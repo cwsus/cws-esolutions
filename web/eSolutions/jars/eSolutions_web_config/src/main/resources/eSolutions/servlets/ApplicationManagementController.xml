@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="1000" />
+    </bean>
+
+    <bean id="applicationManagementController" class="com.cws.us.esolutions.controllers.ApplicationManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="serviceName" value="appMgmt" />
+        <property name="addAppPage" value="AppMgmt_AddApplication" />
+        <property name="defaultPage" value="AppMgmt_DefaultHandler" />
+        <property name="viewAppPage" value="AppMgmt_ViewApplication" />
+        <property name="deployAppPage" value="AppMgmt_DeployApplication" />
+        <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
+        <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />
+        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
+        <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
+        <property name="applMgmt" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
+        <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
+        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
+        <property name="messageApplicationAdded" value="app.mgmt.application.added" />
+    </bean>
+</beans>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <application-config>
+        <appName>eSolutionsCore</appName>
+        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/eSolutions/archive</archiveRootDirectory>
+        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <messageIdLength>16</messageIdLength>
+        <agentPort>10180</agentPort>
+        <managerClassName>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</managerClassName>
+    </application-config>
+
+    <server-config>
+        <portNumber>8181</portNumber>
+        <timeout>30000</timeout>
+        <sslEnabled />
+        <sslKeystore />
+        <sslKeyPassword />
+        <sslKeySalt />
+    </server-config>
+
+    <file-repository>
+        <fileHandler>com.cws.esolutions.core.filehandler.impl.FileSystemFileHandler</fileHandler>
+        <fileRepositoryRoot>/opt/eSolutions/repository/main/</fileRepositoryRoot>
+        <archiveRepositoryRoot>/opt/eSolutions/repository/archive/</archiveRepositoryRoot>
+        <allowedExtensions>
+            <extension>txt</extension>
+            <extension>pdf</extension>
+        </allowedExtensions>
+    </file-repository>
+
+    <proxy-config>
+        <proxyServiceRequired>false</proxyServiceRequired>
+        <proxyServerName>chibcarray.us.hsbc</proxyServerName>
+        <proxyServerPort>8080</proxyServerPort>
+        <proxyAuthRequired>true</proxyAuthRequired>
+        <proxyAuthType>NTLM</proxyAuthType>
+        <proxyAuthDomain>HNAH</proxyAuthDomain>
+        <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
+        <proxyUserId>35033355</proxyUserId>
+        <proxyPwdSalt>GMk0FpQ2cALg08Li6w9FfQXtOJlH2tHj</proxyPwdSalt>
+        <proxyPassword>O0LlkFkk210o81qZYjS6et0fbIuceYFRIyII3mFpcjdCoAx7htugR3SCOo44KZfHp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
+    </proxy-config>
+
+    <dns-config>
+        <templateZoneFile>nls/ZoneTemplate.zone</templateZoneFile>
+        <refreshInterval>900</refreshInterval>
+        <retryInterval>3600</retryInterval>
+        <expirationInterval>604800</expirationInterval>
+        <cacheInterval>3600</cacheInterval>
+        <ttlInterval>900</ttlInterval>
+        <adminName>dnsadmins.</adminName>
+        <domainName>caspersbox.com.</domainName>
+        <masterNameServer>prodns1</masterNameServer>
+        <slaveNameServers>
+            <serverName>prodns2</serverName>
+            <serverName>prodns3</serverName>
+        </slaveNameServers>
+        <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
+    </dns-config>
+
+    <mail-config>
+        <dataSourceName>jndi/mail</dataSourceName>
+        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
+    </mail-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <sendStackTrace>false</sendStackTrace>
+        <emailFrom>esolutionscore-alert@caspersbox.com</emailFrom>
+        <notificationAddress>
+            <emailAddress>oncalls@caspersbox.com</emailAddress>
+            <emailAddress>kmhuntly@gmail.com</emailAddress>
+        </notificationAddress>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>ApplicationDataSource</dsName>
+            <datasource>jdbc/esolutionssvc</datasource>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

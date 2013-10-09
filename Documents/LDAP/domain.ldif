@@ -1,0 +1,42 @@
+version: 1
+
+dn: dc=caspersbox,dc=com
+objectClass: domain
+objectClass: top
+dc: caspersbox
+
+dn: organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organization
+objectClass: top
+organizationName: CWS US
+
+dn: organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+organizationalUnitName: Users
+
+dn: organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+organizationalUnitName: RD
+
+dn: ou=admins,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: admins
+
+dn: ou=developers,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: developers
+
+dn: organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+organizationalUnitName: Service Accounts
+
+dn: ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalUnit
+objectClass: top
+ou: AppAdmins
+

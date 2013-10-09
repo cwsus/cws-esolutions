@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="messagingController" class="com.cws.us.esolutions.controllers.MessagingController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="sendEmailMessage" value="System_ContactAdmins" />
+        <property name="viewServiceMessages" value="Messaging_SystemMessages" />
+        <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
+        <property name="viewServiceMessage" value="Messaging_ViewSystemMessage" />
+        <property name="addServiceMessage" value="Messaging_SubmitSystemMessage" />
+    </bean>
+</beans>

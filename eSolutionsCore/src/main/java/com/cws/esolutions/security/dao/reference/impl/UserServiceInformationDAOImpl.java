@@ -1,0 +1,727 @@
+/**
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.cws.esolutions.security.dao.reference.impl;
+
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+
+import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
+/*
+ * UserSQLServiceInformationDAOImpl
+ * Obtains and returns the user service list for the provided
+ * user information. This information can then be shared across
+ * to the calling application for consumption.
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * Kevin Huntly         01/18/2010 10:05:24             Created.
+ */
+public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
+{
+    @Override
+    public synchronized boolean addProjectIdForUser(final String commonName, final String projectGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#addProjectIdForUser(final String commonName, final String projectGuid) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug(commonName);
+            DEBUGGER.debug(projectGuid);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL addProjectToUser(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, projectGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * Removes a service id from a particular user. Returns true if the service
+     * id was successfully removed, false under all other conditions.
+     *
+     * @param userSecurityId
+     * @param serviceId
+     * @param sqlConn
+     * @return boolean
+     * @throws SQLException
+     */
+    @Override
+    public synchronized boolean removeProjectIdForUser(final String commonName, final String projectGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#removeProjectIdForUser(final String commonName, final String projectGuid) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug(commonName);
+            DEBUGGER.debug(projectGuid);
+        }
+
+        Connection sqlConn = null;
+        PreparedStatement stmt = null;
+        boolean isComplete = false;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL removeProjectFromUser(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, projectGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * Removes a service id from a particular user. Returns true if the service
+     * id was successfully removed, false under all other conditions.
+     *
+     * @param userSecurityId
+     * @param serviceId
+     * @param sqlConn
+     * @return boolean
+     * @throws SQLException
+     */
+    @Override
+    public synchronized boolean verifyProjectForUser(final String commonName, final String projectGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#verifyProjectForUser(final String commonName, final String projectGuid) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug(commonName);
+            DEBUGGER.debug(projectGuid);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL isUserAuthorizedForProject(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, projectGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = stmt.execute();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    /**
+     * Obtains and returns a list of the provided user's available services.
+     * Typically, these are objects the user is authorized to access.
+     *
+     * @param userSecurityId
+     * @param sqlConn
+     * @return List<String>
+     * @throws SQLException
+     */
+    @Override
+    public synchronized List<String> returnUserAuthorizedProjects(final String commonName) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#returnUserAuthorizedProjects(final String commonName) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug(commonName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        List<String> projectList = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL retrieveAuthorizedProjectsForUser(?)}");
+                stmt.setString(1, commonName);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        projectList = new ArrayList<String>();
+
+                        while (resultSet.next())
+                        {
+                            projectList.add(resultSet.getString(1));
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", projectList);
+                        }
+                    }
+                    else
+                    {
+                        throw new SQLException("The provided user does not currently have any services assigned.");
+                    }
+                }
+                else
+                {
+                    throw new SQLException("The provided user does not currently have any services assigned.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return projectList;
+    }
+
+    @Override
+    public synchronized boolean addServiceToUser(final String commonName, final String serviceGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#addServiceToUser(final String commonName, final String serviceGuid) throws SQLException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("commonName: {}", commonName);
+            DEBUGGER.debug("serviceGuid: {}", serviceGuid);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL addServiceToUser(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, serviceGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
+    public synchronized boolean removeServiceFromUser(final String commonName, final String serviceGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#removeServiceFromUser(final String commonName, final String serviceGuid) throws SQLException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("commonName: {}", commonName);
+            DEBUGGER.debug("serviceGuid: {}", serviceGuid);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL removeServiceFromUser(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, serviceGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
+    public synchronized boolean verifyServiceForUser(final String commonName, final String serviceGuid) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#verifyServiceForUser(final String commonName, final String serviceGuid) throws SQLException";
+        
+        if (DEBUG)
+        {
+        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug("commonName: {}", commonName);
+            DEBUGGER.debug("serviceGuid: {}", serviceGuid);
+        }
+        
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL verifySvcForUser(?, ?)}");
+                stmt.setString(1, commonName);
+                stmt.setString(2, serviceGuid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                ResultSet resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    isComplete = resultSet.getBoolean(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
+    public synchronized Map<String, String> listServicesForUser(final String commonName) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#listServicesForUser(final String commonName) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug(commonName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        PreparedStatement stmt = null;
+        Map<String, String> resultsMap = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL listServicesForUser(?)}");
+                stmt.setString(1, commonName);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    resultSet.last();
+
+                    int iRowCount = resultSet.getRow();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("iRowCount: {}", iRowCount);
+                    }
+
+                    if (iRowCount != 0)
+                    {
+                        resultsMap = new HashMap<String, String>();
+
+                        resultSet.beforeFirst();
+
+                        while (resultSet.next())
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug(resultSet.getString("usr_lgn_svcid"));
+                            }
+
+                            resultsMap.put(resultSet.getString("usr_svc_svcid"), resultSet.getString("usr_svc_svcname"));
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("resultsMap: {}", resultsMap);
+                        }
+                    }
+                    else
+                    {
+                        throw new SQLException("The provided user does not currently have any services assigned.");
+                    }
+                }
+                else
+                {
+                    throw new SQLException("The provided user does not currently have any services assigned.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return resultsMap;
+    }
+}

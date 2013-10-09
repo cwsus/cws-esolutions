@@ -1,0 +1,5 @@
+dn: cn=esolutions,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: groupOfUniqueNames
+objectClass: top
+cn: esolutions
+uniqueMember: uid=khuntly,ou=developers,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com

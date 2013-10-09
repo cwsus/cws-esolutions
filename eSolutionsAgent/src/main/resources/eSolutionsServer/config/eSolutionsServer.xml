@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<server-config>
+	    <transportType>TCP</transportType>
+	    <listenAddress>127.0.0.1</listenAddress>
+	    <portNumber>61616</portNumber>
+	    <backlog>10</backlog>
+	    <sslEnabled />
+	    <sslKeystore />
+	    <sslKeyPassword />
+	    <sslKeySalt />
+        <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
+        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+        <serverClass>com.cws.esolutions.agent.server.impl.MQServer</serverClass>
+	</server-config>
+
+    <application-config>
+        <appName>eSolutionsServer</appName>
+        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>C:/Temp/archive</archiveRootDirectory>
+        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <proxyConfigFile>eSolutions/ProxyConfig.xml</proxyConfigFile>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <nlsFileName>nls.request_processing</nlsFileName>
+    </application-config>
+
+    <jmx-config>
+        <jmxHandler>com.cws.esolutions.agent.jmx.impl.WebSphereJMXConnector</jmxHandler>
+        <mbeanHandler>com.cws.esolutions.agent.mbeans.impl.WebSphereServiceMBeanImpl</mbeanHandler>
+        <protocol>t3</protocol>
+        <serverName>192.168.10.251</serverName>
+        <portNumber>19024</portNumber>
+        <userConfig>C:/Users/kh05451/kh05451-WebLogicConfig.properties</userConfig>
+        <keyConfig>C:/Users/kh05451/kh05451-WebLogicKey.properties</keyConfig>
+        <nmPort>19024</nmPort>
+        <isSecure>false</isSecure>
+        <sslKeystore />
+        <keystorePass />
+        <sslTruststore />
+        <truststorePass />
+        <requestTimeout />
+    </jmx-config>
+
+    <deployment-config>
+        <deploymentActiveDirectory>/opt/eSolutions/deployments/active/</deploymentActiveDirectory>
+        <deploymentArchiveDirectory>/opt/eSolutions/deployments/archive/</deploymentArchiveDirectory>
+        <deploymentControlFile>appcontrol.txt</deploymentControlFile>
+        <deploymentFileSuffixes>
+            <suffix>ear</suffix>
+            <suffix>war</suffix>
+        </deploymentFileSuffixes>
+    </deployment-config>
+
+    <script-config>
+        <netstatCmd>C:/temp/bin/netstat.cmd</netstatCmd>
+    </script-config>
+
+    <mail-config>
+        <dataSourceName />
+        <propertyFile>eSolutionsServer/mail/MailConfig.properties</propertyFile>
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
+    </mail-config>
+
+    <dns-config>
+        <templateZoneFile>nls/ZoneTemplate.zone</templateZoneFile>
+        <refreshInterval>900</refreshInterval>
+        <retryInterval>3600</retryInterval>
+        <expirationInterval>604800</expirationInterval>
+        <cacheInterval>3600</cacheInterval>
+        <ttlInterval>900</ttlInterval>
+        <adminName>dnsadmins.</adminName>
+        <domainName>caspersbox.com.</domainName>
+        <masterNameServer>prodns1</masterNameServer>
+        <slaveNameServers>
+            <serverName>prodns2</serverName>
+            <serverName>prodns3</serverName>
+        </slaveNameServers>
+    </dns-config>
+
+    <ssh-config>
+        <sshUserAccount></sshUserAccount>
+        <sshUserPassword />
+        <sshUserSalt />
+        <sshKeyFile></sshKeyFile>
+        <sshKeyPassword />
+        <sshKeySalt />
+    </ssh-config>
+
+    <proxy-config>
+        <proxyServiceRequired>true</proxyServiceRequired>
+        <proxyAuthRequired>true</proxyAuthRequired>
+        <proxyAuthType>basic</proxyAuthType>
+        <proxyServerName>proxy.caspersbox.corp</proxyServerName>
+        <proxyServerPort>3128</proxyServerPort>
+        <proxyServerRealm />
+        <proxyAuthDomain />
+        <proxyUserId>khuntly</proxyUserId>
+        <proxyPassword>1508hailey27*</proxyPassword>
+        <proxyPwdSalt></proxyPwdSalt>
+    </proxy-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <sendStackTrace>false</sendStackTrace>
+        <notificationAddress>
+            <emailAddress>oncalls@caspersbox.com</emailAddress>
+            <emailAddress>kmhuntly@gmail.com</emailAddress>
+        </notificationAddress>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>ApplicationDataSource</dsName>
+            <datasource>jdbc:mysql://localhost/esolutions</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <username>appuser</username>
+            <password>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</password>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

@@ -1,0 +1,623 @@
+/**
+ * Copyright 2008 - 2012 CaspersBox Web Services
+ * All rights reserved.
+ */
+package com.cws.us.esolutions;
+
+import java.util.Map;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.enums.LogonType;
+/*
+ * InitializerBean
+ * Initializer for application. Currently loads logging
+ *
+ * History
+ *
+ * Author               Date                           Comments
+ * ----------------------------------------------------------------------------
+ * Kevin Huntly         11/23/2008 22:39:20            Created.
+ */
+public class ApplicationServiceBean implements Serializable
+{
+    @Autowired private String homePage = null;
+    @Autowired private String hostname = null;
+    @Autowired private int requestTimeout = 10;
+    @Autowired private String dateFormat = null;
+    @Autowired private String homeRedirect = null;
+    @Autowired private String secEmailAddr = null;
+    @Autowired private LogonType logonType = null;
+    @Autowired private String logonRedirect = null;
+    @Autowired private int timeoutWarning = 840000;
+    @Autowired private String applicationId = null;
+    @Autowired private String applicationName = null;
+    @Autowired private String unavailablePage = null;
+    @Autowired private String expiredRedirect = null;
+    @Autowired private String unauthorizedPage = null;
+    @Autowired private String contactAdminsPage = null;
+    @Autowired private String errorResponsePage = null;
+    @Autowired private String searchRequestPage = null;
+    @Autowired private String requestCompletePage = null;
+    @Autowired private Map<String, Boolean> services = null;
+    @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
+
+    private static final long serialVersionUID = 6547417416150985897L;
+    private static final String CNAME = ApplicationServiceBean.class.getName();
+
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setLogonType(final LogonType value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setLogonType(final LogonType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.logonType = value;
+    }
+
+    public final void setLogonRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setLogonRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.logonRedirect = value;
+    }
+
+    public final void setExpiredRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setExpiredRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.expiredRedirect = value;
+    }
+
+    public final void setHomeRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setHomeRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.homeRedirect = value;
+    }
+
+    public final void setHomePage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setHomePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.homePage = value;
+    }
+
+    public final void setUnavailablePage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setUnavailablePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.unavailablePage = value;
+    }
+
+    public final void setUnauthorizedPage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setUnauthorizedPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.unauthorizedPage = value;
+    }
+
+    public final void setContactAdminsPage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setContactAdminsPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.contactAdminsPage = value;
+    }
+
+    public final void setErrorResponsePage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setErrorResponsePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.errorResponsePage = value;
+    }
+
+    public final void setSearchRequestPage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setSearchRequestPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchRequestPage = value;
+    }
+
+    public final void setRequestCompletePage(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setRequestCompletePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestCompletePage = value;
+    }
+
+    public final void setHostname(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setHostname(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.hostname = value;
+    }
+
+    public final void setRequestTimeout(final int value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setRequestTimeout(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestTimeout = value;
+    }
+
+    public final void setDateFormat(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setDateFormat(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dateFormat = value;
+    }
+
+    public final void setSecEmailAddr(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setSecEmailAddr(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.secEmailAddr = value;
+    }
+
+    public final void setTimeoutWarning(final int value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setTimeoutWarning(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.timeoutWarning = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
+
+    public final void setServices(final Map<String, Boolean> value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setServices(final Map<String, Boolean> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.services = value;
+    }
+
+    public final void setUploadDirectory(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setUploadDirectory(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.uploadDirectory = value;
+    }
+
+    public final LogonType getLogonType()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getLogonType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.logonType);
+        }
+
+        return this.logonType;
+    }
+
+    public final String getLogonRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getLogonRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.logonRedirect);
+        }
+
+        return this.logonRedirect;
+    }
+
+    public final String getExpiredRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getExpiredRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.expiredRedirect);
+        }
+
+        return this.expiredRedirect;
+    }
+
+    public final String getHomeRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getHomeRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.homeRedirect);
+        }
+
+        return this.homeRedirect;
+    }
+
+    public final String getHostname()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getHostname()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.hostname);
+        }
+
+        return this.hostname;
+    }
+
+    public final int getRequestTimeout()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getRequestTimeout()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestTimeout);
+        }
+
+        return this.requestTimeout;
+    }
+
+    public final String getDateFormat()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getDateFormat()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.dateFormat);
+        }
+
+        return this.dateFormat;
+    }
+
+    public final String getSecEmailAddr()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getSecEmailAddr()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.secEmailAddr);
+        }
+
+        return this.secEmailAddr;
+    }
+
+    public final long getTimeoutWarning()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getTimeoutWarning()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.timeoutWarning);
+        }
+
+        return this.timeoutWarning;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
+    }
+
+    public final Map<String, Boolean> getServices()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getServices()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.services);
+        }
+
+        return this.services;
+    }
+
+    public final String getUploadDirectory()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getUploadDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.uploadDirectory);
+        }
+
+        return this.uploadDirectory;
+    }
+
+    public final String getHomePage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getHomePage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.homePage);
+        }
+
+        return this.homePage;
+    }
+
+    public final String getUnavailablePage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getUnavailablePage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.unavailablePage);
+        }
+
+        return this.unavailablePage;
+    }
+
+    public final String getUnauthorizedPage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getUnauthorizedPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.unauthorizedPage);
+        }
+
+        return this.unauthorizedPage;
+    }
+
+    public final String getContactAdminsPage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getContactAdminsPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.contactAdminsPage);
+        }
+
+        return this.contactAdminsPage;
+    }
+
+    public final String getErrorResponsePage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getErrorResponsePage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.errorResponsePage);
+        }
+
+        return this.errorResponsePage;
+    }
+
+    public final String getSearchRequestPage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getSearchRequestPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchRequestPage);
+        }
+
+        return this.searchRequestPage;
+    }
+
+    public final String getRequestCompletePage()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getRequestCompletePage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestCompletePage);
+        }
+
+        return this.requestCompletePage;
+    }
+
+    public final String toString()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#toString()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        StringBuilder sBuilder = new StringBuilder()
+            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
+
+        for (Field field : this.getClass().getDeclaredFields())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("field: {}", field);
+            }
+
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
+            {
+                try
+                {
+                    if (field.get(this) != null)
+                    {
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
+                    }
+                }
+                catch (IllegalAccessException iax)
+                {
+                    // don't do anything with it
+                }
+            }
+        }
+
+        sBuilder.append('}');
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("sBuilder: {}", sBuilder);
+        }
+
+        return sBuilder.toString();
+    }
+}

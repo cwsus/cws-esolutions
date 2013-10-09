@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="knowledgeBaseController" class="com.cws.us.esolutions.controllers.KnowledgeBaseController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="prefix" value="KB" />
+        <property name="serviceName" value="kbase" />
+        <property name="newIdentifierLength" value="9" />
+        <property name="articleList" value="articleList" />
+        <property name="postURL" value="/ui/kbase/search" />
+        <property name="requestURL" value="/ui/kbase/article/" />
+        <property name="editArticlePage" value="KnowledgeBase_EditArticle" />
+        <property name="showArticlePage" value="KnowledgeBase_ShowArticle" />
+        <property name="apprRejectPage" value="KnowledgeBase_ApproveReject" />
+        <property name="createArticlePage" value="KnowledgeBase_CreateArticle" />
+        <property name="serviceId" value="4B081972-92C3-455B-9403-B81E68C538B6" />
+        <property name="confirmDeletePage" value="KnowledgeBase_ConfirmDeletion" />
+        <property name="reviewArticlePage" value="KnowledgeBase_ReviewSubmission" />
+        <property name="pendingArticlesPage" value="KnowledgeBase_ShowPendingApprovals" />
+        <property name="createArticleEmail" value="nls/emailTemplates/kbase_create_article.email" />
+    </bean>
+</beans>

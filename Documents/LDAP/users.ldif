@@ -1,0 +1,40 @@
+version: 1
+
+dn: uid=khuntly,ou=developers,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalPerson
+objectClass: person
+objectClass: cwsusperson
+objectClass: cwsperson
+objectClass: inetorgperson
+objectClass: top
+cn: 74d9729b-7fb2-4fef-874b-c9ee5d7a5a95
+sn: Huntly
+cwsexpirydate: 12042009
+cwsfailedpwdcount: 0
+cwsisolrlocked: false
+cwsisolrsetup: false
+cwsissuspended: false
+cwsistcaccepted: true
+cwslastlogin: 120110
+cwssecq1: this is a test of the emergency broadcast system
+cwssecq2: fark
+cwssecans1: aa3fb24858b101981e583e95bd537570e40f9ae88170148ab53d5a3699080fc1f3224fe00e0faabaac4b56a2de8ffcb7d0c4678f269f1e5cd4f63a67364e270c
+cwssecans2: d0ef01b871bc81a0d730a23e5578df4fdcc7d9a27d3e332d34dc19e6b045a08f7055944715a934991ecbc3680d4f3a1678218a9fa5a75e11ef0d732ecba8826a
+cwsrole: SiteAdmin
+displayName: Kevin Huntly
+email: kmhuntly@gmail.com
+givenName: Kevin
+uid: khuntly
+userPassword:: e1NTSEF9aG5udjZWL1Jpdm5rVVhlR0M1M050cVVDT3o2ZjRsR3JBVHVxeGc9PQ=
+
+dn: uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: organizationalPerson
+objectClass: person
+objectClass: cwsusperson
+objectClass: cwsperson
+objectClass: inetorgperson
+objectClass: top
+cn: af8358c2-0a07-11e0-88ef0631adfd72085
+sn: Application User
+uid: AppUser
+userPassword:: e01ENX12SGJOZ3Vab2wwYUhoTCtZNFp0Y2RRPT0=

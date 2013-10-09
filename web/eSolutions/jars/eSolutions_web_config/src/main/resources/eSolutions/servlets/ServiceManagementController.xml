@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="serviceManagementController" class="com.cws.us.esolutions.controllers.ServiceManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="platformValidator">
+            <bean id="platformRequestValidator" class="com.cws.us.esolutions.validators.PlatformValidator" />
+        </property>
+        <property name="serviceName" value="svcMgmt" />
+	    <property name="addProjectPage" value="ServiceMgmt_AddProject" />
+	    <property name="selectDmgrPage" value="ServiceMgmt_SelectDmgr" />
+	    <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
+	    <property name="addPlatformPage" value="ServiceMgmt_AddPlatform" />
+	    <property name="viewProjectPage" value="ServiceMgmt_ViewProject" />
+	    <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
+	    <property name="viewProjectsList" value="ServiceMgmt_ViewProjects" />
+	    <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
+        <property name="systemMgmt" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
+        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />        
+    </bean>
+</beans>

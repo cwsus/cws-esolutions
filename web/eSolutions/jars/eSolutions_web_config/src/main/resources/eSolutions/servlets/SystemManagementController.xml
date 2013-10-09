@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="serverValidator">
+            <bean id="serverValidator" class="com.cws.us.esolutions.validators.ServerValidator" />
+        </property>
+        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="serviceName" value="sysMgmt" />
+        <property name="defaultDomain" value="caspersbox.corp" />
+	    <property name="addServerFailed" value="server.add.failed" />
+	    <property name="addServerPage" value="SystemMgmt_AddServer" />
+	    <property name="viewServerPage" value="SystemMgmt_ViewServer" />
+	    <property name="defaultPage" value="SystemMgmt_DefaultHandler" />
+	    <property name="adminConsolePage" value="SystemMgmt_AdminConsoles" />
+        <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
+    </bean>
+</beans>

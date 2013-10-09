@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jee="http://www.springframework.org/schema/jee"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+    <!-- load up logging -->
+    <bean id="eSolutions" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="staticMethod">
+            <value>org.springframework.util.Log4jConfigurer.initLogging</value>
+        </property>
+        <property name="arguments">
+            <list>
+                <value>classpath:logging/logging.xml</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="hostname" factory-bean="localhost" factory-method="getHostName"/>
+    <bean id="localhost" class="java.net.InetAddress" factory-method="getLocalHost"/>
+
+    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="java:comp/env/jdbc/esolutionssvc" />
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource">
+            <ref bean="dataSource" />
+        </property>
+    </bean>
+
+    <!-- application configuration -->
+    <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
+        <property name="applicationName" value="eSolutions" /> <!-- application name -->
+        <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
+        <property name="logonType" value="COMBINED" />
+        <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
+        <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
+        <property name="uploadDirectory" value="/opt/eSolutions/uploads" /> <!-- where should we put uploads ? -->
+        <property name="secEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
+        <property name="hostname" ref="hostname" />
+        <!-- enable/disable services. true for on, false for off -->
+        <property name="services">
+            <map>
+                <entry key="appMgmt" value="true" />
+                <entry key="dnsAdmin" value="true" />
+                <entry key="kbase" value="true" />
+                <entry key="messaging" value="true" />
+                <entry key="sysMgmt" value="true" />
+                <entry key="userAdmin" value="true" />
+                <entry key="deployApp" value="true" />
+                <entry key="buildApp" value="true" />
+                <entry key="svcMgmt" value="true" />
+            </map>
+        </property>
+	    <property name="homePage" value="HomePage" />
+	    <property name="contactAdminsPage" value="System_ContactAdmins" />
+	    <property name="errorResponsePage" value="System_ErrorResponse" />
+	    <property name="requestCompletePage" value="System_RequestComplete" />
+	    <property name="searchRequestPage" value="System_SearchRequest" />
+	    <property name="unauthorizedPage" value="System_Unauthorized" />
+	    <property name="unavailablePage" value="System_UnavailablePage" />
+	    <property name="logonRedirect" value="redirect:/ui/logon/default" />
+	    <property name="expiredRedirect" value="redirect:/ui/user/password" />
+	    <property name="homeRedirect" value="redirect:/ui/home/default" />
+    </bean>
+
+    <!-- internationalization -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+				<value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
+				<value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
+				<value>classpath:nls/KnowledgeBaseServlet/KnowledgeBaseServlet</value>
+				<value>classpath:nls/LoginServlet/LoginServlet</value>
+				<value>classpath:nls/MessagingServlet/MessagingServlet</value>
+				<value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
+				<value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
+				<value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
+				<value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
+				<value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
+				<value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
+				<value>classpath:nls/theme/resources</value>
+            </list>
+        </property>
+        <property name="cacheSeconds">
+            <value>60</value>
+        </property>
+        <property name="fallbackToSystemLocale" value="true" />
+    </bean>
+</beans>

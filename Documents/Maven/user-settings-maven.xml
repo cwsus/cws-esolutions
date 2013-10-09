@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <servers>
+        <server>
+            <id>artifactory-release</id>
+            <username>username</username>
+            <password>password</password>
+            <filePermissions>644</filePermissions>
+            <directoryPermissions>755</directoryPermissions>
+            <configuration>
+                <timeout>1</timeout>
+            </configuration>
+        </server>
+        <server>
+            <id>artifactory-snapshots</id>
+            <username>username</username>
+            <password>password</password>
+            <filePermissions>644</filePermissions>
+            <directoryPermissions>755</directoryPermissions>
+            <configuration>
+                <timeout>1</timeout>
+            </configuration>
+        </server>
+        <server>
+            <id>artifactory-ext-libs</id>
+            <username>username</username>
+            <password>password</password>
+            <filePermissions>644</filePermissions>
+            <directoryPermissions>755</directoryPermissions>
+            <configuration>
+                <timeout>1</timeout>
+            </configuration>
+        </server>
+        <server>
+            <id>artifactory-int-libs</id>
+            <username>username</username>
+            <password>password</password>
+            <filePermissions>644</filePermissions>
+            <directoryPermissions>755</directoryPermissions>
+            <configuration>
+                <timeout>1</timeout>
+            </configuration>
+        </server>
+    </servers>
+
+    <proxies>
+        <proxy>
+            <id>cws-proxy</id>
+            <active>true</active>
+            <protocol>http</protocol>
+            <username>the-username</username>
+            <password>the-password</password>
+            <host>proxy.caspersbox.corp</host>
+            <port>3128</port>
+            <nonProxyHosts>localhost|127.0.0.1|*.caspersbox.corp</nonProxyHosts>
+        </proxy>
+    </proxies>
+
+    <profiles>
+        <profile>
+            <id>nexus</id>
+            <properties>
+                <sdk.path>/opt/google/android-sdk</sdk.path>
+                <android.sdk.path>/opt/google/android-sdk</android.sdk.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>nexus</activeProfile>
+    </activeProfiles>
+</settings>

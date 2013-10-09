@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="userAccountController" class="com.cws.us.esolutions.controllers.UserAccountController">
+        <property name="passwordValidator">
+            <bean id="passwordValidator" class="com.cws.us.esolutions.validators.PasswordValidator">
+                <property name="secConfig">
+                    <ref bean="securityConfig" />
+                </property>
+            </bean>
+        </property>
+        <property name="securityValidator">
+            <bean id="securityResponseValidator" class="com.cws.us.esolutions.validators.SecurityResponseValidator" />
+        </property>
+        <property name="emailValidator">
+            <bean id="emailAddressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator" />
+        </property>
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+	    <property name="myAccountPage" value="UserAccount_ShowUser" />
+	    <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
+	    <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
+	    <property name="changePasswordPage" value="UserAccount_ChangePassword" />
+	    <property name="errorPasswordExpired" value="user.account.password.expired" />
+	    <property name="errorPasswordFailed" value="error.password.requirement.failure" />
+	    <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
+	    <property name="changePasswordComplete" value="user.account.password.change.success" />
+	    <property name="changeSecurityComplete" value="user.account.update.security.complete" />
+    </bean>
+</beans>

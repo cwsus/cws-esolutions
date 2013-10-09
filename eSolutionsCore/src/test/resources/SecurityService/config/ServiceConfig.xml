@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <email-address>secadm@caspersbox.com</email-address>
+
+    <security-config>
+        <maxAttempts>3</maxAttempts> <!-- maximum number of failed authentication attempts -->
+        <iterations>65535</iterations> <!-- number of times to hash over the password -->
+        <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
+        <passwordMinLength>8</passwordMinLength> <!--  minimum allowed password length -->
+        <passwordMaxLength>64</passwordMaxLength> <!--  maximum allowed password length (0 or null -> no limit)-->
+        <allowUserReset>true</allowUserReset> <!-- can users reset their own password? -->
+        <authAlgorithm>SHA-512</authAlgorithm> <!-- MessageDigest: http://docs.oracle.com/javase/6/docs/technotes/guides/security/StandardNames.html#MessageDigest -->
+        <saltLength>32</saltLength> <!-- salt string length (bigger is better) -->
+        <performAudit>true</performAudit> <!-- should we audit stuff ? (default true) -->
+        <resetIdLength>64</resetIdLength> <!-- reset id length (bigger is better) -->
+        <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
+        <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
+        <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
+        <encryptionAlgorithm>RSA</encryptionAlgorithm>
+        <signingAlgorithm>SHA1withRSA</signingAlgorithm>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
+        <passwordManager>com.cws.esolutions.security.dao.passwordmgmt.impl.LDAPPasswordManager</passwordManager>
+    </security-config>
+
+    <auth-data>
+        <objectClass>cwsusperson</objectClass>
+        <userId>uid</userId>
+        <userPassword>userPassword</userPassword>
+        <userRole>cwsrole</userRole>
+        <lockCount>cwsfailedpwdcount</lockCount>
+        <lastLogin>cwslastlogin</lastLogin>
+        <surname>sn</surname>
+        <givenName>givenName</givenName>
+        <expiryDate>cwsexpirydate</expiryDate>
+        <secQuestionOne>cwssecq1</secQuestionOne>
+        <secQuestionTwo>cwssecq2</secQuestionTwo>
+        <secAnswerOne>cwssecans1</secAnswerOne>
+        <secAnswerTwo>cwssecans2</secAnswerTwo>
+        <emailAddr>email</emailAddr>
+        <isSuspended>cwsissuspended</isSuspended>
+        <commonName>cn</commonName>
+        <olrSetupReq>cwsisolrsetup</olrSetupReq>
+        <olrLocked>cwsisolrlocked</olrLocked>
+        <displayName>displayName</displayName>
+        <tcAccepted>cwsistcaccepted</tcAccepted>
+        <publicKey>cwspublickey</publicKey>
+    </auth-data>
+
+    <auth-repo>
+        <repoType>LDAP</repoType>
+        <repositoryHost>127.0.0.1</repositoryHost>
+        <repositoryPort>10389</repositoryPort>
+        <repositoryDriver />
+        <repositoryConnTimeout>10000</repositoryConnTimeout>
+        <repositoryReadTimeout>10000</repositoryReadTimeout>
+        <repositoryUser>uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUser>
+        <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
+        <repositorySalt>OITltocOUZjW</repositorySalt>
+        <baseObjectClass>cwsusperson</baseObjectClass>
+        <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
+        <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
+        <repositoryAppBase>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</repositoryAppBase>
+    </auth-repo>
+
+    <!--<auth-repo>
+        <repoType>SQL</repoType>
+        <repositoryHost>jdbc:mysql://127.0.0.1/cwssec</repositoryHost>
+        <repositoryDriver>com.mysql.jdbc.Driver</repositoryDriver>
+        <repositoryConnTimeout>10000</repositoryConnTimeout>
+        <repositoryReadTimeout>10000</repositoryReadTimeout>
+        <repositoryUser>appuser</repositoryUser>
+        <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
+        <repositorySalt>OITltocOUZjW</repositorySalt>
+    </auth-repo>-->
+
+    <key-config>
+        <keyAlgorithm>RSA</keyAlgorithm>
+        <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
+        <keyDirectory>/opt/eSolutions/keys</keyDirectory>
+        <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
+    </key-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <emailFrom>esolutionssec-alert@caspersbox.com</emailFrom>
+        <notificationAddress>
+            <emailAddress>oncalls@caspersbox.com</emailAddress>
+            <emailAddress>kmhuntly@gmail.com</emailAddress>
+        </notificationAddress>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>SecurityDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+        <DataSourceManager>
+            <dsName>AuditDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+        <DataSourceManager>
+            <dsName>SessionDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

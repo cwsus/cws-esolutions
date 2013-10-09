@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context useHttpOnly="true" cookies="true" crossContext="true"
+    docBase="${catalina.base}/installedApps/CWSPWS-1.0.ear/CWSPWS_web_source-1.0.war"
+    logEffectiveWebXml="false" override="false" privileged="false" path="/cws" reloadable="true"
+    sessionCookieDomain="" sessionCookiePath="/" tldNamespaceAware="true" tldValidation="false"
+    xmlNamespaceAware="true" xmlValidation="true"
+    allowLinking="false" antiJARLocking="false" antiResourceLocking="false" cacheTTL="30000" cachingAllowed="true"
+    processTlds="false" useNaming="true" workDir="${catalina.base}/work/Catalina/localhost/CWSPWS-1.0.ear/CWSPWS_web_source-1.0.war">
+
+    <Resource name="jdbc/cws" auth="Container" type="javax.sql.DataSource"
+        username="@database.user.name" password="@database.user.password" driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://data.caspersbox.corp/cws"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
+        validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
+        timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="10"
+        maxWait="10000" initialSize="10" removeAbandonedTimeout="60"
+        removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+        jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
+            org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
+            org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
+</Context>

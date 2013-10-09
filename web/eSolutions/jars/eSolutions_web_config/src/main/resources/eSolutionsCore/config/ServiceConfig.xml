@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <application-config>
+        <appName>eSolutionsCore</appName>
+        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/eSolutions/archive</archiveRootDirectory>
+        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <messageIdLength>16</messageIdLength>
+        <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
+    </application-config>
+
+    <mq-config>
+        <hostURL>tcp://127.0.0.1:61616</hostURL>
+        <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
+        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+    </mq-config>
+
+    <proxy-config>
+        <proxyServiceRequired>true</proxyServiceRequired>
+        <proxyServerName>chibcarray.us.hsbc</proxyServerName>
+        <proxyServerPort>8080</proxyServerPort>
+        <proxyAuthRequired>true</proxyAuthRequired>
+        <proxyAuthType>NTLM</proxyAuthType>
+        <proxyAuthDomain>HNAH</proxyAuthDomain>
+        <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
+        <proxyUserId>35033355</proxyUserId>
+        <proxyPwdSalt>yN9r0BeCmRh2okYb6vEapXbTDjDozTXT</proxyPwdSalt>
+        <proxyPassword>L/rZFW1wndHXVKvfsaRT5hGUSWiVIMWIhK/uVjJ6q5JwY37KEP/4PlMhWTwtVndnp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
+    </proxy-config>
+
+    <dns-config>
+        <namedRootDir>/var/named</namedRootDir>
+        <zoneRootDir>/namedb</zoneRootDir> 
+        <refreshInterval>900</refreshInterval>
+        <retryInterval>3600</retryInterval>
+        <expirationInterval>604800</expirationInterval>
+        <cacheInterval>3600</cacheInterval>
+        <ttlInterval>900</ttlInterval>
+        <adminName>dnsadmins.</adminName>
+        <domainName>caspersbox.com.</domainName>
+        <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
+    </dns-config>
+
+    <ssh-config>
+        <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
+        <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
+        <sshUserAccount>kh05451</sshUserAccount> <!-- username to use for authentication -->
+        <sshUserSalt />
+        <sshUserPassword />
+        <sshKeyFile>C:/home/35033355/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
+        <sshKeyPassword /> <!-- password for key, if required -->
+    </ssh-config>
+
+    <mail-config>
+        <dataSourceName>jndi/mail</dataSourceName>
+        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
+    </mail-config>
+
+    <exception-config>
+        <sendExceptionNotifications>true</sendExceptionNotifications>
+        <emailFrom>esolutionscore-alert@caspersbox.com</emailFrom>
+        <notificationAddresses>
+            <emailAddress>oncalls@caspersbox.com</emailAddress>
+            <emailAddress>kmhuntly@gmail.com</emailAddress>
+        </notificationAddresses>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>ApplicationDataSource</dsName>
+            <datasource>jdbc/esolutionssvc</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
+</configuration>

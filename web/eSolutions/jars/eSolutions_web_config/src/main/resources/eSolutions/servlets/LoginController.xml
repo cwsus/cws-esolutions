@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="loginController" class="com.cws.us.esolutions.controllers.LoginController">
+        <property name="validator">
+            <bean id="loginValidator" class="com.cws.us.esolutions.validators.LoginValidator" />
+        </property>
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
+        <property name="logoffCompleteString" value="login.user.logoff" />
+        <property name="forgotUsernameUrl" value="ui/online-reset/forgot-username" />
+        <property name="forgotPasswordUrl" value="ui/online-reset/forgot-password" />
+        <property name="combinedLoginPage" value="CombinedLogin" />
+        <property name="usernameLoginPage" value="UsernameLogin" />
+        <property name="passwordLoginPage" value="PasswordLogin" />
+        <property name="otpLoginPage" value="OTPLogin" />
+    </bean>
+</beans>

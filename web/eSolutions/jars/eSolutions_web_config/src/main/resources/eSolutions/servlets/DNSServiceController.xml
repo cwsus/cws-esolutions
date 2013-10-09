@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean id="dnsServiceController" class="com.cws.us.esolutions.controllers.DNSServiceController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="serviceName" value="dnsAdmin" />
+        <property name="lookupPage" value="DNSService_ServiceLookup" />
+        <property name="defaultPage" value="DNSService_DefaultHandler" />
+        <property name="serviceId" value="B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD" />
+        <property name="searchSuffix" value="caspersbox.corp, caspersbox.com" /> <!-- dns search suffix (not required) -->
+        <!-- where should we go for external dns lookups ? -->
+        <!-- commenting, this isnt working anymore. may try to find a replacement, may not, havent decided. -->
+        <!--
+        <property name="serviceHost" value="http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}" />
+        -->
+    </bean>
+</beans>

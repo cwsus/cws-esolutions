@@ -1,0 +1,59 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<project name = "eSolutionsCore" default = "build" basedir = ".">
+    <description>eSolutionsCore buildfile</description>
+
+    <property environment = "env" />
+    <property file = "build/build.properties" />
+    <property file = "build/build.credentials.properties" />
+    <propertyfile file = "build/build.properties">
+        <entry key = "major.num" type = "int" operation = "+" value = "1" pattern = "0" />
+        <entry key = "minor.num" type = "int" operation = "+" value = "1" pattern = "0" />
+        <entry key = "build.num" type = "int" operation = "+" value = "1" pattern = "00" />
+        <entry key = "rev.num" type = "int" operation = "+" value = "1" pattern = "00" />
+    </propertyfile>
+
+    <path id = "path.antcontrib">
+        <fileset dir = "${env.ANT_HOME}/lib">
+            <include name = "**/ant-contrib.jar" />
+        </fileset>
+    </path>
+
+    <path id = "path.svnant">
+        <fileset dir = "${env.ANT_HOME}/lib">
+            <include name = "**/svnant.jar" />
+            <include name = "**/svnClientAdapter.jar" />
+            <include name = "**/svnjavahl.jar" />
+            <include name = "**/svnkit.jar" />
+            <include name = "**/ganymed.jar" />
+            <include name = "**/jna.jar" />
+        </fileset>
+    </path>
+
+    <taskdef resource = "net/sf/antcontrib/antlib.xml" classpathref = "path.antcontrib" />
+    <typedef resource = "org/tigris/subversion/svnant/svnantlib.xml" classpathref = "path.svnant" />
+
+    <delete dir = "${basedir}/${tmp}" />
+    <delete dir = "${basedir}/${buildArea}" />
+    <mkdir dir = "${basedir}/${tmp}" />
+    <mkdir dir = "${basedir}/${buildArea}" />
+
+    <target name = "build">
+        <tstamp>
+            <format property = "TODAY" pattern = "yyyy-MM-dd HH:mm:ss" />
+        </tstamp>
+
+        <!--<svn javahl = "false">
+            <info target = "${svnpath}" />
+        </svn>-->
+
+        <touch file = "${buildArea}/${VersionFile}" />
+
+        <echo message = "${ProjectName} version ${major.num}.${minor.num}.${build.num}.${rev.num} built ${TODAY}" output = "${buildArea}/${VersionFile}" append = "true" />
+        <!--
+        <echo message = "${line.separator}" output = "${buildArea}/${VersionFile}" append = "true" />
+        <echo message = "SVN Revision: ${svn.info.rev}" output = "${buildArea}/${VersionFile}" append = "true" />
+        <echo message = "${line.separator}" output = "${buildArea}/${VersionFile}" append = "true" />
+        <echo message = "Last changed author: ${svn.info.author}" output = "${buildArea}/${VersionFile}" append = "true" />
+        -->
+    </target>
+</project>

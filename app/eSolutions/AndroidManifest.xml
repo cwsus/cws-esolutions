@@ -1,0 +1,45 @@
+<manifest xmlns:android = "http://schemas.android.com/apk/res/android"
+    package = "com.cws.us.esolutions.ui"
+    android:versionCode = "1"
+    android:versionName = "1.0"
+    android:installLocation = "auto">
+
+    <uses-sdk android:minSdkVersion = "8" android:targetSdkVersion = "15" />
+
+    <uses-permission android:name = "android.permission.INTERNET"/>
+    <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name = "android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name = "android.permission.WRITE_SETTINGS"/>
+
+    <application
+        android:allowBackup = "false"
+        android:icon = "@drawable/logo"
+        android:label = "@string/appName"
+        android:theme = "@style/AppTheme"
+        android:allowClearUserData = "true">
+
+        <activity
+            android:name = "com.cws.us.esolutions.ui.LoginActivity"
+            android:label = "@string/loginTitle">
+            <intent-filter>
+                <action android:name = "android.intent.action.MAIN" />
+                <category android:name = "android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name = "com.cws.us.esolutions.ui.MainActivity"
+            android:label = "@string/mainTitle"
+            android:exported = "false">
+        </activity>
+        <activity
+            android:name = "com.cws.us.esolutions.ui.DNSActivity"
+            android:label = "@string/dnsTitle"
+            android:exported = "false">
+        </activity>
+        <activity
+            android:name = "com.cws.us.esolutions.ui.KnowledgeBaseActivity"
+            android:label = "@string/kbaseTitle"
+            android:exported = "false">
+        </activity>
+    </application>
+</manifest>

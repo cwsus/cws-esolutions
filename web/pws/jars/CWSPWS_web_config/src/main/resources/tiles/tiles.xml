@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition name="base" template="/theme/cws/html/en/Default.jsp">
+        <put-attribute name="pageTitle" value="" cascade="true" />
+        <put-attribute name="header" value="/theme/cws/html/en/jsp/head.jsp" cascade="true" />
+        <put-attribute name="footer" value="/theme/cws/html/en/jsp/footer.jsp" cascade="true" />
+        <put-attribute name="right-nav" value="/theme/cws/html/en/jsp/right-nav.jsp" cascade="true" />
+        <put-attribute name="top-nav" value="/theme/cws/html/en/jsp/top-nav.jsp" cascade="true" />
+        <put-attribute name="main-bulletin" value="/theme/cws/html/en/jsp/alert/en/main-bulletin.jsp" cascade="true" />
+        <put-attribute name="left-notify" value="/theme/cws/html/en/jsp/common/en/left-notify.jsp" cascade="true" />
+        <put-attribute name="right-notify" value="/theme/cws/html/en/jsp/common/en/right-notify.jsp" cascade="true" />
+    </definition>
+
+    <definition name="home" extends="base">
+        <put-attribute name="pageTitle" value="Home" />
+        <put-attribute name="body" value="/com.cws.us.pws.common/jsp/html/en/CommonLandingPage.jsp" cascade="true" />
+    </definition>
+
+    <definition name="errorResponse" extends="base">
+        <put-attribute name="pageTitle" value="Error" />
+        <put-attribute name="body" value="/com.cws.us.pws.common/jsp/html/en/ErrorHandler.jsp" cascade="true" />
+    </definition>
+
+    <definition name="search" extends="base">
+        <put-attribute name="pageTitle" value="Search" />
+        <put-attribute name="body" value="/com.cws.us.pws.search/jsp/html/en/Search.jsp" cascade="true" />
+    </definition>
+
+    <definition name="searchResults" extends="base">
+        <put-attribute name="pageTitle" value="Search Results" />
+        <put-attribute name="body" value="/com.cws.us.pws.search/jsp/html/en/SearchResults.jsp" cascade="true" />
+    </definition>
+
+    <definition name="addContact" extends="base">
+        <put-attribute name="pageTitle" value="Search" />
+        <put-attribute name="body" value="/com.cws.us.pws.contact/jsp/html/en/Contact_SendMessage.jsp" cascade="true" />
+    </definition>
+
+    <definition name="contactResponse" extends="base">
+        <put-attribute name="pageTitle" value="Message sent !" />
+        <put-attribute name="body" value="/com.cws.us.pws.contact/jsp/html/en/Contact_MessageSent.jsp" cascade="true" />
+    </definition>
+
+    <!-- product pages -->
+    <definition name="searchProducts" extends="base">
+        <put-attribute name="pageTitle" value="Product Search Results" />
+        <put-attribute name="body" value="/com.cws.us.pws.products/jsp/html/en/Product_SearchProducts.jsp" cascade="true" />
+    </definition>
+
+    <definition name="productSearchResults" extends="base">
+        <put-attribute name="pageTitle" value="Message sent !" />
+        <put-attribute name="body" value="/com.cws.us.pws.products/jsp/html/en/Product_SearchResults.jsp" cascade="true" />
+    </definition>
+
+    <definition name="productDetail" extends="base">
+        <put-attribute name="pageTitle" value="Product Information" />
+        <put-attribute name="body" value="/com.cws.us.pws.products/jsp/html/en/Product_ShowProduct.jsp" cascade="true" />
+    </definition>
+</tiles-definitions>

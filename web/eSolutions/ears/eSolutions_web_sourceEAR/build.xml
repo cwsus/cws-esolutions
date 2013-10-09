@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="eSolutions" default="init" basedir=".">
+    <description>eSolutions buildfile</description>
+	<property file="build/build.properties" />
+
+	<target name="init">
+		<tstamp>
+		     <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+		</tstamp>
+
+		<touch file="${resources}/${EarProjectName}.version" />
+		<echo message="${EarProjectName} version ${ProjectVersion} built ${TODAY}" file="${ear}/${EarProjectName}.version" />
+	</target>
+</project>

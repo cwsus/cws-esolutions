@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<server-config>
+	    <transportType>TCP</transportType>
+	    <listenAddress>127.0.0.1</listenAddress>
+	    <portNumber>8181</portNumber>
+	    <backlog>10</backlog>
+	    <sslEnabled />
+	    <sslKeystore />
+	    <sslKeyPassword />
+	    <sslKeySalt />
+	</server-config>
+
+    <application-config>
+        <appName>eSolutionsServer</appName>
+        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>C:/Temp/archive</archiveRootDirectory>
+        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <proxyConfigFile>eSolutions/ProxyConfig.xml</proxyConfigFile>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <nlsFileName>nls.request_processing</nlsFileName>
+    </application-config>
+
+    <jmx-config>
+        <jmxHandler>com.cws.esolutions.agent.jmx.impl.WebSphereJMXConnector</jmxHandler> <!-- which jmx handler - this creates the actual jmx conn -->
+        <mbeanHandler>com.cws.esolutions.agent.jmx.mbeans.impl.WebSphereServiceMBeanImpl</mbeanHandler> <!-- which service handler - this does the actual work -->
+        <protocol>t3</protocol> <!-- only valid for weblogic (right now ?) -->
+        <serverName>192.168.10.251</serverName> <!-- this should really probably be the associated dmgr. have to look at this since it should come from the application not here -->
+        <dmgrHost>192.168.10.251</dmgrHost> <!-- for websphere, this is the host of the owning deployment manager -->
+        <dmgrPort>18003</dmgrPort> <!-- for websphere, this is the port of the owning deployment manager -->
+        <userConfig>C:/Users/kh05451/kh05451-WebLogicConfig.properties</userConfig> <!-- for weblogic, this will be the path to the generated user config. for websphere, nvp for auth (as necessary) -->
+        <keyConfig>C:/Users/kh05451/kh05451-WebLogicKey.properties</keyConfig> <!-- only used for weblogic -->
+        <nmPort>19024</nmPort> <!-- nodeagent/nodemanager (depending on container) transport port number -->
+        <requestTimeout>900</requestTimeout> <!-- how long (in seconds) do we wait for completion -->
+        <isSecure>false</isSecure> <!-- is ssl used for the connection? -->
+        <sslKeystore /> <!-- if ssl is used, specify keystore, keystore pass, truststore and truststore pass from here down -->
+        <keystorePass />
+        <sslTruststore />
+        <truststorePass />
+    </jmx-config>
+
+    <script-config>
+        <netstatCmd>netstat</netstatCmd>
+    </script-config>
+</configuration>

@@ -1,0 +1,181 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+USE esolutionssvc;
+
+--
+-- Definition of table `esolutionssvc`.`email_messages`
+--
+DROP TABLE IF EXISTS `esolutionssvc`.`email_messages`;
+CREATE TABLE `esolutionssvc`.`email_messages` (
+    `EMAIL_MESSAGE_ID` VARCHAR(128) NOT NULL UNIQUE,
+    `EMAIL_MESSAGE_DATE` BIGINT NOT NULL,
+    `EMAIL_MESSAGE_FROM` VARCHAR(100) NOT NULL,
+    `EMAIL_MESSAGE_TO` VARCHAR(255) NOT NULL,
+    `EMAIL_MESSAGE_CC` VARCHAR(255),
+    `EMAIL_MESSAGE_BCC` VARCHAR(255),
+    `EMAIL_MESSAGE_SOURCES` TEXT NOT NULL,
+    `EMAIL_MESSAGE_SUBJECT` VARCHAR(255),
+    `EMAIL_MESSAGE_BODY` TEXT,
+    `EMAIL_MESSAGE_ATTACHMENTS` BLOB,
+    PRIMARY KEY  (`EMAIL_MESSAGE_ID`),
+    FULLTEXT KEY `EMAIL_SEARCH` (`EMAIL_MESSAGE_FROM`, `EMAIL_MESSAGE_BODY`, `EMAIL_MESSAGE_SUBJECT`, `EMAIL_MESSAGE_SOURCES`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `esolutionssvc`.`email_messages`
+--
+/*!40000 ALTER TABLE `esolutionssvc`.`email_messages` DISABLE KEYS */;
+/*!40000 ALTER TABLE `esolutionssvc`.`email_messages` ENABLE KEYS */;
+COMMIT;	
+
+--
+-- Definition of procedure `esolutionssvc`.`getEmailByAttribute`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getEmailByAttribute`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getEmailByAttribute`(
+    IN attributeName VARCHAR(100)
+)
+BEGIN
+    SELECT
+        EMAIL_MESSAGE_ID,
+        EMAIL_MESSAGE_DATE,
+        EMAIL_MESSAGE_FROM,
+        EMAIL_MESSAGE_TO,
+        EMAIL_MESSAGE_CC,
+        EMAIL_MESSAGE_BCC,
+        EMAIL_MESSAGE_SOURCES,
+        EMAIL_MESSAGE_SUBJECT,
+        EMAIL_MESSAGE_BODY,
+        EMAIL_MESSAGE_ATTACHMENTS,
+    MATCH (`EMAIL_MESSAGE_FROM`, `EMAIL_MESSAGE_BODY`, `EMAIL_MESSAGE_SUBJECT`, `EMAIL_MESSAGE_SOURCES`)
+    AGAINST (+attributeName WITH QUERY EXPANSION)
+    FROM `esolutionssvc`.`email_messages`
+    WHERE MATCH (`EMAIL_MESSAGE_FROM`, `EMAIL_MESSAGE_BODY`, `EMAIL_MESSAGE_SUBJECT`, `EMAIL_MESSAGE_SOURCES`)
+    AGAINST (+attributeName IN BOOLEAN MODE);
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `esolutionssvc`.`insertEmailMessage`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertEmailMessage`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertEmailMessage`(
+    IN messageId VARCHAR(128),
+    IN messageDate BIGINT,
+    IN messageFrom VARCHAR(255),
+    IN messageTO VARCHAR(255),
+    IN messageCC VARCHAR(255),
+    IN messageBCC VARCHAR(255),
+    IN sources TEXT,
+    IN messageSubject VARCHAR(255),
+    IN messageBody TEXT,
+    IN attachments BLOB
+)
+BEGIN
+    INSERT INTO `esolutionssvc`.`email_messages`
+    (
+        EMAIL_MESSAGE_ID, EMAIL_MESSAGE_DATE, EMAIL_MESSAGE_FROM, EMAIL_MESSAGE_TO, EMAIL_MESSAGE_CC,
+        EMAIL_MESSAGE_BCC, EMAIL_MESSAGE_SOURCES, EMAIL_MESSAGE_SUBJECT, EMAIL_MESSAGE_BODY, EMAIL_MESSAGE_ATTACHMENTS
+    )
+    VALUES
+    (
+        messageId, messageDate, messageFrom, messageTO, messageCC,
+        messageBCC, sources, messageSubject, messageBody, attachments
+    );
+
+    COMMIT;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `esolutionssvc`.`retrieve_email_count`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrieve_email_count`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrieve_email_count`(
+)
+BEGIN
+    SELECT COUNT(EMAIL_MESSAGE_ID)
+    FROM `esolutionssvc`.`email_messages`;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `esolutionssvc`.`retrieveMessages`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrieveMessages`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrieveMessages`(
+)
+BEGIN
+    SELECT
+        EMAIL_MESSAGE_ID,
+        EMAIL_MESSAGE_DATE,
+        EMAIL_MESSAGE_FROM,
+        EMAIL_MESSAGE_TO,
+        EMAIL_MESSAGE_CC,
+        EMAIL_MESSAGE_BCC,
+        EMAIL_MESSAGE_SOURCES,
+        EMAIL_MESSAGE_SUBJECT,
+        EMAIL_MESSAGE_BODY,
+        EMAIL_MESSAGE_ATTACHMENTS
+    FROM `esolutionssvc`.`email_messages`;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
+-- Definition of procedure `esolutionssvc`.`retrieveMessage`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrieveMessage`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrieveMessage`(
+    IN messageId VARCHAR(100)
+)
+BEGIN
+    SELECT
+        EMAIL_MESSAGE_ID,
+        EMAIL_MESSAGE_DATE,
+        EMAIL_MESSAGE_FROM,
+        EMAIL_MESSAGE_TO,
+        EMAIL_MESSAGE_CC,
+        EMAIL_MESSAGE_BCC,
+        EMAIL_MESSAGE_SOURCES,
+        EMAIL_MESSAGE_SUBJECT,
+        EMAIL_MESSAGE_BODY,
+        EMAIL_MESSAGE_ATTACHMENTS
+    FROM `esolutionssvc`.`email_messages`
+    WHERE EMAIL_MESSAGE_ID = messageId;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+
+COMMIT;

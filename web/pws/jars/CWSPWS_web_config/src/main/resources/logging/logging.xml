@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <!-- CWS loggers -->
+    <appender name="info-logger" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/cwspws-info.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="INFO" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="error-logger" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/cwspws-error.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="fatal-logger" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/cwspws-fatal.log" />
+        <param name="DatePattern" value=".yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="FATAL" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="cws-debug" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/cwspws-debug.log" />
+        <param name="DatePattern" value=".yyyy-MM-dd" />
+        <param name="Threshold" value="DEBUG" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="DEBUG" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+
+    <!-- eSolutionsCore loggers -->
+    <appender name="esolutions-audit" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/esolutions-audit.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="AUDIT" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="esolutions-info" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/esolutions-info.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="INFO" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="esolutions-error" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/esolutions-error.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+    <appender name="esolutions-debug" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/esolutions-debug.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <param name="Threshold" value="DEBUG" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="DEBUG" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="smtp-logger" class="org.apache.log4j.net.SMTPAppender">
+        <param name="BufferSize" value="512" />
+        <param name="SMTPHost" value="localhost" />
+        <param name="From" value="esolutionscore-alerts@caspersbox.com" />
+        <param name="To" value="oncall@caspersbox.com" />
+        <param name="Subject" value="eSolutionsCore Exception report" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="FATAL" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
+    </appender>
+    <appender name="quartz" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="${LOG_ROOT}/esolutions-quartz.log" />
+        <param name="DatePattern" value="'.'yy-MM-dd" />
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
+        </layout>
+    </appender>
+
+    <!-- CWS loggers -->
+    <category name="INFO_RECORDER.com.cws.us.pws" additivity="false">
+        <priority value="INFO" />
+        <appender-ref ref="info-logger" />
+    </category>
+    <category name="ERROR_RECORDER.com.cws.us.pws" additivity="false">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+    <category name="FATAL_RECORDER.com.cws.us.pws" additivity="false">
+        <priority value="FATAL" />
+        <appender-ref ref="fatal-logger" />
+    </category>
+    <category name="CWS_DEBUGGER" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="cws-debug" />
+    </category>
+    <category name="org.springframework.core">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+    <category name="org.springframework.beans">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+    <category name="org.springframework.context">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+    <category name="org.springframework.http">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+    <category name="org.springframework.web">
+        <priority value="ERROR" />
+        <appender-ref ref="error-logger" />
+    </category>
+
+    <!-- eSolutionsCore loggers -->
+    <category name="AUDIT_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="AUDIT" />
+        <appender-ref ref="esolutions-audit" />
+    </category>
+    <category name="INFO_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="INFO" />
+        <appender-ref ref="esolutions-info" />
+    </category>
+    <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="ERROR" />
+        <appender-ref ref="esolutions-error" />
+    </category>
+    <category name="FATAL_RECORDER.com.cws.esolutions.core" additivity="false">
+        <priority value="ERROR" />
+        <appender-ref ref="smtp-logger" />
+    </category>
+    <category name="ESOLUTIONS_DEBUGGER" additivity="false">
+        <priority value="DEBUG" />
+        <appender-ref ref="esolutions-debug" />
+    </category>
+</log4j:configuration>

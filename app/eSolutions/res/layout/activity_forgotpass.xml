@@ -1,0 +1,54 @@
+<RelativeLayout xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools = "http://schemas.android.com/tools"
+    android:layout_width = "match_parent"
+    android:layout_height = "match_parent"
+    android:background="@drawable/logo">
+    <TextView
+        android:id = "@+id/tvSecurityQuestionName"
+        android:layout_alignParentLeft = "true"
+        android:layout_marginTop="10dp"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:text = "@string/tvSecQuestionName" />
+    <TextView
+        android:id = "@+id/tvSecurityQuestionValue"
+        android:layout_marginTop = "10dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_below = "@+id/tvSecurityQuestionName"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content" />
+    <TextView
+        android:id = "@+id/tvSecurityAnswerName"
+        android:layout_marginTop = "10dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_below = "@+id/tvSecurityQuestionValue"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:text = "@string/tvSecAnswerName" />
+    <EditText
+        android:id = "@+id/etSecurityAnswerValue"
+        android:layout_marginTop = "10dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_below = "@+id/tvSecurityAnswerName"
+        android:layout_width = "wrap_content"
+        android:layout_height = "wrap_content"
+        android:hint = "@string/hintSecAnswerValue" />
+    <Button
+        android:id = "@+id/btn_DoSubmit"
+        android:layout_width = "125dp"
+        android:layout_height = "40dp"
+        android:layout_centerInParent = "true"
+        android:layout_below = "@+id/etSecurityAnswerValue"
+        android:layout_marginTop = "30dp"
+        android:text = "@string/btnDoSubmit"
+        android:background="@drawable/button"
+        android:onClick="executeUserLogin" />
+    <TextView
+        android:id = "@+id/tv_Response"
+        android:layout_width = "wrap_content"
+        android:layout_height = "100dp"
+        android:layout_alignParentLeft = "true"
+        android:layout_alignParentRight = "true"
+        android:layout_below = "@+id/btn_DoSubmit"
+        android:layout_marginTop = "18dp" />
+</RelativeLayout>

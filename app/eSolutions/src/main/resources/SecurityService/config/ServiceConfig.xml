@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <security-config>
+        <security-config key="authRepo">LDAP</security-config>
+        <security-config key="useTwoFactor">false</security-config>
+        <security-config key="maxAttempts">3</security-config>
+        <security-config key="sessionTimeout">900000</security-config>
+        <security-config key="timeoutWarning">840000</security-config>
+        <security-config key="concurrentLogons">false</security-config>
+        <security-config key="passwordExpiration">90</security-config>
+        <security-config key="passwordMinLength">6</security-config>
+        <security-config key="passwordMaxLength">30</security-config>
+        <security-config key="allowUserReset">true</security-config>
+        <security-config key="authAlgorithm">MD5</security-config>
+        <security-config key="permSuspendLockCount">999</security-config>
+        <security-config key="useSecurityManager">true</security-config>
+        <security-config key="saltLength">8</security-config>
+        <security-config key="authHandler">com.cws.esolutions.core.security.usermgmt.impl.LDAPAuthenticator</security-config>
+    </security-config>
+
+    <key-config>
+        <key-config key="KeyManager">com.cws.esolutions.core.security.keymgmt.impl.FileKeyManager</key-config>
+        <key-config key="KeyDirectory">/var/tmp/keys/</key-config>
+        <key-config key="KeySize">4096</key-config>
+    </key-config>
+
+    <security-roles>
+        <role key="SERVICE_SVCADMIN_ROLE">ServiceAdmin</role>
+        <role key="SERVICE_USERADMIN_ROLE">UserAdmin</role>
+        <role key="SERVICE_ADMIN_ROLE">Admin</role>
+        <role key="SERVICE_USER_ROLE">User</role>
+        <role key="SITE_ADMIN_ROLE">SiteAdmin</role>
+    </security-roles>
+
+    <auth-data>
+        <auth-data key="USERID">uid</auth-data>
+        <auth-data key="PASSWORD">userPassword</auth-data>
+        <auth-data key="USER_ROLE">cwsrole</auth-data>
+        <auth-data key="LOCK_COUNTER">cwsfailedpwdcount</auth-data>
+        <auth-data key="LAST_LOGIN">cwslastlogin</auth-data>
+        <auth-data key="SURNAME">sn</auth-data>
+        <auth-data key="GIVEN_NAME">givenName</auth-data>
+        <auth-data key="EXPIRY_DATE">cwsexpirydate</auth-data>
+        <auth-data key="SEC_QUESTION_ONE">cwssecq1</auth-data>
+        <auth-data key="SEC_QUESTION_TWO">cwssecq2</auth-data>
+        <auth-data key="SEC_ANS_ONE">cwssecans1</auth-data>
+        <auth-data key="SEC_ANS_TWO">cwssecans2</auth-data>
+        <auth-data key="EMAIL_ADDR">email</auth-data>
+        <auth-data key="IS_SUSPENDED">cwsissuspended</auth-data>
+        <auth-data key="COMMON_NAME">cn</auth-data>
+        <auth-data key="OLR_SETUP_REQ">cwsisolrsetup</auth-data>
+        <auth-data key="OLR_LOCKED">cwsisolrlocked</auth-data>
+        <auth-data key="DISPLAY_NAME">displayName</auth-data>
+        <auth-data key="TC_ACCEPTED">cwsistcaccepted</auth-data>
+    </auth-data>
+
+    <auth-repo>
+        <auth-repo key="ldapURL">127.0.0.1</auth-repo>
+        <auth-repo key="ldapPort">10389</auth-repo>
+        <auth-repo key="connectTimeout">10000</auth-repo>
+        <auth-repo key="readTimeout">10000</auth-repo>
+        <auth-repo key="username">uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</auth-repo>
+        <auth-repo key="password">TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</auth-repo>
+        <auth-repo key="salt">OITltocOUZjW</auth-repo>
+        <auth-repo key="baseDN">dc=caspersbox,dc=com</auth-repo>
+        <auth-repo key="agentLdapContext">organizationalUnitName=Users,organizationName=CWS US</auth-repo>
+    </auth-repo>
+
+    <connection-factory-config>
+        <connection-name>SessionDataSourceManager</connection-name>
+        <SessionDataSourceManager>
+            <connection key="datasource">jdbc:mysql://127.0.0.1/cwssec</connection>
+            <connection key="driver">com.mysql.jdbc.Driver</connection>
+            <connection key="username">appuser</connection>
+            <connection key="password">TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</connection>
+            <connection key="salt">OITltocOUZjW</connection>
+        </SessionDataSourceManager>
+
+        <connection-name>AuditDataSourceManager</connection-name>
+        <AuditDataSourceManager>
+            <connection key="datasource">jdbc:mysql://127.0.0.1/cwssec</connection>
+            <connection key="driver">com.mysql.jdbc.Driver</connection>
+            <connection key="username">appuser</connection>
+            <connection key="password">TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</connection>
+            <connection key="salt">OITltocOUZjW</connection>
+        </AuditDataSourceManager>
+    </connection-factory-config>
+</config>

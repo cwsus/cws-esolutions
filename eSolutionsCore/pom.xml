@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.cws</groupId>
+        <artifactId>cws</artifactId>
+        <version>2.2</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cws-shared</groupId>
+    <artifactId>eSolutionsCore</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <version>1.0-SNAPSHOT</version>
+
+    <scm>
+        <connection>scm:git:git@github.com:cws-us/cws-esolutions.git</connection>
+        <developerConnection>scm:git:git@github.com:cws-us/cws-esolutions.git</developerConnection>
+        <url>scm:git:git@github.com:cws-us/cws-esolutions.git</url>
+    </scm>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Third-party jars -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.1.6</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-daemon</groupId>
+            <artifactId>commons-daemon</artifactId>
+            <version>1.0.10</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>org.eclipse.persistence.moxy</artifactId>
+            <version>2.4.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>2.4.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>sshtools</groupId>
+            <artifactId>j2ssh-core</artifactId>
+            <version>0.2.9</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>sshtools</groupId>
+            <artifactId>j2ssh-common</artifactId>
+            <version>0.2.9</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- virtualbox -->
+        <dependency>
+        	<groupId>org.virtualbox</groupId>
+        	<artifactId>vboxjws</artifactId>
+        	<version>4.2.8</version>
+        	<type>jar</type>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.expectj</groupId>
+            <artifactId>expectj</artifactId>
+            <version>2.0.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-core</artifactId>
+            <version>5.7.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- agent -->
+        <dependency>
+            <groupId>eSolutionsAgent</groupId>
+            <artifactId>eSolutionsAgent</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--
+        exclude everything out of src/main/resources
+        applications CALLING this library MUST provide
+        their own configuration (everyone might not fit
+        into the same model). the server portion does NOT
+        load its config from the jar, its loaded on the fs
+        -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+	            <excludes>
+	                <exclude>**/*</exclude>
+	            </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptor>src/assemble/assembly.xml</descriptor>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

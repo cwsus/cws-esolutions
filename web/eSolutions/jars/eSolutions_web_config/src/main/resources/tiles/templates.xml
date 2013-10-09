@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+    <definition name="baseLayout" template="/theme/cws/html/en/Default.jsp">
+        <put-attribute name="pageTitle"     value="eSolutions" cascade="true" />
+        <!-- jsp files -->
+        <put-attribute name="head"          value="/theme/cws/html/en/jsp/head.jsp" cascade="true" />
+        <put-attribute name="masthead"      value="/theme/cws/html/en/jsp/masthead.jsp" cascade="true" />
+        <put-attribute name="navbar"        value="/theme/cws/html/en/jsp/navbar.jsp" cascade="true" />
+        <put-attribute name="footer"        value="/theme/cws/html/en/jsp/footer.jsp" cascade="true" />
+    </definition>
+
+    <!-- Common -->
+    <definition name="HomePage" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Home"/>
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/CommonLandingPage.jsp"/>      
+    </definition>
+    <definition name="System_ContactAdmins" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Contact Administrators" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_ContactAdmins.jsp" cascade="true" />
+    </definition>
+    <definition name="System_ErrorResponse" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Error" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_ErrorHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="System_RequestComplete" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Request Complete" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_RequestComplete.jsp" cascade="true" />
+    </definition>
+    <definition name="System_SearchRequest" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Search Request" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_SearchRequest.jsp" cascade="true" />
+    </definition>
+    <definition name="System_Unauthorized" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Not Authorized" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_Unauthorized.jsp" cascade="true" />
+    </definition>
+    <definition name="System_UnavailablePage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Unavailable" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_Unavailable.jsp" cascade="true" />
+    </definition>
+
+    <!-- Application Management -->
+    <definition name="AppMgmt_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_DefaultHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="AppMgmt_AddApplication" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - Add new application" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_AddApplication.jsp" cascade="true" />
+    </definition>
+    <definition name="AppMgmt_ViewApplication" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - View Application" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_ViewApplication.jsp" cascade="true" />
+    </definition>
+    <definition name="AppMgmt_RetrieveFiles" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - Retrieve Files" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_RetrieveFiles.jsp" cascade="true" />
+    </definition>
+    <definition name="AppMgmt_ViewApplications" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - Application List" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_ViewApplications.jsp" cascade="true" />
+    </definition>
+    <definition name="AppMgmt_DeployApplication" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - Deploy Application" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_DeployApplication.jsp" cascade="true" />
+    </definition>
+
+    <!-- Authentication -->
+    <definition name="CombinedLogin" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Enter Username" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.login/jsp/html/en/Login.jsp" cascade="true" />
+    </definition>
+    <definition name="UsernameLogin" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Enter Username" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.login/jsp/html/en/LoginUsername.jsp" cascade="true" />
+    </definition>
+    <definition name="PasswordLogin" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Enter Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.login/jsp/html/en/LoginPassword.jsp" cascade="true" />
+    </definition>
+    <definition name="OTPLogin" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Enter Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.login/jsp/html/en/LoginOTP.jsp" cascade="true" />
+    </definition>
+
+    <!-- DNSService -->
+    <definition name="DNSService_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - DNS Services" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DefaultHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="DNSService_ServiceLookup" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Lookup" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
+    </definition>
+
+    <!-- KnowledgeBase -->
+    <definition name="KnowledgeBase_ApproveReject" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Approve/Reject Article {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ApproveReject.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_ConfirmDeletion" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Delete Article {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ConfirmDeletion.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_CreateArticle" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Create Article {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_CreateArticle.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_EditArticle" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Edit Article {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_EditArticle.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_ReviewSubmission" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Review Article {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ReviewSubmission.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_ShowArticle" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - {0}" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ShowArticle.jsp" cascade="true" />
+    </definition>
+    <definition name="KnowledgeBase_ShowPendingApprovals" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Pending Approvals" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ShowPendingApprovals.jsp" cascade="true" />
+    </definition>
+
+    <!-- Messaging -->
+    <definition name="Messaging_SubmitSystemMessage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Edit Article" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SubmitServiceMessage.jsp" cascade="true" />
+    </definition>
+    <definition name="Messaging_SystemMessages" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Review Submission" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SystemMessages.jsp" cascade="true" />
+    </definition>
+    <definition name="Messaging_ViewSystemMessage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Review Submission" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewSystemMessage.jsp" cascade="true" />
+    </definition>
+
+    <!-- OnlineReset -->
+    <definition name="OnlineReset_SubmitUsername" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.onlinereset/jsp/html/en/OnlineReset_SubmitUsername.jsp" cascade="true" />
+    </definition>
+    <definition name="OnlineReset_SubmitAnswers" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.onlinereset/jsp/html/en/OnlineReset_QuestionResponse.jsp" cascade="true" />
+    </definition>
+    <definition name="OnlineReset_ForgotUsername" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Forgot Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.onlinereset/jsp/html/en/OnlineReset_ForgotUsername.jsp" cascade="true" />
+    </definition>
+
+    <!-- Service Management -->
+    <definition name="ServiceMgmt_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_DefaultHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_SelectDmgr" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - Select Deployment Manager" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_SelectDmgr.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_AddProject" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Project" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_AddProject.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_AddPlatform" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Platform" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_AddPlatform.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewProject" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Project" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProject.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewPlatform" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platform" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewPlatform.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewProjects" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Projects" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProjects.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewPlatforms" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platforms" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewPlatforms.jsp" cascade="true" />
+    </definition>
+
+    <!-- System Check -->
+    <definition name="SystemCheck_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_DefaultHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemCheck_RemoteDate" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Remote Date" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_RemoteDate.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemCheck_TelnetTest" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Telnet Test" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_TelnetTest.jsp" cascade="true" />
+    </definition>
+
+    <!-- System Management -->
+    <definition name="SystemMgmt_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_DefaultHandler.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_ViewServer" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - View server detail" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_ViewServer.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_AddServer" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Add new server" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_AddServer.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_AdminConsoles" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Administration Consoles" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_AdminConsoles.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_RemoteDate" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Remote Date" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_RemoteDate.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_ServerControl" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Server Control" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_ServerControl.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemMgmt_TelnetTest" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Telnet Test" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-management/jsp/html/en/SystemMgmt_TelnetTest.jsp" cascade="true" />
+    </definition>
+
+    <!-- User Management -->
+    <definition name="UserManagement_CreateUser" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - User Management - Create User" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.user-management/jsp/html/en/UserManagement_CreateUser.jsp" cascade="true" />
+    </definition>
+    <definition name="UserManagement_EditUser" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - User Manageement - Edit User" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.user-management/jsp/html/en/UserManagement_EditUser.jsp" cascade="true" />
+    </definition>
+    <definition name="UserManagement_UserAudit" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - User Management - User Audit" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.user-management/jsp/html/en/UserManagement_UserAudit.jsp" cascade="true" />
+    </definition>
+    <definition name="UserManagement_UserSearch" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - User Management - User Search" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.user-management/jsp/html/en/UserManagement_UserSearch.jsp" cascade="true" />
+    </definition>
+    <definition name="UserManagement_ViewUser" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - User Management - View User" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.user-management/jsp/html/en/UserManagement_ViewUser.jsp" cascade="true" />
+    </definition>
+
+    <!-- UserAccount -->
+    <definition name="UserAccount_ChangePassword" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Update Password" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ChangePassword.jsp" cascade="true" />
+    </definition>
+    <definition name="UserAccount_ChangeSecurity" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Update Security Questions" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ChangeSecurity.jsp" cascade="true" />
+    </definition>
+    <definition name="UserAccount_ChangeEmail" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - Update Email Address" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ChangeEmail.jsp" cascade="true" />
+    </definition>
+    <definition name="UserAccount_ShowUser" extends="baseLayout">
+        <put-attribute name="title"         value="eSolutions - View User Account" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ViewMyProfile.jsp" cascade="true" />
+    </definition>
+</tiles-definitions>

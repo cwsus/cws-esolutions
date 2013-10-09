@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job-scheduling-data xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+    version="2.0">
+
+    <pre-processing-commands>
+        <delete-jobs-in-group>*</delete-jobs-in-group>  <!-- clear all jobs in scheduler -->
+        <delete-triggers-in-group>*</delete-triggers-in-group> <!-- clear all triggers in scheduler -->
+    </pre-processing-commands>
+
+    <processing-directives>
+        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), overwrite them -->
+        <overwrite-existing-data>true</overwrite-existing-data>
+        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), and over-write is false, ignore them rather then generating an error -->
+        <ignore-duplicates>false</ignore-duplicates>
+    </processing-directives>
+
+    <schedule>
+        <job>
+            <name>CheckEmailMessagesJob</name>
+            <group>eSolutions</group>
+            <description>Check email messages</description>
+            <job-class>com.cws.esolutions.core.jobs.CheckEmailMessagesJob</job-class>
+            <durability>false</durability>
+            <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>mail.protocol</key>
+                    <value>pop3s</value>
+                </entry>
+                <entry>
+                    <key>mail.host</key>
+                    <value>pop.gmail.com</value>
+                </entry>
+                <entry>
+                    <key>mail.port</key>
+                    <value>995</value>
+                </entry>
+                <entry>
+                    <key>isSSL</key>
+                    <value>true</value>
+                </entry>
+                <entry>
+                    <key>userAccount</key>
+                    <value>recent:kmhuntly@gmail.com</value>
+                </entry>
+                <entry>
+                    <key>userSalt</key>
+                    <value>Pskd2LMP</value>
+                </entry>
+                <entry>
+                    <key>userPass</key>
+                    <value>3yghI/Ba4ChcsKkr45PP/hVfWk4sj3v8IcU9yzKuJuY=</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>CheckEmailMessagesTrigger</name>
+                <group>eSolutions</group>
+                <job-name>CheckEmailMessagesJob</job-name>
+                <job-group>eSolutions</job-group>
+                <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+    <schedule>
+        <job>
+            <name>DeployerJob</name>
+            <group>eSolutions</group>
+            <description>Deploy application files</description>
+            <job-class>com.cws.esolutions.core.jobs.DeployerJob</job-class>
+            <durability>false</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>DeployerJobTrigger</name>
+                <group>eSolutions</group>
+                <job-name>DeployerJob</job-name>
+                <job-group>eSolutions</job-group>
+                <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+    <schedule>
+        <job>
+            <name>ResetReaperJob</name>
+            <group>SecurityService</group>
+            <description>Remove expired reset request identifiers</description>
+            <job-class>com.cws.esolutions.security.jobs.ResetRequestReaperJob</job-class>
+            <durability>false</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>ResetRequestReaperTrigger</name>
+                <group>SecurityService</group>
+                <job-name>ResetReaperJob</job-name>
+                <job-group>SecurityService</job-group>
+                <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+</job-scheduling-data>
