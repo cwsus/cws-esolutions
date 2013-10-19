@@ -44,7 +44,7 @@
         <table id="userauth">
             <tr>
                 <td><label id="txtQuestionOne"><spring:message code="olr.question" /><br /></label></td>
-                <td>${userSecurity.secQuestionOne}</td>
+                <td>${sessionScope.userSecurity.secQuestionOne}</td>
             </tr>
             <tr>
                 <td><label id="txtAnswerOne"><spring:message code="olr.answer" /></label></td>
@@ -58,7 +58,7 @@
             </tr>
             <tr>
                 <td><label id="txtQuestionTwo"><spring:message code="olr.question" /><br /></label></td>
-                <td>${userSecurity.secQuestionTwo}</td>
+                <td>${sessionScope.userSecurity.secQuestionTwo}</td>
             </tr>
             <tr>
                 <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
