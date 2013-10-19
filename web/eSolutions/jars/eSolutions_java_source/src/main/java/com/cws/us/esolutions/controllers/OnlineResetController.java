@@ -801,11 +801,11 @@ public class OnlineResetController
                         if (secResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             // xlnt. set the user
-                            hSession.setAttribute(Constants.USER_ACCOUNT, resUser);
+                            hSession.setAttribute(Constants.RESET_ACCOUNT, resUser);
+                            hSession.setAttribute(Constants.USER_SECURITY, secResponse.getUserSecurity());
 
                             mView.addObject(secResponse.getUserSecurity());
                             mView.addObject("command", new OnlineResetRequest());
-                            mView.addObject("userSecurity", secResponse.getUserSecurity());
                             mView.setViewName(this.submitAnswersPage);
                         }
                         else
@@ -851,17 +851,21 @@ public class OnlineResetController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
-        String smsCode = null;
         ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("ServletRequestAttributes", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest", hRequest);
+            DEBUGGER.debug("HttpSession", hSession);
+            DEBUGGER.debug("IAuthenticationProcessor", authProcessor);
+            DEBUGGER.debug("UserAccount", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -904,13 +908,6 @@ public class OnlineResetController
             if (DEBUG)
             {
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
             }
 
             UserSecurity userSecurity = new UserSecurity();
@@ -961,7 +958,7 @@ public class OnlineResetController
 
                 if (secConfig.getSmsResetEnabled())
                 {
-                    smsCode = RandomStringUtils.randomAlphanumeric(8);
+                    String smsCode = RandomStringUtils.randomAlphanumeric(8);
 
                     if (DEBUG)
                     {
@@ -1042,7 +1039,7 @@ public class OnlineResetController
                         // send an sms code
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        smsMessage.setMessageBody(smsCode);
+                        smsMessage.setMessageBody(resetReq.getSmsCode());
                         emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
                         emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
 
@@ -1053,6 +1050,9 @@ public class OnlineResetController
 
                         EmailUtils.sendSmsMessage(smsMessage);
                     }
+
+                    // invalidate the session at this point
+                    hSession.invalidate();
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);
                     mView.setViewName(appConfig.getLogonRedirect());
@@ -1108,10 +1108,6 @@ public class OnlineResetController
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
-        }
-        finally
-        {
-            hSession.invalidate();
         }
 
         if (DEBUG)

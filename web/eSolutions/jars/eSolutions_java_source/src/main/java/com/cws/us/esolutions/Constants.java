@@ -35,6 +35,7 @@ public class Constants
     public static final String DEBUGGER = "ESOLUTIONS_DEBUGGER";
 
     public static final String USER_ACCOUNT = "userAccount";
+    public static final String USER_SECURITY = "userSecurity";
     public static final String RESET_ACCOUNT = "resetAccount";
     public static final String ERROR_MESSAGE = "errorResponse";
     public static final String SEARCH_RESULTS = "searchResults";
