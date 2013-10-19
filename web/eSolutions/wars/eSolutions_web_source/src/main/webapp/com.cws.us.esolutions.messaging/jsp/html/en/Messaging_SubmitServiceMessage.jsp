@@ -41,12 +41,13 @@
     <p id="validationError" />
 
     <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/messaging/submit-message" method="post" autocomplete="off">
-        <form:hidden path="submitDate" />
-        <form:hidden path="messageId" />
-        <form:hidden path="authorEmail" />
-        <form:hidden path="messageAuthor" />
+        <form:hidden path="isNewMessage" value="true" />
 
         <table id="contactTable">
+            <tr>
+                <td id="txtSubmittorUserID"><spring:message code="messaging.system.message.author" /></td>
+                <td>${sessionScope.userAccount.username}</td>
+            </tr>
             <tr>
                 <td id="txtSysMessageSubject"><spring:message code="messaging.system.message.subject" /></td>
                 <td><form:input path="messageTitle" /></td>
@@ -56,14 +57,6 @@
                 <td id="txtSysMessageBody"><spring:message code="messaging.system.message.body" /></td>
                 <td><form:textarea path="messageText" /></td>
                 <td><form:errors path="messageText" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtIsMessageActive"><spring:message code="messaging.system.message.active" /></label></td>
-                <td>
-                    <form:radiobutton path="isActive" value="true" /><spring:message code="messaging.system.message.active" />
-                    <form:radiobutton path="isActive" value="false" /><spring:message code="messaging.system.message.inactive" />
-                    <form:errors path="isActive" cssClass="validationError" />
-                </td>
             </tr>
         </table>
         <table id="inputTable">

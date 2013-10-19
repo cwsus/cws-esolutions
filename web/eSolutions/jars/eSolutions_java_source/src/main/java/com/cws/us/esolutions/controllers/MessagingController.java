@@ -12,12 +12,8 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
-import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
-
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -32,10 +28,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
@@ -45,6 +39,9 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
+import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -67,71 +64,18 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 public class MessagingController
 {
     private String serviceId = null;
-    private String messageEmailSent = null;
-    private String sendEmailMessage = null;
-    private String addServiceMessage = null;
-    private String editServiceMessage = null;
-    private String viewServiceMessages = null;
+    private String addServiceMessagePage = null;
+    private String editServiceMessagePage = null;
+    private String viewServiceMessagesPage = null;
     private String messageSuccessfullyAdded = null;
     private ApplicationServiceBean appConfig = null;
+    private String messageSuccessfullyUpdated = null;
 
     private static final String CNAME = MessagingController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-
-    public final void setSendEmailMessage(final String value)
-    {
-        final String methodName = MessagingController.CNAME + "#setSendEmailMessage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sendEmailMessage = value;
-    }
-
-    public final void setAddServiceMessage(final String value)
-    {
-        final String methodName = MessagingController.CNAME + "#setAddServiceMessage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.addServiceMessage = value;
-    }
-
-    public final void setViewServiceMessages(final String value)
-    {
-        final String methodName = MessagingController.CNAME + "#setViewServiceMessages(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.viewServiceMessages = value;
-    }
-
-    public final void setEditServiceMessage(final String value)
-    {
-        final String methodName = MessagingController.CNAME + "#setEditServiceMessage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.editServiceMessage = value;
-    }
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
@@ -159,9 +103,9 @@ public class MessagingController
         this.serviceId = value;
     }
 
-    public final void setMessageEmailSent(final String value)
+    public final void setAddServiceMessagePage(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setMessageEmailSent(final String value)";
+        final String methodName = MessagingController.CNAME + "#setAddServiceMessagePage(final String value)";
 
         if (DEBUG)
         {
@@ -169,7 +113,33 @@ public class MessagingController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageEmailSent = value;
+        this.addServiceMessagePage = value;
+    }
+
+    public final void setViewServiceMessagesPage(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setViewServiceMessagesPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.viewServiceMessagesPage = value;
+    }
+
+    public final void setEditServiceMessagePage(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setEditServiceMessagePage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.editServiceMessagePage = value;
     }
 
     public final void setMessageSuccessfullyAdded(final String value)
@@ -183,6 +153,19 @@ public class MessagingController
         }
 
         this.messageSuccessfullyAdded = value;
+    }
+
+    public final void setMessageSuccessfullyUpdated(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setMessageSuccessfullyUpdated(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSuccessfullyUpdated = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -277,19 +260,116 @@ public class MessagingController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
+                mView.addObject("dateFormat", appConfig.getDateFormat());
                 mView.addObject("messageList", response.getSvcMessages());
-                mView.setViewName(this.viewServiceMessages);
+                mView.setViewName(this.viewServiceMessagesPage);
             }
             else
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                mView.setViewName(this.addServiceMessage);
+                mView.setViewName(this.addServiceMessagePage);
             }
         }
         catch (MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
+
+            mView.setViewName(appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/add-message", method = RequestMethod.GET)
+    public ModelAndView showAddMessage()
+    {
+        final String methodName = MessagingController.CNAME + "#showAddMessage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        try
+        {
+            IUserControlService control = new UserControlServiceImpl();
+
+            boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                mView.addObject("command", new ServiceMessage());
+                mView.setViewName(this.addServiceMessagePage);
+            }
+            else
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
         }
@@ -412,13 +492,13 @@ public class MessagingController
                 }
 
                 mView.addObject("message", responseMessage);
-                mView.setViewName(this.editServiceMessage);
+                mView.setViewName(this.editServiceMessagePage);
             }
             else
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                mView.setViewName(this.viewServiceMessages);
+                mView.setViewName(this.viewServiceMessagesPage);
             }
         }
         catch (MessagingServiceException msx)
@@ -436,89 +516,10 @@ public class MessagingController
         return mView;
     }
 
-    @RequestMapping(value = "/send-email", method = RequestMethod.GET)
-    public ModelAndView showEmailRequest()
+    @RequestMapping(value = "/submit-message", method = RequestMethod.POST)
+    public ModelAndView doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final BindingResult bindResult)
     {
-        final String methodName = MessagingController.CNAME + "#showEmailRequest()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        EmailMessage email = new EmailMessage();
-        email.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("EmailMessage: {}", email);
-        }
-
-        mView.addObject("command", email);
-        mView.setViewName(this.sendEmailMessage);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/add-message", method = RequestMethod.POST)
-    public ModelAndView addServiceMessage(@ModelAttribute("message") final ServiceMessage message, final BindingResult bindResult)
-    {
-        final String methodName = MessagingController.CNAME + "#addServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final BindingResult bindResult";
+        final String methodName = MessagingController.CNAME + "#doAddOrModifyServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final BindingResult bindResult";
 
         if (DEBUG)
         {
@@ -602,7 +603,16 @@ public class MessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = msgProcessor.addNewMessage(request);
+            MessagingResponse response = null;
+
+            if (message.getIsNewMessage())
+            {
+                response = msgProcessor.addNewMessage(request);
+            }
+            else
+            {
+                response = msgProcessor.updateExistingMessage(request);
+            }
 
             if (DEBUG)
             {
@@ -611,125 +621,27 @@ public class MessagingController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyAdded);
-                mView.setViewName(this.viewServiceMessages);
+                if (message.getIsNewMessage())
+                {
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyAdded);
+                }
+                else
+                {
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyUpdated);
+                }
             }
             else
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                mView.setViewName(this.viewServiceMessages);
             }
+
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(this.viewServiceMessagesPage);
         }
         catch (MessagingServiceException msx)
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
-
-            mView.setViewName(appConfig.getErrorResponsePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/send-email", method = RequestMethod.POST)
-    public ModelAndView sendEmailMessage(@ModelAttribute("request") final EmailMessage request, final BindingResult bindResult)
-    {
-        final String methodName = MessagingController.CNAME + "#sendEmailMessage(@ModelAttribute(\"request\") final EmailMessage request, final BindingResult bindResult";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("EmailMessage: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        // validate here
-        try
-        {
-            RequestHostInfo reqInfo = new RequestHostInfo();
-            reqInfo.setHostName(hRequest.getRemoteHost());
-            reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            request.setFirstName(userAccount.getGivenName());
-            request.setLastName(userAccount.getSurname());
-            request.setIsAlert(false);
-            request.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-            request.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-            request.setMessageCC(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailMessage: {}", request);
-            }
-
-            EmailUtils.sendEmailMessage(request);
-
-            mView.addObject(Constants.RESPONSE_MESSAGE, this.messageEmailSent);
-            mView.setViewName(appConfig.getHomePage());
-        }
-        catch (MessagingException mx)
-        {
-            ERROR_RECORDER.error(mx.getMessage(), mx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
         }

@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-import java.text.SimpleDateFormat;
 
 import com.cws.esolutions.core.Constants;
 /**
@@ -50,8 +49,7 @@ public class ServiceMessage implements Serializable
     private boolean doesExpire = false;
     private String messageTitle = null;
     private String messageAuthor = null;
-    private String fmtExpiryDate = null;
-    private String fmtSubmitDate = null;
+    private boolean isNewMessage = false;
 
     private static final long serialVersionUID = 5693111856955648085L;
     private static final String CNAME = ServiceMessage.class.getName();
@@ -70,6 +68,19 @@ public class ServiceMessage implements Serializable
         }
 
         this.messageId = value;
+    }
+
+    public final void setIsNewMessage(final boolean value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setIsNewMessage(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isNewMessage = value;
     }
 
     public final void setMessageTitle(final String value)
@@ -189,6 +200,19 @@ public class ServiceMessage implements Serializable
         return this.messageId;
     }
 
+    public final boolean getIsNewMessage()
+    {
+        final String methodName = ServiceMessage.CNAME + "#getIsNewMessage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isNewMessage);
+        }
+
+        return this.isNewMessage;
+    }
+
     public final String getMessageTitle()
     {
         final String methodName = ServiceMessage.CNAME + "#getMessageTitle()";
@@ -254,31 +278,9 @@ public class ServiceMessage implements Serializable
         return this.submitDate;
     }
 
-    public final String getSubmitDateAsString(final String value)
+    public final boolean getIsActive()
     {
-        final String methodName = ServiceMessage.CNAME + "#getSubmitDateAsString(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-            DEBUGGER.debug("Value: {}", this.submitDate);
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat(value);
-        this.fmtSubmitDate = sdf.format(this.submitDate);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Value: {}", this.fmtSubmitDate);
-        }
-
-        return this.fmtSubmitDate;
-    }
-
-    public final boolean isActive()
-    {
-        final String methodName = ServiceMessage.CNAME + "#isActive()";
+        final String methodName = ServiceMessage.CNAME + "#getIsActive()";
 
         if (DEBUG)
         {
@@ -289,9 +291,9 @@ public class ServiceMessage implements Serializable
         return this.isActive;
     }
 
-    public final boolean doesExpire()
+    public final boolean getDoesExpire()
     {
-        final String methodName = ServiceMessage.CNAME + "#doesExpire()";
+        final String methodName = ServiceMessage.CNAME + "#getDoesExpire()";
 
         if (DEBUG)
         {
@@ -313,28 +315,6 @@ public class ServiceMessage implements Serializable
         }
 
         return this.expiryDate;
-    }
-
-    public final String getExpiryDateAsString(final String value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#getExpiryDateAsString(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-            DEBUGGER.debug("Value: {}", this.expiryDate);
-        }
-
-        SimpleDateFormat sdf = new SimpleDateFormat(value);
-        this.fmtExpiryDate = sdf.format(this.expiryDate);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Value: {}", this.fmtExpiryDate);
-        }
-
-        return this.fmtExpiryDate;
     }
 
     @Override

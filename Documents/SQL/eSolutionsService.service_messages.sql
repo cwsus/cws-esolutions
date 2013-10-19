@@ -103,7 +103,7 @@ BEGIN
         messageText,
         messageAuthor,
         authorEmail,
-        UNIX_TIMESTAMP(),
+        UNIX_TIMESTAMP(NOW()),
         active,
         expiry,
         expiryDate
@@ -203,7 +203,7 @@ BEGIN
         svc_message_modifiedby
     FROM `esolutionssvc`.`service_messages`
     WHERE svc_message_active = TRUE
-    AND svc_message_expires >= UNIX_TIMESTAMP()
+    AND svc_message_expires >= UNIX_TIMESTAMP(NOW())
     OR svc_message_expires = 0
     ORDER BY svc_message_id DESC;
 END $$

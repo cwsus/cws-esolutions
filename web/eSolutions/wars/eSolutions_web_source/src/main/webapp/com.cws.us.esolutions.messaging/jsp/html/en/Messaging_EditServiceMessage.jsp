@@ -40,12 +40,14 @@
 
     <p id="validationError" />
 
-    <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/messaging/submit-message" method="post" autocomplete="off">
+    <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/messaging/submit-message" method="post" autocomplete="off" commandName="message">
+        <form:hidden path="submitDate" />
+        <form:hidden path="messageId" />
+        <form:hidden path="authorEmail" />
+        <form:hidden path="messageAuthor" />
+        <form:hidden path="isNewMessage" value="false" />
+
         <table id="contactTable">
-            <tr>
-                <td id="txtSubmittorUserID"><spring:message code="messaging.system.message.author" /></td>
-                <td>${sessionScope.userAccount.username}</td>
-            </tr>
             <tr>
                 <td id="txtSysMessageSubject"><spring:message code="messaging.system.message.subject" /></td>
                 <td><form:input path="messageTitle" /></td>
@@ -56,17 +58,25 @@
                 <td><form:textarea path="messageText" /></td>
                 <td><form:errors path="messageText" cssClass="validationError" /></td>
             </tr>
+            <tr>
+                <td><label id="txtIsMessageActive"><spring:message code="messaging.system.message.active" /></label></td>
+                <td>
+                    <form:radiobutton path="isActive" value="true" /><spring:message code="messaging.system.message.active" />
+                    <form:radiobutton path="isActive" value="false" /><spring:message code="messaging.system.message.inactive" />
+                    <form:errors path="isActive" cssClass="validationError" />
+                </td>
+            </tr>
         </table>
         <table id="inputTable">
             <tr>
                 <td>
-                    <input type="button" name="execute" value="<spring:message code='messaging.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="cancel" value="<spring:message code='messaging.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="reset" value="<spring:message code='messaging.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
                 </td>
             </tr>
         </table>

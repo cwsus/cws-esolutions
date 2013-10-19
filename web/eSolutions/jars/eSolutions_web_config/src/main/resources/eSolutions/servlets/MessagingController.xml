@@ -14,11 +14,12 @@
             <ref bean="appConfig" />
         </property>
         <property name="sendEmailMessage" value="System_ContactAdmins" />
-        <property name="viewServiceMessages" value="Messaging_SystemMessages" />
         <property name="messageEmailSent" value="message.sentmessage.success" />
         <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
-        <property name="addServiceMessage" value="Messaging_SubmitSystemMessage" />
-        <property name="editServiceMessage" value="Messaging_EditSystemMessage" />
+        <property name="editServiceMessagePage" value="Messaging_EditServiceMessage" />
+        <property name="addServiceMessagePage" value="Messaging_SubmitServiceMessage" />
+        <property name="viewServiceMessagesPage" value="Messaging_ViewServiceMessages" />
         <property name="messageSuccessfullyAdded" value="message.sentmessage.success" />
+        <property name="messageSuccessfullyUpdated" value="message.sentmessage.success" />
     </bean>
 </beans>

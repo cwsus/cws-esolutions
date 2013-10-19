@@ -105,8 +105,8 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getMessageText(),
                                 userAccount.getUsername(),
                                 userAccount.getEmailAddr(),
-                                message.isActive(),
-                                message.doesExpire(),
+                                message.getIsActive(),
+                                message.getDoesExpire(),
                                 message.getExpiryDate()));
 
                 // submit it
@@ -261,17 +261,12 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 @SuppressWarnings("unchecked")
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
-                                message.getMessageId(),
                                 message.getMessageTitle(),
                                 message.getMessageText(),
-                                userAccount.getUsername(),
-                                userAccount.getEmailAddr(),
-                                message.doesExpire()));
-
-                if (message.doesExpire())
-                {
-                    messageList.add(message.getExpiryDate());
-                }
+                                message.getIsActive(),
+                                message.getDoesExpire(),
+                                message.getExpiryDate(),
+                                userAccount.getUsername()));
 
                 // submit it
                 boolean isUpdated = messageDAO.updateMessage(message.getMessageId(), messageList);

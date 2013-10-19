@@ -28,6 +28,10 @@
  */
 --%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<jsp:useBean id="submissionDate" class="java.util.Date" />
+<jsp:useBean id="expirationDate" class="java.util.Date" />
+
 <div class="feature">
     <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
         <div id="breadcrumb" class="lpstartover">
@@ -50,10 +54,12 @@
             <c:forEach var="message" items="${messageList}">
                 <div id="svcmessage">
                     <h3>
-                        <a href="${pageContext.request.contextPath}/ui/messaging/edit-message/${message.messageId}"
+                        <a href="${pageContext.request.contextPath}/ui/messaging/edit-message/message/${message.messageId}"
                             title="<spring:message code='messaging.view.system.message.edit' />">${message.messageTitle} - ${message.messageId}</a>
                     </h3>
+                    <br />
                     ${message.messageText}
+                    <br /><br />
                     <table class="kbauth">
                         <tr>
                             <td id="top" align="center" valign="middle"><strong><spring:message code="messaging.system.message.author" /></strong></td>
@@ -65,8 +71,11 @@
                                 <em><a href="mailto:${message.authorEmail}?subject=Request for Comments: ${message.messageId}"
                                     title="Request for Comments: ${message.messageId}">${message.messageAuthor}</a></em>
                             </td>
-                            <td align="center" valign="middle"><em>${message.fmtSubmitDate}</em></td>
-                            <td align="center" valign="middle"><em>${message.fmtExpiryDate}</em></td>
+                            
+                            <jsp:setProperty name="submissionDate" property="time" value="${message.submitDate}" />
+                            <td align="center" valign="middle"><em><fmt:formatDate value="${submissionDate}" pattern="${dateFormat}" /></em></td>
+                            <jsp:setProperty name="expirationDate" property="time" value="${message.expiryDate}" />
+                            <td align="center" valign="middle"><em><fmt:formatDate value="${expirationDate}" pattern="${dateFormat}" /></em></td>
                         </tr>
                     </table>
                 </div>

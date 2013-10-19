@@ -124,21 +124,21 @@
     </definition>
 
     <!-- Messaging -->
-    <definition name="Messaging_SubmitSystemMessage" extends="baseLayout">
+    <definition name="Messaging_SubmitServiceMessage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Messaging - Create Message" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SubmitServiceMessage.jsp" cascade="true" />
     </definition>
-    <definition name="Messaging_EditSystemMessage" extends="baseLayout">
+    <definition name="Messaging_EditServiceMessage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Messaging - Edit Message" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_EditServiceMessage.jsp" cascade="true" />
     </definition>
-    <definition name="Messaging_SystemMessages" extends="baseLayout">
+    <definition name="Messaging_ViewServiceMessages" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Messages" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SystemMessages.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewServiceMessages.jsp" cascade="true" />
     </definition>
-    <definition name="Messaging_ViewSystemMessage" extends="baseLayout">
+    <definition name="Messaging_ViewServiceMessage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Message" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewSystemMessage.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewServiceMessage.jsp" cascade="true" />
     </definition>
 
     <!-- OnlineReset -->

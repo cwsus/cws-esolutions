@@ -963,6 +963,36 @@ function validateForm(theForm, e, theContext)
             }
         }
     }
+    else if (theForm.name == 'submitSystemMessage')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        {
+            if (theForm.messageTitle.value == '')
+            {
+                document.getElementById('validationError').innerHTML = 'A subject must be provided for the service message.';
+                document.getElementById('txtSysMessageSubject').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('messageTitle').focus();
+            }
+            else if (theForm.messageText.value == '')
+            {
+                document.getElementById('validationError').innerHTML = 'A body must be provided for the service message.';
+                document.getElementById('txtSysMessageBody').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('messageText').focus();
+            }
+            else if ((!(document.getElementById('isActive1').checked)) && (!(document.getElementById('isActive2').checked)))
+            {
+                document.getElementById('validationError').innerHTML = 'The message must either be selected as active or inactive.';
+                document.getElementById('txtIsMessageActive').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+            }
+            else
+            {
+                theForm.submit();
+            }
+        }
+    }
     else
     {
         document.getElementById('validationError').innerHTML = 'An error occurred while processing your request.';
