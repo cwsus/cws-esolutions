@@ -82,7 +82,7 @@
                     <input type="button" name="execute" value="<spring:message code="button.execute.text" />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="cancel" value="<spring:message code="button.cancel.text" />" id="cancel" class="submit" onClick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="cancel" value="<spring:message code="button.cancel.text" />" id="cancel" class="submit" onClick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/login/default';" />
                 </td>
             </tr>
         </table>

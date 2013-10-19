@@ -1022,8 +1022,8 @@ public class OnlineResetController
                     emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                     emailMessage.setMessageBody(emailBody);
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue("nls.OnlineResetServlet.OnlineResetServlet",
-                            "message.forgotpassword.subject", this.getClass().getClassLoader()));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.passwordResetSubject, this.getClass().getClassLoader()));
                     emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
