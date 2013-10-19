@@ -7,19 +7,24 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%--
-/*
- * Default.jsp
- * Default theme file for application display. Only used when the
- * doGet() method is invoked on the ServiceRequestServlet.
+/**
+ * eSolutions_web_source
+ * theme/cws/html/en/jsp
+ * errHandler.jsp
+ *
+ * $Id$
+ * $Author$
+ * $Date$
+ * $Revision$
+ * @author kh05451
+ * @version 1.0
  *
  * History
- *
- * Author               Date                           Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20            Created.
- * Kevin Huntly         12/22/2009 14:58:03            Added escape chars
+ * kh05451 @ Jan 16, 2013 11:53:26 AM
+ *     Created.
  */
- --%>
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" errorPage="true" %>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

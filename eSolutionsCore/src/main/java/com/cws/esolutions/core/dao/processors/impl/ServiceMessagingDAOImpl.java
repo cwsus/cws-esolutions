@@ -69,13 +69,15 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             else
             {
                 sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL submitSvcMessage(?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, (String) messageList.get(0)); // message id
                 stmt.setString(2, (String) messageList.get(1)); // message title
                 stmt.setString(3, (String) messageList.get(2)); // message text
                 stmt.setString(4, (String) messageList.get(3)); // message author
                 stmt.setString(5, (String) messageList.get(4)); // author email
-                stmt.setLong(6, (Long) messageList.get(5)); // expiry date
+                stmt.setBoolean(6, (Boolean) messageList.get(5)); // is active
+                stmt.setBoolean(7, (Boolean) messageList.get(6)); // does expire
+                stmt.setLong(8, (messageList.get(7) == null) ? 0 : (Long) messageList.get(7)); // expiry date
 
                 isComplete = (!(stmt.execute()));
 
@@ -163,16 +165,16 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                         svcMessage.add(resultSet.getString(4)); // svc_message_author
                         svcMessage.add(resultSet.getString(5)); // svc_message_email
                         svcMessage.add(resultSet.getLong(6)); // svc_message_submitdate
-                        svcMessage.add(resultSet.getLong(7)); // svc_message_expires
+                        svcMessage.add(resultSet.getBoolean(7)); // svc_message_active
+                        svcMessage.add(resultSet.getBoolean(8)); // svc_message_expires
+                        svcMessage.add(resultSet.getLong(9)); // svc_message_expirydate
+                        svcMessage.add(resultSet.getLong(10)); // svc_message_modifiedon
+                        svcMessage.add(resultSet.getString(11)); // svc_message_modifiedby
 
                         if (DEBUG)
                         {
                             DEBUGGER.debug("svcMessage: {}", svcMessage);
                         }
-                    }
-                    else
-                    {
-                        // no messages
                     }
                 }
                 else
@@ -257,13 +259,17 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                     {
                         Object[] data = new Object[]
                         {
-                            resultSet.getString(1), // message id
-                            resultSet.getString(2), // message title
-                            resultSet.getString(3), // message text
-                            resultSet.getString(4), // message author
-                            resultSet.getString(5), // author email
-                            resultSet.getLong(6), // submit date
-                            resultSet.getLong(7) // expiry date
+                            resultSet.getString(1), // svc_message_id
+                            resultSet.getString(2), // svc_message_title
+                            resultSet.getString(3), // svc_message_txt
+                            resultSet.getString(4), // svc_message_author
+                            resultSet.getString(5), // svc_message_email
+                            resultSet.getLong(6), // svc_message_submitdate
+                            resultSet.getBoolean(7), // svc_message_active
+                            resultSet.getBoolean(8), // svc_message_expires
+                            resultSet.getLong(9), // svc_message_expirydate
+                            resultSet.getLong(10), // svc_message_modifiedon
+                            resultSet.getString(11) // svc_message_modifiedby
                         };
 
                         if (DEBUG)
@@ -331,14 +337,14 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 sqlConn.setAutoCommit(true);
                 stmt = sqlConn.prepareCall("{CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, messageId);
-                stmt.setString(2, (String) messageList.get(0)); // message title
-                stmt.setString(3, (String) messageList.get(1)); // message text
-                stmt.setString(4, (String) messageList.get(2)); // message author
-                stmt.setString(5, (String) messageList.get(3)); // author email
-                stmt.setLong(6, (Long) messageList.get(4)); // expiry date
-                stmt.setString(7, (String) messageList.get(5)); // modify author
-                
+                stmt.setString(1, messageId); // messageId
+                stmt.setString(2, (String) messageList.get(0)); // messageTitle
+                stmt.setString(3, (String) messageList.get(1)); // messageText
+                stmt.setBoolean(4, (Boolean) messageList.get(2)); // active
+                stmt.setBoolean(5, (Boolean) messageList.get(3)); // expiry
+                stmt.setLong(6, (Long) messageList.get(4)); // expiryDate
+                stmt.setString(7, (String) messageList.get(5)); // modifyAuthor
+
                 if (DEBUG)
                 {
                     DEBUGGER.debug(stmt.toString());
@@ -487,28 +493,30 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
                     while (resultSet.next())
                     {
-                        String[] serverData = new String[]
+                        String[] messageData = new String[]
                         {
                             resultSet.getString(1), // svc_message_id
                             resultSet.getString(2), // svc_message_title
                             resultSet.getString(3), // svc_message_txt
                             resultSet.getString(4), // svc_message_author
                             resultSet.getString(5), // svc_message_email
-                            resultSet.getString(6), // svc_message_submitdate
-                            resultSet.getString(7), // svc_message_expires
-                            String.valueOf(resultSet.getInt(8)), // svc_message_modifiedon
-                            resultSet.getString(9), // svc_message_modifiedby
+                            String.valueOf(resultSet.getLong(6)), // svc_message_submitdate
+                            String.valueOf(resultSet.getBoolean(7)), // svc_message_active
+                            String.valueOf(resultSet.getBoolean(8)), // svc_message_expires
+                            String.valueOf(resultSet.getLong(9)), // svc_message_expirydate
+                            String.valueOf(resultSet.getLong(10)), // svc_message_modifiedon
+                            resultSet.getString(11), // svc_message_modifiedby
                         };
 
                         if (DEBUG)
                         {
-                            for (String str : serverData)
+                            for (String str : messageData)
                             {
                                 DEBUGGER.debug(str);
                             }
                         }
 
-                        responseData.add(serverData);
+                        responseData.add(messageData);
                     }
 
                     if (DEBUG)

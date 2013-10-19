@@ -10,6 +10,9 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <bean id="knowledgeBaseController" class="com.cws.us.esolutions.controllers.KnowledgeBaseController">
+        <property name="validator">
+            <bean id="validator" class="com.cws.us.esolutions.validators.ArticleValidator" />
+        </property>
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -17,16 +20,23 @@
         <property name="serviceName" value="kbase" />
         <property name="newIdentifierLength" value="9" />
         <property name="articleList" value="articleList" />
-        <property name="postURL" value="/ui/kbase/search" />
-        <property name="requestURL" value="/ui/kbase/article/" />
+        <property name="postURL" value="/ui/knowledgebase/search" />
+        <property name="requestURL" value="/ui/knowledgebase/article/" />
         <property name="editArticlePage" value="KnowledgeBase_EditArticle" />
         <property name="showArticlePage" value="KnowledgeBase_ShowArticle" />
-        <property name="apprRejectPage" value="KnowledgeBase_ApproveReject" />
         <property name="createArticlePage" value="KnowledgeBase_CreateArticle" />
         <property name="serviceId" value="4B081972-92C3-455B-9403-B81E68C538B6" />
-        <property name="confirmDeletePage" value="KnowledgeBase_ConfirmDeletion" />
         <property name="reviewArticlePage" value="KnowledgeBase_ReviewSubmission" />
         <property name="pendingArticlesPage" value="KnowledgeBase_ShowPendingApprovals" />
+        <property name="messageArticleDeleted" value="kbase.delete-article.delete-success" />
+        <property name="messageSource" value="nls.KnowledgeBaseServlet.KnowledgeBaseServlet" />
+        <property name="messageArticleApproved" value="kbase.approve-article.approval-success" />
+        <property name="messageArticleRejected" value="kbase.approve-article.article-rejected" />
+        <property name="messageArticleFailedValidation" value="kbase.article.failed.validation" />
         <property name="createArticleEmail" value="nls/emailTemplates/kbase_create_article.email" />
+        <property name="updateArticleEmail" value="nls/emailTemplates/kbase_update_article.email" />
+        <property name="approveArticleEmail" value="nls/emailTemplates/kbase_approve_article.email" />
+        <property name="rejectArticleEmail" value="nls/emailTemplates/kbase_reject_article.email" />
+        <property name="deleteArticleEmail" value="nls/emailTemplates/kbase_delete_article.email" />
     </bean>
 </beans>

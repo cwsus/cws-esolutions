@@ -77,11 +77,13 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 public class SystemManagementController
 {
     private String serviceId = null;
+    private String requestUrl = null;
     private String serviceName = null;
     private String defaultPage = null;
     private String defaultDomain = null;
     private String systemService = null;
     private String addServerPage = null;
+    private String searchPostUrl = null;
     private String viewServerPage = null;
     private String addServerFailed = null;
     private String adminConsolePage = null;
@@ -235,6 +237,32 @@ public class SystemManagementController
         }
 
         this.defaultDomain = value;
+    }
+
+    public final void setSearchPostUrl(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setSearchPostUrl(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchPostUrl = value;
+    }
+
+    public final void setRequestUrl(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setRequestUrl(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestUrl = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -767,7 +795,7 @@ public class SystemManagementController
 
                 if (isUserAuthorized)
                 {
-                    mView.addObject("postUrl", "/ui/systems/search");
+                    mView.addObject("postUrl", this.searchPostUrl);
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(appConfig.getSearchRequestPage());
                 }
@@ -1500,7 +1528,7 @@ public class SystemManagementController
                                 DEBUGGER.debug("SearchResults: {}", results);
                             }
 
-                            mView.addObject("requestUrl", "/ui/systems/server/");
+                            mView.addObject("requestUrl", this.requestUrl);
                             mView.addObject(Constants.SEARCH_RESULTS, results);
                         }
                         else

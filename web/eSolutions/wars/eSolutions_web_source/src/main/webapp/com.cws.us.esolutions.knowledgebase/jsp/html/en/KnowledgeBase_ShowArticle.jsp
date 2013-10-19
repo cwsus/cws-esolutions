@@ -1,28 +1,84 @@
+<%--
+/**
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
+ * 
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
+ *
+ * eSolutions_web_source
+ * com.cws.us.esolutions.knowledgebase/jsp/html/en
+ * KnowledgeBase_ShowArticle.jsp
+ *
+ * $Id$
+ * $Author$
+ * $Date$
+ * $Revision$
+ * @author kh05451
+ * @version 1.0
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * kh05451 @ Jan 16, 2013 11:53:26 AM
+ *     Created.
+ */
+--%>
+
+<script>
+    function approveArticle(theArticle)
+	{
+        var confirmation = confirm("Are you sure you wish to approve article " + theArticle + " ?");
+
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/approve-article/article/' + theArticle;
+        }
+	}
+
+    function rejectArticle(theArticle)
+    {
+        var confirmation = confirm("Are you sure you wish to reject article " + theArticle + " ?");
+
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/reject-article/article/' + theArticle;
+        }
+    }
+
+    function deleteArticle(theArticle)
+    {
+        var confirmation = confirm("Are you sure you wish to delete article " + theArticle + " ?");
+
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/delete-article/article/' + theArticle;
+        }
+    }
+</script>
+
 <div class="feature">
     <div id="breadcrumb" class="lpstartover">
         <a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a> /
         <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
             title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a> /
-        <a href="${pageContext.request.contextPath}/ui/knowledgebase/edit-article/${article.articleId}"
-            title="<spring:message code="kbase.edit.article" />"><spring:message code="kbase.edit.article" />&nbsp; ${article.articleId}</a>
+        <a href="${pageContext.request.contextPath}/ui/knowledgebase/edit-article/article/${article.articleId}"
+            title="<spring:message code="kbase.edit.article" />"><spring:message code="kbase.edit.article" /> ${article.articleId}</a>
         <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
             / <a href="#"
-                title="<spring:message code="kbase.delete.article" />&nbsp; ${article.articleId}" onclick="deleteArticle('${article.articleId}')">
-                <spring:message code="kbase.delete.article" />&nbsp; ${article.articleId}</a>
+                title="<spring:message code="kbase.delete.article" /> ${article.articleId}" onclick="deleteArticle('${article.articleId}')">
+                <spring:message code="kbase.delete.article" /> ${article.articleId}</a>
             / <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
                 title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a> /
         </c:if>
     </div>
-
+    <br /><br />
+    <strong>${article.articleId} - ${article.title}</strong>
+    <br /><br />
     <table id="ShowArticle">
-        <tr>
-            <td><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
-            <td>${article.articleId}</td>
-        </tr>
-        <tr>
-            <td><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
-            <td>${article.title}</td>
-        </tr>
         <tr>
             <td><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
             <td>${article.symptoms}</td>
@@ -32,7 +88,7 @@
             <td>${article.cause}</td>
         </tr>
         <tr>
-            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong>
+            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong></td>
             <td>${article.keywords}</td>
         </tr>
     </table>

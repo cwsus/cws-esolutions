@@ -60,7 +60,7 @@ function showReverseDisclaimer(theOption)
 }
 
 // Validate form contents
-function validateForm(theForm, e)
+function validateForm(theForm, e, theContext)
 {
     var targ;
     var i = 0;
@@ -242,7 +242,7 @@ function validateForm(theForm, e)
             }
         }
     }
-    else if (theForm.name == 'submitNewArticle')
+    else if ((theForm.name == 'submitNewArticle') || (theForm.name == 'submitArticleUpdates'))
     {
         if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
         {
@@ -297,6 +297,37 @@ function validateForm(theForm, e)
             }
         }
     }
+    else if (theForm.name == 'reviewArticleData')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        {
+            var validRequest = false;
+            var refUrl = document.referrer.split("/");
+
+            for (var i = 0; i < refUrl.length; i++)
+            {
+                if (refUrl[i] == 'edit-article')
+                {
+                    validRequest = true;
+                    document.getElementById('reviewArticleData').action = theContext + '/ui/knowledgebase/edit-article';
+
+                    break;
+                }
+                else if (refUrl[i] == 'create-article')
+                {
+                    validRequest = true;
+                    document.getElementById('reviewArticleData').action = theContext + '/ui/knowledgebase/submit-article';
+
+                    break;
+                }
+            }
+
+            if (validRequest)
+            {
+                theForm.submit();
+            }
+        }
+    }           
     else if (theForm.name == 'submitSecurityInformationChange')
     {
         if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
@@ -830,6 +861,34 @@ function validateForm(theForm, e)
                 document.getElementById('txtSearchTerms').style.color = '#FF0000';
                 document.getElementById('execute').disabled = false;
                 document.getElementById('searchTerms').focus();
+            }
+            else
+            {
+                theForm.submit();
+            }
+        }
+    }
+    else if (theForm.name == 'deployApplication')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        {
+            if ((theForm.file) && (theForm.file.value == ''))
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A file must be provided for deployment.';
+                document.getElementById('txtFileName').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('file').focus();
+            }
+            else if ((theForm.applicationVersion) && (theForm.applicationVersion.value == ''))
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A file must be provided for deployment.';
+                document.getElementById('txtScmVersion').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('applicationVersion').focus();
             }
             else
             {

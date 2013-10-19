@@ -27,6 +27,7 @@
 	    <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
         <property name="systemMgmt" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
-        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />        
+        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
+        <property name="messageRequestValidationFailed" value="svc.mgmt.request.validation.failed" />        
     </bean>
 </beans>

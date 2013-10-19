@@ -278,9 +278,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse approveArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public ArticleResponse updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#approveArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -288,51 +288,7 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
             DEBUGGER.debug("ArticleRequest: ", request);
         }
 
-        ArticleResponse response = kbase.approveArticle(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ArticleResponse: ", response);
-        }
-
-        return response;
-    }
-
-    @WebMethod
-    @Override
-    public ArticleResponse rejectArticle(final ArticleRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#rejectArticle(final ArticleRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
-        }
-
-        ArticleResponse response = kbase.rejectArticle(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ArticleResponse: ", response);
-        }
-
-        return response;
-    }
-
-    @WebMethod
-    @Override
-    public ArticleResponse deleteArticle(final ArticleRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#deleteArticle(final ArticleRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
-        }
-
-        ArticleResponse response = kbase.deleteArticle(request);
+        ArticleResponse response = kbase.updateArticleStatus(request);
 
         if (DEBUG)
         {

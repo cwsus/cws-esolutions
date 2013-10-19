@@ -15,14 +15,15 @@ CREATE TABLE `esolutionssvc`.`installed_applications` (
     `APPLICATION_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     `APPLICATION_NAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `APPLICATION_VERSION` VARCHAR(10) CHARACTER SET UTF8 NOT NULL,
-    `SCM_PATH` VARCHAR(255) CHARACTER SET UTF8,
+    `BASE_PATH` TEXT CHARACTER SET UTF8 NOT NULL,
+    `SCM_PATH` TEXT CHARACTER SET UTF8,
     `CLUSTER_NAME` VARCHAR(50) CHARACTER SET UTF8 NOT NULL,
     `JVM_NAME` VARCHAR(255) CHARACTER SET UTF8 NOT NULL,
-    `INSTALL_PATH` VARCHAR(255) CHARACTER SET UTF8 NOT NULL,
-    `LOGS_DIRECTORY` VARCHAR(255) CHARACTER SET UTF8 NOT NULL,
-    `PID_DIRECTORY` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `INSTALL_PATH` TEXT CHARACTER SET UTF8 NOT NULL,
+    `LOGS_DIRECTORY` TEXT CHARACTER SET UTF8 NOT NULL,
+    `PID_DIRECTORY` TEXT CHARACTER SET UTF8 NOT NULL,
     `PROJECT_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `PLATFORM_GUID` TEXT NOT NULL,
     `APP_ONLINE_DATE` TIMESTAMP NOT NULL DEFAULT NOW(),
     `APP_OFFLINE_DATE` TIMESTAMP,
     PRIMARY KEY (`APPLICATION_GUID`),
@@ -60,6 +61,7 @@ BEGIN
         APPLICATION_GUID,
         APPLICATION_NAME,
         APPLICATION_VERSION,
+        BASE_PATH,
         SCM_PATH,
         CLUSTER_NAME,
         JVM_NAME,
@@ -74,11 +76,13 @@ BEGIN
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`installed_applications`
     WHERE MATCH (`APPLICATION_NAME`, `CLUSTER_NAME`, `JVM_NAME`, `PROJECT_GUID`, `PLATFORM_GUID`)
-    AGAINST (+attributeName IN BOOLEAN MODE);
+    AGAINST (+attributeName IN BOOLEAN MODE)
+    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 --
 -- Definition of procedure `esolutionssvc`.`insertNewApplication`
@@ -90,6 +94,7 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertNewApplica
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion VARCHAR(10),
+    IN basePath VARCHAR(128),
     IN scmPath VARCHAR(255),
     IN clusterName VARCHAR(50),
     IN jvmName VARCHAR(255),
@@ -103,12 +108,12 @@ BEGIN
     INSERT INTO `esolutionssvc`.`installed_applications`
     (
         APPLICATION_GUID, APPLICATION_NAME, APPLICATION_VERSION,
-        SCM_PATH, CLUSTER_NAME, JVM_NAME, INSTALL_PATH,
+        BASE_PATH, SCM_PATH, CLUSTER_NAME, JVM_NAME, INSTALL_PATH,
         LOGS_DIRECTORY, PID_DIRECTORY, PROJECT_GUID,
         PLATFORM_GUID, APP_ONLINE_DATE)
     VALUES
     (
-        appGuid, appName, appVersion, scmPath,
+        appGuid, appName, appVersion, basePath, scmPath,
         clusterName, jvmName, installPath, logsDir,
         pidDirectory, projectGuid, platformGuid, NOW()
     );
@@ -118,6 +123,7 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 --
 -- Definition of procedure `esolutionssvc`.`updateApplicationData`
@@ -129,6 +135,7 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateApplicatio
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion VARCHAR(10),
+    IN basePath VARCHAR(128),
     IN scmPath VARCHAR(255),
     IN clusterName VARCHAR(50),
     IN jvmName VARCHAR(255),
@@ -142,17 +149,16 @@ BEGIN
     UPDATE `esolutionssvc`.`installed_applications`
     SET
         APPLICATION_NAME = appName,
-        DMGR_GUID = dmgrGuid,
-        WEB_SERVERS = webServers,
-        CLUSTER_NAME = clusterName,
         APPLICATION_VERSION = appVersion,
-        LOGS_DIRECTORY = logsDir,
-        PROJECT_GUID = projectGuid,
+        BASE_PATH = basePath,
+        SCM_PATH = scmPath,
+        CLUSTER_NAME = clusterName,
+        JVM_NAME = jvmName,
         INSTALL_PATH = installPath,
-        APPLICATION_TYPE = applicationType,
-        APP_SERVERS = appServers,
+        LOGS_DIRECTORY = logsDir,
         PID_DIRECTORY = pidDirectory,
-        SCM_PATH = scmPath
+        PROJECT_GUID = projectGuid,
+        PLATFORM_GUID = platformGuid
     WHERE APPLICATION_GUID = appGuid;
 
     COMMIT;
@@ -160,6 +166,7 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 --
 -- Definition of procedure `esolutionssvc`.`removeApplicationData`
@@ -180,6 +187,7 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 --
 -- Definition of procedure `esolutionssvc`.`getApplicationData`
@@ -195,6 +203,7 @@ BEGIN
         APPLICATION_GUID,
         APPLICATION_NAME,
         APPLICATION_VERSION,
+        BASE_PATH,
         SCM_PATH,
         CLUSTER_NAME,
         JVM_NAME,
@@ -212,6 +221,7 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 --
 -- Definition of procedure `esolutionssvc`.`listApplications`
@@ -226,6 +236,7 @@ BEGIN
         APPLICATION_GUID,
         APPLICATION_NAME,
         APPLICATION_VERSION,
+        BASE_PATH,
         SCM_PATH,
         CLUSTER_NAME,
         JVM_NAME,
@@ -242,6 +253,7 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
+COMMIT;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

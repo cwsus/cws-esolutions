@@ -78,6 +78,10 @@
     <listener>
         <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+    </listener>
+    <!-- This can be un-commented in an EE environment - like Websphere, WebLogic, etc -->
     <!--
     <listener>
         <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>

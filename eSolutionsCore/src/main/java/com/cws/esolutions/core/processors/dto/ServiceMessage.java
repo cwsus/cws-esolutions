@@ -15,11 +15,11 @@
  */
 package com.cws.esolutions.core.processors.dto;
 
-import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import java.text.SimpleDateFormat;
 
 import com.cws.esolutions.core.Constants;
 /**
@@ -41,45 +41,23 @@ import com.cws.esolutions.core.Constants;
  */
 public class ServiceMessage implements Serializable
 {
-    private Date submitDate = null;
-    private Date expiryDate = null;
+    private Long expiryDate = null;
+    private Long submitDate = null;
     private String messageId = null;
+    private boolean isActive = false;
     private String messageText = null;
     private String authorEmail = null;
+    private boolean doesExpire = false;
     private String messageTitle = null;
     private String messageAuthor = null;
+    private String fmtExpiryDate = null;
+    private String fmtSubmitDate = null;
 
     private static final long serialVersionUID = 5693111856955648085L;
     private static final String CNAME = ServiceMessage.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setSubmitDate(final Date value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#setSubmitDate(final Date value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.submitDate = value;
-    }
-
-    public final void setExpiryDate(final Date value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#setExpiryDate(final Date value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.expiryDate = value;
-    }
 
     public final void setMessageId(final String value)
     {
@@ -92,32 +70,6 @@ public class ServiceMessage implements Serializable
         }
 
         this.messageId = value;
-    }
-
-    public final void setMessageText(final String value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#setMessageText(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageText = value;
-    }
-
-    public final void setAuthorEmail(final String value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#setAuthorEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.authorEmail = value;
     }
 
     public final void setMessageTitle(final String value)
@@ -133,6 +85,19 @@ public class ServiceMessage implements Serializable
         this.messageTitle = value;
     }
 
+    public final void setMessageText(final String value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setMessageText(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageText = value;
+    }
+
     public final void setMessageAuthor(final String value)
     {
         final String methodName = ServiceMessage.CNAME + "#setMessageAuthor(final String value)";
@@ -146,30 +111,69 @@ public class ServiceMessage implements Serializable
         this.messageAuthor = value;
     }
 
-    public final Date getSubmitDate()
+    public final void setAuthorEmail(final String value)
     {
-        final String methodName = ServiceMessage.CNAME + "#getSubmitDate()";
+        final String methodName = ServiceMessage.CNAME + "#setAuthorEmail(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.submitDate);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.submitDate;
+        this.authorEmail = value;
     }
 
-    public final Date getExpiryDate()
+    public final void setSubmitDate(final Long value)
     {
-        final String methodName = ServiceMessage.CNAME + "#getExpiryDate()";
+        final String methodName = ServiceMessage.CNAME + "#setSubmitDate(final Long value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.expiryDate);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.expiryDate;
+        this.submitDate = value;
+    }
+
+    public final void setIsActive(final boolean value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setIsActive(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isActive = value;
+    }
+
+    public final void setDoesExpire(final boolean value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setDoesExpire(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.doesExpire = value;
+    }
+
+    public final void setExpiryDate(final Long value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setExpiryDate(final Long value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.expiryDate = value;
     }
 
     public final String getMessageId()
@@ -185,6 +189,19 @@ public class ServiceMessage implements Serializable
         return this.messageId;
     }
 
+    public final String getMessageTitle()
+    {
+        final String methodName = ServiceMessage.CNAME + "#getMessageTitle()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageTitle);
+        }
+
+        return this.messageTitle;
+    }
+
     public final String getMessageText()
     {
         final String methodName = ServiceMessage.CNAME + "#getMessageText()";
@@ -196,6 +213,19 @@ public class ServiceMessage implements Serializable
         }
 
         return this.messageText;
+    }
+
+    public final String getMessageAuthor()
+    {
+        final String methodName = ServiceMessage.CNAME + "#getMessageAuthor()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageAuthor);
+        }
+
+        return this.messageAuthor;
     }
 
     public final String getAuthorEmail()
@@ -211,30 +241,100 @@ public class ServiceMessage implements Serializable
         return this.authorEmail;
     }
 
-    public final String getMessageTitle()
+    public final Long getSubmitDate()
     {
-        final String methodName = ServiceMessage.CNAME + "#getMessageTitle()";
+        final String methodName = ServiceMessage.CNAME + "#getSubmitDate()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.messageTitle);
+            DEBUGGER.debug("Value: {}", this.submitDate);
         }
 
-        return this.messageTitle;
+        return this.submitDate;
     }
 
-    public final String getMessageAuthor()
+    public final String getSubmitDateAsString(final String value)
     {
-        final String methodName = ServiceMessage.CNAME + "#getMessageAuthor()";
+        final String methodName = ServiceMessage.CNAME + "#getSubmitDateAsString(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.messageAuthor);
+            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.submitDate);
         }
 
-        return this.messageAuthor;
+        SimpleDateFormat sdf = new SimpleDateFormat(value);
+        this.fmtSubmitDate = sdf.format(this.submitDate);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Value: {}", this.fmtSubmitDate);
+        }
+
+        return this.fmtSubmitDate;
+    }
+
+    public final boolean isActive()
+    {
+        final String methodName = ServiceMessage.CNAME + "#isActive()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isActive);
+        }
+
+        return this.isActive;
+    }
+
+    public final boolean doesExpire()
+    {
+        final String methodName = ServiceMessage.CNAME + "#doesExpire()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.doesExpire);
+        }
+
+        return this.doesExpire;
+    }
+
+    public final Long getExpiryDate()
+    {
+        final String methodName = ServiceMessage.CNAME + "#getExpiryDate()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.expiryDate);
+        }
+
+        return this.expiryDate;
+    }
+
+    public final String getExpiryDateAsString(final String value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#getExpiryDateAsString(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.expiryDate);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(value);
+        this.fmtExpiryDate = sdf.format(this.expiryDate);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Value: {}", this.fmtExpiryDate);
+        }
+
+        return this.fmtExpiryDate;
     }
 
     @Override

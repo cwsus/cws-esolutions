@@ -1,6 +1,36 @@
-<c:choose>
-    <c:when test="${sessionScope.userAccount.role == 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
-        <div class="feature">
+<%--
+/**
+ * Copyright (c) 2009 - 2013 By: CWS, Inc.
+ * 
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
+ *
+ * eSolutions_web_source
+ * com.cws.us.esolutions.user-management/jsp/html/en
+ * UserManagement_CreateUser.jsp
+ *
+ * $Id$
+ * $Author$
+ * $Date$
+ * $Revision$
+ * @author kh05451
+ * @version 1.0
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * kh05451 @ Jan 16, 2013 11:53:26 AM
+ *     Created.
+ */
+--%>
+
+<div class="feature">
+	<c:choose>
+	    <c:when test="${sessionScope.userAccount.role == 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
 		    <c:if test="${not empty messageResponse}">
 		        <p id="info"><spring:message code="${messageResponse}" /></p>
 		    </c:if>
@@ -82,18 +112,18 @@
                     </tr>
                     <tr>
                         <td>
-                            <input type="button" name="execute" value="<spring:message code='admin.account.submit.button.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                            <input type="button" name="cancel" value="<spring:message code='admin.account.cancel.button.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                            <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                            <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                         </td>
                     </tr>
                 </table>
             </form:form>
-        </div>
-    </c:when>
-    <c:otherwise>
-        <spring:message code="admin.account.not.authorized" />
-        <c:if test="${requestScope.isUserLoggedIn != 'true'}">
-            <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
-        </c:if>
-    </c:otherwise>
-</c:choose>
+	    </c:when>
+	    <c:otherwise>
+	        <spring:message code="admin.account.not.authorized" />
+	        <c:if test="${requestScope.isUserLoggedIn != 'true'}">
+	            <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
+	        </c:if>
+	    </c:otherwise>
+	</c:choose>
+</div>

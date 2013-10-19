@@ -75,18 +75,19 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, value.get(0)); // appGuid
                 stmt.setString(2, value.get(1)); // appName
                 stmt.setString(3, value.get(2)); // appVersion
-                stmt.setString(4, value.get(3)); // scm path
-                stmt.setString(5, value.get(4)); // clusterName
-                stmt.setString(6, value.get(5)); // jvmName
-                stmt.setString(7, value.get(6)); // installPath
-                stmt.setString(8, value.get(7)); // logsDir
-                stmt.setString(9, value.get(8)); // pidDir
-                stmt.setString(10, value.get(9)); // projectGuid
-                stmt.setString(11, value.get(10)); // platformGuid
+                stmt.setString(4, value.get(3)); // basePath
+                stmt.setString(5, value.get(4)); // scm path
+                stmt.setString(6, value.get(5)); // clusterName
+                stmt.setString(7, value.get(6)); // jvmName
+                stmt.setString(8, value.get(8)); // installPath
+                stmt.setString(9, value.get(8)); // logsDir
+                stmt.setString(10, value.get(9)); // pidDir
+                stmt.setString(11, value.get(10)); // projectGuid
+                stmt.setString(12, value.get(11)); // platformGuid
 
                 if (DEBUG)
                 {
@@ -154,18 +155,19 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, value.get(0)); // appGuid
                 stmt.setString(2, value.get(1)); // appName
                 stmt.setString(3, value.get(2)); // appVersion
-                stmt.setString(4, value.get(3)); // scm path
-                stmt.setString(5, value.get(4)); // clusterName
-                stmt.setString(6, value.get(5)); // jvmName
-                stmt.setString(7, value.get(6)); // installPath
-                stmt.setString(8, value.get(7)); // logsDir
-                stmt.setString(9, value.get(8)); // pidDir
-                stmt.setString(10, value.get(9)); // projectGuid
-                stmt.setString(11, value.get(10)); // platformGuid
+                stmt.setString(4, value.get(3)); // basePath
+                stmt.setString(5, value.get(4)); // scm path
+                stmt.setString(6, value.get(5)); // clusterName
+                stmt.setString(7, value.get(6)); // jvmName
+                stmt.setString(8, value.get(8)); // installPath
+                stmt.setString(9, value.get(8)); // logsDir
+                stmt.setString(10, value.get(9)); // pidDir
+                stmt.setString(11, value.get(10)); // projectGuid
+                stmt.setString(12, value.get(11)); // platformGuid
 
                 if (DEBUG)
                 {
@@ -320,16 +322,8 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             resultSet.getString(1), // app guid
                             resultSet.getString(2), // app name
                             resultSet.getString(3), // app version
-                            resultSet.getString(4), // app scm path
-                            resultSet.getString(5), // cluster name
-                            resultSet.getString(6), // jvm name
-                            resultSet.getString(7), // install path
-                            resultSet.getString(8), // logs dir
-                            resultSet.getString(9), // pid dir
-                            resultSet.getString(10), // project guid
-                            resultSet.getString(11), // platform guid
-                            resultSet.getTimestamp(12).toString(), // app online date
-                            (resultSet.getTimestamp(13) != null) ? resultSet.getTimestamp(13).toString() : Constants.NOT_SET // app offline date
+                            resultSet.getString(4), // project guid
+                            resultSet.getString(5), // platform guid
                         };
 
                         if (DEBUG)
@@ -439,16 +433,17 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             resultSet.getString(1), // app guid
                             resultSet.getString(2), // app name
                             resultSet.getString(3), // app version
-                            resultSet.getString(4), // app scm path
-                            resultSet.getString(5), // cluster name
-                            resultSet.getString(6), // jvm name
-                            resultSet.getString(7), // install path
-                            resultSet.getString(8), // logs dir
-                            resultSet.getString(9), // pid dir
-                            resultSet.getString(10), // project guid
-                            resultSet.getString(11), // platform guid
-                            resultSet.getTimestamp(12).toString(), // app online date
-                            (resultSet.getTimestamp(13) != null) ? resultSet.getTimestamp(13).toString() : Constants.NOT_SET // app offline date
+                            resultSet.getString(4), // base path
+                            resultSet.getString(5), // app scm path
+                            resultSet.getString(6), // cluster name
+                            resultSet.getString(7), // jvm name
+                            resultSet.getString(8), // install path
+                            resultSet.getString(9), // logs dir
+                            resultSet.getString(10), // pid dir
+                            resultSet.getString(11), // project guid
+                            resultSet.getString(12), // platform guid
+                            resultSet.getTimestamp(13).toString(), // app online date
+                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
                         )
                     );
 
@@ -544,16 +539,17 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             resultSet.getString(1), // app guid
                             resultSet.getString(2), // app name
                             resultSet.getString(3), // app version
-                            resultSet.getString(4), // app scm path
-                            resultSet.getString(5), // cluster name
-                            resultSet.getString(6), // jvm name
-                            resultSet.getString(7), // install path
-                            resultSet.getString(8), // logs dir
-                            resultSet.getString(9), // pid dir
-                            resultSet.getString(10), // project guid
-                            resultSet.getString(11), // platform guid
-                            resultSet.getTimestamp(12).toString(), // app online date
-                            (resultSet.getTimestamp(13) != null) ? resultSet.getTimestamp(13).toString() : Constants.NOT_SET // app offline date
+                            resultSet.getString(4), // base path
+                            resultSet.getString(5), // app scm path
+                            resultSet.getString(6), // cluster name
+                            resultSet.getString(7), // jvm name
+                            resultSet.getString(8), // install path
+                            resultSet.getString(9), // logs dir
+                            resultSet.getString(10), // pid dir
+                            resultSet.getString(11), // project guid
+                            resultSet.getString(12), // platform guid
+                            resultSet.getTimestamp(13).toString(), // app online date
+                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
                         };
 
                         if (DEBUG)
@@ -577,10 +573,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
                 }
             }
         }

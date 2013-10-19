@@ -15,10 +15,12 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -67,11 +69,13 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         ArticleResponse response = new ArticleResponse();
 
+        final Article article = request.getArticle();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("Article: {}", article);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -87,18 +91,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                Article article = request.getArticle();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Article: {}", article);
-                }
-
                 List<String> insertList = new ArrayList<String>(
                         Arrays.asList(
                                 article.getArticleId(),
-                                article.getAuthor(),
-                                article.getAuthorEmail(),
+                                userAccount.getUsername(),
+                                userAccount.getEmailAddr(),
                                 article.getKeywords(),
                                 article.getTitle(),
                                 article.getSymptoms(),
@@ -123,27 +120,22 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("The article was successfully submitted.");
                     response.setArticle(article);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                     response.setResponse("Failed to approve article in datastore.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                 response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ArticleResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -234,14 +226,15 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 // user authorized, figure out what to do here
-                List<String> dataList = new ArrayList<String>();
-                dataList.add(article.getArticleId());
-                dataList.add(article.getKeywords());
-                dataList.add(article.getTitle());
-                dataList.add(article.getSymptoms());
-                dataList.add(article.getCause());
-                dataList.add(article.getResolution());
-                dataList.add(article.getModifiedBy());
+                List<String> dataList = new ArrayList<String>(
+                        Arrays.asList(
+                                article.getArticleId(),
+                                article.getKeywords(),
+                                article.getTitle(),
+                                article.getSymptoms(),
+                                article.getCause(),
+                                article.getResolution(),
+                                article.getModifiedBy()));
 
                 if (DEBUG)
                 {
@@ -331,9 +324,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
     }
 
     @Override
-    public ArticleResponse approveArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public ArticleResponse updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#rejectArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -365,7 +358,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                boolean isComplete = kbaseDAO.updateArticleStatus(article.getArticleId(), userAccount.getDisplayName(), article.getArticleStatus().name());
+                boolean isComplete = kbaseDAO.updateArticleStatus(article.getArticleId(), userAccount.getUsername(), article.getArticleStatus().name());
 
                 if (DEBUG)
                 {
@@ -420,244 +413,27 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setReqInfo(reqInfo);
                 auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.APPROVEARTICLE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
-                if (DEBUG)
+                switch (article.getArticleStatus())
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    case APPROVED:
+                        auditEntry.setAuditType(AuditType.APPROVEARTICLE);
+
+                        break;
+                    case REJECTED:
+                        auditEntry.setAuditType(AuditType.REJECTARTICLE);
+
+                        break;
+                    case DELETED:
+                        auditEntry.setAuditType(AuditType.DELETEARTICLE);
+
+                        break;
+                    default:
+                        auditEntry.setAuditType(AuditType.UPDATEARTICLE);
+
+                        break;
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    @Override
-    public ArticleResponse rejectArticle(final ArticleRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#rejectArticle(final ArticleRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
-        }
-
-        ArticleResponse response = new ArticleResponse();
-
-        final Article article = request.getArticle();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Article: {}", article);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
-            }
-
-            if (isServiceAuthorized)
-            {
-                // user authorized, continue
-                boolean isComplete = kbaseDAO.updateArticleStatus(article.getArticleId(), userAccount.getDisplayName(), article.getArticleStatus().name());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setArticle(article);
-                    response.setResponse("Article has been successfully rejected.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to process article rejection.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
-                }
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new KnowledgeBaseException(sqx.getMessage(), sqx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.REJECTARTICLE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    @Override
-    public ArticleResponse deleteArticle(final ArticleRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#deleteArticle(final ArticleRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
-        }
-
-        ArticleResponse response = new ArticleResponse();
-
-        final Article article = request.getArticle();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Article: {}", article);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
-            }
-
-            if (isServiceAuthorized)
-            {
-                // user authorized, continue
-                boolean isComplete = kbaseDAO.updateArticleStatus(article.getArticleId(), userAccount.getDisplayName(), ArticleStatus.DELETED.name());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-
-                if (isComplete)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setArticle(article);
-                    response.setResponse("Article has been successfully deleted.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to remove article from datastore.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
-                    }
-                }
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new KnowledgeBaseException(sqx.getMessage(), sqx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.DELETEARTICLE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
 
                 if (DEBUG)
                 {
@@ -715,10 +491,17 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if ((responseList != null) && (responseList.size() != 0))
             {
+                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                }
+
                 article = new Article();
                 article.setPageHits(Integer.valueOf(responseList.get(0)));
                 article.setArticleId(responseList.get(1));
-                article.setCreateDate(Long.valueOf(responseList.get(2)));
+                article.setCreateDate(sdf.format(new Date(Long.valueOf(responseList.get(2)))));
                 article.setAuthor(responseList.get(3));
                 article.setKeywords(responseList.get(4));
                 article.setTitle(responseList.get(5));
@@ -727,8 +510,8 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 article.setResolution(responseList.get(8));
                 article.setArticleStatus(ArticleStatus.valueOf(responseList.get(9)));
                 article.setReviewedBy(responseList.get(10));
-                article.setReviewedOn(Long.valueOf(responseList.get(11)));
-                article.setModifiedOn(Long.valueOf(responseList.get(12)));
+                article.setReviewedOn((responseList.get(11) != null) ? sdf.format(new Date(Long.valueOf(responseList.get(11)))) : null);
+                article.setModifiedOn((responseList.get(12) != null) ? sdf.format(new Date(Long.valueOf(responseList.get(12)))) : null);
                 article.setModifiedBy(responseList.get(13));
                 article.setAuthorEmail(responseList.get(14));
 
@@ -836,13 +619,19 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 {
                     // build it here
                     List<Article> articleList = new ArrayList<Article>();
+                    SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                    }
 
                     for (String[] data : responseList)
                     {
                         Article article = new Article();
                         article.setPageHits(Integer.valueOf(data[0]));
                         article.setArticleId(data[1]);
-                        article.setCreateDate(Long.valueOf(data[2]));
+                        article.setCreateDate(sdf.format(new Date(Long.valueOf(data[2]))));
                         article.setAuthor(data[3]);
                         article.setKeywords(data[4]);
                         article.setTitle(data[5]);
@@ -854,7 +643,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                         if ((StringUtils.isNotEmpty(data[12]) && (!(StringUtils.equals(data[12], "null")))))
                         {
-                            article.setModifiedOn(Long.valueOf(data[12]));
+                            article.setModifiedOn(sdf.format(new Date(Long.valueOf(data[12]))));
                         }
 
                         if ((StringUtils.isNotEmpty(data[13]) && (!(StringUtils.equals(data[13], "null")))))

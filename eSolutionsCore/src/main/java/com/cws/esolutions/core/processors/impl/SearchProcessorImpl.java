@@ -97,8 +97,8 @@ public class SearchProcessorImpl implements ISearchProcessor
                     if ((data != null) && (data.length >= 2))
                     {
                         SearchResult searchResult = new SearchResult();
-                        searchResult.setPath(data[0]);
-                        searchResult.setTitle(data[1]);
+                        searchResult.setPath(data[1]);
+                        searchResult.setTitle(data[5]);
 
                         if (DEBUG)
                         {
@@ -121,6 +121,16 @@ public class SearchProcessorImpl implements ISearchProcessor
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 response.setResponse("Search completed successfully.");
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -201,6 +211,16 @@ public class SearchProcessorImpl implements ISearchProcessor
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 response.setResponse("Search completed successfully.");
             }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
+            }
         }
         catch (SQLException sqx)
         {
@@ -279,6 +299,16 @@ public class SearchProcessorImpl implements ISearchProcessor
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 response.setResponse("Search completed successfully.");
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -359,6 +389,16 @@ public class SearchProcessorImpl implements ISearchProcessor
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 response.setResponse("Search completed successfully.");
             }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
+            }
         }
         catch (SQLException sqx)
         {
@@ -437,6 +477,16 @@ public class SearchProcessorImpl implements ISearchProcessor
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 response.setResponse("Search completed successfully.");
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
             }
         }
         catch (SQLException sqx)

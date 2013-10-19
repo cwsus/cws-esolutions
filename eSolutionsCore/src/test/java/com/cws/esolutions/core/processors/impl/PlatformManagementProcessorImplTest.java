@@ -154,31 +154,31 @@ public class PlatformManagementProcessorImplTest
     public final void testAddNewPlatform()
     {
         Server dmgrServer = new Server();
-        dmgrServer.setServerGuid("bc55f443-202b-4f7c-9118-47dd80500ffb");
+        dmgrServer.setServerGuid("fde6d6e9-8bac-4a82-99c6-ef225945d846");
 
         Server appServer1 = new Server();
-        appServer1.setServerGuid("a8fb1dbf-e915-46d9-b8ce-21dc33afd236");
+        appServer1.setServerGuid("f6bd1ef7-38b1-4d9a-8f99-2a4ca42b02ba");
 
         Server appServer2 = new Server();
-        appServer2.setServerGuid("63acb156-acd2-414d-883e-279f10a8f13b");
+        appServer2.setServerGuid("0dae13de-c9ec-4070-94cd-00a7ee51dee7");
 
         Server appServer3 = new Server();
-        appServer3.setServerGuid("44dc7ab7-f8c0-473a-a228-8169d222c4ab");
+        appServer3.setServerGuid("60cc480f-55d5-4018-98ad-b87e7b13a921");
 
         Server appServer4 = new Server();
-        appServer4.setServerGuid("28898aa1-28be-4e19-be9f-1d3226fb7595");
+        appServer4.setServerGuid("eb88ae10-8d05-4647-b946-432192d23c31");
 
         Server webServer1 = new Server();
-        webServer1.setServerGuid("fdc8c335-cda2-49f4-a66a-06417312dc4b");
+        webServer1.setServerGuid("1ed8cdd7-8bd8-40bc-8cc3-c79c2a0a8d5b");
 
         Server webServer2 = new Server();
-        webServer2.setServerGuid("f1417fab-47d3-4375-8e8b-f41c222be689");
+        webServer2.setServerGuid("2776640f-1a8c-446c-b501-0548418196d6");
 
         Server webServer3 = new Server();
-        webServer3.setServerGuid("737d91c8-6a40-459d-ab1e-b28fc368bcaa");
+        webServer3.setServerGuid("ddff73f7-5606-4a26-9adb-c3e3b4113ba5");
 
         Server webServer4 = new Server();
-        webServer4.setServerGuid("4f69a63d-ce47-4c6e-a783-dc16a7bfe330");
+        webServer4.setServerGuid("93936f7a-1c29-463c-8972-68e2b8812776");
 
         List<Server> appServerList = new ArrayList<Server>(
                 Arrays.asList(
@@ -196,9 +196,9 @@ public class PlatformManagementProcessorImplTest
 
         Platform platform = new Platform();
         platform.setPlatformGuid(UUID.randomUUID().toString());
-        platform.setPlatformName("PLATFORM_X");
+        platform.setPlatformName(RandomStringUtils.randomAlphabetic(8));
         platform.setStatus(ServiceStatus.ACTIVE);
-        platform.setPlatformRegion(ServiceRegion.DEV);
+        platform.setPlatformRegion(ServiceRegion.PRD);
         platform.setDescription("Test Platform");
         platform.setPlatformDmgr(dmgrServer);
         platform.setAppServers(appServerList);
@@ -276,7 +276,7 @@ public class PlatformManagementProcessorImplTest
     public final void testGetPlatformData()
     {
         Platform platform = new Platform();
-        platform.setPlatformGuid("1397a271-3c92-4063-aad1-da878cfca2c2");
+        platform.setPlatformGuid("45837940-9a70-4433-a0ff-8d481fb5b325");
 
         PlatformManagementRequest request = new PlatformManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -287,7 +287,7 @@ public class PlatformManagementProcessorImplTest
         try
         {
             PlatformManagementResponse response = processor.getPlatformData(request);
-
+System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (PlatformManagementException pmx)

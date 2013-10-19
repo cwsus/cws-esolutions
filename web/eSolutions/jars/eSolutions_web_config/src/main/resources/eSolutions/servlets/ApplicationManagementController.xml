@@ -10,25 +10,39 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="1000" />
+        <property name="maxUploadSize" value="-1" />
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.us.esolutions.controllers.ApplicationManagementController">
+        <property name="applicationValidator">
+            <bean id="applicationValidator" class="com.cws.us.esolutions.validators.ApplicationValidator" />
+        </property>
+        <property name="deploymentValidator">
+            <bean id="deploymentValidator" class="com.cws.us.esolutions.validators.DeploymentValidator" />
+        </property>
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
         <property name="serviceName" value="appMgmt" />
+        <property name="viewFilePage" value="AppMgmt_ViewFile" />
         <property name="addAppPage" value="AppMgmt_AddApplication" />
         <property name="defaultPage" value="AppMgmt_DefaultHandler" />
         <property name="viewAppPage" value="AppMgmt_ViewApplication" />
+        <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
         <property name="deployAppPage" value="AppMgmt_DeployApplication" />
         <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
-        <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />
-        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
-        <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
         <property name="applMgmt" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
+        <property name="messageNoFileData" value="app.mgmt.no.file.data.received" />
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />
+        <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />
+        <property name="messageNoBinaryProvided" value="app.mgmt.application.no.files" />
+        <property name="messageFileUploaded" value="app.mgmt.application.file.uploaded" />
+        <property name="messageApplicationRetired" value="app.mgmt.application.retired" />
+        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
+        <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
+        <property name="messageDeploymentFailedValidation" value="app.mgmt.deployment.failed.validation" />
+        <property name="messageApplicationFailedValidation" value="app.mgmt.application.failed.validation" />
     </bean>
 </beans>

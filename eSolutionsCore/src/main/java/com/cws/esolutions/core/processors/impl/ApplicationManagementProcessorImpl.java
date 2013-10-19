@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
-import java.io.File;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
@@ -40,14 +40,13 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.agent.processors.enums.DeploymentType;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
+import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
-import com.cws.esolutions.agent.processors.enums.ApplicationManagementType;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
@@ -151,92 +150,94 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         // we are NOT adding any applications to the project YET
                         // if there are any to add we'll do that later (its a
                         // different table in the database)
-                        if (application.getPlatform() != null)
+                        if ((application.getApplicationPlatforms() != null) && (application.getApplicationPlatforms().size() != 0))
                         {
-                            Platform targetPlatform = application.getPlatform();
+                            List<String> platforms = new ArrayList<String>();
 
-                            if (DEBUG)
+                            for (Platform targetPlatform : application.getApplicationPlatforms())
                             {
-                                DEBUGGER.debug("Platform: {}", targetPlatform);
-                            }
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Platform: {}", targetPlatform);
+                                }
 
-                            // make sure its a valid platform
-                            List<String> isPlatformValid = platformDao.getPlatformData(application.getPlatform().getPlatformGuid());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("isPlatformValid: {}", isPlatformValid);
-                            }
-
-                            if ((isPlatformValid != null) && (isPlatformValid.size() != 0))
-                            {
-                                Project targetProject = application.getApplicationProject();
+                                // make sure its a valid platform
+                                List<String> isPlatformValid = platformDao.getPlatformData(targetPlatform.getPlatformGuid());
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Project: {}", targetProject);
+                                    DEBUGGER.debug("isPlatformValid: {}", isPlatformValid);
                                 }
 
-                                List<String> isProjectValid = projectDAO.getProjectData(targetProject.getProjectGuid());
-
-                                if (DEBUG)
+                                if ((isPlatformValid.size() == 0) || (isPlatformValid == null))
                                 {
-                                    DEBUGGER.debug("isProjectValid: {}", isProjectValid);
+                                    throw new ApplicationManagementException("Provided platform does not exist in the asset datasource. Cannot add application.");
                                 }
 
-                                if ((isProjectValid != null) && (isProjectValid.size() != 0))
-                                {
-                                    // ok, good platform. we can add the application in
-                                    List<String> appDataList = new ArrayList<String>(
-                                            Arrays.asList(
-                                                    applGuid,
-                                                    application.getApplicationName(),
-                                                    application.getApplicationVersion(),
-                                                    application.getScmPath(),
-                                                    application.getApplicationCluster(),
-                                                    application.getJvmName(),
-                                                    application.getApplicationInstallPath(),
-                                                    application.getApplicationLogsPath(),
-                                                    application.getPidDirectory(),
-                                                    targetProject.getProjectGuid(),
-                                                    targetPlatform.getPlatformGuid()));
+                                platforms.add(targetPlatform.getPlatformGuid());
+                            }
 
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("appDataList: {}", appDataList);
-                                    }
+                            Project targetProject = application.getApplicationProject();
 
-                                    boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Project: {}", targetProject);
+                            }
 
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
-                                    }
+                            List<String> isProjectValid = projectDAO.getProjectData(targetProject.getProjectGuid());
 
-                                    if (isApplicationAdded)
-                                    {
-                                        response.setResponse("Successfully added application " + application.getApplicationName() + " to the asset database");
-                                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                    }
-                                    else
-                                    {
-                                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                        response.setResponse("Failed to add application " + application.getApplicationName() + " to the asset database");
-                                    }
-                                }
-                                else
-                                {
-                                    throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
-                                }
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("isProjectValid: {}", isProjectValid);
+                            }
+
+                            if ((isProjectValid.size() == 0) || (isProjectValid == null))
+                            {
+                                throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
+                            }
+
+                            // ok, good platform. we can add the application in
+                            List<String> appDataList = new ArrayList<String>(
+                                    Arrays.asList(
+                                            applGuid,
+                                            application.getApplicationName(),
+                                            application.getApplicationVersion(),
+                                            application.getBasePath(),
+                                            application.getScmPath(),
+                                            application.getApplicationCluster(),
+                                            application.getJvmName(),
+                                            application.getApplicationInstallPath(),
+                                            application.getApplicationLogsPath(),
+                                            application.getPidDirectory(),
+                                            targetProject.getProjectGuid(),
+                                            platforms.toString()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("appDataList: {}", appDataList);
+                            }
+
+                            boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
+                            }
+
+                            if (isApplicationAdded)
+                            {
+                                response.setResponse("Successfully added application " + application.getApplicationName() + " to the asset database");
+                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
                             }
                             else
                             {
-                                throw new ApplicationManagementException("Provided platform does not exist in the asset datasource. Cannot add application.");
+                                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                                response.setResponse("Failed to add application " + application.getApplicationName() + " to the asset database");
                             }
                         }
                         else
                         {
-                            throw new ApplicationManagementException("No platform was assigned to the application. Cannot continue.");
+                            throw new ApplicationManagementException("No platform was assigned to the given application. Cannot continue.");
                         }
                     }
                     else
@@ -363,38 +364,63 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("currAppData: {}", currAppData);
                     }
 
-                    Platform currentPlatform = new Platform();
-                    currentPlatform.setPlatformGuid(currAppData.get(10));
-
-                    if (DEBUG)
+                    if (currAppData.get(11).split(",").length >= 1)
                     {
-                        DEBUGGER.debug("Platform: {}", currentPlatform);
+                        List<Platform> appPlatforms = new ArrayList<Platform>();
+
+                        for (String guid : currAppData.get(11).split(","))
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("guid: {}", guid);
+                            }
+
+                            Platform platform = new Platform();
+                            platform.setPlatformGuid(guid);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Platform: {}", platform);
+                            }
+
+                            appPlatforms.add(platform);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<Platform>: {}", appPlatforms);
+                        }
+
+                        Project currentProject = new Project();
+                        currentProject.setProjectGuid(currAppData.get(9));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Project: {}", currentProject);
+                        }
+
+                        Application currentApp = new Application();
+                        currentApp.setApplicationGuid(currAppData.get(0));
+                        currentApp.setApplicationName(currAppData.get(1));
+                        currentApp.setApplicationVersion(currAppData.get(2));
+                        currentApp.setBasePath(currAppData.get(3));
+                        currentApp.setScmPath(currAppData.get(4));
+                        currentApp.setApplicationCluster(currAppData.get(5));
+                        currentApp.setJvmName(currAppData.get(6));
+                        currentApp.setApplicationInstallPath(currAppData.get(7));
+                        currentApp.setApplicationLogsPath(currAppData.get(8));
+                        currentApp.setPidDirectory(currAppData.get(9));
+                        currentApp.setApplicationProject(currentProject);
+                        currentApp.setApplicationPlatforms(appPlatforms);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Application: {}", currentApp);
+                        }
                     }
-
-                    Project currentProject = new Project();
-                    currentProject.setProjectGuid(currAppData.get(9));
-
-                    if (DEBUG)
+                    else
                     {
-                        DEBUGGER.debug("Project: {}", currentProject);
-                    }
-
-                    Application currentApp = new Application();
-                    currentApp.setApplicationGuid(currAppData.get(0));
-                    currentApp.setApplicationName(currAppData.get(1));
-                    currentApp.setApplicationVersion(currAppData.get(2));
-                    currentApp.setScmPath(currAppData.get(3));
-                    currentApp.setApplicationCluster(currAppData.get(4));
-                    currentApp.setJvmName(currAppData.get(5));
-                    currentApp.setApplicationInstallPath(currAppData.get(6));
-                    currentApp.setApplicationLogsPath(currAppData.get(7));
-                    currentApp.setPidDirectory(currAppData.get(8));
-                    currentApp.setApplicationProject(currentProject);
-                    currentApp.setPlatform(currentPlatform);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Application: {}", currentApp);
+                        throw new ApplicationManagementException("No platform was located for the provided application. Cannot continue.");
                     }
                 }
                 else
@@ -625,10 +651,42 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isUserAuthorized)
                 {
-                    // pull a list of projects the user has access to
+                    List<String> serviceList = new ArrayList<String>();
                     List<Application> applicationList = new ArrayList<Application>();
-                    IUserServiceInformationDAO serviceDAO = new UserServiceInformationDAOImpl();
-                    List<String> serviceList = serviceDAO.returnUserAuthorizedProjects(userAccount.getGuid());
+
+                    if (userAccount.getRole() == Role.SITEADMIN)
+                    {
+                        IProjectDataDAO projectDAO = new ProjectDataDAOImpl();
+                        List<String[]> projects = projectDAO.listAvailableProjects();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("projects: {}", projects);
+                        }
+
+                        if ((projects != null) && (projects.size() != 0))
+                        {
+                            for (String[] project : projects)
+                            {
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("project: {}", project[0]);
+                                }
+
+                                serviceList.add(project[0]);
+                            }
+                        }
+                        else
+                        {
+                            throw new ApplicationManagementException("No installed projects were located. Cannot continue.");
+                        }
+                    }
+                    else
+                    {
+                        // pull a list of projects the user has access to
+                        IUserServiceInformationDAO serviceDAO = new UserServiceInformationDAOImpl();
+                        serviceList = serviceDAO.returnUserAuthorizedProjects(userAccount.getGuid());
+                    }
 
                     if (DEBUG)
                     {
@@ -645,305 +703,126 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 DEBUGGER.debug("projectId: {}", projectId);
                             }
 
-                            List<String[]> appData = null;
-
-                            try
-                            {
-                                appData = appDAO.getApplicationsByAttribute(projectId);
-                            }
-                            catch (SQLException sqx)
-                            {
-                                continue;
-                            }
+                            List<String> projectInfo = projectDAO.getProjectData(projectId);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("List<String[]>: {}", appData);
+                                DEBUGGER.debug("projectInfo: {}", projectInfo);
                             }
 
-                            for (String[] data : appData)
+                            if ((projectInfo != null) && (projectInfo.size() != 0))
                             {
+                                Project project = new Project();
+                                project.setProjectGuid(projectInfo.get(0));
+                                project.setProjectCode(projectInfo.get(1));
+
                                 if (DEBUG)
                                 {
-                                    if (data != null)
-                                    {
-                                        for (String str : data)
-                                        {
-                                            DEBUGGER.debug("data: {}", str);
-                                        }
-                                    }
+                                    DEBUGGER.debug("Project: {}", project);
                                 }
 
-                                Server dmgrServer = null;
-                                List<String> serverData = null;
-                                List<Server> appServerList = null;
-                                List<Server> webServerList = null;
-                                Application resApplication = new Application();
+                                List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid());
 
-                                // get platform data
-                                if ((data != null) && (data[10] != null))
+                                if (DEBUG)
                                 {
-                                    List<String> platformData = platformDao.getPlatformData(data[10]);
+                                    DEBUGGER.debug("appData: {}", appData);
+                                }
 
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("platformData: {}", platformData);
-                                    }
+                                if ((appData != null) && (appData.size() != 0))
+                                {
+                                    List<Platform> platforms = new ArrayList<Platform>();
 
-                                    if ((platformData != null) && (platformData.size() != 0))
+                                    for (String[] data : appData)
                                     {
-                                        serverData = serverDao.getInstalledServer(platformData.get(3));
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("data: {}", data);
+                                        }
+
+                                        // build the platform
+                                        String[] platformList = StringUtils.split(data[11], ",");
 
                                         if (DEBUG)
                                         {
-                                            DEBUGGER.debug("serverData: {}", serverData);
+                                            DEBUGGER.debug("platformList: {}", platformList);
                                         }
 
-                                        if ((serverData != null) && (serverData.size() != 0))
+                                        if ((platformList != null) && (platformList.length != 0))
                                         {
-                                            dmgrServer = new Server();
-                                            dmgrServer.setServerGuid(serverData.get(0));
-                                            dmgrServer.setOsName(serverData.get(1));
-                                            dmgrServer.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                            dmgrServer.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                            dmgrServer.setServerType(ServerType.valueOf(serverData.get(4)));
-                                            dmgrServer.setDomainName(serverData.get(5));
-                                            dmgrServer.setCpuType(serverData.get(6));
-                                            dmgrServer.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                            dmgrServer.setServerRack(serverData.get(8));
-                                            dmgrServer.setRackPosition(serverData.get(9));
-                                            dmgrServer.setServerModel(serverData.get(10));
-                                            dmgrServer.setSerialNumber(serverData.get(11));
-                                            dmgrServer.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                            dmgrServer.setOperIpAddress(serverData.get(13));
-                                            dmgrServer.setOperHostName(serverData.get(14));
-                                            dmgrServer.setAssignedEngineer(serverData.get(15));
-                                            dmgrServer.setServerComments(serverData.get(16));
-                                            dmgrServer.setMgmtIpAddress(serverData.get(17));
-                                            dmgrServer.setMgmtHostName(serverData.get(18));
-                                            dmgrServer.setBkIpAddress(serverData.get(19));
-                                            dmgrServer.setBkHostName(serverData.get(20));
-                                            dmgrServer.setNasIpAddress(serverData.get(21));
-                                            dmgrServer.setNasHostName(serverData.get(22));
-                                            dmgrServer.setNatAddress(serverData.get(23));
-                                            dmgrServer.setMgrUrl(serverData.get(24));
-                                            dmgrServer.setOwningDmgr(serverData.get(25));
-
-                                            if (DEBUG)
+                                            for (String guid : platformList)
                                             {
-                                                DEBUGGER.debug("Server: {}", dmgrServer);
-                                            }
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("guid: {}", guid);
+                                                }
 
-                                            serverData.clear();
-                                        }
-
-                                        if (platformData.get(1).split(",").length >= 1)
-                                        {
-                                            appServerList = new ArrayList<Server>();
-
-                                            // list application servers
-                                            for (String serverGuid : platformData.get(4).split(","))
-                                            {
-                                                String guid = StringUtils.remove(serverGuid, "[");
-                                                guid = StringUtils.remove(guid, "]");
-                                                guid = StringUtils.trim(guid);
+                                                List<String> platformData = platformDao.getPlatformData(guid);
 
                                                 if (DEBUG)
                                                 {
-                                                    DEBUGGER.debug("serverGuid: {}", guid);
+                                                    DEBUGGER.debug("platformData: {}", platformData);
                                                 }
 
-                                                serverData = serverDao.getInstalledServer(guid);
-
-                                                if (DEBUG)
+                                                if ((platformData != null) && (platformData.size() != 0))
                                                 {
-                                                    DEBUGGER.debug("serverData: {}", serverData);
-                                                }
-
-                                                if ((serverData != null) && (serverData.size() != 0))
-                                                {
-                                                    Server server = new Server();
-                                                    server.setServerGuid(serverData.get(0));
-                                                    server.setOsName(serverData.get(1));
-                                                    server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                                    server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                                    server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                                    server.setDomainName(serverData.get(5));
-                                                    server.setCpuType(serverData.get(6));
-                                                    server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                                    server.setServerRack(serverData.get(8));
-                                                    server.setRackPosition(serverData.get(9));
-                                                    server.setServerModel(serverData.get(10));
-                                                    server.setSerialNumber(serverData.get(11));
-                                                    server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                                    server.setOperIpAddress(serverData.get(13));
-                                                    server.setOperHostName(serverData.get(14));
-                                                    server.setAssignedEngineer(serverData.get(15));
-                                                    server.setServerComments(serverData.get(16));
-                                                    server.setMgmtIpAddress(serverData.get(17));
-                                                    server.setMgmtHostName(serverData.get(18));
-                                                    server.setBkIpAddress(serverData.get(19));
-                                                    server.setBkHostName(serverData.get(20));
-                                                    server.setNasIpAddress(serverData.get(21));
-                                                    server.setNasHostName(serverData.get(22));
-                                                    server.setNatAddress(serverData.get(23));
-                                                    server.setMgrUrl(serverData.get(24));
-                                                    server.setOwningDmgr(serverData.get(25));
+                                                    Platform platform = new Platform();
+                                                    platform.setPlatformGuid(platformData.get(0));
+                                                    platform.setPlatformName(platformData.get(1));
 
                                                     if (DEBUG)
                                                     {
-                                                        DEBUGGER.debug("Server: {}", server);
+                                                        DEBUGGER.debug("Platform: {}", platform);
                                                     }
 
-                                                    appServerList.add(server);
-
-                                                    serverData.clear();
+                                                    platforms.add(platform);
                                                 }
-                                            }
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("appServerList: {}", appServerList);
-                                            }
-                                        }
-
-                                        // list web servers
-                                        if (platformData.get(1).split(",").length >= 1)
-                                        {
-                                            webServerList = new ArrayList<Server>();
-
-                                            for (String serverGuid : platformData.get(5).split(","))
-                                            {
-                                                String guid = StringUtils.remove(serverGuid, "[");
-                                                guid = StringUtils.remove(guid, "]");
-                                                guid = StringUtils.trim(guid);
+                                                else
+                                                {
+                                                    throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
+                                                }
 
                                                 if (DEBUG)
                                                 {
-                                                    DEBUGGER.debug("serverGuid: {}", guid);
-                                                }
-
-                                                serverData = serverDao.getInstalledServer(guid);
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("serverData: {}", serverData);
-                                                }
-
-                                                if ((serverData != null) && (serverData.size() != 0))
-                                                {
-                                                    Server server = new Server();
-                                                    server.setServerGuid(serverData.get(0));
-                                                    server.setOsName(serverData.get(1));
-                                                    server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                                    server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                                    server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                                    server.setDomainName(serverData.get(5));
-                                                    server.setCpuType(serverData.get(6));
-                                                    server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                                    server.setServerRack(serverData.get(8));
-                                                    server.setRackPosition(serverData.get(9));
-                                                    server.setServerModel(serverData.get(10));
-                                                    server.setSerialNumber(serverData.get(11));
-                                                    server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                                    server.setOperIpAddress(serverData.get(13));
-                                                    server.setOperHostName(serverData.get(14));
-                                                    server.setAssignedEngineer(serverData.get(15));
-                                                    server.setServerComments(serverData.get(16));
-                                                    server.setMgmtIpAddress(serverData.get(17));
-                                                    server.setMgmtHostName(serverData.get(18));
-                                                    server.setBkIpAddress(serverData.get(19));
-                                                    server.setBkHostName(serverData.get(20));
-                                                    server.setNasIpAddress(serverData.get(21));
-                                                    server.setNasHostName(serverData.get(22));
-                                                    server.setNatAddress(serverData.get(23));
-                                                    server.setMgrUrl(serverData.get(24));
-                                                    server.setOwningDmgr(serverData.get(25));
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("Server: {}", server);
-                                                    }
-
-                                                    webServerList.add(server);
+                                                    DEBUGGER.debug("platforms: {}", platforms);
                                                 }
                                             }
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("webServerList: {}", webServerList);
-                                            }
                                         }
-                                
-                                        Platform platform = new Platform();
-                                        platform.setAppServers(appServerList);
-                                        platform.setPlatformDmgr(dmgrServer);
-                                        platform.setAppServers(appServerList);
-                                        platform.setWebServers(webServerList);
-                                        platform.setPlatformGuid(platformData.get(0));
-                                        platform.setPlatformName(platformData.get(1));
-                                        platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                                        platform.setDescription(platformData.get(6));
-
-                                        if (DEBUG)
+                                        else
                                         {
-                                            DEBUGGER.debug("Platform: {}", platform);
+                                            throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
                                         }
 
-                                        resApplication.setPlatform(platform);
-                                    }
-
-                                    // get project data
-                                    List<String> projectList = projectDAO.getProjectData(data[9]);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("projectList: {}", projectList);
-                                    }
-
-                                    if ((projectList != null) && (projectList.size() != 0))
-                                    {
-                                        Project project = new Project();
-                                        project.setProjectGuid(projectList.get(0));
-                                        project.setProjectCode(projectList.get(1));
-                                        project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                                        project.setPrimaryContact(projectList.get(3));
-                                        project.setSecondaryContact(projectList.get(4));
-                                        project.setContactEmail(projectList.get(5));
-                                        project.setIncidentQueue(projectList.get(6));
-                                        project.setChangeQueue(projectList.get(7));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Project: {}", project);
-                                        }
-
+                                        Application resApplication = new Application();
+                                        resApplication.setApplicationGuid(data[0]);
+                                        resApplication.setApplicationName(data[1]);
+                                        resApplication.setApplicationVersion(data[2]);
+                                        resApplication.setBasePath(data[3]);
+                                        resApplication.setScmPath(data[4]);
+                                        resApplication.setApplicationCluster(data[5]);
+                                        resApplication.setJvmName(data[6]);
+                                        resApplication.setApplicationInstallPath(data[7]);
+                                        resApplication.setApplicationLogsPath(data[8]);
+                                        resApplication.setPidDirectory(data[9]);
                                         resApplication.setApplicationProject(project);
+                                        resApplication.setApplicationPlatforms(platforms);
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("Application: {}", resApplication);
+                                        }
+
+                                        applicationList.add(resApplication);
                                     }
-
-                                    resApplication.setApplicationGuid(data[0]);
-                                    resApplication.setApplicationName(data[1]);
-                                    resApplication.setApplicationVersion(data[2]);
-                                    resApplication.setScmPath(data[3]);
-                                    resApplication.setApplicationCluster(data[4]);
-                                    resApplication.setJvmName(data[5]);
-                                    resApplication.setApplicationInstallPath(data[6]);
-                                    resApplication.setApplicationLogsPath(data[7]);
-                                    resApplication.setPidDirectory(data[8]);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Application: {}", resApplication);
-                                    }
-
-                                    applicationList.add(resApplication);
                                 }
                                 else
                                 {
-                                    ERROR_RECORDER.error("Failed to obtain platform data for provided application.");
-
+                                    // moo
                                     continue;
                                 }
+                            }
+                            else
+                            {
+                                throw new ApplicationManagementException("No project information was located. Cannot continue.");
                             }
                         }
                     }
@@ -974,13 +853,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             catch (SQLException sqx)
             {
                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
+
                 throw new ApplicationManagementException(sqx.getMessage(), sqx);
             }
             catch (UserControlServiceException ucsx)
             {
                 ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
+
                 throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
             }
             finally
@@ -1037,12 +916,14 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         ApplicationManagementResponse response = new ApplicationManagementResponse();
 
         final Application application = request.getApplication();
+        final Project project = application.getApplicationProject();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
             DEBUGGER.debug("Application: {}", application);
+            DEBUGGER.debug("Project: {}", project);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -1069,281 +950,91 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if ((isAdminAuthorized) && (isUserAuthorized))
                 {
-                    List<String[]> appList = appDAO.getApplicationsByAttribute(application.getApplicationProject().getProjectGuid());
+                    List<Application> applicationList = new ArrayList<Application>();
+                    List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("appList: {}", appList);
+                        DEBUGGER.debug("appData: {}", appData);
                     }
 
-                    if ((appList != null) && (appList.size() != 0))
+                    if ((appData != null) && (appData.size() != 0))
                     {
-                        List<Application> applicationList = new ArrayList<Application>();
+                        List<Platform> platforms = new ArrayList<Platform>();
 
-                        for (String[] data : appList)
+                        for (String[] data : appData)
                         {
                             if (DEBUG)
                             {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
+                                DEBUGGER.debug("data: {}", data);
                             }
 
-                            Server dmgrServer = null;
-                            List<String> serverData = null;
-                            List<Server> appServerList = null;
-                            List<Server> webServerList = null;
+                            // build the platform
+                            String[] platformList = StringUtils.split(data[11], ",");
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("platformList: {}", platformList);
+                            }
+
+                            if ((platformList != null) && (platformList.length != 0))
+                            {
+                                for (String guid : platformList)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("guid: {}", guid);
+                                    }
+
+                                    List<String> platformData = platformDao.getPlatformData(guid);
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("platformData: {}", platformData);
+                                    }
+
+                                    if ((platformData != null) && (platformData.size() != 0))
+                                    {
+                                        Platform platform = new Platform();
+                                        platform.setPlatformGuid(platformData.get(0));
+                                        platform.setPlatformName(platformData.get(1));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("Platform: {}", platform);
+                                        }
+
+                                        platforms.add(platform);
+                                    }
+                                    else
+                                    {
+                                        throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
+                                    }
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("platforms: {}", platforms);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
+                            }
+
                             Application resApplication = new Application();
-
-                            // get platform data
-                            List<String> platformData = platformDao.getPlatformData(data[10]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("platformData: {}", platformData);
-                            }
-
-                            if ((platformData != null) && (platformData.size() != 0))
-                            {
-                                
-                                serverData = serverDao.getInstalledServer(platformData.get(3));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    dmgrServer = new Server();
-                                    dmgrServer.setServerGuid(serverData.get(0));
-                                    dmgrServer.setOsName(serverData.get(1));
-                                    dmgrServer.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                    dmgrServer.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                    dmgrServer.setServerType(ServerType.valueOf(serverData.get(4)));
-                                    dmgrServer.setDomainName(serverData.get(5));
-                                    dmgrServer.setCpuType(serverData.get(6));
-                                    dmgrServer.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                    dmgrServer.setServerRack(serverData.get(8));
-                                    dmgrServer.setRackPosition(serverData.get(9));
-                                    dmgrServer.setServerModel(serverData.get(10));
-                                    dmgrServer.setSerialNumber(serverData.get(11));
-                                    dmgrServer.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                    dmgrServer.setOperIpAddress(serverData.get(13));
-                                    dmgrServer.setOperHostName(serverData.get(14));
-                                    dmgrServer.setAssignedEngineer(serverData.get(15));
-                                    dmgrServer.setServerComments(serverData.get(16));
-                                    dmgrServer.setMgmtIpAddress(serverData.get(17));
-                                    dmgrServer.setMgmtHostName(serverData.get(18));
-                                    dmgrServer.setBkIpAddress(serverData.get(19));
-                                    dmgrServer.setBkHostName(serverData.get(20));
-                                    dmgrServer.setNasIpAddress(serverData.get(21));
-                                    dmgrServer.setNasHostName(serverData.get(22));
-                                    dmgrServer.setNatAddress(serverData.get(23));
-                                    dmgrServer.setMgrUrl(serverData.get(24));
-                                    dmgrServer.setOwningDmgr(serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", dmgrServer);
-                                    }
-
-                                    serverData.clear();
-                                }
-
-                                if (platformData.get(1).split(",").length >= 1)
-                                {
-                                    appServerList = new ArrayList<Server>();
-
-                                    // list application servers
-                                    for (String serverGuid : platformData.get(4).split(","))
-                                    {
-                                        String guid = StringUtils.remove(serverGuid, "[");
-                                        guid = StringUtils.remove(guid, "]");
-                                        guid = StringUtils.trim(guid);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("serverGuid: {}", guid);
-                                        }
-
-                                        serverData = serverDao.getInstalledServer(guid);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("serverData: {}", serverData);
-                                        }
-
-                                        if ((serverData != null) && (serverData.size() != 0))
-                                        {
-                                            Server server = new Server();
-                                            server.setServerGuid(serverData.get(0));
-                                            server.setOsName(serverData.get(1));
-                                            server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                            server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                            server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                            server.setDomainName(serverData.get(5));
-                                            server.setCpuType(serverData.get(6));
-                                            server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                            server.setServerRack(serverData.get(8));
-                                            server.setRackPosition(serverData.get(9));
-                                            server.setServerModel(serverData.get(10));
-                                            server.setSerialNumber(serverData.get(11));
-                                            server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                            server.setOperIpAddress(serverData.get(13));
-                                            server.setOperHostName(serverData.get(14));
-                                            server.setAssignedEngineer(serverData.get(15));
-                                            server.setServerComments(serverData.get(16));
-                                            server.setMgmtIpAddress(serverData.get(17));
-                                            server.setMgmtHostName(serverData.get(18));
-                                            server.setBkIpAddress(serverData.get(19));
-                                            server.setBkHostName(serverData.get(20));
-                                            server.setNasIpAddress(serverData.get(21));
-                                            server.setNasHostName(serverData.get(22));
-                                            server.setNatAddress(serverData.get(23));
-                                            server.setMgrUrl(serverData.get(24));
-                                            server.setOwningDmgr(serverData.get(25));
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("Server: {}", server);
-                                            }
-
-                                            appServerList.add(server);
-
-                                            serverData.clear();
-                                        }
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("appServerList: {}", appServerList);
-                                    }
-                                }
-
-                                // list web servers
-                                if (platformData.get(1).split(",").length >= 1)
-                                {
-                                    webServerList = new ArrayList<Server>();
-
-                                    for (String serverGuid : platformData.get(5).split(","))
-                                    {
-                                        String guid = StringUtils.remove(serverGuid, "[");
-                                        guid = StringUtils.remove(guid, "]");
-                                        guid = StringUtils.trim(guid);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("serverGuid: {}", guid);
-                                        }
-
-                                        serverData = serverDao.getInstalledServer(guid);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("serverData: {}", serverData);
-                                        }
-
-                                        if ((serverData != null) && (serverData.size() != 0))
-                                        {
-                                            Server server = new Server();
-                                            server.setServerGuid(serverData.get(0));
-                                            server.setOsName(serverData.get(1));
-                                            server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                            server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                            server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                            server.setDomainName(serverData.get(5));
-                                            server.setCpuType(serverData.get(6));
-                                            server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                            server.setServerRack(serverData.get(8));
-                                            server.setRackPosition(serverData.get(9));
-                                            server.setServerModel(serverData.get(10));
-                                            server.setSerialNumber(serverData.get(11));
-                                            server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                            server.setOperIpAddress(serverData.get(13));
-                                            server.setOperHostName(serverData.get(14));
-                                            server.setAssignedEngineer(serverData.get(15));
-                                            server.setServerComments(serverData.get(16));
-                                            server.setMgmtIpAddress(serverData.get(17));
-                                            server.setMgmtHostName(serverData.get(18));
-                                            server.setBkIpAddress(serverData.get(19));
-                                            server.setBkHostName(serverData.get(20));
-                                            server.setNasIpAddress(serverData.get(21));
-                                            server.setNasHostName(serverData.get(22));
-                                            server.setNatAddress(serverData.get(23));
-                                            server.setMgrUrl(serverData.get(24));
-                                            server.setOwningDmgr(serverData.get(25));
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("Server: {}", server);
-                                            }
-
-                                            webServerList.add(server);
-                                        }
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("webServerList: {}", webServerList);
-                                    }
-                                }
-
-                                Platform platform = new Platform();
-                                platform.setPlatformGuid(platformData.get(0));
-                                platform.setPlatformName(platformData.get(1));
-                                platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                                platform.setPlatformDmgr(dmgrServer);
-                                platform.setAppServers(appServerList);
-                                platform.setWebServers(webServerList);
-                                platform.setDescription(platformData.get(0));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Platform: {}", platform);
-                                }
-
-                                resApplication.setPlatform(platform);
-                            }
-
-                            // get project data
-                            List<String> projectList = projectDAO.getProjectData(data[9]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("projectList: {}", projectList);
-                            }
-
-                            if ((projectList != null) && (projectList.size() != 0))
-                            {
-                                Project project = new Project();
-                                project.setProjectGuid(projectList.get(0));
-                                project.setProjectCode(projectList.get(1));
-                                project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                                project.setPrimaryContact(projectList.get(3));
-                                project.setSecondaryContact(projectList.get(4));
-                                project.setContactEmail(projectList.get(5));
-                                project.setIncidentQueue(projectList.get(6));
-                                project.setChangeQueue(projectList.get(7));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Project: {}", project);
-                                }
-
-                                resApplication.setApplicationProject(project);
-                            }
-
                             resApplication.setApplicationGuid(data[0]);
                             resApplication.setApplicationName(data[1]);
                             resApplication.setApplicationVersion(data[2]);
-                            resApplication.setScmPath(data[3]);
-                            resApplication.setApplicationCluster(data[4]);
-                            resApplication.setJvmName(data[5]);
-                            resApplication.setApplicationInstallPath(data[6]);
-                            resApplication.setApplicationLogsPath(data[7]);
-                            resApplication.setPidDirectory(data[8]);
+                            resApplication.setBasePath(data[3]);
+                            resApplication.setScmPath(data[4]);
+                            resApplication.setApplicationCluster(data[5]);
+                            resApplication.setJvmName(data[6]);
+                            resApplication.setApplicationInstallPath(data[7]);
+                            resApplication.setApplicationLogsPath(data[8]);
+                            resApplication.setPidDirectory(data[9]);
+                            resApplication.setApplicationProject(project);
+                            resApplication.setApplicationPlatforms(platforms);
 
                             if (DEBUG)
                             {
@@ -1353,13 +1044,23 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             applicationList.add(resApplication);
                         }
 
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("applicationList: {}", applicationList);
+                        }
+
                         response.setApplicationList(applicationList);
-                        response.setResponse("Successfully loaded application list");
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                        response.setResponse("Successfully loaded application listing.");
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                        }
                     }
                     else
                     {
-                        // no applications
+                        throw new ApplicationManagementException("No applications were located with the provided project. Cannot continue.");
                     }
                 }
                 else
@@ -1481,271 +1182,305 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     if ((appData != null) && (appData.size() != 0))
                     {
                         Server dmgrServer = null;
-                        List<String> serverData = null;
                         List<Server> appServerList = null;
                         List<Server> webServerList = null;
                         Application resApplication = new Application();
-                        
-                        // get platform data
-                        List<String> platformData = platformDao.getPlatformData(appData.get(10));
+
+                        // platform first...
+                        String[] platformGuids = StringUtils.split(appData.get(11));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("platformData: {}", platformData);
+                            DEBUGGER.debug("platformGuids: {}", platformGuids);
                         }
 
-                        if ((platformData != null) && (platformData.size() != 0))
+                        if ((platformGuids != null) && (platformGuids.length != 0))
                         {
-                            serverData = serverDao.getInstalledServer(platformData.get(3));
+                            List<Platform> platformList = new ArrayList<Platform>();
 
-                            if (DEBUG)
+                            // load
+                            for (String platformGuid : platformGuids)
                             {
-                                DEBUGGER.debug("serverData: {}", serverData);
-                            }
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("platformGuid: {}", platformGuid);
+                                }
 
-                            if ((serverData != null) && (serverData.size() != 0))
-                            {
-                                dmgrServer = new Server();
-                                dmgrServer.setServerGuid(serverData.get(0));
-                                dmgrServer.setOsName(serverData.get(1));
-                                dmgrServer.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                dmgrServer.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                dmgrServer.setServerType(ServerType.valueOf(serverData.get(4)));
-                                dmgrServer.setDomainName(serverData.get(5));
-                                dmgrServer.setCpuType(serverData.get(6));
-                                dmgrServer.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                dmgrServer.setServerRack(serverData.get(8));
-                                dmgrServer.setRackPosition(serverData.get(9));
-                                dmgrServer.setServerModel(serverData.get(10));
-                                dmgrServer.setSerialNumber(serverData.get(11));
-                                dmgrServer.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                dmgrServer.setOperIpAddress(serverData.get(13));
-                                dmgrServer.setOperHostName(serverData.get(14));
-                                dmgrServer.setAssignedEngineer(serverData.get(15));
-                                dmgrServer.setServerComments(serverData.get(16));
-                                dmgrServer.setMgmtIpAddress(serverData.get(17));
-                                dmgrServer.setMgmtHostName(serverData.get(18));
-                                dmgrServer.setBkIpAddress(serverData.get(19));
-                                dmgrServer.setBkHostName(serverData.get(20));
-                                dmgrServer.setNasIpAddress(serverData.get(21));
-                                dmgrServer.setNasHostName(serverData.get(22));
-                                dmgrServer.setNatAddress(serverData.get(23));
-                                dmgrServer.setMgrUrl(serverData.get(24));
-                                dmgrServer.setOwningDmgr(serverData.get(25));
+                                List<String> platformData = platformDao.getPlatformData(platformGuid);
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Server: {}", dmgrServer);
+                                    DEBUGGER.debug("platformData: {}", platformData);
                                 }
 
-                                serverData.clear();
-                            }
-
-                            if (platformData.get(3).split(",").length >= 1)
-                            {
-                                appServerList = new ArrayList<Server>();
-
-                                // list application servers
-                                for (String serverGuid : platformData.get(3).split(","))
+                                if ((platformData != null) && (platformData.size() != 0))
                                 {
-                                    String guid = StringUtils.remove(serverGuid, "[");
-                                    guid = StringUtils.remove(guid, "]");
-                                    guid = StringUtils.trim(guid);
+                                    // load info
+                                    // get the dmgr
+                                    List<String> dmgrData = serverDao.getInstalledServer(platformData.get(3));
 
                                     if (DEBUG)
                                     {
-                                        DEBUGGER.debug("serverGuid: {}", guid);
+                                        DEBUGGER.debug("dmgrData: {}", dmgrData);
                                     }
 
-                                    serverData = serverDao.getInstalledServer(guid);
-
-                                    if (DEBUG)
+                                    if ((dmgrData != null) && (dmgrData.size() != 0))
                                     {
-                                        DEBUGGER.debug("serverData: {}", serverData);
-                                    }
-
-                                    if ((serverData != null) && (serverData.size() != 0))
-                                    {
-                                        Server server = new Server();
-                                        server.setServerGuid(serverData.get(0));
-                                        server.setOsName(serverData.get(1));
-                                        server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                        server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                        server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                        server.setDomainName(serverData.get(5));
-                                        server.setCpuType(serverData.get(6));
-                                        server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                        server.setServerRack(serverData.get(8));
-                                        server.setRackPosition(serverData.get(9));
-                                        server.setServerModel(serverData.get(10));
-                                        server.setSerialNumber(serverData.get(11));
-                                        server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                        server.setOperIpAddress(serverData.get(13));
-                                        server.setOperHostName(serverData.get(14));
-                                        server.setAssignedEngineer(serverData.get(15));
-                                        server.setServerComments(serverData.get(16));
-                                        server.setMgmtIpAddress(serverData.get(17));
-                                        server.setMgmtHostName(serverData.get(18));
-                                        server.setBkIpAddress(serverData.get(19));
-                                        server.setBkHostName(serverData.get(20));
-                                        server.setNasIpAddress(serverData.get(21));
-                                        server.setNasHostName(serverData.get(22));
-                                        server.setNatAddress(serverData.get(23));
-                                        server.setMgrUrl(serverData.get(24));
-                                        server.setOwningDmgr(serverData.get(25));
+                                        dmgrServer = new Server();
+                                        dmgrServer.setServerGuid(dmgrData.get(0));
+                                        dmgrServer.setOsName(dmgrData.get(1));
+                                        dmgrServer.setServerStatus(ServerStatus.valueOf(dmgrData.get(2)));
+                                        dmgrServer.setServerRegion(ServiceRegion.valueOf(dmgrData.get(3)));
+                                        dmgrServer.setServerType(ServerType.valueOf(dmgrData.get(4)));
+                                        dmgrServer.setDomainName(dmgrData.get(5));
+                                        dmgrServer.setCpuType(dmgrData.get(6));
+                                        dmgrServer.setCpuCount(Integer.parseInt(dmgrData.get(7)));
+                                        dmgrServer.setServerRack(dmgrData.get(8));
+                                        dmgrServer.setRackPosition(dmgrData.get(9));
+                                        dmgrServer.setServerModel(dmgrData.get(10));
+                                        dmgrServer.setSerialNumber(dmgrData.get(11));
+                                        dmgrServer.setInstalledMemory(Integer.parseInt(dmgrData.get(12)));
+                                        dmgrServer.setOperIpAddress(dmgrData.get(13));
+                                        dmgrServer.setOperHostName(dmgrData.get(14));
+                                        dmgrServer.setAssignedEngineer(dmgrData.get(15));
+                                        dmgrServer.setServerComments(dmgrData.get(16));
+                                        dmgrServer.setMgmtIpAddress(dmgrData.get(17));
+                                        dmgrServer.setMgmtHostName(dmgrData.get(18));
+                                        dmgrServer.setBkIpAddress(dmgrData.get(19));
+                                        dmgrServer.setBkHostName(dmgrData.get(20));
+                                        dmgrServer.setNasIpAddress(dmgrData.get(21));
+                                        dmgrServer.setNasHostName(dmgrData.get(22));
+                                        dmgrServer.setNatAddress(dmgrData.get(23));
+                                        dmgrServer.setMgrUrl(dmgrData.get(24));
+                                        dmgrServer.setOwningDmgr(dmgrData.get(25));
 
                                         if (DEBUG)
                                         {
-                                            DEBUGGER.debug("Server: {}", server);
+                                            DEBUGGER.debug("Server: {}", dmgrServer);
                                         }
-
-                                        appServerList.add(server);
-
-                                        serverData.clear();
-                                    }
-                                }
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("appServerList: {}", appServerList);
-                                }
-                            }
-
-                            // list web servers
-                            if (platformData.get(4).split(",").length >= 1)
-                            {
-                                webServerList = new ArrayList<Server>();
-
-                                for (String serverGuid : platformData.get(4).split(","))
-                                {
-                                    String guid = StringUtils.remove(serverGuid, "[");
-                                    guid = StringUtils.remove(guid, "]");
-                                    guid = StringUtils.trim(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("serverGuid: {}", guid);
                                     }
 
-                                    serverData = serverDao.getInstalledServer(guid);
-
-                                    if (DEBUG)
+                                    if (platformData.get(3).split(",").length >= 1)
                                     {
-                                        DEBUGGER.debug("serverData: {}", serverData);
-                                    }
+                                        appServerList = new ArrayList<Server>();
 
-                                    if ((serverData != null) && (serverData.size() != 0))
-                                    {
-                                        Server server = new Server();
-                                        server.setServerGuid(serverData.get(0));
-                                        server.setOsName(serverData.get(1));
-                                        server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                        server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                        server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                        server.setDomainName(serverData.get(5));
-                                        server.setCpuType(serverData.get(6));
-                                        server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                        server.setServerRack(serverData.get(8));
-                                        server.setRackPosition(serverData.get(9));
-                                        server.setServerModel(serverData.get(10));
-                                        server.setSerialNumber(serverData.get(11));
-                                        server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                        server.setOperIpAddress(serverData.get(13));
-                                        server.setOperHostName(serverData.get(14));
-                                        server.setAssignedEngineer(serverData.get(15));
-                                        server.setServerComments(serverData.get(16));
-                                        server.setMgmtIpAddress(serverData.get(17));
-                                        server.setMgmtHostName(serverData.get(18));
-                                        server.setBkIpAddress(serverData.get(19));
-                                        server.setBkHostName(serverData.get(20));
-                                        server.setNasIpAddress(serverData.get(21));
-                                        server.setNasHostName(serverData.get(22));
-                                        server.setNatAddress(serverData.get(23));
-                                        server.setMgrUrl(serverData.get(24));
-                                        server.setOwningDmgr(serverData.get(25));
+                                        // list application servers
+                                        for (String serverGuid : platformData.get(4).split(","))
+                                        {
+                                            String guid = StringUtils.remove(serverGuid, "[");
+                                            guid = StringUtils.remove(guid, "]");
+                                            guid = StringUtils.trim(guid);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("serverGuid: {}", guid);
+                                            }
+
+                                            List<String> appServerData = serverDao.getInstalledServer(guid);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("appServerData: {}", appServerData);
+                                            }
+
+                                            if ((appServerData != null) && (appServerData.size() != 0))
+                                            {
+                                                Server server = new Server();
+                                                server.setServerGuid(appServerData.get(0));
+                                                server.setOsName(appServerData.get(1));
+                                                server.setServerStatus(ServerStatus.valueOf(appServerData.get(2)));
+                                                server.setServerRegion(ServiceRegion.valueOf(appServerData.get(3)));
+                                                server.setServerType(ServerType.valueOf(appServerData.get(4)));
+                                                server.setDomainName(appServerData.get(5));
+                                                server.setCpuType(appServerData.get(6));
+                                                server.setCpuCount(Integer.parseInt(appServerData.get(7)));
+                                                server.setServerRack(appServerData.get(8));
+                                                server.setRackPosition(appServerData.get(9));
+                                                server.setServerModel(appServerData.get(10));
+                                                server.setSerialNumber(appServerData.get(11));
+                                                server.setInstalledMemory(Integer.parseInt(appServerData.get(12)));
+                                                server.setOperIpAddress(appServerData.get(13));
+                                                server.setOperHostName(appServerData.get(14));
+                                                server.setAssignedEngineer(appServerData.get(15));
+                                                server.setServerComments(appServerData.get(16));
+                                                server.setMgmtIpAddress(appServerData.get(17));
+                                                server.setMgmtHostName(appServerData.get(18));
+                                                server.setBkIpAddress(appServerData.get(19));
+                                                server.setBkHostName(appServerData.get(20));
+                                                server.setNasIpAddress(appServerData.get(21));
+                                                server.setNasHostName(appServerData.get(22));
+                                                server.setNatAddress(appServerData.get(23));
+                                                server.setMgrUrl(appServerData.get(24));
+                                                server.setOwningDmgr(appServerData.get(25));
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("Server: {}", server);
+                                                }
+
+                                                appServerList.add(server);
+                                            }
+                                        }
 
                                         if (DEBUG)
                                         {
-                                            DEBUGGER.debug("Server: {}", server);
+                                            DEBUGGER.debug("appServerList: {}", appServerList);
+                                        }
+                                    }
+
+                                    // list web servers
+                                    if (platformData.get(4).split(",").length >= 1)
+                                    {
+                                        webServerList = new ArrayList<Server>();
+
+                                        for (String serverGuid : platformData.get(5).split(","))
+                                        {
+                                            String guid = StringUtils.remove(serverGuid, "[");
+                                            guid = StringUtils.remove(guid, "]");
+                                            guid = StringUtils.trim(guid);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("serverGuid: {}", guid);
+                                            }
+
+                                            List<String> webServerData = serverDao.getInstalledServer(guid);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("webServerData: {}", webServerData);
+                                            }
+
+                                            if ((webServerData != null) && (webServerData.size() != 0))
+                                            {
+                                                Server server = new Server();
+                                                server.setServerGuid(webServerData.get(0));
+                                                server.setOsName(webServerData.get(1));
+                                                server.setServerStatus(ServerStatus.valueOf(webServerData.get(2)));
+                                                server.setServerRegion(ServiceRegion.valueOf(webServerData.get(3)));
+                                                server.setServerType(ServerType.valueOf(webServerData.get(4)));
+                                                server.setDomainName(webServerData.get(5));
+                                                server.setCpuType(webServerData.get(6));
+                                                server.setCpuCount(Integer.parseInt(webServerData.get(7)));
+                                                server.setServerRack(webServerData.get(8));
+                                                server.setRackPosition(webServerData.get(9));
+                                                server.setServerModel(webServerData.get(10));
+                                                server.setSerialNumber(webServerData.get(11));
+                                                server.setInstalledMemory(Integer.parseInt(webServerData.get(12)));
+                                                server.setOperIpAddress(webServerData.get(13));
+                                                server.setOperHostName(webServerData.get(14));
+                                                server.setAssignedEngineer(webServerData.get(15));
+                                                server.setServerComments(webServerData.get(16));
+                                                server.setMgmtIpAddress(webServerData.get(17));
+                                                server.setMgmtHostName(webServerData.get(18));
+                                                server.setBkIpAddress(webServerData.get(19));
+                                                server.setBkHostName(webServerData.get(20));
+                                                server.setNasIpAddress(webServerData.get(21));
+                                                server.setNasHostName(webServerData.get(22));
+                                                server.setNatAddress(webServerData.get(23));
+                                                server.setMgrUrl(webServerData.get(24));
+                                                server.setOwningDmgr(webServerData.get(25));
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("Server: {}", server);
+                                                }
+
+                                                webServerList.add(server);
+                                            }
                                         }
 
-                                        webServerList.add(server);
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("webServerList: {}", webServerList);
+                                        }
+                                    }
+                                        
+                                    Platform platform = new Platform();
+                                    platform.setPlatformGuid(platformData.get(0));
+                                    platform.setPlatformName(platformData.get(1));
+                                    platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
+                                    platform.setPlatformDmgr(dmgrServer);
+                                    platform.setAppServers(appServerList);
+                                    platform.setWebServers(webServerList);
+                                    platform.setDescription(platformData.get(0));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("Platform: {}", platform);
+                                    }
+
+                                    platformList.add(platform);
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("platformList: {}", platformList);
                                     }
                                 }
+                                else
+                                {
+                                    throw new ApplicationManagementException("Unable to locate a valid platform for the provided application. Cannot continue.");
+                                }
+                            }
+
+                            // then the project...
+                            List<String> projectList = projectDAO.getProjectData(appData.get(10));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("projectList: {}", projectList);
+                            }
+
+                            if ((projectList != null) && (projectList.size() != 0))
+                            {
+                                Project project = new Project();
+                                project.setProjectGuid(projectList.get(0));
+                                project.setProjectCode(projectList.get(1));
+                                project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
+                                project.setPrimaryContact(projectList.get(3));
+                                project.setSecondaryContact(projectList.get(4));
+                                project.setContactEmail(projectList.get(5));
+                                project.setIncidentQueue(projectList.get(6));
+                                project.setChangeQueue(projectList.get(7));
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("webServerList: {}", webServerList);
+                                    DEBUGGER.debug("Project: {}", project);
                                 }
+
+                                resApplication.setApplicationProject(project);
                             }
-                            
-                            Platform platform = new Platform();
-                            platform.setPlatformGuid(platformData.get(0));
-                            platform.setPlatformName(platformData.get(1));
-                            platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                            platform.setPlatformDmgr(dmgrServer);
-                            platform.setAppServers(appServerList);
-                            platform.setWebServers(webServerList);
-                            platform.setDescription(platformData.get(0));
+                            else
+                            {
+                                throw new ApplicationManagementException("Unable to load associated application project. Cannot continue.");
+                            }
+
+                            // then put it all together
+                            resApplication.setApplicationPlatforms(platformList);
+                            resApplication.setApplicationGuid(appData.get(0));
+                            resApplication.setApplicationName(appData.get(1));
+                            resApplication.setApplicationVersion(appData.get(2));
+                            resApplication.setBasePath(appData.get(3));
+                            resApplication.setScmPath(appData.get(4));
+                            resApplication.setApplicationCluster(appData.get(5));
+                            resApplication.setJvmName(appData.get(6));
+                            resApplication.setApplicationInstallPath(appData.get(7));
+                            resApplication.setApplicationLogsPath(appData.get(8));
+                            resApplication.setPidDirectory(appData.get(9));
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Platform: {}", platform);
+                                DEBUGGER.debug("Application: {}", resApplication);
                             }
 
-                            resApplication.setPlatform(platform);
-                        }
-
-                        // get project data
-                        List<String> projectList = projectDAO.getProjectData(appData.get(9));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("projectList: {}", projectList);
-                        }
-
-                        if ((projectList != null) && (projectList.size() != 0))
-                        {
-                            Project project = new Project();
-                            project.setProjectGuid(projectList.get(0));
-                            project.setProjectCode(projectList.get(1));
-                            project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                            project.setPrimaryContact(projectList.get(3));
-                            project.setSecondaryContact(projectList.get(4));
-                            project.setContactEmail(projectList.get(5));
-                            project.setIncidentQueue(projectList.get(6));
-                            project.setChangeQueue(projectList.get(7));
+                            response.setApplication(resApplication);
+                            response.setResponse("Successfully loaded application");
+                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Project: {}", project);
+                                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                             }
-
-                            resApplication.setApplicationProject(project);
-                        }
-
-                        resApplication.setApplicationGuid(appData.get(0));
-                        resApplication.setApplicationName(appData.get(1));
-                        resApplication.setApplicationVersion(appData.get(2));
-                        resApplication.setScmPath(appData.get(3));
-                        resApplication.setApplicationCluster(appData.get(4));
-                        resApplication.setJvmName(appData.get(5));
-                        resApplication.setApplicationInstallPath(appData.get(6));
-                        resApplication.setApplicationLogsPath(appData.get(7));
-                        resApplication.setPidDirectory(appData.get(8));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Application: {}", resApplication);
-                        }
-
-                        response.setApplication(resApplication);
-                        response.setResponse("Successfully loaded application");
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                         }
                     }
                     else
@@ -1892,12 +1627,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             resApplication.setApplicationGuid(appData.get(0));
                             resApplication.setApplicationName(appData.get(1));
                             resApplication.setApplicationVersion(appData.get(2));
-                            resApplication.setScmPath(appData.get(3));
-                            resApplication.setApplicationCluster(appData.get(4));
-                            resApplication.setJvmName(appData.get(5));
-                            resApplication.setApplicationInstallPath(appData.get(6));
-                            resApplication.setApplicationLogsPath(appData.get(7));
-                            resApplication.setPidDirectory(appData.get(8));
+                            resApplication.setBasePath(appData.get(3));
+                            resApplication.setScmPath(appData.get(4));
+                            resApplication.setApplicationCluster(appData.get(5));
+                            resApplication.setJvmName(appData.get(6));
+                            resApplication.setApplicationInstallPath(appData.get(7));
+                            resApplication.setApplicationLogsPath(appData.get(8));
+                            resApplication.setPidDirectory(appData.get(9));
 
                             if (DEBUG)
                             {
@@ -1908,11 +1644,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                             if (StringUtils.isEmpty(request.getRequestFile()))
                             {
-                                fileRequest.setRequestFile(appData.get(6)); // TODO: this should be the root dir
+                                fileRequest.setRequestFile(appData.get(3)); // TODO: this should be the root dir
                             }
                             else
                             {
-                                fileRequest.setRequestFile(appData.get(6) + "/" + request.getRequestFile());
+                                fileRequest.setRequestFile(appData.get(3) + "/" + request.getRequestFile());
                             }
 
                             if (DEBUG)
@@ -1954,9 +1690,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
                                     }
 
-                                    if (fileResponse != null)
+                                    if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
                                     {
-                                        if ((response.getFileData() != null) && (response.getFileData().length != 0))
+                                        if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
                                         {
                                             byte[] fileData = fileResponse.getFileData();
 
@@ -2130,309 +1866,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if ((isAdminAuthorized) && (isUserAuthorized))
                 {
-                    List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("appData: {}", appData);
-                    }
-
-                    if ((appData != null) && (appData.size() != 0))
-                    {
-                        Server dmgrServer = null;
-                        List<String> serverData = null;
-                        List<Server> appServerList = null;
-                        List<Server> webServerList = null;
-                        Application resApplication = new Application();
-                        
-                        // get platform data
-                        List<String> platformData = platformDao.getPlatformData(appData.get(2));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformData: {}", platformData);
-                        }
-
-                        if ((platformData != null) && (platformData.size() != 0))
-                        {
-                            serverData = serverDao.getInstalledServer(platformData.get(3));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("serverData: {}", serverData);
-                            }
-
-                            if ((serverData != null) && (serverData.size() != 0))
-                            {
-                                dmgrServer = new Server();
-                                dmgrServer.setServerGuid(serverData.get(0));
-                                dmgrServer.setOsName(serverData.get(1));
-                                dmgrServer.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                dmgrServer.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                dmgrServer.setServerType(ServerType.valueOf(serverData.get(4)));
-                                dmgrServer.setDomainName(serverData.get(5));
-                                dmgrServer.setCpuType(serverData.get(6));
-                                dmgrServer.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                dmgrServer.setServerRack(serverData.get(8));
-                                dmgrServer.setRackPosition(serverData.get(9));
-                                dmgrServer.setServerModel(serverData.get(10));
-                                dmgrServer.setSerialNumber(serverData.get(11));
-                                dmgrServer.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                dmgrServer.setOperIpAddress(serverData.get(13));
-                                dmgrServer.setOperHostName(serverData.get(14));
-                                dmgrServer.setAssignedEngineer(serverData.get(15));
-                                dmgrServer.setServerComments(serverData.get(16));
-                                dmgrServer.setMgmtIpAddress(serverData.get(17));
-                                dmgrServer.setMgmtHostName(serverData.get(18));
-                                dmgrServer.setBkIpAddress(serverData.get(19));
-                                dmgrServer.setBkHostName(serverData.get(20));
-                                dmgrServer.setNasIpAddress(serverData.get(21));
-                                dmgrServer.setNasHostName(serverData.get(22));
-                                dmgrServer.setNatAddress(serverData.get(23));
-                                dmgrServer.setMgrUrl(serverData.get(24));
-                                dmgrServer.setOwningDmgr(serverData.get(25));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Server: {}", dmgrServer);
-                                }
-
-                                serverData.clear();
-                            }
-
-                            if (platformData.get(3).split(",").length >= 1)
-                            {
-                                appServerList = new ArrayList<Server>();
-
-                                // list application servers
-                                for (String serverGuid : platformData.get(3).split(","))
-                                {
-                                    String guid = StringUtils.remove(serverGuid, "[");
-                                    guid = StringUtils.remove(guid, "]");
-                                    guid = StringUtils.trim(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("serverGuid: {}", guid);
-                                    }
-
-                                    serverData = serverDao.getInstalledServer(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("serverData: {}", serverData);
-                                    }
-
-                                    if ((serverData != null) && (serverData.size() != 0))
-                                    {
-                                        Server server = new Server();
-                                        server.setServerGuid(serverData.get(0));
-                                        server.setOsName(serverData.get(1));
-                                        server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                        server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                        server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                        server.setDomainName(serverData.get(5));
-                                        server.setCpuType(serverData.get(6));
-                                        server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                        server.setServerRack(serverData.get(8));
-                                        server.setRackPosition(serverData.get(9));
-                                        server.setServerModel(serverData.get(10));
-                                        server.setSerialNumber(serverData.get(11));
-                                        server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                        server.setOperIpAddress(serverData.get(13));
-                                        server.setOperHostName(serverData.get(14));
-                                        server.setAssignedEngineer(serverData.get(15));
-                                        server.setServerComments(serverData.get(16));
-                                        server.setMgmtIpAddress(serverData.get(17));
-                                        server.setMgmtHostName(serverData.get(18));
-                                        server.setBkIpAddress(serverData.get(19));
-                                        server.setBkHostName(serverData.get(20));
-                                        server.setNasIpAddress(serverData.get(21));
-                                        server.setNasHostName(serverData.get(22));
-                                        server.setNatAddress(serverData.get(23));
-                                        server.setMgrUrl(serverData.get(24));
-                                        server.setOwningDmgr(serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        appServerList.add(server);
-
-                                        serverData.clear();
-                                    }
-                                }
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("appServerList: {}", appServerList);
-                                }
-                            }
-
-                            // list web servers
-                            if (platformData.get(4).split(",").length >= 1)
-                            {
-                                webServerList = new ArrayList<Server>();
-
-                                for (String serverGuid : platformData.get(4).split(","))
-                                {
-                                    String guid = StringUtils.remove(serverGuid, "[");
-                                    guid = StringUtils.remove(guid, "]");
-                                    guid = StringUtils.trim(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("serverGuid: {}", guid);
-                                    }
-
-                                    serverData = serverDao.getInstalledServer(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("serverData: {}", serverData);
-                                    }
-
-                                    if ((serverData != null) && (serverData.size() != 0))
-                                    {
-                                        Server server = new Server();
-                                        server.setServerGuid(serverData.get(0));
-                                        server.setOsName(serverData.get(1));
-                                        server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                                        server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                                        server.setServerType(ServerType.valueOf(serverData.get(4)));
-                                        server.setDomainName(serverData.get(5));
-                                        server.setCpuType(serverData.get(6));
-                                        server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                                        server.setServerRack(serverData.get(8));
-                                        server.setRackPosition(serverData.get(9));
-                                        server.setServerModel(serverData.get(10));
-                                        server.setSerialNumber(serverData.get(11));
-                                        server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                                        server.setOperIpAddress(serverData.get(13));
-                                        server.setOperHostName(serverData.get(14));
-                                        server.setAssignedEngineer(serverData.get(15));
-                                        server.setServerComments(serverData.get(16));
-                                        server.setMgmtIpAddress(serverData.get(17));
-                                        server.setMgmtHostName(serverData.get(18));
-                                        server.setBkIpAddress(serverData.get(19));
-                                        server.setBkHostName(serverData.get(20));
-                                        server.setNasIpAddress(serverData.get(21));
-                                        server.setNasHostName(serverData.get(22));
-                                        server.setNatAddress(serverData.get(23));
-                                        server.setMgrUrl(serverData.get(24));
-                                        server.setOwningDmgr(serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        webServerList.add(server);
-                                    }
-                                }
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("webServerList: {}", webServerList);
-                                }
-                            }
-                            
-                            Platform platform = new Platform();
-                            platform.setPlatformGuid(platformData.get(0));
-                            platform.setPlatformName(platformData.get(1));
-                            platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                            platform.setPlatformDmgr(dmgrServer);
-                            platform.setAppServers(appServerList);
-                            platform.setWebServers(webServerList);
-                            platform.setDescription(platformData.get(0));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Platform: {}", platform);
-                            }
-
-                            resApplication.setPlatform(platform);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", resApplication);
-                            }
-
-                            ApplicationManagerRequest mgrRequest = new ApplicationManagerRequest();
-                            mgrRequest.setAppBinary(application.getApplicationBinary());
-                            mgrRequest.setJvmName(resApplication.getJvmName());
-                            mgrRequest.setDeploymentType(DeploymentType.DEPLOY);
-                            mgrRequest.setMgmtType(ApplicationManagementType.DEPLOY);
-                            mgrRequest.setTargetDirectory(resApplication.getApplicationInstallPath());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ApplicationManagerRequest: {}", mgrRequest);
-                            }
-
-                            AgentRequest agentRequest = new AgentRequest();
-                            agentRequest.setAppName(appConfig.getAppName());
-                            agentRequest.setProjectId(appData.get(6));
-                            agentRequest.setRequestPayload(mgrRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                            }
-
-                            String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("correlator: {}", correlator);
-                            }
-
-                            if (StringUtils.isNotEmpty(correlator))
-                            {
-                                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                                }
-
-                                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                                {
-                                    File responseData = (File) agentResponse.getResponsePayload();
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("FileData: {}", responseData);
-                                    }
-
-                                    //response.setFileData(responseData);
-                                    response.setResponse("Successfully loaded file data");
-                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                }
-                                else
-                                {
-                                    response.setResponse(agentResponse.getResponse());
-                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                }
-                            }
-                            else
-                            {
-                                response.setResponse("Failed to send message to configured request queue for action");
-                                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                            }
-                        }
-                        else
-                        {
-                            // no platform data, we dont know where to deploy to
-                            throw new ApplicationManagementException("Unable to determine platform to process deployment. Cannot continue.");
-                        }
-                    }
-                    else
-                    {
-                        // no data found for the given application
-                        throw new ApplicationManagementException("Unable to determine application data to process deployment. Cannot continue.");
-                    }
+                    // do deployment work here
                 }
                 else
                 {
@@ -2450,18 +1884,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
                 throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UtilityException ux)
-            {
-                ERROR_RECORDER.error(ux.getMessage(), ux);
-
-                throw new ApplicationManagementException(ux.getMessage(), ux);
             }
             finally
             {

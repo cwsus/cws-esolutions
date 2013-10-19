@@ -15,12 +15,12 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import javax.mail.MessagingException;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -105,12 +105,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getMessageText(),
                                 userAccount.getUsername(),
                                 userAccount.getEmailAddr(),
+                                message.isActive(),
+                                message.doesExpire(),
                                 message.getExpiryDate()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("messageList: {}", messageList);
-                }
 
                 // submit it
                 boolean isSubmitted = messageDAO.insertMessage(messageList);
@@ -172,6 +169,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                 response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -264,11 +266,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getMessageText(),
                                 userAccount.getUsername(),
                                 userAccount.getEmailAddr(),
-                                message.getExpiryDate()));
+                                message.doesExpire()));
 
-                if (DEBUG)
+                if (message.doesExpire())
                 {
-                    DEBUGGER.debug("messageList: {}", messageList);
+                    messageList.add(message.getExpiryDate());
                 }
 
                 // submit it
@@ -300,6 +302,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                 response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -388,6 +395,12 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             else
             {
                 List<ServiceMessage> svcMessages = new ArrayList<ServiceMessage>();
+                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                }
 
                 for (Object[] object : data)
                 {
@@ -397,13 +410,15 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                     }
 
                     ServiceMessage message = new ServiceMessage();
-                    message.setMessageId((String) object[0]);
-                    message.setMessageTitle((String) object[1]);
-                    message.setMessageText((String) object[2]);
-                    message.setMessageAuthor((String) object[3]);
-                    message.setAuthorEmail((String) object[4]);
-                    message.setSubmitDate(new Date((Long) object[5]));
-                    message.setExpiryDate(new Date((Long) object[6]));
+                    message.setMessageId((String) object[0]); // svc_message_id
+                    message.setMessageTitle((String) object[1]); // svc_message_title
+                    message.setMessageText((String) object[2]); // svc_message_txt
+                    message.setMessageAuthor((String) object[3]); // svc_message_author
+                    message.setAuthorEmail((String) object[4]); // svc_message_email
+                    message.setSubmitDate((Long) object[5]); // svc_message_submitdate
+                    message.setIsActive((Boolean) object[6]); // svc_message_active
+                    message.setDoesExpire((Boolean) object[7]); //svc_message_expires
+                    message.setExpiryDate((Long) object[8]); // svc_message_expirydate
 
                     if (DEBUG)
                     {
@@ -483,23 +498,32 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 {
                     if ((responseList != null) && (responseList.size() != 0))
                     {
-                        ServiceMessage svcMessage = new ServiceMessage();
-                        svcMessage.setMessageId((String) responseList.get(0));
-                        svcMessage.setMessageTitle((String) responseList.get(1));
-                        svcMessage.setMessageText((String) responseList.get(2));
-                        svcMessage.setMessageAuthor((String) responseList.get(3));
-                        svcMessage.setAuthorEmail((String) responseList.get(4));
-                        svcMessage.setSubmitDate(new Date((Long) responseList.get(5)));
-                        svcMessage.setExpiryDate(new Date((Long) responseList.get(6)));
+                        SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("ServiceMessage: {}", svcMessage);
+                            DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                        }
+
+                        ServiceMessage message = new ServiceMessage();
+                        message.setMessageId((String) responseList.get(0)); // svc_message_id
+                        message.setMessageTitle((String) responseList.get(1)); // svc_message_title
+                        message.setMessageText((String) responseList.get(2)); // svc_message_txt
+                        message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
+                        message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
+                        message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
+                        message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
+                        message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
+                        message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ServiceMessage: {}", message);
                         }
 
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
                         response.setResponse("Successfully retrieved message");
-                        response.setServiceMessage(svcMessage);
+                        response.setServiceMessage(message);
 
                         if (DEBUG)
                         {
@@ -517,6 +541,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                 response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", response);
             }
         }
         catch (SQLException sqx)

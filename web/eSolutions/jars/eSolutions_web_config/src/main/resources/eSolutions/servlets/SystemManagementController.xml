@@ -24,6 +24,8 @@
 	    <property name="viewServerPage" value="SystemMgmt_ViewServer" />
 	    <property name="defaultPage" value="SystemMgmt_DefaultHandler" />
 	    <property name="adminConsolePage" value="SystemMgmt_AdminConsoles" />
+	    <property name="searchPostUrl" value="/ui/system-management/search" />
+	    <property name="requestUrl" value="/ui/system-management/server/" />
         <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
     </bean>
 </beans>

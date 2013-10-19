@@ -67,10 +67,12 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 public class MessagingController
 {
     private String serviceId = null;
+    private String messageEmailSent = null;
     private String sendEmailMessage = null;
     private String addServiceMessage = null;
-    private String viewServiceMessage = null;
+    private String editServiceMessage = null;
     private String viewServiceMessages = null;
+    private String messageSuccessfullyAdded = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = MessagingController.class.getName();
@@ -105,19 +107,6 @@ public class MessagingController
         this.addServiceMessage = value;
     }
 
-    public final void setViewServiceMessage(final String value)
-    {
-        final String methodName = MessagingController.CNAME + "#setViewServiceMessage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.viewServiceMessage = value;
-    }
-
     public final void setViewServiceMessages(final String value)
     {
         final String methodName = MessagingController.CNAME + "#setViewServiceMessages(final String value)";
@@ -129,6 +118,19 @@ public class MessagingController
         }
 
         this.viewServiceMessages = value;
+    }
+
+    public final void setEditServiceMessage(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setEditServiceMessage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.editServiceMessage = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -155,6 +157,32 @@ public class MessagingController
         }
 
         this.serviceId = value;
+    }
+
+    public final void setMessageEmailSent(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setMessageEmailSent(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEmailSent = value;
+    }
+
+    public final void setMessageSuccessfullyAdded(final String value)
+    {
+        final String methodName = MessagingController.CNAME + "#setMessageSuccessfullyAdded(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSuccessfullyAdded = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -274,10 +302,10 @@ public class MessagingController
         return mView;
     }
 
-    @RequestMapping(value = "/message/{messageId}", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage(@PathVariable(value = "messageId") final String messageId)
+    @RequestMapping(value = "/edit-message/message/{messageId}", method = RequestMethod.GET)
+    public ModelAndView showEditMessage(@PathVariable(value = "messageId") final String messageId)
     {
-        final String methodName = MessagingController.CNAME + "#showDefaultPage(@PathVariable(value = \"messageId\") final String messageId)";
+        final String methodName = MessagingController.CNAME + "#showEditMessage(@PathVariable(value = \"messageId\") final String messageId)";
 
         if (DEBUG)
         {
@@ -384,7 +412,7 @@ public class MessagingController
                 }
 
                 mView.addObject("message", responseMessage);
-                mView.setViewName(this.viewServiceMessage);
+                mView.setViewName(this.editServiceMessage);
             }
             else
             {
@@ -583,15 +611,8 @@ public class MessagingController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                ServiceMessage responseMessage = response.getSvcMessage();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceMessage: {}", responseMessage);
-                }
-
-                mView.addObject("message", responseMessage);
-                mView.setViewName(this.viewServiceMessage);
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyAdded);
+                mView.setViewName(this.viewServiceMessages);
             }
             else
             {
@@ -703,8 +724,8 @@ public class MessagingController
 
             EmailUtils.sendEmailMessage(request);
 
-            mView.addObject("response", "Message successfully sent.");
-            mView.setViewName(this.viewServiceMessage);
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.messageEmailSent);
+            mView.setViewName(appConfig.getHomePage());
         }
         catch (MessagingException mx)
         {

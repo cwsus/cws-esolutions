@@ -100,6 +100,7 @@ public class ServiceManagementController
     private String viewPlatformList = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
+    private String messageRequestValidationFailed = null;
 
     private static final String CNAME = ServiceManagementController.class.getName();
 
@@ -287,6 +288,19 @@ public class ServiceManagementController
         }
 
         this.systemMgmt = value;
+    }
+
+    public final void setMessageRequestValidationFailed(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageRequestValidationFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRequestValidationFailed = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -1201,7 +1215,7 @@ public class ServiceManagementController
             if (bindResult.hasErrors())
             {
                 // something was missing from the request
-                mView.addObject("message", "invalid request data"); // TODO: this should be an actual message
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestValidationFailed);
                 mView.addObject("command", new PlatformRequest());
                 mView.setViewName(this.selectDmgrPage);
             }

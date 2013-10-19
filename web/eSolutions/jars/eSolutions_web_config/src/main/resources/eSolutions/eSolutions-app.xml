@@ -37,6 +37,7 @@
 
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
+        <property name="fileEncoding" value="UTF-8" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
         <property name="logonType" value="COMBINED" />
@@ -59,7 +60,18 @@
                 <entry key="svcMgmt" value="true" />
             </map>
         </property>
-	    <property name="homePage" value="HomePage" />
+        <property name="allowedAppFileExtensions">
+            <list>
+                <value>war</value>
+                <value>ear</value>
+            </list>
+        </property>
+        <property name="allowedWebFileExtensions">
+            <list>
+                <value>zip</value>
+            </list>
+        </property>
+        <property name="homePage" value="HomePage" />
 	    <property name="contactAdminsPage" value="System_ContactAdmins" />
 	    <property name="errorResponsePage" value="System_ErrorResponse" />
 	    <property name="requestCompletePage" value="System_RequestComplete" />

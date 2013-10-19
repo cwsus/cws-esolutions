@@ -63,7 +63,7 @@ public class SearchProcessorImplTest
     private UserAccount userAccount = new UserAccount();
     private RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+    private static final ISearchProcessor processor = new SearchProcessorImpl();
 
     @Before
     public final void setUp() throws Exception
@@ -145,21 +145,43 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public final void doSiteSearch()
-    {
-        
-    }
-
-    @Test
     public final void doMessageSearch()
     {
-        
+        SearchRequest request = new SearchRequest();
+        request.setSearchTerms("test");
+        request.setUserAccount(userAccount);
+        request.setRequestInfo(hostInfo);
+
+        try
+        {
+            SearchResponse response = processor.doMessageSearch(request);
+
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (SearchRequestException srx)
+        {
+            Assert.fail(srx.getMessage());
+        }
     }
 
     @Test
     public final void doArticleSearch()
     {
-        
+        SearchRequest request = new SearchRequest();
+        request.setSearchTerms("testy");
+        request.setUserAccount(userAccount);
+        request.setRequestInfo(hostInfo);
+
+        try
+        {
+            SearchResponse response = processor.doArticleSearch(request);
+
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (SearchRequestException srx)
+        {
+            Assert.fail(srx.getMessage());
+        }
     }
 
     @Test
@@ -172,7 +194,7 @@ public class SearchProcessorImplTest
 
         try
         {
-            SearchResponse response = searchProcessor.doServerSearch(request);
+            SearchResponse response = processor.doServerSearch(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

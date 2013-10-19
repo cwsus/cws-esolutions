@@ -68,6 +68,10 @@
         <put-attribute name="pageTitle"     value="eSolutions - Application Management - Deploy Application" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_DeployApplication.jsp" cascade="true" />
     </definition>
+    <definition name="AppMgmt_ViewFile" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Application Management - View File" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.application-management/jsp/html/en/AppMgmt_ViewFile.jsp" cascade="true" />
+    </definition>
 
     <!-- Authentication -->
     <definition name="CombinedLogin" extends="baseLayout">
@@ -90,7 +94,7 @@
     <!-- DNSService -->
     <definition name="DNSService_DefaultHandler" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DefaultHandler.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_DefaultHandler.jsp" cascade="true" />
     </definition>
     <definition name="DNSService_ServiceLookup" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Lookup" cascade="true" />
@@ -98,14 +102,6 @@
     </definition>
 
     <!-- KnowledgeBase -->
-    <definition name="KnowledgeBase_ApproveReject" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Approve/Reject Article {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ApproveReject.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_ConfirmDeletion" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Delete Article {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_ConfirmDeletion.jsp" cascade="true" />
-    </definition>
     <definition name="KnowledgeBase_CreateArticle" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Create Article {0}" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_CreateArticle.jsp" cascade="true" />
@@ -129,15 +125,19 @@
 
     <!-- Messaging -->
     <definition name="Messaging_SubmitSystemMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Edit Article" cascade="true" />
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Create Message" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SubmitServiceMessage.jsp" cascade="true" />
     </definition>
+    <definition name="Messaging_EditSystemMessage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Edit Message" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_EditServiceMessage.jsp" cascade="true" />
+    </definition>
     <definition name="Messaging_SystemMessages" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Review Submission" cascade="true" />
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Messages" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SystemMessages.jsp" cascade="true" />
     </definition>
     <definition name="Messaging_ViewSystemMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Review Submission" cascade="true" />
+        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Message" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewSystemMessage.jsp" cascade="true" />
     </definition>
 

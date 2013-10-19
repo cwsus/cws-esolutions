@@ -18,7 +18,6 @@ package com.cws.esolutions.core.processors.dto;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -30,7 +29,7 @@ import com.cws.esolutions.core.processors.enums.ArticleStatus;
  *
  * $Id: $
  * $Author: $
- * $Date: $
+ * $String: $
  * $Revision: $
  * @author kmhuntly@gmail.com
  * @version 1.0
@@ -46,12 +45,12 @@ public class Article implements Serializable
     private String title = null;
     private String cause = null;
     private String author = null;
-    private Long createDate = null;
-    private Long reviewedOn = null;
-    private Long modifiedOn = null;
     private String keywords = null;
     private String symptoms = null;
     private String articleId = null;
+    private String createDate = null;
+    private String reviewedOn = null;
+    private String modifiedOn = null;
     private String modifiedBy = null;
     private String reviewedBy = null;
     private String resolution = null;
@@ -90,9 +89,9 @@ public class Article implements Serializable
         this.articleId = value;
     }
 
-    public final void setCreateDate(final Long value)
+    public final void setCreateDate(final String value)
     {
-        final String methodName = Article.CNAME + "#setCreateDate(final Long value)";
+        final String methodName = Article.CNAME + "#setCreateDate(final String value)";
 
         if (DEBUG)
         {
@@ -220,7 +219,7 @@ public class Article implements Serializable
         this.reviewedBy = value;
     }
 
-    public final void setReviewedOn(final Long value)
+    public final void setReviewedOn(final String value)
     {
         final String methodName = Article.CNAME + "#setReviewedOn(final String value)";
 
@@ -246,7 +245,7 @@ public class Article implements Serializable
         this.modifiedBy = value;
     }
 
-    public final void setModifiedOn(final Long value)
+    public final void setModifiedOn(final String value)
     {
         final String methodName = Article.CNAME + "#setModifiedOn(final String value)";
 
@@ -285,7 +284,7 @@ public class Article implements Serializable
         return this.articleId;
     }
 
-    public final Long getCreateDate()
+    public final String getCreateDate()
     {
         final String methodName = Article.CNAME + "#getCreateDate()";
 
@@ -415,7 +414,7 @@ public class Article implements Serializable
         return this.reviewedBy;
     }
 
-    public final Long getReviewedOn()
+    public final String getReviewedOn()
     {
         final String methodName = Article.CNAME + "#getReviewedOn()";
 
@@ -441,7 +440,7 @@ public class Article implements Serializable
         return this.modifiedBy;
     }
 
-    public final Long getModifiedOn()
+    public final String getModifiedOn()
     {
         final String methodName = Article.CNAME + "#getModifiedOn()";
 

@@ -186,7 +186,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -235,7 +235,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -285,7 +285,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -334,7 +334,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -384,7 +384,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -433,7 +433,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -639,7 +639,7 @@ public class ServerManagementProcessorImplTest
 
             try
             {
-                ServerManagementResponse response = processor.updateServerData(request);
+                ServerManagementResponse response = processor.addNewServer(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }

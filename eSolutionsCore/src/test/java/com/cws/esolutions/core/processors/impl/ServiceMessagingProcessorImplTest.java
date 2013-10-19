@@ -15,12 +15,10 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
-import java.util.Date;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import java.util.Calendar;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -63,6 +61,8 @@ public class ServiceMessagingProcessorImplTest
 {
     private UserAccount userAccount = new UserAccount();
     private RequestHostInfo hostInfo = new RequestHostInfo();
+
+    private static final IMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
     private static final String SERVICEID = "5C0B0A54-2456-45C9-A435-B485ED36FAC7";
 
@@ -148,19 +148,14 @@ public class ServiceMessagingProcessorImplTest
     @Test
     public final void addNewMessage()
     {
-        Calendar cal = Calendar.getInstance();
-        IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
-
-        cal.add(Calendar.DATE, 30);
-
         ServiceMessage message = new ServiceMessage();
-        message.setAuthorEmail(userAccount.getEmailAddr());
-        message.setExpiryDate(new Date(cal.getTimeInMillis()));
-        message.setMessageAuthor(userAccount.getUsername());
-        message.setMessageId("13AFCE55-DF77-49B6-86AF-A46518202818");
-        message.setMessageText("This is a test service message. Please disregard it.");
+        message.setMessageId(RandomStringUtils.randomAlphanumeric(16));
         message.setMessageTitle("Test Message");
-        message.setSubmitDate(new Date(System.currentTimeMillis()));
+        message.setMessageText("This is a test");
+        message.setMessageAuthor(userAccount.getUsername());
+        message.setAuthorEmail(userAccount.getEmailAddr());
+        message.setDoesExpire(false);
+        message.setIsActive(true);
 
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);
@@ -170,7 +165,7 @@ public class ServiceMessagingProcessorImplTest
 
         try
         {
-            MessagingResponse response = msgProcessor.addNewMessage(request);
+            MessagingResponse response = processor.addNewMessage(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -194,8 +189,6 @@ public class ServiceMessagingProcessorImplTest
     @Test
     public final void showMessages()
     {
-        IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
-
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -203,7 +196,7 @@ public class ServiceMessagingProcessorImplTest
 
         try
         {
-            MessagingResponse response = msgProcessor.showMessages(request);
+            MessagingResponse response = processor.showMessages(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -216,10 +209,8 @@ public class ServiceMessagingProcessorImplTest
     @Test
     public final void showMessage()
     {
-        IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
-
         ServiceMessage message = new ServiceMessage();
-        message.setMessageId("13AFCE55-DF77-49B6-86AF-A46518202818");
+        message.setMessageId("muUlODU6k1kA0L3q");
 
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);
@@ -229,7 +220,7 @@ public class ServiceMessagingProcessorImplTest
 
         try
         {
-            MessagingResponse response = msgProcessor.showMessage(request);
+            MessagingResponse response = processor.showMessage(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

@@ -144,8 +144,7 @@ BEGIN
             kbase_article_author_email
         FROM `articles`
         WHERE kbase_article_id = articleId
-        AND kbase_article_status = 'NEW'
-		OR kbase_article_status = 'REVIEW';
+        AND kbase_article_status IN ('NEW', 'REVIEW');
     ELSE
         UPDATE `articles`
         SET kbase_page_hits = kbase_page_hits + 1
@@ -262,22 +261,14 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateArticleSta
 	IN articleStatus VARCHAR(15)
 )
 BEGIN
-	IF (articleStatus = 'APPROVED')
-	THEN
-		UPDATE `esolutionssvc`.`articles`
-		SET
-			kbase_article_status = articleStatus,
-			kbase_article_reviewedby = modifiedBy,
-			kbase_article_revieweddate = UNIX_TIMESTAMP()
-		WHERE kbase_article_id = articleId;
-	ELSE
-		UPDATE `esolutionssvc`.`articles`
-		SET
-			kbase_article_status = articleStatus,
-			kbase_article_modifiedby = modifiedBy,
-			kbase_article_modifieddate = UNIX_TIMESTAMP()
-		WHERE kbase_article_id = articleId;
-	END IF;
+	UPDATE `esolutionssvc`.`articles`
+	SET
+        kbase_article_status = articleStatus,
+        kbase_article_modifiedby = modifiedBy,
+        kbase_article_modifieddate = UNIX_TIMESTAMP(),
+        kbase_article_reviewedby = modifiedBy,
+        kbase_article_revieweddate = UNIX_TIMESTAMP()
+    WHERE kbase_article_id = articleId;
 
 	COMMIT;
 END $$
@@ -313,9 +304,7 @@ BEGIN
         kbase_article_modifiedby,
         kbase_article_author_email
     FROM `esolutionssvc`.`articles`
-    WHERE kbase_article_status = 'NEW'
-	OR kbase_article_status = 'REJECTED'
-	OR kbase_article_status = 'REVIEW'
+    WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
     AND kbase_article_author != requestorId
     ORDER BY kbase_article_createdate DESC;
 END $$

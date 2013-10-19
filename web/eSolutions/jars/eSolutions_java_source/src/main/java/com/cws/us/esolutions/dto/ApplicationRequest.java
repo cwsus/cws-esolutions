@@ -11,14 +11,14 @@
  */
 package com.cws.us.esolutions.dto;
 
-import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.AppServerType;
+import com.cws.us.esolutions.enums.DeploymentType;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.dto
@@ -41,16 +41,17 @@ public class ApplicationRequest implements Serializable
     private String scmPath = null;
     private String jvmName = null;
     private String project = null;
+    private String basePath = null;
     private String platform = null;
-    private String version = "1.0";
+    private String version = "0.0";
     private String logsPath = null;
     private String clusterName = null;
     private String installPath = null;
     private String pidDirectory = null;
     private String applicationGuid = null;
     private String applicationName = null;
-    private File applicationBinary = null;
-    private AppServerType serverType = null;
+    private DeploymentType deploymentType = null;
+    private MultipartFile applicationBinary = null;
 
     private static final long serialVersionUID = -3668811202791320189L;
     private static final String CNAME = ApplicationRequest.class.getName();
@@ -97,9 +98,9 @@ public class ApplicationRequest implements Serializable
         this.platform = value;
     }
 
-    public final void setApplicationBinary(final File value)
+    public final void setApplicationBinary(final MultipartFile value)
     {
-        final String methodName = ApplicationRequest.CNAME + "#setApplicationBinary(final File value)";
+        final String methodName = ApplicationRequest.CNAME + "#setApplicationBinary(final MultipartFile value)";
 
         if (DEBUG)
         {
@@ -134,6 +135,19 @@ public class ApplicationRequest implements Serializable
         }
 
         this.clusterName = value;
+    }
+
+    public final void setBasePath(final String value)
+    {
+        final String methodName = ApplicationRequest.CNAME + "#setBasePath(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.basePath = value;
     }
 
     public final void setLogsPath(final String value)
@@ -214,9 +228,9 @@ public class ApplicationRequest implements Serializable
         this.jvmName = value;
     }
 
-    public final void setServerType(final AppServerType value)
+    public final void setDeploymentType(final DeploymentType value)
     {
-        final String methodName = ApplicationRequest.CNAME + "#setServerType(final AppServerType value)";
+        final String methodName = ApplicationRequest.CNAME + "#setDeploymentType(final DeploymentType value)";
 
         if (DEBUG)
         {
@@ -224,7 +238,7 @@ public class ApplicationRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.serverType = value;
+        this.deploymentType = value;
     }
 
     public final String getApplicationGuid()
@@ -266,7 +280,7 @@ public class ApplicationRequest implements Serializable
         return this.platform;
     }
 
-    public final File getApplicationBinary()
+    public final MultipartFile getApplicationBinary()
     {
         final String methodName = ApplicationRequest.CNAME + "#getApplicationBinary()";
 
@@ -303,6 +317,19 @@ public class ApplicationRequest implements Serializable
         }
 
         return this.clusterName;
+    }
+
+    public final String getBasePath()
+    {
+        final String methodName = ApplicationRequest.CNAME + "#getBasePath()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.basePath);
+        }
+
+        return this.basePath;
     }
 
     public final String getLogsPath()
@@ -383,17 +410,17 @@ public class ApplicationRequest implements Serializable
         return this.jvmName;
     }
 
-    public final AppServerType getServerType()
+    public final DeploymentType getDeploymentType()
     {
-        final String methodName = ApplicationRequest.CNAME + "#getServerType()";
+        final String methodName = ApplicationRequest.CNAME + "#getDeploymentType()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serverType);
+            DEBUGGER.debug("Value: {}", this.deploymentType);
         }
 
-        return this.serverType;
+        return this.deploymentType;
     }
 
     @Override

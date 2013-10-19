@@ -5,6 +5,7 @@
 package com.cws.us.esolutions;
 
 import java.util.Map;
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -13,15 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.enums.LogonType;
-/*
- * InitializerBean
- * Initializer for application. Currently loads logging
+/**
+ * Project: eSolutions_java_source
+ * Package: com.cws.us.esolutions
+ * File: ApplicationServiceBean.java
+ *
+ * $Id: $
+ * $Author: $
+ * $Date: $
+ * $Revision: $
+ * @author 35033355
+ * @version 1.0
  *
  * History
- *
- * Author               Date                           Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20            Created.
+ * 35033355 @ Oct 17, 2013 10:08:04 AM
+ *     Created.
  */
 public class ApplicationServiceBean implements Serializable
 {
@@ -29,6 +37,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String hostname = null;
     @Autowired private int requestTimeout = 10;
     @Autowired private String dateFormat = null;
+    @Autowired private String fileEncoding = null;
     @Autowired private String homeRedirect = null;
     @Autowired private String secEmailAddr = null;
     @Autowired private LogonType logonType = null;
@@ -44,6 +53,8 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String searchRequestPage = null;
     @Autowired private String requestCompletePage = null;
     @Autowired private Map<String, Boolean> services = null;
+    @Autowired private List<String> allowedAppFileExtensions = null;
+    @Autowired private List<String> allowedWebFileExtensions = null;
     @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
 
     private static final long serialVersionUID = 6547417416150985897L;
@@ -51,6 +62,19 @@ public class ApplicationServiceBean implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setFileEncoding(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setFileEncoding(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.fileEncoding = value;
+    }
 
     public final void setLogonType(final LogonType value)
     {
@@ -312,6 +336,45 @@ public class ApplicationServiceBean implements Serializable
         this.uploadDirectory = value;
     }
 
+    public final void setAllowedAppFileExtensions(final List<String> value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setAllowedAppFileExtensions(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.allowedAppFileExtensions = value;
+    }
+
+    public final void setAllowedWebFileExtensions(final List<String> value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setAllowedWebFileExtensions(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.allowedWebFileExtensions = value;
+    }
+
+    public final String getFileEncoding()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.fileEncoding);
+        }
+
+        return this.fileEncoding;
+    }
+
     public final LogonType getLogonType()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getLogonType()";
@@ -570,6 +633,32 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.requestCompletePage;
+    }
+
+    public final List<String> getAllowedAppFileExtensions()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getAllowedAppFileExtensions()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.allowedAppFileExtensions);
+        }
+
+        return this.allowedAppFileExtensions;
+    }
+
+    public final List<String> getAllowedWebFileExtensions()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getAllowedWebFileExtensions()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.allowedWebFileExtensions);
+        }
+
+        return this.allowedWebFileExtensions;
     }
 
     public final String toString()

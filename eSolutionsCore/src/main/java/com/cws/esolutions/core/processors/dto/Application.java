@@ -16,13 +16,13 @@
 package com.cws.esolutions.core.processors.dto;
 
 import java.io.File;
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.AppServerType;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
@@ -44,17 +44,17 @@ public class Application implements Serializable
 {
     private String scmPath = null;
     private String jvmName = null;
-    private Platform platform = null;
+    private String basePath = null;
     private String pidDirectory = null;
     private String applicationGuid = null;
     private String applicationName = null;
     private File applicationBinary = null;
-    private AppServerType serverType = null;
     private String applicationCluster = null;
     private String applicationVersion = "1.0";
     private String applicationLogsPath = null;
     private Project applicationProject = null;
     private String applicationInstallPath = null;
+    private List<Platform> applicationPlatforms = null;
 
     private static final String CNAME = Application.class.getName();
     private static final long serialVersionUID = -7939041322590386615L;
@@ -88,6 +88,19 @@ public class Application implements Serializable
         this.applicationName = value;
     }
 
+    public final void setBasePath(final String value)
+    {
+        final String methodName = Application.CNAME + "#setBasePath(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.basePath = value;
+    }
+
     public final void setScmPath(final String value)
     {
         final String methodName = Application.CNAME + "#setScmPath(final String value)";
@@ -101,9 +114,9 @@ public class Application implements Serializable
         this.scmPath = value;
     }
 
-    public final void setPlatform(final Platform value)
+    public final void setApplicationPlatforms(final List<Platform> value)
     {
-        final String methodName = Application.CNAME + "#setPlatform(final Platform value)";
+        final String methodName = Application.CNAME + "#setApplicationPlatforms(final List<Platform> value)";
 
         if (DEBUG)
         {
@@ -111,7 +124,7 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.platform = value;
+        this.applicationPlatforms = value;
     }
 
     public final void setApplicationBinary(final File value)
@@ -218,19 +231,6 @@ public class Application implements Serializable
         this.jvmName = value;
     }
 
-    public final void setServerType(final AppServerType value)
-    {
-        final String methodName = Application.CNAME + "#setServerType(final AppServerType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serverType = value;
-    }
-
     public final String getApplicationGuid()
     {
         final String methodName = Application.CNAME + "#getApplicationGuid()";
@@ -257,17 +257,17 @@ public class Application implements Serializable
         return this.applicationName;
     }
 
-    public final Platform getPlatform()
+    public final List<Platform> getApplicationPlatforms()
     {
-        final String methodName = Application.CNAME + "#getPlatform()";
+        final String methodName = Application.CNAME + "#getApplicationPlatforms()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platform);
+            DEBUGGER.debug("Value: {}", this.applicationPlatforms);
         }
 
-        return this.platform;
+        return this.applicationPlatforms;
     }
 
     public final File getApplicationBinary()
@@ -294,6 +294,19 @@ public class Application implements Serializable
         }
 
         return this.applicationVersion;
+    }
+
+    public final String getBasePath()
+    {
+        final String methodName = Application.CNAME + "#getBasePath()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.basePath);
+        }
+
+        return this.basePath;
     }
 
     public final String getScmPath()
@@ -385,19 +398,6 @@ public class Application implements Serializable
         }
 
         return this.jvmName;
-    }
-
-    public final AppServerType getServerType()
-    {
-        final String methodName = Application.CNAME + "#getServerType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.jvmName);
-        }
-
-        return this.serverType;
     }
 
     @Override

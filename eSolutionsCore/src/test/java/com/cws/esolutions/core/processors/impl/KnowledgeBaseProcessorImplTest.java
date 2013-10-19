@@ -46,10 +46,10 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * com.cws.esolutions.core.processors.impl
  * KnowledgeBaseProcessorImpl.java
  *
- * $Id: KnowledgeBaseProcessorImpl.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
+ * $Id: $
  * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
+ * $Date: $
+ * $Revision: $
  * @author kmhuntly@gmail.com
  * @version 1.0
  *
@@ -154,12 +154,11 @@ public class KnowledgeBaseProcessorImplTest
     public final void testAddNewArticle()
     {
         Article article = new Article();
-        article.setArticleId("KB99991");
+        article.setArticleId("KB" + RandomStringUtils.randomNumeric(8));
         article.setArticleStatus(ArticleStatus.NEW);
         article.setAuthor("kmhuntly");
         article.setAuthorEmail("kmhuntly@caspersbox.com");
         article.setCause("Caused By a Test");
-        article.setCreateDate(System.currentTimeMillis());
         article.setKeywords("keywords");
         article.setPageHits(1);
         article.setResolution("untest");
@@ -188,12 +187,11 @@ public class KnowledgeBaseProcessorImplTest
     public final void testUpdateArticle()
     {
         Article article = new Article();
-        article.setArticleId("KB99991");
+        article.setArticleId("KB40975607");
         article.setArticleStatus(ArticleStatus.NEW);
         article.setAuthor("kmhuntly");
         article.setAuthorEmail("kmhuntly@caspersbox.com");
         article.setCause("This is another test");
-        article.setCreateDate(System.currentTimeMillis());
         article.setKeywords("keywords");
         article.setPageHits(1);
         article.setResolution("untest");
@@ -223,19 +221,8 @@ public class KnowledgeBaseProcessorImplTest
     public final void testApproveArticle()
     {
         Article article = new Article();
-        article.setArticleId("KB99991");
+        article.setArticleId("KB40975607");
         article.setArticleStatus(ArticleStatus.APPROVED);
-        article.setAuthor("kmhuntly");
-        article.setAuthorEmail("kmhuntly@caspersbox.com");
-        article.setCause("This is another test");
-        article.setCreateDate(System.currentTimeMillis());
-        article.setKeywords("keywords");
-        article.setPageHits(1);
-        article.setResolution("untest");
-        article.setSymptoms("test");
-        article.setTitle("test article");
-        article.setModifiedBy("khuntly");
-        article.setReviewedBy("chuntly");
 
         ArticleRequest request = new ArticleRequest();
         request.setArticle(article);
@@ -245,7 +232,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.approveArticle(request);
+            ArticleResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -261,17 +248,6 @@ public class KnowledgeBaseProcessorImplTest
         Article article = new Article();
         article.setArticleId("KB99991");
         article.setArticleStatus(ArticleStatus.REJECTED);
-        article.setAuthor("kmhuntly");
-        article.setAuthorEmail("kmhuntly@caspersbox.com");
-        article.setCause("This is another test");
-        article.setCreateDate(System.currentTimeMillis());
-        article.setKeywords("keywords");
-        article.setPageHits(1);
-        article.setResolution("untest");
-        article.setSymptoms("test");
-        article.setTitle("test article");
-        article.setModifiedBy("khuntly");
-        article.setReviewedBy("chuntly");
 
         ArticleRequest request = new ArticleRequest();
         request.setArticle(article);
@@ -281,7 +257,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.rejectArticle(request);
+            ArticleResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -297,15 +273,6 @@ public class KnowledgeBaseProcessorImplTest
         Article article = new Article();
         article.setArticleId("KB99991");
         article.setArticleStatus(ArticleStatus.DELETED);
-        article.setAuthor("kmhuntly");
-        article.setAuthorEmail("kmhuntly@caspersbox.com");
-        article.setCause("Caused By a Test");
-        article.setCreateDate(System.currentTimeMillis());
-        article.setKeywords("keywords");
-        article.setPageHits(1);
-        article.setResolution("untest");
-        article.setSymptoms("test");
-        article.setTitle("test article");
 
         ArticleRequest request = new ArticleRequest();
         request.setArticle(article);
@@ -315,7 +282,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.deleteArticle(request);
+            ArticleResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -329,7 +296,7 @@ public class KnowledgeBaseProcessorImplTest
     public final void testGetArticle()
     {
         Article article = new Article();
-        article.setArticleId("KB99991");
+        article.setArticleId("KB40975607");
 
         ArticleRequest request = new ArticleRequest();
         request.setArticle(article);

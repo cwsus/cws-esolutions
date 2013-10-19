@@ -379,18 +379,18 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                     resultSet.getString(13), // installed memory
                                     resultSet.getString(14), // oper ip
                                     resultSet.getString(15), // oper hostname
-                                    resultSet.getString(16), // assigned engineer
-                                    resultSet.getString(17), // comments
-                                    resultSet.getString(18), // mgmt ip
-                                    resultSet.getString(19), // mgmt hostname
-                                    resultSet.getString(20), // backup ip
-                                    resultSet.getString(21), // backup hostname
-                                    resultSet.getString(22), // nas ip
-                                    resultSet.getString(23), // nas hostname
-                                    resultSet.getString(24), // nat ip
-                                    resultSet.getString(25), // mgrurl
-                                    String.valueOf(resultSet.getInt(26)), // dmgrPort
-                                    resultSet.getString(27))); // owningDmgr
+                                    resultSet.getString(16), // mgmt ip
+                                    resultSet.getString(17), // mgmt hostname
+                                    resultSet.getString(18), // backup ip
+                                    resultSet.getString(19), // backup hostname
+                                    resultSet.getString(20), // nas ip
+                                    resultSet.getString(21), // nas hostname
+                                    resultSet.getString(22), // nat ip
+                                    resultSet.getString(23), // comments
+                                    resultSet.getString(24), // assigned engineer
+                                    String.valueOf(resultSet.getInt(27)), // dmgrPort
+                                    resultSet.getString(28), // owningDmgr
+                                    resultSet.getString(29))); // mgrurl
 
                     if (DEBUG)
                     {
@@ -496,18 +496,18 @@ public class ServerDataDAOImpl implements IServerDataDAO
                             resultSet.getString(13), // installed memory
                             resultSet.getString(14), // oper ip
                             resultSet.getString(15), // oper hostname
-                            resultSet.getString(16), // assigned engineer
-                            resultSet.getString(17), // comments
-                            resultSet.getString(18), // mgmt ip
-                            resultSet.getString(19), // mgmt hostname
-                            resultSet.getString(20), // backup ip
-                            resultSet.getString(21), // backup hostname
-                            resultSet.getString(22), // nas ip
-                            resultSet.getString(23), // nas hostname
-                            resultSet.getString(24), // nat ip
-                            resultSet.getString(25), // mgrurl
-                            String.valueOf(resultSet.getInt(26)), // dmgrPort
-                            resultSet.getString(27) // owningDmgr
+                            resultSet.getString(16), // mgmt ip
+                            resultSet.getString(17), // mgmt hostname
+                            resultSet.getString(18), // backup ip
+                            resultSet.getString(19), // backup hostname
+                            resultSet.getString(20), // nas ip
+                            resultSet.getString(21), // nas hostname
+                            resultSet.getString(22), // nat ip
+                            resultSet.getString(23), // comments
+                            resultSet.getString(24), // assigned engineer
+                            String.valueOf(resultSet.getInt(27)), // dmgrPort
+                            resultSet.getString(28), // owningDmgr
+                            resultSet.getString(29) // mgrurl
                         };
 
                         if (DEBUG)
@@ -648,18 +648,18 @@ public class ServerDataDAOImpl implements IServerDataDAO
                             resultSet.getString(13), // installed memory
                             resultSet.getString(14), // oper ip
                             resultSet.getString(15), // oper hostname
-                            resultSet.getString(16), // assigned engineer
-                            resultSet.getString(17), // comments
-                            resultSet.getString(18), // mgmt ip
-                            resultSet.getString(19), // mgmt hostname
-                            resultSet.getString(20), // backup ip
-                            resultSet.getString(21), // backup hostname
-                            resultSet.getString(22), // nas ip
-                            resultSet.getString(23), // nas hostname
-                            resultSet.getString(24), // nat ip
-                            resultSet.getString(25), // mgrurl
-                            String.valueOf(resultSet.getInt(26)), // dmgrPort
-                            resultSet.getString(27) // owningDmgr
+                            resultSet.getString(16), // mgmt ip
+                            resultSet.getString(17), // mgmt hostname
+                            resultSet.getString(18), // backup ip
+                            resultSet.getString(19), // backup hostname
+                            resultSet.getString(20), // nas ip
+                            resultSet.getString(21), // nas hostname
+                            resultSet.getString(22), // nat ip
+                            resultSet.getString(23), // comments
+                            resultSet.getString(24), // assigned engineer
+                            String.valueOf(resultSet.getInt(27)), // dmgrPort
+                            resultSet.getString(28), // owningDmgr
+                            resultSet.getString(29) // mgrurl
                         };
 
                         if (DEBUG)

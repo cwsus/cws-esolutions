@@ -15,22 +15,21 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
-import java.io.IOException;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
+import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
-import org.apache.commons.io.IOUtils;
+import java.util.ArrayList;
 import org.apache.commons.lang.RandomStringUtils;
-
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
@@ -51,8 +50,6 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProce
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
  * ApplicationManagementProcessorImplTest.java
- *
- *
  *
  * $Id: $
  * $Author: $
@@ -156,15 +153,15 @@ public class ApplicationManagementProcessorImplTest
     public final void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("7c2e3991-1b01-47db-9c78-bd9c453bd07c");
+        project.setProjectGuid("f85bcf1c-63e4-46ec-8903-0f74bb49de00");
 
         Platform platform = new Platform();
-        platform.setPlatformGuid("c48de9ed-b85c-41c1-ba2f-dc25d31177d6");
+        platform.setPlatformGuid("b372bc09-dc19-4a57-a1b6-7fbcfbcbf42a");
 
         Application app = new Application();
         app.setApplicationGuid(UUID.randomUUID().toString());
         app.setApplicationName("eSolutions");
-        app.setPlatform(platform);
+        app.setApplicationPlatforms(new ArrayList<Platform>(Arrays.asList(platform)));
         app.setApplicationVersion("1.0");
         app.setApplicationCluster("eSolutions");
         app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applogs");
@@ -173,6 +170,7 @@ public class ApplicationManagementProcessorImplTest
         app.setPidDirectory("/appvol/ATS70/eSolutions/syslog/");
         app.setScmPath("scm:git:git@github.com:cws-us/cws-esolutions.git");
         app.setJvmName("eSolutions");
+        app.setBasePath("/appvol/ATS70/eSolutions");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
@@ -233,7 +231,7 @@ public class ApplicationManagementProcessorImplTest
         try
         {
             ApplicationManagementResponse response = appProcess.listApplications(request);
-
+System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ApplicationManagementException amx)
@@ -273,7 +271,7 @@ public class ApplicationManagementProcessorImplTest
     public final void testGetApplicationData()
     {
         Application app = new Application();
-        app.setApplicationGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
+        app.setApplicationGuid("604a6f7f-54af-4013-ab96-98716b4df40e");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
@@ -284,7 +282,7 @@ public class ApplicationManagementProcessorImplTest
         try
         {
             ApplicationManagementResponse response = appProcess.getApplicationData(request);
-
+System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ApplicationManagementException amx)
@@ -333,7 +331,7 @@ public class ApplicationManagementProcessorImplTest
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
         request.setServer(server);
-        request.setRequestFile("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war/WEB-INF/web.xml");
+        request.setRequestFile("WEB-INF/web.xml");
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -341,15 +339,7 @@ public class ApplicationManagementProcessorImplTest
         try
         {
             ApplicationManagementResponse response = appProcess.applicationFileRequest(request);
-System.out.println(response);
-try
-{
-    System.out.println(IOUtils.toString(response.getFileData(), "UTF-8"));
-}
-catch (IOException iox)
-{
-    iox.printStackTrace();
-}
+
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ApplicationManagementException amx)

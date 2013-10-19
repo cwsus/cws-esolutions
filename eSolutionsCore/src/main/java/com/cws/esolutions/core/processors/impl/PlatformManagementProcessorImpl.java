@@ -485,17 +485,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                 server.setOperIpAddress(serverData.get(13));
                                 server.setOperHostName(serverData.get(14));
-                                server.setAssignedEngineer(serverData.get(15));
-                                server.setServerComments(serverData.get(16));
-                                server.setMgmtIpAddress(serverData.get(17));
-                                server.setMgmtHostName(serverData.get(18));
-                                server.setBkIpAddress(serverData.get(19));
-                                server.setBkHostName(serverData.get(20));
-                                server.setNasIpAddress(serverData.get(21));
-                                server.setNasHostName(serverData.get(22));
-                                server.setNatAddress(serverData.get(23));
-                                server.setMgrUrl(serverData.get(24));
+                                server.setMgmtIpAddress(serverData.get(15));
+                                server.setMgmtHostName(serverData.get(16));
+                                server.setBkIpAddress(serverData.get(17));
+                                server.setBkHostName(serverData.get(18));
+                                server.setNasIpAddress(serverData.get(19));
+                                server.setNasHostName(serverData.get(20));
+                                server.setNatAddress(serverData.get(21));
+                                server.setServerComments(serverData.get(22));
+                                server.setAssignedEngineer(serverData.get(23));
+                                server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                 server.setOwningDmgr(serverData.get(25));
+                                server.setMgrUrl(serverData.get(26));
 
                                 if (DEBUG)
                                 {
@@ -547,17 +548,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
@@ -617,17 +619,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
@@ -802,17 +805,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                 server.setOperIpAddress(serverData.get(13));
                                 server.setOperHostName(serverData.get(14));
-                                server.setAssignedEngineer(serverData.get(15));
-                                server.setServerComments(serverData.get(16));
-                                server.setMgmtIpAddress(serverData.get(17));
-                                server.setMgmtHostName(serverData.get(18));
-                                server.setBkIpAddress(serverData.get(19));
-                                server.setBkHostName(serverData.get(20));
-                                server.setNasIpAddress(serverData.get(21));
-                                server.setNasHostName(serverData.get(22));
-                                server.setNatAddress(serverData.get(23));
-                                server.setMgrUrl(serverData.get(24));
+                                server.setMgmtIpAddress(serverData.get(15));
+                                server.setMgmtHostName(serverData.get(16));
+                                server.setBkIpAddress(serverData.get(17));
+                                server.setBkHostName(serverData.get(18));
+                                server.setNasIpAddress(serverData.get(19));
+                                server.setNasHostName(serverData.get(20));
+                                server.setNatAddress(serverData.get(21));
+                                server.setServerComments(serverData.get(22));
+                                server.setAssignedEngineer(serverData.get(23));
+                                server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                 server.setOwningDmgr(serverData.get(25));
+                                server.setMgrUrl(serverData.get(26));
 
                                 if (DEBUG)
                                 {
@@ -864,17 +868,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
@@ -934,17 +939,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
@@ -1117,17 +1123,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                 server.setOperIpAddress(serverData.get(13));
                                 server.setOperHostName(serverData.get(14));
-                                server.setAssignedEngineer(serverData.get(15));
-                                server.setServerComments(serverData.get(16));
-                                server.setMgmtIpAddress(serverData.get(17));
-                                server.setMgmtHostName(serverData.get(18));
-                                server.setBkIpAddress(serverData.get(19));
-                                server.setBkHostName(serverData.get(20));
-                                server.setNasIpAddress(serverData.get(21));
-                                server.setNasHostName(serverData.get(22));
-                                server.setNatAddress(serverData.get(23));
-                                server.setMgrUrl(serverData.get(24));
+                                server.setMgmtIpAddress(serverData.get(15));
+                                server.setMgmtHostName(serverData.get(16));
+                                server.setBkIpAddress(serverData.get(17));
+                                server.setBkHostName(serverData.get(18));
+                                server.setNasIpAddress(serverData.get(19));
+                                server.setNasHostName(serverData.get(20));
+                                server.setNatAddress(serverData.get(21));
+                                server.setServerComments(serverData.get(22));
+                                server.setAssignedEngineer(serverData.get(23));
+                                server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                 server.setOwningDmgr(serverData.get(25));
+                                server.setMgrUrl(serverData.get(26));
 
                                 if (DEBUG)
                                 {
@@ -1179,17 +1186,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
@@ -1249,17 +1257,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
                                     server.setOperIpAddress(serverData.get(13));
                                     server.setOperHostName(serverData.get(14));
-                                    server.setAssignedEngineer(serverData.get(15));
-                                    server.setServerComments(serverData.get(16));
-                                    server.setMgmtIpAddress(serverData.get(17));
-                                    server.setMgmtHostName(serverData.get(18));
-                                    server.setBkIpAddress(serverData.get(19));
-                                    server.setBkHostName(serverData.get(20));
-                                    server.setNasIpAddress(serverData.get(21));
-                                    server.setNasHostName(serverData.get(22));
-                                    server.setNatAddress(serverData.get(23));
-                                    server.setMgrUrl(serverData.get(24));
+                                    server.setMgmtIpAddress(serverData.get(15));
+                                    server.setMgmtHostName(serverData.get(16));
+                                    server.setBkIpAddress(serverData.get(17));
+                                    server.setBkHostName(serverData.get(18));
+                                    server.setNasIpAddress(serverData.get(19));
+                                    server.setNasHostName(serverData.get(20));
+                                    server.setNatAddress(serverData.get(21));
+                                    server.setServerComments(serverData.get(22));
+                                    server.setAssignedEngineer(serverData.get(23));
+                                    server.setDmgrPort(Integer.valueOf(serverData.get(24)));
                                     server.setOwningDmgr(serverData.get(25));
+                                    server.setMgrUrl(serverData.get(26));
 
                                     if (DEBUG)
                                     {
