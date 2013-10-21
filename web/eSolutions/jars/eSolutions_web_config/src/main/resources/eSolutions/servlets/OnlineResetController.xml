@@ -9,9 +9,13 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <bean id="onlineResetValidator" class="com.cws.us.esolutions.validators.OnlineResetValidator">
+        <property name="messageAnswerRequired" value="error.answer.empty" />
+    </bean>
+
     <bean id="onlineResetController" class="com.cws.us.esolutions.controllers.OnlineResetController">
         <property name="validator">
-            <bean id="onlineResetValidator" class="com.cws.us.esolutions.validators.OnlineResetValidator" />
+            <ref bean="onlineResetValidator" />
         </property>
         <property name="secConfig">
             <ref bean="securityConfig" />

@@ -45,16 +45,21 @@ import com.cws.us.esolutions.dto.ApplicationRequest;
 @Component
 public class DeploymentValidator implements Validator
 {
-    private static final String CNAME = DeploymentValidator.class.getName();
-
+    private String messageBinaryInvalid = null;
     private ApplicationServiceBean appConfig = null;
+    private String messageBinaryInvalidForType = null;
+    private String messageDeploymentTypeRequired = null;
+    private String messageDeploymentFilesRequired = null;
+    private String messageApplicationVersionRequired = null;
+
+    private static final String CNAME = DeploymentValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = DeploymentValidator.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = DeploymentValidator.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -65,22 +70,94 @@ public class DeploymentValidator implements Validator
         this.appConfig = value;
     }
 
-    @Override
-    public boolean supports(final Class<?> target)
+    public final void setMessageBinaryInvalid(final String value)
     {
-        final String methodName = DeploymentValidator.CNAME + "#supports(final Class<?> target)";
+        final String methodName = DeploymentValidator.CNAME + "#setMessageBinaryInvalid(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: ", target);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return ApplicationRequest.class.isAssignableFrom(target);
+        this.messageBinaryInvalid = value;
+    }
+
+    public final void setMessageBinaryInvalidForType(final String value)
+    {
+        final String methodName = DeploymentValidator.CNAME + "#setMessageBinaryInvalidForType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageBinaryInvalidForType = value;
+    }
+
+    public final void setMessageDeploymentFilesRequired(final String value)
+    {
+        final String methodName = DeploymentValidator.CNAME + "#setMessageDeploymentFilesRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageDeploymentFilesRequired = value;
+    }
+
+    public final void setMessageDeploymentTypeRequired(final String value)
+    {
+        final String methodName = DeploymentValidator.CNAME + "#setMessageDeploymentTypeRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageDeploymentTypeRequired = value;
+    }
+
+    public final void setMessageApplicationVersionRequired(final String value)
+    {
+        final String methodName = DeploymentValidator.CNAME + "#setMessageApplicationVersionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationVersionRequired = value;
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = DeploymentValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(value);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("isSupported: {}", isSupported);
+        }
+
+        return isSupported;
+    }
+
+    @Override
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = DeploymentValidator.CNAME + "#validate(final Object target, final Errors errors)";
 
@@ -91,9 +168,9 @@ public class DeploymentValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", "app.mgmt.app.version.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deploymentType", "app.mgmt.app.deployment.type.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationBinary", "app.mgmt.app.deployment.files.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deploymentType", this.messageDeploymentTypeRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationBinary", this.messageDeploymentFilesRequired);
 
         final ApplicationRequest request = (ApplicationRequest) target;
 
@@ -132,7 +209,7 @@ public class DeploymentValidator implements Validator
                     {
                         if (!(StringUtils.equals(fileExt, allowed)))
                         {
-                            errors.reject("applicationBinary", "app.mgmt.binary.invalid.type");
+                            errors.reject("applicationBinary", this.messageBinaryInvalid);
                         }
 
                         break;
@@ -144,7 +221,7 @@ public class DeploymentValidator implements Validator
                     {
                         if (!(StringUtils.equals(fileExt, allowed)))
                         {
-                            errors.reject("applicationBinary", "app.mgmt.binary.invalid.type");
+                            errors.reject("applicationBinary", this.messageBinaryInvalid);
                         }
 
                         break;
@@ -152,7 +229,7 @@ public class DeploymentValidator implements Validator
 
                     break;
                 default:
-                    errors.reject("applicationBinary", "app.mgmt.binary.not.valid.for.type");
+                    errors.reject("applicationBinary", this.messageBinaryInvalidForType);
 
                     break;
             }

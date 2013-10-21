@@ -42,6 +42,11 @@ import com.cws.esolutions.security.config.SecurityConfig;
 public class PasswordValidator implements Validator
 {
     private SecurityConfig secConfig = null;
+    private String messagePasswordMatch = null;
+    private String messageNewPasswordRequired = null;
+    private String messageConfirmPasswordRequired = null;
+    private String messageCurrentPasswordRequired = null;
+    private String messagePasswordFailedValidation = null;
 
     private static final String CNAME = PasswordValidator.class.getName();
 
@@ -61,18 +66,83 @@ public class PasswordValidator implements Validator
         this.secConfig = value;
     }
 
-    @Override
-    public boolean supports(final Class<?> clazz)
+    public final void setMessageCurrentPasswordRequired(final String value)
     {
-        final String methodName = PasswordValidator.CNAME + "#supports(final Class clazz)";
+        final String methodName = PasswordValidator.CNAME + "#setMessageCurrentPasswordRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", clazz);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        boolean isSupported = UserChangeRequest.class.isAssignableFrom(clazz);
+        this.messageCurrentPasswordRequired = value;
+    }
+
+    public final void setMessageNewPasswordRequired(final String value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setMessageNewPasswordRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNewPasswordRequired = value;
+    }
+
+    public final void setMessageConfirmPasswordRequired(final String value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setMessageConfirmPasswordRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageConfirmPasswordRequired = value;
+    }
+
+    public final void setMessagePasswordMatch(final String value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordMatch(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePasswordMatch = value;
+    }
+
+    public final void setMessagePasswordFailedValidation(final String value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#setMessagePasswordFailedValidation(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePasswordFailedValidation = value;
+    }
+
+    @Override
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = PasswordValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Class: {}", value);
+        }
+
+        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -83,7 +153,7 @@ public class PasswordValidator implements Validator
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = PasswordValidator.CNAME + "#validate(final <Class> request)";
 
@@ -112,19 +182,19 @@ public class PasswordValidator implements Validator
 
         if (!(changeReq.isReset()))
         {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "user.account.current.password.empty");
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", this.messageCurrentPasswordRequired);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "user.account.new.password.empty");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", "user.account.confirm.password.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", this.messageNewPasswordRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmPassword", this.messageConfirmPasswordRequired);
 
         if (!(changeReq.isReset()) && (StringUtils.equals(existingPassword, newPassword)))
         {
-            errors.reject("currentPassword", "user.account.current.matches.new");
+            errors.reject("currentPassword", this.messagePasswordMatch);
         }
         else if (!(pattern.matcher(newPassword).matches()))
         {
-            errors.reject("newPassword", "error.password.requirement.failure");
+            errors.reject("newPassword", this.messagePasswordFailedValidation);
         }
     }
 }

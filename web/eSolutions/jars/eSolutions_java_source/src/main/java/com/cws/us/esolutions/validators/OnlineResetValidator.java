@@ -38,23 +38,38 @@ import com.cws.us.esolutions.dto.OnlineResetRequest;
  */
 public class OnlineResetValidator implements Validator
 {
+    private String messageAnswerRequired = null;
+
     private static final String CNAME = OnlineResetValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
-    public boolean supports(final Class<?> clazz)
+    public final void setMessageAnswerRequired(final String value)
     {
-        final String methodName = OnlineResetValidator.CNAME + "#supports(final Class clazz)";
+        final String methodName = OnlineResetValidator.CNAME + "#setMessageAnswerRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", clazz);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        boolean isSupported = OnlineResetRequest.class.isAssignableFrom(clazz);
+        this.messageAnswerRequired = value;
+    }
+
+    @Override
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = OnlineResetValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Class: {}", value);
+        }
+
+        final boolean isSupported = OnlineResetRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -65,7 +80,7 @@ public class OnlineResetValidator implements Validator
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = OnlineResetValidator.CNAME + "#validate(final <Class> request)";
 
@@ -75,7 +90,7 @@ public class OnlineResetValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", "error.answer.empty");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", "error.answer.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageAnswerRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", this.messageAnswerRequired);
     }
 }

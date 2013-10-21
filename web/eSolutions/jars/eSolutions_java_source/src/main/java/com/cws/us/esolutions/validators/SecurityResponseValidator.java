@@ -39,27 +39,119 @@ import com.cws.us.esolutions.dto.UserChangeRequest;
  */
 public class SecurityResponseValidator implements Validator
 {
+    private String messageCurrentPasswordEmpty = null;
+    private String messageSecurityAnswersMatch = null;
+    private String messageQuestionsAnswersMatch = null;
+    private String messageSecurityQuestionsMatch = null;
+    private String messageSecurityAnswerRequired = null;
+    private String messageSecurityQuestionRequired = null;
+
     private static final String CNAME = SecurityResponseValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
-    public boolean supports(final Class<?> clazz)
+    public final void setMessageSecurityQuestionRequired(final String value)
     {
-        final String methodName = SecurityResponseValidator.CNAME + "#supports(final Class clazz)";
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageSecurityQuestionRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", clazz);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return UserChangeRequest.class.isAssignableFrom(clazz);
+        this.messageSecurityQuestionRequired = value;
+    }
+        
+    public final void setMessageSecurityAnswerRequired(final String value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageSecurityAnswerRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSecurityAnswerRequired = value;
+    }
+
+    public final void setMessageCurrentPasswordEmpty(final String value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageCurrentPasswordEmpty(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageCurrentPasswordEmpty = value;
+    }
+
+    public final void setMessageSecurityQuestionsMatch(final String value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageSecurityQuestionsMatch(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSecurityQuestionsMatch = value;
+    }
+
+    public final void setMessageSecurityAnswersMatch(final String value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageSecurityAnswersMatch(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSecurityAnswersMatch = value;
+    }
+
+    public final void setMessageQuestionsAnswersMatch(final String value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#setMessageQuestionsAnswersMatch(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageQuestionsAnswersMatch = value;
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = SecurityResponseValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Class: {}", value);
+        }
+
+        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("isSupported: {}", isSupported);
+        }
+
+        return isSupported;
+    }
+
+    @Override
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = SecurityResponseValidator.CNAME + "#validate(final <Class> request)";
 
@@ -77,35 +169,35 @@ public class SecurityResponseValidator implements Validator
             DEBUGGER.debug("UserChangeRequest: {}", request);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionOne", "security.question.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionTwo", "security.question.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", "security.answer.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", "security.answer.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", "user.account.current.password.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionOne", this.messageSecurityQuestionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionTwo", this.messageSecurityQuestionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageSecurityAnswerRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", this.messageSecurityAnswerRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "currentPassword", this.messageCurrentPasswordEmpty);
 
         if (StringUtils.equals(request.getSecQuestionOne(), request.getSecQuestionTwo()))
         {
-            errors.rejectValue("secQuestionOne", "security.questions.cannot.match");
+            errors.rejectValue("secQuestionOne", this.messageSecurityQuestionsMatch);
         }
         else if (StringUtils.equals(request.getSecAnswerOne(), request.getSecAnswerTwo()))
         {
-            errors.rejectValue("secQuestionOne", "security.answers.cannot.match");
+            errors.rejectValue("secQuestionOne", this.messageSecurityAnswersMatch);
         }
         else if (StringUtils.equals(request.getSecQuestionOne(), request.getSecAnswerOne()))
         {
-            errors.rejectValue("secQuestionOne", "security.questions.match.answers");
+            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
         }
         else if (StringUtils.equals(request.getSecQuestionTwo(), request.getSecAnswerTwo()))
         {
-            errors.rejectValue("secQuestionOne", "security.questions.match.answers");
+            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
         }
         else if (StringUtils.equals(request.getSecQuestionOne(), request.getSecAnswerTwo()))
         {
-            errors.rejectValue("secQuestionOne", "security.questions.match.answers");
+            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
         }
         else if (StringUtils.equals(request.getSecQuestionTwo(), request.getSecAnswerOne()))
         {
-            errors.rejectValue("secQuestionOne", "security.questions.match.answers");
+            errors.rejectValue("secQuestionOne", this.messageQuestionsAnswersMatch);
         }
     }
 }

@@ -98,6 +98,8 @@ public class ServiceManagementController
     private String viewPlatformPage = null;
     private String viewProjectsList = null;
     private String viewPlatformList = null;
+    private String messageNoDmgrFound = null;
+    private String messageMultipleDmgrsFound = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
     private String messageRequestValidationFailed = null;
@@ -301,6 +303,32 @@ public class ServiceManagementController
         }
 
         this.messageRequestValidationFailed = value;
+    }
+
+    public final void setMessageMultipleDmgrsFound(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageMultipleDmgrsFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageMultipleDmgrsFound = value;
+    }
+
+    public final void setMessageNoDmgrFound(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageNoDmgrFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoDmgrFound = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -1242,6 +1270,191 @@ public class ServiceManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/validate-dmgr", method = RequestMethod.POST)
+    public final ModelAndView validateSelectedManager(@ModelAttribute("request") final PlatformRequest request, final BindingResult bindResult)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#validateSelectedManager(@ModelAttribute(\"request\") final PlatformRequest request, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Project: {}", request);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        final ISearchProcessor search = new SearchProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                if (StringUtils.isNotEmpty(request.getPlatformDmgr()))
+                {
+                    SearchRequest dmgrSearch = new SearchRequest();
+                    dmgrSearch.setRequestInfo(reqInfo);
+                    dmgrSearch.setUserAccount(userAccount);
+                    dmgrSearch.setSearchTerms(request.getDmgrName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SearchRequest: {}", dmgrSearch);
+                    }
+
+                    SearchResponse dmgrSearchRes = search.doServerSearch(dmgrSearch);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SearchResponse: {}", dmgrSearchRes);
+                    }
+
+                    if (dmgrSearchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        List<SearchResult> dmgrSearchResults = dmgrSearchRes.getResults();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("dmgrSearchResults: {}", dmgrSearchRes);
+                        }
+
+                        if ((dmgrSearchResults != null) && (dmgrSearchResults.size() != 0))
+                        {
+                            if (dmgrSearchResults.size() > 1)
+                            {
+                                // more than one dmgr was found with the given info
+                                mView.addObject(Constants.ERROR_MESSAGE, this.messageMultipleDmgrsFound);
+                                mView.setViewName(this.selectDmgrPage);
+                            }
+                            else
+                            {
+                                SearchResult result = dmgrSearchResults.get(0);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SearchResult: {}", result);
+                                }
+
+                                PlatformRequest platformRequest = new PlatformRequest();
+                                platformRequest.setPlatformDmgr(result.getPath());
+
+                                mView.addObject("command", platformRequest);
+                                mView.setViewName(this.addPlatformPage);
+                            }
+                        }
+                        else
+                        {
+                            mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                            mView.addObject("command", new PlatformRequest());
+                            mView.setViewName(this.selectDmgrPage);
+                        }
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                        mView.addObject("command", new PlatformRequest());
+                        mView.setViewName(this.selectDmgrPage);
+                    }
+                }
+                else
+                {
+                    // no dmgr
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                    mView.addObject("command", new PlatformRequest());
+                    mView.setViewName(this.selectDmgrPage);
+                }
+            }
+            catch (SearchRequestException srx)
+            {
+                ERROR_RECORDER.error(srx.getMessage(), srx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/add-platform", method = RequestMethod.POST)
     public final ModelAndView doAddPlatform(@ModelAttribute("request") final PlatformRequest request, final BindingResult bindResult)
     {
@@ -1331,286 +1544,286 @@ public class ServiceManagementController
                 mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestValidationFailed);
                 mView.addObject("command", new PlatformRequest());
                 mView.setViewName(this.selectDmgrPage);
+
+                return mView;
             }
-            else
+
+            try
             {
-                try
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
 
-                    if (DEBUG)
+                Server requestedDmgr = new Server();
+                String dmgrName = request.getDmgrName();
+                String dmgrGuid = request.getPlatformDmgr();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("dmgrGuid: {}", dmgrGuid);
+                    DEBUGGER.debug("dmgrName: {}", dmgrName);
+                }
+
+                if ((StringUtils.isNotEmpty(dmgrGuid)) || (StringUtils.isNotEmpty(dmgrName)))
+                {
+                    if (StringUtils.isNotEmpty(dmgrGuid))
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        requestedDmgr.setServerGuid(request.getPlatformDmgr());
                     }
-
-                    Server requestedDmgr = new Server();
-                    String dmgrName = request.getDmgrName();
-                    String dmgrGuid = request.getPlatformDmgr();
-
-                    if (DEBUG)
+                    else if (StringUtils.isNotEmpty(dmgrName))
                     {
-                        DEBUGGER.debug("dmgrGuid: {}", dmgrGuid);
-                        DEBUGGER.debug("dmgrName: {}", dmgrName);
-                    }
-
-                    if ((StringUtils.isNotEmpty(dmgrGuid)) || (StringUtils.isNotEmpty(dmgrName)))
-                    {
-                        if (StringUtils.isNotEmpty(dmgrGuid))
-                        {
-                            requestedDmgr.setServerGuid(request.getPlatformDmgr());
-                        }
-                        else if (StringUtils.isNotEmpty(dmgrName))
-                        {
-                            SearchRequest dmgrSearch = new SearchRequest();
-                            dmgrSearch.setRequestInfo(reqInfo);
-                            dmgrSearch.setUserAccount(userAccount);
-                            dmgrSearch.setSearchTerms(request.getDmgrName());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchRequest: {}", dmgrSearch);
-                            }
-
-                            SearchResponse dmgrSearchRes = search.doServerSearch(dmgrSearch);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResponse: {}", dmgrSearchRes);
-                            }
-
-                            if (dmgrSearchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                            {
-                                List<SearchResult> dmgrSearchResults = dmgrSearchRes.getResults();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("dmgrSearchResults: {}", dmgrSearchRes);
-                                }
-
-                                if ((dmgrSearchResults != null) && (dmgrSearchResults.size() != 0))
-                                {
-                                    for (SearchResult searchResult : dmgrSearchResults)
-                                    {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("SearchResult: {}", searchResult);
-                                        }
-
-                                        if (StringUtils.equals(searchResult.getTitle(), dmgrName))
-                                        {
-                                            requestedDmgr.setServerGuid(searchResult.getPath());
-                                            requestedDmgr.setOperHostName(searchResult.getTitle());
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("Server: {}", requestedDmgr);
-                                            }
-
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
-                            mView.addObject("command", new PlatformRequest());
-                            mView.setViewName(this.selectDmgrPage);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ModelAndView: {}", mView);
-                            }
-
-                            return mView;
-                        }
+                        SearchRequest dmgrSearch = new SearchRequest();
+                        dmgrSearch.setRequestInfo(reqInfo);
+                        dmgrSearch.setUserAccount(userAccount);
+                        dmgrSearch.setSearchTerms(request.getDmgrName());
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Server: {}", requestedDmgr);
+                            DEBUGGER.debug("SearchRequest: {}", dmgrSearch);
                         }
 
-                        ServerManagementRequest dmgrRequest = new ServerManagementRequest();
-                        dmgrRequest.setRequestInfo(reqInfo);
-                        dmgrRequest.setUserAccount(userAccount);
-                        dmgrRequest.setServiceId(this.systemMgmt);
-                        dmgrRequest.setTargetServer(requestedDmgr);
+                        SearchResponse dmgrSearchRes = search.doServerSearch(dmgrSearch);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("ServerManagementRequest: {}", dmgrRequest);
+                            DEBUGGER.debug("SearchResponse: {}", dmgrSearchRes);
                         }
 
-                        ServerManagementResponse dmgrResponse = serverMgr.getServerData(dmgrRequest);
-
-                        if (DEBUG)
+                        if (dmgrSearchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
                         {
-                            DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
-                        }
-
-                        if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            Server dmgrResServer = dmgrResponse.getServer();
+                            List<SearchResult> dmgrSearchResults = dmgrSearchRes.getResults();
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Server: {}", dmgrResServer);
+                                DEBUGGER.debug("dmgrSearchResults: {}", dmgrSearchRes);
                             }
 
-                            if ((request.getAppServers() == null) || (request.getAppServers().size() == 0))
+                            if ((dmgrSearchResults != null) && (dmgrSearchResults.size() != 0))
                             {
-                                SearchRequest appServerSearch = new SearchRequest();
-                                appServerSearch.setRequestInfo(reqInfo);
-                                appServerSearch.setUserAccount(userAccount);
-                                appServerSearch.setSearchTerms(dmgrResServer.getServerGuid());
-
-                                if (DEBUG)
+                                for (SearchResult searchResult : dmgrSearchResults)
                                 {
-                                    DEBUGGER.debug("SearchRequest: {}", appServerSearch);
-                                }
-
-                                SearchResponse appServerResponse = search.doServerSearch(appServerSearch);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("SearchResponse: {}", appServerResponse);
-                                }
-
-                                if (appServerResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                                {
-                                    List<SearchResult> searchList = appServerResponse.getResults();
-                                    Map<String, String> appServerList = new HashMap<String, String>();
-
                                     if (DEBUG)
                                     {
-                                        DEBUGGER.debug("searchList: {}", searchList);
+                                        DEBUGGER.debug("SearchResult: {}", searchResult);
                                     }
 
-                                    for (SearchResult result : searchList)
+                                    if (StringUtils.equals(searchResult.getTitle(), dmgrName))
                                     {
+                                        requestedDmgr.setServerGuid(searchResult.getPath());
+                                        requestedDmgr.setOperHostName(searchResult.getTitle());
+
                                         if (DEBUG)
                                         {
-                                            DEBUGGER.debug("SearchResult: {}", result);
+                                            DEBUGGER.debug("Server: {}", requestedDmgr);
                                         }
 
-                                        if (!(StringUtils.equals(request.getPlatformDmgr(), result.getPath())))
-                                        {
-                                            appServerList.put(result.getPath(), result.getTitle());
-                                        }
+                                        break;
                                     }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("appServerList: {}", appServerList);
-                                    }
-
-                                    mView.addObject("appServerList", appServerList);
                                 }
                             }
-
-                            if ((request.getWebServers() == null) || (request.getWebServers().size() == 0))
-                            {
-                                Server webServerSearch = new Server();
-                                webServerSearch.setServerType(ServerType.WEBSERVER);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Server: {}", webServerSearch);
-                                }
-
-                                ServerManagementRequest webRequest = new ServerManagementRequest();
-                                webRequest.setRequestInfo(reqInfo);
-                                webRequest.setUserAccount(userAccount);
-                                webRequest.setServiceId(this.systemMgmt);
-                                webRequest.setTargetServer(webServerSearch);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("ServerManagementRequest: {}", webRequest);
-                                }
-
-                                ServerManagementResponse webResponse = serverMgr.listServersByType(webRequest);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("ServerManagementResponse: {}", webResponse);
-                                }
-
-                                if (webResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                                {
-                                    List<Server> webServers = webResponse.getServerList();
-                                    Map<String, String> webServerList = new HashMap<String, String>();
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("webServers: {}", webServers);
-                                    }
-
-                                    for (Server server : webServers)
-                                    {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        if (server.getServerRegion() == dmgrResServer.getServerRegion())
-                                        {
-                                            webServerList.put(server.getServerGuid(), server.getOperHostName());
-                                        }
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("webServerList: {}", webServerList);
-                                    }
-
-                                    mView.addObject("webServerList", webServerList);
-                                }
-                            }
-
-                            request.setPlatformDmgr(request.getPlatformDmgr());
-                            request.setDmgrName(dmgrResServer.getOperHostName());
-                            request.setPlatformRegion(dmgrResServer.getServerRegion());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("PlatformRequest: {}", request);
-                            }
-
-                            mView.addObject("command", request);
-                            mView.setViewName(this.addPlatformPage);
-                        }
-                        else
-                        {
-                            // no valid dmgr
-                            mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
-                            mView.addObject("command", new PlatformRequest());
-                            mView.setViewName(this.selectDmgrPage);
                         }
                     }
                     else
                     {
-                        // no dmgr
-                        mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                        mView.addObject("command", new PlatformRequest());
+                        mView.setViewName(this.selectDmgrPage);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ModelAndView: {}", mView);
+                        }
+
+                        return mView;
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Server: {}", requestedDmgr);
+                    }
+
+                    ServerManagementRequest dmgrRequest = new ServerManagementRequest();
+                    dmgrRequest.setRequestInfo(reqInfo);
+                    dmgrRequest.setUserAccount(userAccount);
+                    dmgrRequest.setServiceId(this.systemMgmt);
+                    dmgrRequest.setTargetServer(requestedDmgr);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ServerManagementRequest: {}", dmgrRequest);
+                    }
+
+                    ServerManagementResponse dmgrResponse = serverMgr.getServerData(dmgrRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
+                    }
+
+                    if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        Server dmgrResServer = dmgrResponse.getServer();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", dmgrResServer);
+                        }
+
+                        if ((request.getAppServers() == null) || (request.getAppServers().size() == 0))
+                        {
+                            SearchRequest appServerSearch = new SearchRequest();
+                            appServerSearch.setRequestInfo(reqInfo);
+                            appServerSearch.setUserAccount(userAccount);
+                            appServerSearch.setSearchTerms(dmgrResServer.getServerGuid());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SearchRequest: {}", appServerSearch);
+                            }
+
+                            SearchResponse appServerResponse = search.doServerSearch(appServerSearch);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SearchResponse: {}", appServerResponse);
+                            }
+
+                            if (appServerResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                            {
+                                List<SearchResult> searchList = appServerResponse.getResults();
+                                Map<String, String> appServerList = new HashMap<String, String>();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("searchList: {}", searchList);
+                                }
+
+                                for (SearchResult result : searchList)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("SearchResult: {}", result);
+                                    }
+
+                                    if (!(StringUtils.equals(request.getPlatformDmgr(), result.getPath())))
+                                    {
+                                        appServerList.put(result.getPath(), result.getTitle());
+                                    }
+                                }
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("appServerList: {}", appServerList);
+                                }
+
+                                mView.addObject("appServerList", appServerList);
+                            }
+                        }
+
+                        if ((request.getWebServers() == null) || (request.getWebServers().size() == 0))
+                        {
+                            Server webServerSearch = new Server();
+                            webServerSearch.setServerType(ServerType.WEBSERVER);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Server: {}", webServerSearch);
+                            }
+
+                            ServerManagementRequest webRequest = new ServerManagementRequest();
+                            webRequest.setRequestInfo(reqInfo);
+                            webRequest.setUserAccount(userAccount);
+                            webRequest.setServiceId(this.systemMgmt);
+                            webRequest.setTargetServer(webServerSearch);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("ServerManagementRequest: {}", webRequest);
+                            }
+
+                            ServerManagementResponse webResponse = serverMgr.listServersByType(webRequest);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("ServerManagementResponse: {}", webResponse);
+                            }
+
+                            if (webResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                            {
+                                List<Server> webServers = webResponse.getServerList();
+                                Map<String, String> webServerList = new HashMap<String, String>();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("webServers: {}", webServers);
+                                }
+
+                                for (Server server : webServers)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("Server: {}", server);
+                                    }
+
+                                    if (server.getServerRegion() == dmgrResServer.getServerRegion())
+                                    {
+                                        webServerList.put(server.getServerGuid(), server.getOperHostName());
+                                    }
+                                }
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("webServerList: {}", webServerList);
+                                }
+
+                                mView.addObject("webServerList", webServerList);
+                            }
+                        }
+
+                        request.setPlatformDmgr(request.getPlatformDmgr());
+                        request.setDmgrName(dmgrResServer.getOperHostName());
+                        request.setPlatformRegion(dmgrResServer.getServerRegion());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("PlatformRequest: {}", request);
+                        }
+
+                        mView.addObject("command", request);
+                        mView.setViewName(this.addPlatformPage);
+                    }
+                    else
+                    {
+                        // no valid dmgr
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                         mView.addObject("command", new PlatformRequest());
                         mView.setViewName(this.selectDmgrPage);
                     }
                 }
-                catch (ServerManagementException smx)
+                else
                 {
-                    ERROR_RECORDER.error(smx.getMessage(), smx);
-
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    // no dmgr
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                    mView.addObject("command", new PlatformRequest());
+                    mView.setViewName(this.selectDmgrPage);
                 }
-                catch (SearchRequestException srx)
-                {
-                    ERROR_RECORDER.error(srx.getMessage(), srx);
+            }
+            catch (ServerManagementException smx)
+            {
+                ERROR_RECORDER.error(smx.getMessage(), smx);
 
-                    mView.setViewName(appConfig.getErrorResponsePage());
-                }
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (SearchRequestException srx)
+            {
+                ERROR_RECORDER.error(srx.getMessage(), srx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
             }
         }
         else
@@ -1894,14 +2107,14 @@ public class ServiceManagementController
                         }
                         else
                         {
-                            mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
+                            mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                             mView.addObject("command", new PlatformRequest());
                             mView.setViewName(this.selectDmgrPage);
                         }
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                         mView.addObject("command", new PlatformRequest());
                         mView.setViewName(this.selectDmgrPage);
                     }
@@ -1909,7 +2122,7 @@ public class ServiceManagementController
                 else
                 {
                     // no dmgr
-                    mView.addObject(Constants.ERROR_MESSAGE, "system.mgmt.no.dmgr");
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                     mView.addObject("command", new PlatformRequest());
                     mView.setViewName(this.selectDmgrPage);
                 }

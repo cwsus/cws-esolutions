@@ -38,13 +38,112 @@ import com.cws.us.esolutions.dto.ApplicationRequest;
  */
 public class ApplicationValidator implements Validator
 {
+    private String messageApplicationNameRequired = null;
+    private String messageApplicationClusterRequired = null;
+    private String messageApplicationVersionRequired = null;
+    private String messageApplicationProjectRequired = null;
+    private String messageApplicationLogsPathRequired = null;
+    private String messageApplicationPlatformRequired = null;
+    private String messageApplicationInstallPathRequired = null;
+
     private static final String CNAME = ApplicationValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    public final void setMessageApplicationNameRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationNameRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationNameRequired = value;
+    }
+
+    public final void setMessageApplicationLogsPathRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationLogsPathRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationLogsPathRequired = value;
+    }
+
+    public final void setMessageApplicationProjectRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationProjectRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationProjectRequired = value;
+    }
+
+    public final void setMessageApplicationVersionRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationVersionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationVersionRequired = value;
+    }
+
+    public final void setMessageApplicationClusterRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationClusterRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationClusterRequired = value;
+    }
+
+    public final void setMessageApplicationPlatformRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationPlatformRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationPlatformRequired = value;
+    }
+
+    public final void setMessageApplicationInstallPathRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationInstallPathRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageApplicationInstallPathRequired = value;
+    }
+
     @Override
-    public boolean supports(final Class<?> target)
+    public final boolean supports(final Class<?> target)
     {
         final String methodName = ApplicationValidator.CNAME + "#supports(final Class<?> target)";
 
@@ -54,11 +153,18 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Class: ", target);
         }
 
-        return ApplicationRequest.class.isAssignableFrom(target);
+        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(target);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("isSupported: {}", isSupported);
+        }
+
+        return isSupported;
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = ApplicationValidator.CNAME + "#validate(final Object target, final Errors errors)";
 
@@ -69,12 +175,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", "app.mgmt.app.name.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationProject", "app.mgmt.app.project.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationPlatform", "app.mgmt.app.platform.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationVersion", "app.mgmt.app.version.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationCluster", "app.mgmt.app.cluster.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationLogsPath", "app.mgmt.app.logs.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationInstallPath", "app.mgmt.app.install.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationProject", this.messageApplicationProjectRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationPlatform", this.messageApplicationPlatformRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationVersion", this.messageApplicationVersionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationCluster", this.messageApplicationClusterRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationLogsPath", this.messageApplicationLogsPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationInstallPath", this.messageApplicationInstallPathRequired);
     }
 }

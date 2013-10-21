@@ -9,12 +9,29 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <bean id="serverValidator" class="com.cws.us.esolutions.validators.ServerValidator">
+		<property name="messageOsNameRequired" value="system.os.name.required" />
+		<property name="messageHostnameRequired" value="system.oper.name.required" />
+		<property name="messageHostAddressRequired" value="system.oper.addr.required" />
+		<property name="messageServerTypeRequired" value="system.server.type.required" />
+		<property name="messageServerStatusRequired" value="system.server.status.required" />
+		<property name="messageServerRegionRequired" value="system.server.region.required" />
+		<property name="messageManagementHostnameRequired" value="system.mgmt.host.name.required" />
+		<property name="messageManagementHostAddressRequired" value="system.mgmt.host.address.required" />
+		<property name="messageBackupHostnameRequired" value="system.backup.host.name.required" />
+		<property name="messageBackupHostAddressRequired" value="system.backup.host.address.required" />
+		<property name="messageNasHostnameRequired" value="system.nas.host.name.required" />
+		<property name="messageNasHostAddressRequired" value="system.nas.host.address.required" />
+		<property name="messageServerAddressInvalid" value="system.server.address.invalid" />
+		<property name="messageManagerUrlRequired" value="system.vbox.manager.url.required" />
+    </bean>
+
     <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
         <property name="serverValidator">
-            <bean id="serverValidator" class="com.cws.us.esolutions.validators.ServerValidator" />
+            <ref bean="serverValidator" />
         </property>
         <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />

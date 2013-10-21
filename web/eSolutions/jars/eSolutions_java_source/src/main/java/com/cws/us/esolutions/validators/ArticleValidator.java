@@ -18,7 +18,6 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.ApplicationRequest;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -38,27 +37,105 @@ import com.cws.us.esolutions.dto.ApplicationRequest;
  */
 public class ArticleValidator implements Validator
 {
+    private String messageArticleCauseRequired = null;
+    private String messageArticleTitleRequired = null;
+    private String messageArticleKeywordsRequired = null;
+    private String messageArticleSymptomsRequired = null;
+    private String messageArticleResolutionRequired = null;
+
     private static final String CNAME = ArticleValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
-    public boolean supports(final Class<?> target)
+    public final void setMessageArticleTitleRequired(final String value)
     {
-        final String methodName = ArticleValidator.CNAME + "#supports(final Class<?> target)";
+        final String methodName = ArticleValidator.CNAME + "#setMessageArticleTitleRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: ", target);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return ApplicationRequest.class.isAssignableFrom(target);
+        this.messageArticleTitleRequired = value;
+    }
+
+    public final void setMessageArticleCauseRequired(final String value)
+    {
+        final String methodName = ArticleValidator.CNAME + "#setMessageArticleCauseRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageArticleCauseRequired = value;
+    }
+
+    public final void setMessageArticleKeywordsRequired(final String value)
+    {
+        final String methodName = ArticleValidator.CNAME + "#setMessageArticleKeywordsRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageArticleKeywordsRequired = value;
+    }
+
+    public final void setMessageArticleSymptomsRequired(final String value)
+    {
+        final String methodName = ArticleValidator.CNAME + "#setMessageArticleSymptomsRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageArticleSymptomsRequired = value;
+    }
+
+    public final void setMessageArticleResolutionRequired(final String value)
+    {
+        final String methodName = ArticleValidator.CNAME + "#setMessageArticleResolutionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageArticleResolutionRequired = value;
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = ArticleValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        final boolean isSupported = ArticleValidator.class.isAssignableFrom(value);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("isSupported: {}", value);
+        }
+
+        return isSupported;
+    }
+
+    @Override
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = ArticleValidator.CNAME + "#validate(final Object target, final Errors errors)";
 
@@ -69,10 +146,10 @@ public class ArticleValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", "kbase.article.title.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cause", "kbase.article.cause.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keywords", "kbase.article.keywords.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "symptoms", "kbase.article.symptoms.required");
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resolution", "kbase.article.resolution.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "title", this.messageArticleTitleRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cause", this.messageArticleCauseRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "keywords", this.messageArticleKeywordsRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "symptoms", this.messageArticleSymptomsRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "resolution", this.messageArticleResolutionRequired);
     }
 }

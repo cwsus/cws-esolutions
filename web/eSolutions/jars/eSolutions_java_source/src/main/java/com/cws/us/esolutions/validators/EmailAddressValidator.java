@@ -40,27 +40,49 @@ import com.cws.us.esolutions.dto.UserChangeRequest;
  */
 public class EmailAddressValidator implements Validator
 {
+    private String messageEmailAddressRequired = null;
+
     private static final String CNAME = EmailAddressValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
-    public boolean supports(final Class<?> clazz)
+    public final void setMessageEmailAddressRequired(final String value)
     {
-        final String methodName = EmailAddressValidator.CNAME + "#supports(final Class clazz)";
+        final String methodName = EmailAddressValidator.CNAME + "#setMessageEmailAddressRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", clazz);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return UserChangeRequest.class.isAssignableFrom(clazz);
+        this.messageEmailAddressRequired = value;
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = EmailAddressValidator.CNAME + "#supports(final Class value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("isSupported: {}", isSupported);
+        }
+
+        return isSupported;
+    }
+
+    @Override
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = EmailAddressValidator.CNAME + "#validate(final <Class> request)";
 
@@ -79,11 +101,11 @@ public class EmailAddressValidator implements Validator
             DEBUGGER.debug("UserChangeRequest: {}", request);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", "email.source.addr.required");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageEmailAddressRequired);
 
         if (!(pattern.matcher(request.getEmailAddr()).matches()))
         {
-            errors.reject("emailAddr", "email.addr.not.valid");
+            errors.reject("emailAddr", this.messageEmailAddressRequired);
         }
     }
 }

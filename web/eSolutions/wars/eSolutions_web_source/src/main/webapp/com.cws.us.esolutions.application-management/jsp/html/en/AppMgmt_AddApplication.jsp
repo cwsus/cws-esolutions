@@ -116,30 +116,6 @@
                 <td><form:input path="installPath" /></td>
                 <td><form:errors path="installPath" cssClass="validationError" /></td>
             </tr>
-            <tr>
-                <td><label id="txtPidDirectory"><spring:message code="app.mgmt.application.pid.path" /></label></td>
-                <td><form:input path="pidDirectory" /></td>
-                <td><form:errors path="pidDirectory" cssClass="validationError" /></td>
-                <td><label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label></td>
-                <c:choose>
-                    <c:when test="${not empty platformListing}">
-                        <td>
-                            <form:select path="serverType" multiple="false">
-                                <form:option value="<spring:message code='select.value' />" />
-                                <form:option value="--------" />
-                                <form:options items="${serverType}" />
-                            </form:select>
-                        </td>
-                    </c:when>
-                    <c:otherwise>
-                        <td>
-                            <a href="${pageContext.request.contextPath}/ui/application-management/add-project"
-                                title="<spring:message code='select.request.add.project' />"><spring:message code='select.request.add.project' /></a>
-                        </td>
-                    </c:otherwise>
-                </c:choose>
-                <td><form:errors path="serverType" cssClass="validationError" /></td>
-            </tr>
         </table>
         <br /><br />
         <table id="inputItems">

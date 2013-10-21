@@ -9,15 +9,20 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <bean id="loginValidator" class="com.cws.us.esolutions.validators.LoginValidator">
+        <property name="messageLoginUserRequired" value="error.username.empty" />
+    </bean>
+
     <bean id="loginController" class="com.cws.us.esolutions.controllers.LoginController">
         <property name="validator">
-            <bean id="loginValidator" class="com.cws.us.esolutions.validators.LoginValidator" />
+            <ref bean="loginValidator" />
         </property>
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="logoffCompleteString" value="login.user.logoff" />
+        <property name="messageUsernameEmpty" value="error.username.empty" />
         <property name="forgotUsernameUrl" value="ui/online-reset/forgot-username" />
         <property name="forgotPasswordUrl" value="ui/online-reset/forgot-password" />
         <property name="combinedLoginPage" value="CombinedLogin" />

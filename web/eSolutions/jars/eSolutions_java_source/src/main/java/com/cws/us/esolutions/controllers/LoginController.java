@@ -71,6 +71,7 @@ public class LoginController
     private String usernameLoginPage = null;
     private String passwordLoginPage = null;
     private String logoffCompleteString = null;
+    private String messageUsernameEmpty = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = LoginController.class.getName();
@@ -142,6 +143,19 @@ public class LoginController
         }
 
         this.logoffCompleteString = value;
+    }
+
+    public final void setMessageUsernameEmpty(final String value)
+    {
+        final String methodName = LoginController.CNAME + "#setMessageUsernameEmpty(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageUsernameEmpty = value;
     }
 
     public final void setValidator(final LoginValidator value)
@@ -537,7 +551,7 @@ public class LoginController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, "error.username.empty");
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
                 mView.addObject("command", new LoginRequest());
 
                 return mView;
@@ -737,7 +751,7 @@ public class LoginController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, "error.username.empty");
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
                 mView.addObject("command", new UserAccount());
 
                 return mView;

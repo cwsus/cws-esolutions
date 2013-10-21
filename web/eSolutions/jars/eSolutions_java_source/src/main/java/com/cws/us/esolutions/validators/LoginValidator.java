@@ -39,23 +39,38 @@ import com.cws.esolutions.security.dto.UserSecurity;
  */
 public class LoginValidator implements Validator
 {
+    private String messageLoginUserRequired = null;
+
     private static final String CNAME = LoginValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @Override
-    public boolean supports(final Class<?> clazz)
+    public final void setMessageLoginUserRequired(final String value)
     {
-        final String methodName = LoginValidator.CNAME + "#supports(final Class clazz)";
+        final String methodName = LoginValidator.CNAME + "#setMessageLoginUserRequired(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: {}", clazz);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        boolean isSupported = ((UserAccount.class.isAssignableFrom(clazz)) || (UserSecurity.class.isAssignableFrom(clazz)));
+        this.messageLoginUserRequired = value;
+    }
+
+    @Override
+    public final boolean supports(final Class<?> value)
+    {
+        final String methodName = LoginValidator.CNAME + "#supports(final Class<?> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (UserSecurity.class.isAssignableFrom(value)));
 
         if (DEBUG)
         {
@@ -66,7 +81,7 @@ public class LoginValidator implements Validator
     }
 
     @Override
-    public void validate(final Object target, final Errors errors)
+    public final void validate(final Object target, final Errors errors)
     {
         final String methodName = LoginValidator.CNAME + "#validate(final <Class> request)";
 
@@ -76,6 +91,6 @@ public class LoginValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", "error.username.empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "loginUser", this.messageLoginUserRequired);
     }
 }
