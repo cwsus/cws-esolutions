@@ -52,6 +52,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String errorResponsePage = null;
     @Autowired private String searchRequestPage = null;
     @Autowired private String requestCompletePage = null;
+    @Autowired private String messageRequestCanceled = null;
     @Autowired private Map<String, Boolean> services = null;
     @Autowired private List<String> allowedAppFileExtensions = null;
     @Autowired private List<String> allowedWebFileExtensions = null;
@@ -362,6 +363,19 @@ public class ApplicationServiceBean implements Serializable
         this.allowedWebFileExtensions = value;
     }
 
+    public final void setMessageRequestCanceled(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageRequestCanceled(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRequestCanceled = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -659,6 +673,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.allowedWebFileExtensions;
+    }
+
+    public final String getMessageRequestCanceled()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageRequestCanceled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageRequestCanceled);
+        }
+
+        return this.messageRequestCanceled;
     }
 
     public final String toString()

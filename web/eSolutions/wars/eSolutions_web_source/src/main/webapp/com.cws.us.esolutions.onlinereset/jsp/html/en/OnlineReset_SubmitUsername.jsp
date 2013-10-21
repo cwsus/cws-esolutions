@@ -45,23 +45,26 @@
             <tr>
                 <td><label id="txtUsername"><spring:message code="olr.username" /></label></td>
                 <td>
-                    <form:input path="olrUser" />
-                    <form:errors path="olrUser" cssClass="validationError" />
+                    <form:input path="username" />
+                    <form:errors path="username" cssClass="validationError" />
                 </td>
                 <td>
                     <a href="${pageContext.request.contextPath}/ui/app/help/forgot-username"
                         title="<spring:message code="olr.user.forgot.username" />"><spring:message code="olr.user.forgot.username" /></a>
                 </td>
             </tr>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
+        </table>
+        <br /><br />
+        <table id="inputItems">
             <tr>
                 <td>
-                    <input type="button" name="execute" value="<spring:message code="button.execute.text" />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="cancel" value="<spring:message code="button.cancel.text" />" id="cancel" class="submit" onClick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/login/default';" />
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                </td>
+                <td>
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
             </tr>
         </table>

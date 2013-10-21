@@ -173,7 +173,7 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = DNSServiceController.CNAME + "#showDefaultPage()";
 
@@ -191,7 +191,10 @@ public class DNSServiceController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -214,6 +217,17 @@ public class DNSServiceController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -251,7 +265,7 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "/lookup", method = RequestMethod.GET)
-    public ModelAndView showLookup()
+    public final ModelAndView showLookup()
     {
         final String methodName = DNSServiceController.CNAME + "#showLookup()";
 
@@ -269,7 +283,10 @@ public class DNSServiceController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -292,6 +309,17 @@ public class DNSServiceController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -323,7 +351,7 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "/lookup", method = RequestMethod.POST)
-    public ModelAndView showLookup(@ModelAttribute("entry") final DNSRecord record, final BindingResult bindResult)
+    public final ModelAndView showLookup(@ModelAttribute("entry") final DNSRecord record, final BindingResult bindResult)
     {
         final String methodName = DNSServiceController.CNAME + "#showLookup(@ModelAttribute(\"entry\") final DNSRecord record, final BindingResult bindResult)";
 
@@ -344,7 +372,10 @@ public class DNSServiceController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -367,6 +398,17 @@ public class DNSServiceController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

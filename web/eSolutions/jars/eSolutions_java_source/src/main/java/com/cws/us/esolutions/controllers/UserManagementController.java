@@ -336,7 +336,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = UserManagementController.CNAME + "#showDefaultPage()";
 
@@ -354,7 +354,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -377,6 +380,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -450,7 +464,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/add-user", method = RequestMethod.GET)
-    public ModelAndView showAddUser()
+    public final ModelAndView showAddUser()
     {
         final String methodName = UserManagementController.CNAME + "#showAddUser()";
 
@@ -468,7 +482,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -491,6 +508,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -562,7 +590,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/account/{userGuid}", method = RequestMethod.GET)
-    public ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
+    public final ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
     {
         final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userGuid\") final String userGuid)";
 
@@ -582,7 +610,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -605,6 +636,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -731,7 +773,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/account/modify/{userName}", method = RequestMethod.GET)
-    public ModelAndView editAccountData(@PathVariable("userName") final String userName)
+    public final ModelAndView editAccountData(@PathVariable("userName") final String userName)
     {
         final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userName\") final String userName)";
 
@@ -751,7 +793,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -774,6 +819,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -924,7 +980,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
         final String methodName = UserManagementController.CNAME + "#doSearchUsers(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
 
@@ -944,7 +1000,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -967,6 +1026,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1116,7 +1186,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/add-user", method = RequestMethod.POST)
-    public ModelAndView doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
         final String methodName = UserManagementController.CNAME + "#doAddUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
 
@@ -1136,7 +1206,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1159,6 +1232,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1314,7 +1398,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/suspend-user", method = RequestMethod.POST)
-    public ModelAndView doSuspendUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView doSuspendUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
         final String methodName = UserManagementController.CNAME + "#doSuspendUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
 
@@ -1334,7 +1418,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1357,6 +1444,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1488,7 +1586,7 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/reset-user", method = RequestMethod.POST)
-    public ModelAndView doResetUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView doResetUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
         final String methodName = UserManagementController.CNAME + "#doResetUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
 
@@ -1508,7 +1606,10 @@ public class UserManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1531,6 +1632,17 @@ public class UserManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

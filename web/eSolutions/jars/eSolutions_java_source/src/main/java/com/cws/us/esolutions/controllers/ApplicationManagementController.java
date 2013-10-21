@@ -436,7 +436,7 @@ public class ApplicationManagementController
     }
     
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = ApplicationManagementController.CNAME + "#showDefaultPage()";
 
@@ -454,7 +454,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -477,6 +480,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -539,7 +553,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/list-applications", method = RequestMethod.GET)
-    public ModelAndView doListApplications()
+    public final ModelAndView doListApplications()
     {
         final String methodName = ApplicationManagementController.CNAME + "#doListApplications()";
 
@@ -558,7 +572,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -581,6 +598,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -698,7 +726,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/application/{request}", method = RequestMethod.GET)
-    public ModelAndView showApplication(@PathVariable("request") final String request)
+    public final ModelAndView showApplication(@PathVariable("request") final String request)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showApplication(@PathVariable(\"request\") final String request)";
 
@@ -718,7 +746,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -741,6 +772,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -860,7 +902,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/add-application", method = RequestMethod.GET)
-    public ModelAndView showAddApplication()
+    public final ModelAndView showAddApplication()
     {
         final String methodName = ApplicationManagementController.CNAME + "#showAddApplication()";
 
@@ -880,7 +922,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -903,6 +948,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1084,7 +1140,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/retire-application/application/{application}", method = RequestMethod.GET)
-    public ModelAndView showRetireApplication(@PathVariable("application") final String application)
+    public final ModelAndView showRetireApplication(@PathVariable("application") final String application)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showRetireApplication(@PathVariable(\"application\") final String application)";
 
@@ -1104,7 +1160,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1127,6 +1186,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1239,7 +1309,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/retrieve-files/application/{application}", method = RequestMethod.GET)
-    public ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application)
+    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application)";
 
@@ -1259,7 +1329,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1282,6 +1355,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1420,7 +1504,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/retrieve-files/application/{application}/platform/{platform}", method = RequestMethod.GET)
-    public ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
+    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform)";
 
@@ -1440,7 +1524,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1463,6 +1550,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1605,7 +1703,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/retrieve-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
-    public ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server)
+    public final ModelAndView showRetrieveFilesPage(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showRetrieveFilesPage(@PathVariable(\"application\") final String application, @PathVariable(\"server\") final String server)";
 
@@ -1626,7 +1724,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1649,6 +1750,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1793,7 +1905,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/list-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
-    public ModelAndView showListFiles(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, @RequestParam(value = "vpath", required = true) final String vpath)
+    public final ModelAndView showListFiles(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, @RequestParam(value = "vpath", required = true) final String vpath)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showListFiles(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform, @PathVariable(\"server\") final String server, @RequestParam(value = \"vpath\", required = true) final String vpath)";
 
@@ -1815,7 +1927,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1838,6 +1953,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2061,7 +2187,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/deploy-application/application/{application}", method = RequestMethod.GET)
-    public ModelAndView showDeployApplication(@PathVariable("application") final String application)
+    public final ModelAndView showDeployApplication(@PathVariable("application") final String application)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showDeployApplication(@PathVariable(\"application\") final String application)";
 
@@ -2086,7 +2212,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2109,6 +2238,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2253,7 +2393,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/deploy-application/application/{application}/platform/{platform}", method = RequestMethod.GET)
-    public ModelAndView showDeployApplication(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
+    public final ModelAndView showDeployApplication(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
     {
         final String methodName = ApplicationManagementController.CNAME + "#showDeployApplication(@PathVariable(\"application\") final String application, @PathVariable(\"platform\") final String platform)";
 
@@ -2281,7 +2421,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2304,6 +2447,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2485,7 +2639,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/add-application", method = RequestMethod.POST)
-    public ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
+    public final ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
     {
         final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final ApplicationRequest request, final BindingResult bindResult)";
 
@@ -2508,7 +2662,10 @@ public class ApplicationManagementController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2531,6 +2688,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2793,7 +2961,7 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/deploy-application", method = RequestMethod.POST)
-    public ModelAndView doDeployApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
+    public final ModelAndView doDeployApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
     {
         final String methodName = ApplicationManagementController.CNAME + "#doDeployApplication(@ModelAttribute(\"request\") final ApplicationRequest request, final BindingResult bindResult)";
 
@@ -2818,8 +2986,9 @@ public class ApplicationManagementController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            
+
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
@@ -2840,6 +3009,17 @@ public class ApplicationManagementController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

@@ -60,11 +60,11 @@ function showReverseDisclaimer(theOption)
 }
 
 // Validate form contents
-function validateForm(theForm, e, theContext)
+function validateForm(theForm, e)
 {
     var targ;
     var i = 0;
-    var matchString = /^[0-9a-zA-Z]+$/; 
+    var matchString = /^[0-9a-zA-Z]+$/;
 
     // TODO: make sure this excludes password and email addr fields
     for (i = 0; i < theForm.elements.length; i++)
@@ -105,465 +105,31 @@ function validateForm(theForm, e, theContext)
 
     if (theForm.name == 'submitUserLogin')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if ((theForm.loginUser) && (theForm.loginUser.value == ''))
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your username must be provided.';
-                document.getElementById('loginUser').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('loginUser').focus();
-            }
-            if (document.getElementById('loginPass'))
-            {
-                if ((theForm.loginPass) && (theForm.loginPass.value == ''))
+                if ((theForm.username) && (theForm.username.value == ''))
                 {
                     clearText(theForm);
 
-                    document.getElementById('validationError').innerHTML = 'Your password must be provided.';
-                    document.getElementById('loginPass').style.color = '#FF0000';
+                    document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+                    document.getElementById('username').style.color = '#FF0000';
+                    document.getElementById('username').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
-                    document.getElementById('loginPass').focus();
+                    document.getElementById('username').focus();
                 }
-                else
+                if (document.getElementById('password'))
                 {
-                    theForm.submit();
-                }
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'submitEmailForUserSearch')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.emailAddr.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your email address must be provided.';
-                document.getElementById('txtEmailAddr').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('emailAddr').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'submitUsernameForSearch')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.olrUser.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide your account username.';
-                document.getElementById('txtUsername').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('olrUser').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'submitSecurityQuestion')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.secAnswerOne.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide your account username.';
-                document.getElementById('txtAnswerOne').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secAnswerOne').focus();
-            }
-            else if (theForm.secAnswerTwo.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide your account username.';
-                document.getElementById('txtAnswerTwo').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secAnswerOne').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'submitNameLookup')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.recordName.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
-                document.getElementById('txtServiceName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('recordName').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'submitArticleSearch')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.searchTerms.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide a search value.';
-                document.getElementById('txtSearchTerms').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('searchTerms').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if ((theForm.name == 'submitNewArticle') || (theForm.name == 'submitArticleUpdates'))
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.title.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'The new article must have a title.';
-                document.getElementById('txtArticleTitle').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('title').focus();
-            }
-            else if (theForm.symptoms.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'The new article must have associated symptoms.';
-                document.getElementById('txtArticleSymptoms').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('symptoms').focus();
-            }
-            else if (theForm.cause.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'The new article must have an associated cause.';
-                document.getElementById('txtArticleCause').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('cause').focus();
-            }
-            else if (theForm.keywords.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'The new article must have searchable keywords.';
-                document.getElementById('txtArticleKeywords').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('keywords').focus();
-            }
-            else if (theForm.resolution.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'The new article must have an associated resolution.';
-                document.getElementById('txtArticleResolution').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('resolution').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
-        }
-    }
-    else if (theForm.name == 'reviewArticleData')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            var validRequest = false;
-            var refUrl = document.referrer.split("/");
-
-            for (var i = 0; i < refUrl.length; i++)
-            {
-                if (refUrl[i] == 'edit-article')
-                {
-                    validRequest = true;
-                    document.getElementById('reviewArticleData').action = theContext + '/ui/knowledgebase/edit-article';
-
-                    break;
-                }
-                else if (refUrl[i] == 'create-article')
-                {
-                    validRequest = true;
-                    document.getElementById('reviewArticleData').action = theContext + '/ui/knowledgebase/submit-article';
-
-                    break;
-                }
-            }
-
-            if (validRequest)
-            {
-                theForm.submit();
-            }
-        }
-    }           
-    else if (theForm.name == 'submitSecurityInformationChange')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.secQuestionOne.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                document.getElementById('txtQuestionOne').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secQuestionOne').focus();
-            }
-            else if (theForm.secQuestionTwo.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                document.getElementById('txtQuestionTwo').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secQuestionOne').focus();
-            }
-            if (theForm.secAnswerOne.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
-                document.getElementById('txtAnswerOne').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secQuestionOne').focus();
-            }
-            else if (theForm.secAnswerTwo.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
-                document.getElementById('txtAnswerTwo').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secQuestionOne').focus();
-            }
-            else if (theForm.currentPassword.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your current password must be provided.';
-                document.getElementById('txtPassword').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('secQuestionOne').focus();
-            }
-            else
-            {
-                if (theForm.secQuestionOne.value == theForm.secQuestionTwo.value) // make sure the questions arent the same
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'The security questions must be different.';
-                    document.getElementById('txtQuestionOne').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else if (theForm.secAnswerOne.value == theForm.secAnswerTwo.value) // make sure the answers arent the same
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'The security answers must be different.';
-                    document.getElementById('txtQuestionOne').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else if (theForm.secQuestionOne.value == theForm.secAnswerOne.value) // make sure question 1 doesnt match answer 1
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                    document.getElementById('txtQuestionTwo').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else if (theForm.secQuestionTwo.value == theForm.secAnswerTwo.value) // make sure question 2 doesnt match answer 2
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                    document.getElementById('txtQuestionTwo').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else if (theForm.secQuestionOne.value == theForm.secAnswerTwo.value) // make sure question 1 doesnt match answer 2
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                    document.getElementById('txtQuestionTwo').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else if (theForm.secQuestionTwo.value == theForm.secAnswerOne.value)
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
-                    document.getElementById('txtQuestionTwo').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('secQuestionOne').focus();
-                }
-                else
-                {
-                    theForm.submit();
-                }
-            }
-        }
-    }
-    else if (theForm.name == 'submitEmailChange')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.emailAddr.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide your new email address.';
-                document.getElementById('txtEmailAddr').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('emailAddr').focus();
-            }
-            if (theForm.currentPassword.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'You must provide your password.';
-                document.getElementById('txtPassword').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('emailAddr').focus();
-            }
-            else
-            {
-                if (checkEmailAddr(theForm.emailAddr.value))
-                {
-                    theForm.submit();
-                }
-                else
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'Your email address did not pass validation. Please provide a new email address.';
-                    document.getElementById('txtEmailAddr').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('emailAddr').focus();
-                }
-            }
-        }
-    }
-    else if (theForm.name == 'createNewServer')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.osName.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'An OS type must be provided.';
-                document.getElementById('txtOsName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('osName').focus();
-            }
-            else if (theForm.operHostName.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A system hostname must be provided.';
-                document.getElementById('txtOperHostname').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('osName').focus();
-            }
-            else if (theForm.operIpAddress.value == '')
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A system IP address must be provided.';
-                document.getElementById('txtOperAddress').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('osName').focus();
-            }
-            else
-            {
-                if ((theForm.serverType.value == 'DMGR') || (theForm.serverType.value == 'VIRTUALHOST'))
-                {
-                    if (theForm.serverType.value == 'DMGR') 
+                    if ((theForm.password) && (theForm.password.value == ''))
                     {
-                        if ((theForm.dmgrPort.value == '') || (theForm.dmgrPort.value == 0))
-                        {
-                            clearText(theForm);
+                        clearText(theForm);
 
-                            document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no service port was provided.';
-                            document.getElementById('txtDmgrPort').style.color = '#FF0000';
-                            document.getElementById("dmgrPort").style.display = 'block';
-                            document.getElementById("mgrUrl").style.display = 'none';
-                            document.getElementById('serverType').selected.value = 'DMGR';
-                            document.getElementById('execute').disabled = false;
-                            document.getElementById('osName').focus();
-                        }
-                        else if (theForm.mgrUrl.value == '')
-                        {
-                            clearText(theForm);
-
-                            document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no manager URL was provided.';
-                            document.getElementById('txtDmgrPort').style.color = '#FF0000';
-                            document.getElementById("dmgrPort").style.display = 'block';
-                            document.getElementById("mgrUrl").style.display = 'none';
-                            document.getElementById('serverType').selected.value = 'DMGR';
-                            document.getElementById('execute').disabled = false;
-                            document.getElementById('osName').focus();
-                        }
-                        else
-                        {
-                            theForm.submit();
-                        }
-                    }
-                    else if (theForm.serverType.value == 'VIRTUALHOST')
-                    {
-                        if (theForm.mgrUrl.value == '')
-                        {
-                            clearText(theForm);
-
-                            document.getElementById('validationError').innerHTML = 'Server type specified as Virtual Manager but no manager URL was provided.';
-                            document.getElementById('txtDmgrPort').style.color = '#FF0000';
-                            document.getElementById("dmgrPort").style.display = 'block';
-                            document.getElementById("mgrUrl").style.display = 'none';
-                            document.getElementById('serverType').selected.value = 'VIRTUALHOST';
-                            document.getElementById('execute').disabled = false;
-                            document.getElementById('osName').focus();
-                        }
-                        else
-                        {
-                            theForm.submit();
-                        }
+                        document.getElementById('validationError').innerHTML = 'Your password must be provided.';
+                        document.getElementById('password').style.color = '#FF0000';
+                        document.getElementById('password').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('password').focus();
                     }
                     else
                     {
@@ -575,421 +141,902 @@ function validateForm(theForm, e, theContext)
                     theForm.submit();
                 }
             }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitEmailForUserSearch')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.emailAddr.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your email address must be provided.';
+                    document.getElementById('txtEmailAddr').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('emailAddr').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitUsernameForSearch')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.username.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+                    document.getElementById('txtUsername').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('username').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitSecurityQuestion')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.secAnswerOne.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+                    document.getElementById('txtAnswerOne').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secAnswerOne').focus();
+                }
+                else if (theForm.secAnswerTwo.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+                    document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secAnswerOne').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitNameLookup')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.recordName.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
+                    document.getElementById('txtServiceName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('recordName').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitArticleSearch')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.searchTerms.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide a search value.';
+                    document.getElementById('txtSearchTerms').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('searchTerms').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitNewArticle')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.title.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'The new article must have a title.';
+                    document.getElementById('txtArticleTitle').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('title').focus();
+                }
+                else if (theForm.symptoms.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'The new article must have associated symptoms.';
+                    document.getElementById('txtArticleSymptoms').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('symptoms').focus();
+                }
+                else if (theForm.cause.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'The new article must have an associated cause.';
+                    document.getElementById('txtArticleCause').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('cause').focus();
+                }
+                else if (theForm.keywords.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'The new article must have searchable keywords.';
+                    document.getElementById('txtArticleKeywords').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('keywords').focus();
+                }
+                else if (theForm.resolution.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'The new article must have an associated resolution.';
+                    document.getElementById('txtArticleResolution').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('resolution').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitSecurityInformationChange')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.secQuestionOne.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                    document.getElementById('txtQuestionOne').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secQuestionOne').focus();
+                }
+                else if (theForm.secQuestionTwo.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                    document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secQuestionOne').focus();
+                }
+                if (theForm.secAnswerOne.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
+                    document.getElementById('txtAnswerOne').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secQuestionOne').focus();
+                }
+                else if (theForm.secAnswerTwo.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
+                    document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secQuestionOne').focus();
+                }
+                else if (theForm.currentPassword.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your current password must be provided.';
+                    document.getElementById('txtPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('secQuestionOne').focus();
+                }
+                else
+                {
+                    if (theForm.secQuestionOne.value == theForm.secQuestionTwo.value) // make sure the questions arent the same
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'The security questions must be different.';
+                        document.getElementById('txtQuestionOne').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else if (theForm.secAnswerOne.value == theForm.secAnswerTwo.value) // make sure the answers arent the same
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'The security answers must be different.';
+                        document.getElementById('txtQuestionOne').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else if (theForm.secQuestionOne.value == theForm.secAnswerOne.value) // make sure question 1 doesnt match answer 1
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                        document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else if (theForm.secQuestionTwo.value == theForm.secAnswerTwo.value) // make sure question 2 doesnt match answer 2
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                        document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else if (theForm.secQuestionOne.value == theForm.secAnswerTwo.value) // make sure question 1 doesnt match answer 2
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                        document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else if (theForm.secQuestionTwo.value == theForm.secAnswerOne.value)
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                        document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('secQuestionOne').focus();
+                    }
+                    else
+                    {
+                        theForm.submit();
+                    }
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitEmailChange')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.emailAddr.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide your new email address.';
+                    document.getElementById('txtEmailAddr').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('emailAddr').focus();
+                }
+                if (theForm.currentPassword.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'You must provide your password.';
+                    document.getElementById('txtPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('emailAddr').focus();
+                }
+                else
+                {
+                    if (checkEmailAddr(theForm.emailAddr.value))
+                    {
+                        theForm.submit();
+                    }
+                    else
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'Your email address did not pass validation. Please provide a new email address.';
+                        document.getElementById('txtEmailAddr').style.color = '#FF0000';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('emailAddr').focus();
+                    }
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'createNewServer')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.osName.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'An OS type must be provided.';
+                    document.getElementById('txtOsName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('osName').focus();
+                }
+                else if (theForm.operHostName.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A system hostname must be provided.';
+                    document.getElementById('txtOperHostname').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('osName').focus();
+                }
+                else if (theForm.operIpAddress.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A system IP address must be provided.';
+                    document.getElementById('txtOperAddress').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('osName').focus();
+                }
+                else
+                {
+                    if ((theForm.serverType.value == 'DMGR') || (theForm.serverType.value == 'VIRTUALHOST'))
+                    {
+                        if (theForm.serverType.value == 'DMGR') 
+                        {
+                            if ((theForm.dmgrPort.value == '') || (theForm.dmgrPort.value == 0))
+                            {
+                                clearText(theForm);
+
+                                document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no service port was provided.';
+                                document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                                document.getElementById("dmgrPort").style.display = 'block';
+                                document.getElementById("mgrUrl").style.display = 'none';
+                                document.getElementById('serverType').selected.value = 'DMGR';
+                                document.getElementById('execute').disabled = false;
+                                document.getElementById('osName').focus();
+                            }
+                            else if (theForm.mgrUrl.value == '')
+                            {
+                                clearText(theForm);
+
+                                document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no manager URL was provided.';
+                                document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                                document.getElementById("dmgrPort").style.display = 'block';
+                                document.getElementById("mgrUrl").style.display = 'none';
+                                document.getElementById('serverType').selected.value = 'DMGR';
+                                document.getElementById('execute').disabled = false;
+                                document.getElementById('osName').focus();
+                            }
+                            else
+                            {
+                                theForm.submit();
+                            }
+                        }
+                        else if (theForm.serverType.value == 'VIRTUALHOST')
+                        {
+                            if (theForm.mgrUrl.value == '')
+                            {
+                                clearText(theForm);
+
+                                document.getElementById('validationError').innerHTML = 'Server type specified as Virtual Manager but no manager URL was provided.';
+                                document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                                document.getElementById("dmgrPort").style.display = 'block';
+                                document.getElementById("mgrUrl").style.display = 'none';
+                                document.getElementById('serverType').selected.value = 'VIRTUALHOST';
+                                document.getElementById('execute').disabled = false;
+                                document.getElementById('osName').focus();
+                            }
+                            else
+                            {
+                                theForm.submit();
+                            }
+                        }
+                        else
+                        {
+                            theForm.submit();
+                        }
+                    }
+                    else
+                    {
+                        theForm.submit();
+                    }
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
         }
     }
     else if (theForm.name == 'submitRemoteDate')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.targetServer.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.targetServer.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A target host must be provided.';
-                document.getElementById('txtTargetHostName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('targetServer').focus();
+                    document.getElementById('validationError').innerHTML = 'A target host must be provided.';
+                    document.getElementById('txtTargetHostName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('targetServer').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'submitTelnetRequest')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.targetServer.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.targetServer.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A target host must be provided.';
-                document.getElementById('txtTargetHostName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('targetServer').focus();
-            }
-            else if ((theForm.targetPort.value == '') || (isNaN(theForm.targetPort.value)))
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A target host must be provided.';
+                    document.getElementById('txtTargetHostName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('targetServer').focus();
+                }
+                else if ((theForm.targetPort.value == '') || (isNaN(theForm.targetPort.value)))
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A target port number must be provided.';
-                document.getElementById('txtTargetPort').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('targetServer').focus();
+                    document.getElementById('validationError').innerHTML = 'A target port number must be provided.';
+                    document.getElementById('txtTargetPort').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('targetServer').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'createNewProject')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.projectCode.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.projectCode.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A project code must be provided.';
-                document.getElementById('txtProjectCode').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.projectStatus.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A project code must be provided.';
+                    document.getElementById('txtProjectCode').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.projectStatus.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A project status must be provided.';
-                document.getElementById('txtProjectStatus').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.projectRegion.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A project status must be provided.';
+                    document.getElementById('txtProjectStatus').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.projectRegion.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A project region must be provided.';
-                document.getElementById('txtProjectRegion').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.primaryContact.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A project region must be provided.';
+                    document.getElementById('txtProjectRegion').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.primaryContact.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A project contact must be provided.';
-                document.getElementById('txtPrimaryContact').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.contactEmail.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A project contact must be provided.';
+                    document.getElementById('txtPrimaryContact').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.contactEmail.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
-                document.getElementById('txtContactEmail').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.changeQueue.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
+                    document.getElementById('txtContactEmail').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.changeQueue.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A change queue must be provided.';
-                document.getElementById('txtChangeQueue').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
-            }
-            else if (theForm.incidentQueue.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A change queue must be provided.';
+                    document.getElementById('txtChangeQueue').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else if (theForm.incidentQueue.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'An incident queue must be provided.';
-                document.getElementById('txtIncidentQueue').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('projectCode').focus();
+                    document.getElementById('validationError').innerHTML = 'An incident queue must be provided.';
+                    document.getElementById('txtIncidentQueue').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('projectCode').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'createNewApplication')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.applicationName.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.applicationName.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'An application name must be provided.';
-                document.getElementById('txtApplicationName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationName').focus();
-            }
-            else if (theForm.version.value == '')
-            {
-                // default to 1.0
-                document.getElementById('applicationName').value = '1.0';
-            }
-            else if (theForm.clusterName.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'An application name must be provided.';
+                    document.getElementById('txtApplicationName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationName').focus();
+                }
+                else if (theForm.version.value == '')
+                {
+                    // default to 1.0
+                    document.getElementById('applicationName').value = '1.0';
+                }
+                else if (theForm.clusterName.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A target application cluster must be provided.';
-                document.getElementById('txtApplicationCluster').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationName').focus();
-            }
-            else if (theForm.project.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A target application cluster must be provided.';
+                    document.getElementById('txtApplicationCluster').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationName').focus();
+                }
+                else if (theForm.project.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'The application must be associated with a project.';
-                document.getElementById('txtApplicationProject').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationName').focus();
-            }
-            else if (theForm.platform.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'The application must be associated with a project.';
+                    document.getElementById('txtApplicationProject').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationName').focus();
+                }
+                else if (theForm.platform.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'The application must be associated with a platform.';
-                document.getElementById('txtApplicationPlatform').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationPlatform').focus();
-            }
-            else if (theForm.logsPath.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'The application must be associated with a platform.';
+                    document.getElementById('txtApplicationPlatform').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationPlatform').focus();
+                }
+                else if (theForm.logsPath.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A valid path must be provided for application logs.';
-                document.getElementById('txtApplicationLogsPath').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationName').focus();
-            }
-            else if (theForm.installPath.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A valid path must be provided for application logs.';
+                    document.getElementById('txtApplicationLogsPath').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationName').focus();
+                }
+                else if (theForm.installPath.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A valid path for application binaries must be provided.';
-                document.getElementById('txtApplicationInstallPath').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationName').focus();
+                    document.getElementById('validationError').innerHTML = 'A valid path for application binaries must be provided.';
+                    document.getElementById('txtApplicationInstallPath').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('applicationName').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'selectDmgr')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.platformDmgr.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.platformDmgr.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A deployment manager must be provided.';
-                document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformDmgr').focus();
+                    document.getElementById('validationError').innerHTML = 'A deployment manager must be provided.';
+                    document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformDmgr').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'createNewPlatform')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.platformName.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.platformName.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A platform name must be provided.';
-                document.getElementById('txtPlatformName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
-            }
-            else if (theForm.status.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A platform name must be provided.';
+                    document.getElementById('txtPlatformName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else if (theForm.status.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A platform status must be provided.';
-                document.getElementById('txtPlatformStatus').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
-            }
-            else if (theForm.platformRegion.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A platform status must be provided.';
+                    document.getElementById('txtPlatformStatus').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else if (theForm.platformRegion.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A platform region must be provided.';
-                document.getElementById('txtPlatformRegion').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
-            }
-            else if (((theForm.platformDmgr) && (theForm.platformDmgr.value == '')) || ((theForm.dmgrName) && (theForm.dmgrName.value == '')))
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A platform region must be provided.';
+                    document.getElementById('txtPlatformRegion').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else if (((theForm.platformDmgr) && (theForm.platformDmgr.value == '')) || ((theForm.dmgrName) && (theForm.dmgrName.value == '')))
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'A Target deployment manager must be provided.';
-                document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
-            }
-            else if (theForm.appServers.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'A Target deployment manager must be provided.';
+                    document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else if (theForm.appServers.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Target application servers must be provided.';
-                document.getElementById('txtPlatformAppservers').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
-            }
-            else if (theForm.webServers.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'Target application servers must be provided.';
+                    document.getElementById('txtPlatformAppservers').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else if (theForm.webServers.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Target web servers must be provided.';
-                document.getElementById('txtPlatformWebservers').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('platformName').focus();
+                    document.getElementById('validationError').innerHTML = 'Target web servers must be provided.';
+                    document.getElementById('txtPlatformWebservers').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('platformName').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'searchRequest')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if (targ.id == 'execute')
         {
-            if (theForm.searchTerms.value == '')
+            if ((e.keyCode == 13) || (e.type == 'click'))
             {
-                clearText(theForm);
+                if (theForm.searchTerms.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
-                document.getElementById('txtSearchTerms').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('searchTerms').focus();
-            }
-            else
-            {
-                theForm.submit();
+                    document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
+                    document.getElementById('txtSearchTerms').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('searchTerms').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
         }
-    }
-    else if (theForm.name == 'deployApplication')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        else if (targ.id == 'cancel')
         {
-            if ((theForm.file) && (theForm.file.value == ''))
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A file must be provided for deployment.';
-                document.getElementById('txtFileName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('file').focus();
-            }
-            else if ((theForm.applicationVersion) && (theForm.applicationVersion.value == ''))
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'A file must be provided for deployment.';
-                document.getElementById('txtScmVersion').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('applicationVersion').focus();
-            }
-            else
-            {
-                theForm.submit();
-            }
+            theForm.submit();
         }
     }
     else if (theForm.name == 'submitContactForm')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (theForm.messageSubject.value == '')
+            if (targ.id == 'execute')
             {
-                clearText(theForm);
+                if (theForm.messageSubject.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Please provide a brief subject for your request.';
-                document.getElementById('txtMessageSubject').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('messageSubject').focus();
-            }
-            else if (theForm.messageBody.value == '')
-            {
-                clearText(theForm);
+                    document.getElementById('validationError').innerHTML = 'Please provide a brief subject for your request.';
+                    document.getElementById('txtMessageSubject').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('messageSubject').focus();
+                }
+                else if (theForm.messageBody.value == '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
-                document.getElementById('txtMessageBody').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('messageSubject').focus();
+                    document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+                    document.getElementById('txtMessageBody').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('messageSubject').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }
     else if (theForm.name == 'searchUserAccounts')
     {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            var i = 0;
-            var f = 0;
-            var entryFound = false;
-
-            for (f = 0; f < document.forms.length; f++)
+            if (targ.id == 'execute')
             {
-                // for each element in each form
-                for (i = 0; i < document.forms[f].length; i++)
+                var i = 0;
+                var f = 0;
+                var entryFound = false;
+
+                for (f = 0; f < document.forms.length; f++)
                 {
-                    // if it's not a hidden element, disabled or a button
-                    if ((document.forms[f][i].type != "hidden") && (document.forms[f][i].disabled != true) && (document.forms[f][i].type != "button"))
+                    // for each element in each form
+                    for (i = 0; i < document.forms[f].length; i++)
                     {
-                        // clear it
-                        if (document.forms[f][i].value != '')
+                        // if it's not a hidden element, disabled or a button
+                        if ((document.forms[f][i].type != "hidden") && (document.forms[f][i].disabled != true) && (document.forms[f][i].type != "button"))
                         {
-                            entryFound = true;
-                            break;
+                            // clear it
+                            if (document.forms[f][i].value != '')
+                            {
+                                entryFound = true;
+
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            if (entryFound)
-            {
-                theForm.submit();
+                if (entryFound)
+                {
+                    theForm.submit();
+                }
+                else
+                {
+                    document.getElementById('validationError').innerHTML = 'A search criterion must be provided.';
+                    document.getElementById('txtUserName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('username').focus();
+                }
             }
-            else
+            else if (targ.id == 'cancel')
             {
-                document.getElementById('validationError').innerHTML = 'A search criterion must be provided.';
-                document.getElementById('txtUserName').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('username').focus();
-            }
-        }
-    }
-    else if (theForm.name == 'submitSystemMessage')
-    {
-        if ((e.keyCode == 13) || (e.type == 'click') || (targ.id == 'execute'))
-        {
-            if (theForm.messageTitle.value == '')
-            {
-                document.getElementById('validationError').innerHTML = 'A subject must be provided for the service message.';
-                document.getElementById('txtSysMessageSubject').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('messageTitle').focus();
-            }
-            else if (theForm.messageText.value == '')
-            {
-                document.getElementById('validationError').innerHTML = 'A body must be provided for the service message.';
-                document.getElementById('txtSysMessageBody').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('messageText').focus();
-            }
-            else if ((!(document.getElementById('isActive1').checked)) && (!(document.getElementById('isActive2').checked)))
-            {
-                document.getElementById('validationError').innerHTML = 'The message must either be selected as active or inactive.';
-                document.getElementById('txtIsMessageActive').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-            }
-            else
-            {
-                theForm.submit();
+                history.go(-1);
             }
         }
     }

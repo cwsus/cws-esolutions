@@ -55,8 +55,10 @@
                     title="<spring:message code='select.request.type.console' />"><spring:message code='select.request.type.console' /></a>
             </td>
             <td>
-               <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
-                   title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
+                <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
+                    title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
+            </td>
         </tr>
     </table>
 </div>
+<br /><br />

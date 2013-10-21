@@ -27,6 +27,7 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -282,7 +283,10 @@ public class OnlineResetController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -304,6 +308,17 @@ public class OnlineResetController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -336,7 +351,10 @@ public class OnlineResetController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -359,9 +377,20 @@ public class OnlineResetController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
-        mView.addObject("command", new OnlineResetRequest());
+        mView.addObject("command", new UserAccount());
         mView.setViewName(this.submitUsernamePage);
 
         if (DEBUG)
@@ -373,7 +402,7 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-password/{resetId}", method = RequestMethod.GET)
-    public ModelAndView showPasswordChange(@PathVariable(value = "resetId") final String resetId)
+    public final ModelAndView showPasswordChange(@PathVariable(value = "resetId") final String resetId)
     {
         final String methodName = OnlineResetController.CNAME + "#showPasswordChange()";
 
@@ -391,7 +420,10 @@ public class OnlineResetController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -413,6 +445,17 @@ public class OnlineResetController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -496,16 +539,14 @@ public class OnlineResetController
         return mView;
     }
 
-    @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
-    public final ModelAndView submitForgottenUsername(@ModelAttribute("olrRequest") final OnlineResetRequest olrRequest, final BindingResult bindResult)
+    @RequestMapping(value = "/cancel", method = RequestMethod.GET)
+    public final ModelAndView doCancelRequest()
     {
-        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"olrRequest\") final String olrRequest, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#doCancelRequest()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("OnlineResetRequest: {}", olrRequest);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -513,11 +554,13 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -539,6 +582,91 @@ public class OnlineResetController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        hSession.invalidate(); // clear the http session
+
+        mView = new ModelAndView(new RedirectView());
+        mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageRequestCanceled());
+        mView.setViewName(appConfig.getLogonRedirect());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
+    public final ModelAndView submitForgottenUsername(@ModelAttribute("olrRequest") final OnlineResetRequest olrRequest, final BindingResult bindResult)
+    {
+        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"olrRequest\") final String olrRequest, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("OnlineResetRequest: {}", olrRequest);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -676,14 +804,14 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-    public final ModelAndView submitUsername(@ModelAttribute("olrRequest") final OnlineResetRequest olrRequest, final BindingResult bindResult)
+    public final ModelAndView submitUsername(@ModelAttribute("account") final UserAccount account, final BindingResult bindResult)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"olrRequest\") final OnlineResetRequest olrRequest, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserAccount\") final UserAccount account, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("username: {}", olrRequest);
+            DEBUGGER.debug("UserAccount: {}", account);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -696,7 +824,10 @@ public class OnlineResetController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -719,6 +850,17 @@ public class OnlineResetController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
         try
@@ -733,18 +875,9 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount userAccount = new UserAccount();
-            userAccount.setUsername(olrRequest.getOlrUser());
-            userAccount.setSessionId(hSession.getId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
-            }
-
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setHostInfo(reqInfo);
-            authRequest.setUserAccount(userAccount);
+            authRequest.setUserAccount(account);
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setAppName(appConfig.getApplicationName());
@@ -861,11 +994,11 @@ public class OnlineResetController
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ServletRequestAttributes", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest", hRequest);
-            DEBUGGER.debug("HttpSession", hSession);
-            DEBUGGER.debug("IAuthenticationProcessor", authProcessor);
-            DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -887,6 +1020,17 @@ public class OnlineResetController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

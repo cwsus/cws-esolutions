@@ -169,7 +169,7 @@ public class MessagingController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = MessagingController.CNAME + "#showDefaultPage()";
 
@@ -188,7 +188,10 @@ public class MessagingController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -211,6 +214,17 @@ public class MessagingController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -287,7 +301,7 @@ public class MessagingController
     }
 
     @RequestMapping(value = "/add-message", method = RequestMethod.GET)
-    public ModelAndView showAddMessage()
+    public final ModelAndView showAddMessage()
     {
         final String methodName = MessagingController.CNAME + "#showAddMessage()";
 
@@ -305,7 +319,10 @@ public class MessagingController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -328,6 +345,17 @@ public class MessagingController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -383,7 +411,7 @@ public class MessagingController
     }
 
     @RequestMapping(value = "/edit-message/message/{messageId}", method = RequestMethod.GET)
-    public ModelAndView showEditMessage(@PathVariable(value = "messageId") final String messageId)
+    public final ModelAndView showEditMessage(@PathVariable(value = "messageId") final String messageId)
     {
         final String methodName = MessagingController.CNAME + "#showEditMessage(@PathVariable(value = \"messageId\") final String messageId)";
 
@@ -403,7 +431,10 @@ public class MessagingController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -426,6 +457,17 @@ public class MessagingController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -517,7 +559,7 @@ public class MessagingController
     }
 
     @RequestMapping(value = "/submit-message", method = RequestMethod.POST)
-    public ModelAndView doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final BindingResult bindResult)
+    public final ModelAndView doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final BindingResult bindResult)
     {
         final String methodName = MessagingController.CNAME + "#doAddOrModifyServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final BindingResult bindResult";
 
@@ -538,7 +580,10 @@ public class MessagingController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -561,6 +606,17 @@ public class MessagingController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

@@ -27,3 +27,30 @@
  *     Created.
  */
 --%>
+
+<div class="feature">
+    <c:choose>
+        <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+            <div id="breadcrumb" class="lpstartover">
+                <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
+                    title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+            </div>
+
+            <c:if test="${not empty messageResponse}">
+                <p id="info"><spring:message code="${messageResponse}" /></p>
+            </c:if>
+            <c:if test="${not empty errorResponse}">
+                <p id="error">${errorResponse}</p>
+            </c:if>
+
+            <%-- TODO: audit --%>
+        </c:when>
+        <c:otherwise>
+            <spring:message code="admin.account.not.authorized" />
+            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
+                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
+            </c:if>
+        </c:otherwise>
+    </c:choose>
+</div>
+<br /><br />

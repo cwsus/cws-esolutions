@@ -22,6 +22,7 @@
                 <td><spring:message code="kbase.delete-article.confirm" arguments="${requestScope.articleId}"/>
             </tr>
         </table>
+        <br /><br />
         <table id="inputItems">
             <tr>
                 <td><input type="button" name="execute" value="<spring:message code='button.submit.text' />" id="execute" class="submit" onclick="disableButton(this);" /></td>
@@ -30,3 +31,4 @@
         </table>
     </form:form>
 </div>
+<br /><br />

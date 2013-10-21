@@ -59,18 +59,20 @@
                 <td><form:errors path="messageText" cssClass="validationError" /></td>
             </tr>
         </table>
-        <table id="inputTable">
+        <br /><br />
+        <table id="inputItems">
             <tr>
                 <td>
-                    <input type="button" name="execute" value="<spring:message code='messaging.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="cancel" value="<spring:message code='messaging.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
                 </td>
                 <td>
-                    <input type="button" name="reset" value="<spring:message code='messaging.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
             </tr>
         </table>
     </form:form>
 </div>
+<br /><br />

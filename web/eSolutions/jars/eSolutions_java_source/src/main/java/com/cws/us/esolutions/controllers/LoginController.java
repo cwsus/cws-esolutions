@@ -210,7 +210,7 @@ public class LoginController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = LoginController.CNAME + "#showDefaultPage()";
 
@@ -252,6 +252,17 @@ public class LoginController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -343,7 +354,7 @@ public class LoginController
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public ModelAndView performLogout()
+    public final ModelAndView performLogout()
     {
         final String methodName = LoginController.CNAME + "#performLogout()";
 
@@ -357,12 +368,13 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final UserAccount currentUser = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("UserAccount: {}", currentUser);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -384,6 +396,17 @@ public class LoginController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -429,9 +452,9 @@ public class LoginController
 
     // combined logon
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public final ModelAndView performLogin(@ModelAttribute("loginRequest") final LoginRequest loginRequest, final BindingResult bindResult)
+    public final ModelAndView doCombinedLogin(@ModelAttribute("loginRequest") final LoginRequest loginRequest, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#performLogin(@ModelAttribute(\"loginRequest\") final LoginRequest loginRequest, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"loginRequest\") final LoginRequest loginRequest, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -474,6 +497,17 @@ public class LoginController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -664,6 +698,17 @@ public class LoginController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
         try
@@ -836,6 +881,17 @@ public class LoginController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
         try
@@ -985,6 +1041,17 @@ public class LoginController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

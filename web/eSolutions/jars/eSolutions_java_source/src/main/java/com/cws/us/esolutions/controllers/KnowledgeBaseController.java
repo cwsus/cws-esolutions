@@ -427,7 +427,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showDefaultPage()";
 
@@ -445,7 +445,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -468,6 +471,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -509,7 +523,7 @@ public class KnowledgeBaseController
     // NOTE: this does NOT require ANY authorization. anyone can LOOK, authorization
     // is only required to modify/change/add/etc
     @RequestMapping(value = "/article/{articleId}", method = RequestMethod.GET)
-    public ModelAndView showArticleDetail(@PathVariable("articleId") final String articleId)
+    public final ModelAndView showArticleDetail(@PathVariable("articleId") final String articleId)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showArticleDetail(@PathVariable(\"articleId\") final String articleId)";
 
@@ -529,7 +543,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -552,6 +569,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -654,7 +682,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/search-articles", method = RequestMethod.GET)
-    public ModelAndView showArticleSearch()
+    public final ModelAndView showArticleSearch()
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showArticleSearch()";
 
@@ -677,7 +705,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -700,6 +731,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -765,7 +807,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/create-article", method = RequestMethod.GET)
-    public ModelAndView showCreateArticle()
+    public final ModelAndView showCreateArticle()
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showCreateArticle()";
 
@@ -783,7 +825,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -806,6 +851,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -879,7 +935,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/edit-article/article/{articleId}", method = RequestMethod.GET)
-    public ModelAndView showEditArticle(@PathVariable("articleId") final String articleId)
+    public final ModelAndView showEditArticle(@PathVariable("articleId") final String articleId)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showEditArticle(@PathVariable(\"articleId\") final String articleId)";
 
@@ -899,7 +955,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -922,6 +981,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1046,7 +1116,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/show-approvals", method = RequestMethod.GET)
-    public ModelAndView showPendingApprovals()
+    public final ModelAndView showPendingApprovals()
     {
         final String methodName = KnowledgeBaseController.CNAME + "#showPendingApprovals()";
 
@@ -1065,7 +1135,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1088,6 +1161,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1211,7 +1295,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/delete-article/article/{article}", method = RequestMethod.GET)
-    public ModelAndView deleteSelectedArticle(@PathVariable("article") final String article)
+    public final ModelAndView deleteSelectedArticle(@PathVariable("article") final String article)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#submitNewArticle(@PathVariable(\"article\") final String article)";
 
@@ -1231,7 +1315,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1254,6 +1341,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1423,7 +1521,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/approve-article/article/{article}", method = RequestMethod.GET)
-    public ModelAndView approveSelectedArticle(@PathVariable("article") final String article)
+    public final ModelAndView approveSelectedArticle(@PathVariable("article") final String article)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#approveSelectedArticle(@PathVariable(\"article\") final String article)";
 
@@ -1443,7 +1541,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1466,6 +1567,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1635,7 +1747,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/reject-article/article/{article}", method = RequestMethod.GET)
-    public ModelAndView rejectSelectedArticle(@PathVariable("article") final String article)
+    public final ModelAndView rejectSelectedArticle(@PathVariable("article") final String article)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#rejectSelectedArticle(@PathVariable(\"article\") final String article)";
 
@@ -1655,7 +1767,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1678,6 +1793,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1847,7 +1973,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/validate-article", method = RequestMethod.POST)
-    public ModelAndView doValidateSubmission(@ModelAttribute("article") final Article article, final BindingResult bindResult)
+    public final ModelAndView doValidateSubmission(@ModelAttribute("article") final Article article, final BindingResult bindResult)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#doValidateSubmission(@ModelAttribute(\"article\") final Article article, final BindingResult bindResult)";
 
@@ -1867,7 +1993,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1890,6 +2019,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -1946,7 +2086,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/submit-article", method = RequestMethod.POST)
-    public ModelAndView submitArticleData(@ModelAttribute("article") final Article article, final BindingResult bindResult)
+    public final ModelAndView submitArticleData(@ModelAttribute("article") final Article article, final BindingResult bindResult)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#submitArticleData(@ModelAttribute(\"article\") final Article article, final BindingResult bindResult)";
 
@@ -1967,7 +2107,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1990,6 +2133,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2173,7 +2327,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/edit-article", method = RequestMethod.POST)
-    public ModelAndView doEditArticle(@ModelAttribute("article") final Article article, final BindingResult bindResult)
+    public final ModelAndView doEditArticle(@ModelAttribute("article") final Article article, final BindingResult bindResult)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#doEditArticle(@ModelAttribute(\"article\") final Article article, final BindingResult bindResult)";
 
@@ -2194,7 +2348,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2217,6 +2374,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -2400,7 +2568,7 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
+    public final ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#submitArticleSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchReq, final BindingResult bindResult)";
 
@@ -2421,7 +2589,10 @@ public class KnowledgeBaseController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2444,6 +2615,17 @@ public class KnowledgeBaseController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 

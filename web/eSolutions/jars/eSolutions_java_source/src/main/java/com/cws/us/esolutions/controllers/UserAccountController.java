@@ -262,7 +262,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public ModelAndView showDefaultPage()
+    public final ModelAndView showDefaultPage()
     {
         final String methodName = UserAccountController.CNAME + "#showDefaultPage()";
 
@@ -280,7 +280,10 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -303,6 +306,17 @@ public class UserAccountController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -332,7 +346,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.GET)
-    public ModelAndView showPasswordChange()
+    public final ModelAndView showPasswordChange()
     {
         final String methodName = UserAccountController.CNAME + "#showPasswordChange()";
 
@@ -352,7 +366,10 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserAccount: {}", resetAccount);
 
@@ -376,6 +393,17 @@ public class UserAccountController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -407,7 +435,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/security", method = RequestMethod.GET)
-    public ModelAndView showSecurityChange()
+    public final ModelAndView showSecurityChange()
     {
         final String methodName = UserAccountController.CNAME + "#showSecurityChange()";
 
@@ -425,7 +453,10 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -448,6 +479,17 @@ public class UserAccountController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -516,7 +558,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/email", method = RequestMethod.GET)
-    public ModelAndView showEmailChange()
+    public final ModelAndView showEmailChange()
     {
         final String methodName = UserAccountController.CNAME + "#showEmailChange()";
 
@@ -534,7 +576,10 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -558,13 +603,31 @@ public class UserAccountController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
-        if (userAccount == null)
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
         {
-            // redirect
+            // redirect to password page
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
             return mView;
         }
 
@@ -575,7 +638,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public ModelAndView doPasswordChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doPasswordChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doPasswordChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -597,7 +660,11 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -619,6 +686,17 @@ public class UserAccountController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -777,7 +855,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/security", method = RequestMethod.POST)
-    public ModelAndView doSecurityChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doSecurityChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doSecurityChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -799,9 +877,11 @@ public class UserAccountController
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("LoginStatus: {}", currentStatus);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -823,6 +903,17 @@ public class UserAccountController
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -915,7 +1006,7 @@ public class UserAccountController
     }
 
     @RequestMapping(value = "/email", method = RequestMethod.POST)
-    public ModelAndView doEmailChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    public final ModelAndView doEmailChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
     {
         final String methodName = UserAccountController.CNAME + "#doEmailChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
@@ -932,14 +1023,15 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final LoginStatus currentStatus = userAccount.getStatus();
         final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("LoginStatus: {}", currentStatus);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -962,6 +1054,32 @@ public class UserAccountController
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
         }
 
         try
@@ -1027,15 +1145,6 @@ public class UserAccountController
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
                     // yay
-                    if (currentStatus == LoginStatus.EXPIRED)
-                    {
-                        HttpSession newSession = hRequest.getSession(true);
-                        userAccount.setSessionId(newSession.getId());
-                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
-                        hSession.invalidate();
-                    }
-
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
                     mView.setViewName(this.myAccountPage);
                 }

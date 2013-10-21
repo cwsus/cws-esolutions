@@ -73,12 +73,21 @@
                 <td><form:input path="targetPort" /></td>
                 <td><form:errors path="targetPort" cssClass="validationError" /></td>
             </tr>
+        </table>
+        <br /><br />
+        <table id="inputItems">
             <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><input type="button" name="execute" value="Continue" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" /></td>
+                <td>
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
+                <td>
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                </td>
+                <td>
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
             </tr>
         </table>
     </form:form>
 </div>
+<br /><br />

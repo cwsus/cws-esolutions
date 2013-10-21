@@ -24,7 +24,7 @@
             <td>${articleInfo.articleCause}</td>
         </tr>
         <tr>
-            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong>
+            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong></td>
             <td>${articleInfo.articleKeywords}</td>
         </tr>
     </table>
@@ -33,3 +33,4 @@
     <br />
     ${articleInfo.articleResolution}
 </div>
+<br /><br />

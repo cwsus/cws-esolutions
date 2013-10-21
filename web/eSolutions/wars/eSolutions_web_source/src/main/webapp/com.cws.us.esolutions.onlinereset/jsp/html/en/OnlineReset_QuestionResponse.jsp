@@ -54,9 +54,6 @@
                 </td>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
                 <td><label id="txtQuestionTwo"><spring:message code="olr.question" /><br /></label></td>
                 <td>${sessionScope.userSecurity.secQuestionTwo}</td>
             </tr>
@@ -68,21 +65,24 @@
                 </td>
             </tr>
             <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
                 <td>
                     <a href="<c:out value="${pageContext.request.contextPath}/ui/app/help/forgot-questions" />" title="<spring:message code='olr.forgot.questions' />">
                         <spring:message code="olr.forgot.questions" />
                     </a>
                 </td>
             </tr>
+        </table>
+        <br /><br />
+        <table id="inputItems">
             <tr>
                 <td>
-                    <input type="button" name="execute" value="<spring:message code="button.execute.text" />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 </td>
                 <td>
-                    <input type="button" name="cancel" value="<spring:message code="button.cancel.text" />" id="cancel" class="submit" onClick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/login/default';" />
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                </td>
+                <td>
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
                 </td>
             </tr>
         </table>

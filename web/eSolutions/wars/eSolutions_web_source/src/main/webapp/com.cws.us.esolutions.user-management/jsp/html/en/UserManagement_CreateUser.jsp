@@ -110,13 +110,21 @@
                         <td><form:checkbox path="suspended" name="suspended" id="suspended" /></td>
                         <td><form:errors path="suspended" cssClass="validationError" /></td>
                     </tr>
-                    <tr>
-                        <td>
-                            <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                            <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                        </td>
-                    </tr>
                 </table>
+                <br /><br />
+		        <table id="inputItems">
+		            <tr>
+		                <td>
+		                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+		                </td>
+		                <td>
+		                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+		                </td>
+		                <td>
+		                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+		                </td>
+		            </tr>
+		        </table>
             </form:form>
 	    </c:when>
 	    <c:otherwise>
@@ -127,3 +135,4 @@
 	    </c:otherwise>
 	</c:choose>
 </div>
+<br /><br />
