@@ -39,7 +39,6 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  */
 public class PlatformRequest implements Serializable
 {
-    private String dmgrName = null;
     private String description = null;
     private String platformName = null;
     private String platformDmgr = null;
@@ -104,19 +103,6 @@ public class PlatformRequest implements Serializable
         }
 
         this.platformDmgr = value;
-    }
-
-    public final void setDmgrName(final String value)
-    {
-        final String methodName = PlatformRequest.CNAME + "#setDmgrName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.dmgrName = value;
     }
 
     public final void setAppServers(final List<String> value)
@@ -208,19 +194,6 @@ public class PlatformRequest implements Serializable
         }
 
         return this.platformDmgr;
-    }
-
-    public final String getDmgrName()
-    {
-        final String methodName = PlatformRequest.CNAME + "#getDmgrName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dmgrName);
-        }
-
-        return this.dmgrName;
     }
 
     public final List<String> getAppServers()

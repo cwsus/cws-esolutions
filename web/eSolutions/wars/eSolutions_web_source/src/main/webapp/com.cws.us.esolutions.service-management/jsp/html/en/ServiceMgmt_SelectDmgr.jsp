@@ -40,7 +40,7 @@
 
     <p id="validationError" />
 
-    <form:form id="selectDmgr" name="selectDmgr" action="${pageContext.request.contextPath}/ui/service-management/add-platform" method="post">
+    <form:form id="selectDmgr" name="selectDmgr" action="${pageContext.request.contextPath}/ui/service-management/validate-dmgr" method="post">
         <table id="selectDmgr">
             <tr>
                 <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>

@@ -38,7 +38,6 @@
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
-        <property name="messageMultipleDmgrsFound" value="svc.mgmt.platform.multiple.dmgr.found" />
         <property name="messageRequestValidationFailed" value="svc.mgmt.request.validation.failed" />
     </bean>
 </beans>
