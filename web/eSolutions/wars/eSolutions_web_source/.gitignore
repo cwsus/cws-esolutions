@@ -15,6 +15,11 @@ local.properties
 .classpath
 .settings/
 .loadpath
+.checkstyle
+target/
+
+# Android
+gen/
 
 # External tool builders
 .externalToolBuilders/
