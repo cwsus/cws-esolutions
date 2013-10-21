@@ -13,26 +13,30 @@
         <property name="maxUploadSize" value="-1" />
     </bean>
 
-    <bean id="applicationValidator" class="com.cws.us.esolutions.validators.ApplicationValidator">
-        <property name="messageBinaryInvalid" value="app.mgmt.binary.invalid.type" />
-		<property name="messageApplicationNameRequired" value="app.mgmt.app.name.required" />
+    <bean id="applicationValidatorBean" class="com.cws.us.esolutions.validators.ApplicationValidator">
+        <property name="messageApplicationNameRequired" value="app.mgmt.app.name.required" />
 		<property name="messageApplicationLogsPathRequired" value="app.mgmt.app.logs.required" />
-		<property name="messageBinaryInvalidForType" value="app.mgmt.binary.not.valid.for.type" />
 		<property name="messageApplicationProjectRequired" value="app.mgmt.app.project.required" />
 		<property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
         <property name="messageApplicationClusterRequired" value="app.mgmt.app.cluster.required" />
 		<property name="messageApplicationPlatformRequired" value="app.mgmt.app.platform.required" />
 		<property name="messageApplicationInstallPathRequired" value="app.mgmt.app.install.required" />
+    </bean>
+
+    <bean id="deploymentValidatorBean" class="com.cws.us.esolutions.validators.DeploymentValidator">
+        <property name="messageBinaryInvalid" value="app.mgmt.binary.invalid.type" />
+        <property name="messageBinaryInvalidForType" value="app.mgmt.binary.not.valid.for.type" />
         <property name="messageDeploymentTypeRequired" value="app.mgmt.app.deployment.type.required" />
         <property name="messageDeploymentFilesRequired" value="app.mgmt.app.deployment.files.required" />
+        <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.us.esolutions.controllers.ApplicationManagementController">
         <property name="applicationValidator">
-            <ref bean="applicationValidator" />
+            <ref bean="applicationValidatorBean" />
         </property>
         <property name="deploymentValidator">
-            <bean id="deploymentValidator" class="com.cws.us.esolutions.validators.DeploymentValidator" />
+            <ref bean="deploymentValidatorBean" />
         </property>
         <property name="appConfig">
             <ref bean="appConfig" />
