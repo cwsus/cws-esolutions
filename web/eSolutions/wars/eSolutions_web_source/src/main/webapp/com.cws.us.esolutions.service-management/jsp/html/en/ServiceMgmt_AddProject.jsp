@@ -51,7 +51,7 @@
                     <form:select path="projectStatus">
                         <form:option value="<spring:message code='select.value' />" />
                         <form:option value="--------" />
-                        <form:options items="${status}" />
+                        <form:options items="${statusList}" />
                     </form:select>
                 </td>
                 <td><form:errors path="projectStatus" cssClass="validationError" /></td>

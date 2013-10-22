@@ -127,6 +127,11 @@
                 <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label></td>
                 <td><form:input path="serialNumber" /></td>
                 <td><form:errors path="serialNumber" cssClass="validationError" /></td>
+                <td>
+                    <form:select path="networkPartition">
+                        <form:options items="${networkPartitions}" />
+                    </form:select>
+                </td>
             </tr>
         </table>
         <table id="applicationDetail" style="display: none">

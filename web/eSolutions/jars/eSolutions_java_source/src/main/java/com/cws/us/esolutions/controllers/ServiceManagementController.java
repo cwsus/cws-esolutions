@@ -43,6 +43,7 @@ import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.us.esolutions.validators.PlatformValidator;
 import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.us.esolutions.validators.DatacenterValidator;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -871,6 +872,7 @@ public class ServiceManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            mView.addObject("statusList", ServiceStatus.values());
             mView.addObject("command", new Project());
             mView.setViewName(this.addProjectPage);
         }
@@ -963,6 +965,7 @@ public class ServiceManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            mView.addObject("statusList", ServiceStatus.values());
             mView.addObject("command", new DataCenter());
             mView.setViewName(this.addDatacenterPage);
         }
@@ -1117,6 +1120,7 @@ public class ServiceManagementController
                     mView.addObject("dmgrList", dmgrList);
                 }
 
+                mView.addObject("statusList", ServiceStatus.values());
                 mView.addObject("command", new PlatformRequest());
                 mView.setViewName(this.selectDmgrPage);
             }

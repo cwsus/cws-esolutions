@@ -41,7 +41,10 @@ import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.enums.ServerStatus;
+import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
@@ -1186,7 +1189,11 @@ public class SystemManagementController
                     {
                         DEBUGGER.debug("Server: {}", server);
                     }
-        
+
+                    mView.addObject("serverTypes", ServerType.values());
+                    mView.addObject("serverStatuses", ServerStatus.values());
+                    mView.addObject("serverRegions", ServiceRegion.values());
+                    mView.addObject("networkPartitions", NetworkPartition.values());
                     mView.addObject("command", server);
                     mView.setViewName(this.addServerPage);
                 }

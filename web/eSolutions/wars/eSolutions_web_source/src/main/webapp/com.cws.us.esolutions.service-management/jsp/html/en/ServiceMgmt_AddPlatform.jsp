@@ -51,7 +51,7 @@
                 <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label></td>
                 <td>
                     <form:select path="status" multiple="false">
-                        <form:options items="${status}" />
+                        <form:options items="${statusList}" />
                     </form:select>
                 </td>
                 <td><form:errors path="status" cssClass="validationError" /></td>
