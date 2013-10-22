@@ -38,9 +38,9 @@
 
             if (obj.value == 'DMGRSERVER')
             {
-	            document.getElementById("dmgrPort").style.display = 'block';
-	            document.getElementById("owningDmgr").style.display = 'none';
-	            document.getElementById("managerUrl").style.display = 'block';
+                document.getElementById("dmgrPort").style.display = 'block';
+                document.getElementById("owningDmgr").style.display = 'none';
+                document.getElementById("managerUrl").style.display = 'block';
             }
             else if (obj.value == 'VIRTUALHOST')
             {
@@ -120,18 +120,19 @@
                 <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
                 <td>
                     <form:select path="datacenter">
-                        <form:options items="${datacenters}" />
+                        <c:forEach var="datacenter" items="${datacenters}">
+                            <form:option value="${datacenter.datacenterName}" />
+                        </c:forEach>
                     </form:select>
                 </td>
                 <td><form:errors path="serverRegion" cssClass="validationError" /></td>
-                <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label></td>
-                <td><form:input path="serialNumber" /></td>
-                <td><form:errors path="serialNumber" cssClass="validationError" /></td>
+                <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
                 <td>
                     <form:select path="networkPartition">
                         <form:options items="${networkPartitions}" />
                     </form:select>
                 </td>
+                <td><form:errors path="serialNumber" cssClass="validationError" /></td>
             </tr>
         </table>
         <table id="applicationDetail" style="display: none">
@@ -150,14 +151,14 @@
                 <td>
                     <c:choose>
                         <c:when test="${not empty dmgrServers}">
-		                    <form:select path="owningDmgr">
-		                        <form:options items="${dmgrServers}" />
-		                    </form:select>
-	                    </c:when>
-	                    <c:otherwise>
-	                        <td><form:input path="owningDmgr" /></td>
-	                    </c:otherwise>
-	                </c:choose>
+                            <form:select path="owningDmgr">
+                                <form:options items="${dmgrServers}" />
+                            </form:select>
+                        </c:when>
+                        <c:otherwise>
+                            <td><form:input path="owningDmgr" /></td>
+                        </c:otherwise>
+                    </c:choose>
                 </td>
                 <td><form:errors path="owningDmgr" cssClass="validationError" /></td>
             </tr>
@@ -237,15 +238,15 @@
         <br /><br />
         <table id="inputItems">
             <tr>
-				<td>
-				    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
-				<td>
-				    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-				</td>
-				<td>
-				    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
+                <td>
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
+                <td>
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                </td>
+                <td>
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
             </tr>
         </table>
     </form:form>

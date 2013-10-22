@@ -396,6 +396,19 @@ public class ServiceManagementController
         this.messageDatacenterSuccessfullyAdded = value;
     }
 
+    public final void setMessageNoDmgrFound(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageNoDmgrFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoDmgrFound = value;
+    }
+
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
