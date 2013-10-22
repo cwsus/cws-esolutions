@@ -33,6 +33,7 @@
         <property name="serverValidator">
             <ref bean="serverValidator" />
         </property>
+        <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
         <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />
         <property name="defaultDomain" value="caspersbox.corp" />

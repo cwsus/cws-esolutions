@@ -43,6 +43,7 @@ public class PlatformRequest implements Serializable
     private String platformName = null;
     private String platformDmgr = null;
     private ServiceStatus status = null;
+    private String platformDmgrName = null;
     private List<String> appServers = null;
     private List<String> webServers = null;
     private ServiceRegion platformRegion = null;
@@ -103,6 +104,19 @@ public class PlatformRequest implements Serializable
         }
 
         this.platformDmgr = value;
+    }
+
+    public final void setPlatformDmgrName(final String value)
+    {
+        final String methodName = PlatformRequest.CNAME + "#setPlatformDmgrName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.platformDmgrName = value;
     }
 
     public final void setAppServers(final List<String> value)
@@ -194,6 +208,19 @@ public class PlatformRequest implements Serializable
         }
 
         return this.platformDmgr;
+    }
+
+    public final String getPlatformDmgrName()
+    {
+        final String methodName = PlatformRequest.CNAME + "#getPlatformDmgrName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.platformDmgrName);
+        }
+
+        return this.platformDmgrName;
     }
 
     public final List<String> getAppServers()

@@ -53,24 +53,8 @@ public interface IServerDataDAO
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    /**
-     * 
-     *
-     *
-     * @param platformCode
-     * @return
-     * @throws SQLException
-     */
     boolean addNewServer(final List<Object> serverData) throws SQLException;
 
-    /**
-     * 
-     *
-     *
-     * @param platformCode
-     * @return
-     * @throws SQLException
-     */
     boolean removeExistingServer(final String serverGuid) throws SQLException;
 
     boolean modifyServerData(final List<String> serverData) throws SQLException;

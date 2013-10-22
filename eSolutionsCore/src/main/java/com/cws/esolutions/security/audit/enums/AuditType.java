@@ -98,12 +98,17 @@ public enum AuditType
     DELETESERVER,
     UPDATESERVER,
     LISTSERVERS,
+    GETSERVER,
     TELNET,
     REMOTEDATE,
     STOP,
     START,
     RESTART,
     SUSPEND,
+    // datacenter mgmt
+    ADDDATACENTER,
+    LISTDATACENTERS,
+    GETDATACENTER,
     // added to satisfy service tests
     // DO NOT REMOVE
     JUNIT;

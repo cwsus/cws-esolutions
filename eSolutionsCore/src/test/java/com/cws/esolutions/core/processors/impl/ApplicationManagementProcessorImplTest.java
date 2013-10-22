@@ -231,7 +231,7 @@ public class ApplicationManagementProcessorImplTest
         try
         {
             ApplicationManagementResponse response = appProcess.listApplications(request);
-System.out.println(response);
+
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ApplicationManagementException amx)
@@ -282,7 +282,7 @@ System.out.println(response);
         try
         {
             ApplicationManagementResponse response = appProcess.getApplicationData(request);
-System.out.println(response);
+
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ApplicationManagementException amx)

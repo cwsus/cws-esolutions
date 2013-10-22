@@ -83,7 +83,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.articleId = value;
@@ -109,7 +109,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.author = value;
@@ -122,7 +122,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.keywords = value;
@@ -135,7 +135,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.title = value;
@@ -148,7 +148,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.symptoms = value;
@@ -161,7 +161,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.cause = value;
@@ -174,7 +174,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.authorEmail = value;
@@ -187,7 +187,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resolution = value;
@@ -213,7 +213,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.reviewedBy = value;
@@ -239,7 +239,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.modifiedBy = value;
@@ -265,7 +265,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", pageHits);
+            DEBUGGER.debug("Value: {}", this.pageHits);
         }
 
         return this.pageHits;
@@ -278,7 +278,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.articleId);
+            DEBUGGER.debug("Value: {}", this.articleId);
         }
 
         return this.articleId;
@@ -304,7 +304,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.author);
+            DEBUGGER.debug("Value: {}", this.author);
         }
 
         return this.author;
@@ -317,7 +317,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.keywords);
+            DEBUGGER.debug("Value: {}", this.keywords);
         }
 
         return this.keywords;
@@ -330,7 +330,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.title);
+            DEBUGGER.debug("Value: {}", this.title);
         }
 
         return this.title;
@@ -343,7 +343,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.symptoms);
+            DEBUGGER.debug("Value: {}", this.symptoms);
         }
 
         return this.symptoms;
@@ -356,7 +356,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.cause);
+            DEBUGGER.debug("Value: {}", this.cause);
         }
 
         return this.cause;
@@ -369,7 +369,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.authorEmail);
+            DEBUGGER.debug("Value: {}", this.authorEmail);
         }
 
         return this.authorEmail;
@@ -382,7 +382,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.resolution);
+            DEBUGGER.debug("Value: {}", this.resolution);
         }
 
         return this.resolution;
@@ -395,7 +395,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleStatus: {}", this.articleStatus);
+            DEBUGGER.debug("Value: {}", this.articleStatus);
         }
 
         return this.articleStatus;
@@ -408,7 +408,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.reviewedBy);
+            DEBUGGER.debug("Value: {}", this.reviewedBy);
         }
 
         return this.reviewedBy;
@@ -434,7 +434,7 @@ public class Article implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.modifiedBy);
+            DEBUGGER.debug("Value: {}", this.modifiedBy);
         }
 
         return this.modifiedBy;

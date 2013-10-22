@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.processors.dto.Article;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -124,7 +125,7 @@ public class ArticleValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = ArticleValidator.class.isAssignableFrom(value);
+        final boolean isSupported = Article.class.isAssignableFrom(value);
 
         if (DEBUG)
         {

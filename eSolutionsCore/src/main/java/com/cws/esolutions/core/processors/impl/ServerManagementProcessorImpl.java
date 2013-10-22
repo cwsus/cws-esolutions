@@ -30,13 +30,16 @@ import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
+import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.utils.exception.UtilityException;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
@@ -146,6 +149,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                     requestServer.getOsName(),
                                     requestServer.getServerStatus().name(),
                                     requestServer.getServerRegion().name(),
+                                    requestServer.getNetworkPartition().name(),
+                                    requestServer.getDatacenter().getDatacenterGuid(),
                                     requestServer.getServerType().name(),
                                     requestServer.getDomainName(),
                                     requestServer.getCpuType(),
@@ -308,6 +313,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 requestServer.getOsName(),
                                 requestServer.getServerStatus().name(),
                                 requestServer.getServerRegion().name(),
+                                requestServer.getNetworkPartition().name(),
+                                requestServer.getDatacenter().getDatacenterGuid(),
                                 requestServer.getServerType().name(),
                                 requestServer.getDomainName(),
                                 requestServer.getCpuType(),
@@ -465,17 +472,68 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             }
                         }
 
-                        Server server = new Server();
-                        server.setServerGuid(data[0]);
-                        server.setOperHostName(data[1]);
-                        server.setServerType(ServerType.valueOf(data[2]));
+                        List<String> datacenter = datactrDAO.getDatacenter(data[5]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Server: {}", server);
+                            DEBUGGER.debug("List<String>: {}", datacenter);
                         }
 
-                        serverList.add(server);
+                        if ((datacenter != null) && (datacenter.size() != 0))
+                        {
+                            DataCenter dataCenter = new DataCenter();
+                            dataCenter.setDatacenterGuid(datacenter.get(0));
+                            dataCenter.setDatacenterName(datacenter.get(1));
+                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
+                            dataCenter.setDatacenterDesc(datacenter.get(3));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DataCenter: {}", dataCenter);
+                            }
+
+                            Server server = new Server();
+                            server.setServerGuid(data[0]);
+                            server.setOsName(data[1]);
+                            server.setServerStatus(ServerStatus.valueOf(data[2]));
+                            server.setServerRegion(ServiceRegion.valueOf(data[3]));
+                            server.setNetworkPartition(NetworkPartition.valueOf(data[4]));
+                            server.setDatacenter(dataCenter);
+                            server.setServerType(ServerType.valueOf(data[6]));
+                            server.setDomainName(data[7]);
+                            server.setCpuType(data[8]);
+                            server.setCpuCount(Integer.parseInt(data[9]));
+                            server.setServerRack(data[10]);
+                            server.setRackPosition(data[11]);
+                            server.setServerModel(data[12]);
+                            server.setSerialNumber(data[13]);
+                            server.setInstalledMemory(Integer.parseInt(data[14]));
+                            server.setOperIpAddress(data[15]);
+                            server.setOperHostName(data[16]);
+                            server.setMgmtIpAddress(data[17]);
+                            server.setMgmtHostName(data[18]);
+                            server.setBkIpAddress(data[19]);
+                            server.setBkHostName(data[20]);
+                            server.setNasIpAddress(data[21]);
+                            server.setNasHostName(data[22]);
+                            server.setNatAddress(data[23]);
+                            server.setServerComments(data[24]);
+                            server.setAssignedEngineer(data[25]);
+                            server.setDmgrPort(Integer.valueOf(data[26]));
+                            server.setOwningDmgr(data[27]);
+                            server.setMgrUrl(data[28]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Server: {}", server);
+                            }
+
+                            serverList.add(server);
+                        }
+                        else
+                        {
+                            ERROR_RECORDER.error("Server " + data[0] + " has no associated datacenter");
+                        }
                     }
 
                     if (DEBUG)
@@ -514,7 +572,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setReqInfo(reqInfo);
                 auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setAuditType(AuditType.LISTSERVERS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
                 if (DEBUG)
@@ -597,41 +655,68 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             }
                         }
 
-                        Server server = new Server();
-                        server.setServerGuid(data[0]);
-                        server.setOsName(data[1]);
-                        server.setServerStatus(ServerStatus.valueOf(data[2]));
-                        server.setServerRegion(ServiceRegion.valueOf(data[3]));
-                        server.setServerType(ServerType.valueOf(data[4]));
-                        server.setDomainName(data[5]);
-                        server.setCpuType(data[6]);
-                        server.setCpuCount(Integer.parseInt(data[7]));
-                        server.setServerRack(data[8]);
-                        server.setRackPosition(data[9]);
-                        server.setServerModel(data[10]);
-                        server.setSerialNumber(data[11]);
-                        server.setInstalledMemory(Integer.parseInt(data[12]));
-                        server.setOperIpAddress(data[13]);
-                        server.setOperHostName(data[14]);
-                        server.setMgmtIpAddress(data[15]);
-                        server.setMgmtHostName(data[16]);
-                        server.setBkIpAddress(data[17]);
-                        server.setBkHostName(data[18]);
-                        server.setNasIpAddress(data[19]);
-                        server.setNasHostName(data[20]);
-                        server.setNatAddress(data[21]);
-                        server.setServerComments(data[22]);
-                        server.setAssignedEngineer(data[23]);
-                        server.setDmgrPort(Integer.valueOf(data[24]));
-                        server.setOwningDmgr(data[25]);
-                        server.setMgrUrl(data[26]);
+                        List<String> datacenter = datactrDAO.getDatacenter(data[5]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Server: {}", server);
+                            DEBUGGER.debug("List<String>: {}", datacenter);
                         }
 
-                        serverList.add(server);
+                        if ((datacenter != null) && (datacenter.size() != 0))
+                        {
+                            DataCenter dataCenter = new DataCenter();
+                            dataCenter.setDatacenterGuid(datacenter.get(0));
+                            dataCenter.setDatacenterName(datacenter.get(1));
+                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
+                            dataCenter.setDatacenterDesc(datacenter.get(3));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DataCenter: {}", dataCenter);
+                            }
+
+                            Server server = new Server();
+                            server.setServerGuid(data[0]);
+                            server.setOsName(data[1]);
+                            server.setServerStatus(ServerStatus.valueOf(data[2]));
+                            server.setServerRegion(ServiceRegion.valueOf(data[3]));
+                            server.setNetworkPartition(NetworkPartition.valueOf(data[4]));
+                            server.setDatacenter(dataCenter);
+                            server.setServerType(ServerType.valueOf(data[6]));
+                            server.setDomainName(data[7]);
+                            server.setCpuType(data[8]);
+                            server.setCpuCount(Integer.parseInt(data[9]));
+                            server.setServerRack(data[10]);
+                            server.setRackPosition(data[11]);
+                            server.setServerModel(data[12]);
+                            server.setSerialNumber(data[13]);
+                            server.setInstalledMemory(Integer.parseInt(data[14]));
+                            server.setOperIpAddress(data[15]);
+                            server.setOperHostName(data[16]);
+                            server.setMgmtIpAddress(data[17]);
+                            server.setMgmtHostName(data[18]);
+                            server.setBkIpAddress(data[19]);
+                            server.setBkHostName(data[20]);
+                            server.setNasIpAddress(data[21]);
+                            server.setNasHostName(data[22]);
+                            server.setNatAddress(data[23]);
+                            server.setServerComments(data[24]);
+                            server.setAssignedEngineer(data[25]);
+                            server.setDmgrPort(Integer.valueOf(data[26]));
+                            server.setOwningDmgr(data[27]);
+                            server.setMgrUrl(data[28]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Server: {}", server);
+                            }
+
+                            serverList.add(server);
+                        }
+                        else
+                        {
+                            ERROR_RECORDER.error("Server " + data[0] + " has no associated datacenter");
+                        }
                     }
 
                     if (DEBUG)
@@ -697,7 +782,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
-
     @Override
     public ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -744,43 +828,70 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     if ((serverData != null) && (serverData.size() != 0))
                     {
-                        Server server = new Server();
-                        server.setServerGuid(serverData.get(0));
-                        server.setOsName(serverData.get(1));
-                        server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                        server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                        server.setServerType(ServerType.valueOf(serverData.get(4)));
-                        server.setDomainName(serverData.get(5));
-                        server.setCpuType(serverData.get(6));
-                        server.setCpuCount(Integer.parseInt(serverData.get(7)));
-                        server.setServerRack(serverData.get(8));
-                        server.setRackPosition(serverData.get(9));
-                        server.setServerModel(serverData.get(10));
-                        server.setSerialNumber(serverData.get(11));
-                        server.setInstalledMemory(Integer.parseInt(serverData.get(12)));
-                        server.setOperIpAddress(serverData.get(13));
-                        server.setOperHostName(serverData.get(14));
-                        server.setMgmtIpAddress(serverData.get(15));
-                        server.setMgmtHostName(serverData.get(16));
-                        server.setBkIpAddress(serverData.get(17));
-                        server.setBkHostName(serverData.get(18));
-                        server.setNasIpAddress(serverData.get(19));
-                        server.setNasHostName(serverData.get(20));
-                        server.setNatAddress(serverData.get(21));
-                        server.setServerComments(serverData.get(22));
-                        server.setAssignedEngineer(serverData.get(23));
-                        server.setDmgrPort(Integer.valueOf(serverData.get(24)));
-                        server.setOwningDmgr(serverData.get(25));
-                        server.setMgrUrl(serverData.get(26));
+                        List<String> datacenter = datactrDAO.getDatacenter(serverData.get(5));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Server: {}", server);
+                            DEBUGGER.debug("List<String>: {}", datacenter);
                         }
 
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully loaded installed server information.");
-                        response.setServer(server);
+                        if ((datacenter != null) && (datacenter.size() != 0))
+                        {
+                            DataCenter dataCenter = new DataCenter();
+                            dataCenter.setDatacenterGuid(datacenter.get(0));
+                            dataCenter.setDatacenterName(datacenter.get(1));
+                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
+                            dataCenter.setDatacenterDesc(datacenter.get(3));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DataCenter: {}", dataCenter);
+                            }
+
+                            Server server = new Server();
+                            server.setServerGuid(serverData.get(0));
+                            server.setOsName(serverData.get(1));
+                            server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
+                            server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
+                            server.setNetworkPartition(NetworkPartition.valueOf(serverData.get(4)));
+                            server.setDatacenter(dataCenter);
+                            server.setServerType(ServerType.valueOf(serverData.get(6)));
+                            server.setDomainName(serverData.get(7));
+                            server.setCpuType(serverData.get(8));
+                            server.setCpuCount(Integer.parseInt(serverData.get(9)));
+                            server.setServerRack(serverData.get(10));
+                            server.setRackPosition(serverData.get(11));
+                            server.setServerModel(serverData.get(12));
+                            server.setSerialNumber(serverData.get(13));
+                            server.setInstalledMemory(Integer.parseInt(serverData.get(14)));
+                            server.setOperIpAddress(serverData.get(15));
+                            server.setOperHostName(serverData.get(16));
+                            server.setMgmtIpAddress(serverData.get(17));
+                            server.setMgmtHostName(serverData.get(18));
+                            server.setBkIpAddress(serverData.get(19));
+                            server.setBkHostName(serverData.get(20));
+                            server.setNasIpAddress(serverData.get(21));
+                            server.setNasHostName(serverData.get(22));
+                            server.setNatAddress(serverData.get(23));
+                            server.setServerComments(serverData.get(24));
+                            server.setAssignedEngineer(serverData.get(25));
+                            server.setDmgrPort(Integer.valueOf(serverData.get(26)));
+                            server.setOwningDmgr(serverData.get(27));
+                            server.setMgrUrl(serverData.get(28));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Server: {}", server);
+                            }
+
+                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                            response.setResponse("Successfully loaded installed server information.");
+                            response.setServer(server);
+                        }
+                        else
+                        {
+                            throw new ServerManagementException("The server provided has no associated datacenter.");
+                        }
                     }
                     else
                     {
@@ -819,7 +930,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setReqInfo(reqInfo);
                 auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setAuditType(AuditType.GETSERVER);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
                 if (DEBUG)

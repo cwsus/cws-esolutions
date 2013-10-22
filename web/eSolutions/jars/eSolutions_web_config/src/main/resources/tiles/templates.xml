@@ -172,6 +172,10 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Platform" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_AddPlatform.jsp" cascade="true" />
     </definition>
+    <definition name="ServiceMgmt_AddDatacenter" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Datacenter" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_AddDatacenter.jsp" cascade="true" />
+    </definition>
     <definition name="ServiceMgmt_ViewProject" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Project" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProject.jsp" cascade="true" />

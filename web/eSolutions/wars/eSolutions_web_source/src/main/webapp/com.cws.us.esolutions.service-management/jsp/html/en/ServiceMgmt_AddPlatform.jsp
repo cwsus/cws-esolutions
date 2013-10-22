@@ -46,6 +46,8 @@
                 <td><label id="txtPlatformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
                 <td><form:input path="platformName" /></td>
                 <td><form:errors path="platformName" cssClass="validationError" /></td>
+            </tr>
+            <tr>
                 <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label></td>
                 <td>
                     <form:select path="status" multiple="false">
@@ -53,12 +55,14 @@
                     </form:select>
                 </td>
                 <td><form:errors path="status" cssClass="validationError" /></td>
+            </tr>
+            <tr>
                 <td><label id="txtPlatformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
                 <td><form:input path="platformRegion" readonly="true" /></td>
             </tr>
             <tr>
                 <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-                <td><form:input path="dmgrName" readonly="true" /></td>
+                <td><form:input path="platformDmgrName" readonly="true" /></td>
             </tr>
             <tr>
                 <c:if test="${not empty appServerList}">
@@ -79,6 +83,8 @@
 	                    </c:otherwise>
 	                </c:choose>
 		        </c:if>
+		    </tr>
+		    <tr>
 		        <c:if test="${not empty webServerList}">
 	                <td><label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
 	                <c:choose>

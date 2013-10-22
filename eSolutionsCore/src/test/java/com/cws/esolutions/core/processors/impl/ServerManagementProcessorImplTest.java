@@ -27,6 +27,7 @@ import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -34,6 +35,7 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -154,6 +156,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -177,6 +182,8 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setOwningDmgr("bc55f443-202b-4f7c-9118-47dd80500ffb");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -204,6 +211,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -226,6 +236,8 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -253,6 +265,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -276,6 +291,8 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setOwningDmgr("dac2e765-109e-4385-8563-aab66d6713f9");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -303,6 +320,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -325,6 +345,8 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -352,6 +374,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -375,6 +400,8 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setOwningDmgr("fde6d6e9-8bac-4a82-99c6-ef225945d846");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -402,6 +429,9 @@ public class ServerManagementProcessorImplTest
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
             server.setOsName("CentOS");
@@ -424,6 +454,8 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -445,7 +477,7 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void addServer()
+    public final void addServerAsDnsServer()
     {
         for (int x = 0; x < 4; x++)
         {
@@ -495,52 +527,6 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void doStuff()
-    {
-        String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-        Server server = new Server();
-        server.setServerGuid(UUID.randomUUID().toString());
-        server.setOsName("CentOS");
-        server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
-        server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-        server.setMgmtIpAddress("192.168.10.155");
-        server.setMgmtHostName(name + "-mgt");
-        server.setBkIpAddress("172.16.10.55");
-        server.setBkHostName(name + "-bak");
-        server.setNasIpAddress("172.15.10.55");
-        server.setNasHostName(name + "-nas");
-        server.setServerRegion(ServiceRegion.DEV);
-        server.setServerStatus(ServerStatus.ONLINE);
-        server.setServerType(ServerType.DNSMASTER);
-        server.setServerComments("dns server");
-        server.setAssignedEngineer("Kevin Huntly");
-        server.setCpuType("AMD 1.0 GHz");
-        server.setCpuCount(1);
-        server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
-        server.setInstalledMemory(4096);
-        server.setOwningDmgr("7d29ba8c-2729-4fa3-b1b7-a90a9cf3e44f");
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setTargetServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.addNewServer(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-    @Test
     public final void addNewServerAsMqServer()
     {
         Server server = new Server();
@@ -589,9 +575,12 @@ public class ServerManagementProcessorImplTest
     {
         String[] strings = new String [] { "bc55f443-202b-4f7c-9118-47dd80500ffb", "dac2e765-109e-4385-8563-aab66d6713f9", "fde6d6e9-8bac-4a82-99c6-ef225945d846" };
 
-        for (int x = 0; x < 4; x++)
+        for (int x = 0; x < 3; x++)
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
 
             Server server = new Server();
             server.setServerGuid(strings[x]);
@@ -630,6 +619,8 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setMgrUrl("https://dmgr.myserver.org:18003/console");
             server.setDmgrPort(18003);
+            server.setDatacenter(dataCenter);
+            server.setNetworkPartition(NetworkPartition.DMZ);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -848,7 +839,7 @@ public class ServerManagementProcessorImplTest
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
+        request.setTargetServer(server);
 
         try
         {

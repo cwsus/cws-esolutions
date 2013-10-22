@@ -21,7 +21,7 @@ CREATE  TABLE `cwssec`.`usr_lgn_services` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 --
--- Dumping data for table `cwssec`.`usr_lgn_services`
+-- add in default services
 --
 /*!40000 ALTER TABLE `cwssec`.`usr_lgn_services` DISABLE KEYS */;
 
@@ -47,6 +47,8 @@ INSERT INTO `cwssec`.`usr_lgn_services` (usr_svc_svcid, usr_svc_svcname, usr_svc
 VALUES ('3F0D3FB5-56C9-4A90-B177-4E1593088DBF', 'SystemCheck', 'Service ID for System Checks');
 INSERT INTO `cwssec`.`usr_lgn_services` (usr_svc_svcid, usr_svc_svcname, usr_svc_description)
 VALUES ('AEB46994-57B4-4E92-90AA-A4046F60B830', 'UserMgmt', 'Service ID for User Management');
+INSERT INTO `cwssec`.`usr_lgn_services` (usr_svc_svcid, usr_svc_svcname, usr_svc_description)
+VALUES ('0C1C5F83-3EDD-4635-9F1E-6A9B5383747E', 'DatacenterMgmt', 'Service ID for Datacenter Management');
 
 /*!40000 ALTER TABLE `cwssec`.`usr_lgn_services` ENABLE KEYS */;
 COMMIT;

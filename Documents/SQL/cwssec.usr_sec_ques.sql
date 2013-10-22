@@ -27,7 +27,7 @@ CREATE TABLE `cwssec`.`usr_sec_ques` (
 COMMIT;
 
 --
--- Dumping data for table `cwssec`.`usr_sec_ques`
+-- add in default questions
 --
 
 /*!40000 ALTER TABLE `cwssec`.`usr_sec_ques` DISABLE KEYS */;

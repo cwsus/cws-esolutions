@@ -18,6 +18,12 @@
 		<property name="messagePlatformRegionRequired" value="platform.region.required" />
     </bean>
 
+    <bean id="datactrValidator" class="com.cws.us.esolutions.validators.DatacenterValidator">
+        <property name="messageDatacenterNameRequired" value="svc.mgmt.datacenter.name.required" />
+        <property name="messageDatacenterStatusRequired" value="svc.mgmt.datacenter.status.required" />
+        <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.dataacenter.description.required" />
+    </bean>
+
     <bean id="serviceManagementController" class="com.cws.us.esolutions.controllers.ServiceManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
@@ -25,7 +31,14 @@
         <property name="platformValidator">
             <ref bean="platformRequestValidator" />
         </property>
+        <property name="datacenterValidator">
+            <ref bean="datactrValidator" />
+        </property>
+        <property name="messageNoWebServersFound" value="svc.mgmt.no.web.servers" />
+        <property name="messageNoAppServersFound" value="svc.mgmt.no.app.servers" />
+        <property name="messageDatacenterSuccessfullyAdded" value="svc.mgmt.datacenter.added" />
         <property name="serviceName" value="svcMgmt" />
+        <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
 	    <property name="addProjectPage" value="ServiceMgmt_AddProject" />
 	    <property name="selectDmgrPage" value="ServiceMgmt_SelectDmgr" />
 	    <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
@@ -34,6 +47,7 @@
 	    <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
 	    <property name="viewProjectsList" value="ServiceMgmt_ViewProjects" />
 	    <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
+	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="systemMgmt" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />

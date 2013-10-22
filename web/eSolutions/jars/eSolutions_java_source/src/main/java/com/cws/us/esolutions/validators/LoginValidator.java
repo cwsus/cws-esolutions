@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.dto.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 /**
@@ -70,7 +71,7 @@ public class LoginValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (UserSecurity.class.isAssignableFrom(value)));
+        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (UserSecurity.class.isAssignableFrom(value)) || (LoginRequest.class.isAssignableFrom(value)));
 
         if (DEBUG)
         {

@@ -11,11 +11,9 @@
  */
 package com.cws.us.esolutions.controllers;
 
-import java.util.Map;
 import java.util.List;
 import java.util.UUID;
 import org.slf4j.Logger;
-import java.util.HashMap;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpSession;
@@ -37,13 +35,11 @@ import com.cws.us.esolutions.dto.ManagementRequest;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.us.esolutions.validators.ServerValidator;
+import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -51,10 +47,18 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
+import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
+import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
+import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
+import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
+import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
+import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
+import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -77,6 +81,7 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 public class SystemManagementController
 {
     private String serviceId = null;
+    private String dcService = null;
     private String requestUrl = null;
     private String serviceName = null;
     private String defaultPage = null;
@@ -211,6 +216,19 @@ public class SystemManagementController
         }
 
         this.systemService = value;
+    }
+
+    public final void setDcService(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setDcService(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dcService = value;
     }
 
     public final void setServerValidator(final ServerValidator value)
@@ -1009,11 +1027,12 @@ public class SystemManagementController
 
         ModelAndView mView = new ModelAndView();
 
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
+        final IDatacenterManagementProcessor dcProcessor = new DatacenterManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1095,62 +1114,68 @@ public class SystemManagementController
                     {
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
-    
-                    // search req for dmgr's
-                    SearchRequest searchRequest = new SearchRequest();
-                    searchRequest.setRequestInfo(reqInfo);
-                    searchRequest.setUserAccount(userAccount);
-                    searchRequest.setSearchTerms(ServerType.DMGRSERVER.name());
-    
+
+                    Server dmgrServer = new Server();
+                    dmgrServer.setServerType(ServerType.DMGRSERVER);
+
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SearchRequest: {}", searchRequest);
+                        DEBUGGER.debug("Server: {}", dmgrServer);
                     }
-    
-                    try
+
+                    ServerManagementRequest dmgrRequest = new ServerManagementRequest();
+                    dmgrRequest.setRequestInfo(reqInfo);
+                    dmgrRequest.setUserAccount(userAccount);
+                    dmgrRequest.setServiceId(this.systemService);
+                    dmgrRequest.setTargetServer(dmgrServer);
+
+                    ServerManagementResponse dmgrResponse = processor.listServersByType(dmgrRequest);
+
+                    if (DEBUG)
                     {
-                        SearchResponse searchResponse = searchProcessor.doServerSearch(searchRequest);
-     
+                        DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
+                    }
+
+                    if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        List<Server> dmgrServers = dmgrResponse.getServerList();
+
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SearchResponse: {}", searchResponse);
+                            DEBUGGER.debug("List<Server>: {}", dmgrServers);
                         }
-    
-                        if (searchResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            List<SearchResult> results = searchResponse.getResults();
-    
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("results: {}", results);
-                            }
-    
-                            if ((results != null) && (results.size() != 0))
-                            {
-                                Map<String, String> dmgrList = new HashMap<String, String>();
-    
-                                for (SearchResult result : results)
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("SearchResult: {}", result);
-                                    }
-    
-                                    dmgrList.put(result.getPath(), result.getTitle());
-                                }
-    
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("dmgrList: {}", dmgrList);
-                                }
-    
-                                mView.addObject("dmgrList", dmgrList);
-                            }
-                        }
+
+                        mView.addObject("dmgrServers", dmgrServers);
                     }
-                    catch (SearchRequestException srx)
+
+                    // list datacenters
+                    DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
+                    dcRequest.setRequestInfo(reqInfo);
+                    dcRequest.setServiceId(this.dcService);
+                    dcRequest.setUserAccount(userAccount);
+
+                    if (DEBUG)
                     {
-                        ERROR_RECORDER.error(srx.getMessage(), srx);
+                        DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+                    }
+
+                    DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
+                    }
+
+                    if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        List<DataCenter> datacenters = dcResponse.getDatacenterList();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<DataCenter>: {}", datacenters);
+                        }
+
+                        mView.addObject("datacenters", datacenters);
                     }
 
                     Server server = new Server();
@@ -1175,6 +1200,18 @@ public class SystemManagementController
                 ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
                 mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (ServerManagementException smx)
+            {
+                ERROR_RECORDER.error(smx.getMessage(), smx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (DatacenterManagementException dmx)
+            {
+                ERROR_RECORDER.error(dmx.getMessage(), dmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
             }
         }
         else

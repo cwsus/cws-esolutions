@@ -54,8 +54,8 @@
         <tr>
             <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label>
             <td>${server.serverRegion}</td>
-            <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label>
-            <td>${server.serialNumber}</td>
+            <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label>
+            <td>${server.datacenter}</td>
         </tr>
     </table>
     <c:if test="${server.serverType eq 'DMGR' or server.serverType eq 'VIRTUALHOST'}">
@@ -114,6 +114,8 @@
         <tr>
             <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label>
             <td>${server.natAddress}</td>
+            <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label>
+            <td>${server.serialNumber}</td>
         </tr>
     </table>
     <table id="comments">

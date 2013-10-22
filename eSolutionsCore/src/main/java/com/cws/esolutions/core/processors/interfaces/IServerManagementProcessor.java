@@ -27,6 +27,8 @@ import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
+import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
@@ -59,6 +61,7 @@ public interface IServerManagementProcessor
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
+    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();

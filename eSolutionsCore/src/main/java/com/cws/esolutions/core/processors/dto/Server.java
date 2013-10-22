@@ -24,6 +24,7 @@ import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.dto
@@ -66,11 +67,13 @@ public class Server implements Serializable
     private String nasIpAddress = null;
     private String operIpAddress = null;
     private String mgmtIpAddress = null;
+    private DataCenter datacenter = null;
     private String serverComments = null;
     private ServerType serverType = null;
     private String assignedEngineer = null;
     private ServerStatus serverStatus = null;
     private ServiceRegion serverRegion = null;
+    private NetworkPartition networkPartition = null;
 
     private static final long serialVersionUID = 9028945840047154190L;
     private static final String CNAME = Server.class.getName();
@@ -442,6 +445,32 @@ public class Server implements Serializable
         this.installedMemory = value;
     }
 
+    public final void setNetworkPartition(final NetworkPartition value)
+    {
+        final String methodName = Server.CNAME + "#setInstalledMemory(final NetworkPartition value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.networkPartition = value;
+    }
+
+    public final void setDatacenter(final DataCenter value)
+    {
+        final String methodName = Server.CNAME + "#setDatacenter(final DataCenter value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.datacenter = value;
+    }
+
     public final String getServerGuid()
     {
         final String methodName = Server.CNAME + "#getServerGuid()";
@@ -804,6 +833,32 @@ public class Server implements Serializable
         }
 
         return this.installedMemory;
+    }
+
+    public final NetworkPartition getNetworkPartition()
+    {
+        final String methodName = Server.CNAME + "#getNetworkPartition()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.networkPartition);
+        }
+
+        return this.networkPartition;
+    }
+
+    public final DataCenter getDatacenter()
+    {
+        final String methodName = Server.CNAME + "#getDatacenter()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.datacenter);
+        }
+
+        return this.datacenter;
     }
 
     @Override

@@ -1040,6 +1040,44 @@ function validateForm(theForm, e)
             }
         }
     }
+    else if (theForm.name == 'createNewDatacenter')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.datacenterName.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'A name must be provided for the new datacenter.';
+                    document.getElementById('txtDatacenterName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('datacenterName').focus();
+                }
+                else if (theForm.datacenterStatus.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'A datacenter status must be provided.';
+                    document.getElementById('txtDatacenterStatus').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('datacenterStatus').focus();
+                }
+                else if (theForm.datacenterDesc.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'A description of the datacenter must be provided.';
+                    document.getElementById('txtDatacenterDescription').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('datacenterDesc').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
     else
     {
         document.getElementById('validationError').innerHTML = 'An error occurred while processing your request.';

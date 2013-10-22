@@ -74,34 +74,36 @@ public class ServerDataDAOImpl implements IServerDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL insertNewServer(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, (String) serverData.get(0)); // systemGuid
                 stmt.setString(2, (String) serverData.get(1)); // systemOs
                 stmt.setString(3, (String) serverData.get(2)); // systemStatus
                 stmt.setString(4, (String) serverData.get(3)); // systemRegion
-                stmt.setString(5, (String) serverData.get(4)); // systemType
-                stmt.setString(6, (String) serverData.get(5)); // domainName
-                stmt.setString(7, (String) serverData.get(6)); // cpuType
-                stmt.setInt(8, (Integer) serverData.get(7)); // cpuCount
-                stmt.setString(9, (String) serverData.get(8)); // serverModel
-                stmt.setString(10, (String) serverData.get(9)); // serialNumber
-                stmt.setInt(11, (Integer) serverData.get(10)); // installedMemory
-                stmt.setString(12, (String) serverData.get(11)); // operIp
-                stmt.setString(13, (String) serverData.get(12)); // operHostname
-                stmt.setString(14, (String) serverData.get(13)); // mgmtIp
-                stmt.setString(15, (String) serverData.get(14)); // mgmtHostname
-                stmt.setString(16, (String) serverData.get(15)); // backupIp
-                stmt.setString(17, (String) serverData.get(16)); // backupHostname
-                stmt.setString(18, (String) serverData.get(17)); // nasIp
-                stmt.setString(19, (String) serverData.get(18)); // nasHostname
-                stmt.setString(20, (String) serverData.get(19)); // natAddr
-                stmt.setString(21, (String) serverData.get(20)); // systemComments
-                stmt.setString(22, (String) serverData.get(21)); // engineer
-                stmt.setString(23, (String) serverData.get(22)); // mgrEntry
-                stmt.setInt(24, (Integer) serverData.get(23)); // dmgrPort
-                stmt.setString(25, (String) serverData.get(24)); // serverRack
-                stmt.setString(26, (String) serverData.get(25)); // rackPosition
-                stmt.setString(27, (String) serverData.get(26)); // owningDmgr
+                stmt.setString(5, (String) serverData.get(4)); // networkPartiton
+                stmt.setString(6, (String) serverData.get(5)); // datacenter
+                stmt.setString(7, (String) serverData.get(6)); // systemType
+                stmt.setString(8, (String) serverData.get(7)); // domainName
+                stmt.setString(9, (String) serverData.get(8)); // cpuType
+                stmt.setInt(10, (Integer) serverData.get(9)); // cpuCount
+                stmt.setString(11, (String) serverData.get(10)); // serverModel
+                stmt.setString(12, (String) serverData.get(11)); // serialNumber
+                stmt.setInt(13, (Integer) serverData.get(12)); // installedMemory
+                stmt.setString(14, (String) serverData.get(13)); // operIp
+                stmt.setString(15, (String) serverData.get(14)); // operHostname
+                stmt.setString(16, (String) serverData.get(15)); // mgmtIp
+                stmt.setString(17, (String) serverData.get(16)); // mgmtHostname
+                stmt.setString(18, (String) serverData.get(17)); // backupIp
+                stmt.setString(19, (String) serverData.get(18)); // backupHostname
+                stmt.setString(20, (String) serverData.get(19)); // nasIp
+                stmt.setString(21, (String) serverData.get(20)); // nasHostname
+                stmt.setString(22, (String) serverData.get(21)); // natAddr
+                stmt.setString(23, (String) serverData.get(22)); // systemComments
+                stmt.setString(24, (String) serverData.get(23)); // engineer
+                stmt.setString(25, (String) serverData.get(24)); // mgrEntry
+                stmt.setInt(26, (Integer) serverData.get(25)); // dmgrPort
+                stmt.setString(27, (String) serverData.get(26)); // serverRack
+                stmt.setString(28, (String) serverData.get(27)); // rackPosition
+                stmt.setString(29, (String) serverData.get(28)); // owningDmgr
 
                 if (DEBUG)
                 {
@@ -253,9 +255,35 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     {
                         String[] serverData = new String[]
                         {
-                            resultSet.getString(1), // guid
-                            resultSet.getString(2), // oper hostname
-                            resultSet.getString(3), // type
+                                resultSet.getString(1), // guid
+                                resultSet.getString(2), // ostype
+                                resultSet.getString(3), // status
+                                resultSet.getString(4), // region
+                                resultSet.getString(5), // partition
+                                resultSet.getString(6), // datacenter
+                                resultSet.getString(7), // type
+                                resultSet.getString(8), // domain name
+                                resultSet.getString(9), // cpu type
+                                String.valueOf(resultSet.getInt(10)), // cpu count
+                                resultSet.getString(11), // server rack
+                                resultSet.getString(12), // rack position
+                                resultSet.getString(13), // server model
+                                resultSet.getString(14), // serial number
+                                resultSet.getString(15), // installed memory
+                                resultSet.getString(16), // oper ip
+                                resultSet.getString(17), // oper hostname
+                                resultSet.getString(18), // mgmt ip
+                                resultSet.getString(19), // mgmt hostname
+                                resultSet.getString(20), // backup ip
+                                resultSet.getString(21), // backup hostname
+                                resultSet.getString(22), // nas ip
+                                resultSet.getString(23), // nas hostname
+                                resultSet.getString(24), // nat ip
+                                resultSet.getString(25), // comments
+                                resultSet.getString(26), // assigned engineer
+                                String.valueOf(resultSet.getInt(27)), // dmgrPort
+                                resultSet.getString(28), // owningDmgr
+                                resultSet.getString(29) // mgrurl
                         };
 
                         if (DEBUG)
@@ -368,26 +396,28 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                     resultSet.getString(2), // ostype
                                     resultSet.getString(3), // status
                                     resultSet.getString(4), // region
-                                    resultSet.getString(5), // type
-                                    resultSet.getString(6), // domain name
-                                    resultSet.getString(7), // cpu type
-                                    String.valueOf(resultSet.getInt(8)), // cpu count
-                                    resultSet.getString(9), // server rack
-                                    resultSet.getString(10), // rack position
-                                    resultSet.getString(11), // server model
-                                    resultSet.getString(12), // serial number
-                                    resultSet.getString(13), // installed memory
-                                    resultSet.getString(14), // oper ip
-                                    resultSet.getString(15), // oper hostname
-                                    resultSet.getString(16), // mgmt ip
-                                    resultSet.getString(17), // mgmt hostname
-                                    resultSet.getString(18), // backup ip
-                                    resultSet.getString(19), // backup hostname
-                                    resultSet.getString(20), // nas ip
-                                    resultSet.getString(21), // nas hostname
-                                    resultSet.getString(22), // nat ip
-                                    resultSet.getString(23), // comments
-                                    resultSet.getString(24), // assigned engineer
+                                    resultSet.getString(5), // partition
+                                    resultSet.getString(6), // datacenter
+                                    resultSet.getString(7), // type
+                                    resultSet.getString(8), // domain name
+                                    resultSet.getString(9), // cpu type
+                                    String.valueOf(resultSet.getInt(10)), // cpu count
+                                    resultSet.getString(11), // server rack
+                                    resultSet.getString(12), // rack position
+                                    resultSet.getString(13), // server model
+                                    resultSet.getString(14), // serial number
+                                    resultSet.getString(15), // installed memory
+                                    resultSet.getString(16), // oper ip
+                                    resultSet.getString(17), // oper hostname
+                                    resultSet.getString(18), // mgmt ip
+                                    resultSet.getString(19), // mgmt hostname
+                                    resultSet.getString(20), // backup ip
+                                    resultSet.getString(21), // backup hostname
+                                    resultSet.getString(22), // nas ip
+                                    resultSet.getString(23), // nas hostname
+                                    resultSet.getString(24), // nat ip
+                                    resultSet.getString(25), // comments
+                                    resultSet.getString(26), // assigned engineer
                                     String.valueOf(resultSet.getInt(27)), // dmgrPort
                                     resultSet.getString(28), // owningDmgr
                                     resultSet.getString(29))); // mgrurl
@@ -481,33 +511,35 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     {
                         String[] serverData = new String[]
                         {
-                            resultSet.getString(1), // guid
-                            resultSet.getString(2), // ostype
-                            resultSet.getString(3), // status
-                            resultSet.getString(4), // region
-                            resultSet.getString(5), // type
-                            resultSet.getString(6), // domain name
-                            resultSet.getString(7), // cpu type
-                            String.valueOf(resultSet.getInt(8)), // cpu count
-                            resultSet.getString(9), // server rack
-                            resultSet.getString(10), // rack position
-                            resultSet.getString(11), // server model
-                            resultSet.getString(12), // serial number
-                            resultSet.getString(13), // installed memory
-                            resultSet.getString(14), // oper ip
-                            resultSet.getString(15), // oper hostname
-                            resultSet.getString(16), // mgmt ip
-                            resultSet.getString(17), // mgmt hostname
-                            resultSet.getString(18), // backup ip
-                            resultSet.getString(19), // backup hostname
-                            resultSet.getString(20), // nas ip
-                            resultSet.getString(21), // nas hostname
-                            resultSet.getString(22), // nat ip
-                            resultSet.getString(23), // comments
-                            resultSet.getString(24), // assigned engineer
-                            String.valueOf(resultSet.getInt(27)), // dmgrPort
-                            resultSet.getString(28), // owningDmgr
-                            resultSet.getString(29) // mgrurl
+                                resultSet.getString(1), // guid
+                                resultSet.getString(2), // ostype
+                                resultSet.getString(3), // status
+                                resultSet.getString(4), // region
+                                resultSet.getString(5), // partition
+                                resultSet.getString(6), // datacenter
+                                resultSet.getString(7), // type
+                                resultSet.getString(8), // domain name
+                                resultSet.getString(9), // cpu type
+                                String.valueOf(resultSet.getInt(10)), // cpu count
+                                resultSet.getString(11), // server rack
+                                resultSet.getString(12), // rack position
+                                resultSet.getString(13), // server model
+                                resultSet.getString(14), // serial number
+                                resultSet.getString(15), // installed memory
+                                resultSet.getString(16), // oper ip
+                                resultSet.getString(17), // oper hostname
+                                resultSet.getString(18), // mgmt ip
+                                resultSet.getString(19), // mgmt hostname
+                                resultSet.getString(20), // backup ip
+                                resultSet.getString(21), // backup hostname
+                                resultSet.getString(22), // nas ip
+                                resultSet.getString(23), // nas hostname
+                                resultSet.getString(24), // nat ip
+                                resultSet.getString(25), // comments
+                                resultSet.getString(26), // assigned engineer
+                                String.valueOf(resultSet.getInt(27)), // dmgrPort
+                                resultSet.getString(28), // owningDmgr
+                                resultSet.getString(29) // mgrurl
                         };
 
                         if (DEBUG)
@@ -633,33 +665,35 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     {
                         String[] serverData = new String[]
                         {
-                            resultSet.getString(1), // guid
-                            resultSet.getString(2), // ostype
-                            resultSet.getString(3), // status
-                            resultSet.getString(4), // region
-                            resultSet.getString(5), // type
-                            resultSet.getString(6), // domain name
-                            resultSet.getString(7), // cpu type
-                            String.valueOf(resultSet.getInt(8)), // cpu count
-                            resultSet.getString(9), // server rack
-                            resultSet.getString(10), // rack position
-                            resultSet.getString(11), // server model
-                            resultSet.getString(12), // serial number
-                            resultSet.getString(13), // installed memory
-                            resultSet.getString(14), // oper ip
-                            resultSet.getString(15), // oper hostname
-                            resultSet.getString(16), // mgmt ip
-                            resultSet.getString(17), // mgmt hostname
-                            resultSet.getString(18), // backup ip
-                            resultSet.getString(19), // backup hostname
-                            resultSet.getString(20), // nas ip
-                            resultSet.getString(21), // nas hostname
-                            resultSet.getString(22), // nat ip
-                            resultSet.getString(23), // comments
-                            resultSet.getString(24), // assigned engineer
-                            String.valueOf(resultSet.getInt(27)), // dmgrPort
-                            resultSet.getString(28), // owningDmgr
-                            resultSet.getString(29) // mgrurl
+                                resultSet.getString(1), // guid
+                                resultSet.getString(2), // ostype
+                                resultSet.getString(3), // status
+                                resultSet.getString(4), // region
+                                resultSet.getString(5), // partition
+                                resultSet.getString(6), // datacenter
+                                resultSet.getString(7), // type
+                                resultSet.getString(8), // domain name
+                                resultSet.getString(9), // cpu type
+                                String.valueOf(resultSet.getInt(10)), // cpu count
+                                resultSet.getString(11), // server rack
+                                resultSet.getString(12), // rack position
+                                resultSet.getString(13), // server model
+                                resultSet.getString(14), // serial number
+                                resultSet.getString(15), // installed memory
+                                resultSet.getString(16), // oper ip
+                                resultSet.getString(17), // oper hostname
+                                resultSet.getString(18), // mgmt ip
+                                resultSet.getString(19), // mgmt hostname
+                                resultSet.getString(20), // backup ip
+                                resultSet.getString(21), // backup hostname
+                                resultSet.getString(22), // nas ip
+                                resultSet.getString(23), // nas hostname
+                                resultSet.getString(24), // nat ip
+                                resultSet.getString(25), // comments
+                                resultSet.getString(26), // assigned engineer
+                                String.valueOf(resultSet.getInt(27)), // dmgrPort
+                                resultSet.getString(28), // owningDmgr
+                                resultSet.getString(29) // mgrurl
                         };
 
                         if (DEBUG)

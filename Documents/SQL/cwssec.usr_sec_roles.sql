@@ -23,7 +23,7 @@ CREATE TABLE `cwssec`.`usr_sec_roles` (
 COMMIT;
 
 --
--- Dumping data for table `cwssec`.`usr_sec_roles`
+-- add in default roles
 --
 
 /*!40000 ALTER TABLE `cwssec`.`usr_sec_roles` DISABLE KEYS */;
