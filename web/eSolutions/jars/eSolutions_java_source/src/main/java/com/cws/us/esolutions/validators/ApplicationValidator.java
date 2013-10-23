@@ -13,6 +13,7 @@ package com.cws.us.esolutions.validators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -38,6 +39,9 @@ import com.cws.us.esolutions.dto.ApplicationRequest;
  */
 public class ApplicationValidator implements Validator
 {
+    private String messageJvmNameRequired = null;
+    private String messageBasePathRequired = null;
+    private String messagePidDirectoryRequired = null;
     private String messageApplicationNameRequired = null;
     private String messageApplicationClusterRequired = null;
     private String messageApplicationVersionRequired = null;
@@ -142,6 +146,45 @@ public class ApplicationValidator implements Validator
         this.messageApplicationInstallPathRequired = value;
     }
 
+    public final void setMessageJvmNameRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageJvmNameRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageJvmNameRequired = value;
+    }
+
+    public final void setMessageBasePathRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageBasePathRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageBasePathRequired = value;
+    }
+
+    public final void setMessagePidDirectoryRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessagePidDirectoryRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePidDirectoryRequired = value;
+    }
+
     @Override
     public final boolean supports(final Class<?> target)
     {
@@ -175,12 +218,27 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "jvmName", this.messageJvmNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "project", this.messageApplicationProjectRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "basePath", this.messageBasePathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platform", this.messageApplicationPlatformRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsPath", this.messageApplicationLogsPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "clusterName", this.messageApplicationClusterRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageApplicationInstallPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pidDirectory", this.messagePidDirectoryRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationProject", this.messageApplicationProjectRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationPlatform", this.messageApplicationPlatformRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationVersion", this.messageApplicationVersionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationCluster", this.messageApplicationClusterRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationLogsPath", this.messageApplicationLogsPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationInstallPath", this.messageApplicationInstallPathRequired);
+
+        ApplicationRequest request = (ApplicationRequest) target;
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ApplicationRequest: {}", request);
+        }
+
+        if (StringUtils.equals(request.getVersion(), "0.0"))
+        {
+            errors.reject("version", this.messageApplicationVersionRequired);
+        }
     }
 }

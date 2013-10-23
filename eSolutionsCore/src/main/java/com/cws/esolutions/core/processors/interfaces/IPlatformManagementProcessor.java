@@ -28,7 +28,9 @@ import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
+import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
@@ -39,9 +41,7 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.interfaces
- * IServerManagementProcessor.java
- *
- *
+ * IPlatformManagementProcessor.java
  *
  * $Id: $
  * $Author: $
@@ -61,6 +61,7 @@ public interface IPlatformManagementProcessor
     static final IServerDataDAO serverDao = new ServerDataDAOImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
+    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final String CNAME = IPlatformManagementProcessor.class.getName();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
