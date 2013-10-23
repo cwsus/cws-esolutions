@@ -33,7 +33,9 @@
         <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
             <div id="breadcrumb" class="lpstartover">
                 <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                    title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                    title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a> /
+                <a href="${pageContext.request.contextPath}/ui/user-management/audit-user/user/${userAccount.guid}"
+                    title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
             </div>
 
             <c:if test="${not empty messageResponse}">
