@@ -49,8 +49,8 @@
                 <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label></td>
                 <td>
                     <form:select path="projectStatus">
-                        <form:option value="<spring:message code='select.value' />" />
-                        <form:option value="--------" />
+						<option><spring:message code="select.default" /></option>
+						<option><spring:message code="select.spacer" /></option>
                         <form:options items="${statusList}" />
                     </form:select>
                 </td>

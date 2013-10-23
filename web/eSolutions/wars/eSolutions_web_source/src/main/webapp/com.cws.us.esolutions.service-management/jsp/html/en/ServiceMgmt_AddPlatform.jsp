@@ -51,6 +51,8 @@
                 <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label></td>
                 <td>
                     <form:select path="status" multiple="false">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${statusList}" />
                     </form:select>
                 </td>
@@ -71,7 +73,11 @@
 	                    <c:when test="${not empty appServerList}">
 	                        <td>
 	                            <form:select path="appServers" multiple="true">
-	                                <form:options items="${appServerList}" />
+	                                <c:forEach var="appserver" items="${appServerList}">
+	                                    <option><spring:message code="select.default" /></option>
+                                        <option><spring:message code="select.spacer" /></option>
+	                                    <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
+	                                </c:forEach>
 	                            </form:select>
 	                        </td>
 	                    </c:when>
@@ -91,7 +97,11 @@
 	                    <c:when test="${not empty webServerList}">
 	                        <td>
 	                            <form:select path="webServers" multiple="true">
-	                                <form:options items="${webServerList}" />
+                                    <c:forEach var="webserver" items="${webServerList}">
+                                        <option><spring:message code="select.default" /></option>
+                                        <option><spring:message code="select.spacer" /></option>
+                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
+                                    </c:forEach>
 	                            </form:select>
 	                        </td>
 	                    </c:when>

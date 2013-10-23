@@ -380,6 +380,11 @@ p#validationError
     font-size: 11px;
 }
 
+.error
+{
+    color: #FF0000;
+}
+
 .feature
 {
     padding: 10px 10px 10px 0px;

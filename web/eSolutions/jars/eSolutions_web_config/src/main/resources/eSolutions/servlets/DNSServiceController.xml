@@ -18,6 +18,18 @@
         <property name="defaultPage" value="DNSService_DefaultHandler" />
         <property name="serviceId" value="B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD" />
         <property name="searchSuffix" value="caspersbox.corp, caspersbox.com" /> <!-- dns search suffix (not required) -->
+        <property name="serviceTypes">
+            <list>
+				<value>A</value>
+				<value>MX</value>
+				<value>NS</value>
+				<value>TXT</value>
+				<value>PTR</value>
+				<value>SOA</value>
+				<value>SRV</value>
+				<value>CNAME</value>
+            </list>
+        </property>
         <!-- where should we go for external dns lookups ? -->
         <!-- commenting, this isnt working anymore. may try to find a replacement, may not, havent decided. -->
         <!--

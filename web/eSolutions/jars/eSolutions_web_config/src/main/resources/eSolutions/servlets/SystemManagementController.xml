@@ -11,8 +11,6 @@
 
     <bean id="serverValidator" class="com.cws.us.esolutions.validators.ServerValidator">
 		<property name="messageOsNameRequired" value="system.os.name.required" />
-		<property name="messageHostnameRequired" value="system.oper.name.required" />
-		<property name="messageHostAddressRequired" value="system.oper.addr.required" />
 		<property name="messageServerTypeRequired" value="system.server.type.required" />
 		<property name="messageServerStatusRequired" value="system.server.status.required" />
 		<property name="messageServerRegionRequired" value="system.server.region.required" />
@@ -24,6 +22,16 @@
 		<property name="messageNasHostAddressRequired" value="system.nas.host.address.required" />
 		<property name="messageServerAddressInvalid" value="system.server.address.invalid" />
 		<property name="messageManagerUrlRequired" value="system.vbox.manager.url.required" />
+		<property name="messageOperAddressRequired" value="system.oper.addr.required" />
+		<property name="messageOperHostnameRequired" value="system.oper.name.required" />
+		<property name="messageSerialNumberRequired" value="system.server.serial.number.required" />
+		<property name="messageServerModelRequired" value="system.server.model.required" />
+		<property name="messageDatacenterRequired" value="system.server.datacenter.required" />
+		<property name="messageDomainNameRequired" value="system.server.domain.name.required" />
+		<property name="messageInstalledMemoryRequired" value="system.server.installed.memory.required" />
+		<property name="messageCpuTypeRequired" value="system.server.cpu.type.required" />
+		<property name="messageCpuCountRequired" value="system.server.cpu.count.required" />
+		<property name="messageNetworkPartitionRequired" value="system.server.network.partition.required" />
     </bean>
 
     <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">
@@ -33,17 +41,22 @@
         <property name="serverValidator">
             <ref bean="serverValidator" />
         </property>
+        <property name="availableDomains">
+            <list>
+                <value>caspersbox.corp</value>
+            </list>
+        </property>
+        <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
         <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
-        <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
+        <property name="systemService" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />
-        <property name="defaultDomain" value="caspersbox.corp" />
-	    <property name="addServerFailed" value="server.add.failed" />
 	    <property name="addServerPage" value="SystemMgmt_AddServer" />
 	    <property name="viewServerPage" value="SystemMgmt_ViewServer" />
 	    <property name="defaultPage" value="SystemMgmt_DefaultHandler" />
 	    <property name="adminConsolePage" value="SystemMgmt_AdminConsoles" />
 	    <property name="searchPostUrl" value="/ui/system-management/search" />
 	    <property name="requestUrl" value="/ui/system-management/server/" />
+	    <property name="messageServerAdded" value="system.server.successfully.added" />
         <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
     </bean>
 </beans>

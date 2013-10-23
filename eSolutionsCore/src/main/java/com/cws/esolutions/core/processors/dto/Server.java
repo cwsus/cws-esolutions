@@ -75,8 +75,8 @@ public class Server implements Serializable
     private ServiceRegion serverRegion = null;
     private NetworkPartition networkPartition = null;
 
-    private static final long serialVersionUID = 9028945840047154190L;
     private static final String CNAME = Server.class.getName();
+    private static final long serialVersionUID = 9028945840047154190L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

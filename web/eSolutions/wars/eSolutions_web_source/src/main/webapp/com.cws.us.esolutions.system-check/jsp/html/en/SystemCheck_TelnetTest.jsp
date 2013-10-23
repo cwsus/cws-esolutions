@@ -53,6 +53,8 @@
 	                <c:choose>
 	                    <c:when test="${not empty serverList}">
 	                        <form:select path="sourceServer">
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
 	                            <form:options items="${serverList}" />
 	                        </form:select>
 	                    </c:when>

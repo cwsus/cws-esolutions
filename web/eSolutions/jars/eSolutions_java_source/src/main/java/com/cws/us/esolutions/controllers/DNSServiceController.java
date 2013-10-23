@@ -11,6 +11,7 @@
  */
 package com.cws.us.esolutions.controllers;
 
+import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -66,6 +67,7 @@ public class DNSServiceController
     private String defaultPage = null;
     private String serviceHost = null;
     private String[] searchSuffix = null;
+    private List<String> serviceTypes = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = DNSServiceController.class.getName();
@@ -170,6 +172,19 @@ public class DNSServiceController
         }
 
         this.searchSuffix = value;
+    }
+
+    public final void setServiceTypes(final List<String> value)
+    {
+        final String methodName = DNSServiceController.CNAME + "#setSearchSuffix(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceTypes = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -334,6 +349,7 @@ public class DNSServiceController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            mView.addObject("serviceTypes", this.serviceTypes);
             mView.addObject("command", new DNSRecord());
             mView.setViewName(this.lookupPage);
         }
@@ -477,6 +493,7 @@ public class DNSServiceController
                     mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
                 }
 
+                mView.addObject("serviceTypes", this.serviceTypes);
                 mView.addObject("command", new DNSRecord());
                 mView.setViewName(this.lookupPage);
             }

@@ -46,6 +46,8 @@
                 <td><label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label></td>
                 <td>
                     <form:select path="secQuestionOne">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${questionList}" />
                     </form:select>
                 </td>
@@ -60,6 +62,8 @@
                 <td id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></td>
                 <td>
                     <form:select path="secQuestionTwo">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${questionList}" />
                     </form:select>
                 </td>

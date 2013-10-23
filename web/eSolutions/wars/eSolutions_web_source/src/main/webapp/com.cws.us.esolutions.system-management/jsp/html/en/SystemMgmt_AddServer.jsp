@@ -32,33 +32,49 @@
     <!--
     function showOptions(obj)
     {
-        if ((obj.value == 'DMGRSERVER') || (obj.value == 'VIRTUALHOST') || (obj.value == 'APPSERVER'))
+        if ((obj.value == 'DMGRSERVER') || (obj.value == 'VIRTUALHOST'))
         {
             document.getElementById("applicationDetail").style.display = 'block';
 
             if (obj.value == 'DMGRSERVER')
             {
+                document.getElementById("domainName").style.display = 'block';
+                document.getElementById("locationDetail").style.display = 'block';
+                document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'block';
                 document.getElementById("owningDmgr").style.display = 'none';
                 document.getElementById("managerUrl").style.display = 'block';
             }
             else if (obj.value == 'VIRTUALHOST')
             {
+                document.getElementById("domainName").style.display = 'block';
+                document.getElementById("locationDetail").style.display = 'block';
+                document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'none';
                 document.getElementById("owningDmgr").style.display = 'none';
                 document.getElementById("managerUrl").style.display = 'block';
             }
-            else if (obj.Value == 'APPSERVER')
-            {
-                // need to list out associated dmgr's here somehow
-                document.getElementById("dmgrPort").style.display = 'none';
-                document.getElementById("managerUrl").style.display = 'none';
-                document.getElementById("owningDmgr").style.display = 'block';
-            }
         }
         else
         {
-            document.getElementById("applicationDetail").style.display = 'none';
+            if (obj.value == 'APPSERVER')
+            {
+                document.getElementById("domainName").style.display = 'none';
+                document.getElementById("applicationDetail").style.display = 'block';
+                document.getElementById("locationDetail").style.display = 'none';
+                document.getElementById("dmgrPort").style.display = 'none';
+                document.getElementById("owningDmgr").style.display = 'block';
+                document.getElementById("managerUrl").style.display = 'none';
+            }
+            else
+            {
+                document.getElementById("domainName").style.display = 'block';
+	            document.getElementById("applicationDetail").style.display = 'none';
+	            document.getElementById("locationDetail").style.display = 'block';
+	            document.getElementById("dmgrPort").style.display = 'none';
+	            document.getElementById("owningDmgr").style.display = 'none';
+	            document.getElementById("managerUrl").style.display = 'none';
+            }
         }
     }
     //-->
@@ -84,14 +100,22 @@
                 <td><form:input path="osName" /></td>
                 <td><form:errors path="osName" cssClass="validationError" /></td>
                 <%-- domain name --%>
-                <td><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
-                <td><form:input path="domainName" /></td>
+                <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
+                <td>
+                    <form:select path="domainName">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
+                        <form:options items="${domainList}" />
+                    </form:select>
+                </td>
                 <td><form:errors path="domainName" cssClass="validationError" /></td>
             </tr>
             <tr>
                 <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label></td>
                 <td>
                     <form:select path="serverType" onchange="showOptions(this);">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${serverTypes}" />
                     </form:select>
                 </td>
@@ -99,15 +123,21 @@
                 <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label></td>
                 <td>
                     <form:select path="serverStatus">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${serverStatuses}" />
                     </form:select>
                 </td>
                 <td><form:errors path="serverStatus" cssClass="validationError" /></td>
             </tr>
+        </table>
+        <table id="locationDetail" style="display: none;">
             <tr>
                 <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label></td>
                 <td>
                     <form:select path="serverRegion">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${serverRegions}" />
                     </form:select>
                 </td>
@@ -120,8 +150,10 @@
                 <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
                 <td>
                     <form:select path="datacenter">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <c:forEach var="datacenter" items="${datacenters}">
-                            <form:option value="${datacenter.datacenterName}" />
+                            <form:option value="${datacenter.datacenterGuid}" label="${datacenter.datacenterName}"/>
                         </c:forEach>
                     </form:select>
                 </td>
@@ -129,6 +161,8 @@
                 <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
                 <td>
                     <form:select path="networkPartition">
+                        <option><spring:message code="select.default" /></option>
+                        <option><spring:message code="select.spacer" /></option>
                         <form:options items="${networkPartitions}" />
                     </form:select>
                 </td>
@@ -152,7 +186,11 @@
                     <c:choose>
                         <c:when test="${not empty dmgrServers}">
                             <form:select path="owningDmgr">
-                                <form:options items="${dmgrServers}" />
+                                <option><spring:message code="select.default" /></option>
+                                <option><spring:message code="select.spacer" /></option>
+                                <c:forEach var="dmgr" items="${dmgrServers}">
+                                    <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}"/>
+                                </c:forEach>
                             </form:select>
                         </c:when>
                         <c:otherwise>

@@ -58,10 +58,9 @@
                         <td><spring:message code="admin.account.user.role" /></td>
                         <td>
                             <select name="userRole" id="userRole">
-                                <option value="${searchResults.userRole}" selected="selected">${searchResults.userRole}</option>
-                                <option value=""></option>
-                                <option value="<spring:message code='admin.account.user.select' />"><spring:message code="admin.account.user.select" /></option>
-                                <option value=""></option>
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
+								<option value="${searchResults.userRole}" selected="selected">${searchResults.userRole}</option>
                                 <c:forEach var="role" items="${selectableGroups}">
                                     <option value="${role}">${role}</option>
                                 </c:forEach>

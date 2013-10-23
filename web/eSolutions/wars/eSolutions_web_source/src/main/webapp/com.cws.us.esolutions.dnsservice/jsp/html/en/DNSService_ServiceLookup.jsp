@@ -72,16 +72,11 @@
             <tr>
                 <td><label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label></td>
                 <td>
-                    <select name="recordType" id="recordType" onchange="showReverseDisclaimer(this);">
-                        <option value="A"><spring:message code="dns.lookup.forward.lookup" />
-                        <option value="MX"><spring:message code="dns.lookup.mx.lookup" />
-                        <option value="NS"><spring:message code="dns.lookup.ns.lookup" />
-                        <option value="TXT"><spring:message code="dns.lookup.txt.lookup" />
-                        <option value="PTR"><spring:message code="dns.lookup.ptr.lookup" />
-                        <option value="SOA"><spring:message code="dns.lookup.soa.lookup" />
-                        <option value="SRV"><spring:message code="dns.lookup.srv.lookup" />
-                        <option value="CNAME"><spring:message code="dns.lookup.cname.lookup" />
-                    </select>
+                    <form:select path="recordType" onchange="showReverseDisclaimer(this);">
+						<option><spring:message code="select.default" /></option>
+						<option><spring:message code="select.spacer" /></option>
+						<form:options items="${serviceTypes}" />
+                    </form:select>
                 </td>
             </tr>
         </table>

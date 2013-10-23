@@ -145,7 +145,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     @SuppressWarnings("unchecked")
                     List<Object> insertData = new ArrayList<Object>(
                             Arrays.asList(
-                                    (StringUtils.isNotEmpty(requestServer.getServerGuid())) ? requestServer.getServerGuid() : UUID.randomUUID().toString(),
+                                    UUID.randomUUID().toString(),
                                     requestServer.getOsName(),
                                     requestServer.getServerStatus().name(),
                                     requestServer.getServerRegion().name(),
@@ -168,7 +168,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                     (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : Constants.NOT_SET,
                                     (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : Constants.NOT_SET,
                                     requestServer.getServerComments(),
-                                    requestServer.getAssignedEngineer(),
+                                    userAccount.getUsername(),
                                     (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : Constants.NOT_SET,
                                     requestServer.getDmgrPort(),
                                     (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : Constants.NOT_SET,

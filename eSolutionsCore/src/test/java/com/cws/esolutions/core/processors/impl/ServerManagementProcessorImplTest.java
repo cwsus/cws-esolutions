@@ -150,427 +150,6 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void addServerAsDevAppServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.DEV);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.APPSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setOwningDmgr("bc55f443-202b-4f7c-9118-47dd80500ffb");
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsDevWebServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.DEV);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.WEBSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsQaAppServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.QA);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.APPSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setOwningDmgr("dac2e765-109e-4385-8563-aab66d6713f9");
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsQaWebServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.QA);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.WEBSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsPrdAppServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.PRD);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.APPSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setOwningDmgr("fde6d6e9-8bac-4a82-99c6-ef225945d846");
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsPrdWebServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.PRD);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.WEBSERVER);
-            server.setServerComments("app server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addServerAsDnsServer()
-    {
-        for (int x = 0; x < 4; x++)
-        {
-            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
-
-            Server server = new Server();
-            server.setServerGuid(UUID.randomUUID().toString());
-            server.setOsName("CentOS");
-            server.setDomainName("caspersbox.corp");
-            server.setOperIpAddress("192.168.10.55");
-            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-            server.setMgmtIpAddress("192.168.10.155");
-            server.setMgmtHostName(name + "-mgt");
-            server.setBkIpAddress("172.16.10.55");
-            server.setBkHostName(name + "-bak");
-            server.setNasIpAddress("172.15.10.55");
-            server.setNasHostName(name + "-nas");
-            server.setServerRegion(ServiceRegion.PRD);
-            server.setServerStatus(ServerStatus.ONLINE);
-            server.setServerType(ServerType.DNSSLAVE);
-            server.setServerComments("dns server");
-            server.setAssignedEngineer("Kevin Huntly");
-            server.setCpuType("AMD 1.0 GHz");
-            server.setCpuCount(1);
-            server.setServerModel("Virtual Server");
-            server.setSerialNumber("1YU391");
-            server.setInstalledMemory(4096);
-            server.setOwningDmgr("7d29ba8c-2729-4fa3-b1b7-a90a9cf3e44f");
-
-            ServerManagementRequest request = new ServerManagementRequest();
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
-            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-            request.setTargetServer(server);
-
-            try
-            {
-                ServerManagementResponse response = processor.addNewServer(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ServerManagementException smx)
-            {
-                Assert.fail(smx.getMessage());
-            }
-        }
-    }
-
-    @Test
-    public final void addNewServerAsMqServer()
-    {
-        Server server = new Server();
-        server.setServerGuid(UUID.randomUUID().toString());
-        server.setOsName("CentOS");
-        server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
-        server.setOperHostName("caspersb-damq12");
-        server.setMgmtIpAddress("192.168.10.155");
-        server.setMgmtHostName("caspersb-damq1-mgt");
-        server.setBkIpAddress("172.16.10.55");
-        server.setBkHostName("caspersb-damq1-bak");
-        server.setNasIpAddress("172.15.10.55");
-        server.setNasHostName("caspersb-damq1-nas");
-        server.setServerRegion(ServiceRegion.DEV);
-        server.setServerStatus(ServerStatus.ONLINE);
-        server.setServerType(ServerType.APPSERVER);
-        server.setServerComments("app server");
-        server.setAssignedEngineer("Kevin Huntly");
-        server.setCpuType("AMD 1.0 GHz");
-        server.setCpuCount(1);
-        server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU391");
-        server.setInstalledMemory(4096);
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setTargetServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.updateServerData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
     public final void addNewServerAsDmgr()
     {
         String[] strings = new String [] { "bc55f443-202b-4f7c-9118-47dd80500ffb", "dac2e765-109e-4385-8563-aab66d6713f9", "fde6d6e9-8bac-4a82-99c6-ef225945d846" };
@@ -580,7 +159,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("BFBA6455-D538-4352-A2B8-39517B423C4E");
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
 
             Server server = new Server();
             server.setServerGuid(strings[x]);
@@ -642,32 +221,364 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void addNewServerAsVmgr()
+    public final void addServerAsDevAppServer()
     {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.DEV);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.APPSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setOwningDmgr("bc55f443-202b-4f7c-9118-47dd80500ffb");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsDevWebServer()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.DEV);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.WEBSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsQaAppServer()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.QA);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.APPSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setOwningDmgr("dac2e765-109e-4385-8563-aab66d6713f9");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsQaWebServer()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.QA);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.WEBSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsPrdAppServer()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.PRD);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.APPSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setOwningDmgr("fde6d6e9-8bac-4a82-99c6-ef225945d846");
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsPrdWebServer()
+    {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.PRD);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.WEBSERVER);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addServerAsMasterDnsServer()
+    {
+        String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+        DataCenter dataCenter = new DataCenter();
+        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.60");
-        server.setOperHostName("caspersb-vmgr");
-        server.setMgmtIpAddress("192.168.10.160");
-        server.setMgmtHostName("caspersb-vmgr-mgt");
-        server.setBkIpAddress("172.16.10.60");
-        server.setBkHostName("caspersb-vmgr-bak");
-        server.setNasIpAddress("172.15.10.61");
-        server.setNasHostName("caspersb-vmgr-nas");
-        server.setServerRegion(ServiceRegion.DEV);
+        server.setOperIpAddress("192.168.10.55");
+        server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtHostName(name + "-mgt");
+        server.setBkIpAddress("172.16.10.55");
+        server.setBkHostName(name + "-bak");
+        server.setNasIpAddress("172.15.10.55");
+        server.setNasHostName(name + "-nas");
+        server.setServerRegion(ServiceRegion.PRD);
         server.setServerStatus(ServerStatus.ONLINE);
-        server.setServerType(ServerType.VIRTUALHOST);
-        server.setServerComments("dmgr server");
+        server.setServerType(ServerType.DNSMASTER);
+        server.setServerComments("app server");
         server.setAssignedEngineer("Kevin Huntly");
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU341");
+        server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
-        server.setMgrUrl("https://vmgr.myserver.org:18003/console");
-        server.setDmgrPort(18003);
+        server.setNetworkPartition(NetworkPartition.DMZ);
+        server.setDatacenter(dataCenter);
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -677,7 +588,7 @@ public class ServerManagementProcessorImplTest
 
         try
         {
-            ServerManagementResponse response = processor.updateServerData(request);
+            ServerManagementResponse response = processor.addNewServer(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -688,30 +599,91 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void addNewServerAsMq()
+    public final void addServerAsSlaveDnsServer()
     {
+        for (int x = 0; x < 4; x++)
+        {
+            String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+            DataCenter dataCenter = new DataCenter();
+            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+            Server server = new Server();
+            server.setServerGuid(UUID.randomUUID().toString());
+            server.setOsName("CentOS");
+            server.setDomainName("caspersbox.corp");
+            server.setOperIpAddress("192.168.10.55");
+            server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+            server.setMgmtIpAddress("192.168.10.155");
+            server.setMgmtHostName(name + "-mgt");
+            server.setBkIpAddress("172.16.10.55");
+            server.setBkHostName(name + "-bak");
+            server.setNasIpAddress("172.15.10.55");
+            server.setNasHostName(name + "-nas");
+            server.setServerRegion(ServiceRegion.PRD);
+            server.setServerStatus(ServerStatus.ONLINE);
+            server.setServerType(ServerType.DNSSLAVE);
+            server.setServerComments("app server");
+            server.setAssignedEngineer("Kevin Huntly");
+            server.setCpuType("AMD 1.0 GHz");
+            server.setCpuCount(1);
+            server.setServerModel("Virtual Server");
+            server.setSerialNumber("1YU391");
+            server.setInstalledMemory(4096);
+            server.setNetworkPartition(NetworkPartition.DMZ);
+            server.setDatacenter(dataCenter);
+
+            ServerManagementRequest request = new ServerManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+            request.setTargetServer(server);
+
+            try
+            {
+                ServerManagementResponse response = processor.addNewServer(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ServerManagementException smx)
+            {
+                Assert.fail(smx.getMessage());
+            }
+        }
+    }
+
+    @Test
+    public final void addNewServerAsMqServer()
+    {
+        String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
+
+        DataCenter dataCenter = new DataCenter();
+        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.60");
-        server.setOperHostName("caspersb-amq1");
-        server.setMgmtIpAddress("192.168.10.160");
-        server.setMgmtHostName("caspersb-amq1-mgt");
-        server.setBkIpAddress("172.16.10.60");
-        server.setBkHostName("caspersb-amq1-bak");
-        server.setNasIpAddress("172.15.10.61");
-        server.setNasHostName("caspersb-amq1-nas");
-        server.setServerRegion(ServiceRegion.DEV);
+        server.setOperIpAddress("192.168.10.55");
+        server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtHostName(name + "-mgt");
+        server.setBkIpAddress("172.16.10.55");
+        server.setBkHostName(name + "-bak");
+        server.setNasIpAddress("172.15.10.55");
+        server.setNasHostName(name + "-nas");
+        server.setServerRegion(ServiceRegion.PRD);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.MQSERVER);
-        server.setServerComments("mq server");
+        server.setServerComments("app server");
         server.setAssignedEngineer("Kevin Huntly");
         server.setCpuType("AMD 1.0 GHz");
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
-        server.setSerialNumber("1YU341");
+        server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
+        server.setNetworkPartition(NetworkPartition.DMZ);
+        server.setDatacenter(dataCenter);
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -721,7 +693,59 @@ public class ServerManagementProcessorImplTest
 
         try
         {
-            ServerManagementResponse response = processor.updateServerData(request);
+            ServerManagementResponse response = processor.addNewServer(request);
+
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (ServerManagementException smx)
+        {
+            Assert.fail(smx.getMessage());
+        }
+    }
+
+    @Test
+    public final void addNewServerAsVmgr()
+    {
+        String name = RandomStringUtils.randomAlphabetic(8);
+
+        DataCenter dataCenter = new DataCenter();
+        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+
+        Server server = new Server();
+        server.setServerGuid(UUID.randomUUID().toString());
+        server.setOsName("CentOS");
+        server.setDomainName("caspersbox.corp");
+        server.setOperIpAddress("192.168.10.55");
+        server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
+        server.setMgmtIpAddress("192.168.10.155");
+        server.setMgmtHostName(name + "-mgt");
+        server.setBkIpAddress("172.16.10.55");
+        server.setBkHostName(name + "-bak");
+        server.setNasIpAddress("172.15.10.55");
+        server.setNasHostName(name + "-nas");
+        server.setServerRegion(ServiceRegion.PRD);
+        server.setServerStatus(ServerStatus.ONLINE);
+        server.setServerType(ServerType.VIRTUALHOST);
+        server.setServerComments("app server");
+        server.setAssignedEngineer("Kevin Huntly");
+        server.setCpuType("AMD 1.0 GHz");
+        server.setCpuCount(1);
+        server.setServerModel("Virtual Server");
+        server.setSerialNumber("1YU391");
+        server.setMgrUrl("https://vmgr.myserver.org:18003/console");
+        server.setInstalledMemory(4096);
+        server.setNetworkPartition(NetworkPartition.DMZ);
+        server.setDatacenter(dataCenter);
+
+        ServerManagementRequest request = new ServerManagementRequest();
+        request.setRequestInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+        request.setTargetServer(server);
+
+        try
+        {
+            ServerManagementResponse response = processor.addNewServer(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

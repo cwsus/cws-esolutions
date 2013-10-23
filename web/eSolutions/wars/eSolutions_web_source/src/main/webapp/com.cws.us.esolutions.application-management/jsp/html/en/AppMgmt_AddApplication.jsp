@@ -64,8 +64,8 @@
                     <c:when test="${not empty projectListing}">
                         <td>
                             <form:select path="project" multiple="false">
-                                <form:option value="<spring:message code='select.value' />" />
-                                <form:option value="--------" />
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
                                 <form:options items="${projectListing}" />
                             </form:select>
                         </td>
@@ -83,8 +83,8 @@
                     <c:when test="${not empty platformListing}">
                         <td>
                             <form:select path="platform" multiple="false">
-                                <form:option value="<spring:message code='select.value' />" />
-                                <form:option value="--------" />
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
                                 <form:options items="${platformListing}" />
                             </form:select>
                         </td>

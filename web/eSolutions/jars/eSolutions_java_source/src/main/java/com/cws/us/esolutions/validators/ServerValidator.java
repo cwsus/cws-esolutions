@@ -20,7 +20,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.us.esolutions.dto.ServerRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
 /**
  * eSolutions_java_source
@@ -42,16 +42,24 @@ import com.cws.esolutions.core.processors.enums.ServerType;
 public class ServerValidator implements Validator
 {
     private String messageOsNameRequired = null;
-    private String messageHostnameRequired = null;
+    private String messageCpuTypeRequired = null;
+    private String messageCpuCountRequired = null;
+    private String messageDatacenterRequired = null;
+    private String messageDomainNameRequired = null;
     private String messageServerTypeRequired = null;
     private String messageManagerUrlRequired = null;
-    private String messageHostAddressRequired = null;
     private String messageNasHostnameRequired = null;
+    private String messageOperAddressRequired = null;
+    private String messageServerModelRequired = null;
+    private String messageOperHostnameRequired = null;
+    private String messageSerialNumberRequired = null;
     private String messageServerStatusRequired = null;
     private String messageServerRegionRequired = null;
     private String messageServerAddressInvalid = null;
     private String messageBackupHostnameRequired = null;
     private String messageNasHostAddressRequired = null;
+    private String messageInstalledMemoryRequired = null;
+    private String messageNetworkPartitionRequired = null;
     private String messageBackupHostAddressRequired = null;
     private String messageManagementHostnameRequired = null;
     private String messageManagementHostAddressRequired = null;
@@ -72,32 +80,6 @@ public class ServerValidator implements Validator
         }
 
         this.messageOsNameRequired = value;
-    }
-
-    public final void setMessageHostnameRequired(final String value)
-    {
-        final String methodName = ServerValidator.CNAME + "#setMessageHostnameRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageHostnameRequired = value;
-    }
-
-    public final void setMessageHostAddressRequired(final String value)
-    {
-        final String methodName = ServerValidator.CNAME + "#setMessageHostAddressRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageHostAddressRequired = value;
     }
 
     public final void setMessageServerTypeRequired(final String value)
@@ -243,6 +225,136 @@ public class ServerValidator implements Validator
         this.messageManagerUrlRequired = value;
     }
 
+    public final void setMessageCpuCountRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageCpuCountRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageCpuCountRequired = value;
+    }
+
+    public final void setMessageCpuTypeRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageCpuTypeRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageCpuTypeRequired = value;
+    }
+
+    public final void setMessageInstalledMemoryRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageInstalledMemoryRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageInstalledMemoryRequired = value;
+    }
+
+    public final void setMessageDomainNameRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageDomainNameRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageDomainNameRequired = value;
+    }
+
+    public final void setMessageDatacenterRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageDatacenterRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageDatacenterRequired = value;
+    }
+
+    public final void setMessageServerModelRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageServerModelRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageServerModelRequired = value;
+    }
+
+    public final void setMessageSerialNumberRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageSerialNumberRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageSerialNumberRequired = value;
+    }
+
+    public final void setMessageOperHostnameRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageOperHostnameRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageOperHostnameRequired = value;
+    }
+
+    public final void setMessageOperAddressRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageOperAddressRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageOperAddressRequired = value;
+    }
+
+    public final void setMessageNetworkPartitionRequired(final String value)
+    {
+        final String methodName = ServerValidator.CNAME + "#setMessageNetworkPartitionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNetworkPartitionRequired = value;
+    }
+
     @Override
     public final boolean supports(final Class<?> value)
     {
@@ -254,7 +366,7 @@ public class ServerValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = Server.class.isAssignableFrom(value);
+        final boolean isSupported = ServerRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -276,67 +388,75 @@ public class ServerValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cpuCount", this.messageCpuCountRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "osName", this.messageOsNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operHostName", this.messageHostnameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operIpAddress", this.messageHostAddressRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "cpuType", this.messageCpuTypeRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installedMemory", this.messageInstalledMemoryRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "domainName", this.messageDomainNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datacenter", this.messageDatacenterRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverModel", this.messageServerModelRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serialNumber", this.messageSerialNumberRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operHostName", this.messageOperHostnameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "operIpAddress", this.messageOperAddressRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverType", this.messageServerTypeRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverStatus", this.messageServerStatusRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverRegion", this.messageServerRegionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "networkPartition", this.messageNetworkPartitionRequired);
 
-        final Server server = (Server) target;
+        final ServerRequest request = (ServerRequest) target;
         final Pattern pattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", server);
+            DEBUGGER.debug("Server: {}", request);
         }
 
-        if ((StringUtils.isNotEmpty(server.getMgmtHostName())) && (StringUtils.isBlank(server.getMgmtIpAddress()))
-                || (StringUtils.isNotEmpty(server.getMgmtIpAddress())) && (StringUtils.isBlank(server.getMgmtHostName())))
+        if ((StringUtils.isNotEmpty(request.getMgmtHostName())) && (StringUtils.isBlank(request.getMgmtIpAddress()))
+                || (StringUtils.isNotEmpty(request.getMgmtIpAddress())) && (StringUtils.isBlank(request.getMgmtHostName())))
         {
             errors.reject("mgmtHostName", this.messageManagementHostnameRequired);
             errors.reject("mgmtIpAddress", this.messageManagementHostAddressRequired);
         }
-        else if ((StringUtils.isNotEmpty(server.getBkHostName())) && (StringUtils.isBlank(server.getBkIpAddress()))
-                || (StringUtils.isNotEmpty(server.getBkIpAddress())) && (StringUtils.isBlank(server.getBkHostName())))
+        else if ((StringUtils.isNotEmpty(request.getBkHostName())) && (StringUtils.isBlank(request.getBkIpAddress()))
+                || (StringUtils.isNotEmpty(request.getBkIpAddress())) && (StringUtils.isBlank(request.getBkHostName())))
         {
             errors.reject("bkHostName", this.messageBackupHostnameRequired);
             errors.reject("bkIpAddress", this.messageBackupHostAddressRequired);
         }
-        else if ((StringUtils.isNotEmpty(server.getNasHostName())) && (StringUtils.isBlank(server.getNasIpAddress()))
-                || (StringUtils.isNotEmpty(server.getNasIpAddress())) && (StringUtils.isBlank(server.getNasHostName())))
+        else if ((StringUtils.isNotEmpty(request.getNasHostName())) && (StringUtils.isBlank(request.getNasIpAddress()))
+                || (StringUtils.isNotEmpty(request.getNasIpAddress())) && (StringUtils.isBlank(request.getNasHostName())))
         {
             errors.reject("nasHostName", this.messageNasHostnameRequired);
             errors.reject("nasIpAddress", this.messageNasHostAddressRequired);
         }
-        else if ((StringUtils.isNotEmpty(server.getNatAddress())) && (!(pattern.matcher(server.getNatAddress()).matches())))
+        else if ((StringUtils.isNotEmpty(request.getNatAddress())) && (!(pattern.matcher(request.getNatAddress()).matches())))
         {
             // properly formatted nat addr
             errors.reject("natAddress", this.messageServerAddressInvalid);
         }
         else
         {
-            if (!(pattern.matcher(server.getOperIpAddress()).matches()))
+            if (!(pattern.matcher(request.getOperIpAddress()).matches()))
             {
                 errors.reject("operIpAddress", this.messageServerAddressInvalid);
             }
-            else if ((StringUtils.isNotEmpty(server.getMgmtIpAddress())) && (!(pattern.matcher(server.getMgmtIpAddress()).matches())))
+            else if ((StringUtils.isNotEmpty(request.getMgmtIpAddress())) && (!(pattern.matcher(request.getMgmtIpAddress()).matches())))
             {
                 errors.reject("mgmtIpAddress", this.messageServerAddressInvalid);
             }
-            else if ((StringUtils.isNotEmpty(server.getBkIpAddress())) && (!(pattern.matcher(server.getBkIpAddress()).matches())))
+            else if ((StringUtils.isNotEmpty(request.getBkIpAddress())) && (!(pattern.matcher(request.getBkIpAddress()).matches())))
             {
                 errors.reject("bkIpAddress", this.messageServerAddressInvalid);
             }
-            else if ((StringUtils.isNotEmpty(server.getNasIpAddress())) && (!(pattern.matcher(server.getNasIpAddress()).matches())))
+            else if ((StringUtils.isNotEmpty(request.getNasIpAddress())) && (!(pattern.matcher(request.getNasIpAddress()).matches())))
             {
                 errors.reject("nasIpAddress", this.messageServerAddressInvalid);
             }
-            else if ((server.getServerType() == ServerType.VIRTUALHOST) || (server.getServerType() == ServerType.DMGRSERVER) && (StringUtils.isEmpty(server.getMgrUrl())))
+            else if ((request.getServerType() == ServerType.VIRTUALHOST) || (request.getServerType() == ServerType.DMGRSERVER) && (StringUtils.isEmpty(request.getMgrUrl())))
             {
                 errors.reject("vboxManagerUrl", this.messageManagerUrlRequired);
             }
-            else if ((server.getServerType() == ServerType.DMGRSERVER) && (server.getDmgrPort() == 0))
+            else if ((request.getServerType() == ServerType.DMGRSERVER) && (request.getDmgrPort() == 0))
             {
                 errors.reject("vboxManagerUrl", this.messageManagerUrlRequired);
             }

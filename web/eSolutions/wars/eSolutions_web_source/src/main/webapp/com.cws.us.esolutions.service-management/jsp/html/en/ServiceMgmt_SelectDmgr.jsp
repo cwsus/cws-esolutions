@@ -47,8 +47,12 @@
                 <c:choose>
                     <c:when test="${not empty dmgrList}">
                         <td>
-                            <form:select path="platformDmgr" multiple="false">
-                                <form:options items="${dmgrList}" />
+                            <form:select path="serverGuid" multiple="false">
+                                <c:forEach var="dmgr" items="${dmgrList}">
+			                        <option><spring:message code="select.default" /></option>
+			                        <option><spring:message code="select.spacer" /></option>
+			                        <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}" />
+			                    </c:forEach>
                             </form:select>
                         </td>
                     </c:when>

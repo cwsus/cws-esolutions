@@ -56,6 +56,8 @@
                                 <option value="<spring:message code='admin.account.user.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
                                 <option value=""></option>
                                 <c:forEach var="role" items="${selectableRoles}">
+									<option><spring:message code="select.default" /></option>
+									<option><spring:message code="select.spacer" /></option>
                                     <option value="${role}">${role}</option>
                                 </c:forEach>
                             </form:select>
@@ -67,8 +69,8 @@
                         <td><label id="createUserUnit"><spring:message code="admin.account.user.dept" /></label></td>
                         <td>
                             <form:select path="dept" name="dept" id="dept">
-                                <option value="<spring:message code='admin.account.user.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
-                                <option value=""></option>
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
                                 <c:forEach var="dept" items="${selectableDepts}">
                                     <option value="${dept}">${dept}</option>
                                 </c:forEach>
@@ -80,8 +82,8 @@
                         <td><label id="createUserGroup"><spring:message code="admin.account.user.group" /></label></td>
                         <td>
                             <form:select path="group" name="group" id="group">
-                                <option value="<spring:message code='admin.account.user.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
-                                <option value=""></option>
+								<option><spring:message code="select.default" /></option>
+								<option><spring:message code="select.spacer" /></option>
                                 <c:forEach var="group" items="${selectableGroups}">
                                     <option value="${group}">${group}</option>
                                 </c:forEach>
