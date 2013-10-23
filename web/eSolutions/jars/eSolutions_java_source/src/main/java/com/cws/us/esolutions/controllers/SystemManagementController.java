@@ -1737,7 +1737,6 @@ public class SystemManagementController
         return mView;
     }
 
-    // TODO
     @RequestMapping(value = "/server-control", method = RequestMethod.POST)
     public final ModelAndView runServerControlOperation(@ModelAttribute("request") final ManagementRequest request, final BindingResult binding)
     {

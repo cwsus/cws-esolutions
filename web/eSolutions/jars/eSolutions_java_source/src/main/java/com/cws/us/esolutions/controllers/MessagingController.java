@@ -692,8 +692,36 @@ public class MessagingController
                 mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
             }
 
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.viewServiceMessagesPage);
+            MessagingRequest mRequest = new MessagingRequest();
+            mRequest.setRequestInfo(reqInfo);
+            mRequest.setServiceId(this.serviceId);
+            mRequest.setUserAccount(userAccount);
+            mRequest.setAppName(appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingRequest: {}", mRequest);
+            }
+
+            MessagingResponse mResponse = msgProcessor.showMessages(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", mResponse);
+            }
+
+            if (mResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("dateFormat", appConfig.getDateFormat());
+                mView.addObject("messageList", mResponse.getSvcMessages());
+                mView.setViewName(this.viewServiceMessagesPage);
+            }
+            else
+            {
+                // no existing service messages
+                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.setViewName(this.addServiceMessagePage);
+            }
         }
         catch (MessagingServiceException msx)
         {

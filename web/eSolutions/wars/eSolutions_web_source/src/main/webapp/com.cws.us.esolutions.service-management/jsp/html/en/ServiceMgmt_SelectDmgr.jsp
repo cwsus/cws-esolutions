@@ -63,7 +63,6 @@
                         </td>
                     </c:otherwise>
                 </c:choose>
-                <td><form:errors path="platformDmgr" cssClass="validationError" /></td>
             </tr>
         </table>
         <br /><br />

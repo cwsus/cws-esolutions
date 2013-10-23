@@ -101,10 +101,12 @@ public class ServiceManagementController
     private String viewProjectsList = null;
     private String viewPlatformList = null;
     private String addDatacenterPage = null;
+    private String addServerRedirect = null;
     private String messageNoDmgrFound = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
     private String messageRequestValidationFailed = null;
+    private String messageProjectSuccessfullyAdded = null;
     private String messagePlatformSuccessfullyAdded = null;
     private DatacenterValidator datacenterValidator = null;
     private String messageDatacenterSuccessfullyAdded = null;
@@ -218,7 +220,6 @@ public class ServiceManagementController
 
         this.selectDmgrPage = value;
     }
-
 
     public final void setAddPlatformPage(final String value)
     {
@@ -389,6 +390,32 @@ public class ServiceManagementController
         this.messagePlatformSuccessfullyAdded = value;
     }
 
+    public final void setMessageProjectSuccessfullyAdded(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageProjectSuccessfullyAdded(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageProjectSuccessfullyAdded = value;
+    }
+
+    public final void setAddServerRedirect(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setAddServerRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addServerRedirect = value;
+    }
+
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
@@ -478,6 +505,292 @@ public class ServiceManagementController
         }
 
         // in here, we're going to get all the messages to display and such
+        return mView;
+    }
+
+    @RequestMapping(value = "/list-platforms", method = RequestMethod.GET)
+    public final ModelAndView showPlatformList()
+    {
+        final String methodName = ServiceManagementController.CNAME + "#showPlatformList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                PlatformManagementRequest request = new PlatformManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.platformMgmt);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("PlatformManagementRequest: {}", request);
+                }
+
+                PlatformManagementResponse response = platformMgr.listPlatforms(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("PlatformManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Platform> platformList = response.getPlatformList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("platformList: {}", platformList);
+                    }
+
+                    mView.addObject("platformList", platformList);
+                    mView.setViewName(this.viewPlatformList);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (PlatformManagementException pmx)
+            {
+                ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/list-projects", method = RequestMethod.GET)
+    public final ModelAndView showProjectList()
+    {
+        final String methodName = ServiceManagementController.CNAME + "#showProjectList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                ProjectManagementRequest request = new ProjectManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.platformMgmt);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
+                }
+
+                ProjectManagementResponse response = projectMgr.listProjects(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Project> projectList = response.getProjectList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("projectList: {}", projectList);
+                    }
+
+                    mView.addObject("projectList", projectList);
+                    mView.setViewName(this.viewProjectsList);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (ProjectManagementException pmx)
+            {
+                ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         return mView;
     }
 
@@ -634,7 +947,6 @@ public class ServiceManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/platform/{platformName}", method = RequestMethod.GET)
     public final ModelAndView showPlatform(@PathVariable("platformName") final String platformName)
@@ -976,7 +1288,6 @@ public class ServiceManagementController
         return mView;
     }
 
-
     @RequestMapping(value = "/add-platform", method = RequestMethod.GET)
     public final ModelAndView showAddPlatform()
     {
@@ -1100,313 +1411,21 @@ public class ServiceManagementController
                         DEBUGGER.debug("listing: {}", listing);
                     }
 
-                    Map<String, String> dmgrList = new HashMap<String, String>();
-
-                    for (Server server : listing)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", server);
-                        }
-
-                        dmgrList.put(server.getServerGuid(), server.getOperHostName());
-                    }
-
-                    mView.addObject("dmgrList", dmgrList);
+                    mView.addObject("command", new Server());
+                    mView.addObject("dmgrList", listing);
+                    mView.setViewName(this.selectDmgrPage);
                 }
-
-                mView.addObject("command", new Server());
-                mView.setViewName(this.selectDmgrPage);
+                else
+                {
+                    // no dmgrs were found. redirect over to the add server page
+                    mView = new ModelAndView(new RedirectView());
+                    mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
+                    mView.setViewName(this.addServerRedirect);
+                }
             }
             catch (ServerManagementException smx)
             {
                 ERROR_RECORDER.error(smx.getMessage(), smx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/list-platforms", method = RequestMethod.GET)
-    public final ModelAndView showPlatformList()
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showPlatformList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                PlatformManagementRequest request = new PlatformManagementRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.platformMgmt);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", request);
-                }
-
-                PlatformManagementResponse response = platformMgr.listPlatforms(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Platform> platformList = response.getPlatformList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("platformList: {}", platformList);
-                    }
-
-                    mView.addObject("platformList", platformList);
-                    mView.setViewName(this.viewPlatformList);
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
-                }
-            }
-            catch (PlatformManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/list-projects", method = RequestMethod.GET)
-    public final ModelAndView showProjectList()
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showProjectList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                ProjectManagementRequest request = new ProjectManagementRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.platformMgmt);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
-                }
-
-                ProjectManagementResponse response = projectMgr.listProjects(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Project> projectList = response.getProjectList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("projectList: {}", projectList);
-                    }
-
-                    mView.addObject("projectList", projectList);
-                    mView.setViewName(this.viewProjectsList);
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }
@@ -1740,8 +1759,8 @@ public class ServiceManagementController
             {
                 // something was missing from the request
                 mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestValidationFailed);
-                mView.addObject("command", new PlatformRequest());
-                mView.setViewName(this.selectDmgrPage);
+                mView.addObject("command", request);
+                mView.setViewName(this.addPlatformPage);
 
                 return mView;
             }
@@ -2120,7 +2139,6 @@ public class ServiceManagementController
         return mView;
     }
 
-
     @RequestMapping(value = "/add-project", method = RequestMethod.POST)
     public final ModelAndView doAddProject(@ModelAttribute("request") final Project request, final BindingResult bindResult)
     {
@@ -2231,7 +2249,7 @@ public class ServiceManagementController
 
                 if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, projectResponse.getResponse());
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageProjectSuccessfullyAdded);
                 }
                 else
                 {

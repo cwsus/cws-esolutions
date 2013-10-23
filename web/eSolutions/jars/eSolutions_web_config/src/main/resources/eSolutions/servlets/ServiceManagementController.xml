@@ -34,8 +34,10 @@
         <property name="datacenterValidator">
             <ref bean="datactrValidator" />
         </property>
+        <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
         <property name="messagePlatformSuccessfullyAdded" value="svc.mgmt.platform.added" />
         <property name="messageDatacenterSuccessfullyAdded" value="svc.mgmt.datacenter.added" />
+        <property name="messageProjectSuccessfullyAdded" value="svc.mgmt.project.added" />
         <property name="serviceName" value="svcMgmt" />
         <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
 	    <property name="addProjectPage" value="ServiceMgmt_AddProject" />

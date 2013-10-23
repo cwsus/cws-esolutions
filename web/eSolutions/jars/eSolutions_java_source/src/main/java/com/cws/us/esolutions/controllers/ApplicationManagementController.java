@@ -103,6 +103,8 @@ public class ApplicationManagementController
     private String deployAppPage = null;
     private String messageNoFileData = null;
     private String retrieveFilesPage = null;
+    private String addProjectRedirect = null;
+    private String addPlatformRedirect = null;
     private String messageFileUploaded = null;
     private String viewApplicationsPage = null;
     private String messageNoBinaryProvided = null;
@@ -290,6 +292,32 @@ public class ApplicationManagementController
         }
 
         this.platformMgmt = value;
+    }
+
+    public final void setAddProjectRedirect(final String value)
+    {
+        final String methodName = ApplicationManagementController.CNAME + "#setAddProjectRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addProjectRedirect = value;
+    }
+
+    public final void setAddPlatformRedirect(final String value)
+    {
+        final String methodName = ApplicationManagementController.CNAME + "#setAddPlatformRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addPlatformRedirect = value;
     }
 
     public final void setViewApplicationsPage(final String value)
@@ -1049,6 +1077,13 @@ public class ApplicationManagementController
                             mView.addObject("projectListing", projectListing);
                         }
                     }
+                    else
+                    {
+                        mView = new ModelAndView(new RedirectView());
+                        mView.setViewName(this.addProjectRedirect);
+
+                        return mView;
+                    }
 
                     PlatformManagementRequest platformReq = new PlatformManagementRequest();
                     platformReq.setRequestInfo(reqInfo);
@@ -1097,6 +1132,13 @@ public class ApplicationManagementController
 
                             mView.addObject("platformListing", platformListing);
                         }
+                    }
+                    else
+                    {
+                        mView = new ModelAndView(new RedirectView());
+                        mView.setViewName(this.addPlatformRedirect);
+
+                        return mView;
                     }
 
                     mView.addObject("command", new ApplicationRequest());

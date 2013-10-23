@@ -703,15 +703,6 @@ function validateForm(theForm, e)
                     document.getElementById('execute').disabled = false;
                     document.getElementById('projectCode').focus();
                 }
-                else if (theForm.projectRegion.value == '')
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A project region must be provided.';
-                    document.getElementById('txtProjectRegion').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('projectCode').focus();
-                }
                 else if (theForm.primaryContact.value == '')
                 {
                     clearText(theForm);
@@ -848,7 +839,7 @@ function validateForm(theForm, e)
                     document.getElementById('validationError').innerHTML = 'A deployment manager must be provided.';
                     document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
-                    document.getElementById('platformDmgr').focus();
+                    document.getElementById('serverGuid').focus();
                 }
                 else
                 {
@@ -1066,6 +1057,43 @@ function validateForm(theForm, e)
                     document.getElementById('txtDatacenterDescription').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
                     document.getElementById('datacenterDesc').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitSystemMessage')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.messageTitle.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'A message subject must be provided.';
+                    document.getElementById('txtSysMessageSubject').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('messageTitle').focus();
+                }
+                else if (theForm.messageText.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'A message body must be provided.';
+                    document.getElementById('txtSysMessageBody').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('datacenterStatus').focus();
+                }
+                else if (!((theForm.isActive1.checked)) && (!(theForm.isActive2.checked)))
+                {
+                    document.getElementById('validationError').innerHTML = 'A message status must be provided.';
+                    document.getElementById('txtIsMessageActive').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
                 }
                 else
                 {
