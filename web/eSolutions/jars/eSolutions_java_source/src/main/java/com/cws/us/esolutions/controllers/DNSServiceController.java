@@ -485,12 +485,12 @@ public class DNSServiceController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 }
 
                 mView.addObject("serviceTypes", this.serviceTypes);

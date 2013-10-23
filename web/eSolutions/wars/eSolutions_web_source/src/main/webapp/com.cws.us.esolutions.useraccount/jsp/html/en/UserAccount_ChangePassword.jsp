@@ -30,10 +30,13 @@
 
 <div class="feature">
     <c:if test="${not empty messageResponse}">
-        <p id="info"><spring:message code="${messageResponse}" /></p>
+        <p id="info">${messageResponse}</p>
     </c:if>
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
     <spring:message code="user.account.update.password" />

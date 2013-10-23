@@ -72,6 +72,7 @@ public class LoginController
     private String passwordLoginPage = null;
     private String logoffCompleteString = null;
     private String messageUsernameEmpty = null;
+    private String messageValidationFailed = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = LoginController.class.getName();
@@ -221,6 +222,19 @@ public class LoginController
         }
 
         this.forgotPasswordUrl = value;
+    }
+
+    public final void setMessageValidationFailed(final String value)
+    {
+        final String methodName = LoginController.CNAME + "#setMessageValidationFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageValidationFailed = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -570,7 +584,7 @@ public class LoginController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, "error.password.empty");
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new LoginRequest());
 
                 return mView;
@@ -1143,7 +1157,7 @@ public class LoginController
 
                         mView.addObject("command", new UserSecurity());
                         mView.setViewName(this.otpLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, authResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
 
                         break;
                 }

@@ -736,7 +736,7 @@ public class UserManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.searchUsersPage);
                     }
                 }
@@ -943,7 +943,7 @@ public class UserManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.viewUsersPage);
                     }
                 }
@@ -1137,13 +1137,13 @@ public class UserManagementController
                         else
                         {
                             mView.addObject("command", new UserAccount());
-                            mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         }
                     }
                     else
                     {
                         mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
                 else
@@ -1355,7 +1355,7 @@ public class UserManagementController
                     else
                     {
                         mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
                 else
@@ -1545,7 +1545,7 @@ public class UserManagementController
                     else
                     {
                         mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
                 else
@@ -1805,7 +1805,7 @@ public class UserManagementController
                         // some failure occurred
                         ERROR_RECORDER.error(resetRes.getResponse());
 
-                        mView.addObject(Constants.ERROR_MESSAGE, resetRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
                         mView.addObject("userAccount", user);
                         mView.setViewName(this.viewUserPage);
                     }

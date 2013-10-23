@@ -451,7 +451,7 @@ public class SystemCheckController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
                 else
@@ -618,7 +618,7 @@ public class SystemCheckController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.defaultPage);
                 }
             }
@@ -787,7 +787,7 @@ public class SystemCheckController
                 else
                 {
                     // nooo
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 }
 
                 // regardless of what happens we still allow the user to
@@ -973,7 +973,7 @@ public class SystemCheckController
                 else
                 {
                     // nooo
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 }
 
                 // regardless of what happens we still allow the user to

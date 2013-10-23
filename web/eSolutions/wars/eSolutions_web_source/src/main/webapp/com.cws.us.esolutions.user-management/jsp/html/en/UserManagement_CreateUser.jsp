@@ -31,12 +31,15 @@
 <div class="feature">
 	<c:choose>
 	    <c:when test="${sessionScope.userAccount.role == 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
-		    <c:if test="${not empty messageResponse}">
-		        <p id="info"><spring:message code="${messageResponse}" /></p>
-		    </c:if>
-		    <c:if test="${not empty errorResponse}">
-		        <p id="error">${errorResponse}</p>
-		    </c:if>
+            <c:if test="${not empty messageResponse}">
+                <p id="info">${messageResponse}</p>
+            </c:if>
+            <c:if test="${not empty errorResponse}">
+                <p id="error">${errorResponse}</p>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <p id="error"><spring:message code="${errorMessage}" /></p>
+            </c:if>
 
             <spring:message code="admin.create.new.account" />
 

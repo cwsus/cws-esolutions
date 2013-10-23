@@ -12,10 +12,8 @@
     <bean id="platformRequestValidator" class="com.cws.us.esolutions.validators.PlatformValidator">
 		<property name="messagePlatformDmgrRequired" value="platform.dmgr.required" />
 		<property name="messagePlatformNameRequired" value="platform.name.required" />
-		<property name="messagePlatformStatusRequired" value="platform.status.required" />
 		<property name="messagePlatformAppServersRequired" value="platform.appservers.required" />
 		<property name="messagePlatformWebServersRequired" value="platform.webservers.required" />
-		<property name="messagePlatformRegionRequired" value="platform.region.required" />
     </bean>
 
     <bean id="datactrValidator" class="com.cws.us.esolutions.validators.DatacenterValidator">

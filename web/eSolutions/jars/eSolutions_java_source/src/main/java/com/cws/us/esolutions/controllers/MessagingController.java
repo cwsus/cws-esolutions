@@ -281,7 +281,7 @@ public class MessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.addServiceMessagePage);
             }
         }
@@ -539,7 +539,7 @@ public class MessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.viewServiceMessagesPage);
             }
         }
@@ -689,7 +689,7 @@ public class MessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
             }
 
             MessagingRequest mRequest = new MessagingRequest();
@@ -719,7 +719,7 @@ public class MessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.addServiceMessagePage);
             }
         }

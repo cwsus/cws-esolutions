@@ -656,7 +656,7 @@ public class KnowledgeBaseController
                         mView.addObject("postUrl", this.postURL);
                         mView.addObject("isHelpSearch", true);
                         mView.addObject("command", new SearchRequest());
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
                 }
@@ -1079,7 +1079,7 @@ public class KnowledgeBaseController
                             mView.addObject("postUrl", this.postURL);
                             mView.addObject("command", new SearchRequest());
                             mView.addObject("isHelpSearch", true);
-                            mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                             mView.setViewName(appConfig.getSearchRequestPage());
                         }
                     }
@@ -1258,7 +1258,7 @@ public class KnowledgeBaseController
                     {
                         mView.addObject("postUrl", this.postURL);
                         mView.addObject("isHelpSearch", true);
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.addObject("command", new SearchRequest());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
@@ -1461,7 +1461,7 @@ public class KnowledgeBaseController
                     else
                     {
                         // failure
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
                 }
@@ -1486,7 +1486,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, iox.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1494,7 +1494,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, mx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1502,7 +1502,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, csx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1687,7 +1687,7 @@ public class KnowledgeBaseController
                     else
                     {
                         // failure
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
                 }
@@ -1712,7 +1712,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, iox.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1720,7 +1720,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, mx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1728,7 +1728,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, csx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1913,7 +1913,7 @@ public class KnowledgeBaseController
                     else
                     {
                         // failure
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
                 }
@@ -1938,7 +1938,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, iox.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1946,7 +1946,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, mx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1954,7 +1954,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, csx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2267,7 +2267,7 @@ public class KnowledgeBaseController
                     {
                         // failure
                         mView.addObject("command", article);
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.createArticlePage);
                     }
                 }
@@ -2292,7 +2292,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, iox.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2300,7 +2300,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, mx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2308,7 +2308,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, csx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2508,7 +2508,7 @@ public class KnowledgeBaseController
                     {
                         // failure
                         mView.addObject("command", article);
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.createArticlePage);
                     }
                 }
@@ -2533,7 +2533,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, iox.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2541,7 +2541,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, mx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2549,7 +2549,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, csx.getMessage());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2697,7 +2697,7 @@ public class KnowledgeBaseController
                         mView.addObject("postUrl", this.postURL);
                         mView.addObject("command", new SearchRequest());
                         mView.addObject("isHelpSearch", true);
-                        mView.addObject(Constants.ERROR_MESSAGE, searchRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
                         mView.setViewName(appConfig.getSearchRequestPage());
                     }
                 }

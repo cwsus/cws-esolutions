@@ -627,7 +627,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.defaultPage);
                 }
             }
@@ -770,7 +770,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.defaultPage);
                 }
             }
@@ -924,7 +924,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.defaultPage);
                 }
             }
@@ -1078,7 +1078,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.defaultPage);
                 }
             }
@@ -1563,7 +1563,6 @@ public class ServiceManagementController
                     PlatformRequest platformRequest = new PlatformRequest();
                     platformRequest.setPlatformDmgr(targetDmgr.getServerGuid());
                     platformRequest.setPlatformDmgrName(targetDmgr.getOperHostName());
-                    platformRequest.setPlatformRegion(targetDmgr.getServerRegion());
 
                     if (DEBUG)
                     {
@@ -1644,6 +1643,7 @@ public class ServiceManagementController
                         mView.addObject("webServerList", webServerList);
                     }
 
+                    mView.addObject("statusList", ServiceStatus.values());
                     mView.addObject("command", platformRequest);
                     mView.setViewName(this.addPlatformPage);
                 }
@@ -1901,7 +1901,7 @@ public class ServiceManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, platformResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, platformResponse.getResponse());
                     }
                 }
                 else
@@ -2114,7 +2114,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, dcResponse.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, dcResponse.getResponse());
                     mView.addObject("command", request);
                     mView.setViewName(this.addDatacenterPage);
                 }
@@ -2253,7 +2253,7 @@ public class ServiceManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, projectResponse.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, projectResponse.getResponse());
                 }
 
                 mView.addObject("command", new Project());

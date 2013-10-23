@@ -766,7 +766,7 @@ public class OnlineResetController
             }
             else
             {
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.submitUsernamePage);
             }
         }
@@ -911,7 +911,7 @@ public class OnlineResetController
                     {
                         // account olr locked
                         mView.addObject("command", new OnlineResetRequest());
-                        mView.addObject(Constants.ERROR_MESSAGE, authResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
                         mView.setViewName(this.submitUsernamePage);
                     }
                     else
@@ -943,7 +943,7 @@ public class OnlineResetController
                         }
                         else
                         {
-                            mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                            mView.addObject(Constants.ERROR_RESPONSE, secResponse.getResponse());
                             mView.setViewName(appConfig.getErrorResponsePage());
                         }
                     }
@@ -952,7 +952,7 @@ public class OnlineResetController
                 {
                     // account is suspended
                     mView.addObject("command", new OnlineResetRequest());
-                    mView.addObject(Constants.ERROR_MESSAGE, authResponse.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
                     mView.setViewName(this.submitUsernamePage);
                 }
             }
@@ -1206,8 +1206,7 @@ public class OnlineResetController
                     // some failure occurred
                     ERROR_RECORDER.error(resetRes.getResponse());
 
-                    mView.addObject(Constants.ERROR_MESSAGE, resetRes.getResponse());
-                    mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                    mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
                     mView.addObject("command", new OnlineResetRequest());
                     mView.setViewName(this.submitAnswersPage);
                 }
@@ -1217,8 +1216,7 @@ public class OnlineResetController
                 // user not logged in, redirect
                 ERROR_RECORDER.error(response.getResponse());
 
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.addObject("command", new OnlineResetRequest());
                 mView.setViewName(this.submitAnswersPage);
             }

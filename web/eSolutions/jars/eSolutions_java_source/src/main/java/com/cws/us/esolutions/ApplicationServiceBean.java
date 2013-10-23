@@ -52,6 +52,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String errorResponsePage = null;
     @Autowired private String searchRequestPage = null;
     @Autowired private String requestCompletePage = null;
+    @Autowired private String messageEmailSendFailed = null;
     @Autowired private String messageRequestCanceled = null;
     @Autowired private Map<String, Boolean> services = null;
     @Autowired private List<String> allowedAppFileExtensions = null;
@@ -376,6 +377,19 @@ public class ApplicationServiceBean implements Serializable
         this.messageRequestCanceled = value;
     }
 
+    public final void setMessageEmailSendFailed(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageEmailSendFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEmailSendFailed = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -686,6 +700,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageRequestCanceled;
+    }
+
+    public final String getMessageEmailSendFailed()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageEmailSendFailed()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageEmailSendFailed);
+        }
+
+        return this.messageEmailSendFailed;
     }
 
     public final String toString()

@@ -30,10 +30,13 @@
 
 <div class="feature">
     <c:if test="${not empty messageResponse}">
-        <p id="info"><spring:message code="${messageResponse}" /></p>
+        <p id="info">${messageResponse}</p>
     </c:if>
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
     <spring:message code="svc.mgmt.add.platform" />
@@ -48,9 +51,9 @@
                     <c:when test="${not empty dmgrList}">
                         <td>
                             <form:select path="serverGuid" multiple="false">
+                                <option><spring:message code="select.default" /></option>
+                                <option><spring:message code="select.spacer" /></option>
                                 <c:forEach var="dmgr" items="${dmgrList}">
-			                        <option><spring:message code="select.default" /></option>
-			                        <option><spring:message code="select.spacer" /></option>
 			                        <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}" />
 			                    </c:forEach>
                             </form:select>

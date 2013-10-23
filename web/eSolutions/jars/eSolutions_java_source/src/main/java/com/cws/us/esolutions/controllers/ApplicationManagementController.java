@@ -718,7 +718,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                         mView.setViewName(this.defaultPage);
                     }
                 }
@@ -894,7 +894,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appRes.getResponse());
                         mView.setViewName(this.defaultPage);
                     }
                 }
@@ -1039,45 +1039,55 @@ public class ApplicationManagementController
                         DEBUGGER.debug("ProjectManagementRequest: {}", projectReq);
                     }
 
-                    ProjectManagementResponse projectResponse = projectMgr.listProjects(projectReq);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("ProjectManagementResponse: {}", projectResponse);
-                    }
-
-                    if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Project> projects = projectResponse.getProjectList();
+                        ProjectManagementResponse projectResponse = projectMgr.listProjects(projectReq);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("projects: {}", projects);
+                            DEBUGGER.debug("ProjectManagementResponse: {}", projectResponse);
                         }
 
-                        if ((projects != null) && (projects.size() != 0))
+                        if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                         {
-                            Map<String, String> projectListing = new HashMap<String, String>();
-
-                            for (Project project : projects)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Project: {}", project);
-                                }
-
-                                projectListing.put(project.getProjectGuid(), project.getProjectCode());
-                            }
+                            List<Project> projects = projectResponse.getProjectList();
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("projectListing: {}", projectListing);
+                                DEBUGGER.debug("projects: {}", projects);
                             }
 
-                            mView.addObject("projectListing", projectListing);
+                            if ((projects != null) && (projects.size() != 0))
+                            {
+                                Map<String, String> projectListing = new HashMap<String, String>();
+
+                                for (Project project : projects)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("Project: {}", project);
+                                    }
+
+                                    projectListing.put(project.getProjectGuid(), project.getProjectCode());
+                                }
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("projectListing: {}", projectListing);
+                                }
+
+                                mView.addObject("projectListing", projectListing);
+                            }
+                        }
+                        else
+                        {
+                            mView = new ModelAndView(new RedirectView());
+                            mView.setViewName(this.addProjectRedirect);
+
+                            return mView;
                         }
                     }
-                    else
+                    catch (ProjectManagementException pmx)
                     {
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(this.addProjectRedirect);
@@ -1095,45 +1105,55 @@ public class ApplicationManagementController
                         DEBUGGER.debug("PlatformManagementRequest: {}", platformReq);
                     }
 
-                    PlatformManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
-                    }
-
-                    if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Platform> platformList = platformResponse.getPlatformList();
+                        PlatformManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("platformList: {}", platformList);
+                            DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
                         }
 
-                        if ((platformList != null) && (platformList.size() != 0))
+                        if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                         {
-                            Map<String, String> platformListing = new HashMap<String, String>();
-
-                            for (Platform platform : platformList)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Platform: {}", platform);
-                                }
-
-                                platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
-                            }
+                            List<Platform> platformList = platformResponse.getPlatformList();
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("platformListing: {}", platformListing);
+                                DEBUGGER.debug("platformList: {}", platformList);
                             }
 
-                            mView.addObject("platformListing", platformListing);
+                            if ((platformList != null) && (platformList.size() != 0))
+                            {
+                                Map<String, String> platformListing = new HashMap<String, String>();
+
+                                for (Platform platform : platformList)
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("Platform: {}", platform);
+                                    }
+
+                                    platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
+                                }
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("platformListing: {}", platformListing);
+                                }
+
+                                mView.addObject("platformListing", platformListing);
+                            }
+                        }
+                        else
+                        {
+                            mView = new ModelAndView(new RedirectView());
+                            mView.setViewName(this.addPlatformRedirect);
+
+                            return mView;
                         }
                     }
-                    else
+                    catch (PlatformManagementException pmx)
                     {
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(this.addPlatformRedirect);
@@ -1148,18 +1168,6 @@ public class ApplicationManagementController
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (PlatformManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
             }
             catch (UserControlServiceException ucsx)
             {
@@ -1315,7 +1323,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appRes.getResponse());
                         mView.setViewName(this.defaultPage);
                     }
                 }
@@ -1910,7 +1918,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                         mView.addObject("application", appResponse.getApplication());
                         mView.setViewName(this.viewAppPage);
                     }
@@ -2186,7 +2194,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                         mView.addObject("application", application);
                         mView.setViewName(this.viewAppPage);
                     }
@@ -2399,7 +2407,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appResponse.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                         mView.setViewName(appConfig.getErrorResponsePage());
                     }
                 }
@@ -2632,7 +2640,7 @@ public class ApplicationManagementController
                             }
                             else
                             {
-                                mView.addObject(Constants.ERROR_MESSAGE, appResponse.getResponse());
+                                mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                                 mView.setViewName(appConfig.getErrorResponsePage());
                             }
                         }
@@ -2955,7 +2963,7 @@ public class ApplicationManagementController
                     else
                     {
                         mView.addObject("command", request);
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.addAppPage);
                     }
                 }
@@ -3265,13 +3273,13 @@ public class ApplicationManagementController
                         else
                         {
                             // error
-                            mView.addObject(Constants.ERROR_MESSAGE, platformResponse.getResponse());
+                            mView.addObject(Constants.ERROR_RESPONSE, platformResponse.getResponse());
                             mView.setViewName(appConfig.getErrorResponsePage());
                         }
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_MESSAGE, appRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appRes.getResponse());
                         mView.setViewName(this.defaultPage);
                     }
                 }

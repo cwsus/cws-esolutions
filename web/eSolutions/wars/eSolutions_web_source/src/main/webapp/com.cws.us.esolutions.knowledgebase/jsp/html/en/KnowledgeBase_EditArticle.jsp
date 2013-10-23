@@ -52,6 +52,16 @@
                 </c:otherwise>
             </c:choose>
 
+            <c:if test="${not empty messageResponse}">
+                <p id="info">${messageResponse}</p>
+            </c:if>
+            <c:if test="${not empty errorResponse}">
+                <p id="error">${errorResponse}</p>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <p id="error"><spring:message code="${errorMessage}" /></p>
+            </c:if>
+
             <p id="validationError" />
 
             <form:form id="submitArticleUpdates" name="submitArticleUpdates" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post" commandName="article">

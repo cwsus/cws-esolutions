@@ -832,7 +832,7 @@ function validateForm(theForm, e)
         {
             if (targ.id == 'execute')
             {
-                if (theForm.platformDmgr.value == '')
+                if (theForm.serverGuid.value == '')
                 {
                     clearText(theForm);
 

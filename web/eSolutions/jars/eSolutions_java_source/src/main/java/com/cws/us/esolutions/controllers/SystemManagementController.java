@@ -752,7 +752,7 @@ public class SystemManagementController
                         else
                         {
                             // boo
-                            mView.addObject(Constants.ERROR_MESSAGE, hostResponse.getResponse());
+                            mView.addObject(Constants.ERROR_RESPONSE, hostResponse.getResponse());
                             mView.setViewName(this.defaultPage);
                         }
                     }
@@ -1499,7 +1499,7 @@ public class SystemManagementController
                                 }
 
                                 // no dmgr information found for the request
-                                mView.addObject(Constants.ERROR_MESSAGE, dmgrResponse.getResponse());
+                                mView.addObject(Constants.ERROR_RESPONSE, dmgrResponse.getResponse());
                                 mView.addObject("domainList", this.availableDomains);
                                 mView.addObject("serverTypes", ServerType.values());
                                 mView.addObject("serverStatuses", ServerStatus.values());
@@ -1698,7 +1698,7 @@ public class SystemManagementController
                     else
                     {
                         // nooo
-                        mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.addObject("command", request);
                     }
 
@@ -1997,7 +1997,7 @@ public class SystemManagementController
                         }
                         else
                         {
-                            mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         }
 
                         // regardless of what happens we still allow the user to

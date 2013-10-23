@@ -30,10 +30,13 @@
 
 <div class="feature">
     <c:if test="${not empty messageResponse}">
-        <p id="info"><spring:message code="${messageResponse}" /></p>
+        <p id="info">${messageResponse}</p>
     </c:if>
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
     <spring:message code="svc.mgmt.add.platform" />
@@ -74,8 +77,6 @@
 	                        <td>
 	                            <form:select path="appServers" multiple="true">
 	                                <c:forEach var="appserver" items="${appServerList}">
-	                                    <option><spring:message code="select.default" /></option>
-                                        <option><spring:message code="select.spacer" /></option>
 	                                    <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
 	                                </c:forEach>
 	                            </form:select>
@@ -98,8 +99,6 @@
 	                        <td>
 	                            <form:select path="webServers" multiple="true">
                                     <c:forEach var="webserver" items="${webServerList}">
-                                        <option><spring:message code="select.default" /></option>
-                                        <option><spring:message code="select.spacer" /></option>
                                         <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
                                     </c:forEach>
 	                            </form:select>

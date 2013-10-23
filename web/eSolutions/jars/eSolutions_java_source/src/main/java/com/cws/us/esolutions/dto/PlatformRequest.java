@@ -18,7 +18,6 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
  * eSolutions_java_source
@@ -46,7 +45,6 @@ public class PlatformRequest implements Serializable
     private String platformDmgrName = null;
     private List<String> appServers = null;
     private List<String> webServers = null;
-    private ServiceRegion platformRegion = null;
 
     private static final long serialVersionUID = 6181577121963540025L;
     private static final String CNAME = PlatformRequest.class.getName();
@@ -78,19 +76,6 @@ public class PlatformRequest implements Serializable
         }
 
         this.status = value;
-    }
-
-    public final void setPlatformRegion(final ServiceRegion value)
-    {
-        final String methodName = PlatformRequest.CNAME + "#setPlatformRegion(final ServiceRegion value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platformRegion = value;
     }
 
     public final void setPlatformDmgr(final String value)
@@ -182,19 +167,6 @@ public class PlatformRequest implements Serializable
         }
 
         return this.status;
-    }
-
-    public final ServiceRegion getPlatformRegion()
-    {
-        final String methodName = PlatformRequest.CNAME + "#getPlatformRegion()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformRegion);
-        }
-
-        return this.platformRegion;
     }
 
     public final String getPlatformDmgr()

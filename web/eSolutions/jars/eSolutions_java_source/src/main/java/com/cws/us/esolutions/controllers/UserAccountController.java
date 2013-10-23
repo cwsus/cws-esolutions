@@ -538,7 +538,7 @@ public class UserAccountController
             }
             else
             {
-                mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.myAccountPage);
             }
         }
@@ -839,7 +839,7 @@ public class UserAccountController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.changePasswordPage);
                 }
             }
@@ -990,7 +990,7 @@ public class UserAccountController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.changePasswordPage);
                 }
             }
@@ -1150,7 +1150,7 @@ public class UserAccountController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.changePasswordPage);
                 }
             }

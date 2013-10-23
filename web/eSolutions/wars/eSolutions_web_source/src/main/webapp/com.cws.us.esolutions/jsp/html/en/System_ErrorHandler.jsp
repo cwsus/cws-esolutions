@@ -30,10 +30,17 @@
 
 <div class="feature">
     <spring:message code="error.system.failure" />
-    <br /><br />
+
+    <c:if test="${not empty messageResponse}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+
     <c:choose>
         <c:when test="${requestScope.isUserLoggedIn != 'true'}">
             <p><a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/home/default" /></a></p>

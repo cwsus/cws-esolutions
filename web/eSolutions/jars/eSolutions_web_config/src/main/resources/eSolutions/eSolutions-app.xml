@@ -81,6 +81,8 @@
 	    <property name="logonRedirect" value="redirect:/ui/logon/default" />
 	    <property name="expiredRedirect" value="redirect:/ui/user/password" />
 	    <property name="homeRedirect" value="redirect:/ui/home/default" />
+	    <property name="messageEmailSendFailed" value="system.message.email.send.failed" />
+	    <property name="messageRequestCanceled" value="system.message.request.canceled" />
     </bean>
 
     <!-- internationalization -->
