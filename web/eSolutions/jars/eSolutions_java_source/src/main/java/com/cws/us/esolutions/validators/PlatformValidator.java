@@ -39,7 +39,7 @@ import com.cws.us.esolutions.dto.PlatformRequest;
 public class PlatformValidator implements Validator
 {
     private String messagePlatformNameRequired = null;
-    private String messagePlatformDmgrRequired = null;
+    private String messagePlatformStatusRequired = null;
     private String messagePlatformWebServersRequired = null;
     private String messagePlatformAppServersRequired = null;
 
@@ -47,19 +47,6 @@ public class PlatformValidator implements Validator
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setMessagePlatformDmgrRequired(final String value)
-    {
-        final String methodName = PlatformValidator.CNAME + "#setMessagePlatformDmgrRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePlatformDmgrRequired = value;
-    }
 
     public final void setMessagePlatformNameRequired(final String value)
     {
@@ -72,6 +59,19 @@ public class PlatformValidator implements Validator
         }
 
         this.messagePlatformNameRequired = value;
+    }
+
+    public final void setMessagePlatformStatusRequired(final String value)
+    {
+        final String methodName = PlatformValidator.CNAME + "#setMessagePlatformStatusRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePlatformStatusRequired = value;
     }
 
     public final void setMessagePlatformAppServersRequired(final String value)
@@ -134,7 +134,7 @@ public class PlatformValidator implements Validator
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformName", this.messagePlatformNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformDmgr", this.messagePlatformDmgrRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messagePlatformStatusRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "appServers", this.messagePlatformAppServersRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "webServers", this.messagePlatformWebServersRequired);
     }

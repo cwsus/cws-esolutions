@@ -3090,20 +3090,20 @@ public class ApplicationManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            deploymentValidator.validate(request, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                // validation failed
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageDeploymentFailedValidation);
+                mView.addObject("command", new ApplicationRequest());
+
+                return mView;
+            }
+
             // validate the user has access
             try
             {
-                deploymentValidator.validate(request, bindResult);
-
-                if (bindResult.hasErrors())
-                {
-                    // validation failed
-                    mView.addObject(Constants.ERROR_MESSAGE, this.messageDeploymentFailedValidation);
-                    mView.addObject("command", new ApplicationRequest());
-
-                    return mView;
-                }
-
                 IUserControlService control = new UserControlServiceImpl();
 
                 boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.applMgmt);

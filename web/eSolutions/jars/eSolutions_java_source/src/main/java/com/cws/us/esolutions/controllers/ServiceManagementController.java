@@ -1681,7 +1681,7 @@ public class ServiceManagementController
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Project: {}", request);
+            DEBUGGER.debug("PlatformRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -1926,10 +1926,10 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("ServerManagementRequest: {}", dmgrRequest);
+                    DEBUGGER.debug("ServerManagementRequest: {}", serverReq);
                 }
 
-                ServerManagementResponse serverRes = serverMgr.listServersByType(dmgrRequest);
+                ServerManagementResponse serverRes = serverMgr.listServersByType(serverReq);
 
                 if (DEBUG)
                 {

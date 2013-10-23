@@ -44,6 +44,8 @@
     <p id="validationError" />
 
     <form:form id="createNewPlatform" name="createNewPlatform" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
+        <form:hidden path="platformDmgr" />
+
         <table id="applicationDetail">
             <tr>
                 <td><label id="txtPlatformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
@@ -60,10 +62,6 @@
                     </form:select>
                 </td>
                 <td><form:errors path="status" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtPlatformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
-                <td><form:input path="platformRegion" readonly="true" /></td>
             </tr>
             <tr>
                 <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>

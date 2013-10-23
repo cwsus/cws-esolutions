@@ -106,7 +106,7 @@ public class PlatformRequest implements Serializable
 
     public final void setAppServers(final List<String> value)
     {
-        final String methodName = PlatformRequest.CNAME + "#setPlatformDmgr(final List<String> value)";
+        final String methodName = PlatformRequest.CNAME + "#setAppServers(final List<String> value)";
 
         if (DEBUG)
         {

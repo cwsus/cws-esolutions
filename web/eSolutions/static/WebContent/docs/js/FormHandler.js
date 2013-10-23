@@ -876,24 +876,6 @@ function validateForm(theForm, e)
                     document.getElementById('execute').disabled = false;
                     document.getElementById('platformName').focus();
                 }
-                else if (theForm.platformRegion.value == '')
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A platform region must be provided.';
-                    document.getElementById('txtPlatformRegion').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('platformName').focus();
-                }
-                else if (((theForm.platformDmgr) && (theForm.platformDmgr.value == '')) || ((theForm.dmgrName) && (theForm.dmgrName.value == '')))
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'A Target deployment manager must be provided.';
-                    document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('platformName').focus();
-                }
                 else if (theForm.appServers.value == '')
                 {
                     clearText(theForm);
