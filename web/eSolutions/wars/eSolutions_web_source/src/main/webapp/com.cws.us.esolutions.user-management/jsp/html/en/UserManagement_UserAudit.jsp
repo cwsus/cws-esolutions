@@ -46,7 +46,22 @@
                 <p id="error"><spring:message code="${errorMessage}" /></p>
             </c:if>
 
-            <%-- TODO: audit --%>
+            <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
+
+            <table id="viewAuditTrail">
+                <tr>
+                    <td><spring:message code="admin.account.audit.timestamp" /></td>
+                    <td><spring:message code="admin.account.audit.type" /></td>
+                    <td><spring:message code="admin.account.audit.hostinfo" /></td>
+                </tr>
+                <c:forEach var="entry" items="${auditEntries}">
+                    <tr>
+                        <td>${entry.auditDate}</td>
+                        <td>${entry.auditType}</td>
+                        <td>${entry.reqInfo.hostName} / ${entry.reqInfo.hostAddress}</td>
+                    </tr>
+                </c:forEach>
+            </table>
         </c:when>
         <c:otherwise>
             <spring:message code="admin.account.not.authorized" />

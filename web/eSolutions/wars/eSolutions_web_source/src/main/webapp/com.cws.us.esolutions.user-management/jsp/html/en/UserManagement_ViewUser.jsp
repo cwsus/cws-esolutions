@@ -34,8 +34,10 @@
             <div id="breadcrumb" class="lpstartover">
                 <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
                     title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a> /
-                <a href="${pageContext.request.contextPath}/ui/user-management/audit-user/user/${userAccount.guid}"
-                    title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
+                <c:if test="${auditEnabled eq 'TRUE'}">
+                    <a href="${pageContext.request.contextPath}/ui/user-management/audit-user/user/${userAccount.guid}"
+                        title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
+                </c:if>
             </div>
 
             <c:if test="${not empty messageResponse}">
