@@ -21,6 +21,7 @@ target/
 # Android
 gen/
 bin/
+**/bin
 
 # External tool builders
 .externalToolBuilders/
