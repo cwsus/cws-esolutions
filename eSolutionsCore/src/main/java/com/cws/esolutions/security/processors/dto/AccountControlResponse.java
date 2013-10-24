@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * SecurityService
@@ -48,6 +49,7 @@ public class AccountControlResponse implements Serializable
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private List<UserAccount> userList = null;
+    private List<AuditEntry> auditEntries = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = 7424992844092841578L;
@@ -134,6 +136,19 @@ public class AccountControlResponse implements Serializable
         this.questionList = value;
     }
 
+    public final void setAuditEntries(final List<AuditEntry> value)
+    {
+        final String methodName = AccountControlResponse.CNAME + "#setAuditEntries(final List<AuditEntry> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.auditEntries = value;
+    }
+
     public final SecurityRequestStatus getRequestStatus()
     {
         final String methodName = AccountControlResponse.CNAME + "#getMgmtType()";
@@ -210,6 +225,19 @@ public class AccountControlResponse implements Serializable
         }
 
         return this.questionList;
+    }
+
+    public final List<AuditEntry> getAuditEntries()
+    {
+        final String methodName = AccountControlResponse.CNAME + "#getAuditEntries()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditEntries);
+        }
+
+        return this.auditEntries;
     }
 
     @Override

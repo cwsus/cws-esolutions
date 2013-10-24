@@ -82,6 +82,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
+        UserAccount userAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
@@ -182,7 +183,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (authAccount != null)
             {
-                List<Object> userData = authenticator.performLogon(authAccount.getGuid(), authAccount.getUsername(), password, request.getAppName());
+                List<Object> userData = authenticator.performLogon(authAccount.getGuid(), authAccount.getUsername(), password, request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -191,7 +192,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                 if ((userData != null) && (!(userData.isEmpty())))
                 {
-                    UserAccount userAccount = new UserAccount();
+                    userAccount = new UserAccount();
                     userAccount.setGuid((String) userData.get(0));
                     userAccount.setUsername((String) userData.get(1));
                     userAccount.setGivenName((String) userData.get(2));
@@ -385,10 +386,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(authUser);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOGON);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -427,10 +430,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         AuthenticationResponse response = new AuthenticationResponse();
 
+        final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
@@ -476,6 +481,39 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             throw new AuthenticationException(ax.getMessage(), ax);
         }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADSECURITY);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
 
         return response;
     }
@@ -493,11 +531,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         AuthenticationResponse authResponse = new AuthenticationResponse();
 
+        final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
         final UserSecurity userSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserSecurity: {}", userSecurity);
         }
@@ -559,6 +599,39 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
             throw new AuthenticationException(ax.getMessage(), ax);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.VERIFYSECURITY);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
 
         return authResponse;

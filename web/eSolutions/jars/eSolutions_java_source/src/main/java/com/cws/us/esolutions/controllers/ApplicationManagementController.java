@@ -683,6 +683,8 @@ public class ApplicationManagementController
                     appRequest.setRequestInfo(reqInfo);
                     appRequest.setServiceId(this.applMgmt);
                     appRequest.setUserAccount(userAccount);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -862,27 +864,29 @@ public class ApplicationManagementController
                     }
 
                     // get a list of available servers
-                    ApplicationManagementRequest appReq = new ApplicationManagementRequest();
-                    appReq.setRequestInfo(reqInfo);
-                    appReq.setUserAccount(userAccount);
-                    appReq.setServiceId(this.applMgmt);
-                    appReq.setApplication(reqApplication);
+                    ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+                    appRequest.setRequestInfo(reqInfo);
+                    appRequest.setUserAccount(userAccount);
+                    appRequest.setServiceId(this.applMgmt);
+                    appRequest.setApplication(reqApplication);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ApplicationManagementRequest: {}", appReq);
+                        DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
                     }
 
-                    ApplicationManagementResponse appRes = appMgr.getApplicationData(appReq);
+                    ApplicationManagementResponse appResponse = appMgr.getApplicationData(appRequest);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ApplicationManagementResponse: {}", appRes);
+                        DEBUGGER.debug("ApplicationManagementResponse: {}", appResponse);
                     }
 
-                    if (appRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    if (appResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        Application resApplication = appRes.getApplication();
+                        Application resApplication = appResponse.getApplication();
 
                         if (DEBUG)
                         {
@@ -894,7 +898,7 @@ public class ApplicationManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_RESPONSE, appRes.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
                         mView.setViewName(this.defaultPage);
                     }
                 }
@@ -1033,6 +1037,8 @@ public class ApplicationManagementController
                     projectReq.setRequestInfo(reqInfo);
                     projectReq.setUserAccount(userAccount);
                     projectReq.setServiceId(this.projectMgmt);
+                    projectReq.setApplicationId(appConfig.getApplicationId());
+                    projectReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1099,6 +1105,8 @@ public class ApplicationManagementController
                     platformReq.setRequestInfo(reqInfo);
                     platformReq.setServiceId(this.platformMgmt);
                     platformReq.setUserAccount(userAccount);
+                    platformReq.setApplicationId(appConfig.getApplicationId());
+                    platformReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1298,18 +1306,20 @@ public class ApplicationManagementController
                     }
 
                     // get a list of available servers
-                    ApplicationManagementRequest appReq = new ApplicationManagementRequest();
-                    appReq.setRequestInfo(reqInfo);
-                    appReq.setUserAccount(userAccount);
-                    appReq.setServiceId(this.applMgmt);
-                    appReq.setApplication(reqApplication);
+                    ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
+                    appRequest.setRequestInfo(reqInfo);
+                    appRequest.setUserAccount(userAccount);
+                    appRequest.setServiceId(this.applMgmt);
+                    appRequest.setApplication(reqApplication);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ApplicationManagementRequest: {}", appReq);
+                        DEBUGGER.debug("ApplicationManagementRequest: {}", appRequest);
                     }
 
-                    ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appReq);
+                    ApplicationManagementResponse appRes = appMgr.deleteApplicationData(appRequest);
 
                     if (DEBUG)
                     {
@@ -1472,6 +1482,8 @@ public class ApplicationManagementController
                     appRequest.setRequestInfo(reqInfo);
                     appRequest.setUserAccount(userAccount);
                     appRequest.setServiceId(this.applMgmt);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1675,6 +1687,8 @@ public class ApplicationManagementController
                     platformRequest.setRequestInfo(reqInfo);
                     platformRequest.setServiceId(this.platformMgmt);
                     platformRequest.setPlatform(reqPlatform);
+                    platformRequest.setApplicationId(appConfig.getApplicationId());
+                    platformRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1884,6 +1898,8 @@ public class ApplicationManagementController
                     appRequest.setUserAccount(userAccount);
                     appRequest.setServiceId(this.applMgmt);
                     appRequest.setServer(targetServer);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -2088,6 +2104,8 @@ public class ApplicationManagementController
                     appRequest.setServiceId(this.applMgmt);
                     appRequest.setServer(targetServer);
                     appRequest.setRequestFile(vpath);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -2355,6 +2373,8 @@ public class ApplicationManagementController
                     appRequest.setRequestInfo(reqInfo);
                     appRequest.setUserAccount(userAccount);
                     appRequest.setServiceId(this.applMgmt);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -2572,6 +2592,8 @@ public class ApplicationManagementController
                     platformRequest.setRequestInfo(reqInfo);
                     platformRequest.setServiceId(this.platformMgmt);
                     platformRequest.setPlatform(reqPlatform);
+                    platformRequest.setApplicationId(appConfig.getApplicationId());
+                    platformRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -2602,6 +2624,8 @@ public class ApplicationManagementController
                             appRequest.setRequestInfo(reqInfo);
                             appRequest.setUserAccount(userAccount);
                             appRequest.setServiceId(this.applMgmt);
+                            appRequest.setApplicationId(appConfig.getApplicationId());
+                            appRequest.setApplicationName(appConfig.getApplicationName());
 
                             if (DEBUG)
                             {
@@ -2842,6 +2866,8 @@ public class ApplicationManagementController
                     appRequest.setServiceId(this.applMgmt);
                     appRequest.setRequestInfo(reqInfo);
                     appRequest.setUserAccount(userAccount);
+                    appRequest.setApplicationId(appConfig.getApplicationId());
+                    appRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -2862,6 +2888,8 @@ public class ApplicationManagementController
                         projectReq.setRequestInfo(reqInfo);
                         projectReq.setUserAccount(userAccount);
                         projectReq.setServiceId(this.projectMgmt);
+                        projectReq.setApplicationId(appConfig.getApplicationId());
+                        projectReq.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
@@ -2911,6 +2939,8 @@ public class ApplicationManagementController
                         platformReq.setRequestInfo(reqInfo);
                         platformReq.setServiceId(this.platformMgmt);
                         platformReq.setUserAccount(userAccount);
+                        platformReq.setApplicationId(appConfig.getApplicationId());
+                        platformReq.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
@@ -3138,6 +3168,8 @@ public class ApplicationManagementController
                     appReq.setUserAccount(userAccount);
                     appReq.setServiceId(this.applMgmt);
                     appReq.setApplication(reqApplication);
+                    appReq.setApplicationId(appConfig.getApplicationId());
+                    appReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -3174,6 +3206,8 @@ public class ApplicationManagementController
                         platformRequest.setRequestInfo(reqInfo);
                         platformRequest.setServiceId(this.platformMgmt);
                         platformRequest.setPlatform(reqPlatform);
+                        platformRequest.setApplicationId(appConfig.getApplicationId());
+                        platformRequest.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
@@ -3268,6 +3302,8 @@ public class ApplicationManagementController
                             else
                             {
                                 // no platform
+                                mView.addObject(Constants.ERROR_MESSAGE, this.messageNoPlatformAssigned);
+                                mView.setViewName(appConfig.getErrorResponsePage());
                             }
                         }
                         else

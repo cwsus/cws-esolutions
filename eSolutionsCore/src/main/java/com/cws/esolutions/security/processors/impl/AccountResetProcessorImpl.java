@@ -23,7 +23,6 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
@@ -71,6 +70,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
+        UserAccount userAccount = null;
         AccountResetResponse response = new AccountResetResponse();
 
         final Calendar cal = Calendar.getInstance();
@@ -137,7 +137,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                             }
                         }
 
-                        UserAccount userAccount = new UserAccount();
+                        userAccount = new UserAccount();
                         userAccount.setGuid(userData[0]);
                         userAccount.setUsername(userData[1]);
                         userAccount.setGivenName(userData[2]);
@@ -204,19 +204,13 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             // audit
             try
             {
-                UserAccount account = new UserAccount();
-                account.setUsername(SecurityConstants.SYSADM);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", account);
-                }
-
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(account);
-                auditEntry.setAuditType(AuditType.RESETPASS);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.VERIFYRESET);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -381,10 +375,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.RESETPASS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -455,37 +451,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
             
             throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(reqUser);
-                auditEntry.setAuditType(AuditType.NONE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
         }
 
         return response;

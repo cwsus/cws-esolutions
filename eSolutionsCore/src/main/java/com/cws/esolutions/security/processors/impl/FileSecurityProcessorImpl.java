@@ -153,10 +153,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.LOGON);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.SIGNFILE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getAppName());
 
                 if (DEBUG)
                 {
@@ -164,7 +166,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 }
 
                 AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
 
                 if (DEBUG)
                 {
@@ -264,10 +265,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.LOGON);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.VERIFYFILE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getAppName());
 
                 if (DEBUG)
                 {
@@ -382,10 +385,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.LOGON);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.ENCRYPTFILE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getAppName());
 
                 if (DEBUG)
                 {
@@ -489,10 +494,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.LOGON);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.DECRYPTFILE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getAppName());
 
                 if (DEBUG)
                 {

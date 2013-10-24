@@ -62,19 +62,19 @@ public class AuditProcessorImpl implements IAuditProcessor
             DEBUGGER.debug("AuditRequest: {}", request);
         }
 
-        if (request.doPerformAudit())
+        final AuditEntry auditEntry = request.getAuditEntry();
+        final RequestHostInfo hostInfo = auditEntry.getHostInfo();
+        final UserAccount userAccount = auditEntry.getUserAccount();
+
+        if (DEBUG)
         {
-            final AuditEntry auditEntry = request.getAuditEntry();
-            final RequestHostInfo hostInfo = auditEntry.getReqInfo();
-            final UserAccount userAccount = auditEntry.getUserAccount();
+            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+        }
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                DEBUGGER.debug("UserAccount: {}", userAccount);
-                DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-            }
-
+        if (secConfig.getPerformAudit())
+        {
             if (hostInfo == null)
             {
                 throw new AuditServiceException("Cannot perform audit: RequestHostInfo is missing");
@@ -85,30 +85,42 @@ public class AuditProcessorImpl implements IAuditProcessor
             switch (auditEntry.getAuditType())
             {
                 case LOGON:
-                    auditList.add(userAccount.getSessionId());
-                    auditList.add(userAccount.getUsername());
-                    auditList.add(SecurityConstants.NOT_SET);
-                    auditList.add(auditEntry.getAuditType().toString());
-                    auditList.add(hostInfo.getHostAddress());
-                    auditList.add(hostInfo.getHostName());
+                    auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
 
                     break;
                 case RESETPASS:
-                    auditList.add(SecurityConstants.NOT_SET);
-                    auditList.add(userAccount.getUsername());
-                    auditList.add(SecurityConstants.NOT_SET);
-                    auditList.add(auditEntry.getAuditType().toString());
-                    auditList.add(hostInfo.getHostAddress());
-                    auditList.add(hostInfo.getHostName());
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
 
                     break;
                 default:
-                    auditList.add(userAccount.getSessionId());
-                    auditList.add(userAccount.getUsername());
-                    auditList.add(userAccount.getRole().toString());
-                    auditList.add(auditEntry.getAuditType().toString());
-                    auditList.add(hostInfo.getHostAddress());
-                    auditList.add(hostInfo.getHostName());
+                    auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(userAccount.getRole().toString()); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
 
                     break;
             }
@@ -153,9 +165,16 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         AuditResponse response = new AuditResponse();
 
-        if (request.doPerformAudit())
+        final AuditEntry auditEntry = request.getAuditEntry();
+
+        if (DEBUG)
         {
-            final UserAccount user = request.getAuditEntry().getUserAccount();
+            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+        }
+
+        if (secConfig.getPerformAudit())
+        {
+            final UserAccount user = auditEntry.getUserAccount();
 
             if (DEBUG)
             {
@@ -188,9 +207,10 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                         // capture
                         UserAccount userAccount = new UserAccount();
-                        userAccount.setSessionId(array[0]);
-                        userAccount.setUsername(array[1]);
-                        userAccount.setRole(Role.valueOf(array[2]));
+                        userAccount.setSessionId(array[0]); // usr_audit_sessionid
+                        userAccount.setUsername(array[1]); // usr_audit_userid
+                        userAccount.setGuid(array[2]); // usr_audit_userguid
+                        userAccount.setRole(Role.valueOf(array[3])); // usr_audit_role
 
                         if (DEBUG)
                         {
@@ -198,26 +218,28 @@ public class AuditProcessorImpl implements IAuditProcessor
                         }
 
                         RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostAddress(array[6]);
-                        reqInfo.setHostName(array[7]);
+                        reqInfo.setHostAddress(array[8]);
+                        reqInfo.setHostName(array[9]);
 
                         if (DEBUG)
                         {
                             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                         }
 
-                        AuditEntry auditEntry = new AuditEntry();
-                        auditEntry.setAuditDate(Long.valueOf(array[4]));
-                        auditEntry.setAuditType(AuditType.valueOf(array[5]));
-                        auditEntry.setReqInfo(reqInfo);
-                        auditEntry.setUserAccount(userAccount);
+                        AuditEntry resEntry = new AuditEntry();
+                        resEntry.setApplicationId(array[4]); // usr_audit_applid
+                        resEntry.setApplicationName(array[5]); // usr_audit_applname
+                        resEntry.setAuditDate(Long.valueOf(array[6])); // usr_audit_timestamp
+                        resEntry.setAuditType(AuditType.valueOf(array[7])); // usr_audit_action
+                        resEntry.setHostInfo(reqInfo);
+                        resEntry.setUserAccount(userAccount);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                            DEBUGGER.debug("AuditEntry: {}", resEntry);
                         }
 
-                        auditList.add(auditEntry);
+                        auditList.add(resEntry);
                     }
 
                     if (DEBUG)

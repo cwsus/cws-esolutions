@@ -36,12 +36,17 @@ package com.cws.esolutions.security.audit.enums;
 public enum AuditType
 {
     NONE,
+
     // authentication
     LOGON,
     LOGOFF,
     FORCELOGOFF,
     CHANGEPASS,
     RESETPASS,
+    LOADSECURITY,
+    VERIFYSECURITY,
+    VERIFYRESET,
+
     // user management
     CREATEUSER,
     MODIFYUSER,
@@ -52,48 +57,47 @@ public enum AuditType
     UNSUSPENDUSER,
     LOCKUSER,
     UNLOCKUSER,
-    ADDQUESTIONS,
+    ADDSECURITY,
+    SHOWAUDIT,
+    SEARCHACCOUNTS,
+    LOADACCOUNT,
+
+    // file security
+    DECRYPTFILE,
+    ENCRYPTFILE,
+    VERIFYFILE,
+    SIGNFILE,
+
     // emailing
     SENDEMAIL,
+
     // knowledgebase
+    CREATEARTICLE,
+    UPDATEARTICLE,
     DELETEARTICLE,
     REJECTARTICLE,
     APPROVEARTICLE,
-    UPDATEARTICLE,
-    CREATEARTICLE,
     SHOWARTICLE,
     SHOWPENDING,
+
     // service messaging
+    SHOWMESSAGES,
+    LOADMESSAGE,
     ADDSVCMESSAGE,
     EDITSVCMESSAGE,
+
     // app mgmt
-    ADDPROJECT,
-    DELETEPROJECT,
-    MODIFYPROJECT,
-    SHOWPROJECT,
-    MODIFYAPP,
-    LISTPROJECTS,
     ADDAPP,
-    DELETEAPP,
     UPDATEAPP,
+    DELETEAPP,
     LISTAPPS,
-    ADDWEB,
-    DELETEWEB,
-    UPDATEWEB,
-    LISTWEBS,
-    GETFILE,
-    LISTFILES,
-    SRVRMGMT,
+    LOADAPP,
+    GETFILES,
+    DEPLOYAPP,
+
     // sysmgmt
     KILL,
-    ADDDNS,
-    FAILOVER,
-    SITETXFR,
     EXECCMD,
-    ADDPLATFORM,
-    DELETEPLATFORM,
-    UPDATEPLATFORM,
-    LISTPLATFORMS,
     ADDSERVER,
     DELETESERVER,
     UPDATESERVER,
@@ -101,14 +105,35 @@ public enum AuditType
     GETSERVER,
     TELNET,
     REMOTEDATE,
+    NETSTAT,
     STOP,
     START,
     RESTART,
     SUSPEND,
+
+    // project mgmt
+    ADDPROJECT,
+    UPDATEPROJECT,
+    LISTPROJECTS,
+    LOADPROJECT,
+
+    // platform mgmt
+    ADDPLATFORM,
+    UPDATEPLATFORM,
+    LISTPLATFORMS,
+    LOADPLATFORM,
+
+    // dns mgmt
+    CREATEDNSRECORD,
+    PUSHDNSRECORD,
+    SITETXFR,
+    LOADRECORD,
+
     // datacenter mgmt
     ADDDATACENTER,
     LISTDATACENTERS,
-    GETDATACENTER,
+    LOADDATACENTER,
+
     // added to satisfy service tests
     // DO NOT REMOVE
     JUNIT;

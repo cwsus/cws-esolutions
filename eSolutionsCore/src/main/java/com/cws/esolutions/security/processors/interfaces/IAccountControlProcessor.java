@@ -86,33 +86,15 @@ public interface IAccountControlProcessor
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityConstants.WARN_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
 
-    /**
-     * Creates a new user account based on the information provided. Inserts
-     * new user into authorization database and sends email to user notifying
-     * of account info. This method is utilized with an LDAP user datastore.
-     *
-     * @param Map<String, String>
-     * @param DirContext
-     * @param List<String>
-     * @throws NamingException
-     * @throws InvalidAgentException
-     */
     AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse createSecurityData(final AccountControlRequest request) throws AccountControlException;
 
-    /**
-     * Modify a provided user account, capable of modifying most attributes.
-     *
-     * @param request - The user account to modify, as well as the modified data
-     * @return <code>AccountControlResponse</code> containing the result data
-     * @throws AccountControlException if an exception occurs during account modification
-     */
-    // AccountControlResponse modifyAccount(final AccountControlRequest request) throws AccountControlException;
-
     AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException;
+
+    AccountControlResponse loadUserAuditTrail(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse changeUserEmail(final AccountControlRequest request) throws AccountControlException;
 

@@ -24,9 +24,9 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Article;
-import com.cws.esolutions.core.processors.dto.ArticleRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.ArticleResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
@@ -85,7 +85,7 @@ public class KnowledgeBaseProcessorImplTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setAppName("esolutions");
+                userRequest.setApplicationName("esolutions");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
                 userRequest.setUserAccount(account);
@@ -103,7 +103,7 @@ public class KnowledgeBaseProcessorImplTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setAppName("esolutions");
+                        passRequest.setApplicationName("esolutions");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
                         passRequest.setUserAccount(authUser);
@@ -115,6 +115,7 @@ public class KnowledgeBaseProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
+                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
                         }
                         else
                         {
@@ -165,7 +166,7 @@ public class KnowledgeBaseProcessorImplTest
         article.setSymptoms("test");
         article.setTitle("test article");
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -173,7 +174,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.addNewArticle(request);
+            KnowledgeBaseResponse response = kbase.addNewArticle(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -199,7 +200,7 @@ public class KnowledgeBaseProcessorImplTest
         article.setTitle("test article");
         article.setModifiedBy("khuntly");
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -207,7 +208,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.updateArticle(request);
+            KnowledgeBaseResponse response = kbase.updateArticle(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -224,7 +225,7 @@ public class KnowledgeBaseProcessorImplTest
         article.setArticleId("KB40975607");
         article.setArticleStatus(ArticleStatus.APPROVED);
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -232,7 +233,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.updateArticleStatus(request);
+            KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -249,7 +250,7 @@ public class KnowledgeBaseProcessorImplTest
         article.setArticleId("KB99991");
         article.setArticleStatus(ArticleStatus.REJECTED);
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -257,7 +258,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.updateArticleStatus(request);
+            KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -274,7 +275,7 @@ public class KnowledgeBaseProcessorImplTest
         article.setArticleId("KB99991");
         article.setArticleStatus(ArticleStatus.DELETED);
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -282,7 +283,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.updateArticleStatus(request);
+            KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -298,7 +299,7 @@ public class KnowledgeBaseProcessorImplTest
         Article article = new Article();
         article.setArticleId("KB40975607");
 
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
@@ -306,7 +307,7 @@ public class KnowledgeBaseProcessorImplTest
 
         try
         {
-            ArticleResponse response = kbase.getArticle(request);
+            KnowledgeBaseResponse response = kbase.getArticle(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -319,14 +320,14 @@ public class KnowledgeBaseProcessorImplTest
     @Test
     public final void testGetPendingArticles()
     {
-        ArticleRequest request = new ArticleRequest();
+        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
 
         try
         {
-            ArticleResponse response = kbase.getPendingArticles(request);
+            KnowledgeBaseResponse response = kbase.getPendingArticles(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

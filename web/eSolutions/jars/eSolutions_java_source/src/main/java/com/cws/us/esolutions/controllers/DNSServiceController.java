@@ -367,14 +367,14 @@ public class DNSServiceController
     }
 
     @RequestMapping(value = "/lookup", method = RequestMethod.POST)
-    public final ModelAndView showLookup(@ModelAttribute("entry") final DNSRecord record, final BindingResult bindResult)
+    public final ModelAndView showLookup(@ModelAttribute("entry") final DNSRecord request, final BindingResult bindResult)
     {
-        final String methodName = DNSServiceController.CNAME + "#showLookup(@ModelAttribute(\"entry\") final DNSRecord record, final BindingResult bindResult)";
+        final String methodName = DNSServiceController.CNAME + "#showLookup(@ModelAttribute(\"entry\") final DNSRecord request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSRecord: {}", record);
+            DEBUGGER.debug("DNSRecord: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -451,21 +451,23 @@ public class DNSServiceController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                DNSServiceRequest request = new DNSServiceRequest();
-                request.setRecord(record);
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setSearchURL(this.serviceHost);
-                request.setSearchPath(this.searchSuffix);
-                request.setRequestType(DNSRequestType.LOOKUP);
+                DNSServiceRequest dnsRequest = new DNSServiceRequest();
+                dnsRequest.setRecord(request);
+                dnsRequest.setRequestInfo(reqInfo);
+                dnsRequest.setUserAccount(userAccount);
+                dnsRequest.setServiceId(this.serviceId);
+                dnsRequest.setSearchURL(this.serviceHost);
+                dnsRequest.setSearchPath(this.searchSuffix);
+                dnsRequest.setRequestType(DNSRequestType.LOOKUP);
+                dnsRequest.setApplicationId(appConfig.getApplicationId());
+                dnsRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("DNSServiceRequest: {}", request);
+                    DEBUGGER.debug("DNSServiceRequest: {}", dnsRequest);
                 }
 
-                DNSServiceResponse response = dnsProcessor.performLookup(request);
+                DNSServiceResponse response = dnsProcessor.performLookup(dnsRequest);
 
                 if (DEBUG)
                 {

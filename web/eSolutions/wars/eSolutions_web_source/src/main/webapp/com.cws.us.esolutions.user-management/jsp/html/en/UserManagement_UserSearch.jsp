@@ -120,12 +120,12 @@
                     <c:forEach var="userResult" items="${requestScope.searchResults}">
                         <tr>
                             <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/account/${userResult.guid}"
+                                <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
                                     title="${userResult.username}">${userResult.username}</a>
                             </td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/account/${userResult.guid}"
-                                  title="${userResult.displayName}">${userResult.displayName}</a>
+                                <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
+                                    title="${userResult.displayName}">${userResult.displayName}</a>
                             </td>
                         </tr>
                     </c:forEach>

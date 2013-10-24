@@ -480,9 +480,10 @@ public class OnlineResetController
             }
 
             AccountResetRequest resetReq = new AccountResetRequest();
-            resetReq.setAppName(appConfig.getApplicationName());
             resetReq.setHostInfo(reqInfo);
             resetReq.setUserSecurity(userSecurity);
+            resetReq.setApplicationId(appConfig.getApplicationId());
+            resetReq.setApplicationName(appConfig.getApplicationName());
 
             IAccountResetProcessor resetProcessor = new AccountResetProcessorImpl();
             AccountResetResponse resetRes = resetProcessor.verifyResetRequest(resetReq);
@@ -691,13 +692,14 @@ public class OnlineResetController
             }
 
             AccountControlRequest request = new AccountControlRequest();
-            request.setAppName(appConfig.getApplicationName());
             request.setControlType(ControlType.LOOKUP);
             request.setHostInfo(reqInfo);
             request.setIsLogonRequest(false);
             request.setModType(ModificationType.NONE);
             request.setUserAccount(searchAccount);
             request.setSearchType(SearchRequestType.FORGOTUID);
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -880,8 +882,9 @@ public class OnlineResetController
             authRequest.setUserAccount(account);
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
-            authRequest.setAppName(appConfig.getApplicationName());
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -918,11 +921,12 @@ public class OnlineResetController
                     {
                         // continue
                         AuthenticationRequest secRequest = new AuthenticationRequest();
-                        secRequest.setAppName(appConfig.getApplicationName());
                         secRequest.setAuthType(AuthenticationType.RESET);
                         secRequest.setLoginType(LoginType.SECCONFIG);
                         secRequest.setHostInfo(reqInfo);
                         secRequest.setUserAccount(resUser);
+                        secRequest.setApplicationId(appConfig.getApplicationId());
+                        secRequest.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
@@ -1069,8 +1073,9 @@ public class OnlineResetController
             request.setUserSecurity(userSecurity);
             request.setAuthType(AuthenticationType.RESET);
             request.setLoginType(LoginType.SECCONFIG);
-            request.setAppName(appConfig.getApplicationName());
             request.setTimeoutValue(appConfig.getRequestTimeout());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1093,7 +1098,8 @@ public class OnlineResetController
                 resetReq.setRequestor(userAccount);
                 resetReq.setUserAccount(userAccount);
                 resetReq.setAlgorithm(secConfig.getAuthAlgorithm());
-                resetReq.setAppName(appConfig.getApplicationName());
+                resetReq.setApplicationId(appConfig.getApplicationId());
+                resetReq.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {

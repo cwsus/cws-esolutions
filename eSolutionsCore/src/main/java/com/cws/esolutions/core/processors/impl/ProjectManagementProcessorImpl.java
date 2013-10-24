@@ -182,8 +182,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDPROJECT);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
@@ -194,6 +193,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -307,9 +309,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.MODIFYPROJECT);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.UPDATEPROJECT);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
                 if (DEBUG)
@@ -319,6 +320,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -438,8 +442,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPROJECTS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
@@ -450,6 +453,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -571,8 +577,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPROJECTS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
@@ -583,6 +588,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -704,9 +712,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.SHOWPROJECT);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADPROJECT);
                 auditEntry.setAuditDate(System.currentTimeMillis());
 
                 if (DEBUG)
@@ -716,6 +723,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {

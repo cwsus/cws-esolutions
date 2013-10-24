@@ -52,6 +52,8 @@ public class DNSServiceRequest implements Serializable
     private String[] searchPath = null;
     private String resolverHost = null;
     private String changeRequest = null;
+    private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private List<DNSEntry> dnsEntries = null;
     private DNSRequestType requestType = null;
@@ -101,6 +103,32 @@ public class DNSServiceRequest implements Serializable
         }
 
         this.serviceId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
     }
 
     public final void setDnsEntry(final DNSEntry value)
@@ -261,6 +289,32 @@ public class DNSServiceRequest implements Serializable
         }
 
         return this.serviceId;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = DNSServiceRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final DNSEntry getDnsEntry()

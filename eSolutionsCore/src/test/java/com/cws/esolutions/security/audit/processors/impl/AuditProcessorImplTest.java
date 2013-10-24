@@ -19,7 +19,6 @@ import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
-import java.net.InetAddress;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -72,8 +71,8 @@ public class AuditProcessorImplTest
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
 
             IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
-            hostInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
-            hostInfo.setHostName(InetAddress.getLocalHost().getHostName());
+            hostInfo.setHostAddress("junit");
+            hostInfo.setHostName("junit");
 
             UserAccount account = new UserAccount();
             account.setUsername("khuntly");
@@ -82,7 +81,7 @@ public class AuditProcessorImplTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setAppName("eSolutions");
+                userRequest.setApplicationName("eSolutions");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
                 userRequest.setUserAccount(account);
@@ -100,7 +99,7 @@ public class AuditProcessorImplTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setAppName("eSolutions");
+                        passRequest.setApplicationName("eSolutions");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
                         passRequest.setUserAccount(authUser);
@@ -112,6 +111,7 @@ public class AuditProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
+                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                             Assert.assertEquals(LoginStatus.SUCCESS, userAccount.getStatus());
                         }
@@ -132,6 +132,7 @@ public class AuditProcessorImplTest
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 Assert.fail(e.getMessage());
             }
         }
@@ -142,16 +143,15 @@ public class AuditProcessorImplTest
         }
     }
 
-    /**
-     * Test method for {@link com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl#auditRequest(com.cws.esolutions.security.audit.dto.AuditRequest)}.
-     */
     @Test
     public void testAuditRequest()
     {
         AuditEntry auditEntry = new AuditEntry();
+        auditEntry.setApplicationId("JUNIT");
+        auditEntry.setApplicationName("JUNIT");
         auditEntry.setAuditDate(System.currentTimeMillis());
         auditEntry.setAuditType(AuditType.JUNIT);
-        auditEntry.setReqInfo(hostInfo);
+        auditEntry.setHostInfo(hostInfo);
         auditEntry.setUserAccount(userAccount);
 
         AuditRequest auditRequest = new AuditRequest();
@@ -167,9 +167,6 @@ public class AuditProcessorImplTest
         }
     }
 
-    /**
-     * Test method for {@link com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl#getAuditEntries(com.cws.esolutions.security.audit.dto.AuditRequest)}.
-     */
     @Test
     public void testGetAuditEntries()
     {

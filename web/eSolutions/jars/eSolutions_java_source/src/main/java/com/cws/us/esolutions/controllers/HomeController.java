@@ -191,6 +191,8 @@ public class HomeController
             mRequest.setRequestInfo(reqInfo);
             mRequest.setUserAccount(userAccount);
             mRequest.setServiceId(this.serviceId);
+            mRequest.setApplicationId(appConfig.getApplicationId());
+            mRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {

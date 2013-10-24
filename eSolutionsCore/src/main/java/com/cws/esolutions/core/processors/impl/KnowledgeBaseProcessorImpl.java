@@ -29,9 +29,9 @@ import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.ArticleRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
-import com.cws.esolutions.core.processors.dto.ArticleResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
@@ -57,17 +57,17 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
 public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 {
     @Override
-    public ArticleResponse addNewArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#addNewArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
         }
 
-        ArticleResponse response = new ArticleResponse();
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
 
         final Article article = request.getArticle();
         final UserAccount userAccount = request.getUserAccount();
@@ -135,7 +135,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ArticleResponse: {}", response);
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -156,10 +156,12 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEARTICLE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -186,17 +188,17 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
     }
 
     @Override
-    public ArticleResponse updateArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#updateArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
         }
 
-        ArticleResponse response = new ArticleResponse();
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -257,7 +259,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
                 }
                 else
@@ -267,7 +269,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
                 }
             }
@@ -294,10 +296,12 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEARTICLE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -324,17 +328,17 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
     }
 
     @Override
-    public ArticleResponse updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
         }
 
-        ArticleResponse response = new ArticleResponse();
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
 
         final Article article = request.getArticle();
         final UserAccount userAccount = request.getUserAccount();
@@ -373,7 +377,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
                 }
                 else
@@ -383,7 +387,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
                 }
             }
@@ -411,9 +415,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 switch (article.getArticleStatus())
                 {
@@ -460,19 +466,20 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
     }
 
     @Override
-    public ArticleResponse getArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#getArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: {}", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
         }
 
-        ArticleResponse articleResponse = new ArticleResponse();
+        KnowledgeBaseResponse knowledgeBaseResponse = new KnowledgeBaseResponse();
 
         // NO authorization required here, anyone can LOOK at this stuff
+        // no audit either
         try
         {
             Article article = request.getArticle();
@@ -520,19 +527,19 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                     DEBUGGER.debug("Article: {}", article);
                 }
 
-                articleResponse.setRequestStatus(CoreServicesStatus.SUCCESS);
-                articleResponse.setResponse("Successfully loaded requested article.");
-                articleResponse.setArticle(article);
+                knowledgeBaseResponse.setRequestStatus(CoreServicesStatus.SUCCESS);
+                knowledgeBaseResponse.setResponse("Successfully loaded requested article.");
+                knowledgeBaseResponse.setArticle(article);
             }
             else
             {
-                articleResponse.setRequestStatus(CoreServicesStatus.FAILURE);
-                articleResponse.setResponse("No articles were located with the provided data.");
+                knowledgeBaseResponse.setRequestStatus(CoreServicesStatus.FAILURE);
+                knowledgeBaseResponse.setResponse("No articles were located with the provided data.");
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ArticleResponse: {}", articleResponse);
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", knowledgeBaseResponse);
             }
         }
         catch (SQLException sqx)
@@ -541,52 +548,21 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(request.getRequestInfo());
-                auditEntry.setUserAccount(request.getUserAccount());
-                auditEntry.setAuditType(AuditType.SHOWARTICLE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return articleResponse;
+        return knowledgeBaseResponse;
     }
 
     @Override
-    public ArticleResponse getPendingArticles(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IKnowledgeBaseProcessor.CNAME + "#getPendingArticles(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        ArticleResponse response = new ArticleResponse();
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -670,7 +646,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
                 }
                 else
@@ -703,10 +679,12 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(request.getRequestInfo());
-                auditEntry.setUserAccount(request.getUserAccount());
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWPENDING);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {

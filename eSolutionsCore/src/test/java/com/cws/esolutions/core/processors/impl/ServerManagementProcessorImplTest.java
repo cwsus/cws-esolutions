@@ -90,7 +90,7 @@ public class ServerManagementProcessorImplTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setAppName("esolutions");
+                userRequest.setApplicationName("esolutions");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
                 userRequest.setUserAccount(account);
@@ -108,7 +108,7 @@ public class ServerManagementProcessorImplTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setAppName("esolutions");
+                        passRequest.setApplicationName("esolutions");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
                         passRequest.setUserAccount(authUser);
@@ -120,6 +120,7 @@ public class ServerManagementProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
+                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
                         }
                         else
                         {

@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.ApplicationConfig;
-import com.cws.esolutions.core.processors.dto.ArticleRequest;
-import com.cws.esolutions.core.processors.dto.ArticleResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
@@ -73,7 +73,7 @@ public interface IKnowledgeBaseProcessor
      * @return
      * @throws KnowledgeBaseException
      */
-    ArticleResponse addNewArticle(final ArticleRequest request) throws KnowledgeBaseException;
+    KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
      * 
@@ -83,7 +83,7 @@ public interface IKnowledgeBaseProcessor
      * @return
      * @throws KnowledgeBaseException
      */
-    ArticleResponse updateArticle(final ArticleRequest request) throws KnowledgeBaseException;
+    KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
      * 
@@ -93,7 +93,7 @@ public interface IKnowledgeBaseProcessor
      * @return
      * @throws KnowledgeBaseException
      */
-    ArticleResponse updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException;
+    KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
      * 
@@ -102,7 +102,7 @@ public interface IKnowledgeBaseProcessor
      * @return
      * @throws KnowledgeBaseException
      */
-    ArticleResponse getArticle(final ArticleRequest request) throws KnowledgeBaseException;
+    KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
      * 
@@ -111,5 +111,5 @@ public interface IKnowledgeBaseProcessor
      * @return
      * @throws KnowledgeBaseException
      */
-    ArticleResponse getPendingArticles(final ArticleRequest request) throws KnowledgeBaseException;
+    KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 }

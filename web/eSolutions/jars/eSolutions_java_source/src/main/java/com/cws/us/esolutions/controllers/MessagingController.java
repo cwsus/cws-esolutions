@@ -258,7 +258,8 @@ public class MessagingController
             request.setRequestInfo(reqInfo);
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
-            request.setAppName(appConfig.getApplicationName());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -510,7 +511,8 @@ public class MessagingController
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
             request.setSvcMessage(message);
-            request.setAppName(appConfig.getApplicationName());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -652,7 +654,8 @@ public class MessagingController
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
             request.setSvcMessage(message);
-            request.setAppName(appConfig.getApplicationName());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -696,7 +699,8 @@ public class MessagingController
             mRequest.setRequestInfo(reqInfo);
             mRequest.setServiceId(this.serviceId);
             mRequest.setUserAccount(userAccount);
-            mRequest.setAppName(appConfig.getApplicationName());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {

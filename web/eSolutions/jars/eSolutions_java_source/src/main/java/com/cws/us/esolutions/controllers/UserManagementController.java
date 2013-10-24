@@ -42,6 +42,7 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -97,6 +98,7 @@ public class UserManagementController
     private String viewUserPage = null;
     private String viewUsersPage = null;
     private String messageSource = null;
+    private String viewAuditPage = null;
     private String userResetEmail = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
@@ -177,6 +179,19 @@ public class UserManagementController
         }
 
         this.viewUserPage = value;
+    }
+
+    public final void setViewAuditPage(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setViewAuditPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.viewAuditPage = value;
     }
 
     public final void setCreateUserPage(final String value)
@@ -589,7 +604,7 @@ public class UserManagementController
         return mView;
     }
 
-    @RequestMapping(value = "/account/{userGuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "/view/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
     {
         final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userGuid\") final String userGuid)";
@@ -704,10 +719,11 @@ public class UserManagementController
                     AccountControlRequest request = new AccountControlRequest();
                     request.setHostInfo(reqInfo);
                     request.setUserAccount(searchAccount);
-                    request.setAppName(appConfig.getApplicationName());
                     request.setApplicationId(appConfig.getApplicationId());
                     request.setRequestor(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -772,7 +788,199 @@ public class UserManagementController
         return mView;
     }
 
-    @RequestMapping(value = "/account/modify/{userName}", method = RequestMethod.GET)
+    @RequestMapping(value = "/audit/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#showAuditData(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount searchAccount = new UserAccount();
+                    searchAccount.setGuid(userGuid);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", searchAccount);
+                    }
+
+                    AccountControlRequest request = new AccountControlRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(searchAccount);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setRequestor(userAccount);
+                    request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    AccountControlResponse response = acctController.loadUserAuditTrail(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        List<AuditEntry> auditEntries = response.getAuditEntries();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
+                        }
+
+                        if ((auditEntries != null) && (auditEntries.size() != 0))
+                        {
+                            mView.addObject("auditEntries", auditEntries);
+                            mView.addObject("userAccount", searchAccount);
+                            mView.setViewName(this.viewAuditPage);
+                        }
+                        else
+                        {
+                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                            mView.setViewName(this.viewAuditPage);
+                        }
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/modify/account/{userName}", method = RequestMethod.GET)
     public final ModelAndView editAccountData(@PathVariable("userName") final String userName)
     {
         final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userName\") final String userName)";
@@ -885,12 +1093,13 @@ public class UserManagementController
                     }
 
                     AccountControlRequest request = new AccountControlRequest();
-                    request.setAppName(appConfig.getApplicationName());
                     request.setControlType(ControlType.LOOKUP);
                     request.setHostInfo(reqInfo);
                     request.setRequestor(userAccount);
                     request.setUserAccount(searchAccount);
                     request.setSearchType(SearchRequestType.USERNAME);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1097,7 +1306,6 @@ public class UserManagementController
                     AccountControlRequest request = new AccountControlRequest();
                     request.setHostInfo(hostInfo);
                     request.setUserAccount(searchAccount);
-                    request.setAppName(appConfig.getApplicationName());
                     request.setApplicationId(appConfig.getApplicationName());
                     request.setControlType(ControlType.LOOKUP);
                     request.setModType(ModificationType.NONE);
@@ -1105,6 +1313,8 @@ public class UserManagementController
                     request.setRequestor(userAccount);
                     request.setIsLogonRequest(false);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1323,7 +1533,6 @@ public class UserManagementController
                     request.setHostInfo(hostInfo);
                     request.setUserAccount(newUser);
                     request.setUserSecurity(security);
-                    request.setAppName(appConfig.getApplicationName());
                     request.setApplicationId(appConfig.getApplicationName());
                     request.setAlgorithm(secConfig.getAuthAlgorithm());
                     request.setControlType(ControlType.CREATE);
@@ -1331,6 +1540,8 @@ public class UserManagementController
                     request.setRequestor(userAccount);
                     request.setIsLogonRequest(false);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1513,7 +1724,6 @@ public class UserManagementController
                     AccountControlRequest request = new AccountControlRequest();
                     request.setHostInfo(hostInfo);
                     request.setUserAccount(user);
-                    request.setAppName(appConfig.getApplicationName());
                     request.setApplicationId(appConfig.getApplicationName());
                     request.setAlgorithm(secConfig.getAuthAlgorithm());
                     request.setControlType(ControlType.SUSPEND);
@@ -1521,6 +1731,8 @@ public class UserManagementController
                     request.setRequestor(userAccount);
                     request.setIsLogonRequest(false);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1694,7 +1906,8 @@ public class UserManagementController
                     resetReq.setRequestor(userAccount);
                     resetReq.setUserAccount(user);
                     resetReq.setAlgorithm(secConfig.getAuthAlgorithm());
-                    resetReq.setAppName(appConfig.getApplicationName());
+                    resetReq.setApplicationId(appConfig.getApplicationId());
+                    resetReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {

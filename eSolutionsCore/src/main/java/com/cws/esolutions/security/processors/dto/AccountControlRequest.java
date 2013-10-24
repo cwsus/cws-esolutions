@@ -47,12 +47,12 @@ import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
  */
 public class AccountControlRequest implements Serializable
 {
-    private String appName = null;
     private String algorithm = null;
     private String projectId = null;
     private String serviceId = null;
     private String applicationId = null;
     private UserAccount requestor = null;
+    private String applicationName = null;
     private ControlType controlType = null;
     private boolean isLoginRequest = false;
     private UserAccount userAccount = null;
@@ -107,9 +107,9 @@ public class AccountControlRequest implements Serializable
         this.userSecurity = value;
     }
 
-    public final void setAppName(final String value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = AccountControlRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = AccountControlRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -117,7 +117,7 @@ public class AccountControlRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appName = value;
+        this.applicationName = value;
     }
 
     public final void setApplicationId(final String value)
@@ -289,17 +289,17 @@ public class AccountControlRequest implements Serializable
         return this.userSecurity;
     }
 
-    public final String getAppName()
+    public final String getApplicationName()
     {
-        final String methodName = AccountControlRequest.CNAME + "#getAppName()";
+        final String methodName = AccountControlRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.appName;
+        return this.applicationName;
     }
 
     public final String getApplicationId()

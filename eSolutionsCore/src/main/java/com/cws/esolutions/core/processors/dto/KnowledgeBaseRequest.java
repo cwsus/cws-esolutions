@@ -26,7 +26,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
- * ArticleRequest.java
+ * KnowledgeBaseRequest.java
  *
  * $Id: $
  * $Author: $
@@ -40,23 +40,25 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
  * kh05451 @ Oct 30, 2012 12:34:34 PM
  *     Created.
  */
-public class ArticleRequest implements Serializable
+public class KnowledgeBaseRequest implements Serializable
 {
     private Article article = null;
     private String serviceId = null;
     private boolean isReview = false;
+    private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
 
     private static final long serialVersionUID = 634839379561828115L;
-    private static final String CNAME = ArticleRequest.class.getName();
+    private static final String CNAME = KnowledgeBaseRequest.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setUserAccount(final UserAccount value)
     {
-        final String methodName = ArticleRequest.CNAME + "#setUserAccount(final UserAccount value)";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -69,7 +71,7 @@ public class ArticleRequest implements Serializable
 
     public final void setRequestInfo(final RequestHostInfo value)
     {
-        final String methodName = ArticleRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -82,7 +84,7 @@ public class ArticleRequest implements Serializable
 
     public final void setServiceId(final String value)
     {
-        final String methodName = ArticleRequest.CNAME + "#setServiceId(final String value)";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -93,9 +95,35 @@ public class ArticleRequest implements Serializable
         this.serviceId = value;
     }
 
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
+
     public final void setIsReview(final boolean value)
     {
-        final String methodName = ArticleRequest.CNAME + "#setIsReview(final boolean value)";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setIsReview(final boolean value)";
 
         if (DEBUG)
         {
@@ -108,7 +136,7 @@ public class ArticleRequest implements Serializable
 
     public final void setArticle(final Article value)
     {
-        final String methodName = ArticleRequest.CNAME + "#setArticle(final Article value)";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setArticle(final Article value)";
 
         if (DEBUG)
         {
@@ -121,7 +149,7 @@ public class ArticleRequest implements Serializable
 
     public final UserAccount getUserAccount()
     {
-        final String methodName = ArticleRequest.CNAME + "#getUserAccount()";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getUserAccount()";
 
         if (DEBUG)
         {
@@ -134,7 +162,7 @@ public class ArticleRequest implements Serializable
 
     public final RequestHostInfo getRequestInfo()
     {
-        final String methodName = ArticleRequest.CNAME + "#getRequestInfo()";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getRequestInfo()";
 
         if (DEBUG)
         {
@@ -145,22 +173,9 @@ public class ArticleRequest implements Serializable
         return this.requestInfo;
     }
 
-    public final Article getArticle()
-    {
-        final String methodName = ArticleRequest.CNAME + "#getArticle()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.article);
-        }
-
-        return this.article;
-    }
-
     public final String getServiceId()
     {
-        final String methodName = ArticleRequest.CNAME + "#getServiceId()";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getServiceId()";
 
         if (DEBUG)
         {
@@ -171,9 +186,48 @@ public class ArticleRequest implements Serializable
         return this.serviceId;
     }
 
+    public final String getApplicationName()
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
+    }
+
+    public final Article getArticle()
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getArticle()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.article);
+        }
+
+        return this.article;
+    }
+
     public final boolean isReview()
     {
-        final String methodName = ArticleRequest.CNAME + "#isReview()";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#isReview()";
 
         if (DEBUG)
         {
@@ -187,7 +241,7 @@ public class ArticleRequest implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ArticleRequest.CNAME + "#toString()";
+        final String methodName = KnowledgeBaseRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {

@@ -44,6 +44,8 @@ public class ProjectManagementRequest implements Serializable
 {
     private Project project = null;
     private String serviceId = null;
+    private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
 
@@ -90,6 +92,32 @@ public class ProjectManagementRequest implements Serializable
         }
 
         this.serviceId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
     }
 
     public final void setProject(final Project value)
@@ -142,6 +170,32 @@ public class ProjectManagementRequest implements Serializable
         }
 
         return this.serviceId;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final Project getProject()

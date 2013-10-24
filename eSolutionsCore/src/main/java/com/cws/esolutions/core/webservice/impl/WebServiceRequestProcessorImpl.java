@@ -19,9 +19,9 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.ArticleRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
-import com.cws.esolutions.core.processors.dto.ArticleResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
@@ -234,21 +234,21 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse addNewArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
         }
 
-        ArticleResponse response = kbase.addNewArticle(request);
+        KnowledgeBaseResponse response = kbase.addNewArticle(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ArticleResponse: ", response);
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
         }
 
         return response;
@@ -256,21 +256,21 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse updateArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
         }
 
-        ArticleResponse response = kbase.updateArticle(request);
+        KnowledgeBaseResponse response = kbase.updateArticle(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ArticleResponse: ", response);
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
         }
 
         return response;
@@ -278,21 +278,21 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticleStatus(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
         }
 
-        ArticleResponse response = kbase.updateArticleStatus(request);
+        KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ArticleResponse: ", response);
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
         }
 
         return response;
@@ -300,21 +300,21 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse getArticle(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ArticleRequest: ", request);
+            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
         }
 
-        ArticleResponse response = kbase.getArticle(request);
+        KnowledgeBaseResponse response = kbase.getArticle(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ArticleResponse: ", response);
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
         }
 
         return response;
@@ -322,20 +322,20 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
 
     @WebMethod
     @Override
-    public ArticleResponse getPendingArticles(final ArticleRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getPendingArticles(final ArticleRequest request) throws KnowledgeBaseException";
+        final String methodName = IWebServiceRequestProcessor.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        ArticleResponse response = kbase.getPendingArticles(request);
+        KnowledgeBaseResponse response = kbase.getPendingArticles(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ArticleResponse: ", response);
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
         }
 
         return response;

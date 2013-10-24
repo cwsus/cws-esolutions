@@ -62,6 +62,9 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  */
 public class OracleVBoxManagerTest
 {
+    private UserAccount userAccount = null;
+    private RequestHostInfo hostInfo = null;
+
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     @Before
@@ -70,11 +73,10 @@ public class OracleVBoxManagerTest
         try
         {
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
+
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
 
             IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
-
-            RequestHostInfo hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("127.0.0.1");
             hostInfo.setHostName("localhost");
 
@@ -85,7 +87,7 @@ public class OracleVBoxManagerTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setAppName("esolutions");
+                userRequest.setApplicationName("esolutions");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
                 userRequest.setUserAccount(account);
@@ -103,7 +105,7 @@ public class OracleVBoxManagerTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setAppName("esolutions");
+                        passRequest.setApplicationName("esolutions");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
                         passRequest.setUserAccount(authUser);
@@ -112,7 +114,15 @@ public class OracleVBoxManagerTest
 
                         AuthenticationResponse passResponse = agentAuth.processAgentLogon(passRequest);
 
-                        Assert.assertEquals(SecurityRequestStatus.SUCCESS, passResponse.getRequestStatus());
+                        if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                        {
+                            userAccount = passResponse.getUserAccount();
+                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+                        }
+                        else
+                        {
+                            Assert.fail("Account login failed");
+                        }
                     }
                     else
                     {

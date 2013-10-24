@@ -50,7 +50,9 @@ public class ServerManagementRequest implements Serializable
     private Server sourceServer = null;
     private Server targetServer = null;
     private String extTargetDir = null;
+    private String applicationId = null;
     private boolean installAgent = false;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
     private SystemCheckType requestType = null;
@@ -100,6 +102,32 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.serviceId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
     }
 
     public final void setSourceServer(final Server value)
@@ -243,6 +271,32 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.serviceId;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final Server getSourceServer()

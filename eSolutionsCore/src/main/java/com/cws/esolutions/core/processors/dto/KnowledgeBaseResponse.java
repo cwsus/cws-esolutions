@@ -26,7 +26,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
- * ArticleResponse.java
+ * KnowledgeBaseResponse.java
  *
  * $Id: $
  * $Author: $
@@ -40,7 +40,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  * kh05451 @ Oct 30, 2012 12:34:49 PM
  *     Created.
  */
-public class ArticleResponse implements Serializable
+public class KnowledgeBaseResponse implements Serializable
 {
     private Article article = null;
     private String response = null;
@@ -48,14 +48,14 @@ public class ArticleResponse implements Serializable
     private CoreServicesStatus requestStatus = null;
 
     private static final long serialVersionUID = -4112583385542471257L;
-    private static final String CNAME = ArticleResponse.class.getName();
+    private static final String CNAME = KnowledgeBaseResponse.class.getName();
     
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = ArticleResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
@@ -68,7 +68,7 @@ public class ArticleResponse implements Serializable
 
     public final void setResponse(final String value)
     {
-        final String methodName = ArticleResponse.CNAME + "#setResponse(final String value)";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setResponse(final String value)";
 
         if (DEBUG)
         {
@@ -81,7 +81,7 @@ public class ArticleResponse implements Serializable
 
     public final void setArticle(final Article value)
     {
-        final String methodName = ArticleResponse.CNAME + "#setArticle(final Article value)";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setArticle(final Article value)";
 
         if (DEBUG)
         {
@@ -94,7 +94,7 @@ public class ArticleResponse implements Serializable
 
     public final void setArticleList(final List<Article> value)
     {
-        final String methodName = ArticleResponse.CNAME + "#setArticle(final List<Article> value)";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setArticle(final List<Article> value)";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class ArticleResponse implements Serializable
 
     public final CoreServicesStatus getRequestStatus()
     {
-        final String methodName = ArticleResponse.CNAME + "#getRequestStatus()";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
@@ -120,7 +120,7 @@ public class ArticleResponse implements Serializable
 
     public final String getResponse()
     {
-        final String methodName = ArticleResponse.CNAME + "#getResponse()";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getResponse()";
 
         if (DEBUG)
         {
@@ -133,7 +133,7 @@ public class ArticleResponse implements Serializable
 
     public final Article getArticle()
     {
-        final String methodName = ArticleResponse.CNAME + "#getArticle()";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getArticle()";
 
         if (DEBUG)
         {
@@ -146,7 +146,7 @@ public class ArticleResponse implements Serializable
 
     public final List<Article> getArticleList()
     {
-        final String methodName = ArticleResponse.CNAME + "#getArticleList()";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getArticleList()";
 
         if (DEBUG)
         {
@@ -160,7 +160,7 @@ public class ArticleResponse implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ArticleResponse.CNAME + "#toString()";
+        final String methodName = KnowledgeBaseResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {

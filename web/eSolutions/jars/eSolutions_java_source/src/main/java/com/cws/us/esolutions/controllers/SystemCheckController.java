@@ -411,6 +411,8 @@ public class SystemCheckController
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -578,6 +580,8 @@ public class SystemCheckController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -747,6 +751,8 @@ public class SystemCheckController
                 serverReq.setPortNumber(request.getTargetPort());
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
+                serverReq.setApplicationId(appConfig.getApplicationId());
+                serverReq.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -930,6 +936,8 @@ public class SystemCheckController
                 serverReq.setRequestType(SystemCheckType.REMOTEDATE);
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
+                serverReq.setApplicationId(appConfig.getApplicationId());
+                serverReq.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {

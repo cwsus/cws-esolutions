@@ -591,13 +591,14 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAppName(appConfig.getApplicationName());
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.COMBINED);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
             authRequest.setUserSecurity(reqSecurity);
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -772,12 +773,13 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAppName(appConfig.getApplicationName());
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -935,13 +937,14 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAppName(appConfig.getApplicationName());
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.PASSWORD);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1096,13 +1099,14 @@ public class LoginController
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setAppName(appConfig.getApplicationName());
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {

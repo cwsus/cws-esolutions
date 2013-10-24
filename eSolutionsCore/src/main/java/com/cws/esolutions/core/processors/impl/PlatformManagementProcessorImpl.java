@@ -221,10 +221,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.ADDPLATFORM);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -378,10 +380,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -777,10 +781,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1178,10 +1184,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1575,10 +1583,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSERVER);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADPLATFORM);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {

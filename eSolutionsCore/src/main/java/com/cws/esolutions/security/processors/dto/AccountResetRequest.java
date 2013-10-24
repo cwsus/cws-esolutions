@@ -44,10 +44,10 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 public class AccountResetRequest implements Serializable
 {
     private String smsCode = null;
-    private String appName = null;
     private String algorithm = null;
     private String applicationId = null;
     private UserAccount requestor = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
     private UserSecurity userSecurity = null;
@@ -97,9 +97,9 @@ public class AccountResetRequest implements Serializable
         this.userSecurity = value;
     }
 
-    public final void setAppName(final String value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = AccountResetRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = AccountResetRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class AccountResetRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appName = value;
+        this.applicationName = value;
     }
 
     public final void setApplicationId(final String value)
@@ -201,17 +201,17 @@ public class AccountResetRequest implements Serializable
         return this.userSecurity;
     }
 
-    public final String getAppName()
+    public final String getApplicationName()
     {
-        final String methodName = AccountResetRequest.CNAME + "#getAppName()";
+        final String methodName = AccountResetRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.appName;
+        return this.applicationName;
     }
 
     public final String getApplicationId()

@@ -587,10 +587,12 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setReqInfo(reqInfo);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuditType(AuditType.ADDDNS);
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
                     auditEntry.setAuditDate(System.currentTimeMillis());
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -920,10 +922,12 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setReqInfo(reqInfo);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuditType(AuditType.ADDDNS);
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.PUSHDNSRECORD);
                     auditEntry.setAuditDate(System.currentTimeMillis());
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1030,10 +1034,12 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setReqInfo(reqInfo);
-                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SITETXFR);
                     auditEntry.setAuditDate(System.currentTimeMillis());
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1312,10 +1318,12 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 try
                 {
                     AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setReqInfo(reqInfo);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setAuditType(AuditType.SITETXFR);
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LOADRECORD);
                     auditEntry.setAuditDate(System.currentTimeMillis());
+                    auditEntry.setUserAccount(userAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
 
                     if (DEBUG)
                     {

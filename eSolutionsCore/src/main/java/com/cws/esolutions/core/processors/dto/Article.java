@@ -58,7 +58,7 @@ public class Article implements Serializable
     private ArticleStatus articleStatus = null;
 
     private static final long serialVersionUID = 8298281387755676485L;
-    private static final String CNAME = ArticleResponse.class.getName();
+    private static final String CNAME = KnowledgeBaseResponse.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();

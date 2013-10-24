@@ -47,6 +47,8 @@ public class ApplicationManagementRequest implements Serializable
     private String jvmName = null;
     private String serviceId = null;
     private String requestFile = null;
+    private String applicationId = null;
+    private String applicationName = null;
     private Application application = null;
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
@@ -94,6 +96,32 @@ public class ApplicationManagementRequest implements Serializable
         }
 
         this.serviceId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
     }
 
     public final void setRequestFile(final String value)
@@ -198,6 +226,32 @@ public class ApplicationManagementRequest implements Serializable
         }
 
         return this.serviceId;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final String getRequestFile()

@@ -19,6 +19,7 @@
 	    <property name="editUserPage" value="UserManagement_EditUser" />
 	    <property name="viewUserPage" value="UserManagement_ViewUser" />
 	    <property name="viewUsersPage" value="UserManagement_ViewUsers" />
+	    <property name="viewAuditPage" value="UserManagement_UserAudit" />
 	    <property name="createUserPage" value="UserManagement_CreateUser" />
 	    <property name="searchUsersPage" value="UserManagement_UserSearch" />
 	    <property name="messageNoUsersFound" value="no.users.found.for.criteria" />

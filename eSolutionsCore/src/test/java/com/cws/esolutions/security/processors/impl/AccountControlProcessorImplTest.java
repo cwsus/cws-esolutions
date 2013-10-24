@@ -82,7 +82,7 @@ public class AccountControlProcessorImplTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setAppName("eSolutions");
+                userRequest.setApplicationName("eSolutions");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
                 userRequest.setUserAccount(account);
@@ -101,7 +101,7 @@ public class AccountControlProcessorImplTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setAppName("eSolutions");
+                        passRequest.setApplicationName("eSolutions");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
                         passRequest.setUserAccount(authUser);
@@ -114,6 +114,7 @@ public class AccountControlProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
+                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                             Assert.assertEquals(LoginStatus.SUCCESS, userAccount.getStatus());
                         }
@@ -134,6 +135,7 @@ public class AccountControlProcessorImplTest
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 Assert.fail(e.getMessage());
             }
         }
@@ -199,7 +201,7 @@ public class AccountControlProcessorImplTest
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
         request.setUserAccount(newUser);
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
 
         try
         {
@@ -224,7 +226,7 @@ public class AccountControlProcessorImplTest
 
         AccountControlRequest request = new AccountControlRequest();
         request.setAlgorithm("MD5");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setModType(ModificationType.SECINFO);
@@ -272,7 +274,7 @@ public class AccountControlProcessorImplTest
 
         AccountControlRequest request = new AccountControlRequest();
         request.setAlgorithm("SHA-512");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setModType(ModificationType.SECINFO);
@@ -312,7 +314,7 @@ public class AccountControlProcessorImplTest
 
         AccountControlRequest request = new AccountControlRequest();
         request.setAlgorithm("SHA-512");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setModType(ModificationType.SECINFO);
@@ -346,7 +348,7 @@ public class AccountControlProcessorImplTest
         reqSecurity.setPassword("ariana16");
 
         AccountControlRequest request = new AccountControlRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setModType(ModificationType.PASSWORD);
@@ -386,7 +388,7 @@ public class AccountControlProcessorImplTest
         reqSecurity.setNewPassword("Ariana17*");
 
         AccountControlRequest request = new AccountControlRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setModType(ModificationType.PASSWORD);
@@ -415,7 +417,7 @@ public class AccountControlProcessorImplTest
         searchUser.setUsername("khuntly");
 
         AccountControlRequest request = new AccountControlRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
         request.setRequestor(userAccount);
@@ -446,7 +448,7 @@ public class AccountControlProcessorImplTest
 
         AccountControlRequest request = new AccountControlRequest();
         request.setRequestor(userAccount);
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setControlType(ControlType.MODIFY);
         request.setHostInfo(hostInfo);
         request.setIsLogonRequest(false);
@@ -458,6 +460,30 @@ public class AccountControlProcessorImplTest
         try
         {
             AccountControlResponse response = processor.changeUserSecurity(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountControlException acx)
+        {
+            Assert.fail(acx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testLoadUserAuditTrail()
+    {
+        AccountControlRequest request = new AccountControlRequest();
+        request.setRequestor(userAccount);
+        request.setApplicationName("esolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setHostInfo(hostInfo);
+        request.setIsLogonRequest(false);
+        request.setUserAccount(userAccount);
+        request.setRequestor(userAccount);
+
+        try
+        {
+            AccountControlResponse response = processor.loadUserAuditTrail(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }

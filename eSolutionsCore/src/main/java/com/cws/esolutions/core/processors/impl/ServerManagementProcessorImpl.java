@@ -231,10 +231,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSERVER);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -389,10 +391,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATESERVER);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -570,10 +574,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTSERVERS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -753,10 +759,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTSERVERS);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -928,10 +936,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.GETSERVER);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -969,6 +979,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         }
 
         ServerManagementResponse response = new ServerManagementResponse();
+
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
 
         try
         {
@@ -1046,6 +1065,39 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(ux.getMessage(), ux);
         }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.NETSTAT);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
 
         return response;
     }
@@ -1062,6 +1114,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         }
 
         ServerManagementResponse response = new ServerManagementResponse();
+
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
 
         try
         {
@@ -1133,6 +1194,39 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(ux.getMessage(), ux);
         }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.TELNET);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
 
         return response;
     }
@@ -1149,6 +1243,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         }
 
         ServerManagementResponse response = new ServerManagementResponse();
+
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
 
         try
         {
@@ -1217,6 +1320,40 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
             throw new ServerManagementException(ux.getMessage(), ux);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.REMOTEDATE);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
 
         return response;

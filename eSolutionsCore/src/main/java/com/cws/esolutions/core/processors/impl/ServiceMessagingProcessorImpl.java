@@ -194,10 +194,12 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSVCMESSAGE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -322,10 +324,12 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             try
             {
                 AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setReqInfo(reqInfo);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setAuditType(AuditType.ADDSVCMESSAGE);
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.EDITSVCMESSAGE);
                 auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -438,6 +442,39 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.SHOWMESSAGES);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
 
         return response;
@@ -554,6 +591,39 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
             throw new MessagingServiceException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADMESSAGE);
+                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
 
         return response;

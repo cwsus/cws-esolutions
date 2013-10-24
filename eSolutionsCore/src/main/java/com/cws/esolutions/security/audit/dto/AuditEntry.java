@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.audit.enums.AuditType;
-
 /**
  * eSolutionsCore
  * com.cws.esolutions.security.audit.dto
@@ -47,14 +46,55 @@ public class AuditEntry implements Serializable
 {
     private long auditDate = 0;
     private AuditType auditType = null;
+    private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
-    private RequestHostInfo reqInfo = null;
+    private RequestHostInfo hostInfo = null;
 
     private static final String CNAME = AuditEntry.class.getName();
     private static final long serialVersionUID = 6018575153093937981L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setUserAccount(final UserAccount value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setUserAccount(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userAccount = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = AuditEntry.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
 
     public final void setAuditDate(final long value)
     {
@@ -69,9 +109,9 @@ public class AuditEntry implements Serializable
         this.auditDate = value;
     }
 
-    public final void setReqInfo(final RequestHostInfo value)
+    public final void setHostInfo(final RequestHostInfo value)
     {
-        final String methodName = AuditEntry.CNAME + "#setReqInfo(final RequestHostInfo value)";
+        final String methodName = AuditEntry.CNAME + "#setHostInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -79,12 +119,12 @@ public class AuditEntry implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.reqInfo = value;
+        this.hostInfo = value;
     }
 
     public final void setAuditType(final AuditType value)
     {
-        final String methodName = AuditEntry.CNAME + "#setUserAccount(final AuditType value)";
+        final String methodName = AuditEntry.CNAME + "#setAuditType(final AuditType value)";
 
         if (DEBUG)
         {
@@ -95,17 +135,56 @@ public class AuditEntry implements Serializable
         this.auditType = value;
     }
 
-    public final void setUserAccount(final UserAccount value)
+    public final RequestHostInfo getHostInfo()
     {
-        final String methodName = AuditEntry.CNAME + "#setUserAccount(final UserAccount value)";
+        final String methodName = AuditEntry.CNAME + "#getHostInfo()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.hostInfo);
         }
 
-        this.userAccount = value;
+        return this.hostInfo;
+    }
+
+    public final UserAccount getUserAccount()
+    {
+        final String methodName = AuditEntry.CNAME + "#getUserAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userAccount);
+        }
+
+        return this.userAccount;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = AuditEntry.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = AuditEntry.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final long getAuditDate()
@@ -121,19 +200,6 @@ public class AuditEntry implements Serializable
         return this.auditDate;
     }
 
-    public final RequestHostInfo getReqInfo()
-    {
-        final String methodName = AuditEntry.CNAME + "#getReqInfo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.reqInfo);
-        }
-
-        return this.reqInfo;
-    }
-
     public final AuditType getAuditType()
     {
         final String methodName = AuditEntry.CNAME + "#getAuditType()";
@@ -145,19 +211,6 @@ public class AuditEntry implements Serializable
         }
 
         return this.auditType;
-    }
-
-    public final UserAccount getUserAccount()
-    {
-        final String methodName = AuditEntry.CNAME + "#getUserAccount()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userAccount);
-        }
-
-        return this.userAccount;
     }
 
     @Override

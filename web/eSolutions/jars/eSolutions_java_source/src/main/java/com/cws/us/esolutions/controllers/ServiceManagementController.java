@@ -600,6 +600,8 @@ public class ServiceManagementController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.platformMgmt);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -743,6 +745,8 @@ public class ServiceManagementController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.platformMgmt);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -897,6 +901,8 @@ public class ServiceManagementController
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.projectMgmt);
                 request.setProject(reqProject);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1051,6 +1057,8 @@ public class ServiceManagementController
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.projectMgmt);
                 request.setPlatform(reqPlatform);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1389,6 +1397,8 @@ public class ServiceManagementController
                 dmgrRequest.setServiceId(this.systemMgmt);
                 dmgrRequest.setTargetServer(dmgrServer);
                 dmgrRequest.setUserAccount(userAccount);
+                dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1538,6 +1548,8 @@ public class ServiceManagementController
                 dmgrServerRequest.setRequestInfo(reqInfo);
                 dmgrServerRequest.setUserAccount(userAccount);
                 dmgrServerRequest.setServiceId(this.systemMgmt);
+                dmgrServerRequest.setApplicationId(appConfig.getApplicationId());
+                dmgrServerRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1574,6 +1586,8 @@ public class ServiceManagementController
                     appServerRequest.setRequestInfo(reqInfo);
                     appServerRequest.setUserAccount(userAccount);
                     appServerRequest.setServiceId(this.systemMgmt);
+                    appServerRequest.setApplicationId(appConfig.getApplicationId());
+                    appServerRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1617,6 +1631,8 @@ public class ServiceManagementController
                     webRequest.setRequestInfo(reqInfo);
                     webRequest.setUserAccount(userAccount);
                     webRequest.setServiceId(this.systemMgmt);
+                    webRequest.setApplicationId(appConfig.getApplicationId());
+                    webRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1789,6 +1805,8 @@ public class ServiceManagementController
                 dmgrRequest.setServiceId(this.systemMgmt);
                 dmgrRequest.setTargetServer(dmgrServer);
                 dmgrRequest.setUserAccount(userAccount);
+                dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1882,6 +1900,8 @@ public class ServiceManagementController
                     platformRequest.setRequestInfo(reqInfo);
                     platformRequest.setServiceId(this.platformMgmt);
                     platformRequest.setUserAccount(userAccount);
+                    platformRequest.setApplicationId(appConfig.getApplicationId());
+                    platformRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1923,6 +1943,8 @@ public class ServiceManagementController
                 serverReq.setServiceId(this.systemMgmt);
                 serverReq.setTargetServer(reqServer);
                 serverReq.setUserAccount(userAccount);
+                serverReq.setApplicationId(appConfig.getApplicationId());
+                serverReq.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -2092,6 +2114,8 @@ public class ServiceManagementController
                 dcRequest.setRequestInfo(reqInfo);
                 dcRequest.setServiceId(this.dcService);
                 dcRequest.setUserAccount(userAccount);
+                dcRequest.setApplicationId(appConfig.getApplicationId());
+                dcRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -2234,6 +2258,8 @@ public class ServiceManagementController
                 projectRequest.setUserAccount(userAccount);
                 projectRequest.setServiceId(this.projectMgmt);
                 projectRequest.setProject(request);
+                projectRequest.setApplicationId(appConfig.getApplicationId());
+                projectRequest.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {

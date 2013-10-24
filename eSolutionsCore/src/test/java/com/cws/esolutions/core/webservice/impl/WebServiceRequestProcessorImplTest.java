@@ -79,12 +79,12 @@ public class WebServiceRequestProcessorImplTest
         account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("eSolutions");
+        request.setApplicationName("eSolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.USERNAME);
         request.setUserAccount(account);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
 
         try
         {
@@ -115,7 +115,7 @@ public class WebServiceRequestProcessorImplTest
         userSecurity.setPassword("Ariana18*");
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.PASSWORD);
         request.setUserAccount(account);
@@ -144,7 +144,7 @@ public class WebServiceRequestProcessorImplTest
         userSecurity.setPassword("Ariana16*");
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
@@ -173,7 +173,7 @@ public class WebServiceRequestProcessorImplTest
         userSecurity.setPassword("Ariana18*");
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
@@ -200,12 +200,12 @@ public class WebServiceRequestProcessorImplTest
         account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("eSolutions");
+        request.setApplicationName("eSolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.USERNAME);
         request.setUserAccount(account);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
 
         try
         {
@@ -232,13 +232,13 @@ public class WebServiceRequestProcessorImplTest
         userSecurity.setSecAnswerTwo("answertwo");
 
         AuthenticationRequest request = new AuthenticationRequest();
-        request.setAppName("eSolutions");
+        request.setApplicationName("eSolutions");
         request.setAuthType(AuthenticationType.LOGIN);
         request.setLoginType(LoginType.USERNAME);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
 
         try
         {

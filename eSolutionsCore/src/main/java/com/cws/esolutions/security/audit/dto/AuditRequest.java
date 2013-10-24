@@ -20,8 +20,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
 /**
  * SecurityService
@@ -42,97 +40,13 @@ import com.cws.esolutions.security.SecurityConstants;
  */
 public class AuditRequest implements Serializable
 {
-    private String appName = null;
-    private boolean performAudit = true;
-    private String applicationId = null;
     private AuditEntry auditEntry = null;
-    private UserAccount userAccount = null;
-    private RequestHostInfo hostInfo = null;
-    private UserSecurity userSecurity = null;
 
     private static final String CNAME = AuditRequest.class.getName();
     private static final long serialVersionUID = 8332518266785977842L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setHostInfo(final RequestHostInfo value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setBaseDN(final RequestHostInfo value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.hostInfo = value;
-    }
-
-    public final void setUserAccount(final UserAccount value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setLoginType(final UserAccount value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userAccount = value;
-    }
-
-    public final void setUserSecurity(final UserSecurity value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setLoginType(final UserSecurity value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userSecurity = value;
-    }
-
-    public final void setAppName(final String value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setAppName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.appName = value;
-    }
-
-    public final void setApplicationId(final String value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setApplicationId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.applicationId = value;
-    }
-
-    public final void setPerformAudit(final boolean value)
-    {
-        final String methodName = AuditRequest.CNAME + "#setPerformAudit(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.performAudit = value;
-    }
 
     public final void setAuditEntry(final AuditEntry value)
     {
@@ -145,84 +59,6 @@ public class AuditRequest implements Serializable
         }
 
         this.auditEntry = value;
-    }
-
-    public final RequestHostInfo getHostInfo()
-    {
-        final String methodName = AuditRequest.CNAME + "#getHostInfo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.hostInfo);
-        }
-
-        return this.hostInfo;
-    }
-
-    public final UserAccount getUserAccount()
-    {
-        final String methodName = AuditRequest.CNAME + "#getLoginType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userAccount);
-        }
-
-        return this.userAccount;
-    }
-
-    public final UserSecurity getUserSecurity()
-    {
-        final String methodName = AuditRequest.CNAME + "#getUserSecurity()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSecurity);
-        }
-
-        return this.userSecurity;
-    }
-
-    public final String getAppName()
-    {
-        final String methodName = AuditRequest.CNAME + "#getAppName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
-        }
-
-        return this.appName;
-    }
-
-    public final String getApplicationId()
-    {
-        final String methodName = AuditRequest.CNAME + "#getApplicationId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationId);
-        }
-
-        return this.applicationId;
-    }
-
-    public final boolean doPerformAudit()
-    {
-        final String methodName = AuditRequest.CNAME + "#doPerformAudit()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.performAudit);
-        }
-
-        return this.performAudit;
     }
 
     public final AuditEntry getAuditEntry()

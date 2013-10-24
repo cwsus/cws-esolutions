@@ -34,10 +34,8 @@
             <div id="breadcrumb" class="lpstartover">
                 <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
                     title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a> /
-                <c:if test="${auditEnabled eq 'TRUE'}">
-                    <a href="${pageContext.request.contextPath}/ui/user-management/audit-user/user/${userAccount.guid}"
-                        title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
-                </c:if>
+                <a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}"
+                    title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
             </div>
 
             <c:if test="${not empty messageResponse}">
@@ -60,7 +58,7 @@
                     <td><spring:message code="admin.password.display.indicator" /></td>
                     <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
                         <td>
-                            <a href="${pageContext.request.contextPath}/ui/user-management/reset" title="<spring:message code='admin.account.reset.user.password' />">
+                            <a href="${pageContext.request.contextPath}/ui/user-management/reset/account/${userAccount.guid}" title="<spring:message code='admin.account.reset.user.password' />">
                                 <spring:message code='admin.account.reset.user.password' /></a>
                         </td>
                     </c:if>
@@ -89,13 +87,13 @@
                     <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
                         <c:if test="${userAccount.failedCount ge 3}">
                             <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/unlock"
+                                <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
                                     title="<spring:message code='admin.account.unlock.user.account' />"><spring:message code='admin.account.unlock.user.account' /></a>
                             </td>
                         </c:if>
                         <c:if test="${userAccount.failedCount le 3}">
                             <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/lock"
+                                <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
                                     title="<spring:message code='admin.account.lock.user.account' />"><spring:message code='admin.account.lock.user.account' /></a>
                             </td>
                         </c:if>
@@ -112,13 +110,13 @@
                         <c:choose>
                             <c:when test="${userAccount.suspended eq 'true'}">
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/ui/user-management/unsuspend"
+                                    <a href="${pageContext.request.contextPath}/ui/user-management/unsuspend/account/${userAccount.guid}"
                                           title="<spring:message code='admin.account.remove.user.suspension' />"><spring:message code='admin.account.remove.user.suspension' /></a>
                                 </td>
                             </c:when>
                             <c:otherwise>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/ui/user-management/suspend"
+                                    <a href="${pageContext.request.contextPath}/ui/user-management/suspend/account/${userAccount.guid}"
                                           title="<spring:message code='admin.account.suspend.user' />"><spring:message code='admin.account.suspend.user' /></a>
                                 </td>
                             </c:otherwise>

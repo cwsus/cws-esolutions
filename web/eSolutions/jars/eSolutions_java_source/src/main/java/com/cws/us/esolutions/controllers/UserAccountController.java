@@ -516,6 +516,8 @@ public class UserAccountController
             request.setHostInfo(reqInfo);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -774,7 +776,6 @@ public class UserAccountController
             else
             {
                 AccountControlRequest request = new AccountControlRequest();
-                request.setAppName(appConfig.getApplicationName());
                 request.setControlType(ControlType.RESETPASS);
                 request.setHostInfo(reqInfo);
                 request.setIsLogonRequest(false);
@@ -782,6 +783,8 @@ public class UserAccountController
                 request.setRequestor(userAccount);
                 request.setUserAccount(userAccount);
                 request.setUserSecurity(userSecurity);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -952,7 +955,6 @@ public class UserAccountController
                 }
 
                 AccountControlRequest request = new AccountControlRequest();
-                request.setAppName(appConfig.getApplicationName());
                 request.setControlType(ControlType.MODIFY);
                 request.setHostInfo(reqInfo);
                 request.setIsLogonRequest(false);
@@ -960,6 +962,8 @@ public class UserAccountController
                 request.setRequestor(userAccount);
                 request.setUserAccount(userAccount);
                 request.setUserSecurity(userSecurity);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1121,7 +1125,6 @@ public class UserAccountController
                 }
 
                 AccountControlRequest request = new AccountControlRequest();
-                request.setAppName(appConfig.getApplicationName());
                 request.setControlType(ControlType.MODIFY);
                 request.setHostInfo(reqInfo);
                 request.setIsLogonRequest(false);
@@ -1129,6 +1132,8 @@ public class UserAccountController
                 request.setRequestor(userAccount);
                 request.setUserAccount(userAccount);
                 request.setUserSecurity(userSecurity);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {

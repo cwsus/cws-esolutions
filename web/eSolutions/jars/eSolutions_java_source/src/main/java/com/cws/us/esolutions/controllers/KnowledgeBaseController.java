@@ -46,10 +46,10 @@ import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.ArticleRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.processors.dto.ArticleResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -621,22 +621,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("Article: {}", article);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(article);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.getArticle(request);
+                    KnowledgeBaseResponse response = kbase.getArticle(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1044,22 +1046,24 @@ public class KnowledgeBaseController
                             DEBUGGER.debug("Article: {}", article);
                         }
 
-                        ArticleRequest request = new ArticleRequest();
+                        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                         request.setArticle(article);
                         request.setRequestInfo(reqInfo);
                         request.setUserAccount(userAccount);
                         request.setServiceId(this.serviceId);
+                        request.setApplicationId(appConfig.getApplicationId());
+                        request.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("ArticleRequest: {}", request);
+                            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                         }
 
-                        ArticleResponse response = kbase.getArticle(request);
+                        KnowledgeBaseResponse response = kbase.getArticle(request);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("ArticleResponse: {}", response);
+                            DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                         }
 
                         if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1214,21 +1218,23 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.getPendingArticles(request);
+                    KnowledgeBaseResponse response = kbase.getPendingArticles(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1403,22 +1409,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("Article: {}", reqArticle);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(reqArticle);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.updateArticleStatus(request);
+                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1629,22 +1637,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("Article: {}", reqArticle);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(reqArticle);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.updateArticleStatus(request);
+                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1855,22 +1865,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("Article: {}", reqArticle);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(reqArticle);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.updateArticleStatus(request);
+                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -2197,22 +2209,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(article);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.addNewArticle(request);
+                    KnowledgeBaseResponse response = kbase.addNewArticle(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -2438,22 +2452,24 @@ public class KnowledgeBaseController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    ArticleRequest request = new ArticleRequest();
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
                     request.setArticle(article);
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleRequest: {}", request);
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
                     }
 
-                    ArticleResponse response = kbase.updateArticle(request);
+                    KnowledgeBaseResponse response = kbase.updateArticle(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ArticleResponse: {}", response);
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
                     }
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)

@@ -42,9 +42,10 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
  */
 public class MessagingRequest implements Serializable
 {
-    private String appName = null;
     private String serviceId = null;
     private boolean webRequest = false;
+    private String applicationId = null;
+    private String applicationName = null;
     private UserAccount userAccount = null;
     private EmailMessage emailMessage = null;
     private ServiceMessage svcMessage = null;
@@ -95,9 +96,9 @@ public class MessagingRequest implements Serializable
         this.serviceId = value;
     }
 
-    public final void setAppName(final String value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = MessagingRequest.CNAME + "#setAppName(final String value)";
+        final String methodName = MessagingRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -105,7 +106,20 @@ public class MessagingRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appName = value;
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = MessagingRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
     }
 
     public final void setEmailMessage(final EmailMessage value)
@@ -186,17 +200,30 @@ public class MessagingRequest implements Serializable
         return this.serviceId;
     }
 
-    public final String getAppName()
+    public final String getApplicationName()
     {
-        final String methodName = MessagingRequest.CNAME + "#getAppName()";
+        final String methodName = MessagingRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.appName;
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = MessagingRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final EmailMessage getEmailMessage()

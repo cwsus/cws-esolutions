@@ -514,6 +514,8 @@ public class SystemManagementController
                     serviceReq.setUserAccount(userAccount);
                     serviceReq.setServiceId(this.systemService);
                     serviceReq.setSourceServer(sourceServer);
+                    serviceReq.setApplicationId(appConfig.getApplicationId());
+                    serviceReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -696,6 +698,8 @@ public class SystemManagementController
                     guidRequest.setUserAccount(userAccount);
                     guidRequest.setServiceId(this.systemService);
                     guidRequest.setSourceServer(server);
+                    guidRequest.setApplicationId(appConfig.getApplicationId());
+                    guidRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -730,6 +734,8 @@ public class SystemManagementController
                         hostRequest.setUserAccount(userAccount);
                         hostRequest.setServiceId(this.systemService);
                         hostRequest.setSourceServer(server);
+                        hostRequest.setApplicationId(appConfig.getApplicationId());
+                        hostRequest.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {
@@ -1131,6 +1137,8 @@ public class SystemManagementController
                     dmgrRequest.setUserAccount(userAccount);
                     dmgrRequest.setServiceId(this.systemService);
                     dmgrRequest.setTargetServer(dmgrServer);
+                    dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                    dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
                     try
                     {
@@ -1164,6 +1172,8 @@ public class SystemManagementController
                     dcRequest.setRequestInfo(reqInfo);
                     dcRequest.setServiceId(this.dcService);
                     dcRequest.setUserAccount(userAccount);
+                    dcRequest.setApplicationId(appConfig.getApplicationId());
+                    dcRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1376,6 +1386,8 @@ public class SystemManagementController
                             dmgrRequest.setServiceId(this.systemService);
                             dmgrRequest.setTargetServer(dmgrServer);
                             dmgrRequest.setUserAccount(userAccount);
+                            dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                            dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
                             if (DEBUG)
                             {
@@ -1419,6 +1431,8 @@ public class SystemManagementController
                                 dmRequest.setUserAccount(userAccount);
                                 dmRequest.setServiceId(this.systemService);
                                 dmRequest.setTargetServer(dmServer);
+                                dmRequest.setApplicationId(appConfig.getApplicationId());
+                                dmRequest.setApplicationName(appConfig.getApplicationName());
 
                                 try
                                 {
@@ -1452,6 +1466,8 @@ public class SystemManagementController
                                 dcRequest.setRequestInfo(reqInfo);
                                 dcRequest.setServiceId(this.dcService);
                                 dcRequest.setUserAccount(userAccount);
+                                dcRequest.setApplicationId(appConfig.getApplicationId());
+                                dcRequest.setApplicationName(appConfig.getApplicationName());
 
                                 if (DEBUG)
                                 {
@@ -1564,6 +1580,8 @@ public class SystemManagementController
                     serverReq.setUserAccount(userAccount);
                     serverReq.setServiceId(this.systemService);
                     serverReq.setTargetServer(server);
+                    serverReq.setApplicationId(appConfig.getApplicationId());
+                    serverReq.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -1608,6 +1626,8 @@ public class SystemManagementController
                         dmgrRequest.setUserAccount(userAccount);
                         dmgrRequest.setServiceId(this.systemService);
                         dmgrRequest.setTargetServer(dmgrServer);
+                        dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                        dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
                         try
                         {
@@ -1641,6 +1661,8 @@ public class SystemManagementController
                         dcRequest.setRequestInfo(reqInfo);
                         dcRequest.setServiceId(this.dcService);
                         dcRequest.setUserAccount(userAccount);
+                        dcRequest.setApplicationId(appConfig.getApplicationId());
+                        dcRequest.setApplicationName(appConfig.getApplicationName());
 
                         if (DEBUG)
                         {

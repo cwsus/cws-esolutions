@@ -88,7 +88,7 @@ public class AccountResetProcessorImplTest
         account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AccountResetRequest request = new AccountResetRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setRequestor(account);
         request.setUserAccount(account);
@@ -114,7 +114,7 @@ public class AccountResetProcessorImplTest
         userSecurity.setResetRequestId("5elKReQu6KddvYQaXt0hYZ72K61TKH7JoSvk1t2WmsdQ7zTO75fTpzbhEgjYSCdL");
 
         AccountResetRequest request = new AccountResetRequest();
-        request.setAppName("esolutions");
+        request.setApplicationName("esolutions");
         request.setHostInfo(hostInfo);
         request.setUserSecurity(userSecurity);
 

@@ -64,14 +64,17 @@ public class AuditDAOImpl implements IAuditDAO
             else
             {
                 sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, auditRequest.get(0)); // usersessid
-                stmt.setString(2, auditRequest.get(1)); // username
-                stmt.setString(3, auditRequest.get(2)); // userrole
-                stmt.setLong(4, System.currentTimeMillis()); // reqtime
-                stmt.setString(5, auditRequest.get(3)); // useraction
-                stmt.setString(6, auditRequest.get(4)); // srcaddr
-                stmt.setString(7, auditRequest.get(5)); // srchost
+                stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
+                stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
+                stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
+                stmt.setString(4, auditRequest.get(3)); // usr_audit_role
+                stmt.setString(5, auditRequest.get(4)); // usr_audit_applid
+                stmt.setString(6, auditRequest.get(5)); // usr_audit_applname
+                stmt.setLong(7, System.currentTimeMillis()); // usr_audit_timestamp
+                stmt.setString(8, auditRequest.get(6)); // usr_audit_action
+                stmt.setString(9, auditRequest.get(7)); // usr_audit_srcaddr
+                stmt.setString(10, auditRequest.get(8)); // usr_audit_srchost
 
                 if (DEBUG)
                 {
@@ -109,14 +112,14 @@ public class AuditDAOImpl implements IAuditDAO
     }
 
     @Override
-    public synchronized List<String[]> getAuditInterval(final String username) throws SQLException
+    public synchronized List<String[]> getAuditInterval(final String guid) throws SQLException
     {
-        final String methodName = IAuditDAO.CNAME + "#getAuditInterval(final String username) throws SQLException";
+        final String methodName = IAuditDAO.CNAME + "#getAuditInterval(final String guid) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Username: {}", username);
+            DEBUGGER.debug("guid: {}", guid);
         }
 
         Connection sqlConn = null;
@@ -128,8 +131,6 @@ public class AuditDAOImpl implements IAuditDAO
         {
             sqlConn = dataSource.getConnection();
 
-            sqlConn = dataSource.getConnection();
-
             if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
@@ -137,8 +138,8 @@ public class AuditDAOImpl implements IAuditDAO
             else
             {
                 sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrAuditInterval(?)}");
-                stmt.setString(1, username);
+                stmt = sqlConn.prepareCall("{CALL getAuditInterval(?)}");
+                stmt.setString(1, guid);
 
                 if (DEBUG)
                 {
@@ -160,14 +161,16 @@ public class AuditDAOImpl implements IAuditDAO
                     while (resultSet.next())
                     {
                         String[] data = new String[] {
-                                resultSet.getString(1),
-                                resultSet.getString(2),
-                                resultSet.getString(3),
-                                resultSet.getString(4),
-                                String.valueOf(resultSet.getLong(5)),
-                                resultSet.getString(6),
-                                resultSet.getString(7),
-                                resultSet.getString(8)
+                                resultSet.getString(1), // usr_audit_sessionid
+                                resultSet.getString(2), // usr_audit_userid
+                                resultSet.getString(3), // usr_audit_userguid
+                                resultSet.getString(4), // usr_audit_role
+                                resultSet.getString(5), // usr_audit_applid
+                                resultSet.getString(6), // usr_audit_applname
+                                String.valueOf(resultSet.getLong(7)), // usr_audit_timestamp
+                                resultSet.getString(8), // usr_audit_action
+                                resultSet.getString(9), // usr_audit_srcaddr
+                                resultSet.getString(10) // usr_audit_srchost
                         };
 
                         if (DEBUG)
