@@ -158,7 +158,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEARTICLE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -298,7 +297,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEARTICLE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -416,7 +414,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -681,7 +678,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWPENDING);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

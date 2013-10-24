@@ -196,7 +196,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSVCMESSAGE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -326,7 +325,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.EDITSVCMESSAGE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -451,7 +449,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWMESSAGES);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -600,7 +597,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADMESSAGE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

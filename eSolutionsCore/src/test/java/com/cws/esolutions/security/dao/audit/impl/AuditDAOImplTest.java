@@ -59,6 +59,7 @@ public class AuditDAOImplTest
         catch (Exception e)
         {
             Assert.fail(e.getMessage());
+
             System.exit(1);
         }
     }
@@ -74,7 +75,6 @@ public class AuditDAOImplTest
                         "SITEADMIN",
                         "6236B840-88B0-4230-BCBC-8EC33EE837D9",
                         "eSolutions",
-                        String.valueOf(System.currentTimeMillis()),
                         AuditType.JUNIT.name(),
                         "junit",
                         "junit"));

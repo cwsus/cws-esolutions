@@ -223,7 +223,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDPLATFORM);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -382,7 +381,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -783,7 +781,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -1186,7 +1183,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LISTPLATFORMS);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -1585,7 +1581,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.LOADPLATFORM);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

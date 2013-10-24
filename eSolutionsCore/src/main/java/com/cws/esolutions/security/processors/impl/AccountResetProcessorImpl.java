@@ -207,7 +207,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.VERIFYRESET);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -377,7 +376,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.RESETPASS);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

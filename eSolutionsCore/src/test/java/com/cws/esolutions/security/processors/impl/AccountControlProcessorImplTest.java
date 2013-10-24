@@ -94,6 +94,7 @@ public class AccountControlProcessorImplTest
                 if (userResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
                     UserAccount authUser = userResponse.getUserAccount();
+                    authUser.setSessionId(account.getSessionId());
 
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
@@ -135,13 +136,15 @@ public class AccountControlProcessorImplTest
             }
             catch (Exception e)
             {
-                e.printStackTrace();
                 Assert.fail(e.getMessage());
+
+                System.exit(1);
             }
         }
         catch (Exception e)
         {
             Assert.fail(e.getMessage());
+
             System.exit(1);
         }
     }
@@ -484,7 +487,7 @@ public class AccountControlProcessorImplTest
         try
         {
             AccountControlResponse response = processor.loadUserAuditTrail(request);
-
+System.out.println(response);
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
         catch (AccountControlException acx)

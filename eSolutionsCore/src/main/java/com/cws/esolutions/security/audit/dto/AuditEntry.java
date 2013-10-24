@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security.audit.dto;
 
+import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -44,7 +45,7 @@ import com.cws.esolutions.security.audit.enums.AuditType;
  */
 public class AuditEntry implements Serializable
 {
-    private long auditDate = 0;
+    private Date auditDate = null;
     private AuditType auditType = null;
     private String applicationId = null;
     private String applicationName = null;
@@ -96,9 +97,9 @@ public class AuditEntry implements Serializable
         this.applicationId = value;
     }
 
-    public final void setAuditDate(final long value)
+    public final void setAuditDate(final Date value)
     {
-        final String methodName = AuditEntry.CNAME + "#setAuditDate(final long value)";
+        final String methodName = AuditEntry.CNAME + "#setAuditDate(final Date value)";
 
         if (DEBUG)
         {
@@ -187,7 +188,7 @@ public class AuditEntry implements Serializable
         return this.applicationId;
     }
 
-    public final long getAuditDate()
+    public final Date getAuditDate()
     {
         final String methodName = AuditEntry.CNAME + "#getAuditDate()";
 

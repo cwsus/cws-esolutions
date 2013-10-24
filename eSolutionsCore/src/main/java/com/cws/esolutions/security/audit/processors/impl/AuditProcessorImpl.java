@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security.audit.processors.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -87,11 +88,10 @@ public class AuditProcessorImpl implements IAuditProcessor
                 case LOGON:
                     auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
-                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_userguid
                     auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
-                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
                     auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
                     auditList.add(hostInfo.getHostName()); // usr_audit_srchost
@@ -104,7 +104,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
-                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
                     auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
                     auditList.add(hostInfo.getHostName()); // usr_audit_srchost
@@ -117,7 +116,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(userAccount.getRole().toString()); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
-                    auditList.add(String.valueOf(auditEntry.getAuditDate())); // usr_audit_timestamp
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
                     auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
                     auditList.add(hostInfo.getHostName()); // usr_audit_srchost
@@ -191,7 +189,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                     DEBUGGER.debug("Data: {}", dataResponse);
                 }
 
-                if (dataResponse.size() != 0)
+                if ((dataResponse != null) && (dataResponse.size() != 0))
                 {
                     List<AuditEntry> auditList = new ArrayList<AuditEntry>();
 
@@ -229,7 +227,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                         AuditEntry resEntry = new AuditEntry();
                         resEntry.setApplicationId(array[4]); // usr_audit_applid
                         resEntry.setApplicationName(array[5]); // usr_audit_applname
-                        resEntry.setAuditDate(Long.valueOf(array[6])); // usr_audit_timestamp
+                        resEntry.setAuditDate(new Date(Long.valueOf(array[6]))); // usr_audit_timestamp
                         resEntry.setAuditType(AuditType.valueOf(array[7])); // usr_audit_action
                         resEntry.setHostInfo(reqInfo);
                         resEntry.setUserAccount(userAccount);

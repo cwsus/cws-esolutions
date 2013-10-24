@@ -155,7 +155,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SIGNFILE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getAppName());
@@ -267,7 +266,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.VERIFYFILE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getAppName());
@@ -387,7 +385,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ENCRYPTFILE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getAppName());
@@ -496,7 +493,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DECRYPTFILE);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getAppName());

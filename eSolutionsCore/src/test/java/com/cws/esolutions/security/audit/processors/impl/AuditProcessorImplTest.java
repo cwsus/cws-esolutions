@@ -81,11 +81,13 @@ public class AuditProcessorImplTest
             try
             {
                 AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setApplicationName("eSolutions");
+                userRequest.setHostInfo(hostInfo);
+                userRequest.setUserAccount(account);
+                userRequest.setApplicationName("esolutions");
+                userRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
                 userRequest.setAuthType(AuthenticationType.LOGIN);
                 userRequest.setLoginType(LoginType.USERNAME);
-                userRequest.setUserAccount(account);
-                userRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
+                userRequest.setTimeoutValue(10000);
 
                 AuthenticationResponse userResponse = agentAuth.processAgentLogon(userRequest);
 
@@ -99,12 +101,14 @@ public class AuditProcessorImplTest
                         userSecurity.setPassword("Ariana16*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setApplicationName("eSolutions");
+                        passRequest.setHostInfo(hostInfo);
+                        passRequest.setUserAccount(account);
+                        passRequest.setApplicationName("esolutions");
+                        passRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
                         passRequest.setAuthType(AuthenticationType.LOGIN);
                         passRequest.setLoginType(LoginType.PASSWORD);
-                        passRequest.setUserAccount(authUser);
+                        passRequest.setTimeoutValue(10000);
                         passRequest.setUserSecurity(userSecurity);
-                        passRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
 
                         AuthenticationResponse passResponse = agentAuth.processAgentLogon(passRequest);
 
@@ -132,13 +136,15 @@ public class AuditProcessorImplTest
             }
             catch (Exception e)
             {
-                e.printStackTrace();
                 Assert.fail(e.getMessage());
+
+                System.exit(1);
             }
         }
         catch (Exception e)
         {
             Assert.fail(e.getMessage());
+
             System.exit(1);
         }
     }
@@ -149,7 +155,6 @@ public class AuditProcessorImplTest
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setApplicationId("JUNIT");
         auditEntry.setApplicationName("JUNIT");
-        auditEntry.setAuditDate(System.currentTimeMillis());
         auditEntry.setAuditType(AuditType.JUNIT);
         auditEntry.setHostInfo(hostInfo);
         auditEntry.setUserAccount(userAccount);
@@ -173,15 +178,14 @@ public class AuditProcessorImplTest
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setUserAccount(userAccount);
 
-        AuditRequest auditRequest = new AuditRequest();
-        auditRequest.setAuditEntry(auditEntry);
+        AuditRequest request = new AuditRequest();
+        request.setAuditEntry(auditEntry);
 
         try
         {
-            AuditResponse auditResponse = new AuditResponse();
-            auditResponse = auditor.getAuditEntries(auditRequest);
-
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, auditResponse.getRequestStatus());
+            AuditResponse response = auditor.getAuditEntries(request);
+System.out.println(response);
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
         catch (AuditServiceException asx)
         {

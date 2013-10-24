@@ -318,7 +318,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEUSER);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -423,7 +422,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DELETEUSER);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -566,8 +564,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSECURITY);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -650,7 +646,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                auditEntry.setAuditDate(System.currentTimeMillis());
+                auditEntry.setUserAccount(requestor);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -659,9 +657,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
-                auditEntry.setUserAccount(requestor);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -829,8 +824,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.MODIFYUSER);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -1066,8 +1059,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CHANGEPASS);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -1310,8 +1301,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSECURITY);
-                auditEntry.setAuditDate(System.currentTimeMillis());
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
@@ -1524,8 +1513,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(requestor);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1674,8 +1661,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(requestor);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1819,7 +1804,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWAUDIT);
-                auditEntry.setAuditDate(System.currentTimeMillis());
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

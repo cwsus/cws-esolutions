@@ -64,17 +64,16 @@ public class AuditDAOImpl implements IAuditDAO
             else
             {
                 sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
                 stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
                 stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
                 stmt.setString(4, auditRequest.get(3)); // usr_audit_role
                 stmt.setString(5, auditRequest.get(4)); // usr_audit_applid
                 stmt.setString(6, auditRequest.get(5)); // usr_audit_applname
-                stmt.setLong(7, System.currentTimeMillis()); // usr_audit_timestamp
-                stmt.setString(8, auditRequest.get(6)); // usr_audit_action
-                stmt.setString(9, auditRequest.get(7)); // usr_audit_srcaddr
-                stmt.setString(10, auditRequest.get(8)); // usr_audit_srchost
+                stmt.setString(7, auditRequest.get(6)); // usr_audit_action
+                stmt.setString(8, auditRequest.get(7)); // usr_audit_srcaddr
+                stmt.setString(9, auditRequest.get(8)); // usr_audit_srchost
 
                 if (DEBUG)
                 {

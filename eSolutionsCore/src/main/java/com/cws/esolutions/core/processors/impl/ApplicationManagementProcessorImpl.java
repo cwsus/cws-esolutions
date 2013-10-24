@@ -278,7 +278,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.ADDAPP);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -456,7 +455,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.UPDATEAPP);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -585,7 +583,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DELETEAPP);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -876,7 +873,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1102,7 +1098,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1529,7 +1524,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADAPP);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1800,7 +1794,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.GETFILES);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1907,7 +1900,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());

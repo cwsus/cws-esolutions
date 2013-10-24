@@ -589,7 +589,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.CREATEDNSRECORD);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -924,7 +923,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.PUSHDNSRECORD);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1036,7 +1034,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SITETXFR);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
@@ -1320,7 +1317,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADRECORD);
-                    auditEntry.setAuditDate(System.currentTimeMillis());
                     auditEntry.setUserAccount(userAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
