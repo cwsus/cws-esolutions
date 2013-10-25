@@ -17,6 +17,18 @@ CREATE USER 'appuser'@'localhost' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9F
 COMMIT;
 
 --
+-- add in the tables
+--
+SOURCE ./eSolutionsService.sql;
+COMMIT;
+
+--
+-- Source in all the sql scripts to build the tables
+--
+SOURCE ./cwssec.sql;
+COMMIT;
+
+--
 -- add privileges
 --
 GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON esolutionssvc.* TO 'appuser'@'localhost';
@@ -24,28 +36,6 @@ GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON cwssec.* TO 'appuser'@'localhost';
 GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'localhost';
 
 FLUSH PRIVILEGES;
-COMMIT;
---
--- Create schema esolutions
---
-CREATE DATABASE IF NOT EXISTS esolutions;
-COMMIT;
---
--- add in the tables
---
-SOURCE ./eSolutionsService.sql;
-COMMIT;
-
---
--- Create schema cwssec
---
-CREATE DATABASE IF NOT EXISTS cwssec;
-COMMIT;
-
---
--- Source in all the sql scripts to build the tables
---
-SOURCE ./cwssec.sql;
 COMMIT;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

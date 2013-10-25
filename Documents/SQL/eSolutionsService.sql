@@ -11,15 +11,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 --
--- Create user `appuser`
---
--- CREATE USER 'appuser'@'localhost' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
-COMMIT;
-
---
 -- Create schema esolutions
 --
 CREATE DATABASE IF NOT EXISTS esolutions;
+COMMIT;
 
 SOURCE ./eSolutionsService.kbase.sql;
 SOURCE ./eSolutionsService.messaging.sql;

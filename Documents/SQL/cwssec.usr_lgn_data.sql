@@ -221,16 +221,17 @@ COMMIT;
 --
 -- Definition of event `cwssec`.`expireResetData`
 --
-DROP EVENT IF EXISTS `cwssec`.`expireResetData`;
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */;
-CREATE DEFINER=`appuser`@`localhost` EVENT `cwssec`.`expireResetData`
-ON SCHEDULE EVERY 15 MINUTE
-DO
-	DELETE FROM `cwssec`.`usr_reset_data`
-	WHERE createTime >= CURRENT_TIMESTAMP;
-
-	COMMIT;
-COMMIT;
+-- NOTE: UNCOMMENT THIS ONLY IF YOUR INSTALLATION SUPPORTS IT!
+-- DROP EVENT IF EXISTS `cwssec`.`expireResetData`;
+-- /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */;
+-- CREATE DEFINER=`appuser`@`localhost` EVENT `cwssec`.`expireResetData`
+-- ON SCHEDULE EVERY 15 MINUTE
+-- DO
+--     DELETE FROM `cwssec`.`usr_reset_data`
+--     WHERE createTime >= CURRENT_TIMESTAMP;
+-- 
+--     COMMIT;
+-- COMMIT;
 
 --
 -- Definition of procedure `cwssec`.`removeResetData`
