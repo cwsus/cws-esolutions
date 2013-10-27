@@ -1,7 +1,0 @@
-<resources>
-    <string name = "forgotPassTitle">eSolutions - Forgot Password</string>
-    <string name = "tvSecQuestionName">Security Question: </string>
-    <string name = "tvSecAnswerName">Answer: </string>
-    <string name = "hintSecAnswerValue">Security Answer</string>
-    <string name = "btnDoSubmit">Submit</string>
-</resources>
