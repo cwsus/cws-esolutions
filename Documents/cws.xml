@@ -9,13 +9,16 @@
     <packaging>pom</packaging>
     <name>CaspersBox Web Services</name>
 
-    <description>CaspersBox Web Services</description>
+    <description>CWS SuperPom</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
-        <cws.repository.url>http://repository.caspersbox.corp:8081/artifactory</cws.repository.url>
+        <cws.public.url>http://www.caspersbox.com/</cws.public.url>
+        <cws.maven.repository>http://repository.caspersbox.corp:8080/archiva/repository</cws.maven.repository>
         <cws.ci.url>http://build.caspersbox.corp:8080/continuum</cws.ci.url>
+        <cws.scm.url>https://github.com/cws-us/cws-esolutions/issues</cws.scm.url>
+        <cws.scm.issues.url>https://github.com/cws-us/cws-esolutions/issues</cws.scm.issues.url>
     </properties>
 
     <licenses>
@@ -28,10 +31,8 @@
 
     <organization>
         <name>CaspersBox Web Services</name>
-        <url>http://www.caspersbox.com/</url>
+        <url>${cws.public.url}</url>
     </organization>
-
-    <url>http://www.caspersbox.com/</url>
 
     <developers>
         <developer>
@@ -42,9 +43,15 @@
         </developer>
     </developers>
 
+    <scm>
+    	<url>git@github.com:cws-khuntly/cws-esolutions.git</url>
+    	<connection>git</connection>
+    	<developerConnection>Kevin Huntly</developerConnection>
+    </scm>
+
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/cws-us/cws-esolutions/issues</url>
+        <url>${cws.scm.issues.url}</url>
     </issueManagement>
 
     <ciManagement>
@@ -64,60 +71,15 @@
         </notifiers>
     </ciManagement>
 
-    <!--
-    <repositories>
-        <repository>
-            <id>artifactory-release</id>
-            <name>Artifactory Managed Internal Repository</name>
-            <url>${cws.repository.url}/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>artifactory-snapshots</id>
-            <name>Artifactory Managed Internal Repository</name>
-            <url>${cws.repository.url}/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>artifactory-ext-libs</id>
-            <name>Artifactory Managed Internal Repository</name>
-            <url>${cws.repository.url}/ext-libs</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    -->
-
-    <repositories>
-        <repository>
-            <id>EclipseLink</id>
-            <url>http://download.eclipse.org/rt/eclipselink/maven.repo</url>
-        </repository>
-    </repositories>
-
     <distributionManagement>
-        <repository>
-            <id>artifactory-release</id>
-            <url>${cws.repository.url}/release</url>
-        </repository>
         <snapshotRepository>
-            <id>artifactory-snapshots</id>
-            <url>${cws.repository.url}/snapshots</url>
+            <id>snapshots</id>
+            <url>${cws.maven.repository}/snapshots/</url>
         </snapshotRepository>
+        <repository>
+            <id>internal</id>
+            <url>${cws.maven.repository}/internal/</url>
+        </repository>
     </distributionManagement>
 
     <mailingLists />
@@ -130,11 +92,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-    	    <groupId>javax.servlet</groupId>
-	        <artifactId>servlet-api</artifactId>
-	        <version>2.4</version>
-	        <type>jar</type>
-	        <scope>provided</scope>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.4</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>
