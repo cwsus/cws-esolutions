@@ -8,7 +8,6 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>cws-shared</groupId>
     <artifactId>eSolutionsCore</artifactId>
     <packaging>jar</packaging>
     <name>${project.artifactId}</name>
@@ -82,7 +81,6 @@
         </dependency>
         <!-- agent -->
         <dependency>
-            <groupId>eSolutionsAgent</groupId>
             <artifactId>eSolutionsAgent</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>

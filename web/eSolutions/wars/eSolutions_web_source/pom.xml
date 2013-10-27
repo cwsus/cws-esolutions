@@ -73,15 +73,12 @@
         </dependency>
         <!-- eSolutions jars -->
         <dependency>
-            <groupId>eSolutions</groupId>
             <artifactId>eSolutions_java_source</artifactId>
         </dependency>
         <dependency>
-            <groupId>eSolutions</groupId>
             <artifactId>eSolutions_web_config</artifactId>
         </dependency>
         <dependency>
-            <groupId>cws-shared</groupId>
             <artifactId>eSolutionsCore</artifactId>
         </dependency>
     </dependencies>

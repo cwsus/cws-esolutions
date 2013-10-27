@@ -34,14 +34,12 @@
         <dependencies>
             <!-- eSolutions Jars -->
             <dependency>
-                <groupId>eSolutions</groupId>
                 <artifactId>eSolutions_java_source</artifactId>
                 <version>${project.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>eSolutions</groupId>
                 <artifactId>eSolutions_web_config</artifactId>
                 <version>${project.version}</version>
                 <type>jar</type>
@@ -49,7 +47,6 @@
             </dependency>
             <!-- esolutions -->
             <dependency>
-                <groupId>cws-shared</groupId>
                 <artifactId>eSolutionsCore</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <type>jar</type>
@@ -86,7 +83,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>eSolutionsAgent</groupId>
                 <artifactId>eSolutionsAgent</artifactId>
                 <version>1.0-SNAPSHOT</version>
                 <type>jar</type>

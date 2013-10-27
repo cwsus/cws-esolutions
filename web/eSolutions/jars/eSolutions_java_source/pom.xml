@@ -18,11 +18,9 @@
     <dependencies>
         <!-- cws-shared -->
         <dependency>
-            <groupId>cws-shared</groupId>
             <artifactId>eSolutionsCore</artifactId>
         </dependency>
         <dependency>
-            <groupId>eSolutionsAgent</groupId>
             <artifactId>eSolutionsAgent</artifactId>
         </dependency>
         <!-- spring -->
