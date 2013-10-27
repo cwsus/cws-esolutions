@@ -4,44 +4,19 @@
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
     <servers>
         <server>
-            <id>artifactory-release</id>
+            <id>internal</id>
             <username>username</username>
             <password>password</password>
-            <filePermissions>644</filePermissions>
-            <directoryPermissions>755</directoryPermissions>
-            <configuration>
-                <timeout>1</timeout>
-            </configuration>
         </server>
         <server>
-            <id>artifactory-snapshots</id>
+            <id>snapshots</id>
             <username>username</username>
             <password>password</password>
-            <filePermissions>644</filePermissions>
-            <directoryPermissions>755</directoryPermissions>
-            <configuration>
-                <timeout>1</timeout>
-            </configuration>
         </server>
         <server>
-            <id>artifactory-ext-libs</id>
+            <id>ext-libs</id>
             <username>username</username>
             <password>password</password>
-            <filePermissions>644</filePermissions>
-            <directoryPermissions>755</directoryPermissions>
-            <configuration>
-                <timeout>1</timeout>
-            </configuration>
-        </server>
-        <server>
-            <id>artifactory-int-libs</id>
-            <username>username</username>
-            <password>password</password>
-            <filePermissions>644</filePermissions>
-            <directoryPermissions>755</directoryPermissions>
-            <configuration>
-                <timeout>1</timeout>
-            </configuration>
         </server>
     </servers>
 

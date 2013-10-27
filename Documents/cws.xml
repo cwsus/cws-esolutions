@@ -15,10 +15,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
         <cws.public.url>http://www.caspersbox.com/</cws.public.url>
-        <cws.maven.repository>http://repository.caspersbox.corp:8080/archiva/repository</cws.maven.repository>
-        <cws.ci.url>http://build.caspersbox.corp:8080/continuum</cws.ci.url>
-        <cws.scm.url>https://github.com/cws-us/cws-esolutions/issues</cws.scm.url>
-        <cws.scm.issues.url>https://github.com/cws-us/cws-esolutions/issues</cws.scm.issues.url>
     </properties>
 
     <licenses>

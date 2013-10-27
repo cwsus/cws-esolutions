@@ -5,18 +5,38 @@
     <interactiveMode>true</interactiveMode>
     <offline>false</offline>
 
+    <mirrors>
+        <mirror>
+            <id>ext-libs</id>
+            <url>http://repository.caspersbox.corp:8081/archiva/repository/ext-libs/</url>
+            <mirrorOf>central,repo1,eclipselink</mirrorOf>
+        </mirror>
+    </mirrors>
+
     <servers>
         <server>
-            <id>artifactory-ext-libs</id>
+			<id>internal</id>
+			<filePermissions>644</filePermissions>
+			<directoryPermissions>755</directoryPermissions>
+			<configuration>
+				<timeout>10</timeout>
+			</configuration>
+		</server>
+        <server>
+            <id>snapshots</id>
+			<filePermissions>644</filePermissions>
+			<directoryPermissions>755</directoryPermissions>
+			<configuration>
+				<timeout>1</timeout>
+			</configuration>
         </server>
         <server>
-            <id>artifactory-int-libs</id>
-        </server>
-        <server>
-            <id>artifactory-release</id>
-        </server>
-        <server>
-            <id>artifactory-snapshots</id>
+            <id>ext-libs</id>
+			<filePermissions>644</filePermissions>
+			<directoryPermissions>755</directoryPermissions>
+			<configuration>
+				<timeout>1</timeout>
+			</configuration>
         </server>
     </servers>
 
@@ -26,12 +46,14 @@
             <properties>
                 <downloadSources>true</downloadSources>
                 <downloadJavadoc>true</downloadJavadoc>
-            </properties>
+				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+				<sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
+			</properties>
             <repositories>
                 <repository>
-                    <id>artifactory-release</id>
-                    <name>Artifactory Managed Internal Repository</name>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/release</url>
+                    <id>internal</id>
+                    <name>Archiva Managed Internal Repository</name>
+                    <url>http://repository.caspersbox.corp:8081/archiva/repository/internal</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
@@ -40,9 +62,9 @@
                     </snapshots>
                 </repository>
                 <repository>
-                    <id>artifactory-snapshots</id>
-                    <name>Artifactory Managed Internal Repository</name>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/snapshots</url>
+                    <id>snapshots</id>
+                    <name>Archiva Managed Internal Repository</name>
+                    <url>http://repository.caspersbox.corp:8081/archiva/repository/snapshots</url>
                     <releases>
                         <enabled>false</enabled>
                     </releases>
@@ -51,114 +73,18 @@
                     </snapshots>
                 </repository>
                 <repository>
-                    <id>artifactory-ext-libs</id>
-                    <name>Artifactory Managed Internal Repository</name>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/ext-libs</url>
+                    <id>ext-libs</id>
+                    <name>Archiva Managed Internal Repository</name>
+                    <url>http://repository.caspersbox.corp:8081/archiva/repository/ext-libs</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
                     <snapshots>
                         <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>artifactory-int-libs</id>
-                    <name>Artifactory Managed Internal Repository</name>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/int-libs</url>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>central</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/central</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>repo1</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/repo1</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>codehaus</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/codehaus</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>EclipseLink</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/EclipseLink</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
                     </snapshots>
                 </repository>
             </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>central</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/central</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>repo1</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/repo1</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>codehaus</id>
-                    <url>http://repository.caspersbox.corp:8081/artifactory/codehaus</url>
-                    <releases>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                        <updatePolicy>always</updatePolicy>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>
+            <pluginRepositories />
         </profile>
     </profiles>
 
