@@ -22,13 +22,6 @@
 
     <dependencies>
         <!-- Third-party jars -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- weblogic jar -->
         <dependency>
             <groupId>oracle</groupId>
@@ -165,14 +158,6 @@
             <version>2.0.1</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-        <!-- activemq -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-core</artifactId>
-            <version>5.7.0</version>
-            <type>jar</type>
-            <scope>provided</scope>
         </dependency>
     </dependencies>
 
