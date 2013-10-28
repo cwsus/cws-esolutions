@@ -65,13 +65,33 @@ DELIMITER ;
 COMMIT;
 
 --
+-- Definition of procedure `getAuditCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `cwssec`.`getAuditCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditCount`(
+    IN userguid VARCHAR(45)
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM usr_audit
+    WHERE usr_audit_userguid = userguid;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `getAuditInterval`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditInterval`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditInterval`(
-    IN userguid VARCHAR(45)
+    IN userguid VARCHAR(45),
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -87,7 +107,8 @@ BEGIN
         usr_audit_srchost
     FROM usr_audit
     WHERE usr_audit_userguid = userguid
-    ORDER BY usr_audit_timestamp DESC;
+    ORDER BY usr_audit_timestamp DESC
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

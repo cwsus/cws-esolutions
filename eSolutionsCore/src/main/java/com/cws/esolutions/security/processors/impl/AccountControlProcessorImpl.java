@@ -1691,14 +1691,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     }
 
     @Override
-    public AccountControlResponse loadUserAuditTrail(final AccountControlRequest request) throws AccountControlException
+    public AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException
     {
         final String methodName = IAccountControlProcessor.CNAME + "#loadUserAuditTrail(final AccountControlRequest request) throws AccountControlException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountControlRequest: {}", request);
+            DEBUGGER.debug("AuditRequest: {}", request);
         }
 
         AccountControlResponse response = new AccountControlResponse();
@@ -1727,6 +1727,27 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
+                // get the user info
+                UserAccount userAccount = null;
+                List<Object> userData = userManager.loadUserAccount(searchUser.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Object>: {}", userData);
+                }
+
+                if ((userData != null) && (!(userData.isEmpty())))
+                {
+                    userAccount = new UserAccount();
+                    userAccount.setGuid((String) userData.get(0));
+                    userAccount.setUsername((String) userData.get(1));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
+                }
+
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setUserAccount(searchUser);
 
@@ -1737,6 +1758,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 AuditRequest auditRequest = new AuditRequest();
                 auditRequest.setAuditEntry(auditEntry);
+                auditRequest.setStartRow(request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -1762,6 +1784,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if ((auditEntries != null) && (auditEntries.size() != 0))
                     {
                         // add to the response
+                        response.setUserAccount(userAccount);
+                        response.setEntryCount(auditResponse.getEntryCount());
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully loaded audit trail");
                         response.setAuditEntries(auditEntries);
@@ -1781,7 +1805,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
+                DEBUGGER.debug("AuditResponse: {}", response);
             }
         }
         catch (AdminControlServiceException acsx)
@@ -1795,6 +1819,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(asx.getMessage(), asx);
 
             throw new AccountControlException(asx.getMessage(), asx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
         }
         finally
         {
@@ -1832,4 +1862,3 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 }
-

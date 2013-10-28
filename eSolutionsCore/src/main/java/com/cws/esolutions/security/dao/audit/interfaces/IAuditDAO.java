@@ -16,9 +16,13 @@
 package com.cws.esolutions.security.dao.audit.interfaces;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
@@ -29,12 +33,10 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
  * com.cws.esolutions.security.audit.dao.interfaces
  * IAuditDAO.java
  *
- *
- *
- * $Id: IAuditDAO.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
+ * $Id: $
  * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
+ * $Date: $
+ * $Revision: $
  * @author kmhuntly@gmail.com
  * @version 1.0
  *
@@ -57,5 +59,7 @@ public interface IAuditDAO
 
     void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
 
-    List<String[]> getAuditInterval(final String username) throws SQLException;
+    List<String[]> getAuditInterval(final String username, final int startRow) throws SQLException;
+
+    int getAuditCount(final String guid) throws SQLException;
 }

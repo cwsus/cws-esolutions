@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.exception.SecurityServiceException;

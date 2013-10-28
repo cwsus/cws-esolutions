@@ -67,25 +67,29 @@ public class AuditDAOImplTest
     @Test
     public void testAuditRequestedOperation()
     {
-        List<String> auditList = new ArrayList<String>(
+        for (int x = 0; x < 50; x++)
+        {
+            List<String> auditList = new ArrayList<String>(
                 Arrays.asList(
                         RandomStringUtils.randomAlphanumeric(32),
                         "khuntly",
                         "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
                         "SITEADMIN",
                         "6236B840-88B0-4230-BCBC-8EC33EE837D9",
-                        "eSolutions",
+                        "eSolutions-" + x,
                         AuditType.JUNIT.name(),
                         "junit",
                         "junit"));
 
-        try
-        {
-            auditDAO.auditRequestedOperation(auditList);
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
+            try
+            {
+            
+                auditDAO.auditRequestedOperation(auditList);
+            }
+            catch (SQLException sqx)
+            {
+                Assert.fail(sqx.getMessage());
+            }
         }
     }
 
@@ -94,7 +98,7 @@ public class AuditDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(auditDAO.getAuditInterval("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
+            Assert.assertNotNull(auditDAO.getAuditInterval("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", 1));
         }
         catch (SQLException sqx)
         {

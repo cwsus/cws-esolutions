@@ -134,12 +134,8 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("sRequest.getServerName(): {}", sRequest.getServerName());
-            DEBUGGER.debug("hRequest.getRequestURI(): {}", hRequest.getRequestURI());
-            DEBUGGER.debug("hRequest.getContextPath(): {}", hRequest.getContextPath());
-            DEBUGGER.debug("Dumping session content:");
 
-            @SuppressWarnings("unchecked")
+            DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
@@ -151,8 +147,6 @@ public class SessionAuthenticationFilter implements Filter
             }
 
             DEBUGGER.debug("Dumping request content:");
-
-            @SuppressWarnings("unchecked")
             Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
@@ -161,6 +155,17 @@ public class SessionAuthenticationFilter implements Filter
                 Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
 
@@ -199,61 +204,49 @@ public class SessionAuthenticationFilter implements Filter
             }
         }
 
-        if (hSession != null)
+        Enumeration<String> sessionAttributes = hSession.getAttributeNames();
+
+        if (DEBUG)
         {
-            @SuppressWarnings("unchecked")
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            DEBUGGER.debug("Enumeration<String>: {}", sessionAttributes);
+        }
 
-            while (sessionEnumeration.hasMoreElements())
+        while (sessionAttributes.hasMoreElements())
+        {
+            String sessionElement = sessionAttributes.nextElement();
+
+            if (DEBUG)
             {
-                String sessionElement = sessionEnumeration.nextElement();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("sessionElement: {}", sessionElement);
-                }
-
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("sessionValue: {}", sessionValue);
-                }
-
-                if (sessionValue instanceof UserAccount)
-                {
-                    userAccount = (UserAccount) sessionValue;
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
+                DEBUGGER.debug("sessionElement: {}", sessionElement);
             }
 
-            if (userAccount != null)
+            Object sessionValue = hSession.getAttribute(sessionElement);
+
+            if (DEBUG)
             {
-                if ((StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
-                {
-                    filterChain.doFilter(sRequest, sResponse);
-                }
-                else
-                {
-                    // no user account was found
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
-                    }
+                DEBUGGER.debug("sessionValue: {}", sessionValue);
+            }
 
-                    // invalidate the session
-                    hSession.invalidate();
+            if (sessionValue instanceof UserAccount)
+            {
+                userAccount = (UserAccount) sessionValue;
+            }
 
-                    hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", userAccount);
+            }
+        }
+
+        if (userAccount != null)
+        {
+            if ((StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
+            {
+                filterChain.doFilter(sRequest, sResponse);
             }
             else
             {
-                // no user account in the session
+                // no user account was found
                 if (DEBUG)
                 {
                     DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
@@ -267,12 +260,15 @@ public class SessionAuthenticationFilter implements Filter
         }
         else
         {
-            // no session exists
+            // no user account in the session
             if (DEBUG)
             {
                 DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
             }
-    
+
+            // invalidate the session
+            hSession.invalidate();
+
             hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
         }
     }

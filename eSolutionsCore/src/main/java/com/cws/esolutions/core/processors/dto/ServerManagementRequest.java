@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.agent.processors.enums.SystemCheckType;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /**
@@ -55,7 +55,7 @@ public class ServerManagementRequest implements Serializable
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo requestInfo = null;
-    private SystemCheckType requestType = null;
+    private ServiceCheckType requestType = null;
     private ServiceOperationType serviceType = null;
     private StateManagementType stateMgmtType = null;
 
@@ -156,9 +156,9 @@ public class ServerManagementRequest implements Serializable
         this.targetServer = value;
     }
 
-    public final void setRequestType(final SystemCheckType value)
+    public final void setRequestType(final ServiceCheckType value)
     {
-        final String methodName = ServerManagementRequest.CNAME + "#setRequestType(final SystemCheckType value)";
+        final String methodName = ServerManagementRequest.CNAME + "#setRequestType(final ServiceCheckType value)";
 
         if (DEBUG)
         {
@@ -325,7 +325,7 @@ public class ServerManagementRequest implements Serializable
         return this.targetServer;
     }
 
-    public final SystemCheckType getRequestType()
+    public final ServiceCheckType getRequestType()
     {
         final String methodName = ServerManagementRequest.CNAME + "#getRequestType()";
 

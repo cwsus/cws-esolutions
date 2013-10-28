@@ -22,11 +22,11 @@ import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest;
 import com.cws.esolutions.core.vmgr.dto.VirtualServiceResponse;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;

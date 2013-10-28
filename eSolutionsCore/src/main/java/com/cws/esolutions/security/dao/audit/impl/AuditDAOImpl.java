@@ -111,14 +111,108 @@ public class AuditDAOImpl implements IAuditDAO
     }
 
     @Override
-    public synchronized List<String[]> getAuditInterval(final String guid) throws SQLException
+    public synchronized int getAuditCount(final String guid) throws SQLException
     {
-        final String methodName = IAuditDAO.CNAME + "#getAuditInterval(final String guid) throws SQLException";
+        final String methodName = IAuditDAO.CNAME + "#getAuditCount(final String guid) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("guid: {}", guid);
+            DEBUGGER.debug("Value: {}", guid);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain audit datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{ CALL getAuditCount(?) }");
+                stmt.setString(1, guid);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+                else
+                {
+                    throw new SQLException("No audit entries were located for the provided user.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> getAuditInterval(final String guid, final int startRow) throws SQLException
+    {
+        final String methodName = IAuditDAO.CNAME + "#getAuditInterval(final String guid, final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", guid);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -137,8 +231,9 @@ public class AuditDAOImpl implements IAuditDAO
             else
             {
                 sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getAuditInterval(?)}");
+                stmt = sqlConn.prepareCall("{CALL getAuditInterval(?, ?)}");
                 stmt.setString(1, guid);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {

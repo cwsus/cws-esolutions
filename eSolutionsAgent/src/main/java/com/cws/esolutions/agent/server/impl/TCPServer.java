@@ -37,10 +37,10 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
 import com.cws.esolutions.agent.AgentBean;
-import com.cws.esolutions.agent.PasswordFunction;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.config.ServerConfig;
+import com.cws.esolutions.agent.utils.PasswordUtils;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.server.interfaces.AgentServer;
 import com.cws.esolutions.agent.server.processors.impl.AgentRequestProcessorImpl;
@@ -92,8 +92,8 @@ public class TCPServer extends Thread implements AgentServer
                         String protocol = serverConfig.getSslProtocol();
                         String keyStoreFile = serverConfig.getSslKeyDatabase();
                         String keyStorePass = (StringUtils.isNotEmpty(serverConfig.getSslKeySalt())) ? 
-                                PasswordFunction.decryptText(
-                                        serverConfig.getSslKeyPassword(), serverConfig.getSslKeySalt()) :
+                                PasswordUtils.decryptText(serverConfig.getSslKeyPassword() + serverConfig.getSslKeySalt(),
+                                        serverConfig.getSslKeySalt().length()) :
                                             serverConfig.getSslKeyPassword();
 
                         // TODO: build an ssl listener here

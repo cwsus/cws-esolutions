@@ -21,10 +21,10 @@ import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
@@ -47,6 +47,7 @@ import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
  */
 public class AccountControlRequest implements Serializable
 {
+    private int startPage = 0;
     private String algorithm = null;
     private String projectId = null;
     private String serviceId = null;
@@ -250,6 +251,19 @@ public class AccountControlRequest implements Serializable
         this.projectId = value;
     }
 
+    public final void setStartPage(final int value)
+    {
+        final String methodName = AccountControlRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountControlRequest.CNAME + "#getHostInfo()";
@@ -430,6 +444,19 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.projectId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = AccountControlRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     @Override

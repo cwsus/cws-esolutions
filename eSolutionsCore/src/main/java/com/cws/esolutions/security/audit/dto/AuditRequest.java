@@ -40,6 +40,7 @@ import com.cws.esolutions.security.SecurityConstants;
  */
 public class AuditRequest implements Serializable
 {
+    private int startRow = 0;
     private AuditEntry auditEntry = null;
 
     private static final String CNAME = AuditRequest.class.getName();
@@ -61,6 +62,19 @@ public class AuditRequest implements Serializable
         this.auditEntry = value;
     }
 
+    public final void setStartRow(final int value)
+    {
+        final String methodName = AuditRequest.CNAME + "#setStartRow(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startRow = value;
+    }
+
     public final AuditEntry getAuditEntry()
     {
         final String methodName = AuditRequest.CNAME + "#getAuditEntry()";
@@ -72,6 +86,19 @@ public class AuditRequest implements Serializable
         }
 
         return this.auditEntry;
+    }
+
+    public final int getStartRow()
+    {
+        final String methodName = AuditRequest.CNAME + "#getStartRow()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startRow);
+        }
+
+        return this.startRow;
     }
 
     @Override

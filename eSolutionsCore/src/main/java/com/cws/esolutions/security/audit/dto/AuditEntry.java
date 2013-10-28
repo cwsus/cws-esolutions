@@ -21,9 +21,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.audit.enums.AuditType;
 /**
  * eSolutionsCore
  * com.cws.esolutions.security.audit.dto

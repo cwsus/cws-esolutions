@@ -21,16 +21,16 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.enums.Role;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * SecurityService
  * com.cws.esolutions.security.audit.processors.impl
@@ -182,7 +182,14 @@ public class AuditProcessorImpl implements IAuditProcessor
             try
             {
                 // capture the data for the given user
-                List<String[]> dataResponse = auditDAO.getAuditInterval(user.getGuid());
+                int rowCount = auditDAO.getAuditCount(user.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("rowCount: {}", rowCount);
+                }
+
+                List<String[]> dataResponse = auditDAO.getAuditInterval(user.getGuid(), request.getStartRow());
 
                 if (DEBUG)
                 {
@@ -245,6 +252,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                         DEBUGGER.debug("AuditList: {}", auditList);
                     }
 
+                    response.setEntryCount(rowCount);
                     response.setAuditList(auditList);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Successfully loaded audit entries for user " + request.getAuditEntry().getUserAccount().getUsername());

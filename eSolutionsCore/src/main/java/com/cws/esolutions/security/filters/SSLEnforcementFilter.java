@@ -35,6 +35,7 @@ import java.util.MissingResourceException;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.cws.esolutions.security.SecurityConstants;
 /*
@@ -143,50 +144,48 @@ public class SSLEnforcementFilter implements Filter
 
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
+        final HttpSession hSession = hRequest.getSession();
 
         if (DEBUG)
         {
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
+            DEBUGGER.debug("HttpSession: {}", hSession);
 
             DEBUGGER.debug("Dumping session content:");
 
-            Object sessionValue = null;
-            String sessionElement = null;
-
-            @SuppressWarnings("unchecked")
-            Enumeration<String> sessionEnumeration = hRequest.getSession().getAttributeNames();
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                sessionElement = sessionEnumeration.nextElement();
-                sessionValue = hRequest.getSession().getAttribute(sessionElement);
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
 
                 DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
             }
 
             DEBUGGER.debug("Dumping request content:");
-
-            Object requestValue = null;
-            String requestElement = null;
-
-            @SuppressWarnings("unchecked")
             Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                requestElement = requestEnumeration.nextElement();
-                requestValue = hRequest.getAttribute(requestElement);
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
 
                 DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
             }
 
-            requestValue = null;
-            sessionValue = null;
-            sessionElement = null;
-            requestElement = null;
-            requestEnumeration = null;
-            sessionEnumeration = null;
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
         }
 
         try

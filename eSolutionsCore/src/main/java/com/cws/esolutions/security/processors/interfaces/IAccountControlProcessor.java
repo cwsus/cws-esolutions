@@ -31,15 +31,15 @@ import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
@@ -94,8 +94,6 @@ public interface IAccountControlProcessor
 
     AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException;
 
-    AccountControlResponse loadUserAuditTrail(final AccountControlRequest request) throws AccountControlException;
-
     AccountControlResponse changeUserEmail(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse changeUserPassword(final AccountControlRequest request) throws AccountControlException;
@@ -105,4 +103,6 @@ public interface IAccountControlProcessor
     AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;
+
+    AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException;
 }

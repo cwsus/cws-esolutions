@@ -26,11 +26,11 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;

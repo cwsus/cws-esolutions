@@ -21,9 +21,9 @@ import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
+import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * SecurityService
@@ -44,6 +44,7 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountControlResponse implements Serializable
 {
+    private int entryCount = 0;
     private String resetId = null;
     private String response = null;
     private UserAccount userAccount = null;
@@ -82,6 +83,19 @@ public class AccountControlResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = AccountControlResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setUserAccount(final UserAccount value)
@@ -173,6 +187,19 @@ public class AccountControlResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = AccountControlResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final UserAccount getUserAccount()

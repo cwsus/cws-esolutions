@@ -18,10 +18,8 @@
     <dependencies>
         <!-- cws-shared -->
         <dependency>
+            <groupId>com.cws</groupId>
             <artifactId>eSolutionsCore</artifactId>
-        </dependency>
-        <dependency>
-            <artifactId>eSolutionsAgent</artifactId>
         </dependency>
         <!-- spring -->
         <dependency>

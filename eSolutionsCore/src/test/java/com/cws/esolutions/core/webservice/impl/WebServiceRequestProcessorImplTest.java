@@ -24,9 +24,9 @@ import javax.xml.ws.Service;
 import javax.xml.namespace.QName;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -39,8 +39,6 @@ import com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor
  * eSolutionsCore
  * com.cws.esolutions.core.webservice.impl
  * WebServiceRequestProcessorImplTest.java
- *
- *
  *
  * $Id: $
  * $Author: $

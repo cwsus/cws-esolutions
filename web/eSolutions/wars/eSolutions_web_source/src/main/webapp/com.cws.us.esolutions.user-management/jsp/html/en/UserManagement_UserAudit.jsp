@@ -47,20 +47,43 @@
             </c:if>
 
             <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
+            <br />
+            <hr />
+            <br />
 
             <table id="viewAuditTrail">
                 <tr>
                     <td><spring:message code="admin.account.audit.timestamp" /></td>
                     <td><spring:message code="admin.account.audit.type" /></td>
+                    <td><spring:message code="admin.account.audit.application" /></td>
                     <td><spring:message code="admin.account.audit.hostinfo" /></td>
                 </tr>
                 <c:forEach var="entry" items="${auditEntries}">
                     <tr>
                         <td>${entry.auditDate}</td>
                         <td>${entry.auditType}</td>
-                        <td>${entry.reqInfo.hostName} / ${entry.reqInfo.hostAddress}</td>
+                        <td>${entry.applicationName}</td>
+                        <td>${entry.hostInfo.hostName} / ${entry.hostInfo.hostAddress}</td>
                     </tr>
                 </c:forEach>
+            </table>
+
+            <table>
+                <tr>
+                    <c:forEach begin="1" end="${pages}" var="i">
+                        <c:choose>
+                            <c:when test="${page eq i}">
+                                <td>${i}</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}/page/${i}"
+                                        title="<spring:message code='admin.account.audit.user' />">${i}</a>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </tr>
             </table>
         </c:when>
         <c:otherwise>

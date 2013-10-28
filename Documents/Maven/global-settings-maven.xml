@@ -48,6 +48,9 @@
                 <downloadJavadoc>true</downloadJavadoc>
 				<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 				<sourceReleaseAssemblyDescriptor>source-release</sourceReleaseAssemblyDescriptor>
+                <cws.maven.repository>http://repository.caspersbox.corp:8081/artifactory</cws.maven.repository>
+                <cws.scm.issues.url>https://github.com/cws-khuntly/cws-esolutions/issues</cws.scm.issues.url>
+                <cws.ci.url>http://repository.caspersbox.corp:8080/</cws.ci.url>
 			</properties>
             <repositories>
                 <repository>

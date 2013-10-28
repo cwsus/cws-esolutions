@@ -26,21 +26,21 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
@@ -97,7 +97,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                @SuppressWarnings("unchecked")
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
                                 message.getMessageId(),
@@ -259,7 +258,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                @SuppressWarnings("unchecked")
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
                                 message.getMessageTitle(),

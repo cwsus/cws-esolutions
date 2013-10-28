@@ -23,9 +23,9 @@ import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.enums.ControlType;
@@ -464,30 +464,6 @@ public class AccountControlProcessorImplTest
         {
             AccountControlResponse response = processor.changeUserSecurity(request);
 
-            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (AccountControlException acx)
-        {
-            Assert.fail(acx.getMessage());
-        }
-    }
-
-    @Test
-    public final void testLoadUserAuditTrail()
-    {
-        AccountControlRequest request = new AccountControlRequest();
-        request.setRequestor(userAccount);
-        request.setApplicationName("esolutions");
-        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
-        request.setHostInfo(hostInfo);
-        request.setIsLogonRequest(false);
-        request.setUserAccount(userAccount);
-        request.setRequestor(userAccount);
-
-        try
-        {
-            AccountControlResponse response = processor.loadUserAuditTrail(request);
-System.out.println(response);
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
         catch (AccountControlException acx)

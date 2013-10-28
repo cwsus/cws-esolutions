@@ -81,6 +81,7 @@
         </dependency>
         <!-- agent -->
         <dependency>
+            <groupId>com.cws</groupId>
             <artifactId>eSolutionsAgent</artifactId>
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
