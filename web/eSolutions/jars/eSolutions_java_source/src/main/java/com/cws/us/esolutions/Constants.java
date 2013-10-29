@@ -11,20 +11,20 @@
  */
 package com.cws.us.esolutions;
 /**
- * CWSPWS_java_source
- * com.cws.us.pws.controllers
+ * eSolutions_java_source
+ * com.cws.us.esolutions
  * Constants.java
  *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
+ * $Id: $
+ * $Author: $
+ * $Date: $
+ * $Revision: $
  * @author 35033355
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Apr 10, 2013 12:59:40 PM
+ * 35033355 @ May 16, 2013 8:40:08 AM
  *     Created.
  */
 public class Constants

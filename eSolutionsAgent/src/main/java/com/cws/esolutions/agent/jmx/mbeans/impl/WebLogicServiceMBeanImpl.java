@@ -89,7 +89,7 @@ public class WebLogicServiceMBeanImpl implements ServiceMBean
             JMXConnection jmxConnection = JMXConnectionFactory.createConnector(jmxConfig.getJmxHandler());
             JMXConnectorObject jmxObject = jmxConnection.getJMXConnector(DomainRuntimeServiceMBean.MBEANSERVER_JNDI_NAME);
             jmxConnector = (JMXConnector) jmxObject.getConnector();
-            jmxConnector.connect();
+            jmxConnector.connect(null);
 
             connectionID = jmxConnector.getConnectionId();
 
@@ -384,7 +384,7 @@ public class WebLogicServiceMBeanImpl implements ServiceMBean
             jmxConnection = JMXConnectionFactory.createConnector(jmxConfig.getJmxHandler());
             JMXConnectorObject jmxObject = jmxConnection.getJMXConnector(DomainRuntimeServiceMBean.MBEANSERVER_JNDI_NAME);
             jmxConnector = (JMXConnector) jmxObject.getConnector();
-            jmxConnector.connect();
+            jmxConnector.connect(null);
 
             connectionID = jmxConnector.getConnectionId();
 

@@ -20,7 +20,6 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="messageValidationFailed" value="error.validation.failed" />
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="logoffCompleteString" value="login.user.logoff" />
         <property name="messageUsernameEmpty" value="error.username.empty" />

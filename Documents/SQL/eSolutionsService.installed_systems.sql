@@ -219,12 +219,32 @@ END $$
 DELIMITER ;
 
 --
--- Definition of procedure `esolutionssvc`.`retrServerList`
+-- Definition of procedure `getServerCount`
 --
 DELIMITER $$
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServerList`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrServerList`(
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM usr_audit
+    FROM `esolutionssvc`.`installed_systems`
+    WHERE DELETE_DATE = '0000-00-00 00:00:00';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
+-- Definition of procedure `esolutionssvc`.`getServerList`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerList`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerList`(
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -260,7 +280,8 @@ BEGIN
         OWNING_DMGR,
         MGR_ENTRY
     FROM `esolutionssvc`.`installed_systems`
-    WHERE DELETE_DATE = '0000-00-00 00:00:00';
+    WHERE DELETE_DATE = '0000-00-00 00:00:00'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

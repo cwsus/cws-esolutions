@@ -78,7 +78,7 @@
 	    <property name="searchRequestPage" value="System_SearchRequest" />
 	    <property name="unauthorizedPage" value="System_Unauthorized" />
 	    <property name="unavailablePage" value="System_UnavailablePage" />
-	    <property name="logonRedirect" value="redirect:/ui/logon/default" />
+	    <property name="logonRedirect" value="redirect:/ui/login/default" />
 	    <property name="expiredRedirect" value="redirect:/ui/user/password" />
 	    <property name="homeRedirect" value="redirect:/ui/home/default" />
 	    <property name="messageEmailSendFailed" value="system.message.email.send.failed" />

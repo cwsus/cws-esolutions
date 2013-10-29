@@ -1088,6 +1088,68 @@ function validateForm(theForm, e)
             }
         }
     }
+    else if (theForm.name == 'createNewUser')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.username.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide a brief subject for your request.';
+                    document.getElementById('"txtUsername"').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('username').focus();
+                }
+                else if (theForm.role.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+                    document.getElementById('txtUserRole').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('role').focus();
+                }
+                else if (theForm.givenName.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+                    document.getElementById('txtFirstName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('givenName').focus();
+                }
+                else if (theForm.surname.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+                    document.getElementById('txtLastName').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('surname').focus();
+                }
+                else if (theForm.emailAddr.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+                    document.getElementById('txtEmailAddr').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('emailAddr').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
     else
     {
         document.getElementById('validationError').innerHTML = 'An error occurred while processing your request.';

@@ -100,7 +100,7 @@ public class WebLogicJMXConnector implements JMXConnection
                 DEBUGGER.debug("jmxServiceURL: {}", jmxServiceURL);
             }
 
-            jmxConnector = JMXConnectorFactory.newJMXConnector(jmxServiceURL, jmxTable);
+            jmxConnector = JMXConnectorFactory.newConnector(jmxServiceURL, jmxTable);
 
             if (DEBUG)
             {

@@ -104,5 +104,7 @@ public interface IAccountControlProcessor
 
     AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;
 
+    AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException;
+
     AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException;
 }

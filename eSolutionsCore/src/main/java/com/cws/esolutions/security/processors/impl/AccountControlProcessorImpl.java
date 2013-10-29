@@ -25,7 +25,9 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
+
 import javax.mail.MessagingException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -592,7 +594,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
-    // TODO
     @Override
     public AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException
     {
@@ -628,8 +629,42 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isAuthorized)
             {
-                // TODO !!
-                throw new AccountControlException("TODO");
+                // we will only have a guid here - so we need to load the user account
+                List<Object> userData = userManager.loadUserAccount(account.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Object>: {}", userData);
+                }
+
+                if ((userData != null) && (userData.size() != 0))
+                {
+                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), account.getGuid(), account.isSuspended());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    if (isComplete)
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Successfully performed suspension modification.");
+                    }
+                    else
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("Failed to perform suspension modification for requested user.");
+                    }
+                }
+                else
+                {
+                    throw new AccountControlException("Failed to locate user account for given GUID");
+                }
+            }
+            else
+            {
+                throw new AccountControlException("The requesting user was not authorized to perform the operation.");
             }
         }
         catch (AdminControlServiceException acsx)
@@ -637,6 +672,148 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new AccountControlException(acsx.getMessage(), acsx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.SUSPENDUSER);
+                auditEntry.setUserAccount(requestor);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+
+        return response;
+    }
+
+    @Override
+    public AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException
+    {
+        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserLockout(final AccountControlRequest) throws AccountControlException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountControlRequest: {}", request);
+        }
+
+        AccountControlResponse response = new AccountControlResponse();
+
+        final UserAccount requestor = request.getRequestor();
+        final UserAccount account = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount reqUser: {}", requestor);
+            DEBUGGER.debug("UserAccount account: {}", account);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+            }
+
+            if (isAuthorized)
+            {
+                // we will only have a guid here - so we need to load the user account
+                List<Object> userData = userManager.loadUserAccount(account.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Object>: {}", userData);
+                }
+
+                if ((userData != null) && (userData.size() != 0))
+                {
+                    Map<String, Object> requestMap = new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = -4501815670500496164L;
+
+                        {
+                            put(authData.getLockCount(), account.getFailedCount());
+                        }
+                    };
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("requestMap: {}", requestMap);
+                    }
+
+                    boolean isComplete = userManager.modifyUserInformation(account.getUsername(), account.getGuid(), requestMap);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    if (isComplete)
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Successfully performed suspension modification.");
+                    }
+                    else
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("Failed to perform suspension modification for requested user.");
+                    }
+                }
+                else
+                {
+                    throw new AccountControlException("Failed to locate user account for given GUID");
+                }
+            }
+            else
+            {
+                throw new AccountControlException("The requesting user was not authorized to perform the operation.");
+            }
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new AccountControlException(acsx.getMessage(), acsx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
         }
         finally
         {
@@ -756,6 +933,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if (isComplete)
                 {
+                    // TODO
                     // send an email out to the user
                     EmailMessage email = new EmailMessage();
                     email.setIsAlert(false);

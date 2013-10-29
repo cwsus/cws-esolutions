@@ -15,14 +15,20 @@
  */
 package com.cws.esolutions.security.dao.usermgmt.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.After;
+
 import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Assert;
+
 import java.util.ArrayList;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -113,9 +119,6 @@ public class LDAPUserManagerTest
         }
     }
 
-    /**
-     * Test method for {@link com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager#searchUsers(com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType, java.lang.String)}.
-     */
     @Test
     public final void testSearchUsers()
     {
@@ -124,6 +127,39 @@ public class LDAPUserManagerTest
             List<String[]> searchList = userManager.searchUsers(SearchRequestType.GUID, "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
 
             Assert.assertNotNull(searchList);
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testModifyUserSuspension()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserSuspension("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", false));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testModifyUserLockout()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("cwsfailedpwdcount", 0);
+                        }
+                    }));
         }
         catch (UserManagementException umx)
         {

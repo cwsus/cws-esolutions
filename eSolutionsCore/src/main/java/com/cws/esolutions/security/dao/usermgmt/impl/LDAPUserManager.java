@@ -527,7 +527,7 @@ public class LDAPUserManager implements UserManager
                 {
                     Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
                             "(&("  + authData.getUserId() +  "=" + userId + "))" +
-                            "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
+                            "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
 
                     SearchRequest searchReq = new SearchRequest(
                             authRepo.getRepositoryBaseDN(),

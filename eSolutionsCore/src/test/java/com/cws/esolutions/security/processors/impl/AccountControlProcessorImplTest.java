@@ -440,6 +440,68 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
+    public final void testModifyUserSuspension()
+    {
+        UserAccount suspendAccount = new UserAccount();
+        suspendAccount.setUsername("khuntly");
+        suspendAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        suspendAccount.setSuspended(false);
+
+        AccountControlRequest request = new AccountControlRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(suspendAccount);
+        request.setApplicationName("esolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setControlType(ControlType.SUSPEND);
+        request.setModType(ModificationType.NONE);
+        request.setRequestor(userAccount);
+        request.setIsLogonRequest(false);
+        request.setServiceId("AEB46994-57B4-4E92-90AA-A4046F60B830");
+
+        try
+        {
+            AccountControlResponse response = processor.modifyUserSuspension(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountControlException acx)
+        {
+            Assert.fail(acx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testModifyUserLockCount()
+    {
+        UserAccount account = new UserAccount();
+        account.setUsername("khuntly");
+        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+        account.setFailedCount(50);
+
+        AccountControlRequest request = new AccountControlRequest();
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(account);
+        request.setApplicationName("esolutions");
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setControlType(ControlType.SUSPEND);
+        request.setModType(ModificationType.NONE);
+        request.setRequestor(userAccount);
+        request.setIsLogonRequest(false);
+        request.setServiceId("AEB46994-57B4-4E92-90AA-A4046F60B830");
+
+        try
+        {
+            AccountControlResponse response = processor.modifyUserLockout(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountControlException acx)
+        {
+            Assert.fail(acx.getMessage());
+        }
+    }
+
+    @Test
     public final void testChangeUserSecurity()
     {
         UserSecurity userSecurity = new UserSecurity();

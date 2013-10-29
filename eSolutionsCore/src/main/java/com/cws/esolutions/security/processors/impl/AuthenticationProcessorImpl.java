@@ -15,13 +15,17 @@
  */
 package com.cws.esolutions.security.processors.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.io.FileUtils;
+
 import com.unboundid.ldap.sdk.ResultCode;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -280,6 +284,23 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
                         else
                         {
+                            // reset the failed count, this is a successful logon
+                            try
+                            {
+                                userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), new HashMap<String, Object>()
+                                        {
+                                            private static final long serialVersionUID = 3026623264042376743L;
+    
+                                            {
+                                                put(authData.getLockCount(), 0);
+                                            }
+                                        });
+                            }
+                            catch (UserManagementException umx)
+                            {
+                                ERROR_RECORDER.error(umx.getMessage(), umx);
+                            }
+
                             // user not already logged in or concurrent auth is allowed
                             if (System.currentTimeMillis() >= userAccount.getExpiryDate())
                             {

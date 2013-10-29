@@ -150,17 +150,38 @@ END $$
 DELIMITER ;
 
 --
+-- Definition of procedure `getProjectCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getProjectCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM usr_audit
+    FROM `esolutionssvc`.`service_projects`
+    AND PROJECT_STATUS = 'ACTIVE';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `esolutionssvc`.`listProjects`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listProjects`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listProjects`(
+    IN startRow INT
 )
 BEGIN
     SELECT PROJECT_GUID, PROJECT_CODE, PROJECT_STATUS, PRIMARY_OWNER, SECONDARY_OWNER, CONTACT_EMAIL, INCIDENT_QUEUE, CHANGE_QUEUE
     FROM `esolutionssvc`.`service_projects`
-    WHERE PROJECT_STATUS = 'ACTIVE';
+    WHERE PROJECT_STATUS = 'ACTIVE'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

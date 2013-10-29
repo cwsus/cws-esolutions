@@ -224,12 +224,32 @@ DELIMITER ;
 COMMIT;
 
 --
+-- Definition of procedure `getApplicationCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getApplicationCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getApplicationCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM usr_audit
+    FROM `esolutionssvc`.`installed_applications`
+    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `esolutionssvc`.`listApplications`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listApplications`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listApplications`(
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -248,7 +268,8 @@ BEGIN
         APP_ONLINE_DATE,
         APP_OFFLINE_DATE
     FROM `esolutionssvc`.`installed_applications`
-    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

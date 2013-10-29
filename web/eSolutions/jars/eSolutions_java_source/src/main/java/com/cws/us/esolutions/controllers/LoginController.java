@@ -72,7 +72,6 @@ public class LoginController
     private String passwordLoginPage = null;
     private String logoffCompleteString = null;
     private String messageUsernameEmpty = null;
-    private String messageValidationFailed = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = LoginController.class.getName();
@@ -222,19 +221,6 @@ public class LoginController
         }
 
         this.forgotPasswordUrl = value;
-    }
-
-    public final void setMessageValidationFailed(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setMessageValidationFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageValidationFailed = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -479,7 +465,7 @@ public class LoginController
     }
 
     // combined logon
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @RequestMapping(value = "/submit", method = RequestMethod.POST)
     public final ModelAndView doCombinedLogin(@ModelAttribute("loginRequest") final LoginRequest loginRequest, final BindingResult bindResult)
     {
         final String methodName = LoginController.CNAME + "#doCombinedLogin(@ModelAttribute(\"loginRequest\") final LoginRequest loginRequest, final BindingResult bindResult)";
@@ -542,6 +528,17 @@ public class LoginController
         try
         {
             // validate
+            validator.validate(loginRequest, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                mView.addObject("errors", bindResult.getAllErrors());
+                mView.addObject("command", new LoginRequest());
+                mView.setViewName(this.combinedLoginPage);
+
+                return mView;
+            }
+
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
@@ -560,34 +557,12 @@ public class LoginController
                 DEBUGGER.debug("UserAccount: {}", reqUser);
             }
 
-            validator.validate(reqUser, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
-                mView.addObject("command", new LoginRequest());
-
-                return mView;
-            }
-
             UserSecurity reqSecurity = new UserSecurity();
             reqSecurity.setPassword(loginRequest.getLoginPass());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("UserSecurity: {}", reqSecurity);
-            }
-
-            validator.validate(reqSecurity, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
-                mView.addObject("command", new LoginRequest());
-
-                return mView;
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
@@ -661,13 +636,29 @@ public class LoginController
             }
             else
             {
+                if (this.allowUserReset)
+                {
+                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+                }
+
                 mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                mView.addObject("command", new LoginRequest());
+                mView.setViewName(this.combinedLoginPage);
             }
         }
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
+            if (this.allowUserReset)
+            {
+                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+            }
+
+            mView.addObject("command", new LoginRequest());
+            mView.setViewName(this.combinedLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
         }
 
@@ -742,6 +733,17 @@ public class LoginController
 
         try
         {
+            validator.validate(user, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                // validation failed
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
+                mView.addObject("command", new UserAccount());
+
+                return mView;
+            }
+
             // validate
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
@@ -759,17 +761,6 @@ public class LoginController
             if (DEBUG)
             {
                 DEBUGGER.debug("UserAccount: {}", reqUser);
-            }
-
-            validator.validate(reqUser, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
-                mView.addObject("command", new UserAccount());
-
-                return mView;
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
@@ -845,6 +836,14 @@ public class LoginController
             }
             else
             {
+                if (this.allowUserReset)
+                {
+                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+                }
+
+                mView.addObject("command", new UserAccount());
+                mView.setViewName(this.usernameLoginPage);
                 mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
             }
         }
@@ -852,6 +851,14 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
+            if (this.allowUserReset)
+            {
+                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+            }
+
+            mView.addObject("command", new UserAccount());
+            mView.setViewName(this.usernameLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
         }
 
@@ -1007,6 +1014,14 @@ public class LoginController
             }
             else
             {
+                if (this.allowUserReset)
+                {
+                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+                }
+
+                mView.addObject("command", new UserSecurity());
+                mView.setViewName(this.passwordLoginPage);
                 mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
             }
         }
@@ -1014,6 +1029,14 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
+            if (this.allowUserReset)
+            {
+                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+            }
+
+            mView.addObject("command", new UserSecurity());
+            mView.setViewName(this.passwordLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
         }
 
@@ -1168,14 +1191,30 @@ public class LoginController
             }
             else
             {
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                if (this.allowUserReset)
+                {
+                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+                }
+
+                mView.addObject("command", new UserSecurity());
+                mView.setViewName(this.otpLoginPage);
+                mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
             }
         }
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+            if (this.allowUserReset)
+            {
+                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
+                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
+            }
+
+            mView.addObject("command", new UserSecurity());
+            mView.setViewName(this.otpLoginPage);
+            mView.addObject(Constants.ERROR_RESPONSE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
         }
 
         if (DEBUG)

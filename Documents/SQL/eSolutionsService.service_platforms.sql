@@ -156,17 +156,38 @@ END $$
 DELIMITER ;
 
 --
+-- Definition of procedure `getPlatformCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM usr_audit
+    FROM `esolutionssvc`.`service_platforms`
+    AND PLATFORM_STATUS = 'ACTIVE';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `esolutionssvc`.`listPlatforms`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listPlatforms`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listPlatforms`(
+    IN startRow INT
 )
 BEGIN
     SELECT PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_DESC
     FROM `esolutionssvc`.`service_platforms`
-    WHERE PLATFORM_STATUS = 'ACTIVE';
+    WHERE PLATFORM_STATUS = 'ACTIVE'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

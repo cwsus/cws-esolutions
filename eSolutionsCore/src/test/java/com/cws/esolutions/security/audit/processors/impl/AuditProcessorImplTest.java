@@ -184,7 +184,7 @@ public class AuditProcessorImplTest
         try
         {
             AuditResponse response = auditor.getAuditEntries(request);
-System.out.println(response);
+
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
         catch (AuditServiceException asx)

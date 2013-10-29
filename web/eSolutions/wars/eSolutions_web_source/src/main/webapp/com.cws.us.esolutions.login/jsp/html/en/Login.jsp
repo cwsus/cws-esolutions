@@ -43,7 +43,7 @@
 
     <p id="validationError" />
 
-    <form:form id="submitUserLogin" name="submitUserLogin" action="${pageContext.request.contextPath}/ui/login/login" method="post">
+    <form:form id="submitUserLogin" name="submitUserLogin" action="${pageContext.request.contextPath}/ui/login/submit" method="post">
         <table id="userauth">
             <tr>
                 <td><label id="txtUsername"><spring:message code="login.user.name" /></label></td>

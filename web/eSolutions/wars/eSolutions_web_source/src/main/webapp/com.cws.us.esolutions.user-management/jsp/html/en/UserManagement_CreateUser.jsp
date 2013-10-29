@@ -48,19 +48,17 @@
             <form:form id="createNewUser" name="createNewUser" action="${pageContext.request.contextPath}/ui/user-management/add-user" method="post" autocomplete="off">
                 <table id="addUser">
                     <tr>
-                        <td><label id="createUserName"><spring:message code="admin.account.user.id" /></label></td>
+                        <td><label id="txtUsername"><spring:message code="admin.account.user.id" /></label></td>
                         <td><form:input path="username" type="text" size="20" value="" name="username" id="username" /></td>
                         <td><form:errors path="username" cssClass="validationError" /></td>
                     </tr>
                     <tr>
-                        <td><label id="createUserRole"><spring:message code="admin.account.user.role" /></label></td>
+                        <td><label id="txtUserRole"><spring:message code="admin.account.user.role" /></label></td>
                         <td>
                             <form:select path="role" name="role" id="role">
-                                <option value="<spring:message code='admin.account.user.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
-                                <option value=""></option>
-                                <c:forEach var="role" items="${selectableRoles}">
-									<option><spring:message code="select.default" /></option>
-									<option><spring:message code="select.spacer" /></option>
+                                <option value="<spring:message code='select.default' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
+                                <option><spring:message code="select.spacer" /></option>
+                                <c:forEach var="role" items="${roles}">
                                     <option value="${role}">${role}</option>
                                 </c:forEach>
                             </form:select>
@@ -96,22 +94,22 @@
                     </tr>
                     --%>
                     <tr>
-                        <td><label id="createuserFirstName"><spring:message code="admin.account.user.firstname" /></label></td>
+                        <td><label id="txtFirstName"><spring:message code="admin.account.user.firstname" /></label></td>
                         <td><form:input path="givenName" type="text" size="20" value="" name="givenName" id="givenName" /></td>
                         <td><form:errors path="givenName" cssClass="validationError" /></td>
                     </tr>
                     <tr>
-                        <td><label id="createUserLastName"><spring:message code="admin.account.user.lastname" /></label></td>
+                        <td><label id="txtLastName"><spring:message code="admin.account.user.lastname" /></label></td>
                         <td><form:input path="surname" type="text" size="20" value="" name="surname" id="surname" /></td>
                         <td><form:errors path="surname" cssClass="validationError" /></td>
                     </tr>
                     <tr>
-                        <td><label id="createUserEmail"><spring:message code="admin.account.user.email" /></label></td>
+                        <td><label id="txtEmailAddr"><spring:message code="admin.account.user.email" /></label></td>
                         <td><form:input path="emailAddr" type="text" size="20" value="" name="emailAddr" id="emailAddr" /></td>
                         <td><form:errors path="emailAddr" cssClass="validationError" /></td>
                     </tr>
                     <tr>
-                        <td><label id="createUserLock"><spring:message code="admin.account.user.locked" /></label></td>
+                        <td><label id="txtLockout"><spring:message code="admin.account.user.locked" /></label></td>
                         <td><form:checkbox path="suspended" name="suspended" id="suspended" /></td>
                         <td><form:errors path="suspended" cssClass="validationError" /></td>
                     </tr>

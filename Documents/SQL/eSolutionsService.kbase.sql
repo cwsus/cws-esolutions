@@ -278,13 +278,33 @@ DELIMITER ;
 COMMIT;
 
 --
+-- Definition of procedure `getPendingArticleCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPendingArticleCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPendingArticleCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM `esolutionssvc`.`articles`
+    WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
+    AND kbase_article_author != requestorId;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `esolutionssvc`.`retrPendingArticles`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrPendingArticles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrPendingArticles`(
-    IN requestorId VARCHAR(100)
+    IN requestorId VARCHAR(100),
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -306,7 +326,8 @@ BEGIN
     FROM `esolutionssvc`.`articles`
     WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
     AND kbase_article_author != requestorId
-    ORDER BY kbase_article_createdate DESC;
+    ORDER BY kbase_article_createdate DESC
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

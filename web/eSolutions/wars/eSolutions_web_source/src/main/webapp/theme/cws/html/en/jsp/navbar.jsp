@@ -44,7 +44,7 @@
                 </c:when>
                 <c:otherwise>
                     <li>
-                        <a href="${pageContext.request.contextPath}/ui/login/login"
+                        <a href="${pageContext.request.contextPath}/ui/login/default"
                             title="<spring:message code='link.sectionLinks.login' />"><spring:message code='link.sectionLinks.login' /></a>
                     </li>
                 </c:otherwise>

@@ -14,17 +14,26 @@ package com.cws.us.esolutions.controllers;
 import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import java.text.MessageFormat;
+
 import org.apache.commons.io.IOUtils;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -42,10 +51,14 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.us.esolutions.validators.UserAccountValidator;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -68,8 +81,6 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -109,6 +120,7 @@ public class UserManagementController
     private String messagePasswordReset = null;
     private String messageAccountCreated = null;
     private String messageAccountSuspended = null;
+    private UserAccountValidator validator = null;
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = UserManagementController.class.getName();
@@ -128,6 +140,19 @@ public class UserManagementController
         }
 
         this.serviceId = value;
+    }
+
+    public final void setValidator(final UserAccountValidator value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setValidator(final UserAccountValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.validator = value;
     }
 
     public final void setServiceName(final String value)
@@ -314,7 +339,7 @@ public class UserManagementController
 
     public final void setSecConfig(final SecurityConfig value)
     {
-        final String methodName = UserManagementController.CNAME + "#setAppConfig(final SecurityConfig value)";
+        final String methodName = UserManagementController.CNAME + "#setSecConfig(final SecurityConfig value)";
 
         if (DEBUG)
         {
@@ -584,6 +609,7 @@ public class UserManagementController
 
                 if ((isUserAuthorized) && (isAdminAuthorized))
                 {
+                    mView.addObject("roles", Role.values());
                     mView.addObject("command", new UserAccount());
                     mView.setViewName(this.createUserPage);
                 }
@@ -1400,6 +1426,722 @@ public class UserManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#lockUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount account = new UserAccount();
+                    account.setGuid(userGuid);
+                    account.setFailedCount(3);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", account);
+                    }
+
+                    AccountControlRequest request = new AccountControlRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(account);
+                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setControlType(ControlType.SUSPEND);
+                    request.setModType(ModificationType.NONE);
+                    request.setRequestor(userAccount);
+                    request.setIsLogonRequest(false);
+                    request.setServiceId(this.serviceId);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    AccountControlResponse response = acctController.modifyUserLockout(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/unlock/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView unlockUserAccount(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#unlockUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount account = new UserAccount();
+                    account.setGuid(userGuid);
+                    account.setFailedCount(0);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", account);
+                    }
+
+                    AccountControlRequest request = new AccountControlRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(account);
+                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setControlType(ControlType.SUSPEND);
+                    request.setModType(ModificationType.NONE);
+                    request.setRequestor(userAccount);
+                    request.setIsLogonRequest(false);
+                    request.setServiceId(this.serviceId);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    AccountControlResponse response = acctController.modifyUserLockout(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/suspend/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView suspendUserAccount(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#suspendUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount account = new UserAccount();
+                    account.setGuid(userGuid);
+                    account.setSuspended(true);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", account);
+                    }
+
+                    AccountControlRequest request = new AccountControlRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(account);
+                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setControlType(ControlType.SUSPEND);
+                    request.setModType(ModificationType.NONE);
+                    request.setRequestor(userAccount);
+                    request.setIsLogonRequest(false);
+                    request.setServiceId(this.serviceId);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    AccountControlResponse response = acctController.modifyUserSuspension(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/unsuspend/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView unsuspendUserAccount(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#unsuspendUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount account = new UserAccount();
+                    account.setGuid(userGuid);
+                    account.setSuspended(false);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", account);
+                    }
+
+                    AccountControlRequest request = new AccountControlRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(account);
+                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setControlType(ControlType.SUSPEND);
+                    request.setModType(ModificationType.NONE);
+                    request.setRequestor(userAccount);
+                    request.setIsLogonRequest(false);
+                    request.setServiceId(this.serviceId);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    AccountControlResponse response = acctController.modifyUserSuspension(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
@@ -1625,6 +2367,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1685,6 +2428,15 @@ public class UserManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            validator.validate(user, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                mView.addObject("errors", bindResult.getAllErrors());
+                mView.addObject("command", user);
+                mView.setViewName(this.createUserPage);
+            }
+
             try
             {
                 IUserControlService userControl = new UserControlServiceImpl();
@@ -1760,8 +2512,7 @@ public class UserManagementController
                         DEBUGGER.debug("AccountControlRequest: {}", request);
                     }
 
-                    IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                    AccountControlResponse response = processor.searchAccounts(request);
+                    AccountControlResponse response = processor.createNewUser(request);
 
                     if (DEBUG)
                     {
@@ -1777,8 +2528,9 @@ public class UserManagementController
                     }
                     else
                     {
-                        mView.addObject("command", new UserAccount());
+                        mView.addObject("command", user);
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.createUserPage);
                     }
                 }
                 else
@@ -1804,8 +2556,6 @@ public class UserManagementController
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }
-            
-            mView.setViewName(this.searchUsersPage);
         }
         else
         {
