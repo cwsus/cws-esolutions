@@ -159,9 +159,8 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getProjectCount`
 )
 BEGIN
     SELECT COUNT(*)
-    FROM usr_audit
     FROM `esolutionssvc`.`service_projects`
-    AND PROJECT_STATUS = 'ACTIVE';
+    WHERE PROJECT_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

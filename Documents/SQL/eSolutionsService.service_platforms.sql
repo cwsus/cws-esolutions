@@ -165,9 +165,8 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformCount
 )
 BEGIN
     SELECT COUNT(*)
-    FROM usr_audit
     FROM `esolutionssvc`.`service_platforms`
-    AND PLATFORM_STATUS = 'ACTIVE';
+    WHERE PLATFORM_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

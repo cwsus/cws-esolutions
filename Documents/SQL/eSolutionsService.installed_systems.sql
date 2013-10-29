@@ -228,7 +228,6 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM usr_audit
     FROM `esolutionssvc`.`installed_systems`
     WHERE DELETE_DATE = '0000-00-00 00:00:00';
 END $$

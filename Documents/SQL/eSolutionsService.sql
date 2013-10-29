@@ -13,7 +13,7 @@
 --
 -- Create schema esolutions
 --
-CREATE DATABASE IF NOT EXISTS esolutions;
+CREATE DATABASE IF NOT EXISTS esolutionssvc;
 COMMIT;
 
 SOURCE ./eSolutionsService.kbase.sql;

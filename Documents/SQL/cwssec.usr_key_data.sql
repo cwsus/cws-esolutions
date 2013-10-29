@@ -13,7 +13,6 @@ USE cwssec;
 -- DATA TABLE
 --
 DROP TABLE IF EXISTS `cwssec`.`usr_key_data`;
-
 COMMIT;
 
 CREATE  TABLE `cwssec`.`usr_key_data` (
