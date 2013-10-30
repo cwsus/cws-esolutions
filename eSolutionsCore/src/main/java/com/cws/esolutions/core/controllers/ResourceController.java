@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import java.util.ResourceBundle;
 import javax.naming.InitialContext;
+import javax.servlet.ServletContext;
 import javax.naming.NamingException;
 import com.unboundid.ldap.sdk.ResultCode;
 import java.util.MissingResourceException;
@@ -67,15 +68,16 @@ public class ResourceController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ResourceController.CNAME);
 
-    public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException
+    public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ServletContext sContext, final ResourceControllerBean resBean) throws CoreServiceException
     {
-        String methodName = CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException";
+        String methodName = CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ServletContext sContext, final ResourceControllerBean resBean) throws CoreServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("AuthRepo: {}", authRepo);
             DEBUGGER.debug("isContainer: {}", isContainer);
+            DEBUGGER.debug("ServletContext: {}", sContext);
             DEBUGGER.debug("ResourceControllerBean: {}", resBean);
         }
 
@@ -97,33 +99,71 @@ public class ResourceController
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setAutoReconnect(true);
                     connOpts.setBindWithDNRequiresPassword(true);
-                    connOpts.setConnectTimeoutMillis(authRepo.getRepositoryConnTimeout());
-                    connOpts.setResponseTimeoutMillis(authRepo.getRepositoryReadTimeout());
 
-                    ldapConn = new LDAPConnection(connOpts,
-                            authRepo.getRepositoryHost(),
-                            authRepo.getRepositoryPort(),
-                            authRepo.getRepositoryUser(),
-                            PasswordUtils.decryptText(
-                                    authRepo.getRepositoryPass(),
-                                    authRepo.getRepositorySalt().length()));
-
-                    if (ldapConn.isConnected())
+                    if (isContainer)
                     {
-                        LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, 1, 10);
+                        connOpts.setConnectTimeoutMillis(Integer.valueOf(sContext.getInitParameter("connTimeout")));
+                        connOpts.setResponseTimeoutMillis(Integer.valueOf(sContext.getInitParameter("readTimeout")));
 
-                        if (!(connPool.isClosed()))
+                        ldapConn = new LDAPConnection(connOpts,
+                                sContext.getInitParameter("ldapHost"),
+                                Integer.valueOf(sContext.getInitParameter("ldapPort")),
+                                sContext.getInitParameter("ldapUser"),
+                                PasswordUtils.decryptText(
+                                        sContext.getInitParameter("ldapPass"),
+                                        sContext.getInitParameter("ldapSalt").length()));
+
+                        if (ldapConn.isConnected())
                         {
-                            resBean.setAuthDataSource(connPool);
+                            LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
+                                    Integer.valueOf(sContext.getInitParameter("minConnections")),
+                                    Integer.valueOf(sContext.getInitParameter("maxConnections")));
+
+                            if (!(connPool.isClosed()))
+                            {
+                                resBean.setAuthDataSource(connPool);
+                            }
+                            else
+                            {
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
+                            }
                         }
                         else
                         {
-                            throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
+                            throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
                         }
                     }
                     else
                     {
-                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                        connOpts.setConnectTimeoutMillis(authRepo.getRepositoryConnTimeout());
+                        connOpts.setResponseTimeoutMillis(authRepo.getRepositoryReadTimeout());
+
+                        ldapConn = new LDAPConnection(connOpts,
+                                authRepo.getRepositoryHost(),
+                                authRepo.getRepositoryPort(),
+                                authRepo.getRepositoryUser(),
+                                PasswordUtils.decryptText(
+                                        authRepo.getRepositoryPass(),
+                                        authRepo.getRepositorySalt().length()));
+
+                        if (ldapConn.isConnected())
+                        {
+                            LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
+                                    authRepo.getMinConnections(), authRepo.getMaxConnections());
+
+                            if (!(connPool.isClosed()))
+                            {
+                                resBean.setAuthDataSource(connPool);
+                            }
+                            else
+                            {
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
+                            }
+                        }
+                        else
+                        {
+                            throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                        }
                     }
                 }
                 catch (LDAPException lx)
@@ -141,7 +181,7 @@ public class ResourceController
                     try
                     {
                         Context initContext = new InitialContext();
-                        Context envContext = (Context) initContext.lookup(DS_CONTEXT);
+                        Context envContext = (Context) initContext.lookup(ResourceController.DS_CONTEXT);
 
                         resBean.setAuthDataSource((DataSource) envContext.lookup(authRepo.getRepositoryHost()));
                     }

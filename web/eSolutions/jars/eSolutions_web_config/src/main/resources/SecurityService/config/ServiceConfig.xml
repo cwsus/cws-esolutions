@@ -49,14 +49,6 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>127.0.0.1</repositoryHost>
-        <repositoryPort>10389</repositoryPort>
-        <repositoryDriver />
-        <repositoryConnTimeout>10000</repositoryConnTimeout>
-        <repositoryReadTimeout>10000</repositoryReadTimeout>
-        <repositoryUser>uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUser>
-        <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
-        <repositorySalt>OITltocOUZjW</repositorySalt>
         <baseObjectClass>cwsusperson</baseObjectClass>
         <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
@@ -83,26 +75,14 @@
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
             <datasource>jdbc/cwssec</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc/cwssec</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>SessionDataSource</dsName>
             <datasource>jdbc/cwssec</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
         </DataSourceManager>
     </resource-config>
 </configuration>

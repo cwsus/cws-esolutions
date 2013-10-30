@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import javax.jms.Session;
 import java.io.Serializable;
 import javax.jms.Connection;
+import javax.naming.Context;
 import javax.jms.Destination;
 import javax.jms.DeliveryMode;
 import javax.jms.JMSException;
@@ -27,8 +28,10 @@ import org.slf4j.LoggerFactory;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ConnectionFactory;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.activemq.ActiveMQConnectionFactory;
+// import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
@@ -55,6 +58,7 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
  */
 public final class MQUtils
 {
+    private static final String INIT_CONTEXT = "java:comp/env";
     private static final String CNAME = MQUtils.class.getName();
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     private static final MQConfig mqConfig = appBean.getConfigData().getMqConfig();
@@ -85,7 +89,11 @@ public final class MQUtils
 
         try
         {
-            ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
+            InitialContext initCtx = new InitialContext();
+            Context envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
+
+            // ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
+            ConnectionFactory connFactory = (ConnectionFactory) envContext.lookup(mqConfig.getRequestQueue());
 
             if (DEBUG)
             {
@@ -109,16 +117,8 @@ public final class MQUtils
                 DEBUGGER.debug("Session: ", session);
             }
 
-            // Create the destination (Topic or Queue)
-            Destination destination = session.createQueue(mqConfig.getRequestQueue());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Destination: ", destination);
-            }
-
             // Create a MessageProducer from the Session to the Topic or Queue
-            MessageProducer producer = session.createProducer(destination);
+            MessageProducer producer = session.createProducer((Destination) envContext.lookup("jms/requestQueue"));
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
             if (DEBUG)
@@ -153,6 +153,12 @@ public final class MQUtils
             ERROR_RECORDER.error(jx.getMessage(), jx);
 
             throw new UtilityException(jx.getMessage(), jx);
+        }
+        catch (NamingException nx)
+        {
+            ERROR_RECORDER.error(nx.getMessage(), nx);
+
+            throw new UtilityException(nx.getMessage(), nx);
         }
         finally
         {
@@ -194,7 +200,11 @@ public final class MQUtils
 
         try
         {
-            ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
+            InitialContext initCtx = new InitialContext();
+            Context envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
+
+            // ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
+            ConnectionFactory connFactory = (ConnectionFactory) envContext.lookup(mqConfig.getResponseQueue());
 
             if (DEBUG)
             {
@@ -219,7 +229,8 @@ public final class MQUtils
             }
 
             // Create the destination (Topic or Queue)
-            Destination destination = session.createQueue(mqConfig.getResponseQueue());
+            // Destination destination = session.createQueue(mqConfig.getResponseQueue());
+            Destination destination = session.createQueue((String) envContext.lookup("jms/responseQueue"));
 
             if (DEBUG)
             {
@@ -259,6 +270,12 @@ public final class MQUtils
             ERROR_RECORDER.error(jx.getMessage(), jx);
 
             throw new UtilityException(jx.getMessage(), jx);
+        }
+        catch (NamingException nx)
+        {
+            ERROR_RECORDER.error(nx.getMessage(), nx);
+
+            throw new UtilityException(nx.getMessage(), nx);
         }
         finally
         {

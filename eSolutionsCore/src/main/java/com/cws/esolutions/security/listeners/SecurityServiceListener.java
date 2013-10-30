@@ -53,8 +53,6 @@ import com.cws.esolutions.security.config.SecurityServiceConfiguration;
  */
 public class SecurityServiceListener implements ServletContextListener
 {
-    
-
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     private static final String DS_CONTEXT = "java:comp/env/";
@@ -133,7 +131,7 @@ public class SecurityServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(DS_CONTEXT);
 
-                    ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), true, resBean);
+                    ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), true, sContext, resBean);
 
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {

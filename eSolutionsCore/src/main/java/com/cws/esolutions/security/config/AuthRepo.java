@@ -48,8 +48,10 @@ import com.cws.esolutions.security.SecurityConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AuthRepo implements Serializable
 {
+    private int minConnections = 0;
     private String repoType = null;
     private int repositoryPort = 0;
+    private int maxConnections = 10;
     private String repositoryHost = null;
     private String repositoryUser = null;
     private String repositoryPass = null;
@@ -237,6 +239,32 @@ public final class AuthRepo implements Serializable
         this.repositoryUserBase = value;
     }
 
+    public final void setMinConnections(final int value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setMinConnections(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.minConnections = value;
+    }
+
+    public final void setMaxConnections(final int value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setMaxConnections(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.maxConnections = value;
+    }
+
     @XmlElement(name = "repoType")
     public final String getRepoType()
     {
@@ -417,6 +445,34 @@ public final class AuthRepo implements Serializable
         }
         
         return this.repositoryUserBase;
+    }
+
+    @XmlElement(name = "minConnections")
+    public final int getMinConnections()
+    {
+        final String methodName = AuthRepo.CNAME + "#getMinConnections()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.minConnections);
+        }
+        
+        return this.minConnections;
+    }
+
+    @XmlElement(name = "maxConnections")
+    public final int getMaxConnections()
+    {
+        final String methodName = AuthRepo.CNAME + "#getMaxConnections()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.maxConnections);
+        }
+        
+        return this.maxConnections;
     }
 
     public final String toString()

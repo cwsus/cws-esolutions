@@ -57,6 +57,8 @@
         <repositoryUser>uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUser>
         <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
         <repositorySalt>OITltocOUZjW</repositorySalt>
+        <minConnections>0</minConnections>
+        <maxConnections>10</maxConnections>
         <baseObjectClass>cwsusperson</baseObjectClass>
         <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>

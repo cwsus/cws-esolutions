@@ -13,13 +13,13 @@
     </application-config>
 
     <mq-config>
-        <hostURL>tcp://127.0.0.1:61616</hostURL>
+        <hostURL />
         <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
     </mq-config>
 
     <proxy-config>
-        <proxyServiceRequired>true</proxyServiceRequired>
+        <proxyServiceRequired>false</proxyServiceRequired>
         <proxyServerName>chibcarray.us.hsbc</proxyServerName>
         <proxyServerPort>8080</proxyServerPort>
         <proxyAuthRequired>true</proxyAuthRequired>
@@ -73,10 +73,6 @@
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
             <datasource>jdbc/esolutionssvc</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
         </DataSourceManager>
     </resource-config>
 </configuration>
