@@ -61,9 +61,11 @@ public interface IServerDataDAO
 
     List<String> getInstalledServer(final String serverGuid) throws SQLException;
 
-    List<String[]> getInstalledServers() throws SQLException;
+    int getServerCount() throws SQLException;
 
-    List<String[]> getServersByAttribute(final String serverType) throws SQLException;
+    List<String[]> getInstalledServers(final int startRow) throws SQLException;
 
-    List<String[]> getServersByAttributeWithRegion(final String attribute, final String region) throws SQLException;
+    List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
+
+    List<String[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException;
 }

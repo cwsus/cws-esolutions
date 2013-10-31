@@ -30,6 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
@@ -41,7 +42,6 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers

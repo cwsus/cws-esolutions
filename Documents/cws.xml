@@ -179,14 +179,6 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <!-- jms -->
-        <dependency>
-            <groupId>javax.jms</groupId>
-            <artifactId>jms-api</artifactId>
-            <version>1.1-rev-1</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
         <!-- slf4j -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -222,14 +214,6 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.18</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <!-- activemq -->
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-client</artifactId>
-            <version>5.8.0</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

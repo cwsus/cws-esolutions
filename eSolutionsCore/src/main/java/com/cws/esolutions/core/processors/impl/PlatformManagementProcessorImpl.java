@@ -107,7 +107,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                 try
                 {
-                    validator = platformDao.listPlatformsByAttribute(platform.getPlatformName());
+                    validator = platformDao.listPlatformsByAttribute(platform.getPlatformName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -442,7 +442,14 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String[]> platformData = platformDao.listAvailablePlatforms();
+                int count = platformDao.getPlatformCount();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("count: {}", count);
+                }
+
+                List<String[]> platformData = platformDao.listAvailablePlatforms(request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -746,6 +753,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         DEBUGGER.debug("platformList: {}", platformList);
                     }
 
+                    response.setEntryCount(count);
                     response.setPlatformList(platformList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("Successfully loaded platform list");
@@ -844,7 +852,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String[]> platformData = platformDao.listPlatformsByAttribute(platform.getPlatformName());
+                List<String[]> platformData = platformDao.listPlatformsByAttribute(platform.getPlatformName(), request.getStartPage());
 
                 if (DEBUG)
                 {

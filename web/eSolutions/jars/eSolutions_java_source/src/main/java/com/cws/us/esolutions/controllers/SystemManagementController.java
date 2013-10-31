@@ -41,6 +41,7 @@ import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
@@ -61,7 +62,6 @@ import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -83,6 +83,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 @RequestMapping("/system-management")
 public class SystemManagementController
 {
+    private int recordsPerPage = 20;
     private String dcService = null;
     private String requestUrl = null;
     private String serviceName = null;
@@ -206,6 +207,19 @@ public class SystemManagementController
         }
 
         this.dcService = value;
+    }
+
+    public final void setRecordsPerPage(final int value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setRecordsPerPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.recordsPerPage = value;
     }
 
     public final void setServerValidator(final ServerValidator value)
@@ -595,7 +609,6 @@ public class SystemManagementController
             DEBUGGER.debug("serverName: {}", serverGuid);
         }
 
-        Server server = new Server();
         ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -676,7 +689,7 @@ public class SystemManagementController
 
                 if (isUserAuthorized)
                 {
-                 // ensure authenticated access
+                    // ensure authenticated access
                     RequestHostInfo reqInfo = new RequestHostInfo();
                     reqInfo.setHostAddress(hRequest.getRemoteAddr());
                     reqInfo.setHostName(hRequest.getRemoteHost());
@@ -686,18 +699,19 @@ public class SystemManagementController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    server.setServerGuid(serverGuid);
+                    Server target = new Server();
+                    target.setServerGuid(serverGuid);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Server: {}", server);
+                        DEBUGGER.debug("Server: {}", target);
                     }
 
                     ServerManagementRequest guidRequest = new ServerManagementRequest();
                     guidRequest.setRequestInfo(reqInfo);
                     guidRequest.setUserAccount(userAccount);
                     guidRequest.setServiceId(this.systemService);
-                    guidRequest.setSourceServer(server);
+                    guidRequest.setTargetServer(target);
                     guidRequest.setApplicationId(appConfig.getApplicationId());
                     guidRequest.setApplicationName(appConfig.getApplicationName());
 
@@ -722,18 +736,18 @@ public class SystemManagementController
                     else
                     {
                         // maybe we have a hostname
-                        server.setOperHostName(serverGuid);
+                        target.setOperHostName(serverGuid);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Server: {}", server);
+                            DEBUGGER.debug("Server: {}", target);
                         }
 
                         ServerManagementRequest hostRequest = new ServerManagementRequest();
                         hostRequest.setRequestInfo(reqInfo);
                         hostRequest.setUserAccount(userAccount);
                         hostRequest.setServiceId(this.systemService);
-                        hostRequest.setSourceServer(server);
+                        hostRequest.setTargetServer(target);
                         hostRequest.setApplicationId(appConfig.getApplicationId());
                         hostRequest.setApplicationName(appConfig.getApplicationName());
 
@@ -2014,6 +2028,8 @@ public class SystemManagementController
                                 DEBUGGER.debug("SearchResults: {}", results);
                             }
 
+                            mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
+                            mView.addObject("page", 1);
                             mView.addObject("requestUrl", this.requestUrl);
                             mView.addObject(Constants.SEARCH_RESULTS, results);
                         }

@@ -13,7 +13,7 @@
     <Parameter name="ldapPort" value="10389" override="false" />
     <Parameter name="connTimeout" value="10000" override="false" />
     <Parameter name="readTimeout" value="10000" override="false" />
-    <Parameter name="minConnections" value="0" override="false" />
+    <Parameter name="minConnections" value="1" override="false" />
     <Parameter name="maxConnections" value="10" override="false" />
     <Parameter name="ldapUser" value="uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" override="false" />
     <Parameter name="ldapPass" value="TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=" override="false" />

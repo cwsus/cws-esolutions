@@ -11,11 +11,8 @@
  */
 package com.cws.us.esolutions.controllers;
 
-import java.util.Map;
 import java.util.Date;
-import java.util.List;
 import org.slf4j.Logger;
-import java.util.HashMap;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.text.MessageFormat;
@@ -28,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +37,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.dto.ManagementRequest;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -50,7 +49,6 @@ import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -74,7 +72,6 @@ public class SystemCheckController
 {
     private String serviceId = null;
     private String serviceName = null;
-    private String defaultPage = null;
     private String messageSource = null;
     private String errorResponse = null;
     private String remoteDatePage = null;
@@ -111,19 +108,6 @@ public class SystemCheckController
         }
 
         this.serviceName = value;
-    }
-
-    public final void setDefaultPage(final String value)
-    {
-        final String methodName = SystemCheckController.CNAME + "#setDefaultPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.defaultPage = value;
     }
 
     public final void setErrorResponse(final String value)
@@ -191,130 +175,15 @@ public class SystemCheckController
         this.messageSource = value;
     }
 
-    @RequestMapping(value = "/default", method = RequestMethod.GET)
-    public final ModelAndView showDefaultPage()
+    @RequestMapping(value = "/remote-date/server/{value}", method = RequestMethod.GET)
+    public final ModelAndView showRemoteDate(@PathVariable("value") final String value)
     {
-        final String methodName = SystemCheckController.CNAME + "#showDefaultPage()";
+        final String methodName = SystemCheckController.CNAME + "#showRemoteDate(@PathVariable(\"value\") final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    mView.setViewName(this.defaultPage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/remote-date", method = RequestMethod.GET)
-    public final ModelAndView showRemoteDate()
-    {
-        final String methodName = SystemCheckController.CNAME + "#showRemoteDate()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -406,6 +275,14 @@ public class SystemCheckController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
+                    Server server = new Server();
+                    server.setServerGuid(value);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Server: {}", server);
+                    }
+
                     // a source server is *required*
                     ServerManagementRequest request = new ServerManagementRequest();
                     request.setRequestInfo(reqInfo);
@@ -413,13 +290,14 @@ public class SystemCheckController
                     request.setServiceId(this.serviceId);
                     request.setApplicationId(appConfig.getApplicationId());
                     request.setApplicationName(appConfig.getApplicationName());
+                    request.setTargetServer(server);
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("ServerManagementRequest: {}", request);
                     }
 
-                    ServerManagementResponse response = processor.listServers(request);
+                    ServerManagementResponse response = processor.getServerData(request);
 
                     if (DEBUG)
                     {
@@ -428,32 +306,21 @@ public class SystemCheckController
 
                     if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        List<Server> servers = response.getServerList();
+                        Server resServer = response.getServer();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("servers: {}", servers);
+                            DEBUGGER.debug("Server: {}", resServer);
                         }
 
-                        Map<String, String> serverMap = new HashMap<String, String>();
-
-                        for (Server server : servers)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Server: {}", server);
-                            }
-
-                            serverMap.put(server.getServerGuid(), server.getOperHostName());
-                        }
-
-                        mView.addObject("serverList", serverMap);
+                        mView.addObject("server", resServer);
                         mView.addObject("command", new ManagementRequest());
                         mView.setViewName(this.remoteDatePage);
                     }
                     else
                     {
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(appConfig.getErrorResponsePage());
                     }
                 }
                 else
@@ -487,14 +354,15 @@ public class SystemCheckController
         return mView;
     }
 
-    @RequestMapping(value = "/telnet", method = RequestMethod.GET)
-    public final ModelAndView showTestTelnet()
+    @RequestMapping(value = "/telnet/server/{value}", method = RequestMethod.GET)
+    public final ModelAndView showTestTelnet(@PathVariable("value") final String value)
     {
-        final String methodName = SystemCheckController.CNAME + "#showTestTelnet()";
+        final String methodName = SystemCheckController.CNAME + "#showTestTelnet(@PathVariable(\"value\") final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -575,6 +443,14 @@ public class SystemCheckController
 
             try
             {
+                Server server = new Server();
+                server.setServerGuid(value);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
                 // a source server is *required*
                 ServerManagementRequest request = new ServerManagementRequest();
                 request.setRequestInfo(reqInfo);
@@ -582,13 +458,14 @@ public class SystemCheckController
                 request.setServiceId(this.serviceId);
                 request.setApplicationId(appConfig.getApplicationId());
                 request.setApplicationName(appConfig.getApplicationName());
+                request.setTargetServer(server);
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("ServerManagementRequest: {}", request);
                 }
 
-                ServerManagementResponse response = processor.listServers(request);
+                ServerManagementResponse response = processor.getServerData(request);
 
                 if (DEBUG)
                 {
@@ -597,33 +474,21 @@ public class SystemCheckController
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Server> servers = response.getServerList();
+                    Server resServer = response.getServer();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("servers: {}", servers);
+                        DEBUGGER.debug("Server: {}", resServer);
                     }
 
-                    Map<String, String> serverMap = new HashMap<String, String>();
-
-                    for (Server server : servers)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", server);
-                        }
-
-                        serverMap.put(server.getServerGuid(), server.getOperHostName());
-                    }
-
-                    mView.addObject("serverList", serverMap);
+                    mView.addObject("server", resServer);
                     mView.addObject("command", new ManagementRequest());
                     mView.setViewName(this.testTelnetPage);
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
@@ -736,17 +601,9 @@ public class SystemCheckController
 
             try
             {
-                Server targetServer = new Server();
-                targetServer.setOperHostName(request.getTargetServer());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", targetServer);
-                }
-
                 ServerManagementRequest serverReq = new ServerManagementRequest();
                 serverReq.setServiceId(this.serviceName);
-                serverReq.setTargetServer(targetServer);
+                serverReq.setSourceServer(request.getSourceServer());
                 serverReq.setRequestType(ServiceCheckType.TELNET);
                 serverReq.setPortNumber(request.getTargetPort());
                 serverReq.setRequestInfo(reqInfo);
@@ -760,10 +617,10 @@ public class SystemCheckController
                 }
 
                 // TODO: this needs to change
-                if ((StringUtils.isNotEmpty(request.getSourceServer()) || (StringUtils.equals(request.getSourceServer(), appConfig.getHostname()))))
+                if ((StringUtils.isNotEmpty(request.getTargetServer()) || (StringUtils.equals(request.getSourceServer().getOperHostName(), appConfig.getHostname()))))
                 {
                     Server sourceServer = new Server();
-                    sourceServer.setOperHostName(request.getSourceServer());
+                    sourceServer.setOperHostName(request.getTargetServer());
 
                     if (DEBUG)
                     {
@@ -913,26 +770,9 @@ public class SystemCheckController
 
             try
             {
-                // a source server is *required*
-                Server sourceServer = new Server();
-                sourceServer.setOperHostName(request.getSourceServer());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", sourceServer);
-                }
-
-                Server targetServer = new Server();
-                targetServer.setOperHostName(request.getTargetServer());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", targetServer);
-                }
-
                 ServerManagementRequest serverReq = new ServerManagementRequest();
                 serverReq.setServiceId(this.serviceName);
-                serverReq.setTargetServer(targetServer);
+                serverReq.setTargetServer(request.getSourceServer());
                 serverReq.setRequestType(ServiceCheckType.REMOTEDATE);
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);

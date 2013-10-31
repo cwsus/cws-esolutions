@@ -68,23 +68,28 @@
                 </c:forEach>
             </table>
 
-            <table>
-                <tr>
-                    <c:forEach begin="1" end="${pages}" var="i">
-                        <c:choose>
-                            <c:when test="${page eq i}">
-                                <td>${i}</td>
-                            </c:when>
-                            <c:otherwise>
-                                <td>
-                                    <a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}/page/${i}"
-                                        title="<spring:message code='admin.account.audit.user' />">${i}</a>
-                                </td>
-                            </c:otherwise>
-                        </c:choose>
-                    </c:forEach>
-                </tr>
-            </table>
+		    <c:if test="${pages gt 1}">
+		        <br />
+		        <hr />
+		        <br />
+		        <table>
+		            <tr>
+		                <c:forEach begin="1" end="${pages}" var="i">
+		                    <c:choose>
+		                        <c:when test="${page eq i}">
+		                            <td>${i}</td>
+		                        </c:when>
+		                        <c:otherwise>
+		                            <td>
+		                                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
+		                                    title="<spring:message code='system.next.page' />">${i}</a>
+		                            </td>
+		                        </c:otherwise>
+		                    </c:choose>
+		                </c:forEach>
+		            </tr>
+		        </table>
+		    </c:if>
         </c:when>
         <c:otherwise>
             <spring:message code="admin.account.not.authorized" />

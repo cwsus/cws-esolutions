@@ -14,26 +14,17 @@ package com.cws.us.esolutions.controllers;
 import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import java.text.MessageFormat;
-
 import org.apache.commons.io.IOUtils;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -47,6 +38,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
@@ -58,7 +50,6 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.UserAccountValidator;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;

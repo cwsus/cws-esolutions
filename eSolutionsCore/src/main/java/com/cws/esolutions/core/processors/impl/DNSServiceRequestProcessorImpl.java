@@ -318,7 +318,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             else
             {
                 // this will run through the available slave servers
-                List<String[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name());
+                List<String[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
 
                 if (DEBUG)
                 {
@@ -801,7 +801,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             if ((zoneFile.exists()) && (zoneFile.length() != 0))
                             {
                                 IServerDataDAO dao = new ServerDataDAOImpl();
-                                List<String[]> dnsServers = dao.getServersByAttributeWithRegion(ServerType.DNSMASTER.name(), request.getServiceRegion().name());
+                                List<String[]> dnsServers = dao.getServersByAttributeWithRegion(ServerType.DNSMASTER.name(), request.getServiceRegion().name(), 0);
 
                                 if (DEBUG)
                                 {
@@ -812,7 +812,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 {
                                     NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
 
-                                    List<String[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name());
+                                    List<String[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name(), 0);
 
                                     if (DEBUG)
                                     {

@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class ServerManagementResponse implements Serializable
 {
+    private int entryCount = 0;
     private Server server = null;
     private String response = null;
     private Object responseObject = null;
@@ -78,6 +79,19 @@ public class ServerManagementResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = ServerManagementResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setServer(final Server value)
@@ -143,6 +157,19 @@ public class ServerManagementResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = ServerManagementResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final Server getServer()

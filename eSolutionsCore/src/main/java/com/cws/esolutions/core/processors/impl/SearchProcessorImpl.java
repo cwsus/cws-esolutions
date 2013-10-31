@@ -25,7 +25,6 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
@@ -34,6 +33,7 @@ import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
+import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 /**
  * eSolutionsCore
@@ -248,7 +248,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IServerDataDAO serverDao = new ServerDataDAOImpl();
-            List<String[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms());
+            List<String[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartPage());
 
             if (DEBUG)
             {
@@ -337,7 +337,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IApplicationDataDAO appDao = new ApplicationDataDAOImpl();
-            List<String[]> applicationList = appDao.getApplicationsByAttribute(request.getSearchTerms());
+            List<String[]> applicationList = appDao.getApplicationsByAttribute(request.getSearchTerms(), request.getStartPage());
 
             if (DEBUG)
             {
@@ -426,7 +426,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IProjectDataDAO projectDao = new ProjectDataDAOImpl();
-            List<String[]> projectList = projectDao.getProjectsByAttribute(request.getSearchTerms());
+            List<String[]> projectList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
 
             if (DEBUG)
             {

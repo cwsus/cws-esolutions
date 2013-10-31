@@ -46,9 +46,9 @@ import com.cws.esolutions.core.Constants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class MQConfig implements Serializable
 {
-    private String hostURL = null;
     private String requestQueue = null;
     private String responseQueue = null;
+    private String connectionName = null;
 
     private static final String CNAME = MQConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
@@ -56,9 +56,9 @@ public final class MQConfig implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public void setHostURL(final String value)
+    public void setConnectionName(final String value)
     {
-        final String methodName = MQConfig.CNAME + "#setHostURL(final String value)";
+        final String methodName = MQConfig.CNAME + "#setConnectionName(final String value)";
 
         if (DEBUG)
         {
@@ -66,7 +66,7 @@ public final class MQConfig implements Serializable
             DEBUGGER.debug("Value: ", value);
         }
         
-        this.hostURL = value;
+        this.connectionName = value;
     }
 
     public void setRequestQueue(final String value)
@@ -95,18 +95,18 @@ public final class MQConfig implements Serializable
         this.responseQueue = value;
     }
 
-    @XmlElement(name = "hostURL")
-    public final String getHostURL()
+    @XmlElement(name = "connectionName")
+    public final String getConnectionName()
     {
-        final String methodName = MQConfig.CNAME + "#getHostURL()";
+        final String methodName = MQConfig.CNAME + "#getConnectionName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.hostURL);
+            DEBUGGER.debug("Value: ", this.connectionName);
         }
         
-        return this.hostURL;
+        return this.connectionName;
     }
 
     @XmlElement(name = "requestQueue")

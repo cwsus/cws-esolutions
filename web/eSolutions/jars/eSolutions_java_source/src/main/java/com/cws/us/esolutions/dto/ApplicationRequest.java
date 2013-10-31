@@ -48,6 +48,7 @@ public class ApplicationRequest implements Serializable
     private String clusterName = null;
     private String installPath = null;
     private String pidDirectory = null;
+    private boolean isScmEnabled = false;
     private String applicationGuid = null;
     private String applicationName = null;
     private DeploymentType deploymentType = null;
@@ -241,6 +242,19 @@ public class ApplicationRequest implements Serializable
         this.deploymentType = value;
     }
 
+    public final void setIsScmEnabled(final boolean value)
+    {
+        final String methodName = ApplicationRequest.CNAME + "#setIsScmEnabled(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isScmEnabled = value;
+    }
+
     public final String getApplicationGuid()
     {
         final String methodName = ApplicationRequest.CNAME + "#getApplicationGuid()";
@@ -421,6 +435,32 @@ public class ApplicationRequest implements Serializable
         }
 
         return this.deploymentType;
+    }
+
+    public final boolean getIsScmEnabled()
+    {
+        final String methodName = ApplicationRequest.CNAME + "#getIsScmEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isScmEnabled);
+        }
+
+        return this.isScmEnabled;
+    }
+
+    public final boolean isScmEnabled()
+    {
+        final String methodName = ApplicationRequest.CNAME + "#isScmEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isScmEnabled);
+        }
+
+        return this.isScmEnabled;
     }
 
     @Override

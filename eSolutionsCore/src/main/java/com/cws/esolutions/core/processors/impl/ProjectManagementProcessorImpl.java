@@ -101,7 +101,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 try
                 {
-                    validator = projectDao.getProjectsByAttribute(project.getProjectCode());
+                    validator = projectDao.getProjectsByAttribute(project.getProjectCode(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -371,7 +371,14 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
             if (isServiceAuthorized)
             {
-                List<String[]> projectData = projectDao.listAvailableProjects();
+                int count = projectDao.getProjectCount();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("count: {}", count);
+                }
+
+                List<String[]> projectData = projectDao.listAvailableProjects(request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -407,6 +414,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         DEBUGGER.debug("projectList: {}", projectList);
                     }
 
+                    response.setEntryCount(count);
                     response.setProjectList(projectList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("Successfully loaded project list");
@@ -505,7 +513,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
             if (isServiceAuthorized)
             {
-                List<String[]> projectData = projectDao.getProjectsByAttribute(project.getProjectCode());
+                List<String[]> projectData = projectDao.getProjectsByAttribute(project.getProjectCode(), request.getStartPage());
 
                 if (DEBUG)
                 {

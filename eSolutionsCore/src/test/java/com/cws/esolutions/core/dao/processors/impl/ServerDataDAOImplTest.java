@@ -17,12 +17,17 @@ package com.cws.esolutions.core.dao.processors.impl;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.junit.Test;
+
 import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
+
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.processors.enums.ServerType;
@@ -71,7 +76,7 @@ public class ServerDataDAOImplTest
     @Test
     public final void testAddNewServer()
     {
-        List<Object> data = new ArrayList<Object>
+        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>
         (
             Arrays.asList
             (

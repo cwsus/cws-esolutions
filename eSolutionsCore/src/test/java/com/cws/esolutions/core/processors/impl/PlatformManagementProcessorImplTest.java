@@ -155,7 +155,7 @@ public class PlatformManagementProcessorImplTest
     public final void testAddNewPlatform()
     {
         Server dmgrServer = new Server();
-        dmgrServer.setServerGuid("fde6d6e9-8bac-4a82-99c6-ef225945d846");
+        dmgrServer.setServerGuid("aaf948c7-c3ed-49ad-a9e9-7a0e43d9a820");
 
         Server appServer1 = new Server();
         appServer1.setServerGuid("f6bd1ef7-38b1-4d9a-8f99-2a4ca42b02ba");
@@ -277,7 +277,7 @@ public class PlatformManagementProcessorImplTest
     public final void testGetPlatformData()
     {
         Platform platform = new Platform();
-        platform.setPlatformGuid("45837940-9a70-4433-a0ff-8d481fb5b325");
+        platform.setPlatformGuid("f9d0cd75-d751-4eca-84e6-abd14019e230");
 
         PlatformManagementRequest request = new PlatformManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -289,6 +289,7 @@ public class PlatformManagementProcessorImplTest
         {
             PlatformManagementResponse response = processor.getPlatformData(request);
 
+            System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (PlatformManagementException pmx)

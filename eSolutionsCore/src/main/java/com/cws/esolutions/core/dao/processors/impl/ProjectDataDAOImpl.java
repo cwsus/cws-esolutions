@@ -358,13 +358,95 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
     }
 
     @Override
-    public synchronized List<String[]> listAvailableProjects() throws SQLException
+    public synchronized int getProjectCount() throws SQLException
     {
-        final String methodName = IProjectDataDAO.CNAME + "#listAvailableProjects() throws SQLException";
+        final String methodName = IProjectDataDAO.CNAME + "#getProjectCount() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareCall("{CALL getProjectCount()}");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> listAvailableProjects(final int startRow) throws SQLException
+    {
+        final String methodName = IProjectDataDAO.CNAME + "#listAvailableProjects(final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -384,7 +466,8 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listProjects()}");
+                stmt = sqlConn.prepareCall("{CALL listProjects(?)}");
+                stmt.setInt(1, startRow);
 
                 if (DEBUG)
                 {
@@ -462,13 +545,15 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getProjectsByAttribute(final String attribute) throws SQLException
+    public synchronized List<String[]> getProjectsByAttribute(final String attribute, final int startRow) throws SQLException
     {
-        final String methodName = IProjectDataDAO.CNAME + "#getProjectsByAttribute(final String attribute)  throws SQLException";
+        final String methodName = IProjectDataDAO.CNAME + "#getProjectsByAttribute(final String attribute, final int startRow)  throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", attribute);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -488,8 +573,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getProjectByAttribute(?)}");
+                stmt = sqlConn.prepareCall("{CALL getProjectByAttribute(?, ?)}");
                 stmt.setString(1, attribute);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {

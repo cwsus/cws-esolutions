@@ -28,10 +28,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.security.processors.enums.LoginStatus;

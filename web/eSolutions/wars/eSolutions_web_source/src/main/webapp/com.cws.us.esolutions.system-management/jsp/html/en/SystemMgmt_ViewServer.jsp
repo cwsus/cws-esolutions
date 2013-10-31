@@ -29,6 +29,13 @@
 --%>
 
 <div class="feature">
+    <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
+            title="<spring:message code='select.request.type.telnet' />"><spring:message code='select.request.type.telnet' /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
+            title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a>
+    </div>
+
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>

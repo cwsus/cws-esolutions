@@ -357,13 +357,105 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     @Override
-    public synchronized List<String[]> listAvailablePlatforms() throws SQLException
+    public synchronized int getPlatformCount() throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#listAvailablePlatforms() throws SQLException";
+        final String methodName = IPlatformDataDAO.CNAME + "#getPlatformCount() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{ CALL getPlatformCount() }");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+                else
+                {
+                    throw new SQLException("No platforms were located.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> listAvailablePlatforms(final int startRow) throws SQLException
+    {
+        final String methodName = IPlatformDataDAO.CNAME + "#listAvailablePlatforms(final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -383,7 +475,8 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listPlatforms()}");
+                stmt = sqlConn.prepareCall("{CALL listPlatforms(?)}");
+                stmt.setInt(1, startRow);
 
                 if (DEBUG)
                 {
@@ -460,14 +553,15 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     @Override
-    public synchronized List<String[]> listPlatformsByAttribute(final String value) throws SQLException
+    public synchronized List<String[]> listPlatformsByAttribute(final String value, final int startRow) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#listPlatformsByAttribute(final String value) throws SQLException";
+        final String methodName = IPlatformDataDAO.CNAME + "#listPlatformsByAttribute(final String value, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -487,8 +581,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?)}");
+                stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?, ?)}");
                 stmt.setString(1, value);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {

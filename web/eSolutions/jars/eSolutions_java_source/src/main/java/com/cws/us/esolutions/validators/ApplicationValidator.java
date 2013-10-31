@@ -40,6 +40,7 @@ import com.cws.us.esolutions.dto.ApplicationRequest;
 public class ApplicationValidator implements Validator
 {
     private String messageJvmNameRequired = null;
+    private String messageScmPathRequired = null;
     private String messageBasePathRequired = null;
     private String messagePidDirectoryRequired = null;
     private String messageApplicationNameRequired = null;
@@ -185,6 +186,19 @@ public class ApplicationValidator implements Validator
         this.messagePidDirectoryRequired = value;
     }
 
+    public final void setMessageScmPathRequired(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setMessageScmPathRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageScmPathRequired = value;
+    }
+
     @Override
     public final boolean supports(final Class<?> target)
     {
@@ -228,7 +242,7 @@ public class ApplicationValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageApplicationInstallPathRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pidDirectory", this.messagePidDirectoryRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
-
+        
         ApplicationRequest request = (ApplicationRequest) target;
 
         if (DEBUG)
@@ -239,6 +253,11 @@ public class ApplicationValidator implements Validator
         if (StringUtils.equals(request.getVersion(), "0.0"))
         {
             errors.reject("version", this.messageApplicationVersionRequired);
+        }
+
+        if ((request.isScmEnabled()) && (StringUtils.isEmpty(request.getScmPath())))
+        {
+            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "scmPath", this.messageScmPathRequired);
         }
     }
 }

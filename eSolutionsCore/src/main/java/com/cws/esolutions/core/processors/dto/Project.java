@@ -49,7 +49,7 @@ public class Project implements Serializable
     private String incidentQueue = null;
     private String primaryContact = null;
     private String secondaryContact = null;
-    private ServiceStatus serviceStatus = null;
+    private ServiceStatus projectStatus = null;
     private List<Application> applicationList = null;
 
     private static final String CNAME = Project.class.getName();
@@ -172,7 +172,7 @@ public class Project implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.serviceStatus = value;
+        this.projectStatus = value;
     }
 
     public final String getProjectGuid()
@@ -286,10 +286,10 @@ public class Project implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceStatus);
+            DEBUGGER.debug("Value: {}", this.projectStatus);
         }
 
-        return this.serviceStatus;
+        return this.projectStatus;
     }
 
     @Override

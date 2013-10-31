@@ -44,7 +44,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
-    IN attributeName VARCHAR(100)
+    IN attributeName VARCHAR(100),
+    IN startRow INT
 )
 BEGIN
     SELECT PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_DESC,
@@ -52,7 +53,8 @@ BEGIN
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_platforms`
     WHERE MATCH (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`)
-    AGAINST (+attributeName IN BOOLEAN MODE);
+    AGAINST (+attributeName IN BOOLEAN MODE)
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

@@ -12,10 +12,13 @@
 package com.cws.us.esolutions.dto;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.us.esolutions.Constants;
 /**
  * eSolutions_java_source
@@ -37,7 +40,7 @@ import com.cws.us.esolutions.Constants;
 public class ManagementRequest implements Serializable
 {
     private int targetPort = 0;
-    private String sourceServer = null;
+    private Server sourceServer = null;
     private String targetServer = null;
 
     private static final long serialVersionUID = -46841443676631031L;
@@ -59,9 +62,9 @@ public class ManagementRequest implements Serializable
         this.targetPort = value;
     }
 
-    public final void setSourceServer(final String value)
+    public final void setSourceServer(final Server value)
     {
-        final String methodName = ManagementRequest.CNAME + "#setSourceServer(final String value)";
+        final String methodName = ManagementRequest.CNAME + "#setSourceServer(final Server value)";
 
         if (DEBUG)
         {
@@ -98,7 +101,7 @@ public class ManagementRequest implements Serializable
         return this.targetPort;
     }
 
-    public final String getSourceServer()
+    public final Server getSourceServer()
     {
         final String methodName = ManagementRequest.CNAME + "#getSourceServer()";
 

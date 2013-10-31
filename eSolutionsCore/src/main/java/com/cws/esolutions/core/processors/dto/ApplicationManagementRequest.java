@@ -42,6 +42,7 @@ import com.cws.esolutions.security.dto.UserAccount;
  */
 public class ApplicationManagementRequest implements Serializable
 {
+    private int startPage = 0;
     private int timeoutValue = 0;
     private Server server = null;
     private String jvmName = null;
@@ -122,6 +123,19 @@ public class ApplicationManagementRequest implements Serializable
         }
 
         this.applicationId = value;
+    }
+
+    public final void setStartPage(final int value)
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
     }
 
     public final void setRequestFile(final String value)
@@ -252,6 +266,19 @@ public class ApplicationManagementRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = ApplicationManagementRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final String getRequestFile()

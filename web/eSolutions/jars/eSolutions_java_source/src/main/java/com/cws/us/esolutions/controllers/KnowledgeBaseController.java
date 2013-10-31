@@ -44,6 +44,7 @@ import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.us.esolutions.validators.ArticleValidator;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
@@ -61,7 +62,6 @@ import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers

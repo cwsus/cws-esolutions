@@ -40,6 +40,7 @@ import com.cws.esolutions.core.Constants;
  */
 public class SearchResult implements Serializable
 {
+    private int entryCount = 0;
     private String path = null;
     private String title = null;
 
@@ -48,6 +49,19 @@ public class SearchResult implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = SearchResult.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
+    }
 
     public final void setPath(final String value)
     {
@@ -73,6 +87,19 @@ public class SearchResult implements Serializable
         }
 
         this.title = value;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = SearchResult.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final String getPath()

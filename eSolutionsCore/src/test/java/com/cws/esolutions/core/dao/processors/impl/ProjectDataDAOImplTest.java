@@ -124,7 +124,7 @@ public class ProjectDataDAOImplTest
     {
         try
         {
-            List<String[]> responseMap = dao.listAvailableProjects();
+            List<String[]> responseMap = dao.listAvailableProjects(0);
 
             Assert.assertNotNull(responseMap);
         }

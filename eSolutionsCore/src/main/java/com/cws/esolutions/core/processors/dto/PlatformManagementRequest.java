@@ -42,6 +42,7 @@ import com.cws.esolutions.security.dto.UserAccount;
  */
 public class PlatformManagementRequest implements Serializable
 {
+    private int startPage = 0;
     private String serviceId = null;
     private Platform platform = null;
     private String applicationId = null;
@@ -120,6 +121,19 @@ public class PlatformManagementRequest implements Serializable
         this.applicationId = value;
     }
 
+    public final void setStartPage(final int value)
+    {
+        final String methodName = PlatformManagementRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
+    }
+
     public final void setPlatform(final Platform value)
     {
         final String methodName = PlatformManagementRequest.CNAME + "#setPlatform(final Platform value)";
@@ -196,6 +210,19 @@ public class PlatformManagementRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = PlatformManagementRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final Platform getPlatform()

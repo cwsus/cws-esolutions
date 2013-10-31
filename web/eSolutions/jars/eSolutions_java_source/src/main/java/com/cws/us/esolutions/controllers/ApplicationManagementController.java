@@ -2798,8 +2798,11 @@ public class ApplicationManagementController
             if (bindResult.hasErrors())
             {
                 // validation failed
+                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
                 mView.addObject(Constants.ERROR_MESSAGE, this.messageApplicationFailedValidation);
                 mView.addObject("command", new ApplicationRequest());
+                mView.setViewName(this.addAppPage);
 
                 return mView;
             }

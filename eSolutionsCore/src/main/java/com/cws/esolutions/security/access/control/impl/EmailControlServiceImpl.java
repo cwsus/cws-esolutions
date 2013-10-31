@@ -88,7 +88,7 @@ public class EmailControlServiceImpl implements IEmailControlService
                 if (!(isException))
                 {
                     int errCount = 0;
-                    List<String[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name());
+                    List<String[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name(), 0);
 
                     if (DEBUG)
                     {

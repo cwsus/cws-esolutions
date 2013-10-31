@@ -835,50 +835,6 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public final void listServers()
-    {
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-
-        try
-        {
-            ServerManagementResponse response = processor.listServers(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
-    public final void listServersWithTypeAsDmgr()
-    {
-        Server server = new Server();
-        server.setServerType(ServerType.DMGRSERVER);
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setTargetServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.listServersByType(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
     public final void listServersWithDmgr()
     {
         Server server = new Server();
@@ -893,30 +849,6 @@ public class ServerManagementProcessorImplTest
         try
         {
             ServerManagementResponse response = processor.getServerData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
-    public final void listServersWithTypeAsVmgr()
-    {
-        Server server = new Server();
-        server.setServerType(ServerType.VIRTUALHOST);
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.listServersByType(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

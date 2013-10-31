@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
@@ -115,7 +116,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 try
                 {
-                    validator = serverDAO.getServersByAttribute(requestServer.getOperHostName());
+                    validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -142,7 +143,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                     }
 
-                    List<Object> insertData = new ArrayList<Object>(
+                    @SuppressWarnings("unchecked") List<Object> insertData = new ArrayList<Object>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
                                     requestServer.getOsName(),
@@ -420,188 +421,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     @Override
-    public ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException
-    {
-        final String methodName = IServerManagementProcessor.CNAME + "#listServers(final ServerManagementRequest request) throws ServerManagementException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServerManagementRequest: {}", request);
-        }
-
-        ServerManagementResponse response = new ServerManagementResponse();
-
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
-            }
-
-            if (isServiceAuthorized)
-            {
-                List<String[]> serverData = serverDAO.getInstalledServers();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("serverList: {}", serverData);
-                }
-
-                if ((serverData != null) && (serverData.size() != 0))
-                {
-                    List<Server> serverList = new ArrayList<Server>();
-
-                    for (String[] data : serverData)
-                    {
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("Data: {}", str);
-                            }
-                        }
-
-                        List<String> datacenter = datactrDAO.getDatacenter(data[5]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", datacenter);
-                        }
-
-                        if ((datacenter != null) && (datacenter.size() != 0))
-                        {
-                            DataCenter dataCenter = new DataCenter();
-                            dataCenter.setDatacenterGuid(datacenter.get(0));
-                            dataCenter.setDatacenterName(datacenter.get(1));
-                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                            dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DataCenter: {}", dataCenter);
-                            }
-
-                            Server server = new Server();
-                            server.setServerGuid(data[0]);
-                            server.setOsName(data[1]);
-                            server.setServerStatus(ServerStatus.valueOf(data[2]));
-                            server.setServerRegion(ServiceRegion.valueOf(data[3]));
-                            server.setNetworkPartition(NetworkPartition.valueOf(data[4]));
-                            server.setDatacenter(dataCenter);
-                            server.setServerType(ServerType.valueOf(data[6]));
-                            server.setDomainName(data[7]);
-                            server.setCpuType(data[8]);
-                            server.setCpuCount(Integer.parseInt(data[9]));
-                            server.setServerRack(data[10]);
-                            server.setRackPosition(data[11]);
-                            server.setServerModel(data[12]);
-                            server.setSerialNumber(data[13]);
-                            server.setInstalledMemory(Integer.parseInt(data[14]));
-                            server.setOperIpAddress(data[15]);
-                            server.setOperHostName(data[16]);
-                            server.setMgmtIpAddress(data[17]);
-                            server.setMgmtHostName(data[18]);
-                            server.setBkIpAddress(data[19]);
-                            server.setBkHostName(data[20]);
-                            server.setNasIpAddress(data[21]);
-                            server.setNasHostName(data[22]);
-                            server.setNatAddress(data[23]);
-                            server.setServerComments(data[24]);
-                            server.setAssignedEngineer(data[25]);
-                            server.setDmgrPort(Integer.valueOf(data[26]));
-                            server.setOwningDmgr(data[27]);
-                            server.setMgrUrl(data[28]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Server: {}", server);
-                            }
-
-                            serverList.add(server);
-                        }
-                        else
-                        {
-                            ERROR_RECORDER.error("Server " + data[0] + " has no associated datacenter");
-                        }
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("serverList: {}", serverList);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded installed server information.");
-                    response.setServerList(serverList);
-                }
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new ServerManagementException(sqx.getMessage(), sqx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LISTSERVERS);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    @Override
     public ServerManagementResponse listServersByType(final ServerManagementRequest request) throws ServerManagementException
     {
         final String methodName = IServerManagementProcessor.CNAME + "#listServersByType(final ServerManagementRequest request) throws ServerManagementException";
@@ -636,7 +455,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if (isServiceAuthorized)
             {
-                List<String[]> serverData = serverDAO.getServersByAttribute(requestServer.getServerType().name());
+                List<String[]> serverData = serverDAO.getServersByAttribute(requestServer.getServerType().name(), request.getStartPage());
 
                 if (DEBUG)
                 {

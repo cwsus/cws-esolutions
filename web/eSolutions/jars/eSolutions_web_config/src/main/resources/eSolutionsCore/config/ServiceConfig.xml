@@ -13,9 +13,9 @@
     </application-config>
 
     <mq-config>
-        <hostURL />
-        <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
-        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+        <connectionName>jms/mqConnectionFactory</connectionName>
+        <requestQueue>jms/requestQueue</requestQueue>
+        <responseQueue>jms/responseQueue</responseQueue>
     </mq-config>
 
     <proxy-config>

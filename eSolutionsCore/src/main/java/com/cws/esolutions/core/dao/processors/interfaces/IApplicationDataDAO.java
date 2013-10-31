@@ -75,9 +75,11 @@ public interface IApplicationDataDAO
      */
     boolean deleteApplication(final String appGuid) throws SQLException;
 
-    List<String[]> listInstalledApplications() throws SQLException;
+    int getApplicationCount() throws SQLException;
+
+    List<String[]> listInstalledApplications(final int startRow) throws SQLException;
 
     List<String> getApplicationData(final String appGuid) throws SQLException;
 
-    List<String[]> getApplicationsByAttribute(final String attribute) throws SQLException;
+    List<String[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
 }

@@ -270,13 +270,99 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     @Override
-    public synchronized List<String[]> listInstalledApplications() throws SQLException
+    public synchronized int getApplicationCount() throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getInstalledServers() throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationCount() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareCall("{CALL getApplicationCount()}");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+                else
+                {
+                    throw new SQLException("No results were found");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> listInstalledApplications(final int startRow) throws SQLException
+    {
+        final String methodName = IApplicationDataDAO.CNAME + "#getInstalledServers(final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -296,7 +382,8 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listApplications()}");
+                stmt = sqlConn.prepareCall("{CALL listApplications(?)}");
+                stmt.setInt(1, startRow);
 
                 if (DEBUG)
                 {
@@ -485,14 +572,15 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getApplicationsByAttribute(final String value) throws SQLException
+    public synchronized List<String[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationsByAttribute(final String value) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationsByAttribute(final String value, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -512,8 +600,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getApplicationByAttribute(?)}");
+                stmt = sqlConn.prepareCall("{CALL getApplicationByAttribute(?, ?)}");
                 stmt.setString(1, value);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {

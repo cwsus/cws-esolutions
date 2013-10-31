@@ -92,6 +92,8 @@ public interface IProjectDataDAO
      */
     List<String> getProjectData(final String projectGuid) throws SQLException;
 
+    int getProjectCount() throws SQLException;
+
     /**
      * Obtains data regarding the provided project GUID for display.
      *
@@ -99,7 +101,7 @@ public interface IProjectDataDAO
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */
-    List<String[]> listAvailableProjects() throws SQLException;
+    List<String[]> listAvailableProjects(final int startRow) throws SQLException;
 
-    List<String[]> getProjectsByAttribute(final String attribute) throws SQLException;
+    List<String[]> getProjectsByAttribute(final String attribute, final int startRow) throws SQLException;
 }

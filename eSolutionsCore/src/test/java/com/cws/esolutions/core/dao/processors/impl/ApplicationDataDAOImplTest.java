@@ -106,7 +106,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.listInstalledApplications());
+            Assert.assertNotNull(dao.listInstalledApplications(0));
         }
         catch (SQLException sqx)
         {
@@ -132,7 +132,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getApplicationsByAttribute("eSolutions"));
+            Assert.assertNotNull(dao.getApplicationsByAttribute("eSolutions", 0));
         }
         catch (SQLException sqx)
         {

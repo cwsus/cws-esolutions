@@ -194,10 +194,6 @@
     </definition>
 
     <!-- System Check -->
-    <definition name="SystemCheck_DefaultHandler" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - System Management" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_DefaultHandler.jsp" cascade="true" />
-    </definition>
     <definition name="SystemCheck_RemoteDate" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - System Management - Remote Date" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_RemoteDate.jsp" cascade="true" />

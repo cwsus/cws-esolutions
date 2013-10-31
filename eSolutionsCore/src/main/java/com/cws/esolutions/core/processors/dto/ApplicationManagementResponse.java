@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class ApplicationManagementResponse implements Serializable
 {
+    private int entryCount = 0;
     private byte[] fileData = null;
     private String response = null;
     private String currentPath = null;
@@ -82,6 +83,19 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = ApplicationManagementResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setApplication(final Application value)
@@ -199,6 +213,19 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = ApplicationManagementResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final Application getApplication()

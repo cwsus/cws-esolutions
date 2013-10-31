@@ -45,6 +45,7 @@ import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
  */
 public class ServerManagementRequest implements Serializable
 {
+    private int startPage = 0;
     private int portNumber = 0;
     private String serviceId = null;
     private Server sourceServer = null;
@@ -128,6 +129,19 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.applicationId = value;
+    }
+
+    public final void setStartPage(final int value)
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
     }
 
     public final void setSourceServer(final Server value)
@@ -297,6 +311,19 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final Server getSourceServer()

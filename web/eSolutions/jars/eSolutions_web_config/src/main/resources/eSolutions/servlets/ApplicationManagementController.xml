@@ -24,6 +24,7 @@
 		<property name="messageJvmNameRequired" value="application.mgmt.jvm.name.required" />
 		<property name="messageBasePathRequired" value="application.mgmt.base.path.required" />
 		<property name="messagePidDirectoryRequired" value="application.mgmt.pid.dir.required" />
+		<property name="messageScmPathRequired" value="application.mgmt.scm.path.required" />
     </bean>
 
     <bean id="deploymentValidatorBean" class="com.cws.us.esolutions.validators.DeploymentValidator">

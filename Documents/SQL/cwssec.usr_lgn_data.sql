@@ -21,8 +21,6 @@ CREATE TABLE `usr_lgn_data` (
   `cn` VARCHAR(128) NOT NULL,
   `userSalt` VARCHAR(128) NOT NULL,
   `saltType` VARCHAR(15) DEFAULT NULL,
-  `secretKey` BLOB NOT NULL,
-  `vector` BLOB NOT NULL,
   PRIMARY KEY (`userSalt`),
   UNIQUE KEY `UNQ_SaltData` (`userSalt`) USING HASH,
   KEY `IDX_SaltData` (`userSalt`,`saltType`) USING HASH

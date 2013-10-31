@@ -54,7 +54,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getApplicationByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getApplicationByAttribute`(
-    IN attributeName VARCHAR(100)
+    IN attributeName VARCHAR(100),
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -77,7 +78,8 @@ BEGIN
     FROM `esolutionssvc`.`installed_applications`
     WHERE MATCH (`APPLICATION_NAME`, `CLUSTER_NAME`, `JVM_NAME`, `PROJECT_GUID`, `PLATFORM_GUID`)
     AGAINST (+attributeName IN BOOLEAN MODE)
-    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class PlatformManagementResponse implements Serializable
 {
+    private int entryCount = 0;
     private String response = null;
     private Platform platformData = null;
     private List<Platform> platformList = null;
@@ -77,6 +78,19 @@ public class PlatformManagementResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = PlatformManagementResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setPlatformData(final Platform value)
@@ -129,6 +143,19 @@ public class PlatformManagementResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = PlatformManagementResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final Platform getPlatformData()

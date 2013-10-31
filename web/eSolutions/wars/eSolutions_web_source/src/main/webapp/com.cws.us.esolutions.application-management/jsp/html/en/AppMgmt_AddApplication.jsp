@@ -28,6 +28,20 @@
  */
 --%>
 
+<script>
+    function showScmData(box)
+    {
+        if (box.checked)
+        {
+            document.getElementById('scmData').style.display = 'block';
+        }
+        else
+        {
+        	document.getElementById('scmData').style.display = 'none';
+        }
+    }
+</script>
+
 <div class="feature">
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
@@ -102,14 +116,12 @@
                 <td><form:errors path="platform" cssClass="validationError" /></td>
             </tr>
             <tr>
-                <td><label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label>
+                <td><label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label></td>
                 <td><form:input path="basePath" /></td>
-                <td><form:errors path="basePath" cssClass="validationError" />
-            </tr>
-            <tr>
-                <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
-                <td><form:input path="scmPath" /></td>
-                <td><form:errors path="scmPath" cssClass="validationError" />
+                <td><form:errors path="basePath" cssClass="validationError" /></td>
+                <td><label id="txtPidDir"><spring:message code="app.mgmt.application.pid.directory" /></label></td>
+                <td><form:input path="pidDirectory" /></td>
+                <td><form:errors path="pidDirectory" cssClass="validationError" /></td>
             </tr>
             <tr>
                 <td><label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label></td>
@@ -118,6 +130,16 @@
                 <td><label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label></td>
                 <td><form:input path="installPath" /></td>
                 <td><form:errors path="installPath" cssClass="validationError" /></td>
+            </tr>
+            <tr>
+                <td><label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label></td>
+                <td><form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData();" /></td>
+                <td><form:errors path="isScmEnabled" cssClass="validationError" /></td>
+            </tr>
+            <tr id="scmData" style="display: none;">
+                <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
+                <td><form:input path="scmPath" /></td>
+                <td><form:errors path="scmPath" cssClass="validationError" /></td>
             </tr>
         </table>
         <br /><br />

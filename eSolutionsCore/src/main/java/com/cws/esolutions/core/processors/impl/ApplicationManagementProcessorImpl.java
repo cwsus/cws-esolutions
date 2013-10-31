@@ -660,7 +660,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     if (userAccount.getRole() == Role.SITEADMIN)
                     {
                         IProjectDataDAO projectDAO = new ProjectDataDAOImpl();
-                        List<String[]> projects = projectDAO.listAvailableProjects();
+                        List<String[]> projects = projectDAO.listAvailableProjects(request.getStartPage());
 
                         if (DEBUG)
                         {
@@ -724,7 +724,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     DEBUGGER.debug("Project: {}", project);
                                 }
 
-                                List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid());
+                                List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid(), request.getStartPage());
 
                                 if (DEBUG)
                                 {
@@ -955,7 +955,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 if ((isAdminAuthorized) && (isUserAuthorized))
                 {
                     List<Application> applicationList = new ArrayList<Application>();
-                    List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid());
+                    List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid(), request.getStartPage());
 
                     if (DEBUG)
                     {

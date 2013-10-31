@@ -78,8 +78,6 @@ public interface IServerManagementProcessor
 
     ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException;
 
-    ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException;
-
     ServerManagementResponse listServersByType(final ServerManagementRequest request) throws ServerManagementException;
 
     ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;

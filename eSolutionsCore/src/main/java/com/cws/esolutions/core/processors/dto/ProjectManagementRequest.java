@@ -42,6 +42,7 @@ import com.cws.esolutions.security.dto.UserAccount;
  */
 public class ProjectManagementRequest implements Serializable
 {
+    private int startPage = 0;
     private Project project = null;
     private String serviceId = null;
     private String applicationId = null;
@@ -120,6 +121,19 @@ public class ProjectManagementRequest implements Serializable
         this.applicationId = value;
     }
 
+    public final void setStartPage(final int value)
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
+    }
+
     public final void setProject(final Project value)
     {
         final String methodName = ProjectManagementRequest.CNAME + "#setProject(final Project value)";
@@ -196,6 +210,19 @@ public class ProjectManagementRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = ProjectManagementRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final Project getProject()

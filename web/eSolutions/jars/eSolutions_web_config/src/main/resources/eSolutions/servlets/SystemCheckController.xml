@@ -18,7 +18,6 @@
         <property name="errorResponse" value="error" />
         <property name="remoteDatePage" value="SystemCheck_RemoteDate" />
         <property name="testTelnetPage" value="SystemCheck_TelnetTest" />
-        <property name="defaultPage" value="SystemCheck_DefaultHandler" />
         <property name="messageSource" value="nls/SystemCheckServlet" />
     </bean>
 </beans>

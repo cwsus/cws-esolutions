@@ -93,6 +93,8 @@ public interface IPlatformDataDAO
      */
     List<String> getPlatformData(final String platformGuid) throws SQLException;
 
+    int getPlatformCount() throws SQLException;
+
     /**
      * Obtains data regarding the provided project GUID for display.
      *
@@ -100,7 +102,7 @@ public interface IPlatformDataDAO
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */
-    List<String[]> listAvailablePlatforms() throws SQLException;
+    List<String[]> listAvailablePlatforms(final int startRow) throws SQLException;
 
-    List<String[]> listPlatformsByAttribute(final String value) throws SQLException;
+    List<String[]> listPlatformsByAttribute(final String value, final int startRow) throws SQLException;
 }

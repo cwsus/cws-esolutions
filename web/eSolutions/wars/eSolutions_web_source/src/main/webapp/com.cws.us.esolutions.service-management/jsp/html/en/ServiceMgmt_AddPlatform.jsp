@@ -29,6 +29,13 @@
 --%>
 
 <div class="feature">
+    <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a> /
+        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+    </div>
+
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>

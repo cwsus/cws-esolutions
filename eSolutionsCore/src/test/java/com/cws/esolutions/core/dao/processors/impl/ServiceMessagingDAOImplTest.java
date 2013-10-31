@@ -16,15 +16,21 @@
 package com.cws.esolutions.core.dao.processors.impl;
 
 import java.util.List;
+
 import org.junit.Test;
+
 import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
+
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import java.util.Calendar;
+
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 /**
@@ -83,7 +89,7 @@ public class ServiceMessagingDAOImplTest
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
 
-        List<Object> data = new ArrayList<Object>(
+        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>(
                 Arrays.asList(
                         ServiceMessagingDAOImplTest.MESSAGE_ID,
                         "Test Message",
@@ -108,7 +114,7 @@ public class ServiceMessagingDAOImplTest
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
 
-        List<Object> data = new ArrayList<Object>(
+        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>(
                 Arrays.asList(
                         "Test Message",
                         "This is a test message",

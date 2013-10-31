@@ -206,13 +206,14 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getInstalledServers() throws SQLException
+    public synchronized List<String[]> getInstalledServers(final int startRow) throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#getInstalledServers() throws SQLException";
+        final String methodName = IServerDataDAO.CNAME + "#getInstalledServers(final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -232,7 +233,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL retrServerList()}");
+                stmt = sqlConn.prepareCall("{CALL retrServerList(?)}");
+                stmt.setInt(1, startRow);
 
                 if (DEBUG)
                 {
@@ -461,13 +463,106 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getServersByAttribute(final String value) throws SQLException
+    public synchronized int getServerCount() throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value) throws SQLException";
+        final String methodName = IServerDataDAO.CNAME + "#getServerCount() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{ CALL getServerCount() }");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+                else
+                {
+                    throw new SQLException("No server entries were located.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> getServersByAttribute(final String value, final int startRow) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value, final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -487,8 +582,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getServerByAttribute(?)}");
+                stmt = sqlConn.prepareCall("{CALL getServerByAttribute(?, ?)}");
                 stmt.setString(1, value);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {
@@ -612,15 +708,16 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getServersByAttributeWithRegion(final String attribute, final String region) throws SQLException
+    public synchronized List<String[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#getServersByAttributeWithRegion(final String attribute, final String region) throws SQLException";
+        final String methodName = IServerDataDAO.CNAME + "#getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", attribute);
             DEBUGGER.debug("Value: {}", region);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -640,9 +737,10 @@ public class ServerDataDAOImpl implements IServerDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getServerByAttributeWithRegion(?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL getServerByAttributeWithRegion(?, ?, ?)}");
                 stmt.setString(1, attribute);
                 stmt.setString(2, region);
+                stmt.setInt(3, startRow);
 
                 if (DEBUG)
                 {

@@ -29,11 +29,6 @@
 --%>
 
 <div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/system-check/remote-date"
-            title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a>
-    </div>
-
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>
@@ -49,24 +44,12 @@
     <p id="validationError" />
 
     <form:form id="submitTelnetRequest" name="submitTelnetRequest" action="${pageContext.request.contextPath}/ui/system-check/telnet" method="post">
+        <form:hidden path="sourceServer" value="${server}" />
+
         <table id="telnetRequest">
             <tr>
                 <td><label id="txtSourceHostName"><spring:message code="telnet.request.select.source" /></label></td>
-                <td>
-	                <c:choose>
-	                    <c:when test="${not empty serverList}">
-	                        <form:select path="sourceServer">
-								<option><spring:message code="select.default" /></option>
-								<option><spring:message code="select.spacer" /></option>
-	                            <form:options items="${serverList}" />
-	                        </form:select>
-	                    </c:when>
-	                    <c:otherwise>
-	                        <td><form:input path="sourceServer" /></td>
-	                    </c:otherwise>
-	                </c:choose>
-	            </td>
-                <td><form:errors path="sourceServer" cssclass="validationError" /></td>
+                <td>${server.operHostName}</td>
             </tr>
             <tr>
                 <td><label id="txtTargetServer"><spring:message code="telnet.request.select.target" /></label></td>

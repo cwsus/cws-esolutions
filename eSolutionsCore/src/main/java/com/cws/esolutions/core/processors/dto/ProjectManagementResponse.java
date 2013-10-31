@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class ProjectManagementResponse implements Serializable
 {
+    private int entryCount = 0;
     private Project project = null;
     private String response = null;
     private List<Project> projectList = null;
@@ -77,6 +78,19 @@ public class ProjectManagementResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = ProjectManagementResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setProject(final Project value)
@@ -129,6 +143,19 @@ public class ProjectManagementResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = ProjectManagementResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final Project getProject()

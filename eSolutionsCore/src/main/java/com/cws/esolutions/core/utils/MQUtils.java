@@ -31,7 +31,7 @@ import javax.jms.ConnectionFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.commons.lang.RandomStringUtils;
-// import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
@@ -79,21 +79,36 @@ public final class MQUtils
 
         Connection conn = null;
         Session session = null;
+        Context envContext = null;
+        InitialContext initCtx = null;
+        MessageProducer producer = null;
+        ConnectionFactory connFactory = null;
 
+        final String connName = mqConfig.getConnectionName();
+        final String requestQueue = mqConfig.getRequestQueue();
         final String correlationId = RandomStringUtils.randomAlphanumeric(64);
 
         if (DEBUG)
         {
+            DEBUGGER.debug("String: {}", connName);
+            DEBUGGER.debug("String: {}", requestQueue);
             DEBUGGER.debug("correlationId: {}", correlationId);
         }
 
         try
         {
-            InitialContext initCtx = new InitialContext();
-            Context envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
+            try
+            {
+                initCtx = new InitialContext();
+                envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
 
-            // ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
-            ConnectionFactory connFactory = (ConnectionFactory) envContext.lookup(mqConfig.getRequestQueue());
+                connFactory = (ConnectionFactory) envContext.lookup(connName);
+            }
+            catch (NamingException nx)
+            {
+                // we're probably not in a container
+                connFactory = new ActiveMQConnectionFactory(connName);
+            }
 
             if (DEBUG)
             {
@@ -118,17 +133,28 @@ public final class MQUtils
             }
 
             // Create a MessageProducer from the Session to the Topic or Queue
-            MessageProducer producer = session.createProducer((Destination) envContext.lookup("jms/requestQueue"));
+            try
+            {
+                producer = session.createProducer((Destination) envContext.lookup(requestQueue));
+            }
+            catch (NamingException nx)
+            {
+                // we're probably not in a container
+                Destination destination = session.createQueue(requestQueue);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Destination: ", destination);
+                }
+
+                producer = session.createProducer(destination);
+            }
+
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("MessageProducer: {}", producer);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Producer: ", producer);
             }
 
             ObjectMessage message = session.createObjectMessage(true);
@@ -153,12 +179,6 @@ public final class MQUtils
             ERROR_RECORDER.error(jx.getMessage(), jx);
 
             throw new UtilityException(jx.getMessage(), jx);
-        }
-        catch (NamingException nx)
-        {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
-            throw new UtilityException(nx.getMessage(), nx);
         }
         finally
         {
@@ -197,14 +217,34 @@ public final class MQUtils
         Connection conn = null;
         Session session = null;
         Object response = null;
+        Context envContext = null;
+        InitialContext initCtx = null;
+        MessageConsumer consumer = null;
+        ConnectionFactory connFactory = null;
+
+        final String connName = mqConfig.getConnectionName();
+        final String responseQueue = mqConfig.getResponseQueue();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("String: {}", connName);
+            DEBUGGER.debug("String: {}", responseQueue);
+        }
 
         try
         {
-            InitialContext initCtx = new InitialContext();
-            Context envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
+            try
+            {
+                initCtx = new InitialContext();
+                envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
 
-            // ConnectionFactory connFactory = new ActiveMQConnectionFactory(mqConfig.getHostURL());
-            ConnectionFactory connFactory = (ConnectionFactory) envContext.lookup(mqConfig.getResponseQueue());
+                connFactory = (ConnectionFactory) envContext.lookup(connName);
+            }
+            catch (NamingException nx)
+            {
+                // we're probably not in a container
+                connFactory = new ActiveMQConnectionFactory(connName);
+            }
 
             if (DEBUG)
             {
@@ -228,16 +268,22 @@ public final class MQUtils
                 DEBUGGER.debug("Session: ", session);
             }
 
-            // Create the destination (Topic or Queue)
-            // Destination destination = session.createQueue(mqConfig.getResponseQueue());
-            Destination destination = session.createQueue((String) envContext.lookup("jms/responseQueue"));
-
-            if (DEBUG)
+            try
             {
-                DEBUGGER.debug("Destination: {}", destination);
+                consumer = session.createConsumer((Destination) envContext.lookup(responseQueue), "JMSCorrelationID='" + messageId + "'");
             }
+            catch (NamingException nx)
+            {
+                // we're probably not in a container
+                Destination destination = session.createQueue((String) envContext.lookup(responseQueue));
 
-            MessageConsumer consumer = session.createConsumer(destination, "JMSCorrelationID='" + messageId + "'");
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Destination: {}", destination);
+                }
+
+                consumer = session.createConsumer(destination, "JMSCorrelationID='" + messageId + "'");
+            }
 
             if (DEBUG)
             {

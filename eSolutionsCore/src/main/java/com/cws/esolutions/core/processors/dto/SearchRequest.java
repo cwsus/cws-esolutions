@@ -42,6 +42,7 @@ import com.cws.esolutions.security.dto.UserAccount;
  */
 public class SearchRequest implements Serializable
 {
+    private int startPage = 0;
     private int searchLimit = 0;
     private String searchTerms = null;
     private UserAccount userAccount = null;
@@ -77,6 +78,19 @@ public class SearchRequest implements Serializable
         }
 
         this.requestInfo = value;
+    }
+
+    public final void setStartPage(final int value)
+    {
+        final String methodName = SearchRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
     }
 
     public final void setSearchTerms(final String value)
@@ -129,6 +143,19 @@ public class SearchRequest implements Serializable
         }
 
         return this.requestInfo;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = SearchRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final String getSearchTerms()

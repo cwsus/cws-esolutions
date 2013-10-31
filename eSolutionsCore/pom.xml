@@ -21,6 +21,28 @@
 
     <dependencies>
         <!-- Third-party jars -->
+        <!-- activemq -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>activemq-all</artifactId>
+            <version>5.8.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>slf4j-api</artifactId>
+            		<groupId>org.slf4j</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <!-- jms -->
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms-api</artifactId>
+            <version>1.1-rev-1</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
         <!-- quartz -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
@@ -28,6 +50,12 @@
             <version>2.1.6</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>slf4j-api</artifactId>
+            		<groupId>org.slf4j</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-daemon</groupId>
@@ -86,6 +114,17 @@
             <version>1.0-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+        	<groupId>org.slf4j</groupId>
+        	<artifactId>slf4j-log4j12</artifactId>
+        	<version>1.7.2</version>
+        	<exclusions>
+        		<exclusion>
+        			<artifactId>slf4j-api</artifactId>
+        			<groupId>org.slf4j</groupId>
+        		</exclusion>
+        	</exclusions>
         </dependency>
     </dependencies>
 

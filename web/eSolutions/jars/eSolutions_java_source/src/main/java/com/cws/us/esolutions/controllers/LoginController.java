@@ -28,11 +28,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.dto.LoginRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.validators.LoginValidator;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
