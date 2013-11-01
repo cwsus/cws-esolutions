@@ -1151,7 +1151,7 @@ public class OnlineResetController
                     StringBuilder targetURL = new StringBuilder()
                         .append(hRequest.getScheme() + "://" + hRequest.getServerName())
                         .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResponse());
+                        .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
 
                     if (DEBUG)
                     {
