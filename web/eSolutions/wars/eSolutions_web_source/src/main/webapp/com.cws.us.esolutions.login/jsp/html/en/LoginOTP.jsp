@@ -64,7 +64,7 @@
             </tr>
             <tr>
                 <td><label id="txtOtpValue"><spring:message code="login.user.otp" /></label></td>
-                <td><form:password path="otpValue" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
+                <td><form:password path="otpValue" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="otpValue" cssClass="validationErrors" /></td>
             </tr>
         </table>

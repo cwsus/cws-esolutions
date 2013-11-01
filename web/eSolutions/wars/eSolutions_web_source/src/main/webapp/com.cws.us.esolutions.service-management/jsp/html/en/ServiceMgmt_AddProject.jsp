@@ -85,7 +85,7 @@
                 <td><form:input path="changeQueue" /></td>
                 <td><form:errors path="changeQueue" cssClass="validationError" /></td>
                 <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
-                <td><form:input path="incidentQueue" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
+                <td><form:input path="incidentQueue" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="incidentQueue" cssClass="validationError" /></td>
             </tr>
         </table>

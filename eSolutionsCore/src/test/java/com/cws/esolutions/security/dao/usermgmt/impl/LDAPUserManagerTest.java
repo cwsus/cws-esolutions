@@ -177,7 +177,28 @@ public class LDAPUserManagerTest
                         private static final long serialVersionUID = 602188777075148683L;
 
                         {
-                            put("userPassword", "VjNSoL1UNGTL9+keI+fSTLCWdwcovfGkfSN1EGRA2GKq+hb+rRukzA9uijcC5Qere3Irb+m6YY3731eWk1YHnw==");
+                            put("userPassword", "5AqFpMOfBTMM9iMN1whNF02+cedRAZ3R9hF0oWpauMI1qtXA4tpVn1J2m8seIUh4pc4VbcxBxyeBxlcEJm9SNw==");
+                        }
+                    }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testModifyUserAnswers()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("cwssecans1", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYBjTeRsiJBppeHlyuofEJw+");
+                            put("cwssecans2", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYCiHy4/Zkct4Dsf1KnqTbZE");
                         }
                     }));
         }

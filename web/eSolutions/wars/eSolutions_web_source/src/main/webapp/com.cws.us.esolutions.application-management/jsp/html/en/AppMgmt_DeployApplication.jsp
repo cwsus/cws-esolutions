@@ -112,13 +112,13 @@
                         <td><label id="txtScmVersion"><spring:message code="app.mgmt.new.version" /></label></td>
                         <td>
                             <form:input path="version" />
-                            <form:errors path="version" cssClass="validationError" onkeypress="disableButton(this); validateForm(this.form, event);" />
+                            <form:errors path="version" cssClass="validationError" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                         </td>
                     </tr>
                     <c:if test="${empty application.scmPath}">
                         <tr>
                             <td><label id="txtFileName"><spring:message code="app.mgmt.select.file" /></label></td>
-                            <td><input type="file" name="applicationBinary" id="applicationBinary" size="30" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
+                            <td><input type="file" name="applicationBinary" id="applicationBinary" size="30" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                         </tr>
                     </c:if>
                 </table>

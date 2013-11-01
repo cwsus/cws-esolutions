@@ -71,6 +71,9 @@ public class PasswordUtilsTest
         System.out.println(salt);
         System.out.println(PasswordUtils.encryptText(pass, salt,
                 bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
+        
+        System.out.println(PasswordUtils.encryptText("answerone", "kigKGiRAxA9aoZSVfwKYevlsfKyUL8Xh"));
+        System.out.println(PasswordUtils.encryptText("answertwo", "kigKGiRAxA9aoZSVfwKYevlsfKyUL8Xh"));
     }
 
     @Test

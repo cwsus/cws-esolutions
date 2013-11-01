@@ -51,7 +51,7 @@
             <tr>
                 <td><label id="txtUsername"><spring:message code="olr.username" /></label></td>
                 <td>
-                    <form:input path="username" onkeypress="disableButton(this); validateForm(this.form, event);" />
+                    <form:input path="username" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="username" cssClass="validationError" />
                 </td>
                 <td>

@@ -39,6 +39,7 @@ import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
+import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
 /**
  * eSolutionsCore
@@ -331,9 +332,40 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
                     if (isComplete)
                     {
-                        response.setResetId(resetId);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully generated password reset request");
+                        // load the user account for the email response
+                        List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserData: {}", userData);
+                        }
+
+                        if ((userData != null) && (!(userData.isEmpty())))
+                        {
+                            UserAccount responseAccount = new UserAccount();
+                            responseAccount.setGuid((String) userData.get(0));
+                            responseAccount.setUsername((String) userData.get(1));
+                            responseAccount.setGivenName((String) userData.get(2));
+                            responseAccount.setSurname((String) userData.get(3));
+                            responseAccount.setDisplayName((String) userData.get(4));
+                            responseAccount.setEmailAddr((String) userData.get(5));
+                            responseAccount.setPagerNumber((String) userData.get(6));
+                            responseAccount.setTelephoneNumber((String) userData.get(7));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", responseAccount);
+                            }
+
+                            response.setResetId(resetId);
+                            response.setUserAccount(responseAccount);
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                            response.setResponse("Successfully generated password reset request");
+                        }
+                        else
+                        {
+                            throw new AuthenticatorException("Failed to locate user account in authentication repository. Cannot continue.");
+                        }
                     }
                     else
                     {
@@ -361,6 +393,12 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
             throw new AccountResetException(acsx.getMessage(), acsx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountResetException(umx.getMessage(), umx);
         }
         catch (AuthenticatorException ax)
         {

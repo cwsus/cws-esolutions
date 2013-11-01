@@ -66,7 +66,7 @@
             <tr>
                 <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
                 <td>
-                    <form:password path="secAnswerTwo" onkeypress="disableButton(this); validateForm(this.form, event);" />
+                    <form:password path="secAnswerTwo" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="secAnswerTwo" cssClass="validationError" />
                 </td>
             </tr>

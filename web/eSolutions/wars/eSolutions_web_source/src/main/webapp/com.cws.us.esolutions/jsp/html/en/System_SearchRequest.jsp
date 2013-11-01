@@ -64,7 +64,7 @@
                     <label id="txtSearchData"><spring:message code="search.data" /><br /></label>
                 </td>
                 <td>
-                    <form:input path="searchTerms" onkeypress="disableButton(this); validateForm(this.form, event);" />
+                    <form:input path="searchTerms" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="searchTerms" cssClass="validationError" />
                 </td>
             </tr>
