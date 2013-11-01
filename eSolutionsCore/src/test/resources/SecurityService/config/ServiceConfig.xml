@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <email-address>secadm@caspersbox.com</email-address>
-
     <security-config>
+        <email-address>secadm@caspersbox.com</email-address>
         <maxAttempts>3</maxAttempts> <!-- maximum number of failed authentication attempts -->
         <iterations>65535</iterations> <!-- number of times to hash over the password -->
         <passwordExpiration>90</passwordExpiration> <!-- how long before a password MUST be changed -->
@@ -49,7 +48,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>127.0.0.1</repositoryHost>
+        <repositoryHost>ldap.caspersbox.corp</repositoryHost>
         <repositoryPort>10389</repositoryPort>
         <repositoryDriver />
         <repositoryConnTimeout>10000</repositoryConnTimeout>

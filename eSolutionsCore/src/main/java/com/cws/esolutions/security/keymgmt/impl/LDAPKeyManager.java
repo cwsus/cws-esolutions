@@ -390,7 +390,7 @@ public class LDAPKeyManager implements KeyManager
                 {
                     // need to get the DN
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + "))");
+                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");
 
                     if (DEBUG)
                     {

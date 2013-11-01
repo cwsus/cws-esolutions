@@ -612,7 +612,7 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        hSession.setAttribute(Constants.RESET_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());

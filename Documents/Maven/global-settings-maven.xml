@@ -9,7 +9,7 @@
         <mirror>
             <id>ext-libs</id>
             <url>http://repository.caspersbox.corp:8081/archiva/repository/ext-libs/</url>
-            <mirrorOf>central,repo1,eclipselink</mirrorOf>
+            <mirrorOf>*,!internal,!snapshots,!ext-libs</mirrorOf>
         </mirror>
     </mirrors>
 

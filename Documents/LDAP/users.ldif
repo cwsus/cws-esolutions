@@ -30,8 +30,6 @@ userPassword:: e1NTSEF9aG5udjZWL1Jpdm5rVVhlR0M1M050cVVDT3o2ZjRsR3JBVHVxeGc9PQ=
 dn: uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalPerson
 objectClass: person
-objectClass: cwsusperson
-objectClass: cwsperson
 objectClass: inetorgperson
 objectClass: top
 cn: af8358c2-0a07-11e0-88ef0631adfd72085

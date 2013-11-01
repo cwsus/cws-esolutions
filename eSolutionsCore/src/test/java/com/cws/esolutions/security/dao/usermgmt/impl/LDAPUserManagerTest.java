@@ -167,6 +167,26 @@ public class LDAPUserManagerTest
         }
     }
 
+    @Test
+    public final void testModifyUserPassword()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("userPassword", "VjNSoL1UNGTL9+keI+fSTLCWdwcovfGkfSN1EGRA2GKq+hb+rRukzA9uijcC5Qere3Irb+m6YY3731eWk1YHnw==");
+                        }
+                    }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
     @After
     public void tearDown()
     {
