@@ -45,6 +45,8 @@
         <displayName>displayName</displayName>
         <tcAccepted>cwsistcaccepted</tcAccepted>
         <publicKey>cwspublickey</publicKey>
+        <pagerNumber>pager</pagerNumber>
+        <telephoneNumber>telephoneNumber</telephoneNumber>
     </auth-data>
 
     <auth-repo>
