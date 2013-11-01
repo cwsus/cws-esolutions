@@ -113,6 +113,8 @@ public class LDAPAuthenticator implements Authenticator
                             authData.getSurname(),
                             authData.getDisplayName(),
                             authData.getEmailAddr(),
+                            authData.getPagerNumber(),
+                            authData.getTelephoneNumber(),
                             authData.getUserRole(),
                             authData.getLockCount(),
                             authData.getLastLogin(),
@@ -200,6 +202,8 @@ public class LDAPAuthenticator implements Authenticator
                         userAccount.add(entry.getAttributeValue(authData.getSurname()));
                         userAccount.add(entry.getAttributeValue(authData.getDisplayName()));
                         userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
+                        userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
+                        userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
                         userAccount.add(entry.getAttributeValue(authData.getUserRole()).toUpperCase());
                         userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
                         userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));

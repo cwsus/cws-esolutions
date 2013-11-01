@@ -231,8 +231,8 @@ public class AuthenticationProcessorImplTest
         account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setSecAnswerOne("answerone");
-        userSecurity.setSecAnswerTwo("answertwo");
+        userSecurity.setSecAnswerOne("myanswer");
+        userSecurity.setSecAnswerTwo("anotheranswer");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");

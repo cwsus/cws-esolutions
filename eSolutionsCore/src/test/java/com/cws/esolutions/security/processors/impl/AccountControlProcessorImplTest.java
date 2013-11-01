@@ -99,7 +99,7 @@ public class AccountControlProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana18*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("eSolutions");
@@ -511,10 +511,11 @@ public class AccountControlProcessorImplTest
         userSecurity.setSecQuestionTwo("Who was your childhood best friend ?");
         userSecurity.setSecAnswerOne("myanswer");
         userSecurity.setSecAnswerTwo("anotheranswer");
-        userSecurity.setPassword("Ariana21*");
+        userSecurity.setPassword("Ariana18*");
 
         AccountControlRequest request = new AccountControlRequest();
         request.setRequestor(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("esolutions");
         request.setControlType(ControlType.MODIFY);
         request.setHostInfo(hostInfo);

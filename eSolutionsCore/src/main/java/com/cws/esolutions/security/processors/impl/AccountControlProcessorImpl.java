@@ -1368,8 +1368,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                 DEBUGGER.debug("backout: {}", backout);
                             }
 
-                            String secAnswerOne = PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
-                            String secAnswerTwo = PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                            String secAnswerOne = PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt);
+                            String secAnswerTwo = PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt);
 
                             if (DEBUG)
                             {

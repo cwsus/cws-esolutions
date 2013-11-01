@@ -18,7 +18,6 @@ package com.cws.esolutions.security.config;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
@@ -66,11 +65,13 @@ public final class AuthData implements Serializable
     private String olrSetupReq = null;
     private String isSuspended = null;
     private String displayName = null;
+    private String pagerNumber = null;
     private String userPassword = null;
     private String secAnswerOne = null;
     private String secAnswerTwo = null;
     private String secQuestionOne = null;
     private String secQuestionTwo = null;
+    private String telephoneNumber = null;
 
     private static final long serialVersionUID = -6969755465434590684L;
     private static final String CNAME = AuthData.class.getName();
@@ -362,6 +363,32 @@ public final class AuthData implements Serializable
         }
         
         this.memberOf = value;
+    }
+
+    public final void setPagerNumber(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setPagerNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.pagerNumber = value;
+    }
+
+    public final void setTelephoneNumber(final String value)
+    {
+        final String methodName = AuthData.CNAME + "#setTelephoneNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.telephoneNumber = value;
     }
 
     @XmlElement(name = "objectClass")
@@ -670,6 +697,34 @@ public final class AuthData implements Serializable
         }
         
         return this.memberOf;
+    }
+
+    @XmlElement(name = "pagerNumber")
+    public final String getPagerNumber()
+    {
+        final String methodName = AuthData.CNAME + "#getPagerNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.pagerNumber);
+        }
+
+        return this.pagerNumber;
+    }
+
+    @XmlElement(name = "telephoneNumber")
+    public final String getTelephoneNumber()
+    {
+        final String methodName = AuthData.CNAME + "#getTelephoneNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.telephoneNumber);
+        }
+
+        return this.telephoneNumber;
     }
 
     public final String toString()

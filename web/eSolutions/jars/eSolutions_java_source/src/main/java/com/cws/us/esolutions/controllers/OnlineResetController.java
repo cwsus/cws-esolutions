@@ -993,8 +993,9 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
+        final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
+        final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
@@ -1123,7 +1124,6 @@ public class OnlineResetController
                     DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                 }
 
-                IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
                 AccountResetResponse resetRes = resetProcess.resetUserPassword(resetReq);
 
                 if (DEBUG)
@@ -1134,6 +1134,13 @@ public class OnlineResetController
                 if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
                     // good, send email
+                    UserAccount responseAccount = resetRes.getUserAccount();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", responseAccount);
+                    }
+
                     String emailId = RandomStringUtils.randomAlphanumeric(16);
 
                     if (DEBUG)
@@ -1154,7 +1161,7 @@ public class OnlineResetController
                     String emailBody = MessageFormat.format(IOUtils.toString(
                             this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
                     {
-                        userAccount.getGivenName(),
+                        responseAccount.getGivenName(),
                         new Date(System.currentTimeMillis()),
                         reqInfo.getHostName(),
                         targetURL.toString(),
@@ -1175,7 +1182,7 @@ public class OnlineResetController
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.passwordResetSubject, this.getClass().getClassLoader()));
                     emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1190,7 +1197,7 @@ public class OnlineResetController
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetReq.getSmsCode());
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
                         emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
 
                         if (DEBUG)

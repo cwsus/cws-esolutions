@@ -59,8 +59,10 @@ public class UserAccount implements Serializable
     private boolean olrLocked = false;
     private boolean suspended = false;
     private LoginStatus status = null;
+    private String pagerNumber = null;
     private Integer failedCount = null;
     private boolean tcAccepted = false;
+    private String telephoneNumber = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
@@ -289,6 +291,32 @@ public class UserAccount implements Serializable
         this.userKeys = value;
     }
 
+    public final void setPagerNumber(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setPagerNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.pagerNumber = value;
+    }
+
+    public final void setTelephoneNumber(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setTelephoneNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.telephoneNumber = value;
+    }
+
     public final LoginStatus getStatus()
     {
         final String methodName = UserAccount.CNAME + "#getStatus()";
@@ -508,6 +536,32 @@ public class UserAccount implements Serializable
         }
 
         return this.userKeys;
+    }
+
+    public final String getPagerNumber()
+    {
+        final String methodName = UserAccount.CNAME + "#getPagerNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.pagerNumber);
+        }
+
+        return this.pagerNumber;
+    }
+
+    public final String getTelephoneNumber()
+    {
+        final String methodName = UserAccount.CNAME + "#getTelephoneNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.telephoneNumber);
+        }
+
+        return this.telephoneNumber;
     }
 
     @Override

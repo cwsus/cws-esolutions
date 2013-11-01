@@ -157,7 +157,6 @@ public final class PasswordUtils
         return response;
     }
 
-
     public static final String decryptText(final String encrypted, final int saltLength) throws SecurityException
     {
         final String methodName = PasswordUtils.CNAME + "#decryptText(final String encrypted, final int saltLength) throws SecurityException";

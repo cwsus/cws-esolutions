@@ -577,8 +577,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         Arrays.asList(
                                 userAccount.getGuid(),
                                 userAccount.getUsername(),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations())));
+                                PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt),
+                                PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt)));
 
                 if (DEBUG)
                 {
@@ -594,8 +594,39 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                 if (isVerified)
                 {
-                    authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    authResponse.setResponse("Successfully validated user security data.");
+                    // get the user information, this will be used for the email that gets sent out
+                    List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserData: {}", userData);
+                    }
+
+                    if ((userData != null) && (!(userData.isEmpty())))
+                    {
+                        UserAccount responseAccount = new UserAccount();
+                        responseAccount.setGuid((String) userData.get(0));
+                        responseAccount.setUsername((String) userData.get(1));
+                        responseAccount.setGivenName((String) userData.get(2));
+                        responseAccount.setSurname((String) userData.get(3));
+                        responseAccount.setDisplayName((String) userData.get(4));
+                        responseAccount.setEmailAddr((String) userData.get(5));
+                        responseAccount.setPagerNumber((String) userData.get(6));
+                        responseAccount.setTelephoneNumber((String) userData.get(7));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", responseAccount);
+                        }
+
+                        authResponse.setUserAccount(responseAccount);
+                        authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        authResponse.setResponse("Successfully validated user security data.");
+                    }
+                    else
+                    {
+                        throw new AuthenticatorException("Failed to locate user account in authentication repository. Cannot continue.");
+                    }
                 }
                 else
                 {
@@ -613,6 +644,12 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AuthenticationException(sqx.getMessage(), sqx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AuthenticationException(umx.getMessage(), umx);
         }
         catch (AuthenticatorException ax)
         {

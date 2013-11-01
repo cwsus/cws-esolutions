@@ -109,6 +109,30 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(hostInfo.getHostName()); // usr_audit_srchost
 
                     break;
+                case LOADSECURITY:
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
+
+                    break;
+                case VERIFYSECURITY:
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
+
+                    break;
                 default:
                     auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
