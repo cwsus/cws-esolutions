@@ -490,7 +490,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -588,7 +588,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -752,7 +752,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -872,7 +872,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -1002,7 +1002,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -1184,7 +1184,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -1256,7 +1256,7 @@ public class KnowledgeBaseController
                             mView.addObject("postUrl", this.postURL);
                             mView.addObject("command", new SearchRequest());
                             mView.addObject("isHelpSearch", true);
-                            mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                            mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                             mView.setViewName(appConfig.getSearchRequestPage());
                         }
                     }
@@ -1366,7 +1366,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -1594,7 +1594,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -1822,7 +1822,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -2050,7 +2050,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -2164,7 +2164,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -2273,7 +2273,7 @@ public class KnowledgeBaseController
 
                         EmailUtils.sendEmailMessage(emailMessage);
 
-                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                         mView.addObject("command", new Article());
                         mView.setViewName(this.createArticlePage);
                     }
@@ -2407,7 +2407,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -2516,7 +2516,7 @@ public class KnowledgeBaseController
 
                         EmailUtils.sendEmailMessage(emailMessage);
 
-                        mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                         mView.addObject("command", new Article());
                         mView.setViewName(this.createArticlePage);
                     }
@@ -2650,7 +2650,7 @@ public class KnowledgeBaseController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {

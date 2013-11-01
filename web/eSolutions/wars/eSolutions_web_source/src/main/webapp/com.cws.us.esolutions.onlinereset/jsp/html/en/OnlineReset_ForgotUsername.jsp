@@ -35,6 +35,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -48,7 +51,7 @@
             <tr>
                 <td><label id="txtEmailAddr"><spring:message code="olr.user.email.address" /></label></td>
                 <td>
-                    <form:input path="emailAddr" />
+                    <form:input path="emailAddr" onkeypress="disableButton(this); validateForm(this.form, event);" />
                     <form:errors path="emailAddr" cssClass="validationError" />
                 </td>
                 <td>

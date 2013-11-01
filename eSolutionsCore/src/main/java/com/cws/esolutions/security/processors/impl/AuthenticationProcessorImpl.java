@@ -293,6 +293,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     
                                             {
                                                 put(authData.getLockCount(), 0);
+                                                put(authData.getLastLogin(), System.currentTimeMillis());
                                             }
                                         });
                             }

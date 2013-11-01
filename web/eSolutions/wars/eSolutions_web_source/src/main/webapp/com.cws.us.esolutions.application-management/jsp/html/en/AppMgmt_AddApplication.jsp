@@ -49,6 +49,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -138,7 +141,7 @@
             </tr>
             <tr id="scmData" style="display: none;">
                 <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
-                <td><form:input path="scmPath" /></td>
+                <td><form:input path="scmPath" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
                 <td><form:errors path="scmPath" cssClass="validationError" /></td>
             </tr>
         </table>

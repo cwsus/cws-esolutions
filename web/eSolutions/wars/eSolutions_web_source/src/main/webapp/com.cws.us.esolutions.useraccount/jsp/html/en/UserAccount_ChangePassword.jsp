@@ -35,6 +35,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -66,7 +69,7 @@
             <tr>
                 <td><label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label></td>
                 <td>
-                    <form:password path="confirmPassword" />
+                    <form:password path="confirmPassword" onkeypress="disableButton(this); validateForm(this.form, event);" />
                     <form:errors path="confirmPassword" cssClass="validationError" />
                 </td>
             </tr>

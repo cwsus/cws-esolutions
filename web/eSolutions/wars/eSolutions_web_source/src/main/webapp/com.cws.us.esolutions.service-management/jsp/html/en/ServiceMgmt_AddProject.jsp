@@ -42,6 +42,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -82,7 +85,7 @@
                 <td><form:input path="changeQueue" /></td>
                 <td><form:errors path="changeQueue" cssClass="validationError" /></td>
                 <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
-                <td><form:input path="incidentQueue" /></td>
+                <td><form:input path="incidentQueue" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
                 <td><form:errors path="incidentQueue" cssClass="validationError" /></td>
             </tr>
         </table>

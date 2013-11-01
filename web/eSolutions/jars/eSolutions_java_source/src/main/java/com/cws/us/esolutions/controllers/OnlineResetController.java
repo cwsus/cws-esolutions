@@ -505,7 +505,7 @@ public class OnlineResetController
                 if (userAccount.isSuspended())
                 {
                     // this account is suspended, we cant work on it
-                    mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_NOT_LOGGED_IN);
+                    mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageUserNotLoggedIn());
                     mView.setViewName(appConfig.getLogonRedirect());
                 }
                 else
@@ -526,7 +526,7 @@ public class OnlineResetController
             else
             {
                 // user not logged in, redirect
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_NOT_LOGGED_IN);
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageUserNotLoggedIn());
                 mView.setViewName(appConfig.getLogonRedirect());
             }
         }
@@ -763,7 +763,7 @@ public class OnlineResetController
 
                 EmailUtils.sendEmailMessage(emailMessage);
 
-                mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                 mView.setViewName(appConfig.getLogonRedirect());
             }
             else

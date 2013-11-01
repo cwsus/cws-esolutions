@@ -46,6 +46,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -61,7 +64,7 @@
                     <label id="txtSearchData"><spring:message code="search.data" /><br /></label>
                 </td>
                 <td>
-                    <form:input path="searchTerms" />
+                    <form:input path="searchTerms" onkeypress="disableButton(this); validateForm(this.form, event);" />
                     <form:errors path="searchTerms" cssClass="validationError" />
                 </td>
             </tr>

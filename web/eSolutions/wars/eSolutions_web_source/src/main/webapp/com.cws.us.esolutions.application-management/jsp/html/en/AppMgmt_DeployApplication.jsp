@@ -40,6 +40,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -109,13 +112,13 @@
                         <td><label id="txtScmVersion"><spring:message code="app.mgmt.new.version" /></label></td>
                         <td>
                             <form:input path="version" />
-                            <form:errors path="version" cssClass="validationError" />
+                            <form:errors path="version" cssClass="validationError" onkeypress="disableButton(this); validateForm(this.form, event);" />
                         </td>
                     </tr>
                     <c:if test="${empty application.scmPath}">
                         <tr>
                             <td><label id="txtFileName"><spring:message code="app.mgmt.select.file" /></label></td>
-                            <td><input type="file" name="applicationBinary" id="applicationBinary" size="30" /></td>
+                            <td><input type="file" name="applicationBinary" id="applicationBinary" size="30" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
                         </tr>
                     </c:if>
                 </table>

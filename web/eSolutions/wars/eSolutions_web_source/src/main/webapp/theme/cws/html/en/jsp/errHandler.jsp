@@ -127,9 +127,18 @@
         <div id="content">
 	        <spring:message code="error.processing.request.operation" />
 	        <br /><br />
-		    <c:if test="${not empty errorResponse}">
-		        <p id="error">${errorResponse}</p>
-		    </c:if>
+            <c:if test="${not empty messageResponse}">
+                <p id="info">${messageResponse}</p>
+            </c:if>
+            <c:if test="${not empty errorResponse}">
+                <p id="error">${errorResponse}</p>
+            </c:if>
+            <c:if test="${not empty responseMessage}">
+                <p id="info"><spring:message code="${responseMessage}" /></p>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+                <p id="error"><spring:message code="${errorMessage}" /></p>
+            </c:if>
         </div>
 
 		<div id="navBar">

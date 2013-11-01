@@ -55,6 +55,9 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String messageEmailSendFailed = null;
     @Autowired private String messageRequestCanceled = null;
     @Autowired private Map<String, Boolean> services = null;
+    @Autowired private String messagePasswordExpired = null;
+    @Autowired private String messageUserNotLoggedIn = null;
+    @Autowired private String messageRequestProcessingFailure = null;
     @Autowired private List<String> allowedAppFileExtensions = null;
     @Autowired private List<String> allowedWebFileExtensions = null;
     @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
@@ -390,6 +393,45 @@ public class ApplicationServiceBean implements Serializable
         this.messageEmailSendFailed = value;
     }
 
+    public final void setMessagePasswordExpired(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessagePasswordExpired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePasswordExpired = value;
+    }
+
+    public final void setMessageUserNotLoggedIn(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageUserNotLoggedIn(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageUserNotLoggedIn = value;
+    }
+
+    public final void setMessageRequestProcessingFailure(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageRequestProcessingFailure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRequestProcessingFailure = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -713,6 +755,45 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageEmailSendFailed;
+    }
+
+    public final String getMessagePasswordExpired()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessagePasswordExpired()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messagePasswordExpired);
+        }
+
+        return this.messagePasswordExpired;
+    }
+
+    public final String getMessageUserNotLoggedIn()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageUserNotLoggedIn()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageUserNotLoggedIn);
+        }
+
+        return this.messageUserNotLoggedIn;
+    }
+
+    public final String getMessageRequestProcessingFailure()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageRequestProcessingFailure()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageRequestProcessingFailure);
+        }
+
+        return this.messageRequestProcessingFailure;
     }
 
     public final String toString()

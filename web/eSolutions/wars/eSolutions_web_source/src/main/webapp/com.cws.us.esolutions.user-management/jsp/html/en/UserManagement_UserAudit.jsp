@@ -29,22 +29,25 @@
 --%>
 
 <div class="feature">
+    <c:if test="${not empty messageResponse}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty errorResponse}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+
     <c:choose>
         <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
             <div id="breadcrumb" class="lpstartover">
                 <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
                     title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
             </div>
-
-            <c:if test="${not empty messageResponse}">
-                <p id="info">${messageResponse}</p>
-            </c:if>
-            <c:if test="${not empty errorResponse}">
-                <p id="error">${errorResponse}</p>
-            </c:if>
-            <c:if test="${not empty errorMessage}">
-                <p id="error"><spring:message code="${errorMessage}" /></p>
-            </c:if>
 
             <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
             <br />

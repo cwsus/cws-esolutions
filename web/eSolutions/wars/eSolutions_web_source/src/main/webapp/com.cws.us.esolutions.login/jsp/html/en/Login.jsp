@@ -35,6 +35,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -43,7 +46,7 @@
 
     <p id="validationError" />
 
-    <form:form id="submitUserLogin" name="submitUserLogin" action="${pageContext.request.contextPath}/ui/login/submit" method="post">
+    <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/login/submit" method="post">
         <table id="userauth">
             <tr>
                 <td><label id="txtUsername"><spring:message code="login.user.name" /></label></td>
@@ -62,7 +65,7 @@
             <tr>
                 <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
                 <td>
-                    <form:password path="loginPass" />
+                    <form:password path="loginPass" onkeypress="disableButton(this); validateForm(this.form, event);" />
                     <form:errors path="loginPass" cssClass="validationError" />
                 </td>
                 <td>

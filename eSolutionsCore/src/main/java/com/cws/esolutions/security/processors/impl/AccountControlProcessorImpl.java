@@ -169,7 +169,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
 
                 // insert the user salt
-                boolean isSaltInserted = userSec.addUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
+                boolean isSaltInserted = userSec.addUserSalt(userGuid, newUserSalt, SaltType.LOGON.name());
 
                 if (DEBUG)
                 {

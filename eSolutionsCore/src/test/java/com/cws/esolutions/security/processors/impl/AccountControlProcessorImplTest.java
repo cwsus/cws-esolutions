@@ -157,19 +157,20 @@ public class AccountControlProcessorImplTest
         newUser.setEmailAddr("test@domain.com");
         newUser.setFailedCount(0);
         newUser.setGivenName("Test");
-        newUser.setGuid(UUID.randomUUID().toString());
         newUser.setOlrLocked(false);
         newUser.setOlrSetup(true);
         newUser.setRole(Role.USER);
         newUser.setSurname("User");
         newUser.setSuspended(false);
-        newUser.setUsername("testuser");
+        newUser.setUsername(RandomStringUtils.randomAlphabetic(8));
 
         AccountControlRequest request = new AccountControlRequest();
         request.setControlType(ControlType.CREATE);
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
         request.setUserAccount(newUser);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("esolutions");
 
         try
         {
@@ -197,13 +198,14 @@ public class AccountControlProcessorImplTest
         newUser.setRole(Role.USER);
         newUser.setSurname("User");
         newUser.setSuspended(false);
-        newUser.setUsername("testuser");
+        newUser.setUsername(RandomStringUtils.randomAlphabetic(8));
 
         AccountControlRequest request = new AccountControlRequest();
         request.setControlType(ControlType.CREATE);
         request.setHostInfo(hostInfo);
         request.setRequestor(userAccount);
         request.setUserAccount(newUser);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("esolutions");
 
         try

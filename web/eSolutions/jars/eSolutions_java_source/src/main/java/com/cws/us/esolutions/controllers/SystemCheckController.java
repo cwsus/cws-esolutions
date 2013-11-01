@@ -241,7 +241,7 @@ public class SystemCheckController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -420,7 +420,7 @@ public class SystemCheckController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -578,7 +578,7 @@ public class SystemCheckController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -645,7 +645,7 @@ public class SystemCheckController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // all set
-                    mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                 }
                 else
                 {
@@ -747,7 +747,7 @@ public class SystemCheckController
             // redirect to password page
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
             if (DEBUG)
             {
@@ -816,7 +816,7 @@ public class SystemCheckController
                         DEBUGGER.debug("responseMessage: {}", responseMessage);
                     }
 
-                    mView.addObject(Constants.RESPONSE_MESSAGE, responseMessage);
+                    mView.addObject(Constants.MESSAGE_RESPONSE, responseMessage);
                 }
                 else
                 {

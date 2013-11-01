@@ -317,7 +317,7 @@ public class LoginController
                     case EXPIRED:
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -616,7 +616,7 @@ public class LoginController
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -627,7 +627,7 @@ public class LoginController
                             mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
                         }
 
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());
                         mView.setViewName(this.combinedLoginPage);
 
@@ -642,7 +642,7 @@ public class LoginController
                     mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
                 }
 
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                 mView.addObject("command", new LoginRequest());
                 mView.setViewName(this.combinedLoginPage);
             }
@@ -659,7 +659,7 @@ public class LoginController
 
             mView.addObject("command", new LoginRequest());
             mView.setViewName(this.combinedLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -829,7 +829,7 @@ public class LoginController
 
                         mView.addObject("command", new UserAccount());
                         mView.setViewName(this.usernameLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                         
                         break;
                 }
@@ -844,7 +844,7 @@ public class LoginController
 
                 mView.addObject("command", new UserAccount());
                 mView.setViewName(this.usernameLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
             }
         }
         catch (AuthenticationException ax)
@@ -859,7 +859,7 @@ public class LoginController
 
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.usernameLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -994,7 +994,7 @@ public class LoginController
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -1007,7 +1007,7 @@ public class LoginController
 
                         mView.addObject("command", new UserSecurity());
                         mView.setViewName(this.passwordLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                         
                         break;
                 }
@@ -1022,7 +1022,7 @@ public class LoginController
 
                 mView.addObject("command", new UserSecurity());
                 mView.setViewName(this.passwordLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
             }
         }
         catch (AuthenticationException ax)
@@ -1037,7 +1037,7 @@ public class LoginController
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.passwordLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -1172,7 +1172,7 @@ public class LoginController
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, Constants.PASSWORD_EXPIRED);
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -1214,7 +1214,7 @@ public class LoginController
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.otpLoginPage);
-            mView.addObject(Constants.ERROR_RESPONSE, Constants.ERROR_REQUEST_PROCESSING_FAILURE);
+            mView.addObject(Constants.ERROR_RESPONSE, appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)

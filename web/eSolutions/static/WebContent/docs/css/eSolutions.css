@@ -7,8 +7,6 @@ body
 {
     width: 100%;
     font-family: Arial, Helvetica, sans-serif;
-    color: #333333;
-    line-height: 1.166;
     margin: 0px;
     padding: 0px;
 }
@@ -23,17 +21,7 @@ table
 
 body > div#siteInfo
 {
-    z-index: 5;
     width: 420px;
-    margin-left: -266px;
-    margin: 10px auto;
-    text-align: center;
-    clear: both;
-    border-top: 1px ridge #CCCCCC;
-    font-size: 12px;
-    color: #cccccc;
-    padding: 10px 10px 10px 10px;
-    margin-top: 25px;
 }
 
 a:link, a:visited, a:hover
@@ -271,7 +259,7 @@ p#validationError
     float: right;
     width: 1300px;
     margin: 0;
-    padding: 0 3% 0 0;
+    padding: 0 5% 0 0;
 }
 
 #pageName
@@ -283,7 +271,7 @@ p#validationError
 #globalNav
 {
     color: #CCCCCC;
-    padding: 0px 0px 0px 525px;
+    padding: 0px 0px 0px 535px;
     white-space: nowrap;
 }
 
@@ -310,16 +298,13 @@ p#validationError
 
 #siteInfo
 {
-    width: 350px;
-    margin: 10px auto;
+    margin: auto;
     text-align: center;
     clear: both;
     border-top: 1px ridge #CCCCCC;
     font-size: 12px;
     color: #cccccc;
     padding: 10px 10px 10px 10px;
-    margin-top: 25px;
-    margin-left: auto;
 }
 
 #search

@@ -83,6 +83,9 @@
 	    <property name="homeRedirect" value="redirect:/ui/home/default" />
 	    <property name="messageEmailSendFailed" value="system.message.email.send.failed" />
 	    <property name="messageRequestCanceled" value="system.message.request.canceled" />
+	    <property name="messagePasswordExpired" value="login.user.expired" />
+	    <property name="messageUserNotLoggedIn" value="error.user.not.authenticated" />
+	    <property name="messageRequestProcessingFailure" value="error.processing.request.operation" />
     </bean>
 
     <!-- internationalization -->

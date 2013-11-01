@@ -103,38 +103,120 @@ function validateForm(theForm, e)
         targ = targ.parentNode;
     }
 
-    if (theForm.name == 'submitUserLogin')
+    if (theForm.name == 'submitCombinedLogin')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
             if (targ.id == 'execute')
             {
-                if ((theForm.username) && (theForm.username.value == ''))
+                if (theForm.loginUser.value == '')
                 {
                     clearText(theForm);
 
                     document.getElementById('validationError').innerHTML = 'Your username must be provided.';
-                    document.getElementById('username').style.color = '#FF0000';
-                    document.getElementById('username').style.color = '#FF0000';
+                    document.getElementById('txtUsername').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
                     document.getElementById('username').focus();
                 }
-                if (document.getElementById('password'))
+                else if (theForm.loginPass.value == '')
                 {
-                    if ((theForm.password) && (theForm.password.value == ''))
-                    {
-                        clearText(theForm);
+                    clearText(theForm);
 
-                        document.getElementById('validationError').innerHTML = 'Your password must be provided.';
-                        document.getElementById('password').style.color = '#FF0000';
-                        document.getElementById('password').style.color = '#FF0000';
-                        document.getElementById('execute').disabled = false;
-                        document.getElementById('password').focus();
-                    }
-                    else
-                    {
-                        theForm.submit();
-                    }
+                    document.getElementById('validationError').innerHTML = 'Your password must be provided.';
+                    document.getElementById('txtPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('username').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                clearForm();
+
+                document.getElementById('username').focus();
+            }
+        }
+    }
+    else if (theForm.name == 'submitUserLogin')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.username.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+                    document.getElementById('txtUsername').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('username').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                clearForm();
+
+                document.getElementById('username').focus();
+            }
+        }
+    }
+    else if (theForm.name == 'submitPassword')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.password.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+                    document.getElementById('txtPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('password').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
+    else if (theForm.name == 'submitOTP')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.password.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+                    document.getElementById('txtPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('password').focus();
+                }
+                else if (theForm.otpValue.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+                    document.getElementById('txtOtpValue').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('otpValue').focus();
                 }
                 else
                 {
@@ -1051,6 +1133,71 @@ function validateForm(theForm, e)
             }
         }
     }
+    else if (theForm.name == 'submitPasswordChange')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'execute')
+            {
+                if (theForm.currentPassword.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'You must provide your current password.';
+                    document.getElementById('txtCurrentPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('currentPassword').focus();
+                }
+                else if (theForm.newPassword.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'You must provide your new password.';
+                    document.getElementById('txtNewPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('newPassword').focus();
+                }
+                else if (theForm.confirmPassword.value == '')
+                {
+                    document.getElementById('validationError').innerHTML = 'Your new password must be confirmed.';
+                    document.getElementById('txtConfirmPassword').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('confirmPassword').focus();
+                }
+                else
+                {
+                    if (theForm.currentPassword.value == theForm.newPassword.value)
+                    {
+                        clearForm();
+
+                        document.getElementById('validationError').innerHTML = 'Your new password cannot match your existing password.';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('currentPassword').focus();
+                    }
+                    if (theForm.currentPassword.value == theForm.confirmPassword.value)
+                    {
+                        clearForm();
+
+                        document.getElementById('validationError').innerHTML = 'Your new password cannot match your existing password.';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('currentPassword').focus();
+                    }
+                    else if (theForm.newPassword.value != theForm.confirmPassword.value)
+                    {
+                        clearForm();
+
+                        document.getElementById('validationError').innerHTML = 'Your new and confirmed passwords must match.';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('currentPassword').focus();
+                    }
+                    else
+                    {
+                        theForm.submit();
+                    }
+                }
+            }
+            else if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+        }
+    }
     else if (theForm.name == 'submitSystemMessage')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
@@ -1199,94 +1346,6 @@ function setFocus()
                 document.forms[f][i].focus();
 
                 break;
-            }
-        }
-    }
-}
-
-function validatePassword(theForm, minSize, maxSize)
-{
-    var validator = /^(?!.*(.)\1{3})((?=.*[\d])(?=.*[a-z])(?=.*[A-Z])|(?=.*[a-z])(?=.*[A-Z])(?=.*[^\w\d\s])|(?=.*[\d])(?=.*[A-Z])(?=.*[^\w\d\s])|(?=.*[\d])(?=.*[a-z])(?=.*[^\w\d\s])).{7,30}$/;
-
-    if ((theForm.currentPassword) && (theForm.currentPassword.value == ''))
-    {
-        clearText(theForm);
-
-        document.getElementById('validationError').innerHTML = 'Please provide your current password.';
-        document.getElementById('currentPassword').style.color = '#FF0000';
-        document.getElementById('execute').disabled = false;
-        document.getElementById('currentPassword').focus();
-    }
-
-    if (theForm.newPassword.value == '')
-    {
-        clearText(theForm);
-
-        document.getElementById('validationError').innerHTML = 'Please provide a new password.';
-        document.getElementById('newPassword').style.color = '#FF0000';
-        document.getElementById('execute').disabled = false;
-        document.getElementById('newPassword').focus();
-    }
-    else if (theForm.confirmPassword.value == '')
-    {
-        clearText(theForm);
-
-        document.getElementById('validationError').innerHTML = 'Please confirm your new password.';
-        document.getElementById('confirmPassword').style.color = '#FF0000';
-        document.getElementById('execute').disabled = false;
-        document.getElementById('confirmPassword').focus();
-    }
-    else
-    {
-        if (theForm.currentPassword)
-        {
-            if ((theForm.currentPassword.value == theForm.newPassword.value) || (theForm.currentPassword.value == theForm.confirmPassword.value))
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your new password cannot be the same as your existing password.';
-                document.getElementById('newPassword').style.color = '#FF0000';
-                document.getElementById('confirmPassword').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('currentPassword').focus();
-            }
-        }
-
-        if (theForm.newPassword.value != theForm.confirmPassword.value)
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'You must confirm your new password.';
-            document.getElementById('newPassword').style.color = '#FF0000';
-            document.getElementById('confirmPassword').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('currentPassword').focus();
-        }
-        else
-        {
-            if ((theForm.confirmPassword.length < minSize) || (theForm.confirmPassword.length > maxSize))
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your new password must be between ' + minSize + ' and ' + maxSize + ' in length.';
-                document.getElementById('newPassword').style.color = '#FF0000';
-                document.getElementById('confirmPassword').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('currentPassword').focus();
-            }
-            else if (!(validator.test(theForm.confirmPassword.value)))
-            {
-                clearText(theForm);
-
-                document.getElementById('validationError').innerHTML = 'Your new password must contain at least 1 of the following: upper-case letters, lower-case letters and special characters (e.g. *).';
-                document.getElementById('newPassword').style.color = '#FF0000';
-                document.getElementById('confirmPassword').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('currentPassword').focus();
-            }
-            else
-            {
-                theForm.submit();
             }
         }
     }

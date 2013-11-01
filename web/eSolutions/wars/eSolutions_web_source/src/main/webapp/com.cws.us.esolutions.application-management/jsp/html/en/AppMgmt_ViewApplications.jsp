@@ -29,6 +29,19 @@
 --%>
 
 <div class="feature">
+    <c:if test="${not empty messageResponse}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty errorResponse}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+
     <table id="appSearchResults">
         <tr>
             <td><spring:message code="app.mgmt.application.name" /></td>

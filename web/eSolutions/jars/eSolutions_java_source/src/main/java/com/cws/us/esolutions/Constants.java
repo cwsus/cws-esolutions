@@ -40,11 +40,7 @@ public class Constants
     public static final String ERROR_MESSAGE = "errorMessage"; // returned from controllers
     public static final String ERROR_RESPONSE = "errorResponse"; // returned from the getResponse() method on DTO objects from esol core
     public static final String SEARCH_RESULTS = "searchResults";
-    public static final String RESPONSE_MESSAGE = "responseMessage"; // returned from the getResponse() method on DTO objects from esol core
+    public static final String RESPONSE_MESSAGE = "responseMessage"; // returned from controllers
+    public static final String MESSAGE_RESPONSE = "messageResponse"; // returned from the getResponse() method on DTO objects from esol core
     public static final String LINE_BREAK = System.getProperty("line.separator");
-
-    /* error messages */
-    public static final String PASSWORD_EXPIRED = "login.user.expired";
-    public static final String ERROR_NOT_LOGGED_IN = "error.user.not.authenticated";
-    public static final String ERROR_REQUEST_PROCESSING_FAILURE = "error.processing.request.operation";
 }

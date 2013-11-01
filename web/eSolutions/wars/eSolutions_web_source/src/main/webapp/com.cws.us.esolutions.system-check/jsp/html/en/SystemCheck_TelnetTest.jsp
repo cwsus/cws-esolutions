@@ -35,6 +35,9 @@
     <c:if test="${not empty errorResponse}">
         <p id="error">${errorResponse}</p>
     </c:if>
+    <c:if test="${not empty responseMessage}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
     <c:if test="${not empty errorMessage}">
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
@@ -58,7 +61,7 @@
             </tr>
             <tr>
                 <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
-                <td><form:input path="targetPort" /></td>
+                <td><form:input path="targetPort" onkeypress="disableButton(this); validateForm(this.form, event);" /></td>
                 <td><form:errors path="targetPort" cssClass="validationError" /></td>
             </tr>
         </table>
