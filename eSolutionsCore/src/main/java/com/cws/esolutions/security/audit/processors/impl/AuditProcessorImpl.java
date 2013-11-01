@@ -76,9 +76,9 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         if (secConfig.getPerformAudit())
         {
-            if (hostInfo == null)
+            if ((hostInfo == null) || (userAccount == null))
             {
-                throw new AuditServiceException("Cannot perform audit: RequestHostInfo is missing");
+                throw new AuditServiceException("Cannot perform audit: RequestHostInfo / UserAccount is missing");
             }
 
             List<String> auditList = new ArrayList<String>();
@@ -122,6 +122,18 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                     break;
                 case VERIFYSECURITY:
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_sessionid
+                    auditList.add(userAccount.getUsername()); // usr_audit_userid
+                    auditList.add(userAccount.getGuid()); // usr_audit_userguid
+                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
+                    auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
+                    auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
+                    auditList.add(hostInfo.getHostAddress()); // usr_audit_srcaddr
+                    auditList.add(hostInfo.getHostName()); // usr_audit_srchost
+
+                    break;
+                case VERIFYRESET:
                     auditList.add(SecurityConstants.NOT_SET); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(userAccount.getGuid()); // usr_audit_userguid
