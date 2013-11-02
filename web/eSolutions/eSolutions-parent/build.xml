@@ -4,7 +4,6 @@
 
     <property environment="env" />
 
-    <path id="path.antcontrib">
     <taskdef resource="net/sf/antcontrib/antlib.xml">
         <classpath>
             <pathelement location="/opt/Apache/ant/current/lib/ant-contrib.jar" />
