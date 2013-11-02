@@ -353,6 +353,24 @@
                     <!-- Create a source-release artifact that contains the
                         fully buildable project directory source structure. This is the artifact
                         which is the official subject of any release vote. -->
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>run-ant</id>
+								<phase>package</phase>
+								<inherited>false</inherited>
+								<configuration>
+									<tasks>
+										<ant antfile="${basedir}/build.xml" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
                         <executions>
