@@ -11,25 +11,11 @@
         <entry key="rev.num" type="int" operation="+" value="1" pattern="00" />
     </propertyfile>
 
-    <path id="path.antcontrib">
-        <fileset dir="${env.ANT_HOME}/lib">
-            <include name="**/ant-contrib.jar" />
-        </fileset>
-    </path>
-
-    <path id="path.svnant">
-        <fileset dir="${env.ANT_HOME}/lib">
-            <include name="**/svnant.jar" />
-            <include name="**/svnClientAdapter.jar" />
-            <include name="**/svnjavahl.jar" />
-            <include name="**/svnkit.jar" />
-            <include name="**/ganymed.jar" />
-            <include name="**/jna.jar" />
-        </fileset>
-    </path>
-
-    <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="path.antcontrib" />
-    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="path.svnant" />
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="/opt/Apache/ant/current/lib/ant-contrib.jar" />
+        </classpath>
+    </taskdef>
 
     <mkdir dir="${basedir}/${tmp}" />
     <mkdir dir="${basedir}/${buildArea}" />
