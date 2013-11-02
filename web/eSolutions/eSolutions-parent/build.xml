@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="eSolutions_web_source" default="build" basedir=".">
+<project name="eSolutions_web_source" default="deploy" basedir=".">
     <description>eSolutions_web_source buildfile</description>
 
     <property environment="env" />
