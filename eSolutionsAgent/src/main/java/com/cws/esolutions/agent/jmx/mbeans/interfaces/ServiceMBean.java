@@ -55,24 +55,8 @@ public interface ServiceMBean
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param mbeanRequest
-     * @return
-     * @throws InstanceNotFoundException
-     * @throws IOException
-     */
     public MBeanResponse performServerOperation(final MBeanRequest request) throws ServiceMBeanException;
 
-    /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param mbeanRequest
-     * @return
-     * @throws InstanceNotFoundException
-     * @throws IOException
-     */
     public MBeanResponse performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException;
 
     public MBeanResponse performApplicationOperation(final MBeanRequest request) throws ServiceMBeanException;

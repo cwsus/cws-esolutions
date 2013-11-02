@@ -63,13 +63,6 @@ public interface ISystemManagerProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
 
-    /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param request
-     * @return
-     * @throws SystemManagerException
-     */
     SystemManagerResponse runSystemCheck(final SystemManagerRequest request) throws SystemManagerException;
 
     SystemManagerResponse installSoftwarePackage(final SystemManagerRequest request) throws SystemManagerException;

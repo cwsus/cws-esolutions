@@ -47,12 +47,5 @@ public interface IExecuteRequestCommand
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param request
-     * @return
-     * @throws ExecuteCommandException
-     */
     ExecuteCommandResponse executeCommand(final ExecuteCommandRequest request) throws ExecuteCommandException;
 }

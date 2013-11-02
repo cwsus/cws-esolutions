@@ -17,27 +17,13 @@
         </classpath>
     </taskdef>
 
-    <mkdir dir="${basedir}/${tmp}" />
-    <mkdir dir="${basedir}/${buildArea}" />
-
     <target name="build">
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>
 
-        <svn javahl="false">
-            <info target="${svnpath}" />
-        </svn>
+        <touch file="${buildArea}/${ProjectName}-${ProjectVersion}.version" />
 
-        <touch file="${buildArea}/${VersionFile}" />
-
-        <echo message="${ProjectName} version ${major.num}.${minor.num}.${build.num}.${rev.num} built ${TODAY}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message="${line.separator}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message = "SVN Revision: ${svn.info.rev}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message="${line.separator}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message = "Last changed author: ${svn.info.author}" output="${buildArea}/${VersionFile}" append="true" />
-
-        <delete dir="${basedir}/${tmp}" />
-        <delete dir="${basedir}/${buildArea}" />
+        <echo message="${ProjectName} version ${major.num}.${minor.num}.${build.num}.${rev.num} built ${TODAY}" output="${buildArea}/${ProjectName}-${ProjectVersion}.version" append="true" />
     </target>
 </project>

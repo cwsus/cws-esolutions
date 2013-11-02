@@ -45,5 +45,6 @@
 
     <activeProfiles>
         <activeProfile>nexus</activeProfile>
+		<activeProfile>cws-release</activeProfile>
     </activeProfiles>
 </settings>
