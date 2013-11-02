@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="eSolutions_web_source" default="deploy" basedir=".">
+<project name="eSolutions_web_source" default="" basedir=".">
     <description>eSolutions_web_source buildfile</description>
-
-    <property environment="env" />
-
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-        <classpath>
-            <pathelement location="/opt/Apache/ant/current/lib/ant-contrib.jar" />
-        </classpath>
-    </taskdef>
-
-    <target name="deploy" depends="">
-		<scp
-		    localFile="file"
-		    remoteFile="file"
-		    todir="jenkins@caspersb-daws1.caspersbox.corp:/opt/Apache/tomcat/current/installableApps"
-		    keyfile="${user.home}/.ssh/id_rsa" />
-    </target>
 </project>
