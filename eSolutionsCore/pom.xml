@@ -145,6 +145,8 @@
             </resource>
         </resources>
 
+        <plugins />
+        <!--
         <plugins>
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -168,5 +170,6 @@
                 <artifactId>maven-source-plugin</artifactId>
             </plugin>
         </plugins>
+        -->
     </build>
 </project>

@@ -357,13 +357,12 @@
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>run-ant</id>
-								<phase>package</phase>
-								<inherited>false</inherited>
+								<id>prepare-package</id>
+								<phase>prepare-package</phase>
 								<configuration>
-									<tasks>
+									<target>
 										<ant antfile="${basedir}/build.xml" />
-									</tasks>
+									</target>
 								</configuration>
 								<goals>
 									<goal>run</goal>
@@ -373,20 +372,20 @@
 					</plugin>
                     <plugin>
                         <artifactId>maven-assembly-plugin</artifactId>
+                        <configuration>
+							<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                            <descriptors>
+								<descriptor>src/assemble/assembly.xml</descriptor>
+							</descriptors>
+                            <tarLongFileFormat>gnu</tarLongFileFormat>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>source-release-assembly</id>
+                                <id>release-assembly</id>
                                 <phase>post-package</phase>
                                 <goals>
                                     <goal>single</goal>
                                 </goals>
-                                <configuration>
-                                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                                    <descriptors>
-										<descriptor>src/assemble/assembly.xml</descriptor>
-									</descriptors>
-                                    <tarLongFileFormat>gnu</tarLongFileFormat>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
