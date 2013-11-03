@@ -37,7 +37,7 @@
         <property name="tomcat.tmp.directory" value="${tomcat.install.root}/temp" />
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
 
-        <copy file="${tomcat}/${WebProjectName}.xml" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
+        <copy file="${basedir}/src/main/tomcat/${WebProjectName}.xml" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
 
         <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml"
             token="@install.root.dir" value="${tomcat.installedApps.root}/${ProjectName}-${ProjectVersion}.ear/${WebProjectName}-${ProjectVersion}.war" />
