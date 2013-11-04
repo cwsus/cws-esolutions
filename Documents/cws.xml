@@ -220,7 +220,6 @@
     </dependencies>
 
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
         <pluginManagement>
             <plugins>
                 <!-- set versions of common plugins for reproducibility, ordered alphabetically -->
@@ -349,6 +348,7 @@
         <profile>
             <id>cws-release</id>
             <build>
+				<finalName>${project.name}</finalName>
                 <plugins>
                     <!-- Create a source-release artifact that contains the
                         fully buildable project directory source structure. This is the artifact
@@ -398,6 +398,32 @@
                             <updateReleaseInfo>true</updateReleaseInfo>
                         </configuration>
                     </plugin>
+					<plugin>
+						<artifactId>maven-ear-plugin</artifactId>
+						<configuration>
+							<modules>
+								<webModule>
+									<groupId>${project.dependencies[0].groupId}</groupId>
+									<artifactId>${project.dependencies[0].artifactId}</artifactId>
+									<contextRoot>/${project.dependencies[0].artifactId}</contextRoot>
+								</webModule>
+							</modules>
+							<archive>
+								<manifestEntries>
+									<Project-Name>${project.name}</Project-Name>
+									<Subproject-Name>${project.name}</Subproject-Name>
+									<Specification-Title>${project.name}</Specification-Title>
+									<Specification-Vendor>${project.organization.name}</Specification-Vendor>
+									<Specification-Version>${project.version}</Specification-Version>
+									<Implementation-Title>${project.name}</Implementation-Title>
+									<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+									<Implementation-Version>${project.version}</Implementation-Version>
+									<Build-Date>${timestamp}</Build-Date>
+									<Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</plugin>
                     <plugin>
                         <artifactId>maven-jar-plugin</artifactId>
                         <configuration>
