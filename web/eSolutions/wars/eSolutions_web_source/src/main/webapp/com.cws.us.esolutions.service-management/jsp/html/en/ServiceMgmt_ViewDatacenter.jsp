@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.service-management/jsp/html/en
- * ServiceMgmt_ViewProject.jsp
+ * ServiceMgmt_AddDatacenter.jsp
  *
  * $Id$
  * $Author$
@@ -57,46 +57,23 @@
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
-    <table id="projectDetail">
+    <spring:message code="svc.mgmt.add.datacenter" />
+
+    <p id="validationError" />
+
+    <table id="viewDatacenter">
         <tr>
-            <td><label id="txtProjectCode"><spring:message code="svc.mgmt.project.code" /></label>
-            <td>${project.projectCode}</td>
+            <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
+            <td>${datacenterName}</td>
         </tr>
         <tr>
-            <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label>  
-            <td>${project.projectStatus}</td>
+            <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
+            <td>${datacenterStatus}</td>
         </tr>
         <tr>
-            <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label>
-            <td>${project.primaryContact}</td>
+            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.dataacenter.description" /></label></td>
+	        <td>${datacenterDesc}</td>
         </tr>
-        <tr>
-            <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label>
-            <td>${project.secondaryContact}</td>
-        </tr>
-        <tr>
-            <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label>
-            <td>${project.contactEmail}</td>
-        </tr>
-        <tr>
-            <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label>
-            <td>${project.changeQueue}</td>
-        </tr>
-        <tr>
-            <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label>
-            <td>${project.incidentQueue}</td>
-        </tr>
-        <tr>
-            <td><label id="txtApplications"><spring:message code="svc.mgmt.project.applications" /></label>
-        </tr>
-        <c:forEach var="application" items="${project.applicationList}">
-            <tr>
-                <td>
-                    <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
-                        title="${application.applicationName}">${application.applicationName}</a>
-                </td>
-            </tr>
-        </c:forEach>
     </table>
 </div>
 <br /><br />

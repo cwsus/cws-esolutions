@@ -40,8 +40,6 @@
                    <spring:message code='link.globalNav.dns-services' /></a> |
                 <a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='link.globalNav.service-mgmt' />">
                    <spring:message code='link.globalNav.service-mgmt' /></a> |
-                <a href="${pageContext.request.contextPath}/ui/system-check/default" title="<spring:message code='link.globalNav.validate-systems' />">
-                    <spring:message code='link.globalNav.validate-systems' /></a> |
                 <a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='link.globalNav.system-mgmt' />">
                     <spring:message code='link.globalNav.system-mgmt' /></a>
             </div>

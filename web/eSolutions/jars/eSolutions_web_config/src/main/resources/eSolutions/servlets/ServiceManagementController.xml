@@ -50,6 +50,8 @@
 	    <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
 	    <property name="viewProjectsList" value="ServiceMgmt_ViewProjects" />
 	    <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
+	    <property name="viewDatacentersPage" value="ServiceMgmt_ViewDatacenters" />
+	    <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
 	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
         <property name="messageRequestValidationFailed" value="svc.mgmt.request.validation.failed" />

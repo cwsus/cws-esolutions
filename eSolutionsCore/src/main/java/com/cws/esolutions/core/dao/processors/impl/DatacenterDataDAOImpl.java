@@ -181,13 +181,105 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getAvailableDataCenters() throws SQLException
+    public synchronized int getDatacenterCount() throws SQLException
     {
-        final String methodName = IDatacenterDataDAO.CNAME + "#getAvailableDataCenters() throws SQLException";
+        final String methodName = IDatacenterDataDAO.CNAME + "#getDatacenterCount() throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{ CALL getDatacenterCount() }");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+                }
+                else
+                {
+                    throw new SQLException("No datacenters were located.");
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return count;
+    }
+
+    @Override
+    public synchronized List<String[]> getAvailableDataCenters(final int startRow) throws SQLException
+    {
+        final String methodName = IDatacenterDataDAO.CNAME + "#getAvailableDataCenters(final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -207,7 +299,8 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listDataCenters()}");
+                stmt = sqlConn.prepareCall("{CALL listDataCenters(?)}");
+                stmt.setInt(1, startRow);
 
                 if (DEBUG)
                 {

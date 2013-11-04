@@ -240,7 +240,8 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
             if (isServiceAuthorized)
             {
-                List<String[]> serverData = datactrDAO.getAvailableDataCenters();
+                int count = datactrDAO.getDatacenterCount();
+                List<String[]> serverData = datactrDAO.getAvailableDataCenters(request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -280,6 +281,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         DEBUGGER.debug("datacenterList: {}", datacenterList);
                     }
 
+                    response.setEntryCount(count);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("Successfully loaded installed server information.");
                     response.setDatacenterList(datacenterList);

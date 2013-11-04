@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
-                <td><form:input path="targetPort" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
+                <td><form:input path="targetPort" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="targetPort" cssClass="validationError" /></td>
             </tr>
         </table>

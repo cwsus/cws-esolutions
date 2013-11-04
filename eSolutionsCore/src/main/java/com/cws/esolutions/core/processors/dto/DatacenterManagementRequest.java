@@ -16,8 +16,11 @@
 package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
+
 import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
@@ -42,6 +45,7 @@ import com.cws.esolutions.security.dto.UserAccount;
  */
 public class DatacenterManagementRequest implements Serializable
 {
+    private int startPage = 0;
     private String serviceId = null;
     private String applicationId = null;
     private DataCenter dataCenter = null;
@@ -120,6 +124,19 @@ public class DatacenterManagementRequest implements Serializable
         this.applicationId = value;
     }
 
+    public final void setStartPage(final int value)
+    {
+        final String methodName = DatacenterManagementRequest.CNAME + "#setStartPage(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startPage = value;
+    }
+
     public final void setDataCenter(final DataCenter value)
     {
         final String methodName = DatacenterManagementRequest.CNAME + "#setDataCenter(final DataCenter value)";
@@ -196,6 +213,19 @@ public class DatacenterManagementRequest implements Serializable
         }
 
         return this.applicationId;
+    }
+
+    public final int getStartPage()
+    {
+        final String methodName = DatacenterManagementRequest.CNAME + "#getStartPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startPage);
+        }
+
+        return this.startPage;
     }
 
     public final DataCenter getDataCenter()

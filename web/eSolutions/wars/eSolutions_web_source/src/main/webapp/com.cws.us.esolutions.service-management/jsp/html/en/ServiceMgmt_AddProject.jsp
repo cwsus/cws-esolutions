@@ -30,10 +30,16 @@
 
 <div class="feature">
     <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a> /
         <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
     </div>
 
     <c:if test="${not empty messageResponse}">
@@ -85,7 +91,7 @@
                 <td><form:input path="changeQueue" /></td>
                 <td><form:errors path="changeQueue" cssClass="validationError" /></td>
                 <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
-                <td><form:input path="incidentQueue" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
+                <td><form:input path="incidentQueue" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="incidentQueue" cssClass="validationError" /></td>
             </tr>
         </table>

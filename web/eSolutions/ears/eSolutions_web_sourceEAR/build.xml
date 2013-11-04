@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="eSolutions" default="init" basedir=".">
     <description>eSolutions buildfile</description>
-	<property file="build/build.properties" />
+
+    <property environment="env" />
+    <property file="buildProps/build.properties" />
 
 	<target name="init">
 		<tstamp>
 		     <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
 		</tstamp>
 
-		<touch file="${resources}/${EarProjectName}.version" />
-		<echo message="${EarProjectName} version ${ProjectVersion} built ${TODAY}" file="${ear}/${EarProjectName}.version" />
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+
+        <touch file="${buildArea}/${projectName}/${projectName}-${projectVersion}.version" />
+
+        <echo message="${projectName} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${projectName}/${projectName}-${projectVersion}.version" append="true" />
 	</target>
 </project>

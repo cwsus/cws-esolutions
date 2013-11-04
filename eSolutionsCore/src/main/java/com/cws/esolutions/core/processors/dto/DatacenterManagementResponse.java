@@ -16,9 +16,13 @@
 package com.cws.esolutions.core.processors.dto;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
+
 import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
@@ -42,6 +46,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class DatacenterManagementResponse implements Serializable
 {
+    private int entryCount = 0;
     private String response = null;
     private DataCenter dataCenter = null;
     private List<DataCenter> datacenterList = null;
@@ -77,6 +82,19 @@ public class DatacenterManagementResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = DatacenterManagementResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
     }
 
     public final void setDataCenter(final DataCenter value)
@@ -129,6 +147,19 @@ public class DatacenterManagementResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = DatacenterManagementResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     public final DataCenter getDataCenter()

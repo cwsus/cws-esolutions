@@ -57,7 +57,9 @@ public interface IDatacenterDataDAO
 
     boolean removeExistingDatacenter(final String serverGuid) throws SQLException;
 
-    List<String[]> getAvailableDataCenters() throws SQLException;
+    int getDatacenterCount() throws SQLException;
+
+    List<String[]> getAvailableDataCenters(final int startRow) throws SQLException;
 
     List<String[]> getDataCenterByAttribute(final String attribute) throws SQLException;
 

@@ -176,9 +176,17 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Datacenter" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_AddDatacenter.jsp" cascade="true" />
     </definition>
-    <definition name="ServiceMgmt_ViewProject" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Project" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProject.jsp" cascade="true" />
+    <definition name="ServiceMgmt_ViewDatacenters" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Datacenters" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewDatacenters.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewDatacenter" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Datacenter" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewDatacenter.jsp" cascade="true" />
+    </definition>
+    <definition name="ServiceMgmt_ViewPlatforms" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platforms" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewPlatforms.jsp" cascade="true" />
     </definition>
     <definition name="ServiceMgmt_ViewPlatform" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platform" cascade="true" />
@@ -188,9 +196,9 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Projects" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProjects.jsp" cascade="true" />
     </definition>
-    <definition name="ServiceMgmt_ViewPlatforms" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platforms" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewPlatforms.jsp" cascade="true" />
+    <definition name="ServiceMgmt_ViewProject" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Project" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-management/jsp/html/en/ServiceMgmt_ViewProject.jsp" cascade="true" />
     </definition>
 
     <!-- System Check -->

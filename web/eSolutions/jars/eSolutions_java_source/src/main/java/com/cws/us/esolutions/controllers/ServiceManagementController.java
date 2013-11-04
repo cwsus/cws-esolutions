@@ -13,13 +13,18 @@ package com.cws.us.esolutions.controllers;
 
 import java.util.Map;
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -104,6 +109,8 @@ public class ServiceManagementController
     private String addDatacenterPage = null;
     private String addServerRedirect = null;
     private String messageNoDmgrFound = null;
+    private String viewDatacenterPage = null;
+    private String viewDatacentersPage = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
     private String messageRequestValidationFailed = null;
@@ -259,6 +266,32 @@ public class ServiceManagementController
         }
 
         this.viewPlatformPage = value;
+    }
+
+    public final void setViewDatacentersPage(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setViewDatacentersPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.viewDatacentersPage = value;
+    }
+
+    public final void setViewDatacenterPage(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setViewDatacenterPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.viewDatacenterPage = value;
     }
 
     public final void setViewProjectsList(final String value)
@@ -1059,7 +1092,7 @@ public class ServiceManagementController
                 request.setServiceId(this.platformMgmt);
                 request.setApplicationId(appConfig.getApplicationId());
                 request.setApplicationName(appConfig.getApplicationName());
-                request.setStartPage((page-1) * this.recordsPerPage);
+                request.setStartPage((page - 1) * this.recordsPerPage);
 
                 if (DEBUG)
                 {
@@ -1096,6 +1129,302 @@ public class ServiceManagementController
             catch (ProjectManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/list-datacenters", method = RequestMethod.GET)
+    public final ModelAndView showDatacenterList()
+    {
+        final String methodName = ServiceManagementController.CNAME + "#showDatacenterList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IDatacenterManagementProcessor processor = new DatacenterManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                DatacenterManagementRequest request = new DatacenterManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.dcService);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+                }
+
+                DatacenterManagementResponse response = processor.listDatacenters(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<DataCenter> datacenterList = response.getDatacenterList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<DataCenter>: {}", datacenterList);
+                    }
+
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject("datacenterList", datacenterList);
+                    mView.setViewName(this.viewDatacentersPage);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (DatacenterManagementException dmx)
+            {
+                ERROR_RECORDER.error(dmx.getMessage(), dmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/list-datacenters/page/{page}", method = RequestMethod.GET)
+    public final ModelAndView showDataCenterList(@PathVariable("page") final int page)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#showDatacenterList(@PathVariable(\"page\") final int page)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", page);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IDatacenterManagementProcessor processor = new DatacenterManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                DatacenterManagementRequest request = new DatacenterManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.dcService);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setStartPage((page - 1) * this.recordsPerPage);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+                }
+
+                DatacenterManagementResponse response = processor.listDatacenters(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<DataCenter> datacenterList = response.getDatacenterList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<DataCenter>: {}", datacenterList);
+                    }
+
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject("datacenterList", datacenterList);
+                    mView.setViewName(this.viewDatacentersPage);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (DatacenterManagementException dmx)
+            {
+                ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }
@@ -1408,6 +1737,162 @@ public class ServiceManagementController
             catch (PlatformManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/datacenter/{datacenter}", method = RequestMethod.GET)
+    public final ModelAndView showDatacenter(@PathVariable("datacenter") final String datacenter)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#showPlatform(@PathVariable(\"datacenter\") final String datacenter)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", datacenter);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IDatacenterManagementProcessor processor = new DatacenterManagementProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        {
+            // redirect to password page
+            mView = new ModelAndView(new RedirectView());
+            mView.setViewName(appConfig.getExpiredRedirect());
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ModelAndView: {}", mView);
+            }
+
+            return mView;
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                DataCenter reqDatacenter = new DataCenter();
+                reqDatacenter.setDatacenterGuid(datacenter);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Datacenter: {}", reqDatacenter);
+                }
+
+                // get a list of available servers
+                DatacenterManagementRequest request = new DatacenterManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.dcService);
+                request.setDataCenter(reqDatacenter);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+                }
+
+                DatacenterManagementResponse response = processor.getDatacenter(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    DataCenter resDatacenter = response.getDataCenter();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DataCenter: {}", resDatacenter);
+                    }
+
+                    mView.addObject("datacenter", resDatacenter);
+                    mView.setViewName(this.viewDatacenterPage);
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (DatacenterManagementException dmx)
+            {
+                ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }

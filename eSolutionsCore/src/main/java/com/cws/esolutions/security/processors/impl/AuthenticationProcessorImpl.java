@@ -367,7 +367,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
 
                         String userGuid = lockInfo[0];
-                        int currentCount = Integer.parseInt(lockInfo[7]);
+                        int currentCount = Integer.parseInt(lockInfo[9]);
 
                         if (DEBUG)
                         {

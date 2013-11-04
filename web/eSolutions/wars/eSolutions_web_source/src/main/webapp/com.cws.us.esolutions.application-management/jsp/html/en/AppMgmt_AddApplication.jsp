@@ -141,7 +141,7 @@
             </tr>
             <tr id="scmData" style="display: none;">
                 <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
-                <td><form:input path="scmPath" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
+                <td><form:input path="scmPath" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="scmPath" cssClass="validationError" /></td>
             </tr>
         </table>

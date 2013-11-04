@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.service-management/jsp/html/en
- * ServiceMgmt_ViewProject.jsp
+ * ServiceMgmt_ViewPlatforms.jsp
  *
  * $Id$
  * $Author$
@@ -32,8 +32,6 @@
     <div id="breadcrumb" class="lpstartover">
         <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
             title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
         <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
             title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a> / 
         <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
@@ -57,46 +55,41 @@
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
-    <table id="projectDetail">
-        <tr>
-            <td><label id="txtProjectCode"><spring:message code="svc.mgmt.project.code" /></label>
-            <td>${project.projectCode}</td>
-        </tr>
-        <tr>
-            <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label>  
-            <td>${project.projectStatus}</td>
-        </tr>
-        <tr>
-            <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label>
-            <td>${project.primaryContact}</td>
-        </tr>
-        <tr>
-            <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label>
-            <td>${project.secondaryContact}</td>
-        </tr>
-        <tr>
-            <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label>
-            <td>${project.contactEmail}</td>
-        </tr>
-        <tr>
-            <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label>
-            <td>${project.changeQueue}</td>
-        </tr>
-        <tr>
-            <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label>
-            <td>${project.incidentQueue}</td>
-        </tr>
-        <tr>
-            <td><label id="txtApplications"><spring:message code="svc.mgmt.project.applications" /></label>
-        </tr>
-        <c:forEach var="application" items="${project.applicationList}">
+    <table id="viewDatacenterList">
+        <c:forEach var="datacenter" items="${datacenterList}">
             <tr>
                 <td>
-                    <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
-                        title="${application.applicationName}">${application.applicationName}</a>
+                    <label id="datacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label>
+                    <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${datacenter.datacenterGuid}"
+                        title="${datacenter.datacenterName}">${datacenter.datacenterName}</a>
                 </td>
+                <td><label id="datacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label>${datacenter.datacenterStatus}</td>
+                <td><label id="datacenterDesc"><spring:message code="svc.mgmt.datacenter.description" /></label>${datacenter.datacenterDesc}</td>
             </tr>
         </c:forEach>
     </table>
+
+    <c:if test="${pages gt 1}">
+        <br />
+        <hr />
+        <br />
+        <table>
+            <tr>
+                <c:forEach begin="1" end="${pages}" var="i">
+                    <c:choose>
+                        <c:when test="${page eq i}">
+                            <td>${i}</td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters/page/${i}"
+                                    title="<spring:message code='system.next.page' />">${i}</a>
+                            </td>
+                        </c:otherwise>
+                    </c:choose>
+                </c:forEach>
+            </tr>
+        </table>
+    </c:if>
 </div>
 <br /><br />

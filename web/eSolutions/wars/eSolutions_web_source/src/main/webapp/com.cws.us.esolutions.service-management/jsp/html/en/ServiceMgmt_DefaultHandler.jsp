@@ -49,14 +49,20 @@
             <td>
                 <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
                     title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                    title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
             </td>
             <td>
                 <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
                     title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                    title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
             </td>
             <td>
                 <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
                     title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+                    title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
             </td>
         </tr>
     </table>

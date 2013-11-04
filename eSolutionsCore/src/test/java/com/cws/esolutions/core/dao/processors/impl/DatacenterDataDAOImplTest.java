@@ -100,7 +100,7 @@ public class DatacenterDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getAvailableDataCenters());
+            Assert.assertNotNull(dao.getAvailableDataCenters(0));
         }
         catch (SQLException sqx)
         {
