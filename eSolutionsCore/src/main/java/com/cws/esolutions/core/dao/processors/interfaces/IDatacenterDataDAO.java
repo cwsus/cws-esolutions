@@ -61,7 +61,7 @@ public interface IDatacenterDataDAO
 
     List<String[]> getAvailableDataCenters(final int startRow) throws SQLException;
 
-    List<String[]> getDataCenterByAttribute(final String attribute) throws SQLException;
+    List<String[]> getDataCenterByAttribute(final String attribute, final int startRow) throws SQLException;
 
     List<String> getDatacenter(final String attribute) throws SQLException;
 }

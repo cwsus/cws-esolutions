@@ -99,7 +99,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                 try
                 {
-                    validator = datactrDAO.getDataCenterByAttribute(dataCenter.getDatacenterName());
+                    validator = datactrDAO.getDataCenterByAttribute(dataCenter.getDatacenterName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {

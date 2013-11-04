@@ -34,7 +34,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDataCenterByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getDataCenterByAttribute`(
-    IN attributeName VARCHAR(100)
+    IN attributeName VARCHAR(100),
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -46,7 +47,8 @@ BEGIN
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_datacenters`
     WHERE MATCH (`DATACENTER_GUID`, `DATACENTER_NAME`, `DATACENTER_STATUS`)
-    AGAINST (+attributeName IN BOOLEAN MODE);
+    AGAINST (+attributeName IN BOOLEAN MODE)
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -100,6 +102,48 @@ DELIMITER ;
 COMMIT;
 
 --
+-- Definition of procedure `getDatacenterCount`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDatacenterCount`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getDatacenterCount`(
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM `esolutionssvc`.`service_datacenters`
+    WHERE DATACENTER_STATUS = 'ACTIVE';
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
+-- Definition of procedure `esolutionssvc`.`listDataCenters`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`listDataCenters`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listDataCenters`(
+    IN startRow INT
+)
+BEGIN
+    SELECT
+        DATACENTER_GUID,
+        DATACENTER_NAME,
+        DATACENTER_STATUS,
+        DATACENTER_DESC
+    FROM `esolutionssvc`.`service_datacenters`
+    WHERE DATACENTER_STATUS = 'ACTIVE'
+    LIMIT startRow, 20;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+COMMIT;
+
+--
 -- Definition of procedure `esolutionssvc`.`getDatacenterData`
 --
 DELIMITER $$
@@ -117,28 +161,6 @@ BEGIN
     FROM `esolutionssvc`.`service_datacenters`
     WHERE DATACENTER_GUID = datacenterGuid
     AND DATACENTER_STATUS = 'ACTIVE';
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
-
---
--- Definition of procedure `esolutionssvc`.`listDataCenters`
---
-DELIMITER $$
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`listDataCenters`$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listDataCenters`(
-)
-BEGIN
-    SELECT
-        DATACENTER_GUID,
-        DATACENTER_NAME,
-        DATACENTER_STATUS,
-        DATACENTER_DESC
-    FROM `esolutionssvc`.`service_datacenters`
-    WHERE DATACENTER_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

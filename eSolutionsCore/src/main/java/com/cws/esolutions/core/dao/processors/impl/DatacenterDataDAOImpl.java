@@ -371,13 +371,14 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
     }
 
     @Override
-    public synchronized List<String[]> getDataCenterByAttribute(final String attribute) throws SQLException
+    public synchronized List<String[]> getDataCenterByAttribute(final String attribute, final int startRow) throws SQLException
     {
-        final String methodName = IDatacenterDataDAO.CNAME + "#getDataCenterByAttribute(final String attribute) throws SQLException";
+        final String methodName = IDatacenterDataDAO.CNAME + "#getDataCenterByAttribute(final String attribute, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
@@ -397,8 +398,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getDataCenterByAttribute(?)}");
+                stmt = sqlConn.prepareCall("{CALL getDataCenterByAttribute(?, ?)}");
                 stmt.setString(1, attribute);
+                stmt.setInt(2, startRow);
 
                 if (DEBUG)
                 {
