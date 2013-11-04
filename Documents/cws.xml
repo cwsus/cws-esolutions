@@ -348,7 +348,7 @@
         <profile>
             <id>cws-release</id>
             <build>
-				<finalName>${project.name}</finalName>
+				<finalName>${project.name}-${project.version}</finalName>
                 <plugins>
                     <!-- Create a source-release artifact that contains the
                         fully buildable project directory source structure. This is the artifact

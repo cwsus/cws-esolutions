@@ -35,19 +35,5 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 
     <build>
         <finalName>${project.name}</finalName>
-        <plugins>
-            <plugin>
-                <artifactId>maven-ear-plugin</artifactId>
-                <configuration>
-                    <modules>
-                        <webModule>
-                            <groupId>${project.dependencies[0].groupId}</groupId>
-                            <artifactId>${project.dependencies[0].artifactId}</artifactId>
-                            <contextRoot>/${project.dependencies[0].artifactId}</contextRoot>
-                        </webModule>
-                    </modules>
-                </configuration>
-            </plugin>
-        </plugins>
     </build>
 </project>
