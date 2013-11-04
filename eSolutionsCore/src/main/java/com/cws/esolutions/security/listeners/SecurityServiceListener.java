@@ -64,6 +64,7 @@ public class SecurityServiceListener implements ServletContextListener
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
 
+    @Override
     public void contextInitialized(final ServletContextEvent sContextEvent)
     {
         final String methodName = SecurityServiceListener.CNAME + "#contextInitialized(final ServletContextEvent sContextEvent)";
@@ -168,9 +169,7 @@ public class SecurityServiceListener implements ServletContextListener
         }
     }
 
-    /**
-     * Empty method
-     */
+    @Override
     public void contextDestroyed(final ServletContextEvent sContextEvent)
     {
         final String methodName = SecurityServiceListener.CNAME + "#contextDestroyed(final ServletContextEvent sContextEvent)";

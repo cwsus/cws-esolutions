@@ -280,10 +280,9 @@ public class ResourceController
      * Sets up an application datasource connection
      * via JNDI to the requested resource reference
      *
-     * @param identifier
-     * @return Connection
-     * @throws NamingException
-     * @throws SQLException
+     * @param dsManager
+     * @param resBean
+     * @throws CoreServiceException
      */
     public synchronized static void configureAndCreateDataConnection(final DataSourceManager dsManager, final ResourceControllerBean resBean) throws CoreServiceException
     {

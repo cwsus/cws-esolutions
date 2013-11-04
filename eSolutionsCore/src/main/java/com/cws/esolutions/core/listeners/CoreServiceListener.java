@@ -158,12 +158,6 @@ public class CoreServiceListener implements ServletContextListener
         }
     }
 
-    /**
-     *
-     *
-     * @param sce
-     * @see javax.servlet.ServletContextListener#contextDestroyed(javax.servlet.ServletContextEvent)
-     */
     @Override
     public void contextDestroyed(final ServletContextEvent contextEvent)
     {

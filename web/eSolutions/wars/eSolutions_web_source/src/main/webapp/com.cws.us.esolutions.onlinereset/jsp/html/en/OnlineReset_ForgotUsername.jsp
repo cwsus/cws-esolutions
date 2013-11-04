@@ -47,6 +47,9 @@
     <p id="validationError" />
 
     <form:form id="submitEmailForUserSearch" name="submitEmailForUserSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-username" method="post" autocomplete="off">
+        <form:hidden path="isReset" value="true" />
+        <form:hidden path="resetType" value="EMAIL" />
+
         <table id="userauth">
             <tr>
                 <td><label id="txtEmailAddr"><spring:message code="olr.user.email.address" /></label></td>

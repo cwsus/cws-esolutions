@@ -307,26 +307,33 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: {}", sessionAccount);
                 }
 
-                switch (sessionAccount.getStatus())
+                if (sessionAccount.getStatus() == null)
                 {
-                    case SUCCESS:
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getHomeRedirect());
+                    hSession.invalidate();
 
-                        return mView;
-                    case EXPIRED:
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                        return mView;
-                    default:
-                        hSession.invalidate();
-
-                        break;
+                    break;
                 }
+                else
+                {
+                    switch (sessionAccount.getStatus())
+                    {
+                        case SUCCESS:
+                            mView = new ModelAndView(new RedirectView());
+                            mView.setViewName(appConfig.getHomeRedirect());
 
-                break;
+                            return mView;
+                        case EXPIRED:
+                            mView = new ModelAndView(new RedirectView());
+                            mView.setViewName(appConfig.getExpiredRedirect());
+                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                            return mView;
+                        default:
+                            hSession.invalidate();
+
+                            break;
+                    }
+                }
             }
         }
 

@@ -97,7 +97,7 @@ public interface IProjectDataDAO
     /**
      * Obtains data regarding the provided project GUID for display.
      *
-     * @param projectGuid - The GUID of the project to obtain data for
+     * @param startRow - The GUID of the project to obtain data for
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */

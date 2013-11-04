@@ -11,6 +11,8 @@
 
     <bean id="onlineResetValidator" class="com.cws.us.esolutions.validators.OnlineResetValidator">
         <property name="messageAnswerRequired" value="error.answer.empty" />
+        <property name="messageEmailAddressRequired" value="error.email.required" />
+        <property name="messageUsernameRequired" value="error.username.empty" />
     </bean>
 
     <bean id="onlineResetController" class="com.cws.us.esolutions.controllers.OnlineResetController">
@@ -23,7 +25,8 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="resetURL" value="/ui/olr/forgot-password/" />
+        <property name="messageValidationFailed" value="request.validation.failed" />
+        <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageOlrComplete" value="olr.request.complete" />
         <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />
         <property name="submitUsernamePage" value="OnlineReset_SubmitUsername" />

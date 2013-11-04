@@ -1139,7 +1139,7 @@ function validateForm(theForm, e)
         {
             if (targ.id == 'execute')
             {
-                if (theForm.currentPassword.value == '')
+                if ((theForm.currentPassword) && (theForm.currentPassword.value == ''))
                 {
                     document.getElementById('validationError').innerHTML = 'You must provide your current password.';
                     document.getElementById('txtCurrentPassword').style.color = '#FF0000';
@@ -1162,7 +1162,7 @@ function validateForm(theForm, e)
                 }
                 else
                 {
-                    if (theForm.currentPassword.value == theForm.newPassword.value)
+                    if ((theForm.currentPassword) && (theForm.currentPassword.value == theForm.newPassword.value))
                     {
                         clearForm();
 
@@ -1170,7 +1170,7 @@ function validateForm(theForm, e)
                         document.getElementById('execute').disabled = false;
                         document.getElementById('currentPassword').focus();
                     }
-                    if (theForm.currentPassword.value == theForm.confirmPassword.value)
+                    else if ((theForm.currentPassword) && (theForm.currentPassword.value == theForm.confirmPassword.value))
                     {
                         clearForm();
 

@@ -11,44 +11,46 @@
  */
 package com.cws.us.esolutions.controllers;
 
-import org.slf4j.Logger;
 import java.util.Enumeration;
-import org.slf4j.LoggerFactory;
-import javax.servlet.http.HttpSession;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
-import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.UserChangeRequest;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.us.esolutions.validators.PasswordValidator;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.us.esolutions.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.enums.ControlType;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.us.esolutions.validators.SecurityResponseValidator;
-import com.cws.esolutions.security.processors.enums.ModificationType;
-import com.cws.esolutions.security.processors.dto.AccountResetRequest;
-import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.security.processors.dto.AccountResetRequest;
+import com.cws.esolutions.security.processors.dto.AccountResetResponse;
+import com.cws.esolutions.security.processors.enums.ControlType;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.enums.ModificationType;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.dto.UserChangeRequest;
+import com.cws.us.esolutions.validators.EmailAddressValidator;
+import com.cws.us.esolutions.validators.PasswordValidator;
+import com.cws.us.esolutions.validators.SecurityResponseValidator;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -706,13 +708,6 @@ public class UserAccountController
         {
             if (hSession.getAttribute(Constants.RESET_ACCOUNT) != null)
             {
-                changeReq.setIsReset(true);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-                }
-
                 userAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
 
                 if (DEBUG)
@@ -783,6 +778,7 @@ public class UserAccountController
                 request.setRequestor(userAccount);
                 request.setUserAccount(userAccount);
                 request.setUserSecurity(userSecurity);
+                request.setIsReset(changeReq.isReset());
                 request.setApplicationId(appConfig.getApplicationId());
                 request.setApplicationName(appConfig.getApplicationName());
 
@@ -803,18 +799,6 @@ public class UserAccountController
                     // yay
                     if (changeReq.isReset())
                     {
-                        // update the account status
-                        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-                        {
-                            userAccount.setStatus(LoginStatus.SUCCESS);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", userAccount);
-                        }
-
-                        // invalidate existing session
                         if (DEBUG)
                         {
                             DEBUGGER.debug("Invalidating existing session object...");
@@ -822,23 +806,15 @@ public class UserAccountController
 
                         hSession.invalidate();
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Creating new session...");
-                        }
-
-                        HttpSession newSession = hRequest.getSession(true);
-                        userAccount.setSessionId(newSession.getId());
-                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("HttpSession: {}", newSession);
-                        }
+                        // redirect to logon page
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
+                        mView.setViewName(appConfig.getLogonRedirect());
                     }
-
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
-                    mView.setViewName(this.myAccountPage);
+                    else
+                    {
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
+                        mView.setViewName(this.myAccountPage);
+                    }
                 }
                 else
                 {

@@ -55,8 +55,8 @@ public interface IKnowledgeBaseDAO
 
     /**
      *
-     * @param articleMap
-     * @return
+     * @param articleDetail
+     * @return boolean
      * @throws SQLException
      */
     boolean doCreateArticle(final List<String> articleDetail) throws SQLException;
@@ -66,9 +66,8 @@ public interface IKnowledgeBaseDAO
      * article.
      *
      * @param articleDetail
-     * @return
+     * @return boolean
      * @throws SQLException
-     * @throws ArticleNotFoundException
      */
     boolean doUpdateArticle(final List<String> articleDetail) throws SQLException;
 
@@ -77,17 +76,17 @@ public interface IKnowledgeBaseDAO
     /**
     *
     * @param articleId
-    * @return
+    * @param isApproval
+    * @return List<String>
     * @throws SQLException
     */
    List<String> retrieveArticle(final String articleId, final boolean isApproval) throws SQLException;
 
     /**
      *
-     * @param requestorId
-     * @return
+     * @param author
+     * @return List<String>
      * @throws SQLException
-     * @throws ArticleNotFoundException
      */
     List<String[]> searchPendingArticles(final String author) throws SQLException;
 

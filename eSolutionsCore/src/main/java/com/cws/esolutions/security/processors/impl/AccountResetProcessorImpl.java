@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -143,8 +144,10 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         userAccount.setUsername(userData[1]);
                         userAccount.setGivenName(userData[2]);
                         userAccount.setSurname(userData[3]);
-                        userAccount.setEmailAddr(userData[4]);
-                        
+                        userAccount.setDisplayName(userData[4]);
+                        userAccount.setEmailAddr(userData[5]);
+                        userAccount.setRole(Role.valueOf(userData[8]));
+
                         if (DEBUG)
                         {
                             DEBUGGER.debug("UserAccount: {}", userAccount);

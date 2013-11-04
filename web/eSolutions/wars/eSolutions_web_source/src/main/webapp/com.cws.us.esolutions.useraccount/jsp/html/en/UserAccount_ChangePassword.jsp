@@ -49,6 +49,8 @@
     <p id="validationError" />
 
     <form:form name="submitPasswordChange" id="submitPasswordChange" action="${pageContext.request.contextPath}/ui/user-account/password" method="POST">
+        <form:hidden path="isReset" value="${command.isReset}" />
+
         <table id="userauth">
             <c:if test="${not command.isReset}">
 	            <tr>
@@ -69,7 +71,7 @@
             <tr>
                 <td><label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label></td>
                 <td>
-                    <form:password path="confirmPassword" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
+                    <form:password path="confirmPassword" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="confirmPassword" cssClass="validationError" />
                 </td>
             </tr>

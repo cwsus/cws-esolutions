@@ -198,7 +198,7 @@ public class SessionAuthenticationFilter implements Filter
                     }
 
                     filterChain.doFilter(sRequest, sResponse);
-    
+
                     return;
                 }
             }

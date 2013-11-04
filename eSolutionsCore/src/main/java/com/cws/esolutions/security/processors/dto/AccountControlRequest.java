@@ -48,6 +48,7 @@ import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 public class AccountControlRequest implements Serializable
 {
     private int startPage = 0;
+    private boolean isReset = false;
     private String algorithm = null;
     private String projectId = null;
     private String serviceId = null;
@@ -197,6 +198,19 @@ public class AccountControlRequest implements Serializable
         }
 
         this.requestor = value;
+    }
+
+    public final void setIsReset(final boolean value)
+    {
+        final String methodName = AccountControlRequest.CNAME + "#setIsReset(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isReset = value;
     }
 
     public final void setIsLogonRequest(final boolean value)
@@ -392,6 +406,19 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.requestor;
+    }
+
+    public final boolean isReset()
+    {
+        final String methodName = AccountControlRequest.CNAME + "#isReset()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isReset);
+        }
+
+        return this.isReset;
     }
 
     public final boolean isLoginRequest()

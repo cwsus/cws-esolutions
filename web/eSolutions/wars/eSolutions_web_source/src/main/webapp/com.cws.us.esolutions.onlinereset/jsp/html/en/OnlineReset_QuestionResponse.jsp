@@ -47,10 +47,15 @@
     <p id="validationError" />
 
     <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
+        <form:hidden path="isReset" value="true" />
+        <form:hidden path="resetType" value="QUESTIONS" />
+        <form:hidden path="secQuestionOne" value="${userSecurity.secQuestionOne}" />
+        <form:hidden path="secQuestionTwo" value="${userSecurity.secQuestionTwo}" />
+
         <table id="userauth">
             <tr>
                 <td><label id="txtQuestionOne"><spring:message code="olr.question" /><br /></label></td>
-                <td>${sessionScope.userSecurity.secQuestionOne}</td>
+                <td>${userSecurity.secQuestionOne}</td>
             </tr>
             <tr>
                 <td><label id="txtAnswerOne"><spring:message code="olr.answer" /></label></td>
@@ -61,12 +66,12 @@
             </tr>
             <tr>
                 <td><label id="txtQuestionTwo"><spring:message code="olr.question" /><br /></label></td>
-                <td>${sessionScope.userSecurity.secQuestionTwo}</td>
+                <td>${userSecurity.secQuestionTwo}</td>
             </tr>
             <tr>
                 <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
                 <td>
-                    <form:password path="secAnswerTwo" onkeypress="if ((e.keyCode == 13) || (e.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
+                    <form:password path="secAnswerTwo" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="secAnswerTwo" cssClass="validationError" />
                 </td>
             </tr>

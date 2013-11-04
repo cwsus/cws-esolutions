@@ -63,9 +63,11 @@ public interface Authenticator
      * handling.
      *
      * executeAgentLogon
-     * @param loginType
-     * @param loginData
-     * @return Map<String, List<String>>
+     * @param guid
+     * @param username
+     * @param password
+     * @param groupName
+     * @return List<Object>
      * @throws AuthenticatorException
      */
     List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException;

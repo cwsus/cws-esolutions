@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.enums.ResetRequestType;
 import com.cws.esolutions.security.SecurityConstants;
 /**
  * eSolutions_java_source
@@ -37,6 +38,7 @@ import com.cws.esolutions.security.SecurityConstants;
  */
 public final class UserChangeRequest implements Serializable
 {
+    private String username = null;
     private boolean isReset = false;
     private String emailAddr = null;
     private String newPassword = null;
@@ -46,6 +48,7 @@ public final class UserChangeRequest implements Serializable
     private String secQuestionTwo = null;
     private String currentPassword = null;
     private String confirmPassword = null;
+    private ResetRequestType resetType = null;
 
     private static final String CNAME = UserChangeRequest.class.getName();
     private static final long serialVersionUID = -990715180500683492L;
@@ -64,6 +67,32 @@ public final class UserChangeRequest implements Serializable
         }
 
         this.isReset = value;
+    }
+
+    public final void setResetType(final ResetRequestType value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setResetType(final ResetRequestType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.resetType = value;
+    }
+
+    public final void setUsername(final String value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setUsername(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.username = value;
     }
 
     public final void setCurrentPassword(final String value)
@@ -194,6 +223,32 @@ public final class UserChangeRequest implements Serializable
         }
 
         return this.isReset;
+    }
+
+    public final ResetRequestType getResetType()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getResetType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.resetType);
+        }
+
+        return this.resetType;
+    }
+
+    public final String getUsername()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getUsername()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.username);
+        }
+
+        return this.username;
     }
 
     public final String getCurrentPassword()

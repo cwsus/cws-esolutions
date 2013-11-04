@@ -11,14 +11,30 @@
         <entry key="rev.num" type="int" operation="+" value="1" pattern="00" />
     </propertyfile>
 
+    <condition property="is_windows">
+        <os family="windows" />
+    </condition>
+    <condition property="is_unix">
+        <os family="unix" />
+    </condition>
+
+    <target name="setWindows" if="is_windows">
+        <property name="antContribPath" value="C:/xampp/ant/lib/ant-contrib.jar" />
+        <property name="tomcat.install.root" value="C:/xampp/tomcat" />
+    </target>
+
+    <target name="setUnix" if="is_unix">
+        <property name="antContribPath" value="/opt/Apache/ant/current/lib/ant-contrib.jar" />
+        <property name="tomcat.install.root" value="/opt/Apache/tomcat/current" />
+    </target>
+
     <taskdef resource="net/sf/antcontrib/antlib.xml">
         <classpath>
-            <pathelement location="/opt/Apache/ant/current/lib/ant-contrib.jar" />
+            <pathelement location="${antContribPath}" />
         </classpath>
     </taskdef>
 
     <property name="target.platform" value="${platform}" />
-    <property name="vhost.name" value="${vhostName}" />
 
     <condition property="isWebSphere">
         <equals arg1="${target.platform}" arg2="websphere" caseSensitive="false" />
@@ -31,26 +47,28 @@
     </condition>
 
     <target name="buildTomcat" if="isTomcat">
-        <property name="tomcat.install.root" value="/opt/Apache/tomcat" />
-        <property name="tomcat.server.root" value="${tomcat.install.root}/servers/esolutions" />
-        <property name="tomcat.installedApps.root" value="/appvol/ATS70/esolutions" />
-        <property name="tomcat.tmp.directory" value="${tomcat.install.root}/temp" />
+        <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
+        <property name="contextFile" value="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
 
-        <copy file="${basedir}/src/main/tomcat/${vhost.name}.xml" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
+        <copy file="${basedir}/src/main/tomcat/${vhostName}.xml" tofile="${contextFile}" />
 
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml"
-            token="@install.root.dir" value="${tomcat.installedApps.root}/${ProjectName}-${ProjectVersion}.ear/${WebProjectName}-${ProjectVersion}.war" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml"
-            token="@vhost.name" value="${vhost.name}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml"
-            token="@tomcat.work.dir" value="${tomcat.work.directory}/${ProjectName}-${ProjectVersion}/${WebProjectName}-${ProjectVersion}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" token="@database.user.name" value="${dbusername}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" token="@database.user.password" value="${dbpassword}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" token="@mail.user.name" value="${mailusername}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" token="@mail.user.password" value="${mailpassword}" />
+        <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
+        <replace file="${contextFile}" token="@vhost.name" value="${vhostName}" />
+        <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
+        <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${ProjectName}-${ProjectVersion}/${WebProjectName}-${ProjectVersion}" />
+        <replace file="${contextFile}" token="@ldap.host.name" value="${ldapHost}" />
+        <replace file="${contextFile}" token="@ldap.port.number" value="${ldapPort}" />
+        <replace file="${contextFile}" token="@ldap.user.name" value="${ldapUser}" />
+        <replace file="${contextFile}" token="@ldap.user.pass" value="${ldapPass}" />
+        <replace file="${contextFile}" token="@ldap.user.salt" value="${ldapSalt}" />
+        <replace file="${contextFile}" token="@database.user.name" value="${dsUser}" />
+        <replace file="${contextFile}" token="@database.user.password" value="${dsPass}" />
+        <replace file="${contextFile}" token="@database.host.name" value="${dsHost}" />
+        <replace file="${contextFile}" token="@amq.host.name" value="${amqHostName}" />
+        <replace file="${contextFile}" token="@amq.host.port" value="${amqHostPort}" />
 
-        <chmod file="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" perm="640" />
+        <chmod file="${contextFile}" perm="640" />
     </target>
 
     <target name="buildWebLogic" if="isWebLogic">
@@ -63,13 +81,11 @@
         <copy file="${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-bnd.xmi" />
         <copy file="${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-ext.xmi" />
 
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-bnd.xmi"
-            token="@vhost.name" value="${vhost.name}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-ext.xmi"
-            token="@vhost.name" value="${vhost.name}" />
+        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name" value="${vhostName}" />
+        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-ext.xmi" token="@vhost.name" value="${vhostName}" />
     </target>
 
-    <target name="build" depends="buildTomcat, buildWebSphere, buildWebLogic">
+    <target name="build" depends="setWindows, setUnix, buildTomcat, buildWebLogic, buildWebSphere">
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>

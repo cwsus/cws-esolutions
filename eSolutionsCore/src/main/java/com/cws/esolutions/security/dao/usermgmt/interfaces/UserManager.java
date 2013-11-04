@@ -65,7 +65,6 @@ public interface UserManager
      *
      * @param userId - The chosen username for the new account
      * @param userGuid - The generated UUID for the new user account
-     * @return none
      * @throws UserManagementException if any errors occur during the process
      * or if any one of the provided information already exists in the datastore
      */
@@ -92,8 +91,10 @@ public interface UserManager
      * credentials - these will be configured by the user on their first
      * logon.
      *
-     * @param userInformation
-     * @return none
+     * @param userId
+     * @param userGuid
+     * @param changeRequest
+     * @return boolean
      * @throws NamingException
      * @throws InvalidAgentException
      */
@@ -107,6 +108,7 @@ public interface UserManager
      * @param userId - The username to perform the modification against
      * @param userGuid - The UUID of the user to perform the modification against
      * @param isSuspended - <code>true</code> to suspend the account, <code>false</code> to unsuspend
+     * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
     boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException;
@@ -116,6 +118,7 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @param userGuid - The UUID of the user to perform the modification against
+     * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
     boolean unlockUserAccount(final String userId, final String userGuid) throws UserManagementException;
@@ -127,6 +130,7 @@ public interface UserManager
      *
      * @param userId - The username to perform the modification against
      * @param userGuid - The UUID of the user to perform the modification against
+     * @return boolean
      * @throws UserManagementException if an error occurs during processing
      */
     boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException;

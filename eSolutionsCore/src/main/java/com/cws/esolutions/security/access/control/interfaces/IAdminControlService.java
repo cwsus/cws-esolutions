@@ -54,12 +54,23 @@ public interface IAdminControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userDN
-     * @param dContext
+     * @param userAccount
      * @return boolean
-     * @throws AuthorizationException
+     * @throws AdminControlServiceException
      */
     boolean adminControlService(final UserAccount userAccount) throws AdminControlServiceException;
 
+    /**
+     * Determines if the requested user has the proper level of authority to
+     * access the requested resource. This method needs a little work - its
+     * long-term goal is to allow both a servlet-based method as well as a
+     * portlet service. It should also query an applicable user datastore,
+     * in the event the session data may have been tampered.
+     *
+     * @param userAccount
+     * @param controlType
+     * @return boolean
+     * @throws AdminControlServiceException
+     */
     boolean adminControlService(final UserAccount userAccount, final AdminControlType controlType) throws AdminControlServiceException;
 }

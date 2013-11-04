@@ -116,6 +116,8 @@ public class SQLAuthenticator implements Authenticator
                         userAccount.add(resultSet.getString(authData.getSurname()));
                         userAccount.add(resultSet.getString(authData.getDisplayName()));
                         userAccount.add(resultSet.getString(authData.getEmailAddr()));
+                        userAccount.add(resultSet.getString(authData.getPagerNumber()));
+                        userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
                         userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
                         userAccount.add(resultSet.getInt(authData.getLockCount()));
                         userAccount.add(resultSet.getLong(authData.getLastLogin()));

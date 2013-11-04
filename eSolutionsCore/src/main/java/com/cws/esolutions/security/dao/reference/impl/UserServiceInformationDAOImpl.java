@@ -110,16 +110,6 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
-    /**
-     * Removes a service id from a particular user. Returns true if the service
-     * id was successfully removed, false under all other conditions.
-     *
-     * @param userSecurityId
-     * @param serviceId
-     * @param sqlConn
-     * @return boolean
-     * @throws SQLException
-     */
     @Override
     public synchronized boolean removeProjectIdForUser(final String commonName, final String projectGuid) throws SQLException
     {
@@ -191,16 +181,6 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
-    /**
-     * Removes a service id from a particular user. Returns true if the service
-     * id was successfully removed, false under all other conditions.
-     *
-     * @param userSecurityId
-     * @param serviceId
-     * @param sqlConn
-     * @return boolean
-     * @throws SQLException
-     */
     @Override
     public synchronized boolean verifyProjectForUser(final String commonName, final String projectGuid) throws SQLException
     {
@@ -272,15 +252,6 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
-    /**
-     * Obtains and returns a list of the provided user's available services.
-     * Typically, these are objects the user is authorized to access.
-     *
-     * @param userSecurityId
-     * @param sqlConn
-     * @return List<String>
-     * @throws SQLException
-     */
     @Override
     public synchronized List<String> returnUserAuthorizedProjects(final String commonName) throws SQLException
     {

@@ -52,7 +52,6 @@ public interface ISecurityReferenceDAO
      * Obtains the configured user security questions from a datastore
      * for display.
      *
-     * @param none
      * @return List<String> - a list of the available security questions
      * @throws SQLException
      */

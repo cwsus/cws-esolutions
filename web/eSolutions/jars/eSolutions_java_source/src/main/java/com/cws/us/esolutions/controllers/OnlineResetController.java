@@ -37,10 +37,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
+import com.cws.us.esolutions.dto.UserChangeRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.us.esolutions.dto.OnlineResetRequest;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -100,6 +100,7 @@ public class OnlineResetController
     private String submitEmailAddrPage = null;
     private String forgotUsernameEmail = null;
     private String passwordResetSubject = null;
+    private String messageValidationFailed = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -252,6 +253,19 @@ public class OnlineResetController
         this.messageSource = value;
     }
 
+    public final void setMessageValidationFailed(final String value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setMessageValidationFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageValidationFailed = value;
+    }
+
     public final void setForgotUsernameEmail(final String value)
     {
         final String methodName = OnlineResetController.CNAME + "#setForgotUsernameEmail(final String value)";
@@ -322,7 +336,7 @@ public class OnlineResetController
             }
         }
 
-        mView.addObject("command", new OnlineResetRequest());
+        mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.submitEmailAddrPage);
 
         if (DEBUG)
@@ -390,7 +404,7 @@ public class OnlineResetController
             }
         }
 
-        mView.addObject("command", new UserAccount());
+        mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.submitUsernamePage);
 
         if (DEBUG)
@@ -612,14 +626,14 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-username", method = RequestMethod.POST)
-    public final ModelAndView submitForgottenUsername(@ModelAttribute("olrRequest") final OnlineResetRequest olrRequest, final BindingResult bindResult)
+    public final ModelAndView submitForgottenUsername(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"olrRequest\") final String olrRequest, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitForgottenUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("OnlineResetRequest: {}", olrRequest);
+            DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -671,6 +685,20 @@ public class OnlineResetController
             }
         }
 
+        // validate
+        validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            ERROR_RECORDER.error("Failed to validate request");
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject("command", new UserChangeRequest());
+            mView.setViewName(this.submitUsernamePage);
+
+            return mView;
+        }
+        
         try
         {
             // ensure authenticated access
@@ -683,30 +711,30 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserAccount searchAccount = new UserAccount();
-            searchAccount.setEmailAddr(olrRequest.getEmailAddr());
+            UserAccount reqAccount = new UserAccount();
+            reqAccount.setEmailAddr(request.getEmailAddr());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                DEBUGGER.debug("UserAccount: {}", reqAccount);
             }
 
-            AccountControlRequest request = new AccountControlRequest();
-            request.setControlType(ControlType.LOOKUP);
-            request.setHostInfo(reqInfo);
-            request.setIsLogonRequest(false);
-            request.setModType(ModificationType.NONE);
-            request.setUserAccount(searchAccount);
-            request.setSearchType(SearchRequestType.FORGOTUID);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            AccountControlRequest controlReq = new AccountControlRequest();
+            controlReq.setControlType(ControlType.LOOKUP);
+            controlReq.setHostInfo(reqInfo);
+            controlReq.setIsLogonRequest(false);
+            controlReq.setModType(ModificationType.NONE);
+            controlReq.setUserAccount(reqAccount);
+            controlReq.setSearchType(SearchRequestType.FORGOTUID);
+            controlReq.setApplicationId(appConfig.getApplicationId());
+            controlReq.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("AccountControlRequest: {}", request);
             }
 
-            AccountControlResponse response = acctController.searchAccounts(request);
+            AccountControlResponse response = acctController.searchAccounts(controlReq);
 
             if (DEBUG)
             {
@@ -769,6 +797,7 @@ public class OnlineResetController
             else
             {
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.addObject("command", new UserChangeRequest());
                 mView.setViewName(this.submitUsernamePage);
             }
         }
@@ -806,14 +835,14 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/forgot-password", method = RequestMethod.POST)
-    public final ModelAndView submitUsername(@ModelAttribute("account") final UserAccount account, final BindingResult bindResult)
+    public final ModelAndView submitUsername(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserAccount\") final UserAccount account, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitUsername(@ModelAttribute(\"UserChangeRequest\") final UserChangeRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount: {}", account);
+            DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -865,6 +894,19 @@ public class OnlineResetController
             }
         }
 
+        validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            ERROR_RECORDER.error("Request failed validation");
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject("command", new UserChangeRequest());
+            mView.setViewName(this.submitUsernamePage);
+
+            return mView;
+        }
+
         try
         {
             // ensure authenticated access
@@ -877,9 +919,17 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
+            UserAccount reqAccount = new UserAccount();
+            reqAccount.setUsername(request.getUsername());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", reqAccount);
+            }
+
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setHostInfo(reqInfo);
-            authRequest.setUserAccount(account);
+            authRequest.setUserAccount(reqAccount);
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
@@ -913,9 +963,8 @@ public class OnlineResetController
                     if (resUser.getOlrLocked())
                     {
                         // account olr locked
-                        mView.addObject("command", new OnlineResetRequest());
                         mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
-                        mView.setViewName(this.submitUsernamePage);
+                        mView.setViewName(appConfig.getErrorResponsePage());
                     }
                     else
                     {
@@ -939,10 +988,9 @@ public class OnlineResetController
                         {
                             // xlnt. set the user
                             hSession.setAttribute(Constants.RESET_ACCOUNT, resUser);
-                            hSession.setAttribute(Constants.USER_SECURITY, secResponse.getUserSecurity());
 
-                            mView.addObject(secResponse.getUserSecurity());
-                            mView.addObject("command", new OnlineResetRequest());
+                            mView.addObject(Constants.USER_SECURITY, secResponse.getUserSecurity());
+                            mView.addObject("command", new UserChangeRequest());
                             mView.setViewName(this.submitAnswersPage);
                         }
                         else
@@ -955,7 +1003,7 @@ public class OnlineResetController
                 else
                 {
                     // account is suspended
-                    mView.addObject("command", new OnlineResetRequest());
+                    mView.addObject("command", new UserChangeRequest());
                     mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
                     mView.setViewName(this.submitUsernamePage);
                 }
@@ -977,14 +1025,14 @@ public class OnlineResetController
     }
 
     @RequestMapping(value = "/submit", method = RequestMethod.POST)
-    public final ModelAndView submitSecurityResponse(@ModelAttribute("olrRequest") final OnlineResetRequest olrRequest, final BindingResult bindResult)
+    public final ModelAndView submitSecurityResponse(@ModelAttribute("request") final UserChangeRequest request, final BindingResult bindResult)
     {
-        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"resetRequest\") final OnlineResetRequest olrRequest, final BindingResult bindResult)";
+        final String methodName = OnlineResetController.CNAME + "#submitSecurityResponse(@ModelAttribute(\"request\") final UserChangeRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("OnlineResetRequest: {}", olrRequest);
+            DEBUGGER.debug("UserChangeRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -1039,16 +1087,21 @@ public class OnlineResetController
             }
         }
 
+        validator.validate(request, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            ERROR_RECORDER.error("Request validation failed");
+
+            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject("command", request);
+            mView.setViewName(this.submitAnswersPage);
+
+            return mView;
+        }
+
         try
         {
-            validator.validate(olrRequest, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                ERROR_RECORDER.error("Request validation failed");
-                // send back to page
-            }
-
             // ensure authenticated access
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
@@ -1060,30 +1113,30 @@ public class OnlineResetController
             }
 
             UserSecurity userSecurity = new UserSecurity();
-            userSecurity.setSecAnswerOne(olrRequest.getSecAnswerOne());
-            userSecurity.setSecAnswerTwo(olrRequest.getSecAnswerTwo());
+            userSecurity.setSecAnswerOne(request.getSecAnswerOne());
+            userSecurity.setSecAnswerTwo(request.getSecAnswerTwo());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("UserSecurity: {}", userSecurity);
             }
 
-            AuthenticationRequest request = new AuthenticationRequest();
-            request.setHostInfo(reqInfo);
-            request.setUserAccount(userAccount);
-            request.setUserSecurity(userSecurity);
-            request.setAuthType(AuthenticationType.RESET);
-            request.setLoginType(LoginType.SECCONFIG);
-            request.setTimeoutValue(appConfig.getRequestTimeout());
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            AuthenticationRequest authRequest = new AuthenticationRequest();
+            authRequest.setHostInfo(reqInfo);
+            authRequest.setUserAccount(userAccount);
+            authRequest.setUserSecurity(userSecurity);
+            authRequest.setAuthType(AuthenticationType.RESET);
+            authRequest.setLoginType(LoginType.SECCONFIG);
+            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setApplicationId(appConfig.getApplicationId());
+            authRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationRequest: {}", request);
+                DEBUGGER.debug("AuthenticationRequest: {}", authRequest);
             }
 
-            AuthenticationResponse response = authProcessor.verifyUserSecurityConfig(request);
+            AuthenticationResponse response = authProcessor.verifyUserSecurityConfig(authRequest);
 
             if (DEBUG)
             {
@@ -1220,7 +1273,7 @@ public class OnlineResetController
                     ERROR_RECORDER.error(resetRes.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
-                    mView.addObject("command", new OnlineResetRequest());
+                    mView.addObject("command", new UserChangeRequest());
                     mView.setViewName(this.submitAnswersPage);
                 }
             }
@@ -1230,7 +1283,7 @@ public class OnlineResetController
                 ERROR_RECORDER.error(response.getResponse());
 
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.addObject("command", new OnlineResetRequest());
+                mView.addObject("command", new UserChangeRequest());
                 mView.setViewName(this.submitAnswersPage);
             }
         }

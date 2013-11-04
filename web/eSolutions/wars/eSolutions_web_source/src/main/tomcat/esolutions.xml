@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context cookies="true" crossContext="false" docBase="${catalina.home}/installedApps/eSolutions_web_source-1.0.war"
-    fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false" path="/esolutions"
+<Context cookies="true" crossContext="false" docBase="@document.base"
+    fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false" path="/@vhost.name"
     preemptiveAuthentication="true" privileged="false" reloadable="true" sendRedirectBody="true"
-    sessionCookieDomain="esolutions.caspersbox.corp" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
+    sessionCookieDomain="@cookie.domain.name" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
     sessionCookiePathUsesTrailingSlash="true" swallowAbortedUploads="true" swallowOutput="true"
     tldNamespaceAware="true" tldValidation="true" useHttpOnly="true" xmlNamespaceAware="true" xmlValidation="true"
     addWebInfClassResources="false" allowLinking="false" antiJARLocking="true" antiResourceLocking="true"
     cacheMaxSize="10240" cacheObjectMaxSize="1024" cacheTTL="30000" cachingAllowed="true"
-    jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" secure="true">
+    jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" secure="true" workDir="@tomcat.work.dir">
 
-    <Parameter name="ldapHost" value="ldap.caspersbox.corp" override="false" />
-    <Parameter name="ldapPort" value="10389" override="false" />
+    <Parameter name="ldapHost" value="@ldap.host.name" override="false" />
+    <Parameter name="ldapPort" value="@ldap.port.number" override="false" />
     <Parameter name="connTimeout" value="10000" override="false" />
     <Parameter name="readTimeout" value="10000" override="false" />
     <Parameter name="minConnections" value="1" override="false" />
     <Parameter name="maxConnections" value="10" override="false" />
-    <Parameter name="ldapUser" value="uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com" override="false" />
-    <Parameter name="ldapPass" value="TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=" override="false" />
-    <Parameter name="ldapSalt" value="OITltocOUZjW" override="false" />
+    <Parameter name="ldapUser" value="@ldap.user.name" override="false" />
+    <Parameter name="ldapPass" value="@ldap.user.pass" override="false" />
+    <Parameter name="ldapSalt" value="@ldap.user.salt" override="false" />
 
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
-        username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://data.caspersbox.corp/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
+        username="@database.user.name" password="@database.user.password" driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://@database.host.name/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
         validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
         timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
@@ -32,8 +32,8 @@
             org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
 
     <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
-        username="appuser" password="appuser10" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://data.caspersbox.corp/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
+        username="@database.user.name" password="@database.user.password" driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://@database.host.name/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
         validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
         timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
@@ -44,7 +44,7 @@
             org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
 
     <Resource name="jms/mqConnectionFactory" auth="Container" type="org.apache.activemq.ActiveMQConnectionFactory"
-        factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="tcp://amq.caspersbox.corp:61616" />
+        factory="org.apache.activemq.jndi.JNDIReferenceFactory" brokerURL="tcp://@amq.host.name:@amq.host.port" />
 
     <Resource name="jms/requestQueue" auth="Container" type="org.apache.activemq.command.ActiveMQQueue"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="CWS.REQUEST.QUEUE"/>

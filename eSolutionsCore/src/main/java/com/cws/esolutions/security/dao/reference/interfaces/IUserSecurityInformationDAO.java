@@ -62,6 +62,7 @@ public interface IUserSecurityInformationDAO
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
      * @param saltValue - The salt value generated for the provided user
+     * @param saltType - The provided salt type - logon or reset
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
@@ -74,6 +75,7 @@ public interface IUserSecurityInformationDAO
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
      * @param saltValue - The salt value generated for the provided user
+     * @param saltType - The provided salt type - logon or reset
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
@@ -85,7 +87,6 @@ public interface IUserSecurityInformationDAO
      * request.
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
-     * @param saltValue - The salt value generated for the provided user
      * @return <code>true</code> if successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
@@ -96,7 +97,8 @@ public interface IUserSecurityInformationDAO
      * authentication request.
      *
      * @param commonName - The commonName associated with the user (also known as GUID)
-     * @return The salt value for the configured user account
+     * @param saltType - The provided salt type - logon or reset
+     * @return String - The salt value for the configured user account
      * @throws SQLException if an exception occurs during insertion process
      */
     String getUserSalt(final String commonName, final String saltType) throws SQLException;
@@ -131,8 +133,9 @@ public interface IUserSecurityInformationDAO
      * Returns the salt value associated with the given user account to process an
      * authentication request.
      *
+     * @param commonName - The commonName associated with the user (also known as GUID)
      * @param resetId - The reset request identifier provided to the user
-     * @return The commonName (GUID) associated with the reset request identifier
+     * @return <code>true</code> if the removal was successful, <code>false</code> otherwise
      * @throws SQLException if an exception occurs during insertion process
      */
     boolean removeResetData(final String commonName, final String resetId) throws SQLException;

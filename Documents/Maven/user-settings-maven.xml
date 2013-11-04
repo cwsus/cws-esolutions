@@ -37,6 +37,7 @@
         <profile>
             <id>nexus</id>
             <properties>
+                <gpg.passphrase>passphrase</gpg.passphrase>
                 <sdk.path>/opt/google/android-sdk</sdk.path>
                 <android.sdk.path>/opt/google/android-sdk</android.sdk.path>
             </properties>

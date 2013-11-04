@@ -129,14 +129,9 @@ public final class NetworkUtils
      * @param sourceFile - The full path to the source file to transfer
      * @param targetFile - The full path (including file name) of the desired target file
      * @param targetHost - The target server to perform the transfer to
-     * @param username - The SSH username to utilize for this connection
-     * @param sshKeyFile - The SSH keyfile to utilize with this connection - MUST BE AN OPENSSH KEY
-     * @param passphrase - SSH key file passphrase (optional, if not required specify either null
-     *            or "")
      * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
      *            is a download 
-     * @throws IOException - If an error occurs processing SSH keys or file transfer operations
-     * @throws AuthenticationProtocolException - If authentication with the remote host fails
+     * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
     public static final synchronized void executeSCPTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
@@ -509,17 +504,9 @@ public final class NetworkUtils
      * Convert the keyfile: ssh-keygen -i -f /path/to/file > /path/to/new-file
      * Re-encrypt the file: ssh-keygen -p -f /path/to/new-file
      * 
-     * @param sourceFile - The full path to the source file to transfer
-     * @param targetFile - The full path (including file name) of the desired target file
      * @param targetHost - The target server to perform the transfer to
-     * @param username - The SSH username to utilize for this connection
-     * @param sshKeyFile - The SSH keyfile to utilize with this connection - MUST BE AN OPENSSH KEY
-     * @param passphrase - SSH key file passphrase (optional, if not required specify either null
-     *            or "")
-     * @param isUpload - <code>true</code> is the transfer is an upload, <code>false</code> if it
-     *            is a download 
-     * @throws IOException - If an error occurs processing SSH keys or file transfer operations
-     * @throws AuthenticationProtocolException - If authentication with the remote host fails
+     * @param commandList - The list of commands to execute on the remote host. 
+     * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
     public static final synchronized StringBuilder executeSshConnection(final String targetHost, List<String> commandList) throws UtilityException
     {
@@ -818,7 +805,8 @@ public final class NetworkUtils
      * system instability.
      * 
      * @param hostName - The target host to make the connection to
-     * @param portNumber - The port number to attempt the connection on 
+     * @param portNumber - The port number to attempt the connection on
+     * @param timeout - The timeout for the connection
      * @throws UtilityException - If an error occurs during the connection attempt
      */
     public static final synchronized void executeTelnetRequest(final String hostName, final int portNumber, final int timeout) throws UtilityException
@@ -1099,7 +1087,9 @@ public final class NetworkUtils
      * system instability.
      * 
      * @param hostName - The target host to make the connection to
-     * @param portNumber - The port number to attempt the connection on 
+     * @param portNumber - The port number to attempt the connection on
+     * @param object - The serializable object to send to the target
+     * @return Obj
      * @throws UtilityException - If an error occurs during the connection attempt
      */
     public static final synchronized Object executeTcpRequest(final String hostName, final int portNumber, final int timeout, final Object object) throws UtilityException

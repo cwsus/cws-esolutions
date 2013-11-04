@@ -78,11 +78,11 @@ public interface IDNSServiceRequestProcessor
      * results are found using the default resolver (whatever is listed in /etc/hosts
      * or whatever is provided, as applicable) then the 
      *
-     * @param dnsRequest
-     * @return
-     * @throws DNSServiceException
+     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
+     * @return <code>DNSServiceResponse</code> containing the response information, or error code
+     * @throws DNSServiceException if an error occurs during processing
      */
-    DNSServiceResponse performLookup(final DNSServiceRequest dnsRequest) throws DNSServiceException;
+    DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
      * This method is utilized to obtain information about a record within the database. At this point
@@ -112,11 +112,19 @@ public interface IDNSServiceRequestProcessor
      * Sends a newly created DNS zone to configured nameservers for public consumption. The file
      * is generated and transferred to the given servers via SCP.
      *
-     * @param request
-     * @return
-     * @throws DNSServiceException
+     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
+     * @return <code>DNSServiceResponse</code> containing the response information, or error code
+     * @throws DNSServiceException if an error occurs during processing
      */
     DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException;
 
+    /**
+     * Sends a newly created DNS zone to configured nameservers for public consumption. The file
+     * is generated and transferred to the given servers via SCP.
+     *
+     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
+     * @return <code>DNSServiceResponse</code> containing the response information, or error code
+     * @throws DNSServiceException if an error occurs during processing
+     */
     DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException;
 }

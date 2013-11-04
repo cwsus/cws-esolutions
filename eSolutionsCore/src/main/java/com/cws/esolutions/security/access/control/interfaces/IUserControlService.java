@@ -52,12 +52,24 @@ public interface IUserControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userDN
-     * @param dContext
+     * @param userGuid
+     * @param projectGuid
      * @return boolean
-     * @throws AuthorizationException
+     * @throws UserControlServiceException
      */
     boolean isUserAuthorizedForProject(final String userGuid, final String projectGuid) throws UserControlServiceException;
 
+    /**
+     * Determines if the requested user has the proper level of authority to
+     * access the requested resource. This method needs a little work - its
+     * long-term goal is to allow both a servlet-based method as well as a
+     * portlet service. It should also query an applicable user datastore,
+     * in the event the session data may have been tampered.
+     *
+     * @param userGuid
+     * @param serviceGuid
+     * @return boolean
+     * @throws UserControlServiceException
+     */
     boolean isUserAuthorizedForService(final String userGuid, final String serviceGuid) throws UserControlServiceException;
 }

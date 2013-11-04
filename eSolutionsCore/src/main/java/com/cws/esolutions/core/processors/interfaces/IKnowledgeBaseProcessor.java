@@ -67,48 +67,36 @@ public interface IKnowledgeBaseProcessor
 
     /**
      * 
-     * @author kmhuntly@gmail.com
      * @param request
-     * @param user
-     * @return
+     * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
     KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param articleRequest
-     * @param user
-     * @return
+     * @param request
+     * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
     KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param articleRequest
-     * @param userAccount
-     * @return
+     * @param request
+     * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
     KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
-     * 
-     * @author kmhuntly@gmail.com
      * @param request
-     * @return
+     * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
     KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
-     * 
-     * @author kmhuntly@gmail.com
-     * @param user
-     * @return
+     * @param request
+     * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
     KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException;

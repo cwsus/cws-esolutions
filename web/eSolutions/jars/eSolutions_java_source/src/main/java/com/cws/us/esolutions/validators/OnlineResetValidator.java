@@ -18,7 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.OnlineResetRequest;
+import com.cws.us.esolutions.dto.UserChangeRequest;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -39,6 +39,8 @@ import com.cws.us.esolutions.dto.OnlineResetRequest;
 public class OnlineResetValidator implements Validator
 {
     private String messageAnswerRequired = null;
+    private String messageUsernameRequired = null;
+    private String messageEmailAddressRequired = null;
 
     private static final String CNAME = OnlineResetValidator.class.getName();
 
@@ -58,6 +60,32 @@ public class OnlineResetValidator implements Validator
         this.messageAnswerRequired = value;
     }
 
+    public final void setMessageUsernameRequired(final String value)
+    {
+        final String methodName = OnlineResetValidator.CNAME + "#setMessageUsernameRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageUsernameRequired = value;
+    }
+
+    public final void setMessageEmailAddressRequired(final String value)
+    {
+        final String methodName = OnlineResetValidator.CNAME + "#setMessageEmailAddressRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEmailAddressRequired = value;
+    }
+
     @Override
     public final boolean supports(final Class<?> value)
     {
@@ -69,7 +97,7 @@ public class OnlineResetValidator implements Validator
             DEBUGGER.debug("Class: {}", value);
         }
 
-        final boolean isSupported = OnlineResetRequest.class.isAssignableFrom(value);
+        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -82,7 +110,7 @@ public class OnlineResetValidator implements Validator
     @Override
     public final void validate(final Object target, final Errors errors)
     {
-        final String methodName = OnlineResetValidator.CNAME + "#validate(final <Class> request)";
+        final String methodName = OnlineResetValidator.CNAME + "#validate(final Object target, final Errors errors)";
 
         if (DEBUG)
         {
@@ -90,7 +118,35 @@ public class OnlineResetValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageAnswerRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", this.messageAnswerRequired);
+        UserChangeRequest request = (UserChangeRequest) target;
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserChangeRequest: {}", request);
+        }
+
+        switch (request.getResetType())
+        {
+            case EMAIL:
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageEmailAddressRequired);
+
+                break;
+            case QUESTIONS:
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageAnswerRequired);
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", this.messageAnswerRequired);
+
+                break;
+            case USERNAME:
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", this.messageUsernameRequired);
+
+                break;
+            default:
+                break;
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Errors: {}", errors);
+        }
     }
 }

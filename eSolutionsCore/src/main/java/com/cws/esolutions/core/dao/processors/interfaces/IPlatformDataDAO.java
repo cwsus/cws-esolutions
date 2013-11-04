@@ -66,7 +66,7 @@ public interface IPlatformDataDAO
      * 7: Change Queue
      * 8: Project status (If no status is provided, "INACTIVE" is assumed
      *
-     * @param projectData - An <code>ArrayList</code> of the aforementioned data
+     * @param platformData - An <code>ArrayList</code> of the aforementioned data
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */
@@ -76,7 +76,7 @@ public interface IPlatformDataDAO
      * Disables a project from being utilized. This does not physically remove
      * the data from the database, just sets its status to "INACTIVE".
      *
-     * @param projectGuid - The GUID of the project to disable
+     * @param platformGuid - The GUID of the project to disable
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */
@@ -87,7 +87,7 @@ public interface IPlatformDataDAO
     /**
      * Obtains data regarding the provided project GUID for display.
      *
-     * @param projectGuid - The GUID of the project to obtain data for
+     * @param platformGuid - The GUID of the project to obtain data for
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */
@@ -98,7 +98,7 @@ public interface IPlatformDataDAO
     /**
      * Obtains data regarding the provided project GUID for display.
      *
-     * @param projectGuid - The GUID of the project to obtain data for
+     * @param startRow - The GUID of the project to obtain data for
      * @return <code>true</code> if addition was successful, <code>false</code> otherwise
      * @throws SQLException if an error occurs while inserting data
      */

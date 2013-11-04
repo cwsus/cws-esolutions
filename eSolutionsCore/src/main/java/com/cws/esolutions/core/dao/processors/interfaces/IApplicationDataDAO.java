@@ -57,8 +57,8 @@ public interface IApplicationDataDAO
      * 
      *
      *
-     * @param packageData
-     * @return
+     * @param applicationData
+     * @return boolean
      * @throws SQLException
      */
     boolean addNewApplication(final List<String> applicationData) throws SQLException;
@@ -69,8 +69,8 @@ public interface IApplicationDataDAO
      * 
      *
      *
-     * @param packageName
-     * @return
+     * @param appGuid
+     * @return boolean
      * @throws SQLException
      */
     boolean deleteApplication(final String appGuid) throws SQLException;

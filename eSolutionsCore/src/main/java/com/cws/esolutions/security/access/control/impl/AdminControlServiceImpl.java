@@ -38,19 +38,6 @@ import com.cws.esolutions.security.access.control.exception.AdminControlServiceE
  */
 public class AdminControlServiceImpl implements IAdminControlService
 {
-    /**
-     * Determines if the requested user has the proper level of authority to
-     * access the requested resource. This method needs a little work - its
-     * long-term goal is to allow both a servlet-based method as well as a
-     * portlet service. It should also query an applicable user datastore,
-     * in the event the session data may have been tampered.
-     *
-     * @param userName
-     * @param userGuid
-     * @return boolean
-     * @throws AuthorizationException
-     * @author khuntly
-     */
     @Override
     public boolean adminControlService(final UserAccount userAccount) throws AdminControlServiceException
     {

@@ -1042,6 +1042,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         }
 
         // List<String> authList = null;
+        String currentPassword = null;
         AccountControlResponse response = new AccountControlResponse();
 
         final Calendar calendar = Calendar.getInstance();
@@ -1096,47 +1097,75 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             }
             else
             {
-                // ok, authenticate first
-                String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+                if (!(request.isReset()))
+                {
+                    // ok, authenticate first
+                    String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("userSalt: {}", userSalt);
+                    }
+
+                    if (StringUtils.isNotEmpty(userSalt))
+                    {
+                        currentPassword = PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Value: {}", currentPassword);
+                        }
+
+                        // we aren't getting the data back here because we don't need it. if the request
+                        // fails we'll get an exception and not process further. this might not be the
+                        // best flow control, but it does exactly what we need where we need it.
+                        authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), currentPassword, request.getApplicationName());
+                    }
+                }
+
+                // ok, thats out of the way. lets keep moving.
+                String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("userSalt: {}", userSalt);
+                    DEBUGGER.debug("Value: {}", newUserSalt);
                 }
 
-                if (StringUtils.isNotEmpty(userSalt))
+                if (StringUtils.isNotEmpty(newUserSalt))
                 {
-                    String currentPassword = PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                    // get rollback information in case something breaks...
+                    // we already have the existing expiry and password, all we really need to get here is the salt.
+                    String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                    if (DEBUG)
+                    if (StringUtils.isNotEmpty(existingSalt))
                     {
-                        DEBUGGER.debug("Value: {}", currentPassword);
-                    }
+                        // good, move forward
+                        // put the new salt in the database
+                        boolean isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
 
-                    // we aren't getting the data back here because we don't need it. if the request
-                    // fails we'll get an exception and not process further. this might not be the
-                    // best flow control, but it does exactly what we need where we need it.
-                    authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(), currentPassword, request.getApplicationName());
-
-                    // ok, thats out of the way. lets keep moving.
-                    String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", newUserSalt);
-                    }
-
-                    if (StringUtils.isNotEmpty(newUserSalt))
-                    {
-                        // get rollback information in case something breaks...
-                        // we already have the existing expiry and password, all we really need to get here is the salt.
-                        String existingSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
-
-                        if (StringUtils.isNotEmpty(existingSalt))
+                        if (DEBUG)
                         {
-                            // good, move forward
-                            // put the new salt in the database
-                            boolean isComplete = userSec.updateUserSalt(userAccount.getGuid(), newUserSalt, SaltType.LOGON.name());
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
+
+                        if (isComplete)
+                        {
+                            // good
+                            String newPassword = PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Value: {}", newPassword);
+                            }
+
+                            // make the modification in the user repository
+                            isComplete = authenticator.changeUserPassword(userAccount.getGuid(),
+                                    PasswordUtils.encryptText(
+                                            reqSecurity.getNewPassword(),
+                                            newUserSalt,
+                                            svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                                            svcBean.getConfigData().getSecurityConfig().getIterations()),
+                                            calendar.getTimeInMillis());
 
                             if (DEBUG)
                             {
@@ -1145,34 +1174,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                             if (isComplete)
                             {
-                                // good
-                                String newPassword = PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Value: {}", newPassword);
-                                }
-
-                                // make the modification in the user repository
-                                isComplete = authenticator.changeUserPassword(userAccount.getGuid(),
-                                        PasswordUtils.encryptText(
-                                                reqSecurity.getNewPassword(),
-                                                newUserSalt,
-                                                svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                                svcBean.getConfigData().getSecurityConfig().getIterations()),
-                                        calendar.getTimeInMillis());
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("isComplete: {}", isComplete);
-                                }
-
-                                if (isComplete)
-                                {
-                                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                    response.setResponse("Successfully changed password.");
-                                }
-                                else
+                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                                response.setResponse("Successfully changed password.");
+                            }
+                            else
+                            {
+                                if (!(request.isReset()))
                                 {
                                     // something failed. we're going to undo what we did in the user
                                     // repository, because we couldnt update the salt value. if we don't
@@ -1184,30 +1191,26 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                     {
                                         throw new AccountControlException("Failed to modify the user account and unable to revert to existing state.");
                                     }
-
-                                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                    response.setResponse("Failed to change the password associated with the user account");
                                 }
-                            }
-                            else
-                            {
+
                                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
                                 response.setResponse("Failed to change the password associated with the user account");
                             }
                         }
                         else
                         {
-                            throw new AccountControlException("Unable to obtain existing salt value from datastore. Cannot continue.");
+                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                            response.setResponse("Failed to change the password associated with the user account");
                         }
                     }
                     else
                     {
-                        throw new AccountControlException("Unable to generate new salt for provided user account.");
+                        throw new AccountControlException("Unable to obtain existing salt value from datastore. Cannot continue.");
                     }
                 }
                 else
                 {
-                    throw new AccountControlException("Unable to obtain configured user salt. Cannot continue");
+                    throw new AccountControlException("Unable to generate new salt for provided user account.");
                 }
             }
         }

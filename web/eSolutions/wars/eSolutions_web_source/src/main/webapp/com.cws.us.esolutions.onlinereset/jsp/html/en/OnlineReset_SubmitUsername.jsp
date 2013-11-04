@@ -47,6 +47,9 @@
     <p id="validationError" />
 
     <form:form id="submitUsernameForSearch" name="submitUsernameForSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password" method="post" autocomplete="off">
+        <form:hidden path="isReset" value="true" />
+        <form:hidden path="resetType" value="USERNAME" />
+
         <table id="userauth">
             <tr>
                 <td><label id="txtUsername"><spring:message code="olr.username" /></label></td>

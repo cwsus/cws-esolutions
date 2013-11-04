@@ -50,7 +50,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>ldap.caspersbox.corp</repositoryHost>
+        <repositoryHost>127.0.0.1</repositoryHost>
         <repositoryPort>10389</repositoryPort>
         <repositoryDriver />
         <repositoryConnTimeout>10000</repositoryConnTimeout>
@@ -96,7 +96,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://data.caspersbox.corp/cwssec</datasource>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
@@ -104,7 +104,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://data.caspersbox.corp/cwssec</datasource>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
@@ -112,7 +112,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>SessionDataSource</dsName>
-            <datasource>jdbc:mysql://data.caspersbox.corp/cwssec</datasource>
+            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>

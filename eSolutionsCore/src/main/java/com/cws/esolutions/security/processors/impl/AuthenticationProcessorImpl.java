@@ -203,14 +203,16 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setSurname((String) userData.get(3));
                     userAccount.setDisplayName((String) userData.get(4));
                     userAccount.setEmailAddr((String) userData.get(5));
-                    userAccount.setRole(Role.valueOf((String) userData.get(6)));
-                    userAccount.setFailedCount((Integer) userData.get(7));
-                    userAccount.setLastLogin(new Date((Long) userData.get(8)));
-                    userAccount.setExpiryDate((Long) userData.get(9));
-                    userAccount.setSuspended((Boolean) userData.get(10));
-                    userAccount.setOlrSetup((Boolean) userData.get(11));
-                    userAccount.setOlrLocked((Boolean) userData.get(12));
-                    userAccount.setTcAccepted((Boolean) userData.get(13));
+                    userAccount.setPagerNumber((String) userData.get(6));
+                    userAccount.setTelephoneNumber((String) userData.get(7));
+                    userAccount.setRole(Role.valueOf((String) userData.get(8)));
+                    userAccount.setFailedCount((Integer) userData.get(9));
+                    userAccount.setLastLogin(new Date((Long) userData.get(10)));
+                    userAccount.setExpiryDate((Long) userData.get(11));
+                    userAccount.setSuspended((Boolean) userData.get(12));
+                    userAccount.setOlrSetup((Boolean) userData.get(13));
+                    userAccount.setOlrLocked((Boolean) userData.get(14));
+                    userAccount.setTcAccepted((Boolean) userData.get(15));
                     userAccount.setSessionId(authUser.getSessionId());
 
                     // get the user keypair
@@ -242,7 +244,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
                     }
 
-                    if (userData.get(14) == null)
+                    if (userData.get(16) == null)
                     {
                         keyResponse = keyManager.createKeys(keyRequest);
                     }
