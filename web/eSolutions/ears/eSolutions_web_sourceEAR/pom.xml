@@ -34,38 +34,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     </dependencies>
 
     <build>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>${project.name}</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <!--
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>package</id>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="build.xml">
-                                    <target name="init" />
-                                </ant>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
                 <configuration>
@@ -82,6 +52,10 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                             <Subproject-Name>${project.name}</Subproject-Name>
                             <Specification-Title>${project.name}</Specification-Title>
                             <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
                             <Build-Date>${timestamp}</Build-Date>
                             <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
                         </manifestEntries>
