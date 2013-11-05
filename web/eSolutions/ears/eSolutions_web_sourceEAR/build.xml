@@ -19,6 +19,6 @@
 
         <touch file="${buildArea}/${projectName}/${projectName}-${projectVersion}.version" />
 
-        <echo message="${projectName} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${projectName}/${projectName}-${projectVersion}.version" append="true" />
+        <echo message="${projectName} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${projectName}/${projectName}-${projectVersion}.version" append="false" />
 	</target>
 </project>
