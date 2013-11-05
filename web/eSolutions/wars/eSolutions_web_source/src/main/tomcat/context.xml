@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context cookies="true" crossContext="false" docBase="@document.base"
-    fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false" path="/@vhost.name"
+    fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false"
     preemptiveAuthentication="true" privileged="false" reloadable="true" sendRedirectBody="true"
     sessionCookieDomain="@cookie.domain.name" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
     sessionCookiePathUsesTrailingSlash="true" swallowAbortedUploads="true" swallowOutput="true"

@@ -45,10 +45,9 @@
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
         <property name="contextFile" value="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
 
-        <copy file="${basedir}/src/main/tomcat/${vhostName}.xml" tofile="${contextFile}" />
+        <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
         <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
-        <replace file="${contextFile}" token="@vhost.name" value="${vhostName}" />
         <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
         <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${WebProjectName}-${ProjectVersion}" />
         <replace file="${contextFile}" token="@ldap.host.name" value="${ldapHost}" />
