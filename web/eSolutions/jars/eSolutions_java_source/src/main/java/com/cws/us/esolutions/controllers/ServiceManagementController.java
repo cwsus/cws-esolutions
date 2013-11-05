@@ -111,9 +111,9 @@ public class ServiceManagementController
     private String messageNoDmgrFound = null;
     private String viewDatacenterPage = null;
     private String viewDatacentersPage = null;
+    private String messageValidationFailed = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
-    private String messageRequestValidationFailed = null;
     private String messageProjectSuccessfullyAdded = null;
     private String messagePlatformSuccessfullyAdded = null;
     private DatacenterValidator datacenterValidator = null;
@@ -385,9 +385,9 @@ public class ServiceManagementController
         this.recordsPerPage = value;
     }
 
-    public final void setMessageRequestValidationFailed(final String value)
+    public final void setMessageValidationFailed(final String value)
     {
-        final String methodName = ServiceManagementController.CNAME + "#setMessageRequestValidationFailed(final String value)";
+        final String methodName = ServiceManagementController.CNAME + "#setMessageValidationFailed(final String value)";
 
         if (DEBUG)
         {
@@ -395,7 +395,7 @@ public class ServiceManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageRequestValidationFailed = value;
+        this.messageValidationFailed = value;
     }
 
     public final void setMessageDatacenterSuccessfullyAdded(final String value)
@@ -2574,7 +2574,7 @@ public class ServiceManagementController
             if (bindResult.hasErrors())
             {
                 // something was missing from the request
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageRequestValidationFailed);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", request);
                 mView.setViewName(this.addPlatformPage);
 

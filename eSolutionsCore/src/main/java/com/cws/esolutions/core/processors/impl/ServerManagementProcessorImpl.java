@@ -927,76 +927,118 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         ServerManagementResponse response = new ServerManagementResponse();
 
+        final Server sourceServer = request.getSourceServer();
+        final Server targetServer = request.getTargetServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", targetServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
         {
-            SystemManagerRequest systemReq = new SystemManagerRequest();
-            systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
-            systemReq.setRequestType(SystemCheckType.TELNET);
-            systemReq.setPortNumber(request.getPortNumber());
-            systemReq.setTargetServer(request.getTargetServer().getOperHostName());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("SystemManagerRequest: {}", request);
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
             }
 
-            AgentRequest agentRequest = new AgentRequest();
-            agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
-
-            if (DEBUG)
+            if (isServiceAuthorized)
             {
-                DEBUGGER.debug("AgentRequest: {}", agentRequest);
-            }
-
-            // always make the tcp conn to the oper hostname - thats where the agent should be listening
-            String correlator = MQUtils.sendMqMessage(agentRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("correlator: {}", correlator);
-            }
-
-            if (StringUtils.isNotEmpty(correlator))
-            {
-                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                if (DEBUG)
+                if (sourceServer != null)
                 {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                }
-
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    List<String> serverData = serverDAO.getInstalledServer(sourceServer.getServerGuid());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("serverData: {}", serverData);
                     }
 
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse(systemRes.getResponse());
-                    response.setResponseObject(systemRes.getResponseData());
+                    if ((serverData != null) && (serverData.size() != 0))
+                    {
+                        SystemManagerRequest systemReq = new SystemManagerRequest();
+                        systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                        systemReq.setRequestType(SystemCheckType.TELNET);
+                        systemReq.setPortNumber(request.getPortNumber());
+                        systemReq.setTargetServer(request.getTargetServer().getOperHostName());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SystemManagerRequest: {}", request);
+                        }
+
+                        AgentRequest agentRequest = new AgentRequest();
+                        agentRequest.setAppName(appConfig.getAppName());
+                        agentRequest.setRequestPayload(systemReq);
+                        agentRequest.setHostname(sourceServer.getOperHostName());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                        }
+
+                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                        String correlator = MQUtils.sendMqMessage(agentRequest);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("correlator: {}", correlator);
+                        }
+
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                            }
+
+                            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                            {
+                                SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                                }
+
+                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                                response.setResponse(systemRes.getResponse());
+                                response.setResponseObject(systemRes.getResponseData());
+                            }
+                            else
+                            {
+                                response.setResponse(agentResponse.getResponse());
+                                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                            }
+                        }
+                        else
+                        {
+                            response.setResponse("Failed to send message to configured request queue for action");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        }
+                    }
+                    else
+                    {
+                        response.setResponse("Failed to locate a source server with the given information.");
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    }
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    throw new ServerManagementException("No source server was provided. Cannot continue.");
                 }
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
+                response.setResponse("The requesting user was not authorized to perform the operation. Cannot continue.");
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
         }
@@ -1005,6 +1047,18 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
             throw new ServerManagementException(ux.getMessage(), ux);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServerManagementException(sqx.getMessage(), sqx);
         }
         finally
         {

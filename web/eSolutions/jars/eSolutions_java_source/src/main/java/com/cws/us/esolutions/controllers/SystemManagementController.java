@@ -31,13 +31,13 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.dto.ServerRequest;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.us.esolutions.dto.ManagementRequest;
+import com.cws.us.esolutions.dto.SystemCheckRequest;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.us.esolutions.validators.ServerValidator;
 import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
@@ -85,17 +85,16 @@ public class SystemManagementController
 {
     private int recordsPerPage = 20;
     private String dcService = null;
-    private String requestUrl = null;
     private String serviceName = null;
     private String defaultPage = null;
     private String systemService = null;
     private String addServerPage = null;
-    private String searchPostUrl = null;
     private String viewServerPage = null;
     private String adminConsolePage = null;
     private String messageServerAdded = null;
     private String addDatacenterRedirect = null;
     private List<String> availableDomains = null;
+    private String messageNoSearchResults = null;
     private ServerValidator serverValidator = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -248,32 +247,6 @@ public class SystemManagementController
         this.availableDomains = value;
     }
 
-    public final void setSearchPostUrl(final String value)
-    {
-        final String methodName = SystemManagementController.CNAME + "#setSearchPostUrl(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.searchPostUrl = value;
-    }
-
-    public final void setRequestUrl(final String value)
-    {
-        final String methodName = SystemManagementController.CNAME + "#setRequestUrl(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestUrl = value;
-    }
-
     public final void setAddDatacenterRedirect(final String value)
     {
         final String methodName = SystemManagementController.CNAME + "#setAddDatacenterRedirect(final String value)";
@@ -298,6 +271,19 @@ public class SystemManagementController
         }
 
         this.messageServerAdded = value;
+    }
+
+    public final void setMessageNoSearchResults(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setMessageNoSearchResults(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoSearchResults = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -389,6 +375,7 @@ public class SystemManagementController
 
                 if (isUserAuthorized)
                 {
+                    mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }
                 else
@@ -798,124 +785,6 @@ public class SystemManagementController
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public final ModelAndView showSearchPage()
-    {
-        final String methodName = SystemManagementController.CNAME + "#showSearchPage()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    mView.addObject("postUrl", this.searchPostUrl);
-                    mView.addObject("command", new SearchRequest());
-                    mView.setViewName(appConfig.getSearchRequestPage());
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -1774,14 +1643,14 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/server-control", method = RequestMethod.POST)
-    public final ModelAndView runServerControlOperation(@ModelAttribute("request") final ManagementRequest request, final BindingResult binding)
+    public final ModelAndView runServerControlOperation(@ModelAttribute("request") final SystemCheckRequest request, final BindingResult binding)
     {
-        final String methodName = SystemManagementController.CNAME + "#runServerControlOperation(@ModelAttribute(\"request\") final ManagementRequest request, final BindingResult binding)";
+        final String methodName = SystemManagementController.CNAME + "#runServerControlOperation(@ModelAttribute(\"request\") final SystemCheckRequest request, final BindingResult binding)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ManagementRequest: {}", request);
+            DEBUGGER.debug("SystemCheckRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", binding);
         }
 
@@ -1901,24 +1770,24 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView doServerSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult binding)
+    public final ModelAndView doServerSearch(@ModelAttribute("request") final SearchRequest value, final BindingResult binding)
     {
-        final String methodName = SystemManagementController.CNAME + "#runServerControlOperation(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult binding)";
+        final String methodName = SystemManagementController.CNAME + "#doServerSearch(@ModelAttribute(\"SearchRequest\") final SearchRequest value, final BindingResult binding)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", request);
+            DEBUGGER.debug("Value: {}", value);
             DEBUGGER.debug("BindingResult: {}", binding);
         }
 
         ModelAndView mView = new ModelAndView();
 
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final ISearchProcessor processor = new SearchProcessorImpl();
 
         if (DEBUG)
         {
@@ -2001,54 +1870,40 @@ public class SystemManagementController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    try
+                    SearchRequest req = new SearchRequest();
+                    req.setRequestInfo(reqInfo);
+                    req.setSearchTerms(value.getSearchTerms());
+                    req.setUserAccount(userAccount);
+
+                    if (DEBUG)
                     {
-                        // a source server is *required*
-                        request.setRequestInfo(reqInfo);
-                        request.setUserAccount(userAccount);
+                        DEBUGGER.debug("SearchRequest: {}", req);
+                    }
+
+                    SearchResponse res = processor.doServerSearch(req);
+
+                    if (res.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        List<SearchResult> serverList = res.getResults();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SearchRequest: {}", request);
+                            DEBUGGER.debug("List<Server>: {}", serverList);
                         }
 
-                        SearchResponse response = searchProcessor.doServerSearch(request);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchResponse: {}", response);
-                        }
-
-                        if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            List<SearchResult> results = response.getResults();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResults: {}", results);
-                            }
-
-                            mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
-                            mView.addObject("page", 1);
-                            mView.addObject("requestUrl", this.requestUrl);
-                            mView.addObject(Constants.SEARCH_RESULTS, results);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        }
-
-                        // regardless of what happens we still allow the user to
-                        // make the request
-                        mView.addObject("command", new SearchRequest());
-                        mView.setViewName(appConfig.getSearchRequestPage());
+                        mView.addObject("pages", (int) Math.ceil(res.getEntryCount() * 1.0 / recordsPerPage));
+                        mView.addObject("page", 1);
+                        mView.addObject(Constants.SEARCH_RESULTS, serverList);
                     }
-                    catch (SearchRequestException srx)
+                    else
                     {
-                        ERROR_RECORDER.error(srx.getMessage(), srx);
-
-                        mView.setViewName(appConfig.getErrorResponsePage());
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageNoSearchResults);
                     }
+
+                    // regardless of what happens we still allow the user to
+                    // make the request
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultPage);
                 }
                 else
                 {
@@ -2060,6 +1915,12 @@ public class SystemManagementController
                 ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
                 mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (SearchRequestException srx)
+            {
+                ERROR_RECORDER.error(srx.getMessage(), srx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
             }
         }
         else

@@ -29,6 +29,11 @@
 --%>
 
 <div class="feature">
+    <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
+    </div>
+
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>
@@ -42,29 +47,50 @@
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
-    <spring:message code="select.request.type" />
-    <br /><br />
-    <table id="selectRequest">
-        <tr>
-            <td>
-                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                    title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
-            </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
-                    title="<spring:message code='select.request.install.server' />"><spring:message code="select.request.install.server" /></a>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="${pageContext.request.contextPath}/ui/system-management/system-consoles"
-                    title="<spring:message code='select.request.type.console' />"><spring:message code='select.request.type.console' /></a>
-            </td>
-            <td>
-                <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
-                    title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
-            </td>
-        </tr>
-    </table>
+    <spring:message code="site.search.submit.request" />
+
+    <p id="validationError" />
+
+    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/system-management/search" method="post">
+        <table id="serverSearch">
+            <tr>
+                <td>
+                    <label id="txtSearchData"><spring:message code="search.data" /><br /></label>
+                </td>
+                <td>
+                    <form:input path="searchTerms" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+                    <form:errors path="searchTerms" cssClass="validationError" />
+                </td>
+            </tr>
+        </table>
+        <br /><br />
+        <table id="inputItems">
+            <tr>
+                <td>
+                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
+                <td>
+                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                </td>
+                <td>
+                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                </td>
+            </tr>
+        </table>
+    </form:form>
+
+    <c:if test="${not empty searchResults}">
+        <p id="splitter" />
+
+        <strong><spring:message code="search.results" /></strong>
+        <br /><br />
+        <table id="searchResults">
+            <c:forEach var="result" items="${searchResults}">
+                <tr>
+                    <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${result.path}" title="${result.title}">${result.title}</a></td>
+                </tr>
+            </c:forEach>
+        </table>
+    </c:if>
 </div>
 <br /><br />

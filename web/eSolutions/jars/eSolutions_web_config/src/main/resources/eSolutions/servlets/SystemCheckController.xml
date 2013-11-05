@@ -9,15 +9,26 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <bean id="checkValidator" class="com.cws.us.esolutions.validators.SystemCheckValidator">
+        <property name="messageTargetNameRequired" value="system.error.no.target.name" />
+        <property name="messageTargetPortRequired" value="error.no.target.port" />
+    </bean>
+
     <bean id="systemCheckController" class="com.cws.us.esolutions.controllers.SystemCheckController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="validator">
+            <ref bean="checkValidator" />
+        </property>
         <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />
-        <property name="errorResponse" value="error" />
+        <property name="errorResponse" value="error.service.response.failed" />
         <property name="remoteDatePage" value="SystemCheck_RemoteDate" />
         <property name="testTelnetPage" value="SystemCheck_TelnetTest" />
+        <property name="netstatPage" value="SystemCheck_Netstat" />
+        <property name="listProcessesPage" value="SystemCheck_ListProcesses" />
         <property name="messageSource" value="nls/SystemCheckServlet" />
+        <property name="messageValidationFailed" value="error.message.failed.validation" />
     </bean>
 </beans>

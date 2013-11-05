@@ -54,6 +54,8 @@
                 <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
                     title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
             </td>
+        </tr>
+        <tr>
             <td>
                 <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
                     title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
@@ -62,6 +64,8 @@
                 <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
                     title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
             </td>
+        </tr>
+        <tr>
             <td>
                 <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
                     title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>

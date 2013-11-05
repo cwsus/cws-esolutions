@@ -113,7 +113,7 @@ public class DatacenterDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getDataCenterByAttribute("attribute"));
+            Assert.assertNotNull(dao.getDataCenterByAttribute("attribute", 0));
         }
         catch (SQLException sqx)
         {

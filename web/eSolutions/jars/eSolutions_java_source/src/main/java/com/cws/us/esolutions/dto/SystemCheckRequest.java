@@ -12,18 +12,15 @@
 package com.cws.us.esolutions.dto;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.us.esolutions.Constants;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.dto
- * ManagementRequest.java
+ * SystemCheckRequest.java
  *
  * $Id: $
  * $Author: $
@@ -37,21 +34,21 @@ import com.cws.us.esolutions.Constants;
  * 35033355 @ May 16, 2013 11:07:14 AM
  *     Created.
  */
-public class ManagementRequest implements Serializable
+public class SystemCheckRequest implements Serializable
 {
     private int targetPort = 0;
-    private Server sourceServer = null;
+    private String sourceServer = null;
     private String targetServer = null;
 
     private static final long serialVersionUID = -46841443676631031L;
-    private static final String CNAME = ManagementRequest.class.getName();
+    private static final String CNAME = SystemCheckRequest.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setTargetPort(final int value)
     {
-        final String methodName = ManagementRequest.CNAME + "#setTargetPort(final int value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setTargetPort(final int value)";
 
         if (DEBUG)
         {
@@ -62,9 +59,9 @@ public class ManagementRequest implements Serializable
         this.targetPort = value;
     }
 
-    public final void setSourceServer(final Server value)
+    public final void setSourceServer(final String value)
     {
-        final String methodName = ManagementRequest.CNAME + "#setSourceServer(final Server value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setSourceServer(final String value)";
 
         if (DEBUG)
         {
@@ -77,7 +74,7 @@ public class ManagementRequest implements Serializable
 
     public final void setTargetServer(final String value)
     {
-        final String methodName = ManagementRequest.CNAME + "#setTargetServer(final String value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setTargetServer(final String value)";
 
         if (DEBUG)
         {
@@ -90,7 +87,7 @@ public class ManagementRequest implements Serializable
 
     public final int getTargetPort()
     {
-        final String methodName = ManagementRequest.CNAME + "#getTargetPort()";
+        final String methodName = SystemCheckRequest.CNAME + "#getTargetPort()";
 
         if (DEBUG)
         {
@@ -101,9 +98,9 @@ public class ManagementRequest implements Serializable
         return this.targetPort;
     }
 
-    public final Server getSourceServer()
+    public final String getSourceServer()
     {
-        final String methodName = ManagementRequest.CNAME + "#getSourceServer()";
+        final String methodName = SystemCheckRequest.CNAME + "#getSourceServer()";
 
         if (DEBUG)
         {
@@ -116,7 +113,7 @@ public class ManagementRequest implements Serializable
 
     public final String getTargetServer()
     {
-        final String methodName = ManagementRequest.CNAME + "#getTargetServer()";
+        final String methodName = SystemCheckRequest.CNAME + "#getTargetServer()";
 
         if (DEBUG)
         {
@@ -130,7 +127,7 @@ public class ManagementRequest implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ManagementRequest.CNAME + "#toString()";
+        final String methodName = SystemCheckRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {

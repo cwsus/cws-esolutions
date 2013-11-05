@@ -660,10 +660,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
                         }
                     }
                 }
-                else
-                {
-                    throw new SQLException("No results were found");
-                }
             }
         }
         catch (SQLException sqx)

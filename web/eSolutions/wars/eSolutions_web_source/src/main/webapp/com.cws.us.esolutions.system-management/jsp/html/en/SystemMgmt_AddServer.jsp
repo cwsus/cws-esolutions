@@ -81,6 +81,11 @@
 </script>
 
 <div class="feature">
+    <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/system-management/system-consoles"
+            title="<spring:message code='select.request.type.console' />"><spring:message code='select.request.type.console' /></a> 
+    </div>
+
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>

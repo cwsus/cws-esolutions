@@ -64,15 +64,15 @@
     <table id="viewDatacenter">
         <tr>
             <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
-            <td>${datacenterName}</td>
+            <td>${datacenter.datacenterName}</td>
         </tr>
         <tr>
             <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
-            <td>${datacenterStatus}</td>
+            <td>${datacenter.datacenterStatus}</td>
         </tr>
         <tr>
             <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.dataacenter.description" /></label></td>
-	        <td>${datacenterDesc}</td>
+	        <td>${datacenter.datacenterDesc}</td>
         </tr>
     </table>
 </div>

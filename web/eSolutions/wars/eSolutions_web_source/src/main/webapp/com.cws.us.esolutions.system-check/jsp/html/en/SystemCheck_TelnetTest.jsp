@@ -47,7 +47,7 @@
     <p id="validationError" />
 
     <form:form id="submitTelnetRequest" name="submitTelnetRequest" action="${pageContext.request.contextPath}/ui/system-check/telnet" method="post">
-        <form:hidden path="sourceServer" value="${server}" />
+        <form:hidden path="sourceServer" value="${server.serverGuid}" />
 
         <table id="telnetRequest">
             <tr>
@@ -61,7 +61,7 @@
             </tr>
             <tr>
                 <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
-                <td><form:input path="targetPort" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" /></td>
+                <td><form:input path="targetPort" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
                 <td><form:errors path="targetPort" cssClass="validationError" /></td>
             </tr>
         </table>

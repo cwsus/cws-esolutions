@@ -61,7 +61,7 @@
             <tr>
                 <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
                 <td>
-                    <form:password path="currentPassword" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
+                    <form:password path="currentPassword" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="currentPassword" cssClass="validationError" />
                 </td>
             </tr>

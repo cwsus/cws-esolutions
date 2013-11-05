@@ -33,6 +33,7 @@ import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.config.ServerConfig;
+import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.server.interfaces.AgentServer;
 import com.cws.esolutions.agent.server.processors.impl.AgentRequestProcessorImpl;
 import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
@@ -159,13 +160,9 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
             DEBUGGER.debug("Message: ", message);
         }
 
-        ObjectMessage mqMessage = null;
-        AgentRequest agentRequest = null;
-        AgentResponse agentResponse = null;
-
         try
         {
-            mqMessage = (ObjectMessage) message;
+            ObjectMessage mqMessage = (ObjectMessage) message;
 
             if (DEBUG)
             {
@@ -177,34 +174,41 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                 return;
             }
 
-            agentRequest = (AgentRequest) mqMessage.getObject();
+            AgentRequest agentRequest = (AgentRequest) mqMessage.getObject();
 
             if (DEBUG)
             {
                 DEBUGGER.debug("agentRequest: ", agentRequest);
             }
 
-            agentResponse = processor.processRequest(agentRequest);
-
-            if (DEBUG)
+            if (StringUtils.equals(agentRequest.getHostname(), agentBean.getHostName()))
             {
-                DEBUGGER.debug("AgentResponse: ", agentResponse);
+                AgentResponse agentResponse = processor.processRequest(agentRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: ", agentResponse);
+                }
+
+                ObjectMessage oMessage = session.createObjectMessage(true);
+                oMessage.setObject(agentResponse);
+                oMessage.setJMSCorrelationID(message.getJMSCorrelationID());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ObjectMessage: {}", oMessage);
+                }
+
+                producer.send(response, oMessage);
             }
-
-            ObjectMessage oMessage = session.createObjectMessage(true);
-            oMessage.setObject(agentResponse);
-            oMessage.setJMSCorrelationID(message.getJMSCorrelationID());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ObjectMessage: {}", oMessage);
-            }
-
-            producer.send(response, oMessage);
         }
-        catch (Exception ex)
+        catch (JMSException jx)
         {
-            ERROR_RECORDER.error(ex.getMessage(), ex);
+            ERROR_RECORDER.error(jx.getMessage(), jx);
+        }
+        catch (AgentException ax)
+        {
+            ERROR_RECORDER.error(ax.getMessage(), ax);
         }
     }
 }
