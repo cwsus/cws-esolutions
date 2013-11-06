@@ -107,7 +107,13 @@ function validateForm(theForm, e)
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                clearForm();
+
+                document.getElementById('username').focus();
+            }
+            else
             {
                 if (theForm.loginUser.value == '')
                 {
@@ -132,19 +138,19 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                clearForm();
-
-                document.getElementById('username').focus();
-            }
         }
     }
     else if (theForm.name == 'submitUserLogin')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                clearForm();
+
+                document.getElementById('username').focus();
+            }
+            else
             {
                 if (theForm.username.value == '')
                 {
@@ -160,19 +166,19 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                clearForm();
-
-                document.getElementById('username').focus();
-            }
         }
     }
     else if (theForm.name == 'submitPassword')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                clearForm();
+
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.password.value == '')
                 {
@@ -188,17 +194,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitOTP')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.password.value == '')
                 {
@@ -223,17 +229,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitEmailForUserSearch')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.emailAddr.value == '')
                 {
@@ -249,17 +255,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitUsernameForSearch')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.username.value == '')
                 {
@@ -275,17 +281,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitSecurityQuestion')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.secAnswerOne.value == '')
                 {
@@ -310,17 +316,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitNameLookup')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.recordName.value == '')
                 {
@@ -336,17 +342,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitArticleSearch')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.searchTerms.value == '')
                 {
@@ -362,17 +368,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitNewArticle')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.title.value == '')
                 {
@@ -424,17 +430,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitSecurityInformationChange')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.secQuestionOne.value == '')
                 {
@@ -543,17 +549,17 @@ function validateForm(theForm, e)
                     }
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitEmailChange')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.emailAddr.value == '')
                 {
@@ -590,17 +596,17 @@ function validateForm(theForm, e)
                     }
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewServer')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.osName.value == '')
                 {
@@ -694,17 +700,17 @@ function validateForm(theForm, e)
                     }
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitRemoteDate')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.targetServer.value == '')
                 {
@@ -720,17 +726,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitTelnetRequest')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.targetServer.value == '')
                 {
@@ -755,17 +761,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewProject')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.projectCode.value == '')
                 {
@@ -826,17 +832,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewApplication')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.applicationName.value == '')
                 {
@@ -902,17 +908,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'selectDmgr')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.serverGuid.value == '')
                 {
@@ -928,17 +934,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewPlatform')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.platformName.value == '')
                 {
@@ -981,43 +987,36 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'searchRequest')
     {
-        if (targ.id == 'execute')
+        if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if ((e.keyCode == 13) || (e.type == 'click'))
+            if (targ.id == 'cancel')
             {
-                if (theForm.searchTerms.value == '')
-                {
-                    clearText(theForm);
-
-                    document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
-                    document.getElementById('txtSearchTerms').style.color = '#FF0000';
-                    document.getElementById('execute').disabled = false;
-                    document.getElementById('searchTerms').focus();
-                }
-                else
-                {
-                    theForm.submit();
-                }
+                history.go(-1);
             }
-        }
-        else if (targ.id == 'cancel')
-        {
-            theForm.submit();
+            else
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
+                document.getElementById('txtSearchTerms').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('searchTerms').focus();
+            }
         }
     }
     else if (theForm.name == 'submitContactForm')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.messageSubject.value == '')
                 {
@@ -1042,17 +1041,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'searchUserAccounts')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 var i = 0;
                 var f = 0;
@@ -1089,17 +1088,17 @@ function validateForm(theForm, e)
                     document.getElementById('username').focus();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewDatacenter')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.datacenterName.value == '')
                 {
@@ -1127,17 +1126,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitPasswordChange')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if ((theForm.currentPassword) && (theForm.currentPassword.value == ''))
                 {
@@ -1192,17 +1191,17 @@ function validateForm(theForm, e)
                     }
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'submitSystemMessage')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.messageTitle.value == '')
                 {
@@ -1229,17 +1228,17 @@ function validateForm(theForm, e)
                     theForm.submit();
                 }
             }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
-            }
         }
     }
     else if (theForm.name == 'createNewUser')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
-            if (targ.id == 'execute')
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
             {
                 if (theForm.username.value == '')
                 {
@@ -1290,10 +1289,6 @@ function validateForm(theForm, e)
                 {
                     theForm.submit();
                 }
-            }
-            else if (targ.id == 'cancel')
-            {
-                history.go(-1);
             }
         }
     }

@@ -107,6 +107,7 @@ public class ApplicationManagementController
     private String addPlatformRedirect = null;
     private String messageFileUploaded = null;
     private String viewApplicationsPage = null;
+    private String messageValidationFailed = null;
     private String messageNoBinaryProvided = null;
     private String messageApplicationAdded = null;
     private ApplicationServiceBean appConfig = null;
@@ -115,9 +116,7 @@ public class ApplicationManagementController
     private String messageNoApplicationsFound = null;
     private String messageNoAppVersionProvided = null;
     private DeploymentValidator deploymentValidator = null;
-    private String messageDeploymentFailedValidation = null;
     private ApplicationValidator applicationValidator = null;
-    private String messageApplicationFailedValidation = null;
 
     private static final String CNAME = ApplicationManagementController.class.getName();
 
@@ -437,9 +436,9 @@ public class ApplicationManagementController
         this.messageApplicationRetired = value;
     }
 
-    public final void setMessageApplicationFailedValidation(final String value)
+    public final void setMessageValidationFailed(final String value)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#setMessageApplicationFailedValidation(final String value)";
+        final String methodName = ApplicationManagementController.CNAME + "#setMessageValidationFailed(final String value)";
 
         if (DEBUG)
         {
@@ -447,20 +446,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationFailedValidation = value;
-    }
-
-    public final void setMessageDeploymentFailedValidation(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setMessageDeploymentFailedValidation(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageDeploymentFailedValidation = value;
+        this.messageValidationFailed = value;
     }
     
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -2800,7 +2786,7 @@ public class ApplicationManagementController
                 // validation failed
                 ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageApplicationFailedValidation);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new ApplicationRequest());
                 mView.setViewName(this.addAppPage);
 
@@ -3128,7 +3114,7 @@ public class ApplicationManagementController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageDeploymentFailedValidation);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new ApplicationRequest());
 
                 return mView;

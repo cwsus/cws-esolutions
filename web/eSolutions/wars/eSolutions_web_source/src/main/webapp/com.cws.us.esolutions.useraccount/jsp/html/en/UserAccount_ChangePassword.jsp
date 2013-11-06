@@ -71,7 +71,7 @@
             <tr>
                 <td><label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label></td>
                 <td>
-                    <form:password path="confirmPassword" onkeypress="if ((event.keyCode == 13) || (event.type == 'click')) { disableButton(this); validateForm(this.form, event); }" />
+                    <form:password path="confirmPassword" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
                     <form:errors path="confirmPassword" cssClass="validationError" />
                 </td>
             </tr>

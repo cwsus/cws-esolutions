@@ -29,6 +29,11 @@
 --%>
 
 <div class="feature">
+    <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
+    </div>
+
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>

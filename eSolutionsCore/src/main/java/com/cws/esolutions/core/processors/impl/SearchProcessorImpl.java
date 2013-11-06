@@ -272,11 +272,11 @@ public class SearchProcessorImpl implements ISearchProcessor
                         }
                     }
 
-                    if ((data != null) && (data.length >= 14))
+                    if ((data != null) && (data.length >= 16))
                     {
                         SearchResult searchResult = new SearchResult();
                         searchResult.setPath(data[0]);
-                        searchResult.setTitle(data[14]); // proper ordinal for oper hostname
+                        searchResult.setTitle(data[16]); // proper ordinal for oper hostname
 
                         if (DEBUG)
                         {

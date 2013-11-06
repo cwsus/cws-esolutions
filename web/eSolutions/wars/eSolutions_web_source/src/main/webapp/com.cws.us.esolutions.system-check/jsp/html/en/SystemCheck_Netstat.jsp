@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.system-management/jsp/html/en
- * SystemManagement_DefaultHandler.jsp
+ * SystemManagement_TelnetTest.jsp
  *
  * $Id$
  * $Author$
@@ -29,11 +29,6 @@
 --%>
 
 <div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
-    </div>
-
     <c:if test="${not empty messageResponse}">
         <p id="info">${messageResponse}</p>
     </c:if>
@@ -47,20 +42,22 @@
         <p id="error"><spring:message code="${errorMessage}" /></p>
     </c:if>
 
-    <spring:message code="site.search.submit.request" />
+    <spring:message code="telnet.request.enter.information" />
 
     <p id="validationError" />
 
-    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/system-management/search" method="post">
-        <table id="serverSearch">
+    <form:form id="submitNetstatRequest" name="submitNetstatRequest" action="${pageContext.request.contextPath}/ui/system-check/netstat" method="post">
+        <form:hidden path="sourceServer" value="${server.serverGuid}" />
+
+        <table id="netstatRequest">
             <tr>
-                <td>
-                    <label id="txtSearchData"><spring:message code="search.data" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="searchTerms" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
-                    <form:errors path="searchTerms" cssClass="validationError" />
-                </td>
+                <td><label id="txtSourceHostName"><spring:message code="telnet.request.select.source" /></label></td>
+                <td>${server.operHostName}</td>
+            </tr>
+            <tr>
+                <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
+                <td><form:input path="targetPort" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+                <td><form:errors path="targetPort" cssClass="validationError" /></td>
             </tr>
         </table>
         <br /><br />
@@ -78,19 +75,5 @@
             </tr>
         </table>
     </form:form>
-
-    <c:if test="${not empty searchResults}">
-        <p id="splitter" />
-
-        <strong><spring:message code="search.results" /></strong>
-        <br /><br />
-        <table id="searchResults">
-            <c:forEach var="result" items="${searchResults}">
-                <tr>
-                    <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${result.path}" title="${result.title}">${result.title}</a></td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
 </div>
 <br /><br />

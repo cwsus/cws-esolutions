@@ -30,10 +30,16 @@
 
 <div class="feature">
     <div id="breadcrumb" class="lpstartover">
+        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
         <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
             title="<spring:message code='select.request.type.telnet' />"><spring:message code='select.request.type.telnet' /></a> / 
         <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
-            title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a>
+            title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a> / 
+        <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
+            title="<spring:message code='select.request.install.server' />"><spring:message code="select.request.install.server" /></a>
+        <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
+            title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
     </div>
 
     <c:if test="${not empty messageResponse}">
@@ -68,10 +74,13 @@
             <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label>
             <td>${server.serverRegion}</td>
             <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label>
-            <td>${server.datacenter}</td>
+            <td>
+                <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${server.datacenter.datacenterGuid}"
+                    title="${server.datacenter.datacenterName}">${server.datacenter.datacenterName}</a>
+            </td>
         </tr>
     </table>
-    <c:if test="${server.serverType eq 'DMGR' or server.serverType eq 'VIRTUALHOST'}">
+    <c:if test="${server.serverType eq 'DMGRSERVER' or server.serverType eq 'VIRTUALHOST'}">
         <table id="applicationDetail">
             <tr>
                 <td><label id="txtManagerUrl"><spring:message code="system.mgmt.manager.url" /></label>

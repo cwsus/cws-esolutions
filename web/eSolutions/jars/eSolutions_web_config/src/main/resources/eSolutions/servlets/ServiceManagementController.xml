@@ -54,6 +54,6 @@
 	    <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
 	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
-        <property name="messageRequestValidationFailed" value="svc.mgmt.request.validation.failed" />
+        <property name="messageValidationFailed" value="error.message.failed.validation" />
     </bean>
 </beans>

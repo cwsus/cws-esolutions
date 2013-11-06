@@ -30,8 +30,13 @@
 
 <div class="feature">
     <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
+        <a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a> /
+        <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
+            title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
+        <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+            / <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
+                title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
+        </c:if>
     </div>
 
     <c:if test="${not empty messageResponse}">
@@ -51,7 +56,7 @@
 
     <p id="validationError" />
 
-    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/system-management/search" method="post">
+    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/knowledgebase/search" method="post">
         <table id="serverSearch">
             <tr>
                 <td>
@@ -87,7 +92,7 @@
         <table id="searchResults">
             <c:forEach var="result" items="${searchResults}">
                 <tr>
-                    <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${result.path}" title="${result.title}">${result.title}</a></td>
+                    <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${result.path}" title="${result.title}">${result.title}</a></td>
                 </tr>
             </c:forEach>
         </table>

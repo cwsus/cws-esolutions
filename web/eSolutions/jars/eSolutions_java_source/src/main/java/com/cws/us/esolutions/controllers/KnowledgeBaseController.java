@@ -84,11 +84,10 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
 public class KnowledgeBaseController
 {
     private String prefix = null;
-    private String postURL = null;
     private String serviceId = null;
-    private String requestURL = null;
     private String serviceName = null;
     private String articleList = null;
+    private String defaultHandler = null;
     private String messageSource = null;
     private int newIdentifierLength = 8; // default of 8
     private String editArticlePage = null;
@@ -105,8 +104,8 @@ public class KnowledgeBaseController
     private String messageArticleDeleted = null;
     private String messageArticleApproved = null;
     private String messageArticleRejected = null;
+    private String messageValidationFailed = null;
     private ApplicationServiceBean appConfig = null;
-    private String messageArticleFailedValidation = null;
 
     private static final String CNAME = KnowledgeBaseController.class.getName();
 
@@ -140,32 +139,6 @@ public class KnowledgeBaseController
         this.validator = value;
     }
 
-    public final void setPostURL(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setPostURL(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.postURL = value;
-    }
-
-    public final void setRequestURL(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setRequestURL(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestURL = value;
-    }
-
     public final void setServiceName(final String value)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#setServiceName(final String value)";
@@ -190,6 +163,19 @@ public class KnowledgeBaseController
         }
 
         this.articleList = value;
+    }
+
+    public final void setDefaultHandler(final String value)
+    {
+        final String methodName = KnowledgeBaseController.CNAME + "#setDefaultHandler(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.defaultHandler = value;
     }
 
     public final void setShowArticlePage(final String value)
@@ -322,9 +308,9 @@ public class KnowledgeBaseController
         this.messageSource = value;
     }
 
-    public final void setMessageArticleFailedValidation(final String value)
+    public final void setMessageValidationFailed(final String value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setMessageArticleFailedValidation(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setMessageValidationFailed(final String value)";
 
         if (DEBUG)
         {
@@ -332,7 +318,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageArticleFailedValidation = value;
+        this.messageValidationFailed = value;
     }
 
     public final void setMessageArticleApproved(final String value)
@@ -502,10 +488,9 @@ public class KnowledgeBaseController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("postUrl", this.postURL);
             mView.addObject("isHelpSearch", true);
             mView.addObject("command", new SearchRequest());
-            mView.setViewName(appConfig.getSearchRequestPage());
+            mView.setViewName(this.defaultHandler);
         }
         else
         {
@@ -655,11 +640,10 @@ public class KnowledgeBaseController
                     }
                     else
                     {
-                        mView.addObject("postUrl", this.postURL);
                         mView.addObject("isHelpSearch", true);
                         mView.addObject("command", new SearchRequest());
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getSearchRequestPage());
+                        mView.setViewName(this.defaultHandler);
                     }
                 }
                 catch (KnowledgeBaseException kbx)
@@ -668,131 +652,6 @@ public class KnowledgeBaseController
 
                     mView.setViewName(appConfig.getErrorResponsePage());
                 }
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/search-articles", method = RequestMethod.GET)
-    public final ModelAndView showArticleSearch()
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#showArticleSearch()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            // validate the user has access
-            try
-            {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    mView.addObject("postUrl", this.postURL);
-                    mView.addObject("isHelpSearch", true);
-                    mView.addObject("command", new SearchRequest());
-                    mView.setViewName(appConfig.getSearchRequestPage());
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
             }
         }
         else
@@ -1080,11 +939,10 @@ public class KnowledgeBaseController
                         }
                         else
                         {
-                            mView.addObject("postUrl", this.postURL);
                             mView.addObject("command", new SearchRequest());
                             mView.addObject("isHelpSearch", true);
                             mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                            mView.setViewName(appConfig.getSearchRequestPage());
+                            mView.setViewName(this.defaultHandler);
                         }
                     }
                     else
@@ -1253,20 +1111,18 @@ public class KnowledgeBaseController
                         }
                         else
                         {
-                            mView.addObject("postUrl", this.postURL);
                             mView.addObject("command", new SearchRequest());
                             mView.addObject("isHelpSearch", true);
                             mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                            mView.setViewName(appConfig.getSearchRequestPage());
+                            mView.setViewName(this.defaultHandler);
                         }
                     }
                     else
                     {
-                        mView.addObject("postUrl", this.postURL);
                         mView.addObject("isHelpSearch", true);
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.addObject("command", new SearchRequest());
-                        mView.setViewName(appConfig.getSearchRequestPage());
+                        mView.setViewName(this.defaultHandler);
                     }
                 }
                 else
@@ -2067,7 +1923,7 @@ public class KnowledgeBaseController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageArticleFailedValidation);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -2181,7 +2037,7 @@ public class KnowledgeBaseController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageArticleFailedValidation);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -2424,7 +2280,7 @@ public class KnowledgeBaseController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageArticleFailedValidation);
+                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -2701,21 +2557,16 @@ public class KnowledgeBaseController
 
                     if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        mView.addObject("postUrl", this.postURL);
-                        mView.addObject("requestUrl", this.requestURL);
-                        mView.addObject("command", new SearchRequest());
-                        mView.addObject("isHelpSearch", true);
                         mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
-                        mView.setViewName(appConfig.getSearchRequestPage());
                     }
                     else
                     {
-                        mView.addObject("postUrl", this.postURL);
-                        mView.addObject("command", new SearchRequest());
-                        mView.addObject("isHelpSearch", true);
                         mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
-                        mView.setViewName(appConfig.getSearchRequestPage());
                     }
+
+                    mView.addObject("command", new SearchRequest());
+                    mView.addObject("isHelpSearch", true);
+                    mView.setViewName(this.defaultHandler);
                 }
                 else
                 {

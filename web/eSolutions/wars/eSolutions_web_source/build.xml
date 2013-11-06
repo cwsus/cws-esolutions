@@ -43,13 +43,13 @@
     <target name="buildTomcat" if="isTomcat">
         <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
-        <property name="contextFile" value="${basedir}/target/${WebProjectName}-${ProjectVersion}/META-INF/context.xml" />
+        <property name="contextFile" value="${basedir}/target/${projectName}-${projectVersion}/META-INF/context.xml" />
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
         <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
         <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
-        <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${WebProjectName}-${ProjectVersion}" />
+        <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${projectName}-${projectVersion}" />
         <replace file="${contextFile}" token="@ldap.host.name" value="${ldapHost}" />
         <replace file="${contextFile}" token="@ldap.port.number" value="${ldapPort}" />
         <replace file="${contextFile}" token="@ldap.user.name" value="${ldapUser}" />
@@ -65,17 +65,17 @@
     </target>
 
     <target name="buildWebLogic" if="isWebLogic">
-        <copy file="${weblogic}/weblogic.xml" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/weblogic.xml" />
+        <copy file="${weblogic}/weblogic.xml" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/weblogic.xml" />
     </target>
 
     <target name="buildWebSphere" if="isWebSphere">
         <property name="websphere.install.root" value="/appvol/DASESOLUTIONS0001US/desolutions00us.ear" />
 
-        <copy file="${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-bnd.xmi" />
-        <copy file="${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-ext.xmi" />
+        <copy file="${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" />
+        <copy file="${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-ext.xmi" />
 
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name" value="${vhostName}" />
-        <replace file="${basedir}/target/${WebProjectName}-${ProjectVersion}/WEB-INF/ibm-web-ext.xmi" token="@vhost.name" value="${vhostName}" />
+        <replace file="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name" value="${vhostName}" />
+        <replace file="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-ext.xmi" token="@vhost.name" value="${vhostName}" />
     </target>
 
     <target name="build" depends="setWindows, setUnix, buildTomcat, buildWebLogic, buildWebSphere">

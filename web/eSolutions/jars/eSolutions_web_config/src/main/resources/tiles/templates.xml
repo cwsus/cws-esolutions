@@ -102,6 +102,10 @@
     </definition>
 
     <!-- KnowledgeBase -->
+    <definition name="KnowledgeBase_DefaultHandler" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_DefaultHandler.jsp" cascade="true" />
+    </definition>
     <definition name="KnowledgeBase_CreateArticle" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Create Article {0}" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.knowledgebase/jsp/html/en/KnowledgeBase_CreateArticle.jsp" cascade="true" />
@@ -209,6 +213,14 @@
     <definition name="SystemCheck_TelnetTest" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - System Management - Telnet Test" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_TelnetTest.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemCheck_Netstat" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - Netstat" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_Netstat.jsp" cascade="true" />
+    </definition>
+    <definition name="SystemCheck_ListProcesses" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - System Management - List Processes" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.system-check/jsp/html/en/SystemCheck_ListProcesses.jsp" cascade="true" />
     </definition>
 
     <!-- System Management -->
