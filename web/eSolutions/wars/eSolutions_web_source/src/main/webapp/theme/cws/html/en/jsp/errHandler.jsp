@@ -41,7 +41,9 @@
 
 	<head>
 	    <title><tiles:insertAttribute name="pageTitle" /></title>
-	    <link rel="stylesheet" type="text/css" href="/html/esolutions/css/esolutions.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 320px)" href="/html/esolutions/css/esolutions-mobile.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 600px)" href="/html/esolutions/css/esolutions-tablet.css" />
+        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 801px)" href="/html/esolutions/css/esolutions.css" />
 	    <link rel="image/x-icon" href="/favicon.ico" />
 	    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 	    <meta http-equiv="Content-Script-Type" content="text/javascript" />
