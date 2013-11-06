@@ -29,15 +29,15 @@
 --%>
 
 <script>
-	function confirmDelete(name, id)
-	{
-	    var confirmation = confirm("Are you sure you wish to retire application " + name + " ?");
-	
-	    if (confirmation)
-	    {
-	        window.location.href = '${pageContext.request.contextPath}/ui/application-management/retire-application/application/' + id;
-	    }
-	}
+    function confirmDelete(name, id)
+    {
+        var confirmation = confirm("Are you sure you wish to retire application " + name + " ?");
+    
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/application-management/retire-application/application/' + id;
+        }
+    }
 </script>
 
 <div class="feature">
@@ -46,7 +46,8 @@
             title="<spring:message code='app.mgmt.application.retrieve.files' />"><spring:message code="app.mgmt.application.retrieve.files" /></a> / 
         <a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}"
             title="<spring:message code='app.mgmt.application.deploy' />"><spring:message code="app.mgmt.application.deploy" /></a> / 
-        <a onclick="confirmDelete('${application.applicationName}, ${application.applicationGuid}');" title="<spring:message code='app.mgmt.application.retire' />"><spring:message code="app.mgmt.application.retire" /></a> / 
+        <a onclick="confirmDelete('${application.applicationName}', '${application.applicationGuid}');"
+            title="<spring:message code='app.mgmt.application.retire' />" style="cursor: pointer;"><spring:message code="app.mgmt.application.retire" /></a> / 
     </div>
 
     <c:if test="${not empty messageResponse}">
