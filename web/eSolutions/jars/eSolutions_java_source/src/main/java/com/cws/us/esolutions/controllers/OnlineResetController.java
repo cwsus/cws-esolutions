@@ -987,6 +987,8 @@ public class OnlineResetController
                         if (secResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             // xlnt. set the user
+                            // set the sessid
+                            resUser.setSessionId(hSession.getId());
                             hSession.setAttribute(Constants.RESET_ACCOUNT, resUser);
 
                             mView.addObject(Constants.USER_SECURITY, secResponse.getUserSecurity());
