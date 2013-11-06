@@ -59,13 +59,13 @@ public interface IServerDataDAO
 
     boolean modifyServerData(final List<String> serverData) throws SQLException;
 
-    List<String> getInstalledServer(final String serverGuid) throws SQLException;
+    List<Object> getInstalledServer(final String serverGuid) throws SQLException;
 
     int getServerCount() throws SQLException;
 
-    List<String[]> getInstalledServers(final int startRow) throws SQLException;
+    List<Object[]> getInstalledServers(final int startRow) throws SQLException;
 
-    List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
+    List<Object[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
 
-    List<String[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException;
+    List<Object[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException;
 }

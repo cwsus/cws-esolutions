@@ -105,7 +105,7 @@ public class ApplicationManagementProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana18*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("esolutions");
@@ -272,7 +272,7 @@ public class ApplicationManagementProcessorImplTest
     public final void testGetApplicationData()
     {
         Application app = new Application();
-        app.setApplicationGuid("604a6f7f-54af-4013-ab96-98716b4df40e");
+        app.setApplicationGuid("d3da855d-8ce8-4b7d-b14a-0c472f196aff");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);

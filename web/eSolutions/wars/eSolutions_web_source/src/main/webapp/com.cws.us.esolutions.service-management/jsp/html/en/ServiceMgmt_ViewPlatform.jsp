@@ -71,7 +71,7 @@
         </tr>
         <tr>
             <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-            <td><a href="${pageContext.request.contextPath}/ui/systems/server/${platform.platformDmgr.serverGuid}" title="${platform.platformDmgr.operHostName}">${platform.platformDmgr.operHostName}</a></td>
+            <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${platform.platformDmgr.serverGuid}" title="${platform.platformDmgr.operHostName}">${platform.platformDmgr.operHostName}</a></td>
         </tr>
         <tr>
             <td><label id="txtPlatformDescription"><spring:message code="svc.mgmt.platform.description" /></label></td>
@@ -87,7 +87,7 @@
                 <c:if test="${appCount eq 4}">
                     <tr>
                 </c:if>
-                <td><a href="${pageContext.request.contextPath}/ui/systems/server/${appServer.serverGuid}" title="${appServer.operHostName}">${appServer.operHostName}</a></td>
+                <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${appServer.serverGuid}" title="${appServer.operHostName}">${appServer.operHostName}</a></td>
                 <c:if test="${appCount eq 4}">
                     <c:set var="appCount" value="0" scope="page" /> <%-- reset the counter --%>
                     </tr>
@@ -104,7 +104,7 @@
                 <c:if test="${webCount eq 4}">
                     <tr>
                 </c:if>
-                <td><a href="${pageContext.request.contextPath}/ui/systems/server/${webServer.serverGuid}" title="${webServer.operHostName}">${webServer.operHostName}</a></td>
+                <td><a href="${pageContext.request.contextPath}/ui/system-management/server/${webServer.serverGuid}" title="${webServer.operHostName}">${webServer.operHostName}</a></td>
                 <c:if test="${webCount eq 4}">
                     <c:set var="webCount" value="0" scope="page" /> <%-- reset the counter --%>
                     </tr>

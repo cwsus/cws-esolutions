@@ -56,39 +56,17 @@
     </c:if>
 
     <table id="viewPlatformList">
+        <tr>
+            <td><label id="platformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
+            <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
+        </tr>
         <c:forEach var="platform" items="${platformList}">
             <tr>
-                <td><label id="platformName"><spring:message code="svc.mgmt.platform.name" /></label>${platform.platformName}</td>
                 <td>
-                    <label id="platformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label>
-                    <a href="${pageContext.request.contextPath}/ui/system-management/server/${platform.platformDmgr.serverGuid}"
-                        title="${platform.platformDmgr.operHostName}">${platform.platformDmgr.operHostName}</a>
+                    <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
+                        title="${platform.platformName}">${platform.platformName}</a>
                 </td>
-                <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label>${platform.platformRegion}</td>
-                <td><label id="platformStatus"><spring:message code="svc.mgmt.platform.status" /></label>${platform.status}</td>
-                <td><label id="platformDesc"><spring:message code="svc.mgmt.platform.description" /></label>${platform.description}</td>
-            </tr>
-            <tr>
-                <td><label id="platformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label></td>
-            </tr>
-            </tr>
-                <c:forEach var="appServer" items="${platform.appServers}">
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/system-management/server/${appServer.serverGuid}"
-                            title="${appServer.operHostName}">${appServer.operHostName}</a>
-                    </td>
-                </c:forEach>
-            </tr>
-            <tr>
-                <td><label id="platformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
-            </tr>
-            <tr>
-                <c:forEach var="webServer" items="${platform.webServers}">
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/system-management/server/${webServer.serverGuid}"
-                            title="${webServer.operHostName}">${webServer.operHostName}</a>
-                    </td>
-                </c:forEach>
+                <td>${platform.platformRegion}</td>
             </tr>
         </c:forEach>
     </table>

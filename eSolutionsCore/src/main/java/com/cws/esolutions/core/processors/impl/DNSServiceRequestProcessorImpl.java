@@ -318,7 +318,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             else
             {
                 // this will run through the available slave servers
-                List<String[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
+                List<Object[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
 
                 if (DEBUG)
                 {
@@ -327,17 +327,17 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                 if ((serverList != null) && (serverList.size() != 0))
                 {
-                    for (String[] data : serverList)
+                    for (Object[] data : serverList)
                     {
                         if (DEBUG)
                         {
-                            for (String str : data)
+                            for (Object obj : data)
                             {
-                                DEBUGGER.debug("data: {}", str);
+                                DEBUGGER.debug("Value: {}", obj);
                             }
                         }
 
-                        String serverName = data[14];
+                        String serverName = (String) data[14];
 
                         if (DEBUG)
                         {
@@ -801,7 +801,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             if ((zoneFile.exists()) && (zoneFile.length() != 0))
                             {
                                 IServerDataDAO dao = new ServerDataDAOImpl();
-                                List<String[]> dnsServers = dao.getServersByAttributeWithRegion(ServerType.DNSMASTER.name(), request.getServiceRegion().name(), 0);
+                                List<Object[]> dnsServers = dao.getServersByAttributeWithRegion(ServerType.DNSMASTER.name(), request.getServiceRegion().name(), 0);
 
                                 if (DEBUG)
                                 {
@@ -810,9 +810,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                                 if ((dnsServers != null) && (dnsServers.size() != 0))
                                 {
-                                    NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
+                                    NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
-                                    List<String[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name(), 0);
+                                    List<Object[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name(), 0);
 
                                     if (DEBUG)
                                     {
@@ -823,11 +823,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                     {
                                         int errCount = 0;
 
-                                        for (String[] server : slaveServers)
+                                        for (Object[] server : slaveServers)
                                         {
                                             try
                                             {
-                                                NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), server[18], true);
+                                                NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
                                             }
                                             catch (UtilityException ux)
                                             {

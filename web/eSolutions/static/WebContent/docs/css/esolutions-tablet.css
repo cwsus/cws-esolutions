@@ -1,11 +1,5 @@
-html>body #navBar li
-{
-    border-bottom: none;
-}
-
 body
 {
-    width: 100%;
     font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
     padding: 0px;
@@ -14,24 +8,26 @@ body
 table
 {
     border-spacing: 0px 0px;
-    border-collapse: seperate;
+    border-collapse: separate;
     padding: 0px;
     width: 200px;
 }
 
-body > div#siteInfo
-{
-    width: 300px;
-}
-
-a:link, a:visited, a:hover
+a:link
 {
     color: #006699;
     text-decoration: none;
 }
 
+a:visited
+{
+    color: #FF0000;
+    text-decoration: none;
+}
+
 a:hover
 {
+    cursor: crosshair, default;
     text-decoration: underline;
 }
 
@@ -95,12 +91,10 @@ p#validationError
 
 #masthead
 {
-    margin: 0;
-    padding: 10px 0px;
+    margin-top: 10px;
     border-bottom: 1px solid #CCC;
     border-right: 1px solid #CCC;
     width: 73%;
-    text-align: left;
 }
 
 #navBar
@@ -113,10 +107,28 @@ p#validationError
     border-bottom: 1px solid #CCC;
 }
 
-#navBar ul a:link, #navBar ul a:visited
+#navBar ul a
 {
     display: block;
     text-align: left;
+}
+
+#navBar ul a:link
+{
+    color: #006699;
+    text-decoration: none;
+}
+
+#navBar ul a:visited
+{
+    color: #FF0000;
+    text-decoration: none;
+}
+
+#navBar ul a:hover
+{
+    cursor: crosshair, default;
+    text-decoration: underline;
 }
 
 #navBar ul
@@ -136,7 +148,7 @@ p#validationError
     position: relative;
     margin: 0px;
     padding: 0px;
-    font-size: 90%;
+    font-size: 9px;
 }
 
 #sectionLinks h3
@@ -166,6 +178,7 @@ p#validationError
     border-top: 1px solid #CCCCCC;
     background-color: #dddddd;
     padding: 2px 0px 2px 10px;
+    text-decoration: underline;
 }
 
 #sectionLinks li#noLink
@@ -257,9 +270,7 @@ p#validationError
 #content
 {
     float: right;
-    #width: 735px;
     width: 75%;
-    margin: 0;
     padding: 0 5% 0 0;
 }
 
@@ -282,16 +293,32 @@ p#validationError
     text-align: left;
 }
 
-#globalNav a
+#globalNav a:link
 {
-    font-size: 90%;
+    font-size: 15px;
+    color: #006699;
+    text-decoration: none;
+}
+
+#globalNav a:hover
+{
+    font-size: 15px;
+    cursor: crosshair, default;
+    text-decoration: underline;
+}
+
+#globalNav a:visited
+{
+    color: #FF0000;
+    text-decoration: none;
+    font-size: 12px;
     padding: 0px 4px 0px 0px;
 }
 
 #breadCrumb
 {
-    font-size: 80%;
-    padding: 5px 0px 5px 10px;
+    font-size: 12px;
+    padding: 5px 5px 5px 5px;
     text-align: right;
     margin-right: 10px;
     font-style: italic;
@@ -306,6 +333,7 @@ p#validationError
     font-size: 12px;
     color: #cccccc;
     padding: 10px 10px 10px 10px;
+    width: 25%;
 }
 
 #search
@@ -373,10 +401,9 @@ p#validationError
 
 .feature
 {
-    padding: 10px 10px 10px 0px;
-    font-size: 80%;
+    padding: 10px 10px 10px 10px;
+    font-size: 14px;
     width: 70%;
-    text-align: left;
 }
 
 .password
@@ -411,11 +438,12 @@ p#validationError
     font-style: italic;
     color: #FF0000;
     text-align: right;
+    margin-bottom: 8px;
 }
 
 .submit
 {
-    background-image: url("./img/ButtonBackground.gif");
+    background-image: url("/html/esolutions/img/ButtonBackground.gif");
     background-attachment: fixed;
     background-repeat: repeat;
 }

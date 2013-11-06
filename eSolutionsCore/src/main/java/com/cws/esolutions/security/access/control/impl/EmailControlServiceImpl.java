@@ -88,7 +88,7 @@ public class EmailControlServiceImpl implements IEmailControlService
                 if (!(isException))
                 {
                     int errCount = 0;
-                    List<String[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name(), 0);
+                    List<Object[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name(), 0);
 
                     if (DEBUG)
                     {
@@ -97,17 +97,17 @@ public class EmailControlServiceImpl implements IEmailControlService
 
                     if ((approvedSources != null) && (approvedSources.size() != 0))
                     {
-                        for (String[] entry : approvedSources)
+                        for (Object[] entry : approvedSources)
                         {
                             if (DEBUG)
                             {
-                                for (String entr : entry)
+                                for (Object entr : entry)
                                 {
                                     DEBUGGER.debug("entry: {}", entr);
                                 }
                             }
 
-                            if (StringUtils.equals(entry[5], str))
+                            if (StringUtils.equals((String) entry[5], str))
                             {
                                 errCount = 0;
                                 break;

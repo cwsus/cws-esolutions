@@ -248,7 +248,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IServerDataDAO serverDao = new ServerDataDAOImpl();
-            List<String[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartPage());
+            List<Object[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartPage());
 
             if (DEBUG)
             {
@@ -259,15 +259,15 @@ public class SearchProcessorImpl implements ISearchProcessor
             {
                 List<SearchResult> responseList = new ArrayList<SearchResult>();
 
-                for (String[] data : serverList)
+                for (Object[] data : serverList)
                 {
                     if (DEBUG)
                     {
                         if (data != null)
                         {
-                            for (String str : data)
+                            for (Object obj : data)
                             {
-                                DEBUGGER.debug("data: {}", str);
+                                DEBUGGER.debug("Value: {}", obj);
                             }
                         }
                     }
@@ -275,8 +275,8 @@ public class SearchProcessorImpl implements ISearchProcessor
                     if ((data != null) && (data.length >= 16))
                     {
                         SearchResult searchResult = new SearchResult();
-                        searchResult.setPath(data[0]);
-                        searchResult.setTitle(data[16]); // proper ordinal for oper hostname
+                        searchResult.setPath((String) data[0]);
+                        searchResult.setTitle((String) data[16]); // proper ordinal for oper hostname
 
                         if (DEBUG)
                         {

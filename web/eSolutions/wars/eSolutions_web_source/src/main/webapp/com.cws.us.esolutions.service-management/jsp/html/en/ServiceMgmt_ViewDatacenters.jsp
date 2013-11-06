@@ -56,15 +56,17 @@
     </c:if>
 
     <table id="viewDatacenterList">
+        <tr>
+            <td><label id="datacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
+            <td><label id="datacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
+        </tr>
         <c:forEach var="datacenter" items="${datacenterList}">
             <tr>
                 <td>
-                    <label id="datacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label>
                     <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${datacenter.datacenterGuid}"
                         title="${datacenter.datacenterName}">${datacenter.datacenterName}</a>
                 </td>
-                <td><label id="datacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label>${datacenter.datacenterStatus}</td>
-                <td><label id="datacenterDesc"><spring:message code="svc.mgmt.datacenter.description" /></label>${datacenter.datacenterDesc}</td>
+                <td>${datacenter.datacenterStatus}</td>
             </tr>
         </c:forEach>
     </table>

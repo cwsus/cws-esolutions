@@ -667,6 +667,46 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         project.setIncidentQueue(projectList.get(6));
                         project.setChangeQueue(projectList.get(7));
 
+                        // get the list of applications associated with this project
+                        List<String[]> appList = appDao.getApplicationsByAttribute(projectList.get(0), 0);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String[]>: {}", appList);
+                        }
+
+                        if ((appList != null) && (appList.size() != 0))
+                        {
+                            List<Application> applicationList = new ArrayList<Application>();
+
+                            // we're only loading the application, not the platform
+                            // we'll link to the application info page, which will draw
+                            // the platform for us. really we don't even need more than
+                            // the name and the guid. and maybe the version. so that's
+                            // all we're adding.
+                            for (String[] appData : appList)
+                            {
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("appData: {}", appData);
+                                }
+
+                                Application app = new Application();
+                                app.setApplicationGuid(appData[0]);
+                                app.setApplicationName(appData[1]);
+                                app.setApplicationVersion(appData[2]);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Application: {}", app);
+                                }
+
+                                applicationList.add(app);
+                            }
+
+                            project.setApplicationList(applicationList);
+                        }
+                                
                         if (DEBUG)
                         {
                             DEBUGGER.debug("Project: {}", project);

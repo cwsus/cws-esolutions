@@ -78,7 +78,7 @@
                 <td><form:errors path="datacenterStatus" cssClass="validationError" /></td>
             </tr>
             <tr>
-                <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.dataacenter.description" /></label></td>
+                <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.datacenter.description" /></label></td>
 	            <td><form:textarea path="datacenterDesc" /></td>
 	            <td><form:errors path="datacenterDesc" cssClass="validationError" /></td>
             </tr>

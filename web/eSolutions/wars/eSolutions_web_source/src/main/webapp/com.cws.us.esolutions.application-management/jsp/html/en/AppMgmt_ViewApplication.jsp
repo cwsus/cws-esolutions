@@ -29,24 +29,24 @@
 --%>
 
 <script>
-	function confirmDelete(application)
+	function confirmDelete(name, id)
 	{
-	    var confirmation = confirm("Are you sure you wish to retire application " + application + " ?");
+	    var confirmation = confirm("Are you sure you wish to retire application " + name + " ?");
 	
 	    if (confirmation)
 	    {
-	        window.location.href = '${pageContext.request.contextPath}/ui/application-management/retire-application/application/' + application;
+	        window.location.href = '${pageContext.request.contextPath}/ui/application-management/retire-application/application/' + id;
 	    }
 	}
 </script>
+
 <div class="feature">
     <div id="breadcrumb" class="lpstartover">
         <a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}"
             title="<spring:message code='app.mgmt.application.retrieve.files' />"><spring:message code="app.mgmt.application.retrieve.files" /></a> / 
         <a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}"
             title="<spring:message code='app.mgmt.application.deploy' />"><spring:message code="app.mgmt.application.deploy" /></a> / 
-        <a href="#" title="<spring:message code='app.mgmt.application.retire' />"
-            onclick="confirmDelete('${application.applicationName}');"><spring:message code="app.mgmt.application.retire" /></a> / 
+        <a onclick="confirmDelete('${application.applicationName}, ${application.applicationGuid}');" title="<spring:message code='app.mgmt.application.retire' />"><spring:message code="app.mgmt.application.retire" /></a> / 
     </div>
 
     <c:if test="${not empty messageResponse}">
@@ -98,7 +98,7 @@
             <td>${application.jvmName}</td>
         </tr>
         <tr>
-            <td><label id="txtPidDirectory"><spring:message code="app.mgmt.application.pid.path" /></label></td>
+            <td><label id="txtPidDirectory"><spring:message code="app.mgmt.application.pid.directory" /></label></td>
             <td>${application.pidDirectory}</td>
         </tr>
         <tr>

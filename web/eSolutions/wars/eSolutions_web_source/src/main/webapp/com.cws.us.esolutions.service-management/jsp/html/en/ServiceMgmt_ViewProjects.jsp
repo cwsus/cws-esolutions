@@ -58,27 +58,13 @@
     </c:if>
 
     <table id="viewProjectList">
+        <tr>
+            <td><label id="projectCode"><spring:message code="svc.mgmt.project.code" /></label></td>
+            <td><label id="projectStatus"><spring:message code="svc.mgmt.project.status" /></label></td>
+        </tr>
         <c:forEach var="project" items="${projectList}">
-            <tr>
-                <td><label id="projectCode"><spring:message code="svc.mgmt.project.code" /></label>${project.projectCode}</td>
-                <td><label id="projectContact"><spring:message code="svc.mgmt.project.email" /></label>${project.contactEmail}</td>
-                <td><label id="projectPrimary"><spring:message code="svc.mgmt.project.pcontact" /></label>${project.primaryContact}</td>
-                <td><label id="projectSecondary"><spring:message code="svc.mgmt.project.scontact" /></label>${project.secondaryContact}</td>
-                <td><label id="projectChangeQ"><spring:message code="svc.mgmt.project.changeq" /></label>${project.changeQueue}</td>
-                <td><label id="projectIncidentQ"><spring:message code="svc.mgmt.project.ticketq" /></label>${project.incidentQueue}</td>
-                <td><label id="projectStatus"><spring:message code="svc.mgmt.project.status" /></label>${project.serviceStatus}</td>
-            </tr>
-            <tr>
-                <td><label id="projectApps"><spring:message code="svc.mgmt.project.applications" /></label></td>
-            </tr>
-            <tr>
-                <c:forEach var="application" items="${project.applicationList}">
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
-                            title="${application.applicationName}">${application.applicationName}</a>
-                    </td>
-                </c:forEach>
-            </tr>
+            <td>${project.projectCode}</td>
+            <td>${project.projectStatus}</td>
         </c:forEach>
     </table>
 

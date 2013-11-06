@@ -71,7 +71,7 @@
             <td>${datacenter.datacenterStatus}</td>
         </tr>
         <tr>
-            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.dataacenter.description" /></label></td>
+            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.datacenter.description" /></label></td>
 	        <td>${datacenter.datacenterDesc}</td>
         </tr>
     </table>

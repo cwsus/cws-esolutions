@@ -20,6 +20,7 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
@@ -32,6 +33,7 @@ import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
@@ -743,17 +745,19 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         }
 
                                         // build the platform
-                                        String[] platformList = StringUtils.split(data[11], ",");
-
-                                        if (DEBUG)
+                                        if (StringUtils.split(data[11], ",").length >= 1)
                                         {
-                                            DEBUGGER.debug("platformList: {}", platformList);
-                                        }
-
-                                        if ((platformList != null) && (platformList.length != 0))
-                                        {
-                                            for (String guid : platformList)
+                                            if (DEBUG)
                                             {
+                                                DEBUGGER.debug("platformList: {}", StringUtils.split(data[11], ","));
+                                            }
+
+                                            for (String platformGuid : data[11].split(","))
+                                            {
+                                                String guid = StringUtils.remove(platformGuid, "[");
+                                                guid = StringUtils.remove(guid, "]");
+                                                guid = StringUtils.trim(guid);
+
                                                 if (DEBUG)
                                                 {
                                                     DEBUGGER.debug("guid: {}", guid);
@@ -1159,14 +1163,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             try
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
                 // it also requires authorization for the service
                 boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
 
@@ -1175,7 +1171,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                 }
 
-                if ((isAdminAuthorized) && (isUserAuthorized))
+                if (isUserAuthorized)
                 {
                     List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
 
@@ -1186,32 +1182,29 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if ((appData != null) && (appData.size() != 0))
                     {
-                        Server dmgrServer = null;
-                        List<Server> appServerList = null;
-                        List<Server> webServerList = null;
                         Application resApplication = new Application();
 
-                        // platform first...
-                        String[] platformGuids = StringUtils.split(appData.get(11));
-
-                        if (DEBUG)
+                        if (StringUtils.split(appData.get(11), ",").length >= 1)
                         {
-                            DEBUGGER.debug("platformGuids: {}", platformGuids);
-                        }
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(11), ","));
+                            }
 
-                        if ((platformGuids != null) && (platformGuids.length != 0))
-                        {
                             List<Platform> platformList = new ArrayList<Platform>();
 
-                            // load
-                            for (String platformGuid : platformGuids)
+                            for (String platformGuid : appData.get(11).split(","))
                             {
+                                String guid = StringUtils.remove(platformGuid, "[");
+                                guid = StringUtils.remove(guid, "]");
+                                guid = StringUtils.trim(guid);
+
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("platformGuid: {}", platformGuid);
+                                    DEBUGGER.debug("guid: {}", guid);
                                 }
 
-                                List<String> platformData = platformDao.getPlatformData(platformGuid);
+                                List<String> platformData = platformDao.getPlatformData(guid);
 
                                 if (DEBUG)
                                 {
@@ -1220,9 +1213,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                                 if ((platformData != null) && (platformData.size() != 0))
                                 {
+                                    Platform platform = new Platform();
+                                    platform.setPlatformGuid(platformData.get(0));
+                                    platform.setPlatformName(platformData.get(1));
+                                    platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
+                                    platform.setDescription(platformData.get(6));
+
                                     // load info
                                     // get the dmgr
-                                    List<String> dmgrData = serverDao.getInstalledServer(platformData.get(3));
+                                    List<Object> dmgrData = serverDao.getInstalledServer(platformData.get(3));
 
                                     if (DEBUG)
                                     {
@@ -1231,57 +1230,61 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                                     if ((dmgrData != null) && (dmgrData.size() != 0))
                                     {
-                                        dmgrServer = new Server();
-                                        dmgrServer.setServerGuid(dmgrData.get(0));
-                                        dmgrServer.setOsName(dmgrData.get(1));
-                                        dmgrServer.setServerStatus(ServerStatus.valueOf(dmgrData.get(2)));
-                                        dmgrServer.setServerRegion(ServiceRegion.valueOf(dmgrData.get(3)));
-                                        dmgrServer.setServerType(ServerType.valueOf(dmgrData.get(4)));
-                                        dmgrServer.setDomainName(dmgrData.get(5));
-                                        dmgrServer.setCpuType(dmgrData.get(6));
-                                        dmgrServer.setCpuCount(Integer.parseInt(dmgrData.get(7)));
-                                        dmgrServer.setServerRack(dmgrData.get(8));
-                                        dmgrServer.setRackPosition(dmgrData.get(9));
-                                        dmgrServer.setServerModel(dmgrData.get(10));
-                                        dmgrServer.setSerialNumber(dmgrData.get(11));
-                                        dmgrServer.setInstalledMemory(Integer.parseInt(dmgrData.get(12)));
-                                        dmgrServer.setOperIpAddress(dmgrData.get(13));
-                                        dmgrServer.setOperHostName(dmgrData.get(14));
-                                        dmgrServer.setAssignedEngineer(dmgrData.get(15));
-                                        dmgrServer.setServerComments(dmgrData.get(16));
-                                        dmgrServer.setMgmtIpAddress(dmgrData.get(17));
-                                        dmgrServer.setMgmtHostName(dmgrData.get(18));
-                                        dmgrServer.setBkIpAddress(dmgrData.get(19));
-                                        dmgrServer.setBkHostName(dmgrData.get(20));
-                                        dmgrServer.setNasIpAddress(dmgrData.get(21));
-                                        dmgrServer.setNasHostName(dmgrData.get(22));
-                                        dmgrServer.setNatAddress(dmgrData.get(23));
-                                        dmgrServer.setMgrUrl(dmgrData.get(24));
-                                        dmgrServer.setOwningDmgr(dmgrData.get(25));
+                                        Server dmgrServer = new Server();
+                                        dmgrServer.setServerGuid((String) dmgrData.get(0)); // SYSTEM_GUID
+                                        dmgrServer.setOsName((String) dmgrData.get(1)); // SYSTEM_OSTYPE
+                                        dmgrServer.setServerStatus(ServerStatus.valueOf((String) dmgrData.get(2))); // SYSTEM_STATUS
+                                        dmgrServer.setServerRegion(ServiceRegion.valueOf((String) dmgrData.get(3))); // SYSTEM_REGION
+                                        dmgrServer.setNetworkPartition(NetworkPartition.valueOf((String) dmgrData.get(4))); // NETWORK_PARTITION
+                                        dmgrServer.setServerType(ServerType.valueOf((String) dmgrData.get(6))); // SYSTEM_TYPE
+                                        dmgrServer.setDomainName((String) dmgrData.get(7)); // DOMAIN_NAME
+                                        dmgrServer.setCpuType((String) dmgrData.get(8)); // CPU_TYPE
+                                        dmgrServer.setCpuCount((Integer) dmgrData.get(9)); // CPU_COUNT
+                                        dmgrServer.setServerRack((String) dmgrData.get(10)); // SERVER_RACK
+                                        dmgrServer.setRackPosition((String) dmgrData.get(11)); // RACK_POSITION
+                                        dmgrServer.setServerModel((String) dmgrData.get(12)); // SERVER_MODEL
+                                        dmgrServer.setSerialNumber((String) dmgrData.get(13)); // SERIAL_NUMBER
+                                        dmgrServer.setInstalledMemory((Integer) dmgrData.get(14)); // INSTALLED_MEMORY
+                                        dmgrServer.setOperIpAddress((String) dmgrData.get(15)); // OPER_IP
+                                        dmgrServer.setOperHostName((String) dmgrData.get(16)); // OPER_HOSTNAME
+                                        dmgrServer.setMgmtIpAddress((String) dmgrData.get(17)); // MGMT_IP
+                                        dmgrServer.setMgmtHostName((String) dmgrData.get(18)); // MGMT_HOSTNAME
+                                        dmgrServer.setBkIpAddress((String) dmgrData.get(19)); // BKUP_IP
+                                        dmgrServer.setBkHostName((String) dmgrData.get(20)); // BKUP_HOSTNAME
+                                        dmgrServer.setNasIpAddress((String) dmgrData.get(21)); // NAS_IP
+                                        dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
+                                        dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
+                                        dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
+                                        dmgrServer.setAssignedEngineer((String) dmgrData.get(25)); // ASSIGNED_ENGINEER
+                                        dmgrServer.setDmgrPort((Integer) dmgrData.get(28)); // DMGR_PORT
+                                        dmgrServer.setOwningDmgr((String) dmgrData.get(29)); // OWNING_DMGR
+                                        dmgrServer.setMgrUrl((String) dmgrData.get(30)); // MGR_ENTRY
 
                                         if (DEBUG)
                                         {
                                             DEBUGGER.debug("Server: {}", dmgrServer);
                                         }
+
+                                        platform.setPlatformDmgr(dmgrServer);
                                     }
 
                                     if (platformData.get(3).split(",").length >= 1)
                                     {
-                                        appServerList = new ArrayList<Server>();
+                                        List<Server> appServerList = new ArrayList<Server>();
 
                                         // list application servers
                                         for (String serverGuid : platformData.get(4).split(","))
                                         {
-                                            String guid = StringUtils.remove(serverGuid, "[");
-                                            guid = StringUtils.remove(guid, "]");
-                                            guid = StringUtils.trim(guid);
+                                            String appGuid = StringUtils.remove(serverGuid, "[");
+                                            appGuid = StringUtils.remove(appGuid, "]");
+                                            appGuid = StringUtils.trim(appGuid);
 
                                             if (DEBUG)
                                             {
-                                                DEBUGGER.debug("serverGuid: {}", guid);
+                                                DEBUGGER.debug("serverGuid: {}", appGuid);
                                             }
 
-                                            List<String> appServerData = serverDao.getInstalledServer(guid);
+                                            List<Object> appServerData = serverDao.getInstalledServer(appGuid);
 
                                             if (DEBUG)
                                             {
@@ -1291,32 +1294,34 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                             if ((appServerData != null) && (appServerData.size() != 0))
                                             {
                                                 Server server = new Server();
-                                                server.setServerGuid(appServerData.get(0));
-                                                server.setOsName(appServerData.get(1));
-                                                server.setServerStatus(ServerStatus.valueOf(appServerData.get(2)));
-                                                server.setServerRegion(ServiceRegion.valueOf(appServerData.get(3)));
-                                                server.setServerType(ServerType.valueOf(appServerData.get(4)));
-                                                server.setDomainName(appServerData.get(5));
-                                                server.setCpuType(appServerData.get(6));
-                                                server.setCpuCount(Integer.parseInt(appServerData.get(7)));
-                                                server.setServerRack(appServerData.get(8));
-                                                server.setRackPosition(appServerData.get(9));
-                                                server.setServerModel(appServerData.get(10));
-                                                server.setSerialNumber(appServerData.get(11));
-                                                server.setInstalledMemory(Integer.parseInt(appServerData.get(12)));
-                                                server.setOperIpAddress(appServerData.get(13));
-                                                server.setOperHostName(appServerData.get(14));
-                                                server.setAssignedEngineer(appServerData.get(15));
-                                                server.setServerComments(appServerData.get(16));
-                                                server.setMgmtIpAddress(appServerData.get(17));
-                                                server.setMgmtHostName(appServerData.get(18));
-                                                server.setBkIpAddress(appServerData.get(19));
-                                                server.setBkHostName(appServerData.get(20));
-                                                server.setNasIpAddress(appServerData.get(21));
-                                                server.setNasHostName(appServerData.get(22));
-                                                server.setNatAddress(appServerData.get(23));
-                                                server.setMgrUrl(appServerData.get(24));
-                                                server.setOwningDmgr(appServerData.get(25));
+                                                server.setServerGuid((String) appServerData.get(0)); // SYSTEM_GUID
+                                                server.setOsName((String) appServerData.get(1)); // SYSTEM_OSTYPE
+                                                server.setServerStatus(ServerStatus.valueOf((String) appServerData.get(2))); // SYSTEM_STATUS
+                                                server.setServerRegion(ServiceRegion.valueOf((String) appServerData.get(3))); // SYSTEM_REGION
+                                                server.setNetworkPartition(NetworkPartition.valueOf((String) appServerData.get(4))); // NETWORK_PARTITION
+                                                server.setServerType(ServerType.valueOf((String) appServerData.get(6))); // SYSTEM_TYPE
+                                                server.setDomainName((String) appServerData.get(7)); // DOMAIN_NAME
+                                                server.setCpuType((String) appServerData.get(8)); // CPU_TYPE
+                                                server.setCpuCount((Integer) appServerData.get(9)); // CPU_COUNT
+                                                server.setServerRack((String) appServerData.get(10)); // SERVER_RACK
+                                                server.setRackPosition((String) appServerData.get(11)); // RACK_POSITION
+                                                server.setServerModel((String) appServerData.get(12)); // SERVER_MODEL
+                                                server.setSerialNumber((String) appServerData.get(13)); // SERIAL_NUMBER
+                                                server.setInstalledMemory((Integer) appServerData.get(14)); // INSTALLED_MEMORY
+                                                server.setOperIpAddress((String) appServerData.get(15)); // OPER_IP
+                                                server.setOperHostName((String) appServerData.get(16)); // OPER_HOSTNAME
+                                                server.setMgmtIpAddress((String) appServerData.get(17)); // MGMT_IP
+                                                server.setMgmtHostName((String) appServerData.get(18)); // MGMT_HOSTNAME
+                                                server.setBkIpAddress((String) appServerData.get(19)); // BKUP_IP
+                                                server.setBkHostName((String) appServerData.get(20)); // BKUP_HOSTNAME
+                                                server.setNasIpAddress((String) appServerData.get(21)); // NAS_IP
+                                                server.setNasHostName((String) appServerData.get(22)); // NAS_HOSTNAME
+                                                server.setNatAddress((String) appServerData.get(23)); // NAT_ADDR
+                                                server.setServerComments((String) appServerData.get(24)); // COMMENTS
+                                                server.setAssignedEngineer((String) appServerData.get(25)); // ASSIGNED_ENGINEER
+                                                server.setDmgrPort((Integer) appServerData.get(28)); // DMGR_PORT
+                                                server.setOwningDmgr((String) appServerData.get(29)); // OWNING_DMGR
+                                                server.setMgrUrl((String) appServerData.get(30)); // MGR_ENTRY
 
                                                 if (DEBUG)
                                                 {
@@ -1331,25 +1336,27 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         {
                                             DEBUGGER.debug("appServerList: {}", appServerList);
                                         }
+
+                                        platform.setAppServers(appServerList);
                                     }
 
                                     // list web servers
                                     if (platformData.get(4).split(",").length >= 1)
                                     {
-                                        webServerList = new ArrayList<Server>();
+                                        List<Server> webServerList = new ArrayList<Server>();
 
                                         for (String serverGuid : platformData.get(5).split(","))
                                         {
-                                            String guid = StringUtils.remove(serverGuid, "[");
-                                            guid = StringUtils.remove(guid, "]");
-                                            guid = StringUtils.trim(guid);
+                                            String webGuid = StringUtils.remove(serverGuid, "[");
+                                            webGuid = StringUtils.remove(webGuid, "]");
+                                            webGuid = StringUtils.trim(webGuid);
 
                                             if (DEBUG)
                                             {
-                                                DEBUGGER.debug("serverGuid: {}", guid);
+                                                DEBUGGER.debug("serverGuid: {}", webGuid);
                                             }
 
-                                            List<String> webServerData = serverDao.getInstalledServer(guid);
+                                            List<Object> webServerData = serverDao.getInstalledServer(webGuid);
 
                                             if (DEBUG)
                                             {
@@ -1359,32 +1366,34 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                             if ((webServerData != null) && (webServerData.size() != 0))
                                             {
                                                 Server server = new Server();
-                                                server.setServerGuid(webServerData.get(0));
-                                                server.setOsName(webServerData.get(1));
-                                                server.setServerStatus(ServerStatus.valueOf(webServerData.get(2)));
-                                                server.setServerRegion(ServiceRegion.valueOf(webServerData.get(3)));
-                                                server.setServerType(ServerType.valueOf(webServerData.get(4)));
-                                                server.setDomainName(webServerData.get(5));
-                                                server.setCpuType(webServerData.get(6));
-                                                server.setCpuCount(Integer.parseInt(webServerData.get(7)));
-                                                server.setServerRack(webServerData.get(8));
-                                                server.setRackPosition(webServerData.get(9));
-                                                server.setServerModel(webServerData.get(10));
-                                                server.setSerialNumber(webServerData.get(11));
-                                                server.setInstalledMemory(Integer.parseInt(webServerData.get(12)));
-                                                server.setOperIpAddress(webServerData.get(13));
-                                                server.setOperHostName(webServerData.get(14));
-                                                server.setAssignedEngineer(webServerData.get(15));
-                                                server.setServerComments(webServerData.get(16));
-                                                server.setMgmtIpAddress(webServerData.get(17));
-                                                server.setMgmtHostName(webServerData.get(18));
-                                                server.setBkIpAddress(webServerData.get(19));
-                                                server.setBkHostName(webServerData.get(20));
-                                                server.setNasIpAddress(webServerData.get(21));
-                                                server.setNasHostName(webServerData.get(22));
-                                                server.setNatAddress(webServerData.get(23));
-                                                server.setMgrUrl(webServerData.get(24));
-                                                server.setOwningDmgr(webServerData.get(25));
+                                                server.setServerGuid((String) webServerData.get(0)); // SYSTEM_GUID
+                                                server.setOsName((String) webServerData.get(1)); // SYSTEM_OSTYPE
+                                                server.setServerStatus(ServerStatus.valueOf((String) webServerData.get(2))); // SYSTEM_STATUS
+                                                server.setServerRegion(ServiceRegion.valueOf((String) webServerData.get(3))); // SYSTEM_REGION
+                                                server.setNetworkPartition(NetworkPartition.valueOf((String) webServerData.get(4))); // NETWORK_PARTITION
+                                                server.setServerType(ServerType.valueOf((String) webServerData.get(6))); // SYSTEM_TYPE
+                                                server.setDomainName((String) webServerData.get(7)); // DOMAIN_NAME
+                                                server.setCpuType((String) webServerData.get(8)); // CPU_TYPE
+                                                server.setCpuCount((Integer) webServerData.get(9)); // CPU_COUNT
+                                                server.setServerRack((String) webServerData.get(10)); // SERVER_RACK
+                                                server.setRackPosition((String) webServerData.get(11)); // RACK_POSITION
+                                                server.setServerModel((String) webServerData.get(12)); // SERVER_MODEL
+                                                server.setSerialNumber((String) webServerData.get(13)); // SERIAL_NUMBER
+                                                server.setInstalledMemory((Integer) webServerData.get(14)); // INSTALLED_MEMORY
+                                                server.setOperIpAddress((String) webServerData.get(15)); // OPER_IP
+                                                server.setOperHostName((String) webServerData.get(16)); // OPER_HOSTNAME
+                                                server.setMgmtIpAddress((String) webServerData.get(17)); // MGMT_IP
+                                                server.setMgmtHostName((String) webServerData.get(18)); // MGMT_HOSTNAME
+                                                server.setBkIpAddress((String) webServerData.get(19)); // BKUP_IP
+                                                server.setBkHostName((String) webServerData.get(20)); // BKUP_HOSTNAME
+                                                server.setNasIpAddress((String) webServerData.get(21)); // NAS_IP
+                                                server.setNasHostName((String) webServerData.get(22)); // NAS_HOSTNAME
+                                                server.setNatAddress((String) webServerData.get(23)); // NAT_ADDR
+                                                server.setServerComments((String) webServerData.get(24)); // COMMENTS
+                                                server.setAssignedEngineer((String) webServerData.get(25)); // ASSIGNED_ENGINEER
+                                                server.setDmgrPort((Integer) webServerData.get(28)); // DMGR_PORT
+                                                server.setOwningDmgr((String) webServerData.get(29)); // OWNING_DMGR
+                                                server.setMgrUrl((String) webServerData.get(30)); // MGR_ENTRY
 
                                                 if (DEBUG)
                                                 {
@@ -1399,16 +1408,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         {
                                             DEBUGGER.debug("webServerList: {}", webServerList);
                                         }
+
+                                        platform.setWebServers(webServerList);
                                     }
-                                        
-                                    Platform platform = new Platform();
-                                    platform.setPlatformGuid(platformData.get(0));
-                                    platform.setPlatformName(platformData.get(1));
-                                    platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                                    platform.setPlatformDmgr(dmgrServer);
-                                    platform.setAppServers(appServerList);
-                                    platform.setWebServers(webServerList);
-                                    platform.setDescription(platformData.get(0));
 
                                     if (DEBUG)
                                     {
@@ -1510,12 +1512,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 
                 throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
             }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-                
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
             finally
             {
                 // audit
@@ -1587,14 +1583,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             try
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
                 // it also requires authorization for the service
                 boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
 
@@ -1603,7 +1591,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                 }
 
-                if ((isAdminAuthorized) && (isUserAuthorized))
+                if (isUserAuthorized)
                 {
                     if (DEBUG)
                     {
@@ -1768,12 +1756,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
             }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
             catch (UtilityException ux)
             {
                 ERROR_RECORDER.error(ux.getMessage(), ux);
@@ -1855,14 +1837,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             try
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
                 // it also requires authorization for the service
                 boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
 
@@ -1871,7 +1845,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                 }
 
-                if ((isAdminAuthorized) && (isUserAuthorized))
+                if (isUserAuthorized)
                 {
                     // do deployment work here
                 }
@@ -1885,12 +1859,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
                 throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
             }
             finally
             {

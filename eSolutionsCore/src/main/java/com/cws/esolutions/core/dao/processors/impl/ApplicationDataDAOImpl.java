@@ -357,7 +357,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     @Override
     public synchronized List<String[]> listInstalledApplications(final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getInstalledServers(final int startRow) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#listInstalledApplications(final int startRow) throws SQLException";
 
         if (DEBUG)
         {

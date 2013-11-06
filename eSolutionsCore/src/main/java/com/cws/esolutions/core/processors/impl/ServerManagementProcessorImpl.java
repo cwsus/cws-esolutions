@@ -112,7 +112,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 }
 
                 // make sure all the platform data is there
-                List<String[]> validator = null;
+                List<Object[]> validator = null;
 
                 try
                 {
@@ -455,7 +455,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if (isServiceAuthorized)
             {
-                List<String[]> serverData = serverDAO.getServersByAttribute(requestServer.getServerType().name(), request.getStartPage());
+                List<Object[]> serverData = serverDAO.getServersByAttribute(requestServer.getServerType().name(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -466,17 +466,17 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     List<Server> serverList = new ArrayList<Server>();
 
-                    for (String[] data : serverData)
+                    for (Object[] data : serverData)
                     {
                         if (DEBUG)
                         {
-                            for (String str : data)
+                            for (Object obj : data)
                             {
-                                DEBUGGER.debug("Data: {}", str);
+                                DEBUGGER.debug("Value: {}", obj);
                             }
                         }
 
-                        List<String> datacenter = datactrDAO.getDatacenter(data[5]);
+                        List<String> datacenter = datactrDAO.getDatacenter((String) data[5]);
 
                         if (DEBUG)
                         {
@@ -497,35 +497,35 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             }
 
                             Server server = new Server();
-                            server.setServerGuid(data[0]);
-                            server.setOsName(data[1]);
-                            server.setServerStatus(ServerStatus.valueOf(data[2]));
-                            server.setServerRegion(ServiceRegion.valueOf(data[3]));
-                            server.setNetworkPartition(NetworkPartition.valueOf(data[4]));
-                            server.setDatacenter(dataCenter);
-                            server.setServerType(ServerType.valueOf(data[6]));
-                            server.setDomainName(data[7]);
-                            server.setCpuType(data[8]);
-                            server.setCpuCount(Integer.parseInt(data[9]));
-                            server.setServerRack(data[10]);
-                            server.setRackPosition(data[11]);
-                            server.setServerModel(data[12]);
-                            server.setSerialNumber(data[13]);
-                            server.setInstalledMemory(Integer.parseInt(data[14]));
-                            server.setOperIpAddress(data[15]);
-                            server.setOperHostName(data[16]);
-                            server.setMgmtIpAddress(data[17]);
-                            server.setMgmtHostName(data[18]);
-                            server.setBkIpAddress(data[19]);
-                            server.setBkHostName(data[20]);
-                            server.setNasIpAddress(data[21]);
-                            server.setNasHostName(data[22]);
-                            server.setNatAddress(data[23]);
-                            server.setServerComments(data[24]);
-                            server.setAssignedEngineer(data[25]);
-                            server.setDmgrPort(Integer.valueOf(data[26]));
-                            server.setOwningDmgr(data[27]);
-                            server.setMgrUrl(data[28]);
+                            server.setServerGuid((String) data[0]); // SYSTEM_GUID
+                            server.setOsName((String) data[1]); // SYSTEM_OSTYPE
+                            server.setServerStatus(ServerStatus.valueOf((String) data[2])); // SYSTEM_STATUS
+                            server.setServerRegion(ServiceRegion.valueOf((String) data[3])); // SYSTEM_REGION
+                            server.setNetworkPartition(NetworkPartition.valueOf((String) data[4])); // NETWORK_PARTITION
+                            server.setDatacenter(dataCenter); // datacenter as earlier obtained
+                            server.setServerType(ServerType.valueOf((String) data[6])); // SYSTEM_TYPE
+                            server.setDomainName((String) data[7]); // DOMAIN_NAME
+                            server.setCpuType((String) data[8]); // CPU_TYPE
+                            server.setCpuCount((Integer) data[9]); // CPU_COUNT
+                            server.setServerRack((String) data[10]); // SERVER_RACK
+                            server.setRackPosition((String) data[11]); // RACK_POSITION
+                            server.setServerModel((String) data[12]); // SERVER_MODEL
+                            server.setSerialNumber((String) data[13]); // SERIAL_NUMBER
+                            server.setInstalledMemory((Integer) data[14]); // INSTALLED_MEMORY
+                            server.setOperIpAddress((String) data[15]); // OPER_IP
+                            server.setOperHostName((String) data[16]); // OPER_HOSTNAME
+                            server.setMgmtIpAddress((String) data[17]); // MGMT_IP
+                            server.setMgmtHostName((String) data[18]); // MGMT_HOSTNAME
+                            server.setBkIpAddress((String) data[19]); // BKUP_IP
+                            server.setBkHostName((String) data[20]); // BKUP_HOSTNAME
+                            server.setNasIpAddress((String) data[21]); // NAS_IP
+                            server.setNasHostName((String) data[22]); // NAS_HOSTNAME
+                            server.setNatAddress((String) data[23]); // NAT_ADDR
+                            server.setServerComments((String) data[24]); // COMMENTS
+                            server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
+                            server.setDmgrPort((Integer) data[28]); // DMGR_PORT
+                            server.setOwningDmgr((String) data[29]); // OWNING_DMGR
+                            server.setMgrUrl((String) data[30]); // MGR_ENTRY
 
                             if (DEBUG)
                             {
@@ -641,7 +641,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             {
                 if (requestServer != null)
                 {
-                    List<String> serverData = serverDAO.getInstalledServer(requestServer.getServerGuid());
+                    List<Object> serverData = serverDAO.getInstalledServer(requestServer.getServerGuid());
 
                     if (DEBUG)
                     {
@@ -650,7 +650,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     if ((serverData != null) && (serverData.size() != 0))
                     {
-                        List<String> datacenter = datactrDAO.getDatacenter(serverData.get(5));
+                        List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5)); // DATACENTER_GUID
 
                         if (DEBUG)
                         {
@@ -671,35 +671,35 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             }
 
                             Server server = new Server();
-                            server.setServerGuid(serverData.get(0));
-                            server.setOsName(serverData.get(1));
-                            server.setServerStatus(ServerStatus.valueOf(serverData.get(2)));
-                            server.setServerRegion(ServiceRegion.valueOf(serverData.get(3)));
-                            server.setNetworkPartition(NetworkPartition.valueOf(serverData.get(4)));
-                            server.setDatacenter(dataCenter);
-                            server.setServerType(ServerType.valueOf(serverData.get(6)));
-                            server.setDomainName(serverData.get(7));
-                            server.setCpuType(serverData.get(8));
-                            server.setCpuCount(Integer.parseInt(serverData.get(9)));
-                            server.setServerRack(serverData.get(10));
-                            server.setRackPosition(serverData.get(11));
-                            server.setServerModel(serverData.get(12));
-                            server.setSerialNumber(serverData.get(13));
-                            server.setInstalledMemory(Integer.parseInt(serverData.get(14)));
-                            server.setOperIpAddress(serverData.get(15));
-                            server.setOperHostName(serverData.get(16));
-                            server.setMgmtIpAddress(serverData.get(17));
-                            server.setMgmtHostName(serverData.get(18));
-                            server.setBkIpAddress(serverData.get(19));
-                            server.setBkHostName(serverData.get(20));
-                            server.setNasIpAddress(serverData.get(21));
-                            server.setNasHostName(serverData.get(22));
-                            server.setNatAddress(serverData.get(23));
-                            server.setServerComments(serverData.get(24));
-                            server.setAssignedEngineer(serverData.get(25));
-                            server.setDmgrPort(Integer.valueOf(serverData.get(26)));
-                            server.setOwningDmgr(serverData.get(27));
-                            server.setMgrUrl(serverData.get(28));
+                            server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
+                            server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
+                            server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
+                            server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
+                            server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
+                            server.setDatacenter(dataCenter); // datacenter as earlier obtained
+                            server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
+                            server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
+                            server.setCpuType((String) serverData.get(8)); // CPU_TYPE
+                            server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
+                            server.setServerRack((String) serverData.get(10)); // SERVER_RACK
+                            server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
+                            server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
+                            server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
+                            server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
+                            server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
+                            server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
+                            server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
+                            server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
+                            server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
+                            server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
+                            server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
+                            server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
+                            server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
+                            server.setServerComments((String) serverData.get(24)); // COMMENTS
+                            server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
+                            server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
+                            server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
+                            server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
 
                             if (DEBUG)
                             {
@@ -953,7 +953,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             {
                 if (sourceServer != null)
                 {
-                    List<String> serverData = serverDAO.getInstalledServer(sourceServer.getServerGuid());
+                    List<Object> serverData = serverDAO.getInstalledServer(sourceServer.getServerGuid());
 
                     if (DEBUG)
                     {
