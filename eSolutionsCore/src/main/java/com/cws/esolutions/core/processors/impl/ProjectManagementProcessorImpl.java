@@ -25,18 +25,19 @@ import org.apache.commons.lang.StringUtils;
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Project;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
+import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
