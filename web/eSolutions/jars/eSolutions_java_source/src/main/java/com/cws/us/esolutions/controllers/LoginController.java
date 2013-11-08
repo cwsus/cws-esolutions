@@ -206,7 +206,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -344,7 +344,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
         mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -432,7 +432,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -622,7 +622,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -799,7 +799,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -960,7 +960,7 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();

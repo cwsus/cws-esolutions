@@ -37,6 +37,7 @@ public class Constants
     public static final String USER_ACCOUNT = "userAccount";
     public static final String USER_SECURITY = "userSecurity";
     public static final String RESET_ACCOUNT = "resetAccount";
+    public static final String ALLOW_RESET = "allowUserReset";
     public static final String ERROR_MESSAGE = "errorMessage"; // returned from controllers
     public static final String ERROR_RESPONSE = "errorResponse"; // returned from the getResponse() method on DTO objects from esol core
     public static final String SEARCH_RESULTS = "searchResults";

@@ -56,7 +56,7 @@
 	                </td>
 	                <td>
 	                    <c:if test="${not empty forgotUsernameUrl}">
-	                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotUsernameUrl}" />" title="<spring:message code='login.user.forgot_uid' />">
+	                        <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
 	                            <spring:message code="login.user.forgot_uid" />
 	                        </a>
 	                    </c:if>
@@ -69,8 +69,8 @@
 	                    <form:errors path="loginPass" cssClass="validationError" />
 	                </td>
 	                <td>
-	                    <c:if test="${not empty forgotPasswordUrl}">
-	                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotPasswordUrl}" />" title="<spring:message code='login.user.forgot_pwd' />">
+	                    <c:if test="${allowUserReset eq 'true'}">
+	                        <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
 	                            <spring:message code="login.user.forgot_pwd" />
 	                        </a>
 	                    </c:if>

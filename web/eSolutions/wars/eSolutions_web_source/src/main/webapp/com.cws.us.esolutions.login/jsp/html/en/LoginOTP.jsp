@@ -55,11 +55,11 @@
 	                    <form:errors path="password" cssClass="validationError" />
 	                </td>
 	                <td>
-	                    <c:if test="${not empty forgotPasswordUrl}">
-	                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotPasswordUrl}" />" title="<spring:message code='login.user.forgot_pwd' />">
-	                            <spring:message code="login.user.forgot_pwd" />
-	                        </a>
-	                    </c:if>
+                        <c:if test="${allowUserReset eq 'true'}">
+                            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
+                                <spring:message code="login.user.forgot_pwd" />
+                            </a>
+                        </c:if>
 	                </td>
 	            </tr>
 	            <tr>

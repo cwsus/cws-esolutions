@@ -55,11 +55,11 @@
 	                    <form:errors path="username" cssClass="validationError" />
 	                </td>
 	                <td>
-	                    <c:if test="${not empty forgotUsernameUrl}">
-	                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotUsernameUrl}" />" title="<spring:message code='login.user.forgot_uid' />">
-	                            <spring:message code="login.user.forgot_uid" />
-	                        </a>
-	                    </c:if>
+                        <c:if test="${not empty forgotUsernameUrl}">
+                            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
+                                <spring:message code="login.user.forgot_uid" />
+                            </a>
+                        </c:if>
 	                </td>
 	            </tr>
 	        </table>
