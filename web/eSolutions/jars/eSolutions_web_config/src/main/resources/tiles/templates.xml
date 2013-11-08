@@ -8,7 +8,6 @@
         <put-attribute name="pageTitle"     value="eSolutions" cascade="true" />
         <!-- jsp files -->
         <put-attribute name="head"          value="/theme/cws/html/en/jsp/head.jsp" cascade="true" />
-        <put-attribute name="masthead"      value="/theme/cws/html/en/jsp/masthead.jsp" cascade="true" />
         <put-attribute name="navbar"        value="/theme/cws/html/en/jsp/navbar.jsp" cascade="true" />
         <put-attribute name="footer"        value="/theme/cws/html/en/jsp/footer.jsp" cascade="true" />
     </definition>
@@ -29,10 +28,6 @@
     <definition name="System_RequestComplete" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Request Complete" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_RequestComplete.jsp" cascade="true" />
-    </definition>
-    <definition name="System_SearchRequest" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Search Request" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions/jsp/html/en/System_SearchRequest.jsp" cascade="true" />
     </definition>
     <definition name="System_Unauthorized" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Not Authorized" cascade="true" />
@@ -96,10 +91,6 @@
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_DefaultHandler.jsp" cascade="true" />
     </definition>
-    <definition name="DNSService_ServiceLookup" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Lookup" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
-    </definition>
 
     <!-- KnowledgeBase -->
     <definition name="KnowledgeBase_DefaultHandler" extends="baseLayout">
@@ -128,21 +119,17 @@
     </definition>
 
     <!-- Messaging -->
-    <definition name="Messaging_SubmitServiceMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Create Message" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_SubmitServiceMessage.jsp" cascade="true" />
+    <definition name="ServiceMessaging_EditMessage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Create Message" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-messaging/jsp/html/en/ServiceMessaging_EditMessage.jsp" cascade="true" />
     </definition>
-    <definition name="Messaging_EditServiceMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Edit Message" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_EditServiceMessage.jsp" cascade="true" />
+    <definition name="ServiceMessaging_SubmitMessage" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Edit Message" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-messaging/jsp/html/en/ServiceMessaging_SubmitMessage.jsp" cascade="true" />
     </definition>
-    <definition name="Messaging_ViewServiceMessages" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Messages" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewServiceMessages.jsp" cascade="true" />
-    </definition>
-    <definition name="Messaging_ViewServiceMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Messaging - Service Message" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.messaging/jsp/html/en/Messaging_ViewServiceMessage.jsp" cascade="true" />
+    <definition name="ServiceMessaging_ViewMessages" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Service Messages" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.service-messaging/jsp/html/en/ServiceMessaging_ViewMessages.jsp" cascade="true" />
     </definition>
 
     <!-- OnlineReset -->

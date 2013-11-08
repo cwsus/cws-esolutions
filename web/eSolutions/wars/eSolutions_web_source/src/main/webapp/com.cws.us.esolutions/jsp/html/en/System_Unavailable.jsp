@@ -28,16 +28,18 @@
  */
 --%>
 
-<div class="feature">
-    <spring:message code="service.unavailable" />
-    <br /><br />
-    <c:choose>
-        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
-            <p><a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/home/default" /></a></p>
-        </c:when>
-        <c:otherwise>
-            <p><a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='link.sectionLinks.login' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/auth/default" /></a></p>
-        </c:otherwise>
-    </c:choose>
+<div id="InfoLine"><spring:message code="service.unavailable" /></div>
+<div id="content">
+    <div id="content-right">
+        <spring:message code="system.service.unavailable" />
+
+	    <c:choose>
+	        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
+	            <p><a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/home/default" /></a></p>
+	        </c:when>
+	        <c:otherwise>
+	            <p><a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='link.sectionLinks.login' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/auth/default" /></a></p>
+	        </c:otherwise>
+	    </c:choose>
+    </div>
 </div>
-<br /><br />

@@ -28,55 +28,55 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="olr.provide.email.address" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
 
-    <spring:message code="olr.provide.email.address" />
+        <p id="validationError" />
 
-    <p id="validationError" />
+	    <form:form id="submitEmailForUserSearch" name="submitEmailForUserSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-username" method="post" autocomplete="off">
+	        <form:hidden path="isReset" value="true" />
+	        <form:hidden path="resetType" value="EMAIL" />
 
-    <form:form id="submitEmailForUserSearch" name="submitEmailForUserSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-username" method="post" autocomplete="off">
-        <form:hidden path="isReset" value="true" />
-        <form:hidden path="resetType" value="EMAIL" />
-
-        <table id="userauth">
-            <tr>
-                <td><label id="txtEmailAddr"><spring:message code="olr.user.email.address" /></label></td>
-                <td>
-                    <form:input path="emailAddr" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
-                    <form:errors path="emailAddr" cssClass="validationError" />
-                </td>
-                <td>
-                    <a href="${pageContext.request.contextPath}/ui/app/help/forgot-email"
-                        title="<spring:message code="olr.user.forgot.email" />"><spring:message code="olr.user.forgot.email" /></a>
-                </td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+	        <table id="userauth">
+	            <tr>
+	                <td><label id="txtEmailAddr"><spring:message code="olr.user.email.address" /></label></td>
+	                <td>
+	                    <form:input path="emailAddr" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+	                    <form:errors path="emailAddr" cssClass="validationError" />
+	                </td>
+	                <td>
+	                    <a href="${pageContext.request.contextPath}/ui/app/help/forgot-email"
+	                        title="<spring:message code="olr.user.forgot.email" />"><spring:message code="olr.user.forgot.email" /></a>
+	                </td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
 </div>
-<br /><br />

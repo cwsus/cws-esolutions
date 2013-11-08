@@ -28,31 +28,37 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a> / 
+<div id="InfoLine"><spring:message code="system.mgmt.admin.consoles" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+	    <table id="consoles">
+	        <tr>
+	            <c:forEach var="dmgr" items="${serverList}">
+	                <td><a href="${dmgr.mgrUrl}" title="${dmgr.operHostName}">${dmgr.operHostName}</a></td>
+	            </c:forEach>
+	        </tr>
+	    </table>
     </div>
 
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-
-    <table id="consoles">
-        <tr>
-            <c:forEach var="dmgr" items="${serverList}">
-                <td><a href="${dmgr.mgrUrl}" title="${dmgr.operHostName}">${dmgr.operHostName}</a></td>
-            </c:forEach>
-        </tr>
-    </table>
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+                    title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

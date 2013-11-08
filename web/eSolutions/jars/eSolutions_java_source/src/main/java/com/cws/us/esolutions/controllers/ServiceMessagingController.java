@@ -45,7 +45,7 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
- * MessagingController.java
+ * ServiceMessagingController.java
  *
  * $Id$
  * $Author$
@@ -61,7 +61,7 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
  */
 @Controller
 @RequestMapping("/messaging")
-public class MessagingController
+public class ServiceMessagingController
 {
     private String serviceId = null;
     private String addServiceMessagePage = null;
@@ -71,7 +71,7 @@ public class MessagingController
     private ApplicationServiceBean appConfig = null;
     private String messageSuccessfullyUpdated = null;
 
-    private static final String CNAME = MessagingController.class.getName();
+    private static final String CNAME = ServiceMessagingController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -79,7 +79,7 @@ public class MessagingController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = MessagingController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setAppConfig(final CoreServiceBean value)";
 
         if (DEBUG)
         {
@@ -92,7 +92,7 @@ public class MessagingController
 
     public final void setServiceId(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setServiceId(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -105,7 +105,7 @@ public class MessagingController
 
     public final void setAddServiceMessagePage(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setAddServiceMessagePage(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setAddServiceMessagePage(final String value)";
 
         if (DEBUG)
         {
@@ -118,7 +118,7 @@ public class MessagingController
 
     public final void setViewServiceMessagesPage(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setViewServiceMessagesPage(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setViewServiceMessagesPage(final String value)";
 
         if (DEBUG)
         {
@@ -131,7 +131,7 @@ public class MessagingController
 
     public final void setEditServiceMessagePage(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setEditServiceMessagePage(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setEditServiceMessagePage(final String value)";
 
         if (DEBUG)
         {
@@ -144,7 +144,7 @@ public class MessagingController
 
     public final void setMessageSuccessfullyAdded(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setMessageSuccessfullyAdded(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setMessageSuccessfullyAdded(final String value)";
 
         if (DEBUG)
         {
@@ -157,7 +157,7 @@ public class MessagingController
 
     public final void setMessageSuccessfullyUpdated(final String value)
     {
-        final String methodName = MessagingController.CNAME + "#setMessageSuccessfullyUpdated(final String value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setMessageSuccessfullyUpdated(final String value)";
 
         if (DEBUG)
         {
@@ -171,7 +171,7 @@ public class MessagingController
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
-        final String methodName = MessagingController.CNAME + "#showDefaultPage()";
+        final String methodName = ServiceMessagingController.CNAME + "#showDefaultPage()";
 
         if (DEBUG)
         {
@@ -304,7 +304,7 @@ public class MessagingController
     @RequestMapping(value = "/add-message", method = RequestMethod.GET)
     public final ModelAndView showAddMessage()
     {
-        final String methodName = MessagingController.CNAME + "#showAddMessage()";
+        final String methodName = ServiceMessagingController.CNAME + "#showAddMessage()";
 
         if (DEBUG)
         {
@@ -414,7 +414,7 @@ public class MessagingController
     @RequestMapping(value = "/edit-message/message/{messageId}", method = RequestMethod.GET)
     public final ModelAndView showEditMessage(@PathVariable(value = "messageId") final String messageId)
     {
-        final String methodName = MessagingController.CNAME + "#showEditMessage(@PathVariable(value = \"messageId\") final String messageId)";
+        final String methodName = ServiceMessagingController.CNAME + "#showEditMessage(@PathVariable(value = \"messageId\") final String messageId)";
 
         if (DEBUG)
         {
@@ -563,7 +563,7 @@ public class MessagingController
     @RequestMapping(value = "/submit-message", method = RequestMethod.POST)
     public final ModelAndView doAddOrModifyServiceMessage(@ModelAttribute("message") final ServiceMessage message, final BindingResult bindResult)
     {
-        final String methodName = MessagingController.CNAME + "#doAddOrModifyServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final BindingResult bindResult";
+        final String methodName = ServiceMessagingController.CNAME + "#doAddOrModifyServiceMessage(@ModelAttribute(\"message\") final ServiceMessage message, final BindingResult bindResult";
 
         if (DEBUG)
         {

@@ -3114,8 +3114,13 @@ public class ApplicationManagementController
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
-                mView.addObject("command", new ApplicationRequest());
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(this.viewAppPage + "/application/" + request.getApplicationGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
 
                 return mView;
             }

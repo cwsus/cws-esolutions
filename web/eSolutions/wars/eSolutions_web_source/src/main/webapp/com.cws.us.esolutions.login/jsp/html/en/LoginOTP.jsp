@@ -28,60 +28,60 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="login.user.otp.message" /></div>
+<div id="content">
+    <div id="content-right">
+        <c:if test="${not empty messageResponse}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty errorResponse}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty responseMessage}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty errorMessage}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
 
-    <spring:message code="login.user.pwd.message" />
+        <p id="validationError" />
 
-    <p id="validationError" />
-
-    <form:form name="submitOTP" method="post" action="${pageContext.request.contextPath}/ui/login/otp">
-        <table id="userauth">
-            <tr>
-                <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
-                <td>
-                    <form:password path="password" />
-                    <form:errors path="password" cssClass="validationError" />
-                </td>
-                <td>
-                    <c:if test="${not empty forgotPasswordUrl}">
-                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotPasswordUrl}" />" title="<spring:message code='login.user.forgot_pwd' />">
-                            <spring:message code="login.user.forgot_pwd" />
-                        </a>
-                    </c:if>
-                </td>
-            </tr>
-            <tr>
-                <td><label id="txtOtpValue"><spring:message code="login.user.otp" /></label></td>
-                <td><form:password path="otpValue" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
-                <td><form:errors path="otpValue" cssClass="validationErrors" /></td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+	    <form:form name="submitOTP" method="post" action="${pageContext.request.contextPath}/ui/login/otp">
+	        <table id="userauth">
+	            <tr>
+	                <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
+	                <td>
+	                    <form:password path="password" />
+	                    <form:errors path="password" cssClass="validationError" />
+	                </td>
+	                <td>
+	                    <c:if test="${not empty forgotPasswordUrl}">
+	                        <a href="<c:out value="${pageContext.request.contextPath}/${forgotPasswordUrl}" />" title="<spring:message code='login.user.forgot_pwd' />">
+	                            <spring:message code="login.user.forgot_pwd" />
+	                        </a>
+	                    </c:if>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtOtpValue"><spring:message code="login.user.otp" /></label></td>
+	                <td><form:password path="otpValue" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+	                <td><form:errors path="otpValue" cssClass="validationErrors" /></td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
 </div>
-<br /><br />

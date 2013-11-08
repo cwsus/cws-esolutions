@@ -51,7 +51,6 @@
 	    <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
 	    <property name="changePasswordPage" value="UserAccount_ChangePassword" />
 	    <property name="errorPasswordExpired" value="user.account.password.expired" />
-	    <property name="errorPasswordFailed" value="error.password.requirement.failure" />
 	    <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
 	    <property name="changePasswordComplete" value="user.account.password.change.success" />
 	    <property name="changeSecurityComplete" value="user.account.update.security.complete" />

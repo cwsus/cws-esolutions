@@ -66,6 +66,5 @@
         <property name="messageApplicationRetired" value="app.mgmt.application.retired" />
         <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
         <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
-        <property name="messageValidationFailed" value="error.message.failed.validation" />
     </bean>
 </beans>

@@ -28,10 +28,11 @@
  */
 --%>
 
-<div class="feature">
-    <div class="error">
-        <spring:message code="request.unauthorized" />
-        <br /><br />
+<div id="InfoLine"><spring:message code="request.unauthorized" /></div>
+<div id="content">
+    <div id="content-right">
+        <spring:message code="system.request.unauthorized" />
+
         <c:choose>
             <c:when test="${requestScope.isUserLoggedIn != 'true'}">
                 <p><a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />"><spring:message code="text.click.continue" arguments="${pageContext.request.contextPath}/ui/home/default" /></a></p>
@@ -42,4 +43,3 @@
         </c:choose>
     </div>
 </div>
-<br /><br />

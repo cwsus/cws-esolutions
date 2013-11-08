@@ -28,68 +28,81 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="user.account.update.password" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
 
-    <spring:message code="user.account.update.password" />
-    <br /><br />
-    <spring:message code="user.account.update.password.rqmts" />
+        <spring:message code="user.account.update.password.rqmts" />
 
-    <p id="validationError" />
+        <p id="validationError" />
 
-    <form:form name="submitPasswordChange" id="submitPasswordChange" action="${pageContext.request.contextPath}/ui/user-account/password" method="POST">
-        <form:hidden path="isReset" value="${command.isReset}" />
+	    <form:form name="submitPasswordChange" id="submitPasswordChange" action="${pageContext.request.contextPath}/ui/user-account/password" method="POST">
+	        <form:hidden path="isReset" value="${command.isReset}" />
 
-        <table id="userauth">
-            <c:if test="${not command.isReset}">
+	        <table id="userauth">
+	            <c:if test="${not command.isReset}">
+	                <tr>
+	                    <td><label id="txtCurrentPassword"><spring:message code="user.account.update.password.current" /><br /></label></td>
+	                    <td>
+	                        <form:password path="currentPassword" />
+	                        <form:errors path="currentPassword" cssClass="validationError" />
+	                    </td>
+	                </tr>
+	            </c:if>
 	            <tr>
-	                <td><label id="txtCurrentPassword"><spring:message code="user.account.update.password.current" /><br /></label></td>
+	                <td><label id="txtNewPassword"><spring:message code="user.account.update.password.new" /><br /></label></td>
 	                <td>
-	                    <form:password path="currentPassword" />
-	                    <form:errors path="currentPassword" cssClass="validationError" />
+	                    <form:password path="newPassword" />
+	                    <form:errors path="newPassword" cssClass="validationError" />
 	                </td>
 	            </tr>
-	        </c:if>
-            <tr>
-                <td><label id="txtNewPassword"><spring:message code="user.account.update.password.new" /><br /></label></td>
-                <td>
-                    <form:password path="newPassword" />
-                    <form:errors path="newPassword" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td><label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label></td>
-                <td>
-                    <form:password path="confirmPassword" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
-                    <form:errors path="confirmPassword" cssClass="validationError" />
-                </td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+	            <tr>
+	                <td><label id="txtConfirmPassword"><spring:message code="user.account.update.password.confirm" /><br /></label></td>
+	                <td>
+	                    <form:password path="confirmPassword" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+	                    <form:errors path="confirmPassword" cssClass="validationError" />
+	                </td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
+
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/user-account/email"
+                    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/user-account/security"
+                    title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

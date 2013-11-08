@@ -28,75 +28,75 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="olr.forgotpwd.message" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
 
-    <spring:message code="olr.forgotpwd.message" />
+        <p id="validationError" />
 
-    <p id="validationError" />
+	    <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
+	        <form:hidden path="isReset" value="true" />
+	        <form:hidden path="resetType" value="QUESTIONS" />
+	        <form:hidden path="secQuestionOne" value="${userSecurity.secQuestionOne}" />
+	        <form:hidden path="secQuestionTwo" value="${userSecurity.secQuestionTwo}" />
 
-    <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
-        <form:hidden path="isReset" value="true" />
-        <form:hidden path="resetType" value="QUESTIONS" />
-        <form:hidden path="secQuestionOne" value="${userSecurity.secQuestionOne}" />
-        <form:hidden path="secQuestionTwo" value="${userSecurity.secQuestionTwo}" />
-
-        <table id="userauth">
-            <tr>
-                <td><label id="txtQuestionOne"><spring:message code="olr.question" /><br /></label></td>
-                <td>${userSecurity.secQuestionOne}</td>
-            </tr>
-            <tr>
-                <td><label id="txtAnswerOne"><spring:message code="olr.answer" /></label></td>
-                <td>
-                    <form:password path="secAnswerOne" />
-                    <form:errors path="secAnswerOne" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td><label id="txtQuestionTwo"><spring:message code="olr.question" /><br /></label></td>
-                <td>${userSecurity.secQuestionTwo}</td>
-            </tr>
-            <tr>
-                <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
-                <td>
-                    <form:password path="secAnswerTwo" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
-                    <form:errors path="secAnswerTwo" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <a href="<c:out value="${pageContext.request.contextPath}/ui/app/help/forgot-questions" />" title="<spring:message code='olr.forgot.questions' />">
-                        <spring:message code="olr.forgot.questions" />
-                    </a>
-                </td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+	        <table id="userauth">
+	            <tr>
+	                <td><label id="txtQuestionOne"><spring:message code="olr.question" /><br /></label></td>
+	                <td>${userSecurity.secQuestionOne}</td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtAnswerOne"><spring:message code="olr.answer" /></label></td>
+	                <td>
+	                    <form:password path="secAnswerOne" />
+	                    <form:errors path="secAnswerOne" cssClass="validationError" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtQuestionTwo"><spring:message code="olr.question" /><br /></label></td>
+	                <td>${userSecurity.secQuestionTwo}</td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtAnswerTwo"><spring:message code="olr.answer" /></label></td>
+	                <td>
+	                    <form:password path="secAnswerTwo" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+	                    <form:errors path="secAnswerTwo" cssClass="validationError" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>
+	                    <a href="<c:out value="${pageContext.request.contextPath}/ui/app/help/forgot-questions" />" title="<spring:message code='olr.forgot.questions' />">
+	                        <spring:message code="olr.forgot.questions" />
+	                    </a>
+	                </td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
 </div>
-<br /><br />

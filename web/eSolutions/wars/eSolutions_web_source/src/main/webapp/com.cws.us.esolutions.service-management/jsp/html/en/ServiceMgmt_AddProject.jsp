@@ -28,88 +28,99 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+<div id="InfoLine"><spring:message code="svc.mgmt.add.project" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+        <p id="validationError" />
+
+	    <form:form id="createNewProject" name="createNewProject" action="${pageContext.request.contextPath}/ui/service-management/add-project" method="post">
+	        <table id="projectDetail">
+	            <tr>
+	                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.project.code" /></label></td>
+	                <td><form:input path="projectCode" /></td>
+	                <td><form:errors path="projectCode" cssClass="validationError" /></td>
+	                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label></td>
+	                <td>
+	                    <form:select path="projectStatus">
+	                        <option><spring:message code="select.default" /></option>
+	                        <option><spring:message code="select.spacer" /></option>
+	                        <form:options items="${statusList}" />
+	                    </form:select>
+	                </td>
+	                <td><form:errors path="projectStatus" cssClass="validationError" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
+	                <td><form:input path="primaryContact" /></td>
+	                <td><form:errors path="primaryContact" cssClass="validationError" /></td>
+	                <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label></td>
+	                <td><form:input path="secondaryContact" /></td>
+	                <td><form:errors path="secondaryContact" cssClass="validationError" /></td>
+	                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label></td>
+	                <td><form:input path="contactEmail" /></td>
+	                <td><form:errors path="contactEmail" cssClass="validationError" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label></td>
+	                <td><form:input path="changeQueue" /></td>
+	                <td><form:errors path="changeQueue" cssClass="validationError" /></td>
+	                <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
+	                <td><form:input path="incidentQueue" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+	                <td><form:errors path="incidentQueue" cssClass="validationError" /></td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
     </div>
 
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-
-    <spring:message code="svc.mgmt.add.project" />
-
-    <p id="validationError" />
-
-    <form:form id="createNewProject" name="createNewProject" action="${pageContext.request.contextPath}/ui/service-management/add-project" method="post">
-        <table id="projectDetail">
-            <tr>
-                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.project.code" /></label></td>
-                <td><form:input path="projectCode" /></td>
-                <td><form:errors path="projectCode" cssClass="validationError" /></td>
-                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label></td>
-                <td>
-                    <form:select path="projectStatus">
-						<option><spring:message code="select.default" /></option>
-						<option><spring:message code="select.spacer" /></option>
-                        <form:options items="${statusList}" />
-                    </form:select>
-                </td>
-                <td><form:errors path="projectStatus" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
-                <td><form:input path="primaryContact" /></td>
-                <td><form:errors path="primaryContact" cssClass="validationError" /></td>
-                <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label></td>
-                <td><form:input path="secondaryContact" /></td>
-                <td><form:errors path="secondaryContact" cssClass="validationError" /></td>
-                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label></td>
-                <td><form:input path="contactEmail" /></td>
-                <td><form:errors path="contactEmail" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label></td>
-                <td><form:input path="changeQueue" /></td>
-                <td><form:errors path="changeQueue" cssClass="validationError" /></td>
-                <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
-                <td><form:input path="incidentQueue" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
-                <td><form:errors path="incidentQueue" cssClass="validationError" /></td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-				<td>
-				    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
-				<td>
-				    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-				</td>
-				<td>
-				    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
-            </tr>
-        </table>
-    </form:form>
+    <div id="content-left">
+        <ul>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+		            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+		            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+		            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+		            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+		            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />
-

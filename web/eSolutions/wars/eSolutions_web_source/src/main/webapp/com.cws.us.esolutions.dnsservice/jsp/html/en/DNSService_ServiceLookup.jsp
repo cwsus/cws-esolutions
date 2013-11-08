@@ -28,100 +28,85 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <c:if test="${requestScope.dnsADMINEnabled == true}">
-            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <a href="${pageContext.request.contextPath}/ui/dns-service/failover"
-                    title="<spring:message code='select.request.type.dns.failover' />"><spring:message code='select.request.type.dns.failover' /></a> /
-                <a href="${pageContext.request.contextPath}/ui/dns-service/addrecord"
-                    title="<spring:message code='select.request.type.create.dns.record' />"><spring:message code='select.request.type.create.dns.record' /></a> /
-                <a href="${pageContext.request.contextPath}/ui/dns-service/decom"
-                    title="<spring:message code='select.request.type.decom.dns.record' />"><spring:message code='select.request.type.decom.dns.record' /></a> /
-                <a href="${pageContext.request.contextPath}/ui/dns-service/roleswap"
-                    title="<spring:message code='select.request.type.dns.role.swap' />"><spring:message code='select.request.type.dns.role.swap' /></a>
-            </c:if>
-        </c:if>
+<div id="InfoLine"><spring:message code="dns.lookup.service.name" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+        <p id="validationError" />
+
+	    <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/lookup" method="post">
+	        <table id="dnsservice">
+	            <tr>
+	                <td>
+	                    <label id="txtServiceName"><spring:message code="dns.service.hostname" /><br /></label>
+	                </td>
+	                <td>
+	                    <form:input path="recordName" />
+	                    <form:errors path="recordName" cssClass="validationError" />
+	                </td>
+	            </tr>
+	            <tr>
+	                <td>&nbsp;</td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label></td>
+	                <td>
+	                    <form:select path="recordType" onchange="showReverseDisclaimer(this);">
+	                        <option><spring:message code="select.default" /></option>
+	                        <option><spring:message code="select.spacer" /></option>
+	                        <form:options items="${serviceTypes}" />
+	                    </form:select>
+	                </td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+
+	    <c:if test="${not empty dnsEntry or not empty dnsEntries}">
+	        <p id="splitter" />
+
+	        <strong><spring:message code="dns.lookup.results" /></strong>
+	        <br /><br />
+	        <c:choose>
+	            <c:when test="${not empty dnsEntry}">
+	               <spring:message code="dns.service.hostname" /> ${dnsEntry.recordName}<br />
+	               <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
+	               <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
+	            </c:when>
+	            <c:when test="${not empty dnsEntries}">
+	                <c:forEach var="dnsEntry" items="${dnsEntries}">
+	                    <spring:message code="dns.service.hostname" /> ${dnsEntry.recordName}<br />
+	                    <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
+	                    <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
+	                    <br />
+	                </c:forEach>
+	            </c:when>
+	        </c:choose>
+	    </c:if>
     </div>
-
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-
-    <spring:message code="dns.lookup.service.name" />
-
-    <p id="validationError" />
-
-    <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/lookup" method="post">
-        <table id="dnsservice">
-            <tr>
-                <td>
-                    <label id="txtServiceName"><spring:message code="dns.service.enter.hostname" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="recordName" />
-                    <form:errors path="recordName" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-            </tr>
-            <tr>
-                <td><label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label></td>
-                <td>
-                    <form:select path="recordType" onchange="showReverseDisclaimer(this);">
-						<option><spring:message code="select.default" /></option>
-						<option><spring:message code="select.spacer" /></option>
-						<form:options items="${serviceTypes}" />
-                    </form:select>
-                </td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
-
-    <c:if test="${not empty dnsEntry or not empty dnsEntries}">
-        <p id="splitter" />
-
-        <strong><spring:message code="dns.lookup.results" /></strong>
-        <br /><br />
-        <c:choose>
-            <c:when test="${not empty dnsEntry}">
-               <spring:message code="dns.service.enter.hostname" /> ${dnsEntry.recordName}<br />
-               <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
-               <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
-            </c:when>
-            <c:when test="${not empty dnsEntries}">
-                <c:forEach var="dnsEntry" items="${dnsEntries}">
-                    <spring:message code="dns.service.enter.hostname" /> ${dnsEntry.recordName}<br />
-                    <spring:message code="dns.lookup.record.type" /> ${dnsEntry.recordType}<br />
-                    <spring:message code="dns.lookup.record.address" /> ${dnsEntry.primaryAddress}<br />
-                    <br />
-                </c:forEach>
-            </c:when>
-        </c:choose>
-	</c:if>
 </div>
-<br /><br />

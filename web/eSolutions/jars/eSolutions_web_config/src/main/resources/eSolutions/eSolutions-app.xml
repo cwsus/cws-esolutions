@@ -96,7 +96,7 @@
 				<value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
 				<value>classpath:nls/KnowledgeBaseServlet/KnowledgeBaseServlet</value>
 				<value>classpath:nls/LoginServlet/LoginServlet</value>
-				<value>classpath:nls/MessagingServlet/MessagingServlet</value>
+				<value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
 				<value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
 				<value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
 				<value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>

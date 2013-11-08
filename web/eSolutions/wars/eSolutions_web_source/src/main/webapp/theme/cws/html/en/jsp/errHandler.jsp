@@ -41,9 +41,7 @@
 
 	<head>
 	    <title><tiles:insertAttribute name="pageTitle" /></title>
-        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 320px)" href="/html/esolutions/css/esolutions-mobile.css" />
-        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 600px)" href="/html/esolutions/css/esolutions-tablet.css" />
-        <link rel="stylesheet" type="text/css" media="only screen and (max-device-width: 801px)" href="/html/esolutions/css/esolutions.css" />
+        <link rel="stylesheet" type="text/css" media="all" href="/html/esolutions/css/esolutions.css" />
 	    <link rel="image/x-icon" href="/favicon.ico" />
 	    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
 	    <meta http-equiv="Content-Script-Type" content="text/javascript" />
@@ -90,117 +88,58 @@
 	</head>
 
     <body>
-		<div id="masthead">
-		    <img src="/html/esolutions/img/logo.gif" alt="eSolutions" title="eSolutions" />
+        <div id="Container">
+            <div id="Top">
+                <h1><img src="/esolutions/html/img/logo.gif" alt="Cool Web site Designs" class="logo" /><spring:message code="theme.company.name" /></h1>
+                <h2><spring:message code="theme.app.welcome" /></h2>
+            </div>
 
-		    <c:if test="${not empty sessionScope.userAccount and sessionScope.userAccount.status ne 'EXPIRED'}">
-		        <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
-		            <div id="globalNav">
-		                <a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='link.globalNav.service-mgmt' />">
-		                   <spring:message code='link.globalNav.service-mgmt' /></a> |
-		                <a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='link.globalNav.system-mgmt' />">
-		                    <spring:message code='link.globalNav.system-mgmt' /></a> |
-		                <a href="${pageContext.request.contextPath}/ui/system-check/default" title="<spring:message code='link.globalNav.validate-systems' />">
-		                    <spring:message code='link.globalNav.validate-systems' /></a> |
-		                <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='link.globalNav.application-mgmt' />">
-		                    <spring:message code='link.globalNav.application-mgmt' /></a> |
-		                <a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='link.globalNav.dns-services' />">
-		                   <spring:message code='link.globalNav.dns-services' /></a>
-		            </div>
-		        </c:if>
+			<div id="nav">
+			    <ul>
+			        <c:choose>
+			            <c:when test="${not empty sessionScope.userAccount}">
+			                <li>
+			                    <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />">
+			                        <spring:message code='link.sectionLinks.home' /></a>
+			                </li>
+			                <li>
+			                    <a href="${pageContext.request.contextPath}/ui/login/logout"
+			                        title="<spring:message code='link.sectionLinks.logoff' />"><spring:message code='link.sectionLinks.logoff' /></a>
+			                </li>
+			            </c:when>
+			            <c:otherwise>
+			                <li>
+			                    <a href="${pageContext.request.contextPath}/ui/login/default"
+			                        title="<spring:message code='link.sectionLinks.login' />"><spring:message code='link.sectionLinks.login' /></a>
+			                </li>
+			            </c:otherwise>
+			        </c:choose>
+			        <li>
+			            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default"
+			                title="<spring:message code='link.sectionLinks.help' />"><spring:message code='link.sectionLinks.help' /></a>
+			        </li>
+			    </ul>
+			</div>
 
-		        <div id="breadCrumb">
-		            <spring:message code="welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" />
-		            <br />
-		            <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
-		                | <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='link.breadcrumb.account' />">
-		                    <spring:message code='link.breadcrumb.account' /></a> |
-		                <a href="${pageContext.request.contextPath}/ui/messaging/default" title="<spring:message code='link.breadcrumb.messaging' />">
-		                    <spring:message code='link.breadcrumb.messaging' /></a> |
-		                <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-		                    <a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='link.breadcrumb.useradmin' />">
-		                        <spring:message code='link.breadcrumb.useradmin' /></a> |
-		                </c:if>
-		            </c:if>
-		        </div>
-		    </c:if>
-		</div>
+            <div id="TopImage"><img src="/esolutions/html/img/top.jpg" alt="" width="800" height="174" /></div>
+            <div id="InfoLine"><spring:message code="system.error" /></div>
 
-        <div id="content">
-	        <spring:message code="error.processing.request.operation" />
-	        <br /><br />
-            <c:if test="${not empty messageResponse}">
-                <p id="info">${messageResponse}</p>
-            </c:if>
-            <c:if test="${not empty errorResponse}">
-                <p id="error">${errorResponse}</p>
-            </c:if>
-            <c:if test="${not empty responseMessage}">
-                <p id="info"><spring:message code="${responseMessage}" /></p>
-            </c:if>
-            <c:if test="${not empty errorMessage}">
-                <p id="error"><spring:message code="${errorMessage}" /></p>
-            </c:if>
-        </div>
+			<div id="content">
+			    <div id="content-right">
+                    <spring:message code="system.failure.message" />
+			    </div>
+			</div>
 
-		<div id="navBar">
-		    <div id="sectionLinks">
-		        <ul>
-		            <c:choose>
-		                <c:when test="${not empty sessionScope.userAccount}">
-		                    <li>
-		                        <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />">
-		                            <spring:message code='link.sectionLinks.home' /></a>
-		                    </li>
-		                    <li>
-		                        <a href="${pageContext.request.contextPath}/ui/login/logout"
-		                            title="<spring:message code='link.sectionLinks.logoff' />"><spring:message code='link.sectionLinks.logoff' /></a>
-		                    </li>
-		                </c:when>
-		                <c:otherwise>
-		                    <li>
-		                        <a href="${pageContext.request.contextPath}/ui/login/default"
-		                            title="<spring:message code='link.sectionLinks.login' />"><spring:message code='link.sectionLinks.login' /></a>
-		                    </li>
-		                </c:otherwise>
-		            </c:choose>
-		            <li>
-		                <a href="${pageContext.request.contextPath}/ui/app/help"
-		                    title="<spring:message code='link.sectionLinks.help' />"><spring:message code='link.sectionLinks.help' /></a>
-		            </li>
-		        </ul>
-		    </div>
-		</div>
-
-        <div id="sectionLinks">
-		    <ul>
-		        <c:choose>
-                    <c:when test="${not empty sessionScope.userAccount}">
-                        <li>
-                            <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />">
-                                <spring:message code='link.sectionLinks.home' /></a>
-		                </li>
-		                <li>
-		                    <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='link.sectionLinks.logoff' />">
-		                        <spring:message code='link.sectionLinks.logoff' /></a>
-		                </li>
-		            </c:when>
-		            <c:otherwise>
-		                <li>
-		                    <a href="${pageContext.request.contextPath}/ui/login/default"
-		                        title="<spring:message code='link.sectionLinks.login' />"><spring:message code='link.sectionLinks.login' /></a>
-		                </li>
-		            </c:otherwise>
-		        </c:choose>
-		        <li>
-		            <a href="${pageContext.request.contextPath}/ui/app/help"
-		                title="<spring:message code='link.sectionLinks.help' />"><spring:message code='link.sectionLinks.help' /></a>
-		        </li>
-		    </ul>
-		</div>
-
-        <div id="siteInfo">
-            <spring:message code="footer.copyright" />
+			<div id="Footer">
+			    <p>
+			        <c:if test="${not empty sessionScope.userAccount}">
+			            <spring:message code="welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" />
+			        </c:if>
+			        <spring:message code="footer.copyright" arguments="http://www.caspersbox.com/cws/ui/home" />
+			        <spring:message code="footer.more.info" arguments="http://www.caspersbox.com/cws/ui/contact" />
+			        <spring:message code="footer.validation" arguments="http://validator.w3.org/check?uri=referer" />
+			        <spring:message code="footer.license" />
+			    </p>
+			</div>
         </div>
     </body>
-</html>

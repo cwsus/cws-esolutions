@@ -28,125 +28,137 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+<div id="InfoLine"><spring:message code="svc.mgmt.add.platform" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+        <p id="validationError" />
+
+	    <form:form id="createNewPlatform" name="createNewPlatform" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
+	        <form:hidden path="platformDmgr" />
+
+	        <table id="applicationDetail">
+	            <tr>
+	                <td><label id="txtPlatformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
+	                <td><form:input path="platformName" /></td>
+	                <td><form:errors path="platformName" cssClass="validationError" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label></td>
+	                <td>
+	                    <form:select path="status" multiple="false">
+	                        <option><spring:message code="select.default" /></option>
+	                        <option><spring:message code="select.spacer" /></option>
+	                        <form:options items="${statusList}" />
+	                    </form:select>
+	                </td>
+	                <td><form:errors path="status" cssClass="validationError" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
+	                <td><form:input path="platformDmgrName" readonly="true" /></td>
+	            </tr>
+	            <tr>
+	                <c:if test="${not empty appServerList}">
+	                    <td><label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label></td>
+	                    <c:choose>
+	                        <c:when test="${not empty appServerList}">
+	                            <td>
+	                                <form:select path="appServers" multiple="true">
+	                                    <c:forEach var="appserver" items="${appServerList}">
+	                                        <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
+	                                    </c:forEach>
+	                                </form:select>
+	                            </td>
+	                        </c:when>
+	                        <c:otherwise>
+	                            <td>
+	                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+	                                    title="<spring:message code='select.request.add.server' />"><spring:message code='select.request.add.server' /></a>
+	                            </td>
+	                        </c:otherwise>
+	                    </c:choose>
+	                </c:if>
+	            </tr>
+	            <tr>
+	                <c:if test="${not empty webServerList}">
+	                    <td><label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
+	                    <c:choose>
+	                        <c:when test="${not empty webServerList}">
+	                            <td>
+	                                <form:select path="webServers" multiple="true">
+	                                    <c:forEach var="webserver" items="${webServerList}">
+	                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
+	                                    </c:forEach>
+	                                </form:select>
+	                            </td>
+	                        </c:when>
+	                        <c:otherwise>
+	                            <td>
+	                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+	                                    title="<spring:message code='select.request.add.server' />"><spring:message code='select.request.add.server' /></a>
+	                            </td>
+	                        </c:otherwise>
+	                    </c:choose>
+	                </c:if>
+	            </tr>
+	            <tr>
+	                <td><label id="txtPlatformDescription"><spring:message code="svc.mgmt.platform.description" /></label></td>
+	                <td><form:textarea path="description" /></td>
+	                <td><form:errors path="description" cssClass="validationError" /></td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
     </div>
 
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-
-    <spring:message code="svc.mgmt.add.platform" />
-
-    <p id="validationError" />
-
-    <form:form id="createNewPlatform" name="createNewPlatform" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
-        <form:hidden path="platformDmgr" />
-
-        <table id="applicationDetail">
-            <tr>
-                <td><label id="txtPlatformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
-                <td><form:input path="platformName" /></td>
-                <td><form:errors path="platformName" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.platform.status" /></label></td>
-                <td>
-                    <form:select path="status" multiple="false">
-                        <option><spring:message code="select.default" /></option>
-                        <option><spring:message code="select.spacer" /></option>
-                        <form:options items="${statusList}" />
-                    </form:select>
-                </td>
-                <td><form:errors path="status" cssClass="validationError" /></td>
-            </tr>
-            <tr>
-                <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-                <td><form:input path="platformDmgrName" readonly="true" /></td>
-            </tr>
-            <tr>
-                <c:if test="${not empty appServerList}">
-	                <td><label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label></td>
-	                <c:choose>
-	                    <c:when test="${not empty appServerList}">
-	                        <td>
-	                            <form:select path="appServers" multiple="true">
-	                                <c:forEach var="appserver" items="${appServerList}">
-	                                    <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
-	                                </c:forEach>
-	                            </form:select>
-	                        </td>
-	                    </c:when>
-	                    <c:otherwise>
-	                        <td>
-	                            <a href="${pageContext.request.contextPath}/ui/systems/add-server"
-	                                title="<spring:message code='select.request.add.server' />"><spring:message code='select.request.add.server' /></a>
-	                        </td>
-	                    </c:otherwise>
-	                </c:choose>
-		        </c:if>
-		    </tr>
-		    <tr>
-		        <c:if test="${not empty webServerList}">
-	                <td><label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
-	                <c:choose>
-	                    <c:when test="${not empty webServerList}">
-	                        <td>
-	                            <form:select path="webServers" multiple="true">
-                                    <c:forEach var="webserver" items="${webServerList}">
-                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
-                                    </c:forEach>
-	                            </form:select>
-	                        </td>
-	                    </c:when>
-	                    <c:otherwise>
-	                        <td>
-	                            <a href="${pageContext.request.contextPath}/ui/systems/add-server"
-	                                title="<spring:message code='select.request.add.server' />"><spring:message code='select.request.add.server' /></a>
-	                        </td>
-	                    </c:otherwise>
-	                </c:choose>
-	            </c:if>
-	        </tr>
-            <tr>
-                <td><label id="txtPlatformDescription"><spring:message code="svc.mgmt.platform.description" /></label></td>
-	            <td><form:textarea path="description" /></td>
-	            <td><form:errors path="description" cssClass="validationError" /></td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-				<td>
-				    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
-				<td>
-				    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-				</td>
-				<td>
-				    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-				</td>
-            </tr>
-        </table>
-    </form:form>
+    <div id="content-left">
+        <ul>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+		            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+		            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+		            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+		            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+		            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

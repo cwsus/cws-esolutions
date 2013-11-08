@@ -39,7 +39,6 @@
         <property name="messageSource" value="nls.KnowledgeBaseServlet.KnowledgeBaseServlet" />
         <property name="messageArticleApproved" value="kbase.approve-article.approval-success" />
         <property name="messageArticleRejected" value="kbase.approve-article.article-rejected" />
-        <property name="messageValidationFailed" value="error.message.failed.validation" />
         <property name="createArticleEmail" value="nls/emailTemplates/kbase_create_article.email" />
         <property name="updateArticleEmail" value="nls/emailTemplates/kbase_update_article.email" />
         <property name="approveArticleEmail" value="nls/emailTemplates/kbase_approve_article.email" />

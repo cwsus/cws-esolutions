@@ -28,78 +28,90 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="user.mgmt.audit.trail" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
 
-    <c:choose>
-        <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+        <c:choose>
+            <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+                <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
+                <br />
+                <hr />
+                <br />
+
+                <table id="viewAuditTrail">
+                    <tr>
+                        <td><spring:message code="admin.account.audit.timestamp" /></td>
+                        <td><spring:message code="admin.account.audit.type" /></td>
+	                    <td><spring:message code="admin.account.audit.application" /></td>
+	                    <td><spring:message code="admin.account.audit.hostinfo" /></td>
+	                </tr>
+	                <c:forEach var="entry" items="${auditEntries}">
+	                    <tr>
+	                        <td>${entry.auditDate}</td>
+	                        <td>${entry.auditType}</td>
+	                        <td>${entry.applicationName}</td>
+	                        <td>${entry.hostInfo.hostName} / ${entry.hostInfo.hostAddress}</td>
+	                    </tr>
+	                </c:forEach>
+	            </table>
+
+	            <c:if test="${pages gt 1}">
+	                <br />
+	                <hr />
+	                <br />
+	                <table>
+	                    <tr>
+	                        <c:forEach begin="1" end="${pages}" var="i">
+	                            <c:choose>
+	                                <c:when test="${page eq i}">
+	                                    <td>${i}</td>
+	                                </c:when>
+	                                <c:otherwise>
+	                                    <td>
+	                                        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
+	                                            title="<spring:message code='system.next.page' />">${i}</a>
+	                                    </td>
+	                                </c:otherwise>
+	                            </c:choose>
+	                        </c:forEach>
+	                    </tr>
+	                </table>
+	            </c:if>
+	        </c:when>
+	        <c:otherwise>
+	            <spring:message code="admin.account.not.authorized" />
+	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
+	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
+	            </c:if>
+	        </c:otherwise>
+	    </c:choose>
+    </div>
+
             <div id="breadcrumb" class="lpstartover">
-                <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                    title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+
             </div>
 
-            <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
-            <br />
-            <hr />
-            <br />
-
-            <table id="viewAuditTrail">
-                <tr>
-                    <td><spring:message code="admin.account.audit.timestamp" /></td>
-                    <td><spring:message code="admin.account.audit.type" /></td>
-                    <td><spring:message code="admin.account.audit.application" /></td>
-                    <td><spring:message code="admin.account.audit.hostinfo" /></td>
-                </tr>
-                <c:forEach var="entry" items="${auditEntries}">
-                    <tr>
-                        <td>${entry.auditDate}</td>
-                        <td>${entry.auditType}</td>
-                        <td>${entry.applicationName}</td>
-                        <td>${entry.hostInfo.hostName} / ${entry.hostInfo.hostAddress}</td>
-                    </tr>
-                </c:forEach>
-            </table>
-
-		    <c:if test="${pages gt 1}">
-		        <br />
-		        <hr />
-		        <br />
-		        <table>
-		            <tr>
-		                <c:forEach begin="1" end="${pages}" var="i">
-		                    <c:choose>
-		                        <c:when test="${page eq i}">
-		                            <td>${i}</td>
-		                        </c:when>
-		                        <c:otherwise>
-		                            <td>
-		                                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
-		                                    title="<spring:message code='system.next.page' />">${i}</a>
-		                            </td>
-		                        </c:otherwise>
-		                    </c:choose>
-		                </c:forEach>
-		            </tr>
-		        </table>
-		    </c:if>
-        </c:when>
-        <c:otherwise>
-            <spring:message code="admin.account.not.authorized" />
-            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
-                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
-            </c:if>
-        </c:otherwise>
-    </c:choose>
+    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+        <div id="content-left">
+            <ul>
+                <li>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
+                        title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                </li>
+            </ul>
+        </div>
+    </c:if>
 </div>
-<br /><br />

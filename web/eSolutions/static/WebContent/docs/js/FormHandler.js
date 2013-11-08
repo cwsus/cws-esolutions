@@ -999,12 +999,19 @@ function validateForm(theForm, e)
             }
             else
             {
-                clearText(theForm);
+                if (theForm.searchTerms.value = '')
+                {
+                    clearText(theForm);
 
-                document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
-                document.getElementById('txtSearchTerms').style.color = '#FF0000';
-                document.getElementById('execute').disabled = false;
-                document.getElementById('searchTerms').focus();
+                    document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
+                    document.getElementById('txtSearchTerms').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('searchTerms').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
             }
         }
     }
@@ -1033,6 +1040,49 @@ function validateForm(theForm, e)
 
                     document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
                     document.getElementById('txtMessageBody').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('messageSubject').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+        }
+    }
+    else if (theForm.name == 'deployApplication')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
+            {
+                if (!((theForm.deploymentType1.checked)) && (!(theForm.deploymentType2.checked)))
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the deployment type.';
+                    document.getElementById('txtDeploymentType').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                }
+                else if ((theForm.version.value == '') || (theForm.version.value == '0.0'))
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the software version to deploy.';
+                    document.getElementById('txtScmVersion').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('version').focus();
+                }
+                else if ((theForm.file) && (theForm.file.value == ''))
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide the file to deploy.';
+                    document.getElementById('txtMessageSubject').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
                     document.getElementById('messageSubject').focus();
                 }

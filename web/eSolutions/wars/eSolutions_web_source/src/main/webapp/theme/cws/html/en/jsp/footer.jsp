@@ -28,6 +28,14 @@
  */
 --%>
 
-<div id="siteInfo">
-    <spring:message code="footer.copyright" />
+<div id="Footer">
+    <p>
+        <c:if test="${not empty sessionScope.userAccount}">
+            <spring:message code="welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" />
+        </c:if>
+        <spring:message code="footer.copyright" arguments="http://www.caspersbox.com/cws/ui/home" />
+        <spring:message code="footer.more.info" arguments="http://www.caspersbox.com/cws/ui/contact" />
+        <spring:message code="footer.validation" arguments="http://validator.w3.org/check?uri=referer" />
+        <spring:message code="footer.license" />
+    </p>
 </div>

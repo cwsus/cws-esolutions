@@ -44,7 +44,7 @@
     <import resource="classpath:/eSolutions/servlets/HomeController.xml" />
     <import resource="classpath:/eSolutions/servlets/KnowledgeBaseController.xml" />
     <import resource="classpath:/eSolutions/servlets/LoginController.xml" />
-    <import resource="classpath:/eSolutions/servlets/MessagingController.xml" />
+    <import resource="classpath:/eSolutions/servlets/ServiceMessagingController.xml" />
     <import resource="classpath:/eSolutions/servlets/OnlineResetController.xml" />
     <import resource="classpath:/eSolutions/servlets/ServiceManagementController.xml" />
     <import resource="classpath:/eSolutions/servlets/SystemCheckController.xml" />    

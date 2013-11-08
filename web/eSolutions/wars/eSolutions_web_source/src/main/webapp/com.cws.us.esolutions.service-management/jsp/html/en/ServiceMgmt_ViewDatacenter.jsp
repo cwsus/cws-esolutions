@@ -28,52 +28,66 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+<div id="InfoLine"><spring:message code="svc.mgmt.add.datacenter" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+        <p id="validationError" />
+
+	    <table id="viewDatacenter">
+	        <tr>
+	            <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
+	            <td>${datacenter.datacenterName}</td>
+	        </tr>
+	        <tr>
+	            <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
+	            <td>${datacenter.datacenterStatus}</td>
+	        </tr>
+	        <tr>
+	            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.datacenter.description" /></label></td>
+	            <td>${datacenter.datacenterDesc}</td>
+	        </tr>
+	    </table>
     </div>
 
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-
-    <spring:message code="svc.mgmt.add.datacenter" />
-
-    <p id="validationError" />
-
-    <table id="viewDatacenter">
-        <tr>
-            <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
-            <td>${datacenter.datacenterName}</td>
-        </tr>
-        <tr>
-            <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
-            <td>${datacenter.datacenterStatus}</td>
-        </tr>
-        <tr>
-            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.datacenter.description" /></label></td>
-	        <td>${datacenter.datacenterDesc}</td>
-        </tr>
-    </table>
+    <div id="content-left">
+        <ul>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+		            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+		            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+		            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+		            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+		            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
+            </li>
+            <li>
+		        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+		            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

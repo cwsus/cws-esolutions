@@ -28,17 +28,20 @@
     <tiles:insertAttribute name="head" />
 
     <body>
-        <tiles:insertAttribute name="masthead" />
+        <div id="Container">
+            <div id="Top">
+                <h1><img src="/esolutions/html/img/logo.gif" alt="Cool Web site Designs" class="logo" /><spring:message code="theme.company.name" /></h1>
+                <h2><spring:message code="theme.app.welcome" /></h2>
+            </div>
 
-        <div id="content">
-            <%-- BEGIN CONTENT --%>
+            <tiles:insertAttribute name="navbar" />
+
+            <div id="TopImage"><img src="/esolutions/html/img/top.jpg" alt="" width="800" height="174" /></div>
+
             <tiles:insertAttribute name="body" />
-            <%-- END CONTENT --%>
-            <br /><br />
-        </div>
 
-        <tiles:insertAttribute name="navbar" />
-        <tiles:insertAttribute name="footer" />
+            <tiles:insertAttribute name="footer" />
+        </div>
     </body>
 
 </html>

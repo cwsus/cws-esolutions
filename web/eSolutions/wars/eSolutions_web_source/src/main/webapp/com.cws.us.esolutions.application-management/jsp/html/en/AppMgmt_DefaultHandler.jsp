@@ -28,33 +28,33 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="select.request.type" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+    </div>
 
-    <spring:message code="select.request.type" />
-    <br /><br />
-    <table id="selectRequest">
-        <tr>
-            <td>
-                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
-                    title="<spring:message code='select.request.add.application' />"><spring:message code='select.request.add.application' /></a>
-            </td>
-            <td>
+    <div id="content-left">
+        <ul>
+            <li>
                 <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
                     title="<spring:message code='select.request.list.applications' />"><spring:message code='select.request.list.applications' /></a>
-            </td>
-        </tr>
-    </table>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
+                    title="<spring:message code='select.request.add.application' />"><spring:message code='select.request.add.application' /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

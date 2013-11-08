@@ -28,83 +28,135 @@
  */
 --%>
 
-<div class="feature">
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<script>
+    <!--
+    function approveArticle(theArticle)
+    {
+        var confirmation = confirm("Are you sure you wish to approve article " + theArticle + " ?");
 
-    <form:form id="reviewArticleData" name="reviewArticleData" action="" method="post" commandName="article">
-        <form:hidden path="author" value="${sessionScope.userAccount.username}" />
-        <form:hidden path="authorEmail" value="${sessionScope.userAccount.emailAddr}" />
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/approve-article/article/' + theArticle;
+        }
+    }
 
-        <table id="ShowArticle">
-            <tr>
-                <td id="txtArticleId"><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
-                <td><form:input path="articleId" readonly="true" /></td>
-            </tr>
-            <tr>
-                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
-                <td><form:input path="title" readonly="true" /></td>
-            </tr>
-            <tr>
-                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
-                <td><form:input path="symptoms" readonly="true" /></td>
-            </tr>
-            <tr>
-                <td id="txtArticleCause"><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
-                <td><form:input path="cause" readonly="true" /></td>
-            </tr>
-            <tr>
-                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.article-keywords" /></em></strong></td>
-                <td><form:input path="keywords" readonly="true" /></td>
-            </tr>
-        </table>
-        <br />
-        <label id="txtArticleResolution"><strong><spring:message code="kbase.view-article.article-resolution" /></strong></label>
-        <br />
-        <form:textarea path="resolution" cols="90" rows="10" readonly="true" />
-        <br /><br />
-        <table class="kbauth">
-            <tr>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-author" /></strong></td>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-created" /></strong></td>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modifier" /></strong></td>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modified" /></strong></td>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approver" /></strong></td>
-                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approved" /></strong></td>
-            </tr>
-            <tr>
-                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>
-                <td align="center" valign="middle"><em>${createDate}</em></td>
-                <td align="center" valign="middle"><em>${modifiedBy}</em></td>
-                <td align="center" valign="middle"><em>${modifiedOn}</em></td>
-                <td align="center" valign="middle"><em>${reviewedBy}</em></td>
-                <td align="center" valign="middle"><em>${reviewedOn}</em></td>
-            </tr>
-        </table>
-        <br /><br />
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event, '${pageContext.request.contextPath}');" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="javascript:history.go(-1);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+    function rejectArticle(theArticle)
+    {
+        var confirmation = confirm("Are you sure you wish to reject article " + theArticle + " ?");
+
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/reject-article/article/' + theArticle;
+        }
+    }
+
+    function deleteArticle(theArticle)
+    {
+        var confirmation = confirm("Are you sure you wish to delete article " + theArticle + " ?");
+
+        if (confirmation)
+        {
+            window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/delete-article/article/' + theArticle;
+        }
+    }
+    //-->
+</script>
+
+<div id="InfoLine"><spring:message code="kbase.article.review.submit" arguments="${article.articleId}" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty messageResponse}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty errorResponse}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty responseMessage}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty errorMessage}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+
+	    <form:form id="reviewArticleData" name="reviewArticleData" action="" method="post" commandName="article">
+	        <form:hidden path="author" value="${sessionScope.userAccount.username}" />
+	        <form:hidden path="authorEmail" value="${sessionScope.userAccount.emailAddr}" />
+
+	        <table id="ShowArticle">
+	            <tr>
+	                <td id="txtArticleId"><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
+	                <td><form:input path="articleId" readonly="true" /></td>
+	            </tr>
+	            <tr>
+	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
+	                <td><form:input path="title" readonly="true" /></td>
+	            </tr>
+	            <tr>
+	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	                <td><form:input path="symptoms" readonly="true" /></td>
+	            </tr>
+	            <tr>
+	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	                <td><form:input path="cause" readonly="true" /></td>
+	            </tr>
+	            <tr>
+	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.article-keywords" /></em></strong></td>
+	                <td><form:input path="keywords" readonly="true" /></td>
+	            </tr>
+	        </table>
+	        <br />
+	        <label id="txtArticleResolution"><strong><spring:message code="kbase.view-article.article-resolution" /></strong></label>
+	        <br />
+	        <form:textarea path="resolution" cols="90" rows="10" readonly="true" />
+	        <br /><br />
+	        <table class="kbauth">
+	            <tr>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-author" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-created" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modifier" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modified" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approver" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approved" /></strong></td>
+	            </tr>
+	            <tr>
+	                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>
+	                <td align="center" valign="middle"><em>${createDate}</em></td>
+	                <td align="center" valign="middle"><em>${modifiedBy}</em></td>
+	                <td align="center" valign="middle"><em>${modifiedOn}</em></td>
+	                <td align="center" valign="middle"><em>${reviewedBy}</em></td>
+	                <td align="center" valign="middle"><em>${reviewedOn}</em></td>
+	            </tr>
+	        </table>
+	        <br /><br />
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event, '${pageContext.request.contextPath}');" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="javascript:history.go(-1);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
+
+    <div id="content-left">
+        <ul>
+            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
+                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
+            </li>
+            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+                <li>
+                    <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
+                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
+                </li>
+            </c:if>
+        </ul>
+    </div>
 </div>
-<br /><br />

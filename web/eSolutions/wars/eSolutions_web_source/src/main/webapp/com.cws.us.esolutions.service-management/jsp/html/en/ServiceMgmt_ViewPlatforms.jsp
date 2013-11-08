@@ -28,70 +28,84 @@
  */
 --%>
 
-<div class="feature">
-    <div id="breadcrumb" class="lpstartover">
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-            title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a> / 
-        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a> 
-    </div>
+<c:set var="count" value="0" scope="page" />
 
-    <c:if test="${not empty messageResponse}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty errorResponse}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty responseMessage}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty errorMessage}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
+<div id="InfoLine"><spring:message code="svc.mgmt.view.platform.list" /></div>
+<div id="content">
+    <div id="content-right">
+        <c:if test="${not empty messageResponse}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty errorResponse}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty responseMessage}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty errorMessage}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
 
-    <table id="viewPlatformList">
-        <tr>
-            <td><label id="platformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
-            <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
-        </tr>
-        <c:forEach var="platform" items="${platformList}">
+        <table id="viewPlatformList">
             <tr>
+                <td><label id="platformName"><spring:message code="svc.mgmt.platform.name" /></label></td>
+                <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
+            </tr>
+            <c:forEach var="platform" items="${platformList}">
                 <td>
                     <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
                         title="${platform.platformName}">${platform.platformName}</a>
                 </td>
                 <td>${platform.platformRegion}</td>
-            </tr>
-        </c:forEach>
-    </table>
-
-    <c:if test="${pages gt 1}">
-        <br />
-        <hr />
-        <br />
-        <table>
-            <tr>
-                <c:forEach begin="1" end="${pages}" var="i">
-                    <c:choose>
-                        <c:when test="${page eq i}">
-                            <td>${i}</td>
-                        </c:when>
-                        <c:otherwise>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
-                                    title="<spring:message code='system.next.page' />">${i}</a>
-                            </td>
-                        </c:otherwise>
-                    </c:choose>
-                </c:forEach>
-            </tr>
+            </c:forEach>
         </table>
-    </c:if>
+
+        <c:if test="${pages gt 1}">
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <c:forEach begin="1" end="${pages}" var="i">
+                        <c:choose>
+                            <c:when test="${page eq i}">
+                                <td>${i}</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
+                                        title="<spring:message code='system.next.page' />">${i}</a>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </tr>
+            </table>
+        </c:if>
+    </div>
+
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+                    title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                    title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
+            </li>
+            <li> 
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+                    title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+                    title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
+            </li>
+            <li> 
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                    title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+            </li>
+        </ul>
+    </div>
 </div>
-<br /><br />

@@ -23,12 +23,10 @@
         </property>
         <property name="serviceId" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
         <property name="serviceName" value="sysMgmt" />
-        <property name="errorResponse" value="error.service.response.failed" />
         <property name="remoteDatePage" value="SystemCheck_RemoteDate" />
         <property name="testTelnetPage" value="SystemCheck_TelnetTest" />
         <property name="netstatPage" value="SystemCheck_Netstat" />
         <property name="listProcessesPage" value="SystemCheck_ListProcesses" />
         <property name="messageSource" value="nls/SystemCheckServlet" />
-        <property name="messageValidationFailed" value="error.message.failed.validation" />
     </bean>
 </beans>
