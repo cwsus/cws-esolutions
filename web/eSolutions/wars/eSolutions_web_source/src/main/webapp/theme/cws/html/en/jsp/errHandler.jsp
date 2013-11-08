@@ -58,8 +58,6 @@
 	    <meta name="copyright" content="<spring:message code="footer.copyright" />" />
 	    <meta name="description" content="eSolutionsService" />
 	    <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
-	    <script type="text/javascript" src="/html/esolutions/js/Scripts.js"></script>
-	    <script type="text/javascript" src="/html/esolutions/js/FormHandler.js"></script>
 	    <script type="text/javascript">
 	        <!--
 	        if (top != self)
@@ -143,3 +141,5 @@
 			</div>
         </div>
     </body>
+</html>
+
