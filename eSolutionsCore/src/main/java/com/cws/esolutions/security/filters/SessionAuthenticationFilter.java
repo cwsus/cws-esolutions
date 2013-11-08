@@ -49,9 +49,13 @@ import com.cws.esolutions.security.SecurityConstants;
 public class SessionAuthenticationFilter implements Filter
 {
     private String loginURI = null;
+    private String resetURI = null;
     private String[] ignoreURIs = null;
 
     private static final String LOGIN_URI = "login.uri";
+    private static final String RESET_URI = "reset.uri";
+    private static final String USER_ACCOUNT = "userAccount";
+    private static final String RESET_ACCOUNT = "resetAccount";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
@@ -89,6 +93,7 @@ public class SessionAuthenticationFilter implements Filter
             }
 
             this.loginURI = rBundle.getString(SessionAuthenticationFilter.LOGIN_URI);
+            this.resetURI = rBundle.getString(SessionAuthenticationFilter.RESET_URI);
             this.ignoreURIs = (StringUtils.isNotEmpty(rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST))) ?
                     rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST).trim().split(",") : null;
                     
@@ -171,6 +176,11 @@ public class SessionAuthenticationFilter implements Filter
 
         if (StringUtils.equals(hRequest.getContextPath() + this.loginURI, hRequest.getRequestURI()))
         {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Request authenticated. No action taken !");
+            }
+
             filterChain.doFilter(sRequest, sResponse);
 
             return;
@@ -229,6 +239,27 @@ public class SessionAuthenticationFilter implements Filter
 
             if (sessionValue instanceof UserAccount)
             {
+                if (StringUtils.equals(sessionElement, SessionAuthenticationFilter.RESET_ACCOUNT))
+                {
+                    // this was a user reset, if the user is on the reset page(s)
+                    // then its fine - otherwise, boot
+                    if (!(StringUtils.equals(hRequest.getContextPath().trim() + this.resetURI, hRequest.getRequestURI())))
+                    {
+                        // it isnt. boot
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Session object contains a reset account but request is not for reset URI. Destroying session");
+                        }
+
+                        hSession.removeAttribute(SessionAuthenticationFilter.RESET_ACCOUNT);
+                        hSession.invalidate();
+
+                        hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+
+                        return;
+                    }
+                }
+
                 userAccount = (UserAccount) sessionValue;
             }
 
@@ -242,35 +273,28 @@ public class SessionAuthenticationFilter implements Filter
         {
             if ((StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
             {
-                filterChain.doFilter(sRequest, sResponse);
-            }
-            else
-            {
-                // no user account was found
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+                    DEBUGGER.debug("Request authenticated. No action taken !");
                 }
 
-                // invalidate the session
-                hSession.invalidate();
+                filterChain.doFilter(sRequest, sResponse);
 
-                hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+                return;
             }
         }
-        else
+
+        // no user account in the session
+        if (DEBUG)
         {
-            // no user account in the session
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
-            }
-
-            // invalidate the session
-            hSession.invalidate();
-
-            hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+            DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
         }
+
+        // invalidate the session
+        hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
+        hSession.invalidate();
+
+        hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
     }
 
     @Override

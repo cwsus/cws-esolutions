@@ -20,7 +20,7 @@
  * Kevin Huntly         12/22/2009 14:58:03            Added escape chars
  */
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" errorPage="/theme/cws/html/en/jsp/errHandler.jsp" %>
 
 <html xml:lang="en" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml2.xsd">
@@ -30,13 +30,13 @@
     <body>
         <div id="Container">
             <div id="Top">
-                <h1><img src="/esolutions/html/img/logo.gif" alt="Cool Web site Designs" class="logo" /><spring:message code="theme.company.name" /></h1>
-                <h2><spring:message code="theme.app.welcome" /></h2>
+                <h1><img src="/html/esolutions/img/logo.gif" alt="CaspersBox Web Services" width="59" height="50" class="logo" />&nbsp;</h1>
+                <h2>&nbsp;</h2>
             </div>
 
             <tiles:insertAttribute name="navbar" />
 
-            <div id="TopImage"><img src="/esolutions/html/img/top.jpg" alt="" width="800" height="174" /></div>
+            <div id="TopImage"><img src="/html/esolutions/img/top.jpg" alt="" width="800" height="174" /></div>
 
             <tiles:insertAttribute name="body" />
 

@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="select.request.type" /></div>
+<div id="InfoLine"><spring:message code="app.mgmt.header" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -49,11 +49,11 @@
         <ul>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
-                    title="<spring:message code='select.request.list.applications' />"><spring:message code='select.request.list.applications' /></a>
+                    title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
-                    title="<spring:message code='select.request.add.application' />"><spring:message code='select.request.add.application' /></a>
+                    title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
             </li>
         </ul>
     </div>

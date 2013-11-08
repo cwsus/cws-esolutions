@@ -28,10 +28,12 @@
  */
 --%>
 
+<div id="InfoLine"><spring:message code="theme.service.unavailable" /></div>
 <div id="content">
-    <div class="feature">
+    <div id="content-right">
+        <h1></h1>
         <img src="/html/esolutions/img/under-construction.gif" alt="Under Construction" />
-        <br /><br />
-        <spring:message code="under.construction" />
+        <br />
+        <spring:message code="theme.system.service.unavailable" />
     </div>
 </div>

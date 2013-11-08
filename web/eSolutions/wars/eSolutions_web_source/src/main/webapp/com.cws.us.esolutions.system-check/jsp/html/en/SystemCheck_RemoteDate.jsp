@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="telnet.request.enter.information" /></div>
+<div id="InfoLine"><spring:message code="system.check.remote.date" arguments="${server.operHostName}" /></div>
 <div id="content">
     <div id="content-right">
         <c:if test="${not empty messageResponse}">
@@ -44,7 +44,7 @@
             <p id="error"><spring:message code="${errorMessage}" /></p>
         </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
         <form:form id="submitRemoteDate" name="submitRemoteDate" action="${pageContext.request.contextPath}/ui/system-check/remote-date" method="post">
             <form:hidden path="sourceServer" value="${server}" />
@@ -55,17 +55,17 @@
                     <td>${server.operHostName}</td>
                 </tr>
             </table>
-            <br /><br />
+
             <table>
                 <tr>
                     <td>
-                        <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                     </td>
                     <td>
-                        <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
                     </td>
                     <td>
-                        <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                     </td>
                 </tr>
             </table>

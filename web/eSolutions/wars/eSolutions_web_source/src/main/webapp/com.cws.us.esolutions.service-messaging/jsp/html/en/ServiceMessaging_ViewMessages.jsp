@@ -32,7 +32,7 @@
 <jsp:useBean id="submissionDate" class="java.util.Date" />
 <jsp:useBean id="expirationDate" class="java.util.Date" />
 
-<div id="InfoLine"><spring:message code="svc.message.list" /></div>
+<div id="InfoLine"><spring:message code="svc.messaging.list" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -50,22 +50,20 @@
 
 	    <c:choose>
 	        <c:when test="${not empty messageList}">
-	            <spring:message code="messaging.system.messages.list" />
-	
 	            <c:forEach var="message" items="${messageList}">
 	                <div id="svcmessage">
 	                    <h3>
-	                        <a href="${pageContext.request.contextPath}/ui/messaging/edit-message/message/${message.messageId}"
-	                            title="<spring:message code='messaging.view.system.message.edit' />">${message.messageTitle} - ${message.messageId}</a>
+	                        <a href="${pageContext.request.contextPath}/ui/service-messaging/edit-message/message/${message.messageId}"
+	                            title="<spring:message code='svc.messaging.view.system.message.edit' />">${message.messageTitle} - ${message.messageId}</a>
 	                    </h3>
 	                    <br />
 	                    ${message.messageText}
 	                    <br /><br />
 	                    <table class="kbauth">
 	                        <tr>
-	                            <td id="top" align="center" valign="middle"><strong><spring:message code="messaging.system.message.author" /></strong></td>
-	                            <td id="top" align="center" valign="middle"><strong><spring:message code="messaging.system.message.submit.date" /></strong></td>
-	                            <td id="top" align="center" valign="middle"><strong><spring:message code="messaging.system.message.expiry.date" /></strong></td>
+	                            <td id="top" align="center" valign="middle"><strong><spring:message code="svc.messaging.system.message.author" /></strong></td>
+	                            <td id="top" align="center" valign="middle"><strong><spring:message code="svc.messaging.system.message.submit.date" /></strong></td>
+	                            <td id="top" align="center" valign="middle"><strong><spring:message code="svc.messaging.system.message.expiry.date" /></strong></td>
 	                        </tr>
 	                        <tr>
 	                            <td align="center" valign="middle">
@@ -83,7 +81,7 @@
 	            </c:forEach>
 	        </c:when>
 	        <c:otherwise>
-	            <spring:message code="messaging.no.system.messages" />
+	            <spring:message code="svc.messaging.no.system.messages" />
 	        </c:otherwise>
 	    </c:choose>
     </div>
@@ -92,8 +90,8 @@
 	    <div id="content-left">
 	        <ul>
 	            <li>
-		            <a href="${pageContext.request.contextPath}/ui/messaging/add-message"
-		                title="spring:message code='messaging.create.system.message' />"><spring:message code="messaging.create.system.message" /></a>
+		            <a href="${pageContext.request.contextPath}/ui/service-messaging/add-message"
+		                title="spring:message code='svc.messaging.create.system.message' />"><spring:message code="svc.messaging.create.system.message" /></a>
 		        </li>
 	        </ul>
 	    </div>

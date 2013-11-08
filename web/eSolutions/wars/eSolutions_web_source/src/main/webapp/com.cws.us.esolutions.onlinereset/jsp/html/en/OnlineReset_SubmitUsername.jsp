@@ -44,7 +44,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="submitUsernameForSearch" name="submitUsernameForSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password" method="post" autocomplete="off">
 	        <form:hidden path="isReset" value="true" />
@@ -58,22 +58,22 @@
 	                    <form:errors path="username" cssClass="validationError" />
 	                </td>
 	                <td>
-	                    <a href="${pageContext.request.contextPath}/ui/app/help/forgot-username"
+	                    <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username"
 	                        title="<spring:message code="olr.user.forgot.username" />"><spring:message code="olr.user.forgot.username" /></a>
 	                </td>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>

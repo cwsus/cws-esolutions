@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="error.system.failure" /></div>
+<div id="InfoLine"><spring:message code="theme.error.system.failure" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">

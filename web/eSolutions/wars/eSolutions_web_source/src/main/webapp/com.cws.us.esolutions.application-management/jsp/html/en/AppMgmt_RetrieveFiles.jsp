@@ -44,7 +44,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <c:choose>
 	        <c:when test="${empty platformList and empty appServerList or empty webServerList and not empty fileList}">

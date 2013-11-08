@@ -68,15 +68,10 @@
 
     <div id="content-left">
         <ul>
-            <li><a href="http://www.free-css.com/">Original Web design Style</a></li>
-            <li><a href="http://www.free-css.com/">W3C standard Validation</a></li>
-            <li><a href="http://www.free-css.com/">Explicit Coding Techniques</a></li>
-            <li><a href="http://www.free-css.com/">Makeovers</a></li>
-            <li><a href="http://www.free-css.com/">Multibrowser Support</a></li>
-            <li><a href="http://www.free-css.com/">LIVE Feature</a></li>
-            <li><a href="http://www.free-css.com/">Code Optimization</a></li>
-            <li><a href="http://www.free-css.com/">Our Clients</a></li>
-            <li><a href="http://www.free-css.com/">Benefits with Us</a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
+                    title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
+            </li>
         </ul>
     </div>
 </div>

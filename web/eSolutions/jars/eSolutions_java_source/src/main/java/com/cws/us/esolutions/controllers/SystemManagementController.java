@@ -94,7 +94,6 @@ public class SystemManagementController
     private String messageServerAdded = null;
     private String addDatacenterRedirect = null;
     private List<String> availableDomains = null;
-    private String messageNoSearchResults = null;
     private ServerValidator serverValidator = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -273,19 +272,6 @@ public class SystemManagementController
         this.messageServerAdded = value;
     }
 
-    public final void setMessageNoSearchResults(final String value)
-    {
-        final String methodName = SystemManagementController.CNAME + "#setMessageNoSearchResults(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageNoSearchResults = value;
-    }
-
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
@@ -345,12 +331,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -463,12 +464,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -646,12 +662,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -849,12 +880,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -968,12 +1014,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -1199,12 +1260,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -1703,12 +1779,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -1831,12 +1922,27 @@ public class SystemManagementController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.EXPIRED)
+        if (userAccount != null)
         {
-            // redirect to password page
+            if (userAccount.getStatus() == LoginStatus.EXPIRED)
+            {
+                // redirect to password page
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(appConfig.getExpiredRedirect());
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ModelAndView: {}", mView);
+                }
+
+                return mView;
+            }
+        }
+        else
+        {
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.setViewName(appConfig.getLogonRedirect());
 
             if (DEBUG)
             {
@@ -1897,7 +2003,7 @@ public class SystemManagementController
                     }
                     else
                     {
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageNoSearchResults);
+                        mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageNoSearchResults());
                     }
 
                     // regardless of what happens we still allow the user to

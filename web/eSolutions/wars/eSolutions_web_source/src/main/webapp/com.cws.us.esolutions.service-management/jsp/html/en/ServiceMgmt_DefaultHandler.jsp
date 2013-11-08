@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="select.request.type" /></div>
+<div id="InfoLine"><spring:message code="svc.mgmt.header" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -43,38 +43,34 @@
 	    <c:if test="${not empty errorMessage}">
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
+    </div>
 
-	    <table id="selectRequest">
-	        <tr>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
-	                    title="<spring:message code='select.request.add.datacenter' />"><spring:message code="select.request.add.datacenter" /></a>
-	            </td>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-	                    title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
-	            </td>
-	        </tr>
-	        <tr>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-	                    title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
-	            </td>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-	                    title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
-	            </td>
-	        </tr>
-	        <tr>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-	                    title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
-	            </td>
-	            <td>
-	                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-	                    title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
-	            </td>
-	        </tr>
-	    </table>
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                    title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+                    title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+                    title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+                    title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                    title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+                    title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a>
+            </li>
+        </ul>
     </div>
 </div>

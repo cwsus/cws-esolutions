@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="svc.mgmt.add.platform" /></div>
+<div id="InfoLine"><spring:message code="svc.mgmt.select.dmgr" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -44,7 +44,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="selectDmgr" name="selectDmgr" action="${pageContext.request.contextPath}/ui/service-management/validate-dmgr" method="post">
 	        <table id="selectDmgr">
@@ -54,8 +54,8 @@
 	                    <c:when test="${not empty dmgrList}">
 	                        <td>
 	                            <form:select path="serverGuid" multiple="false">
-	                                <option><spring:message code="select.default" /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="dmgr" items="${dmgrList}">
 	                                    <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}" />
 	                                </c:forEach>
@@ -65,26 +65,51 @@
 	                    <c:otherwise>
 	                        <td>
 	                            <a href="${pageContext.request.contextPath}/ui/systems/add-server"
-	                                title="<spring:message code='select.request.add.server' />"><spring:message code='select.request.add.server' /></a>
+	                                title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
 	                        </td>
 	                    </c:otherwise>
 	                </c:choose>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	            </tr>
 	        </table>
 	    </form:form>
+    </div>
+
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                    title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter"
+                    title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+                    title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+                    title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                    title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a>
+            </li>
+        </ul>
     </div>
 </div>

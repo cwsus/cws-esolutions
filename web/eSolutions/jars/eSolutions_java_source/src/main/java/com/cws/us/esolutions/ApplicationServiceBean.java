@@ -52,14 +52,16 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String errorResponsePage = null;
     @Autowired private String searchRequestPage = null;
     @Autowired private String requestCompletePage = null;
+    @Autowired private String messageNoSearchResults = null;
     @Autowired private String messageEmailSendFailed = null;
     @Autowired private String messageRequestCanceled = null;
     @Autowired private Map<String, Boolean> services = null;
     @Autowired private String messagePasswordExpired = null;
     @Autowired private String messageUserNotLoggedIn = null;
-    @Autowired private String messageRequestProcessingFailure = null;
+    @Autowired private String messageValidationFailed = null;
     @Autowired private List<String> allowedAppFileExtensions = null;
     @Autowired private List<String> allowedWebFileExtensions = null;
+    @Autowired private String messageRequestProcessingFailure = null;
     @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
 
     private static final long serialVersionUID = 6547417416150985897L;
@@ -432,6 +434,32 @@ public class ApplicationServiceBean implements Serializable
         this.messageRequestProcessingFailure = value;
     }
 
+    public final void setMessageValidationFailed(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageValidationFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageValidationFailed = value;
+    }
+
+    public final void setMessageNoSearchResults(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageNoSearchResults(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoSearchResults = value;
+    }
+    
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -794,6 +822,32 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageRequestProcessingFailure;
+    }
+
+    public final String getMessageValidationFailed()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageValidationFailed()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageValidationFailed);
+        }
+
+        return this.messageValidationFailed;
+    }
+
+    public final String getMessageNoSearchResults()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageNoSearchResults()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageNoSearchResults);
+        }
+
+        return this.messageNoSearchResults;
     }
 
     public final String toString()

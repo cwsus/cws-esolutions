@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="user.mgmt.audit.trail" /></div>
+<div id="InfoLine"><spring:message code="user.mgmt.audit.trail" arguments="${userAccount.username}" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -46,17 +46,12 @@
 
         <c:choose>
             <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <spring:message code="admin.account.view.audit" arguments="${userAccount.username}" />
-                <br />
-                <hr />
-                <br />
-
                 <table id="viewAuditTrail">
                     <tr>
-                        <td><spring:message code="admin.account.audit.timestamp" /></td>
-                        <td><spring:message code="admin.account.audit.type" /></td>
-	                    <td><spring:message code="admin.account.audit.application" /></td>
-	                    <td><spring:message code="admin.account.audit.hostinfo" /></td>
+                        <td><spring:message code="user.mgmt.audit.timestamp" /></td>
+                        <td><spring:message code="user.mgmt.audit.type" /></td>
+	                    <td><spring:message code="user.mgmt.audit.application" /></td>
+	                    <td><spring:message code="user.mgmt.audit.hostinfo" /></td>
 	                </tr>
 	                <c:forEach var="entry" items="${auditEntries}">
 	                    <tr>
@@ -81,8 +76,9 @@
 	                                </c:when>
 	                                <c:otherwise>
 	                                    <td>
-	                                        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
-	                                            title="<spring:message code='system.next.page' />">${i}</a>
+	                                    
+	                                        <a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/${i}"
+	                                            title="{i}">${i}</a>
 	                                    </td>
 	                                </c:otherwise>
 	                            </c:choose>
@@ -92,7 +88,7 @@
 	            </c:if>
 	        </c:when>
 	        <c:otherwise>
-	            <spring:message code="admin.account.not.authorized" />
+	            <spring:message code="theme.system.request.unauthorized" />
 	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
 	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
 	            </c:if>
@@ -108,8 +104,12 @@
         <div id="content-left">
             <ul>
                 <li>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userAccount.guid}"
+                        title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a>
+                </li>
+                <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                        title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                        title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
                 </li>
             </ul>
         </div>

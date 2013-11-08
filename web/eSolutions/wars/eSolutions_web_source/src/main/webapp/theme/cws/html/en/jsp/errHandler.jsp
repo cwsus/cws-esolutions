@@ -25,7 +25,7 @@
  *     Created.
  */
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" errorPage="true" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
 
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -40,7 +40,7 @@
     xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml2.xsd">
 
 	<head>
-	    <title><tiles:insertAttribute name="pageTitle" /></title>
+	    <title>eSolutions - System Error</title>
         <link rel="stylesheet" type="text/css" media="all" href="/html/esolutions/css/esolutions.css" />
 	    <link rel="image/x-icon" href="/favicon.ico" />
 	    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -55,7 +55,7 @@
 	    <meta name="robots" content="index,follow,noarchive" />
 	    <meta name="GoogleBot" content="noarchive" />
 	    <meta name="Author" content="eSolutions" />
-	    <meta name="copyright" content="<spring:message code="footer.copyright" />" />
+	    <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
 	    <meta name="description" content="eSolutionsService" />
 	    <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
 	    <script type="text/javascript">
@@ -88,55 +88,81 @@
     <body>
         <div id="Container">
             <div id="Top">
-                <h1><img src="/esolutions/html/img/logo.gif" alt="Cool Web site Designs" class="logo" /><spring:message code="theme.company.name" /></h1>
-                <h2><spring:message code="theme.app.welcome" /></h2>
+                <h1><img src="/html/esolutions/img/logo.gif" alt="CaspersBox Web Services" width="59" height="50" class="logo" />&nbsp;</h1>
+                <h2>&nbsp;</h2>
             </div>
 
 			<div id="nav">
 			    <ul>
+			        <li>
+			            <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />">
+			                <spring:message code='theme.navbar.home' /></a>
+			        </li>
 			        <c:choose>
-			            <c:when test="${not empty sessionScope.userAccount}">
+			            <c:when test="${not empty sessionScope.userAccount and sessionScope.userAccount.status ne 'EXPIRED'}">
+			                <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
+			                            <spring:message code='theme.navbar.application-mgmt' /></a>
+			                    </li>
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/dns-service/default" title="<spring:message code='theme.navbar.dns-services' />">
+			                            <spring:message code='theme.navbar.dns-services' /></a>
+			                    </li>
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/service-management/default" title="<spring:message code='theme.navbar.service-mgmt' />">
+			                            <spring:message code='theme.navbar.service-mgmt' /></a>
+			                    </li>
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='theme.navbar.system-mgmt' />">
+			                            <spring:message code='theme.navbar.system-mgmt' /></a>
+			                    </li>
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/messaging/default" title="<spring:message code='theme.navbar.messaging' />">
+			                            <spring:message code='theme.navbar.messaging' /></a>
+			                    </li>
+			                </c:if>
+			                <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+			                    <li>
+			                        <a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
+			                            <spring:message code='theme.navbar.useradmin' /></a>
+			                    </li>
+			                </c:if>
 			                <li>
-			                    <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='link.sectionLinks.home' />">
-			                        <spring:message code='link.sectionLinks.home' /></a>
-			                </li>
-			                <li>
-			                    <a href="${pageContext.request.contextPath}/ui/login/logout"
-			                        title="<spring:message code='link.sectionLinks.logoff' />"><spring:message code='link.sectionLinks.logoff' /></a>
+			                    <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
+			                        <spring:message code='theme.navbar.logoff' /></a>
 			                </li>
 			            </c:when>
 			            <c:otherwise>
 			                <li>
-			                    <a href="${pageContext.request.contextPath}/ui/login/default"
-			                        title="<spring:message code='link.sectionLinks.login' />"><spring:message code='link.sectionLinks.login' /></a>
+			                    <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
+			                        <spring:message code='theme.navbar.login' /></a>
 			                </li>
 			            </c:otherwise>
 			        </c:choose>
 			        <li>
-			            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default"
-			                title="<spring:message code='link.sectionLinks.help' />"><spring:message code='link.sectionLinks.help' /></a>
+			            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
+			                <spring:message code='theme.navbar.help' /></a>
 			        </li>
 			    </ul>
 			</div>
 
             <div id="TopImage"><img src="/esolutions/html/img/top.jpg" alt="" width="800" height="174" /></div>
-            <div id="InfoLine"><spring:message code="system.error" /></div>
+            <div id="InfoLine"><spring:message code="theme.error.system.failure" /></div>
 
 			<div id="content">
 			    <div id="content-right">
-                    <spring:message code="system.failure.message" />
+                    <spring:message code="theme.system.service.failure" />
 			    </div>
 			</div>
 
 			<div id="Footer">
 			    <p>
 			        <c:if test="${not empty sessionScope.userAccount}">
-			            <spring:message code="welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" />
+			            <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
 			        </c:if>
-			        <spring:message code="footer.copyright" arguments="http://www.caspersbox.com/cws/ui/home" />
-			        <spring:message code="footer.more.info" arguments="http://www.caspersbox.com/cws/ui/contact" />
-			        <spring:message code="footer.validation" arguments="http://validator.w3.org/check?uri=referer" />
-			        <spring:message code="footer.license" />
+			        <spring:message code="theme.footer.copyright" /><br />
+			        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default" title="Contact Us"><spring:message code="theme.contact.us" /></a><br />
 			    </p>
 			</div>
         </div>

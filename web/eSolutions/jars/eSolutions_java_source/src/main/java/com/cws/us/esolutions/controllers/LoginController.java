@@ -65,8 +65,6 @@ public class LoginController
     private String otpLoginPage = null;
     private boolean allowUserReset = true;
     private LoginValidator validator = null;
-    private String forgotPasswordUrl = null;
-    private String forgotUsernameUrl = null;
     private String combinedLoginPage = null;
     private String usernameLoginPage = null;
     private String passwordLoginPage = null;
@@ -197,32 +195,6 @@ public class LoginController
         this.allowUserReset = value;
     }
 
-    public final void setForgotUsernameUrl(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setForgotUsernameUrl(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.forgotUsernameUrl = value;
-    }
-
-    public final void setForgotPasswordUrl(final String value)
-    {
-        final String methodName = LoginController.CNAME + "#setForgotPasswordUrl(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.forgotPasswordUrl = value;
-    }
-
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
@@ -233,7 +205,8 @@ public class LoginController
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = null;
+        ModelAndView mView = new ModelAndView();
+        mView.addObject("allowUserReset", this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -340,28 +313,14 @@ public class LoginController
         switch (appConfig.getLogonType())
         {
             case COMBINED:
-                mView = new ModelAndView();
                 mView.setViewName(this.combinedLoginPage);
                 mView.addObject("command", new LoginRequest());
-
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
 
                 break;
             default:
                 // default to split
-                mView = new ModelAndView();
                 mView.setViewName(this.usernameLoginPage);
                 mView.addObject("command", new UserAccount());
-
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
 
                 break;
         }
@@ -385,6 +344,8 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
+        mView.addObject("allowUserReset", this.allowUserReset);
+        mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -440,12 +401,6 @@ public class LoginController
                 mView.setViewName(this.combinedLoginPage);
                 mView.addObject("command", new LoginRequest());
 
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
-
                 break;
             default:
                 // default to split
@@ -454,14 +409,6 @@ public class LoginController
 
                 break;
         }
-
-        if (this.allowUserReset)
-        {
-            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-        }
-
-        mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
 
         if (DEBUG)
         {
@@ -485,7 +432,8 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        
+        mView.addObject("allowUserReset", this.allowUserReset);
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -532,20 +480,20 @@ public class LoginController
             }
         }
 
+        validator.validate(loginRequest, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("errors", bindResult.getAllErrors());
+            mView.addObject("command", new LoginRequest());
+            mView.setViewName(this.combinedLoginPage);
+
+            return mView;
+        }
+
         try
         {
             // validate
-            validator.validate(loginRequest, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                mView.addObject("errors", bindResult.getAllErrors());
-                mView.addObject("command", new LoginRequest());
-                mView.setViewName(this.combinedLoginPage);
-
-                return mView;
-            }
-
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
@@ -628,11 +576,6 @@ public class LoginController
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
-                        if (this.allowUserReset)
-                        {
-                            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                        }
 
                         mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());
@@ -643,12 +586,6 @@ public class LoginController
             }
             else
             {
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
-
                 mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                 mView.addObject("command", new LoginRequest());
                 mView.setViewName(this.combinedLoginPage);
@@ -657,12 +594,6 @@ public class LoginController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            if (this.allowUserReset)
-            {
-                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-            }
 
             mView.addObject("command", new LoginRequest());
             mView.setViewName(this.combinedLoginPage);
@@ -691,7 +622,8 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        
+        mView.addObject("allowUserReset", this.allowUserReset);
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -738,19 +670,19 @@ public class LoginController
             }
         }
 
+        validator.validate(user, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            // validation failed
+            mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
+            mView.addObject("command", new UserAccount());
+
+            return mView;
+        }
+
         try
         {
-            validator.validate(user, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, this.messageUsernameEmpty);
-                mView.addObject("command", new UserAccount());
-
-                return mView;
-            }
-
             // validate
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
@@ -807,12 +739,6 @@ public class LoginController
                         // add auth
                         mView.addObject("command", new UserSecurity());
 
-                        if (this.allowUserReset)
-                        {
-                            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                        }
-
                         switch (appConfig.getLogonType())
                         {
                             case OTP:
@@ -828,12 +754,6 @@ public class LoginController
                         }
                     default:
                         // no dice (but its also an unspecified failure)
-                        if (this.allowUserReset)
-                        {
-                            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                        }
-
                         mView.addObject("command", new UserAccount());
                         mView.setViewName(this.usernameLoginPage);
                         mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
@@ -843,12 +763,6 @@ public class LoginController
             }
             else
             {
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
-
                 mView.addObject("command", new UserAccount());
                 mView.setViewName(this.usernameLoginPage);
                 mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
@@ -857,12 +771,6 @@ public class LoginController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            if (this.allowUserReset)
-            {
-                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-            }
 
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.usernameLoginPage);
@@ -891,7 +799,8 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        
+        mView.addObject("allowUserReset", this.allowUserReset);
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -1006,12 +915,6 @@ public class LoginController
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
-                        if (this.allowUserReset)
-                        {
-                            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                        }
-
                         mView.addObject("command", new UserSecurity());
                         mView.setViewName(this.passwordLoginPage);
                         mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
@@ -1021,12 +924,6 @@ public class LoginController
             }
             else
             {
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
-
                 mView.addObject("command", new UserSecurity());
                 mView.setViewName(this.passwordLoginPage);
                 mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
@@ -1035,12 +932,6 @@ public class LoginController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            if (this.allowUserReset)
-            {
-                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-            }
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.passwordLoginPage);
@@ -1069,7 +960,8 @@ public class LoginController
         }
 
         ModelAndView mView = new ModelAndView();
-        
+        mView.addObject("allowUserReset", this.allowUserReset);
+
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -1183,12 +1075,6 @@ public class LoginController
 
                         return mView;
                     default:
-                        if (this.allowUserReset)
-                        {
-                            mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                            mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                        }
-
                         mView.addObject("command", new UserSecurity());
                         mView.setViewName(this.otpLoginPage);
                         mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
@@ -1198,12 +1084,6 @@ public class LoginController
             }
             else
             {
-                if (this.allowUserReset)
-                {
-                    mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                    mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-                }
-
                 mView.addObject("command", new UserSecurity());
                 mView.setViewName(this.otpLoginPage);
                 mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
@@ -1212,12 +1092,6 @@ public class LoginController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            if (this.allowUserReset)
-            {
-                mView.addObject("forgotUsernameUrl", this.forgotUsernameUrl);
-                mView.addObject("forgotPasswordUrl", this.forgotPasswordUrl);
-            }
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.otpLoginPage);

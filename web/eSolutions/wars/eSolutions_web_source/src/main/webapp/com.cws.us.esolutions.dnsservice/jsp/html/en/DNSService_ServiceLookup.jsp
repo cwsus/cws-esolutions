@@ -44,9 +44,9 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
-	    <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/lookup" method="post">
+	    <form:form id="submitNameLookup" name="submitNameLookup" action="${pageContext.request.contextPath}/ui/dns-service/service-lookup" method="post">
 	        <table id="dnsservice">
 	            <tr>
 	                <td>
@@ -64,24 +64,24 @@
 	                <td><label id="txtLookupType"><spring:message code="dns.lookup.record.type" /></label></td>
 	                <td>
 	                    <form:select path="recordType" onchange="showReverseDisclaimer(this);">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${serviceTypes}" />
 	                    </form:select>
 	                </td>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>

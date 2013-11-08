@@ -54,7 +54,7 @@
 	        <table id="inputItems">
 	            <tr>
 	                <td><input type="button" name="execute" value="<spring:message code='button.submit.text' />" id="execute" class="submit" onclick="disableButton(this);" /></td>
-	                <td><input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this);" /></td>
+	                <td><input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this);" /></td>
 	            </tr>
 	        </table>
 	    </form:form>
@@ -62,7 +62,7 @@
 
     <div id="content-left">
         <ul>
-            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a></li>
+            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article" title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
             </li>

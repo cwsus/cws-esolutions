@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="user.mgmt.view.account" /></div>
+<div id="InfoLine"><spring:message code="user.mgmt.view.user" arguments="${userAccount.username}" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -48,74 +48,70 @@
             <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
 	            <table id="viewUser">
 	                <tr>
-	                    <td><spring:message code="admin.account.user.id" /></td>
+	                    <td><spring:message code="user.mgmt.user.name" /></td>
 	                    <td>${userAccount.username}</td>
-	                </tr>
-	                <tr>
-	                    <td><spring:message code="admin.account.user.password" /></td>
-	                    <td><spring:message code="admin.password.display.indicator" /></td>
 	                    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
 	                        <td>
-	                            <a href="${pageContext.request.contextPath}/ui/user-management/reset/account/${userAccount.guid}" title="<spring:message code='admin.account.reset.user.password' />">
-	                                <spring:message code='admin.account.reset.user.password' /></a>
+	                            <a href="${pageContext.request.contextPath}/ui/user-management/reset/account/${userAccount.guid}" title="<spring:message code='user.account.change.password' />">
+	                                <spring:message code='user.account.change.password' /></a>
 	                        </td>
 	                    </c:if>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.role" /></td>
+	                    <td><spring:message code="user.mgmt.user.role" /></td>
 	                    <td>${userAccount.role}</td>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.firstname" /></td>
+	                    <td><spring:message code="user.mgmt.user.givenname" /></td>
 	                    <td>${userAccount.givenName}</td>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.lastname" /></td>
+	                    <td><spring:message code="user.mgmt.user.surname" /></td>
 	                    <td>${userAccount.surname}</td>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.email" /></td>
+	                    <td><spring:message code="user.mgmt.user.email" /></td>
 	                    <td>
-	                        <a href="mailto:${userAccount.emailAddr}?subject=Contact Message" title="contact message">${userAccount.emailAddr}</a>
+	                        <a href="mailto:${userAccount.emailAddr}" title="">${userAccount.emailAddr}</a>
 	                    </td>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.locked" /></td>
+	                    <td><spring:message code="user.mgmt.user.locked" /></td>
 	                    <td>${userAccount.failedCount}</td>
 	                    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
 	                        <c:if test="${userAccount.failedCount ge 3}">
 	                            <td>
 	                                <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
-	                                    title="<spring:message code='admin.account.unlock.user.account' />"><spring:message code='admin.account.unlock.user.account' /></a>
+	                                    title="<spring:message code='user.mgmt.unlock.account' />"><spring:message code='user.mgmt.unlock.account' /></a>
 	                            </td>
 	                        </c:if>
 	                        <c:if test="${userAccount.failedCount le 3}">
 	                            <td>
 	                                <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
-	                                    title="<spring:message code='admin.account.lock.user.account' />"><spring:message code='admin.account.lock.user.account' /></a>
+	                                    title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a>
 	                            </td>
 	                        </c:if>
 	                    </c:if>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.user.last.logon" /></td>
+	                    <td><spring:message code="user.mgmt.last.logon" /></td>
 	                    <td>${userAccount.lastLogin}</td>
 	                </tr>
 	                <tr>
-	                    <td><spring:message code="admin.account.user.suspension" /></td>
+	                    <td><spring:message code="user.mgmt.suspend.account" /></td>
 	                    <td>${userAccount.suspended}</td>
 	                    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
 	                        <c:choose>
 	                            <c:when test="${userAccount.suspended eq 'true'}">
 	                                <td>
 	                                    <a href="${pageContext.request.contextPath}/ui/user-management/unsuspend/account/${userAccount.guid}"
-	                                          title="<spring:message code='admin.account.remove.user.suspension' />"><spring:message code='admin.account.remove.user.suspension' /></a>
+	                                          title="<spring:message code='user.mgmt.unsuspend.account' />"><spring:message code='user.mgmt.unsuspend.accountn' /></a>
 	                                </td>
 	                            </c:when>
 	                            <c:otherwise>
 	                                <td>
 	                                    <a href="${pageContext.request.contextPath}/ui/user-management/suspend/account/${userAccount.guid}"
-	                                          title="<spring:message code='admin.account.suspend.user' />"><spring:message code='admin.account.suspend.user' /></a>
+	                                          title="<spring:message code='user.mgmt.suspend.account' />"><spring:message code='user.mgmt.suspend.account' /></a>
 	                                </td>
 	                            </c:otherwise>
 	                        </c:choose>
@@ -124,7 +120,7 @@
 	            </table>
 	        </c:when>
 	        <c:otherwise>
-	            <spring:message code="admin.account.not.authorized" />
+	            <spring:message code="theme.system.request.unauthorized" />
 	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
 	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
 	            </c:if>
@@ -137,11 +133,11 @@
             <ul>
                 <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                        title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                        title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}"
-                        title="<spring:message code='admin.account.audit.user' />"><spring:message code='admin.account.audit.user' /></a>
+                        title="<spring:message code='user.mgmt.audit.user' />"><spring:message code='user.mgmt.audit.user' /></a>
                 </li>
             </ul>
         </div>

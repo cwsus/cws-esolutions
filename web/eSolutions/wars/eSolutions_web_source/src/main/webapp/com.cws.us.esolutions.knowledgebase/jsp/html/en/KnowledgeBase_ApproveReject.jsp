@@ -74,7 +74,7 @@
 
     <div id="content-left">
         <ul>
-            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a></li>
+            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/approve-article/${article.articleId}"
                     title="<spring:message code='kbase.approve-article.approve-link' />"><spring:message code='kbase.approve-article.approve-link' /></a>

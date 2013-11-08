@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="server.search.submit.request" /></div>
+<div id="InfoLine"><spring:message code="theme.search.header" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -44,13 +44,13 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/system-management/search" method="post">
 	        <table id="serverSearch">
 	            <tr>
 	                <td>
-	                    <label id="txtSearchTerms"><spring:message code="search.data" /><br /></label>
+	                    <label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label>
 	                </td>
 	                <td>
 	                    <form:input path="searchTerms" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
@@ -62,13 +62,13 @@
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>
@@ -77,7 +77,7 @@
 	    <c:if test="${not empty searchResults}">
 	        <p id="splitter" />
 
-	        <strong><spring:message code="search.results" /></strong>
+	        <strong><spring:message code="theme.search.results" /></strong>
 	        <br /><br />
 	        <table id="searchResults">
 	            <c:forEach var="result" items="${searchResults}">
@@ -92,8 +92,12 @@
     <div id="content-left">
         <ul>
             <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/system-consoles"
+                    title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                    title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
+                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
             </li>
         </ul>
     </div>

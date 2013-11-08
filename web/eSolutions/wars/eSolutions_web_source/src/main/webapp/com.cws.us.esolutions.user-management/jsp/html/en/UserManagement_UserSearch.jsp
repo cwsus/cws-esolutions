@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="user.mgmt.account.search" /></div>
+<div id="InfoLine"><spring:message code="user.mgmt.search.header" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -46,13 +46,13 @@
 
 	    <c:choose>
 	        <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <p id="validationError" />
+                <span id="validationError"></span>
 	
 	            <form:form id="searchUserAccounts" name="searchUserAccounts" action="${pageContext.request.contextPath}/ui/user-management/search" method="post">
 	                <table id="searchAccounts">
 	                    <tr>
 	                        <td>
-	                            <label id="txtUserName"><spring:message code="admin.account.search.username" /><br /></label>
+	                            <label id="txtUserName"><spring:message code="user.mgmt.user.name" /><br /></label>
 	                        </td>
 	                        <td>
 	                            <form:input path="username" id="username" />
@@ -61,7 +61,7 @@
 	                    </tr>
 	                    <tr>
 	                        <td>
-	                            <label id="txtUserGuid"><spring:message code="admin.account.search.userguid" /><br /></label>
+	                            <label id="txtUserGuid"><spring:message code="user.mgmt.user.guid" /><br /></label>
 	                        </td>
 	                        <td>
 	                            <form:input path="guid" id="guid" />
@@ -70,7 +70,7 @@
 	                    </tr>
 	                    <tr>
 	                        <td>
-	                            <label id="txtEmailAddress"><spring:message code="admin.account.search.useremail" /><br /></label>
+	                            <label id="txtEmailAddress"><spring:message code="user.mgmt.user.email" /><br /></label>
 	                        </td>
 	                        <td>
 	                            <form:input path="emailAddr" id="emailAddress" />
@@ -79,7 +79,7 @@
 	                    </tr>
 	                    <tr>
 	                        <td>
-	                            <label id="txtDisplayName"><spring:message code="admin.account.search.userdisplayname" /><br /></label>
+	                            <label id="txtDisplayName"><spring:message code="user.mgmt.display.name" /><br /></label>
 	                        </td>
 	                        <td>
 	                            <form:input path="displayName" id="displayName" />
@@ -87,17 +87,17 @@
 	                        </td>
 	                    </tr>
 	                </table>
-	                <br /><br />
+
 	                <table id="inputItems">
 	                    <tr>
 	                        <td>
-	                            <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                    </tr>
 	                </table>
@@ -106,12 +106,12 @@
 	            <c:if test="${not empty requestScope.searchResults}">
 	                <p id="splitter" />
 	
-	                <strong><spring:message code="admin.account.search.results" /></strong>
+	                <strong><spring:message code="theme.search.results" /></strong>
 	                <br />
 	                <table id="userSearchResults">
 	                    <tr>
-	                        <td><spring:message code="admin.account.user.id" /></td>
-	                        <td><spring:message code="admin.account.user.displayname" /></td>
+	                        <td><spring:message code="user.mgmt.user.name" /></td>
+	                        <td><spring:message code="user.mgmt.display.name" /></td>
 	                    </tr>
 	                    <c:forEach var="userResult" items="${requestScope.searchResults}">
 	                        <tr>
@@ -129,7 +129,7 @@
 	            </c:if>
 	        </c:when>
 	        <c:otherwise>
-	            <spring:message code="admin.account.not.authorized" />
+	            <spring:message code="theme.system.request.unauthorized" />
 	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
 	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
 	            </c:if>
@@ -142,7 +142,7 @@
 	        <ul>
 	            <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                        title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                        title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
 	            </li>
 	        </ul>
 	    </div>

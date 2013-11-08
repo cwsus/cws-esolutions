@@ -19,7 +19,7 @@
     <bean id="datactrValidator" class="com.cws.us.esolutions.validators.DatacenterValidator">
         <property name="messageDatacenterNameRequired" value="svc.mgmt.datacenter.name.required" />
         <property name="messageDatacenterStatusRequired" value="svc.mgmt.datacenter.status.required" />
-        <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.dataacenter.description.required" />
+        <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.datacenter.description.required" />
     </bean>
 
     <bean id="serviceManagementController" class="com.cws.us.esolutions.controllers.ServiceManagementController">
@@ -54,6 +54,5 @@
 	    <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
 	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
-        <property name="messageValidationFailed" value="error.message.failed.validation" />
     </bean>
 </beans>

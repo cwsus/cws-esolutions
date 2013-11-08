@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="kbase.search.submit.request" /></div>
+<div id="InfoLine"><spring:message code="theme.search.header" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -44,13 +44,13 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/knowledgebase/search" method="post">
 	        <table id="serverSearch">
 	            <tr>
 	                <td>
-	                    <label id="txtSearchTerms"><spring:message code="search.data" /><br /></label>
+	                    <label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label>
 	                </td>
 	                <td>
 	                    <form:input path="searchTerms" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
@@ -58,17 +58,17 @@
 	                </td>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>
@@ -77,7 +77,7 @@
 	    <c:if test="${not empty searchResults}">
 	        <p id="splitter" />
 	
-	        <strong><spring:message code="search.results" /></strong>
+	        <strong><spring:message code="theme.search.results" /></strong>
 	        <br /><br />
 	        <table id="searchResults">
 	            <c:forEach var="result" items="${searchResults}">
@@ -89,19 +89,20 @@
 	    </c:if>
     </div>
 
-    <div id="content-left">
-        <ul>
-            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a></li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
-                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
-            </li>
-            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <li>
-                    <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
-                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
-                </li>
-            </c:if>
-        </ul>
-    </div>
+    <c:if test="${not empty sessionScope.userAccount}">
+	    <div id="content-left">
+	        <ul>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
+	                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
+	            </li>
+	            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+	                <li>
+	                    <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
+	                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
+	                </li>
+	            </c:if>
+	        </ul>
+	    </div>
+	</c:if>
 </div>

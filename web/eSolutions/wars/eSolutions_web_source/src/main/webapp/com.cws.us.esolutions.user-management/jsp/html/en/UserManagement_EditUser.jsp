@@ -46,7 +46,7 @@
 
         <c:choose>
             <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <p id="validationError" />
+                <span id="validationError"></span>
 
 	            <form:form id="createNewUser" name="createNewUser" action="${pageContext.request.contextPath}/ui/user-management/create" method="post" autocomplete="off">
 	                <table id="addUser">
@@ -59,8 +59,8 @@
 	                        <td><spring:message code="admin.account.user.role" /></td>
 	                        <td>
 	                            <select name="userRole" id="userRole">
-	                                <option><spring:message code="select.default" /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <option value="${searchResults.userRole}" selected="selected">${searchResults.userRole}</option>
 	                                <c:forEach var="role" items="${selectableGroups}">
 	                                    <option value="${role}">${role}</option>
@@ -96,17 +96,17 @@
 	                        <td>anchor for reset here</td>
 	                    </tr>
 	                </table>
-	                <br /><br />
+
 	                <table id="inputItems">
 	                    <tr>
 	                        <td>
-	                            <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                    </tr>
 	                </table>

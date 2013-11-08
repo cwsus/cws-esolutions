@@ -91,6 +91,10 @@
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_DefaultHandler.jsp" cascade="true" />
     </definition>
+    <definition name="DNSService_ServiceLookup" extends="baseLayout">
+        <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Service Lookup" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
+    </definition>
 
     <!-- KnowledgeBase -->
     <definition name="KnowledgeBase_DefaultHandler" extends="baseLayout">
@@ -277,6 +281,6 @@
     </definition>
     <definition name="UserAccount_ShowUser" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - View User Account" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ViewMyProfile.jsp" cascade="true" />
+        <put-attribute name="body"          value="/com.cws.us.esolutions.useraccount/jsp/html/en/UserAccount_ViewAccount.jsp" cascade="true" />
     </definition>
 </tiles-definitions>

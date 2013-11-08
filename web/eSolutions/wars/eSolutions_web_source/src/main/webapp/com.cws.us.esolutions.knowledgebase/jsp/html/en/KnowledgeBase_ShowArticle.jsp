@@ -126,27 +126,29 @@
 	    </table>
     </div>
 
-    <div id="content-left">
-        <ul>
-            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="kbase.view-article.return" /></a></li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
-                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
-            </li>
-            <li>
-	            <a href="${pageContext.request.contextPath}/ui/knowledgebase/edit-article/article/${article.articleId}"
-	                title="<spring:message code="kbase.edit.article" />"><spring:message code="kbase.edit.article" /> ${article.articleId}</a>
-            </li>
-            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                <li>
-                    <a href="#" title="<spring:message code="kbase.delete.article" /> ${article.articleId}" onclick="deleteArticle('${article.articleId}')">
-                        <spring:message code="kbase.delete.article" /> ${article.articleId}</a>
-                </li>
-                <li>
-                    <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
-                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
-                </li>
-            </c:if>
-        </ul>
-    </div>
+    <c:if test="${not empty sessionScope.userAccount}">
+	    <div id="content-left">
+	        <ul>
+	            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
+	                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
+	            </li>
+	            <li>
+		            <a href="${pageContext.request.contextPath}/ui/knowledgebase/edit-article/article/${article.articleId}"
+		                title="<spring:message code="kbase.edit.article" />"><spring:message code="kbase.edit.article" /> ${article.articleId}</a>
+	            </li>
+	            <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+	                <li>
+	                    <a href="#" title="<spring:message code="kbase.delete.article" /> ${article.articleId}" onclick="deleteArticle('${article.articleId}')">
+	                        <spring:message code="kbase.delete.article" /> ${article.articleId}</a>
+	                </li>
+	                <li>
+	                    <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
+	                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
+	                </li>
+	            </c:if>
+	        </ul>
+	    </div>
+	</c:if>
 </div>

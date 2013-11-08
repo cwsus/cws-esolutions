@@ -44,43 +44,43 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="createNewDatacenter" name="createNewDatacenter" action="${pageContext.request.contextPath}/ui/service-management/submit-datacenter" method="post">
 	        <table id="detail">
 	            <tr>
-	                <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.datacenter.name" /></label></td>
+	                <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.service.name" /></label></td>
 	                <td><form:input path="datacenterName" /></td>
 	                <td><form:errors path="datacenterName" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.datacenter.status" /></label></td>
+	                <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
 	                <td>
 	                    <form:select path="datacenterStatus" multiple="false">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${statusList}" />
 	                    </form:select>
 	                </td>
 	                <td><form:errors path="datacenterStatus" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.datacenter.description" /></label></td>
+	                <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
 	                <td><form:textarea path="datacenterDesc" /></td>
 	                <td><form:errors path="datacenterDesc" cssClass="validationError" /></td>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>
@@ -90,24 +90,24 @@
     <div id="content-left">
         <ul>
             <li>
-		        <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-		            title="<spring:message code='select.request.list.datacenters' />"><spring:message code="select.request.list.datacenters" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                    title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
             </li>
             <li>
-		        <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-		            title="<spring:message code='select.request.add.project' />"><spring:message code="select.request.add.project" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+                    title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a>
             </li>
             <li>
-		        <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-		            title="<spring:message code='select.request.list.projects' />"><spring:message code="select.request.list.projects" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+                    title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a>
             </li>
             <li>
-		        <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-		            title="<spring:message code='select.request.add.platform' />"><spring:message code="select.request.add.platform" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                    title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a>
             </li>
             <li>
-		        <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-		            title="<spring:message code='select.request.list.platforms' />"><spring:message code="select.request.list.platforms" /></a>
+                <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+                    title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a>
             </li>
         </ul>
     </div>

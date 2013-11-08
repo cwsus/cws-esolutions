@@ -44,7 +44,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-	    <p id="validationError" />
+	    <span id="validationError"></span>
 
 	    <form:form id="submitArticleUpdates" name="submitArticleUpdates" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post" commandName="article">
 	       <form:hidden path="articleId" />
@@ -83,17 +83,17 @@
 	        </c:if>
 	        <br />
 	        <textarea id="resolution" name="resolution" cols="90" rows="10">${article.resolution}</textarea>
-	        <br /><br />
+
 	        <table id="inputItems">
 	           <tr>
 	               <td>
-	                   <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                   <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	               </td>
 	               <td>
-	                   <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                   <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	               </td>
 	               <td>
-	                   <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                   <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	               </td>
 	           </tr>
 	        </table>

@@ -100,7 +100,6 @@ public class OnlineResetController
     private String submitEmailAddrPage = null;
     private String forgotUsernameEmail = null;
     private String passwordResetSubject = null;
-    private String messageValidationFailed = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
 
@@ -251,19 +250,6 @@ public class OnlineResetController
         }
 
         this.messageSource = value;
-    }
-
-    public final void setMessageValidationFailed(final String value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setMessageValidationFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageValidationFailed = value;
     }
 
     public final void setForgotUsernameEmail(final String value)
@@ -692,7 +678,7 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error("Failed to validate request");
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.addObject("command", new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
@@ -900,7 +886,7 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error("Request failed validation");
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.addObject("command", new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
@@ -1095,7 +1081,7 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error("Request validation failed");
 
-            mView.addObject(Constants.ERROR_MESSAGE, this.messageValidationFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.addObject("command", request);
             mView.setViewName(this.submitAnswersPage);
 

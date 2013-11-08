@@ -47,7 +47,7 @@
         <c:choose>
             <c:when test="${sessionScope.userAccount.role == 'USERADMIN' or sessionScope.userAccount.role == 'SITEADMIN'}">
 
-                <p id="validationError" />
+                <span id="validationError"></span>
 
 	            <form:form id="createNewUser" name="createNewUser" action="${pageContext.request.contextPath}/ui/user-management/add-user" method="post" autocomplete="off">
 	                <table id="addUser">
@@ -60,8 +60,8 @@
 	                        <td><label id="txtUserRole"><spring:message code="admin.account.user.role" /></label></td>
 	                        <td>
 	                            <form:select path="role" name="role" id="role">
-	                                <option value="<spring:message code='select.default' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="role" items="${roles}">
 	                                    <option value="${role}">${role}</option>
 	                                </c:forEach>
@@ -74,8 +74,8 @@
 	                        <td><label id="createUserUnit"><spring:message code="admin.account.user.dept" /></label></td>
 	                        <td>
 	                            <form:select path="dept" name="dept" id="dept">
-	                                <option><spring:message code="select.default" /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="dept" items="${selectableDepts}">
 	                                    <option value="${dept}">${dept}</option>
 	                                </c:forEach>
@@ -87,8 +87,8 @@
 	                        <td><label id="createUserGroup"><spring:message code="admin.account.user.group" /></label></td>
 	                        <td>
 	                            <form:select path="group" name="group" id="group">
-	                                <option><spring:message code="select.default" /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="group" items="${selectableGroups}">
 	                                    <option value="${group}">${group}</option>
 	                                </c:forEach>
@@ -118,17 +118,17 @@
 	                        <td><form:errors path="suspended" cssClass="validationError" /></td>
 	                    </tr>
 	                </table>
-	                <br /><br />
+
 	                <table id="inputItems">
 	                    <tr>
 	                        <td>
-	                            <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                        </td>
 	                        <td>
-	                            <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                        </td>
 	                    </tr>
 	                </table>

@@ -96,7 +96,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <p id="validationError" />
+        <span id="validationError"></span>
 
 	    <form:form id="createNewServer" name="createNewServer" action="${pageContext.request.contextPath}/ui/system-management/add-server" method="post">
 	        <table id="serverDetail">
@@ -109,8 +109,8 @@
 	                <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
 	                <td>
 	                    <form:select path="domainName">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${domainList}" />
 	                    </form:select>
 	                </td>
@@ -120,8 +120,8 @@
 	                <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label></td>
 	                <td>
 	                    <form:select path="serverType" onchange="showOptions(this);">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${serverTypes}" />
 	                    </form:select>
 	                </td>
@@ -129,8 +129,8 @@
 	                <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label></td>
 	                <td>
 	                    <form:select path="serverStatus">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${serverStatuses}" />
 	                    </form:select>
 	                </td>
@@ -142,8 +142,8 @@
 	                <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label></td>
 	                <td>
 	                    <form:select path="serverRegion">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${serverRegions}" />
 	                    </form:select>
 	                </td>
@@ -156,8 +156,8 @@
 	                <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
 	                <td>
 	                    <form:select path="datacenter">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <c:forEach var="datacenter" items="${datacenters}">
 	                            <form:option value="${datacenter.datacenterGuid}" label="${datacenter.datacenterName}"/>
 	                        </c:forEach>
@@ -167,8 +167,8 @@
 	                <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
 	                <td>
 	                    <form:select path="networkPartition">
-	                        <option><spring:message code="select.default" /></option>
-	                        <option><spring:message code="select.spacer" /></option>
+	                        <option><spring:message code="theme.option.select" /></option>
+	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <form:options items="${networkPartitions}" />
 	                    </form:select>
 	                </td>
@@ -192,8 +192,8 @@
 	                    <c:choose>
 	                        <c:when test="${not empty dmgrServers}">
 	                            <form:select path="owningDmgr">
-	                                <option><spring:message code="select.default" /></option>
-	                                <option><spring:message code="select.spacer" /></option>
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="dmgr" items="${dmgrServers}">
 	                                    <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}"/>
 	                                </c:forEach>
@@ -279,17 +279,17 @@
 	                <td><form:errors path="serverComments" cssClass="validationError" /></td>
 	            </tr>
 	        </table>
-	        <br /><br />
+
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='button.execute.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
 	                </td>
 	            </tr>
 	        </table>
@@ -300,7 +300,7 @@
         <ul>
             <li>
 		        <a href="${pageContext.request.contextPath}/ui/system-management/system-consoles"
-		            title="<spring:message code='select.request.type.console' />"><spring:message code='select.request.type.console' /></a>
+		            title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a>
             </li>
         </ul>
     </div>

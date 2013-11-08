@@ -44,7 +44,7 @@
     <meta name="robots" content="index,follow,noarchive" />
     <meta name="GoogleBot" content="noarchive" />
     <meta name="Author" content="eSolutions" />
-    <meta name="copyright" content="<spring:message code="footer.copyright" />" />
+    <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
     <meta name="description" content="eSolutionsService" />
     <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
     <script type="text/javascript" src="/html/esolutions/js/Scripts.js"></script>

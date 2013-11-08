@@ -55,8 +55,7 @@
 	    <property name="viewServerPage" value="SystemMgmt_ViewServer" />
 	    <property name="defaultPage" value="SystemMgmt_DefaultHandler" />
 	    <property name="adminConsolePage" value="SystemMgmt_AdminConsoles" />
-	    <property name="messageServerAdded" value="system.server.successfully.added" />
-	    <property name="messageNoSearchResults" value="no.search.results.found" />
+	    <property name="messageServerAdded" value="system.mgmt.server.successfully.added" />
         <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
     </bean>
 </beans>

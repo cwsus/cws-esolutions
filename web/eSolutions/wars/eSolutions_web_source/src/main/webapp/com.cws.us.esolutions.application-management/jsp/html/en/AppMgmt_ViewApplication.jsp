@@ -120,22 +120,24 @@
         <ul>
             <li>
 				<a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}"
-				    title="<spring:message code='app.mgmt.application.retrieve.files' />"><spring:message code="app.mgmt.application.retrieve.files" /></a>
+				    title="<spring:message code='app.mgmt.file.retrieval' />"><spring:message code="app.mgmt.file.retrieval" /></a>
             </li>
             <li>
 				<a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}"
-				    title="<spring:message code='app.mgmt.application.deploy' />"><spring:message code="app.mgmt.application.deploy" /></a>
+				    title="<spring:message code='app.mgmt.deploy.application' />"><spring:message code="app.mgmt.deploy.application" /></a>
             </li>
             <li>
 				<a onclick="confirmDelete('${application.applicationName}', '${application.applicationGuid}');"
 				    title="<spring:message code='app.mgmt.application.retire' />" style="cursor: pointer;"><spring:message code="app.mgmt.application.retire" /></a>
             </li>
-            <li><a href="http://www.free-css.com/">Makeovers</a></li>
-            <li><a href="http://www.free-css.com/">Multibrowser Support</a></li>
-            <li><a href="http://www.free-css.com/">LIVE Feature</a></li>
-            <li><a href="http://www.free-css.com/">Code Optimization</a></li>
-            <li><a href="http://www.free-css.com/">Our Clients</a></li>
-            <li><a href="http://www.free-css.com/">Benefits with Us</a></li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
+                    title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
+                    title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
+            </li>
         </ul>
     </div>
 </div>

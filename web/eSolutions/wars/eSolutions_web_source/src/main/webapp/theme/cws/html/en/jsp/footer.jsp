@@ -31,11 +31,9 @@
 <div id="Footer">
     <p>
         <c:if test="${not empty sessionScope.userAccount}">
-            <spring:message code="welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" />
+            <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
         </c:if>
-        <spring:message code="footer.copyright" arguments="http://www.caspersbox.com/cws/ui/home" />
-        <spring:message code="footer.more.info" arguments="http://www.caspersbox.com/cws/ui/contact" />
-        <spring:message code="footer.validation" arguments="http://validator.w3.org/check?uri=referer" />
-        <spring:message code="footer.license" />
+        <spring:message code="theme.footer.copyright" /><br />
+        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default" title="Contact Us"><spring:message code="theme.contact.us" /></a><br />
     </p>
 </div>

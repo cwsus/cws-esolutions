@@ -25,7 +25,6 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="messageValidationFailed" value="request.validation.failed" />
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageOlrComplete" value="olr.request.complete" />
         <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />
@@ -34,6 +33,6 @@
         <property name="messageSource" value="nls.OnlineResetServlet.OnlineResetServlet" />
         <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" /> <!-- classpath location to reset password notification message -->
         <property name="forgotUsernameEmail" value="nls/emailTemplates/forgot_userid.email" /> <!-- classpath location to forgot username notification message -->
-        <property name="passwordResetSubject" value="message.forgotuserid.subject" />
+        <property name="passwordResetSubject" value="olr.message.forgotuserid.subject" />
     </bean>
 </beans>

@@ -21,10 +21,10 @@
         <property name="messageApplicationClusterRequired" value="app.mgmt.app.cluster.required" />
 		<property name="messageApplicationPlatformRequired" value="app.mgmt.app.platform.required" />
 		<property name="messageApplicationInstallPathRequired" value="app.mgmt.app.install.required" />
-		<property name="messageJvmNameRequired" value="application.mgmt.jvm.name.required" />
-		<property name="messageBasePathRequired" value="application.mgmt.base.path.required" />
-		<property name="messagePidDirectoryRequired" value="application.mgmt.pid.dir.required" />
-		<property name="messageScmPathRequired" value="application.mgmt.scm.path.required" />
+		<property name="messageJvmNameRequired" value="app.mgmt.jvm.name.required" />
+		<property name="messageBasePathRequired" value="app.mgmt.base.path.required" />
+		<property name="messagePidDirectoryRequired" value="app.mgmt.pid.dir.required" />
+		<property name="messageScmPathRequired" value="app.mgmt.scm.path.required" />
     </bean>
 
     <bean id="deploymentValidatorBean" class="com.cws.us.esolutions.validators.DeploymentValidator">
