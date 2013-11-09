@@ -254,7 +254,7 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if ((userAccount.getStatus() == LoginStatus.EXPIRED))
+                if ((userAccount.getStatus() == LoginStatus.EXPIRED) && (!(StringUtils.equals(hRequest.getRequestURI(), hRequest.getContextPath().trim() + this.passwordURI))))
                 {
                     // redirect to the change password page
                     hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
