@@ -2,7 +2,7 @@
 <Context cookies="true" crossContext="false" docBase="@document.base"
     fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false"
     preemptiveAuthentication="true" privileged="false" reloadable="true" sendRedirectBody="true"
-    sessionCookieDomain="@cookie.domain.name" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/esolutions"
+    sessionCookieDomain="@cookie.domain.name" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
     sessionCookiePathUsesTrailingSlash="true" swallowAbortedUploads="true" swallowOutput="true"
     tldNamespaceAware="true" tldValidation="true" useHttpOnly="true" xmlNamespaceAware="true" xmlValidation="true"
     addWebInfClassResources="false" allowLinking="false" antiJARLocking="true" antiResourceLocking="true"

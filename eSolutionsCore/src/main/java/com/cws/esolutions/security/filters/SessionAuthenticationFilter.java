@@ -254,9 +254,15 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if ((userAccount.getStatus() == LoginStatus.EXPIRED) && (!(StringUtils.equals(hRequest.getRequestURI(), hRequest.getContextPath().trim() + this.passwordURI))))
+                if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET)
+                    && (!(StringUtils.equals(hRequest.getRequestURI(), hRequest.getContextPath().trim() + this.passwordURI))))
                 {
                     // redirect to the change password page
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Request authenticated. No action taken");
+                    }
+
                     hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
 
                     return;
@@ -277,6 +283,8 @@ public class SessionAuthenticationFilter implements Filter
                 }
             }
         }
+
+        ERROR_RECORDER.error("Session contains no existing user account. Redirecting to logon");
 
         // no user account in the session
         if (DEBUG)

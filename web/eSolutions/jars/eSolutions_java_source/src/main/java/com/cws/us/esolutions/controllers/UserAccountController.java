@@ -389,7 +389,7 @@ public class UserAccountController
             }
         }
 
-        if (userAccount.getStatus() == LoginStatus.RESET)
+        if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
         {
             mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessagePasswordExpired());
         }

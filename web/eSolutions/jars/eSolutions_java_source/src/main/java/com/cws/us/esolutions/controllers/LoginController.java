@@ -298,7 +298,6 @@ public class LoginController
                         case EXPIRED:
                             mView = new ModelAndView(new RedirectView());
                             mView.setViewName(appConfig.getExpiredRedirect());
-                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
 
                             return mView;
                         default:
@@ -564,6 +563,11 @@ public class LoginController
 
                         mView.setViewName(appConfig.getHomeRedirect());
 
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ModelAndView: {}", mView);
+                        }
+
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
@@ -571,7 +575,25 @@ public class LoginController
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Dumping session content:");
+                            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+                            while (sessionEnumeration.hasMoreElements())
+                            {
+                                String sessionElement = sessionEnumeration.nextElement();
+                                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                            }
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ModelAndView: {}", mView);
+                        }
 
                         return mView;
                     default:
