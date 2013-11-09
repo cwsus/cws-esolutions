@@ -15,17 +15,14 @@
  */
 package com.cws.esolutions.security.processors.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.io.FileUtils;
-
 import com.unboundid.ldap.sdk.ResultCode;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -50,8 +47,9 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
-import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
+import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
