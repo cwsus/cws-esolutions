@@ -205,7 +205,12 @@ public class HomeController
             ERROR_RECORDER.error(msx.getMessage(), msx);
         }
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         // in here, we're going to get all the messages to display and such
-        return new ModelAndView(this.homePage);
+        return mView;
     }
 }

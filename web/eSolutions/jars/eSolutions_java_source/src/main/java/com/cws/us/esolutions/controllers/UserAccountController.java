@@ -584,6 +584,127 @@ public class UserAccountController
         mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.changeEmailPage);
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/regenerate-keys", method = RequestMethod.GET)
+    public final ModelAndView doRegenerateKeys()
+    {
+        final String methodName = UserAccountController.CNAME + "#doRegenerateKeys()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            // reset keys !
+            AccountControlRequest req = new AccountControlRequest();
+            req.setApplicationId(appConfig.getApplicationId());
+            req.setApplicationName(appConfig.getApplicationName());
+            req.setHostInfo(reqInfo);
+            req.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", req);
+            }
+
+            AccountControlResponse res = processor.changeUserKeys(req);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", res);
+            }
+
+            if (res.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeKeysComplete);
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, res.getResponse());
+            }
+
+            mView.setViewName(this.myAccountPage);
+        }
+        catch (AccountControlException acx)
+        {
+            ERROR_RECORDER.error(acx.getMessage(), acx);
+
+            mView.setViewName(appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         return mView;
     }
 
@@ -762,6 +883,11 @@ public class UserAccountController
             mView.setViewName(appConfig.getErrorResponsePage());
         }
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         return mView;
     }
 
@@ -913,6 +1039,11 @@ public class UserAccountController
             mView.setViewName(appConfig.getErrorResponsePage());
         }
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         return mView;
     }
 
@@ -1057,6 +1188,11 @@ public class UserAccountController
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
             mView.setViewName(appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;

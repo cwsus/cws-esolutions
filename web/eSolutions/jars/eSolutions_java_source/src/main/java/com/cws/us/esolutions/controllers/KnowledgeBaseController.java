@@ -1298,15 +1298,15 @@ public class KnowledgeBaseController
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -1511,15 +1511,15 @@ public class KnowledgeBaseController
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -1724,15 +1724,15 @@ public class KnowledgeBaseController
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -1822,15 +1822,15 @@ public class KnowledgeBaseController
 
             mView.addObject("article", article);
             mView.setViewName(this.reviewArticlePage);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -2050,15 +2050,15 @@ public class KnowledgeBaseController
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -2278,15 +2278,15 @@ public class KnowledgeBaseController
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
         }
         else
         {
             mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;

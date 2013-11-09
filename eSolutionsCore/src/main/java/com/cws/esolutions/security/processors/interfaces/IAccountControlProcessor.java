@@ -100,6 +100,8 @@ public interface IAccountControlProcessor
 
     AccountControlResponse changeUserSecurity(final AccountControlRequest request) throws AccountControlException;
 
+    AccountControlResponse changeUserKeys(final AccountControlRequest request) throws AccountControlException;
+
     AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;

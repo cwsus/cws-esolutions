@@ -136,6 +136,7 @@ public class AccountControlProcessorImplTest
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 Assert.fail(e.getMessage());
 
                 System.exit(1);
@@ -143,6 +144,7 @@ public class AccountControlProcessorImplTest
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
 
             System.exit(1);
@@ -478,7 +480,7 @@ public class AccountControlProcessorImplTest
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        account.setFailedCount(50);
+        account.setFailedCount(0);
 
         AccountControlRequest request = new AccountControlRequest();
         request.setHostInfo(hostInfo);
@@ -528,6 +530,28 @@ public class AccountControlProcessorImplTest
         try
         {
             AccountControlResponse response = processor.changeUserSecurity(request);
+
+            Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (AccountControlException acx)
+        {
+            Assert.fail(acx.getMessage());
+        }
+    }
+
+    @Test
+    public final void testChangeUserKeys()
+    {
+        AccountControlRequest request = new AccountControlRequest();
+        request.setRequestor(userAccount);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("esolutions");
+        request.setHostInfo(hostInfo);
+        request.setUserAccount(userAccount);
+
+        try
+        {
+            AccountControlResponse response = processor.changeUserKeys(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }

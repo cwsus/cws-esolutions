@@ -727,6 +727,11 @@ public class SystemManagementController
             mView.setViewName(appConfig.getUnavailablePage());
         }
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
         return mView;
     }
 

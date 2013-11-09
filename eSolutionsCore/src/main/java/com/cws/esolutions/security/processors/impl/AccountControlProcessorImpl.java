@@ -25,27 +25,26 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
-
-import javax.mail.MessagingException;
-
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
-import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
+import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
@@ -933,29 +932,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if (isComplete)
                 {
-                    // TODO
-                    // send an email out to the user
-                    EmailMessage email = new EmailMessage();
-                    email.setIsAlert(false);
-                    email.setMessageFrom(new ArrayList<String>(Arrays.asList(svcBean.getConfigData().getEmailAddr())));
-                    email.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-                    email.setMessageSubject("some subject");
-                    email.setMessageBody("some body");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", email);
-                    }
-
-                    try
-                    {
-                        EmailUtils.sendEmailMessage(email);
-                    }
-                    catch (MessagingException mx)
-                    {
-                        ERROR_RECORDER.error(mx.getMessage(), mx);
-                    }
-
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Modification request successfully performed");
                 }
@@ -1483,6 +1459,155 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSECURITY);
                 auditEntry.setUserAccount(requestor);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public AccountControlResponse changeUserKeys(final AccountControlRequest request) throws AccountControlException
+    {
+        final String methodName = IAccountControlProcessor.CNAME + "#changeUserKeys(final AccountControlRequest request) throws AccountControlException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountControlRequest: {}", request);
+        }
+
+        AccountControlResponse response = new AccountControlResponse();
+
+        final Calendar calendar = Calendar.getInstance();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount userAccount = request.getUserAccount();
+        final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Calendar: {}", calendar);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("KeyConfig: {}", keyConfig);
+        }
+
+        try
+        {
+            // get the user keypair
+            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyManager: {}", keyManager);
+            }
+
+            KeyManagementRequest keyRequest = new KeyManagementRequest();
+            keyRequest.setGuid(userAccount.getGuid());
+            keyRequest.setKeySize(keyConfig.getKeySize());
+            keyRequest.setPubKeyField(authData.getPublicKey());
+            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
+            }
+
+            // delete the existing keys
+            KeyManagementResponse deleteResponse = keyManager.removeKeys(keyRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyManagementResponse: {}", deleteResponse);
+            }
+
+            if (deleteResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                // good, now re-generate
+                KeyManagementResponse createResponse = keyManager.createKeys(keyRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyManagementResponse: {}", createResponse);
+                }
+
+                if (createResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    // get the new keypair
+                    KeyManagementResponse retrResponse = keyManager.returnKeys(keyRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("KeyManagementResponse: {}", retrResponse);
+                    }
+
+                    if (retrResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        // all done
+                        UserAccount retAccount = userAccount;
+                        retAccount.setUserKeys(retrResponse.getKeyPair());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", retAccount);
+                        }
+
+                        response.setUserAccount(retAccount);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Successfully reloaded user keys");
+                    }
+                    else
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("An error occurred while retrieving the new keypair. Keys may not have generated successfully.");
+                    }
+                }
+                else
+                {
+                    throw new AccountControlException("Failed to generate new keys for the provided user.");
+                }
+            }
+            else
+            {
+                throw new AccountControlException("Failed to remove existing keypair for the provided user.");
+            }
+        }
+        catch (KeyManagementException kmx)
+        {
+            ERROR_RECORDER.error(kmx.getMessage(), kmx);
+
+            throw new AccountControlException(kmx.getMessage(), kmx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.CHANGEKEYS);
+                auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
