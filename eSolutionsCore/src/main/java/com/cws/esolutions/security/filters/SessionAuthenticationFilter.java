@@ -16,17 +16,11 @@
 package com.cws.esolutions.security.filters;
 
 import org.slf4j.Logger;
-
 import java.io.IOException;
-
 import javax.servlet.Filter;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import java.util.ResourceBundle;
-
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
@@ -34,17 +28,14 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
-
 import java.util.MissingResourceException;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
  * SSLEnforcementFilter
  * Provides consistent SSL enforcement within the application
@@ -140,13 +131,18 @@ public class SessionAuthenticationFilter implements Filter
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
         final HttpSession hSession = hRequest.getSession();
+		final String requestURI = hRequest.getRequestURI();
+		final String loginPage = hRequest.getContextPath() + this.loginURI;
+		final String passwdPage = hRequest.getContextPath() + this.passwordURI;
 
         if (DEBUG)
         {
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("RequestURI: {}", hRequest.getRequestURI());
+            DEBUGGER.debug("RequestURI: {}", requestURI);
+			DEBUGGER.debug("loginPage: {}", loginPage);
+			DEBUGGER.debug("passwdPage: {}", passwdPage);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -182,7 +178,7 @@ public class SessionAuthenticationFilter implements Filter
             }
         }
 
-        if (StringUtils.equals(hRequest.getContextPath() + this.loginURI, hRequest.getRequestURI()))
+        if (StringUtils.equals(loginPage, requestURI))
         {
             if (DEBUG)
             {
@@ -255,7 +251,7 @@ public class SessionAuthenticationFilter implements Filter
                 }
 
                 if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET)
-                    && (!(StringUtils.equals(hRequest.getRequestURI(), hRequest.getContextPath().trim() + this.passwordURI))))
+                    && (!(StringUtils.equals(hRequest.getRequestURI(), loginPage))))
                 {
                     // redirect to the change password page
                     if (DEBUG)
