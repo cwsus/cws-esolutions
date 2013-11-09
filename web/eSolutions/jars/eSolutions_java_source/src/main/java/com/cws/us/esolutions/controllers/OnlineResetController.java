@@ -412,7 +412,7 @@ public class OnlineResetController
             DEBUGGER.debug("resetId: {}", resetId);
         }
 
-        ModelAndView mView = new ModelAndView();
+        ModelAndView mView = new ModelAndView(new RedirectView());
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();

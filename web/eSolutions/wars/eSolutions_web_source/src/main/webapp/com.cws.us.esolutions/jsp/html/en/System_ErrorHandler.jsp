@@ -44,7 +44,7 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-        <spring:message code="system.service.failure" />
+        <spring:message code="theme.system.service.failure" />
 
 	    <c:choose>
 	        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
