@@ -85,7 +85,7 @@
 	    <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
 	    <property name="messagePasswordExpired" value="theme.login.user.expired" />
 	    <property name="messageUserNotLoggedIn" value="theme.error.user.not.authenticated" />
-	    <property name="messageRequestProcessingFailure" value="theme.error.processing.request.operation" />
+	    <property name="messageRequestProcessingFailure" value="theme.system.service.failure" />
 	    <property name="messageValidationFailed" value="theme.request.validation.failed" />
 	    <property name="messageNoSearchResults" value="theme.search.no.results" />
     </bean>
