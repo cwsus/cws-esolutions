@@ -16,11 +16,17 @@
 package com.cws.esolutions.security.filters;
 
 import org.slf4j.Logger;
+
 import java.io.IOException;
+
 import javax.servlet.Filter;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import java.util.ResourceBundle;
+
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
@@ -28,12 +34,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
+
 import java.util.MissingResourceException;
+
 import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.SecurityConstants;
 /**
  * SSLEnforcementFilter
@@ -49,13 +59,12 @@ import com.cws.esolutions.security.SecurityConstants;
 public class SessionAuthenticationFilter implements Filter
 {
     private String loginURI = null;
-    private String resetURI = null;
+    private String passwordURI = null;
     private String[] ignoreURIs = null;
 
     private static final String LOGIN_URI = "login.uri";
-    private static final String RESET_URI = "reset.uri";
+    private static final String PASSWORD_URI = "password.change.uri";
     private static final String USER_ACCOUNT = "userAccount";
-    private static final String RESET_ACCOUNT = "resetAccount";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
@@ -93,7 +102,7 @@ public class SessionAuthenticationFilter implements Filter
             }
 
             this.loginURI = rBundle.getString(SessionAuthenticationFilter.LOGIN_URI);
-            this.resetURI = rBundle.getString(SessionAuthenticationFilter.RESET_URI);
+            this.passwordURI = rBundle.getString(SessionAuthenticationFilter.PASSWORD_URI);
             this.ignoreURIs = (StringUtils.isNotEmpty(rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST))) ?
                     rBundle.getString(SessionAuthenticationFilter.IGNORE_URI_LIST).trim().split(",") : null;
                     
@@ -127,8 +136,6 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("ServletRequest: {}", sRequest);
             DEBUGGER.debug("ServletResponse: {}", sResponse);
         }
-
-        UserAccount userAccount = null;
 
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
@@ -239,48 +246,34 @@ public class SessionAuthenticationFilter implements Filter
 
             if (sessionValue instanceof UserAccount)
             {
-                if (StringUtils.equals(sessionElement, SessionAuthenticationFilter.RESET_ACCOUNT))
+                UserAccount userAccount = (UserAccount) sessionValue;
+
+                if (DEBUG)
                 {
-                    // this was a user reset, if the user is on the reset page(s)
-                    // then its fine - otherwise, boot
-                    if (!(StringUtils.equals(hRequest.getContextPath().trim() + this.resetURI, hRequest.getRequestURI())))
+                    DEBUGGER.debug("UserAccount: {}", userAccount);
+                }
+
+                if ((userAccount.getStatus() == LoginStatus.EXPIRED))
+                {
+                    // redirect to the change password page
+                    hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+
+                    return;
+                }
+                else
+                {
+                    if ((userAccount.getStatus() == LoginStatus.SUCCESS) && (StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
                     {
-                        // it isnt. boot
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Session object contains a reset account but request is not for reset URI. Destroying session");
+                            DEBUGGER.debug("Request authenticated. No action taken !");
                         }
 
-                        hSession.removeAttribute(SessionAuthenticationFilter.RESET_ACCOUNT);
-                        hSession.invalidate();
-
-                        hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+                        filterChain.doFilter(sRequest, sResponse);
 
                         return;
                     }
                 }
-
-                userAccount = (UserAccount) sessionValue;
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
-            }
-        }
-
-        if (userAccount != null)
-        {
-            if ((StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
-            {
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Request authenticated. No action taken !");
-                }
-
-                filterChain.doFilter(sRequest, sResponse);
-
-                return;
             }
         }
 

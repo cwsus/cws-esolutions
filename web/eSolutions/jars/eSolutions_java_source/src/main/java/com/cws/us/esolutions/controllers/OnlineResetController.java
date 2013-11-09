@@ -518,7 +518,7 @@ public class OnlineResetController
                         DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
 
-                    hSession.setAttribute(Constants.RESET_ACCOUNT, userAccount);
+                    hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                     mView.setViewName(appConfig.getExpiredRedirect());
                 }
@@ -535,6 +535,11 @@ public class OnlineResetController
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
         return mView;
@@ -916,7 +921,7 @@ public class OnlineResetController
             AuthenticationRequest authRequest = new AuthenticationRequest();
             authRequest.setHostInfo(reqInfo);
             authRequest.setUserAccount(reqAccount);
-            authRequest.setAuthType(AuthenticationType.LOGIN);
+            authRequest.setAuthType(AuthenticationType.RESET);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setApplicationId(appConfig.getApplicationId());
@@ -975,7 +980,7 @@ public class OnlineResetController
                             // xlnt. set the user
                             // set the sessid
                             resUser.setSessionId(hSession.getId());
-                            hSession.setAttribute(Constants.RESET_ACCOUNT, resUser);
+                            hSession.setAttribute(Constants.USER_ACCOUNT, resUser);
 
                             mView.addObject(Constants.USER_SECURITY, secResponse.getUserSecurity());
                             mView.addObject("command", new UserChangeRequest());
@@ -1029,7 +1034,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 

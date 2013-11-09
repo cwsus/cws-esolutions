@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +33,6 @@ import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
@@ -246,36 +244,6 @@ public class DNSServiceController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
         if (appConfig.getServices().get(this.serviceName))
         {
             mView = new ModelAndView();
@@ -353,35 +321,6 @@ public class DNSServiceController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
 
         if (appConfig.getServices().get(this.serviceName))
         {
@@ -464,35 +403,6 @@ public class DNSServiceController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
 
         if (appConfig.getServices().get(this.serviceName))
         {

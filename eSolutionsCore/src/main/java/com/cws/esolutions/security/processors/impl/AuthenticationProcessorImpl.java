@@ -51,6 +51,7 @@ import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
+import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -146,7 +147,14 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 {
                     case USERNAME:
                         // set the status flag to success
-                        authAccount.setStatus(LoginStatus.SUCCESS);
+                        if (request.getAuthType() == AuthenticationType.RESET)
+                        {
+                            authAccount.setStatus(LoginStatus.RESET);
+                        }
+                        else
+                        {
+                            authAccount.setStatus(LoginStatus.SUCCESS);
+                        }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully loaded user account");

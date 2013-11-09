@@ -55,7 +55,7 @@
 	                    <form:errors path="loginUser" cssClass="validationError" />
 	                </td>
 	                <td>
-	                    <c:if test="${not empty forgotUsernameUrl}">
+	                    <c:if test="${allowUserReset eq 'true'}">
 	                        <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
 	                            <spring:message code="login.user.forgot_uid" />
 	                        </a>

@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +77,6 @@ public class UserAccountController
     private String changePasswordPage = null;
     private String errorPasswordFailed = null;
     private String changeEmailComplete = null;
-    private String errorPasswordExpired = null;
     private String changePasswordComplete = null;
     private String changeSecurityComplete = null;
     private ApplicationServiceBean appConfig = null;
@@ -142,19 +140,6 @@ public class UserAccountController
         }
 
         this.changePasswordPage = value;
-    }
-
-    public final void setErrorPasswordExpired(final String value)
-    {
-        final String methodName = UserAccountController.CNAME + "#setErrorPasswordExpired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.errorPasswordExpired = value;
     }
 
     public final void setErrorPasswordFailed(final String value)
@@ -320,36 +305,6 @@ public class UserAccountController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
         mView.setViewName(this.myAccountPage);
 
         if (DEBUG)
@@ -377,7 +332,6 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final UserAccount resetAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
 
         if (DEBUG)
         {
@@ -386,7 +340,6 @@ public class UserAccountController
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserAccount: {}", resetAccount);
 
             DEBUGGER.debug("Dumping session content:");
             @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -422,20 +375,9 @@ public class UserAccountController
             }
         }
 
-        if ((resetAccount == null) && (userAccount == null))
+        if (userAccount.getStatus() == LoginStatus.RESET)
         {
-            // redirect
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-            return mView;
-        }
-        else
-        {
-            if (resetAccount != null)
-            {
-                changeReq.setIsReset(true);
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.errorPasswordExpired);
-            }
+            mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessagePasswordExpired());
         }
 
         mView.addObject("command", changeReq);
@@ -506,36 +448,6 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
-        }
-
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
         }
 
         try
@@ -655,36 +567,6 @@ public class UserAccountController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
         mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.changeEmailPage);
 
@@ -703,13 +585,13 @@ public class UserAccountController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
-        UserAccount userAccount = null;
         UserSecurity userSecurity = null;
         ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
 
         if (DEBUG)
@@ -756,15 +638,8 @@ public class UserAccountController
 
         try
         {
-            if (hSession.getAttribute(Constants.RESET_ACCOUNT) != null)
+            if (userAccount.getStatus() == LoginStatus.RESET)
             {
-                userAccount = (UserAccount) hSession.getAttribute(Constants.RESET_ACCOUNT);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
-
                 userSecurity = new UserSecurity();
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
 
@@ -775,13 +650,6 @@ public class UserAccountController
             }
             else
             {
-                userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
-                }
-
                 userSecurity = new UserSecurity();
                 userSecurity.setPassword(changeReq.getCurrentPassword());
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
@@ -945,36 +813,6 @@ public class UserAccountController
             }
         }
 
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
         try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
@@ -1124,36 +962,6 @@ public class UserAccountController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
-        }
-
-        if (userAccount != null)
-        {
-            if (userAccount.getStatus() == LoginStatus.EXPIRED)
-            {
-                // redirect to password page
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(appConfig.getExpiredRedirect());
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ModelAndView: {}", mView);
-                }
-
-                return mView;
-            }
-        }
-        else
-        {
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getLogonRedirect());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
         }
 
         try
