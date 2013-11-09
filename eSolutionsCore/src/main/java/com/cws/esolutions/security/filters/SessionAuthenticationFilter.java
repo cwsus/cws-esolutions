@@ -195,7 +195,7 @@ public class SessionAuthenticationFilter implements Filter
             // hostname isnt in ignore list
             for (String uri : this.ignoreURIs)
             {
-                String requestURI = hRequest.getContextPath().trim() + uri.trim();
+                uri = hRequest.getContextPath().trim() + uri.trim();
 
                 if (DEBUG)
                 {
@@ -203,7 +203,7 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug(requestURI);
                 }
 
-                if (StringUtils.contains(hRequest.getRequestURI().trim(), requestURI))
+                if (StringUtils.equals(requestURI, uri))
                 {
                     // ignore
                     if (DEBUG)
@@ -251,7 +251,7 @@ public class SessionAuthenticationFilter implements Filter
                 }
 
                 if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET)
-                    && (!(StringUtils.equals(hRequest.getRequestURI(), loginPage))))
+                    && (!(StringUtils.equals(requestURI, loginPage))))
                 {
                     // redirect to the change password page
                     if (DEBUG)
