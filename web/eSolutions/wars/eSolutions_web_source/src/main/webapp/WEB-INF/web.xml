@@ -90,7 +90,7 @@
 
     <filter id="SSLEnforcementFilter">
         <description>Security Service SSL Enforcement</description>
-        <description>SSLEnforcementFilter</description>
+        <display-name>SSLEnforcementFilter</display-name>
         <filter-name>SSLEnforcementFilter</filter-name>
         <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
         <init-param>

@@ -1012,23 +1012,13 @@ public class UserAccountController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    // yay
-                    if (userAccount.getStatus() == LoginStatus.EXPIRED)
-                    {
-                        HttpSession newSession = hRequest.getSession(true);
-                        userAccount.setSessionId(newSession.getId());
-                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
-                        hSession.invalidate();
-                    }
-
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changeSecurityComplete);
                     mView.setViewName(this.myAccountPage);
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.changePasswordPage);
+                    mView.setViewName(this.changeSecurityPage);
                 }
             }
         }

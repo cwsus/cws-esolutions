@@ -578,20 +578,6 @@ public class LoginController
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Dumping session content:");
-                            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-                            while (sessionEnumeration.hasMoreElements())
-                            {
-                                String sessionElement = sessionEnumeration.nextElement();
-                                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-                            }
-                        }
-
-                        if (DEBUG)
-                        {
                             DEBUGGER.debug("ModelAndView: {}", mView);
                         }
 
