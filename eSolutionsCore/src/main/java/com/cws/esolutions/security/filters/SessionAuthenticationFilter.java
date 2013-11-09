@@ -280,14 +280,8 @@ public class SessionAuthenticationFilter implements Filter
             }
         }
 
-        ERROR_RECORDER.error("RequestURI is " + requestURI + " and im sending a redirect to logon");
-        ERROR_RECORDER.error("Session contains no existing user account. Redirecting to logon");
-
         // no user account in the session
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Redirecting request to " + hRequest.getContextPath() + this.loginURI);
-        }
+        ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
 
         // invalidate the session
         hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
