@@ -53,5 +53,6 @@
 	    <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
 	    <property name="changePasswordComplete" value="user.account.password.change.success" />
 	    <property name="changeSecurityComplete" value="user.account.update.security.success" />
+		<property name="changeKeysComplete" value="user.account.update.keys.success" />
     </bean>
 </beans>

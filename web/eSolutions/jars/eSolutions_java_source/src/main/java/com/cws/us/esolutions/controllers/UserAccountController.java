@@ -73,6 +73,7 @@ public class UserAccountController
 {
     private String myAccountPage = null;
     private String changeEmailPage = null;
+	private String changeKeysComplete = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
     private String errorPasswordFailed = null;
@@ -192,6 +193,19 @@ public class UserAccountController
         }
 
         this.changeSecurityComplete = value;
+    }
+
+    public final void setChangeKeysComplete(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setChangeKeysComplete(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.changeKeysComplete = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)

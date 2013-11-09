@@ -95,6 +95,10 @@
                 <a href="${pageContext.request.contextPath}/ui/user-account/security"
                     title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a>
             </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys"
+                    title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a>
+            </li>
         </ul>
     </div>
 </div>
