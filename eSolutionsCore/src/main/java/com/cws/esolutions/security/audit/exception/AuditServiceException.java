@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.security.audit.exception;
 
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * SecurityService
  * com.cws.esolutions.security.audit.exception
@@ -35,7 +34,7 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  * kh05451 @ Oct 30, 2012 10:30:30 AM
  *     Created.
  */
-public class AuditServiceException extends SecurityServiceException
+public class AuditServiceException extends Exception
 {
     private static final long serialVersionUID = -4989476871384420297L;
 

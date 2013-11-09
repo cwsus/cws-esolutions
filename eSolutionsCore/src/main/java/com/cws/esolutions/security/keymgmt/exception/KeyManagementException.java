@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.security.keymgmt.exception;
 
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * SecurityService
  * com.cws.esolutions.security.keymgmt.exception
@@ -33,7 +32,7 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  * kh05451 @ Nov 5, 2012 2:02:34 PM
  *     Created.
  */
-public class KeyManagementException extends SecurityServiceException
+public class KeyManagementException extends Exception
 {
     private static final long serialVersionUID = -6006500480862957327L;
 

@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.security.processors.exception;
 
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.processors.exception
@@ -33,7 +32,7 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  * 35033355 @ Jul 12, 2013 3:11:30 PM
  *     Created.
  */
-public class FileSecurityException extends SecurityServiceException
+public class FileSecurityException extends Exception
 {
     private static final long serialVersionUID = -930492911008590921L;
 
