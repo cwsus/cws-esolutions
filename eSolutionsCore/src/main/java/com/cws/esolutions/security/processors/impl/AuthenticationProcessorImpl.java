@@ -223,57 +223,65 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setTcAccepted((Boolean) userData.get(15));
                     userAccount.setSessionId(authUser.getSessionId());
 
-                    // get the user keypair
-                    KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
+					try
+					{
+                    	// get the user keypair
+                    	KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KeyConfig: {}", keyConfig);
-                    }
+                    	if (DEBUG)
+                    	{
+                        	DEBUGGER.debug("KeyConfig: {}", keyConfig);
+                    	}
 
-                    KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
+                    	KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KeyManager: {}", keyManager);
-                    }
+                    	if (DEBUG)
+                    	{
+                        	DEBUGGER.debug("KeyManager: {}", keyManager);
+                    	}
 
-                    KeyManagementRequest keyRequest = new KeyManagementRequest();
-                    keyRequest.setGuid(userAccount.getGuid());
-                    keyRequest.setKeySize(keyConfig.getKeySize());
-                    keyRequest.setPubKeyField(authData.getPublicKey());
-                    keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-                    keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+                    	KeyManagementRequest keyRequest = new KeyManagementRequest();
+                    	keyRequest.setGuid(userAccount.getGuid());
+                    	keyRequest.setKeySize(keyConfig.getKeySize());
+                        keyRequest.setPubKeyField(authData.getPublicKey());
+                        keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+                        keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
 
-                    KeyManagementResponse keyResponse = null;
+                        KeyManagementResponse keyResponse = null;
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-                    }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
+                        }
 
-                    if (userData.get(16) == null)
-                    {
-                        keyResponse = keyManager.createKeys(keyRequest);
-                    }
-                    else
-                    {
-                        keyResponse = keyManager.returnKeys(keyRequest);
-                    }
+                        if (userData.get(16) == null)
+                        {
+                            keyResponse = keyManager.createKeys(keyRequest);
+                        }
+                        else
+                        {
+                            keyResponse = keyManager.returnKeys(keyRequest);
+                        }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-                    }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
+                        }
 
-                    if (keyResponse.getRequestStatus() == SecurityRequestStatus.FAILURE)
-                    {
-                        ERROR_RECORDER.error("Unable to generate user keys - signing/encryption functions will not be available");
-                    }
-                    else
-                    {
-                        userAccount.setUserKeys(keyResponse.getKeyPair());
-                    }
+                        if (keyResponse.getRequestStatus() == SecurityRequestStatus.FAILURE)
+                        {
+                            ERROR_RECORDER.error("Unable to generate user keys - signing/encryption functions will not be available");
+                        }
+                        else
+                        {
+                            userAccount.setUserKeys(keyResponse.getKeyPair());
+                        }
+					}
+					catch (KeyManagementException kmx)
+					{
+						ERROR_RECORDER.error("Failed to generate/obtain user keys");
+						ERROR_RECORDER.error(kmx.getMessage(), kmx);
+					}
 
                     // have a user account, run with it
                     if (userAccount.isSuspended())
