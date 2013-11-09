@@ -198,6 +198,8 @@ public class HomeController
             {
                 mView.addObject("messageList", mResponse.getSvcMessages());
             }
+
+            mView.setViewName(this.homePage);
         }
         catch (MessagingServiceException msx)
         {
