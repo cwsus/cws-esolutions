@@ -146,6 +146,7 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("RequestURI: {}", hRequest.getRequestURI());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();

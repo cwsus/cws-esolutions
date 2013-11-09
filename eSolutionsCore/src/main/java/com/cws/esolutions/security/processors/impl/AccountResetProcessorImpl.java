@@ -18,6 +18,7 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Calendar;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -36,6 +37,7 @@ import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
@@ -140,6 +142,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         }
 
                         userAccount = new UserAccount();
+                        userAccount.setStatus(LoginStatus.RESET);
                         userAccount.setGuid(userData[0]);
                         userAccount.setUsername(userData[1]);
                         userAccount.setGivenName(userData[2]);
