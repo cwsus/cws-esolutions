@@ -547,7 +547,7 @@ public class LoginController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: ", userAccount);
+                    DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
                 switch (userAccount.getStatus())
