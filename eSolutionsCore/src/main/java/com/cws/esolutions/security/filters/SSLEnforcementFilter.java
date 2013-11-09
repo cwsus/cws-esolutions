@@ -153,8 +153,6 @@ public class SSLEnforcementFilter implements Filter
             DEBUGGER.debug("HttpSession: {}", hSession);
 
             DEBUGGER.debug("Dumping session content:");
-
-            DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())

@@ -50,7 +50,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>127.0.0.1</repositoryHost>
+        <repositoryHost>192.168.10.54</repositoryHost>
         <repositoryPort>10389</repositoryPort>
         <repositoryDriver />
         <repositoryConnTimeout>10000</repositoryConnTimeout>
@@ -65,17 +65,6 @@
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
         <repositoryAppBase>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</repositoryAppBase>
     </auth-repo>
-
-    <!--<auth-repo>
-        <repoType>SQL</repoType>
-        <repositoryHost>jdbc:mysql://data.caspersbox.corp/cwssec</repositoryHost>
-        <repositoryDriver>com.mysql.jdbc.Driver</repositoryDriver>
-        <repositoryConnTimeout>10000</repositoryConnTimeout>
-        <repositoryReadTimeout>10000</repositoryReadTimeout>
-        <repositoryUser>appuser</repositoryUser>
-        <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
-        <repositorySalt>OITltocOUZjW</repositorySalt>
-    </auth-repo>-->
 
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm>
@@ -96,7 +85,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <datasource>jdbc:mysql://192.168.10.53/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
@@ -104,7 +93,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <datasource>jdbc:mysql://192.168.10.53/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
@@ -112,7 +101,7 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>SessionDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec</datasource>
+            <datasource>jdbc:mysql://192.168.10.53/cwssec</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>

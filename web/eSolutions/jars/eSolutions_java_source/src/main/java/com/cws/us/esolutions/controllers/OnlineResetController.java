@@ -505,6 +505,8 @@ public class OnlineResetController
                 if (userAccount.isSuspended())
                 {
                     // this account is suspended, we cant work on it
+                    hSession.invalidate();
+
                     mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageUserNotLoggedIn());
                     mView.setViewName(appConfig.getLogonRedirect());
                 }
@@ -526,7 +528,8 @@ public class OnlineResetController
             else
             {
                 // user not logged in, redirect
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageUserNotLoggedIn());
+                hSession.invalidate();
+
                 mView.setViewName(appConfig.getLogonRedirect());
             }
         }
@@ -1255,6 +1258,7 @@ public class OnlineResetController
                     }
 
                     // invalidate the session at this point
+                    hSession.removeAttribute(Constants.USER_ACCOUNT);
                     hSession.invalidate();
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);

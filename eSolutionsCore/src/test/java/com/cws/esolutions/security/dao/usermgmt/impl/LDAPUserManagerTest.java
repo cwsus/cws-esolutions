@@ -177,7 +177,7 @@ public class LDAPUserManagerTest
                         private static final long serialVersionUID = 602188777075148683L;
 
                         {
-                            put("userPassword", "5AqFpMOfBTMM9iMN1whNF02+cedRAZ3R9hF0oWpauMI1qtXA4tpVn1J2m8seIUh4pc4VbcxBxyeBxlcEJm9SNw==");
+                            put("userPassword", "gddsw/D7LD2iSoMMcxDnQtJeA93dpzEUUHxmlg5+YmRUGt5Vy3eTICapCQwERuKLMigwp+NYDD7AnD4lh6hdOw==");
                         }
                     }));
         }
