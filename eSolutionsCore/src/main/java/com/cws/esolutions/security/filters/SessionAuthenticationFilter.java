@@ -203,7 +203,7 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug(requestURI);
                 }
 
-                if (StringUtils.equals(requestURI, uri))
+                if (StringUtils.contains(requestURI, uri))
                 {
                     // ignore
                     if (DEBUG)
