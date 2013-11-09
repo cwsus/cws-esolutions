@@ -243,6 +243,11 @@
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <source>1.6</source>
                         <target>1.6</target>
+						<rules>
+                            <requireJavaVersion>
+                                <version>1.6</version>
+                            </requireJavaVersion>
+                        </rules>
                     </configuration>
                 </plugin>
                 <plugin>
