@@ -15,20 +15,17 @@
  */
 package com.cws.esolutions.security.dao.usermgmt.impl;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.After;
-
 import java.util.Arrays;
-
 import org.junit.Before;
 import org.junit.Assert;
-
+import java.util.HashMap;
+import java.util.Calendar;
 import java.util.ArrayList;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -170,16 +167,16 @@ public class LDAPUserManagerTest
     @Test
     public final void testModifyUserPassword()
     {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 45);
+
+        Map<String, Object> change = new HashMap<String, Object>();
+        change.put("userPassword", "64zvbQf415HfbUF7LaYlWpN/t9/wRciZAmTz1yEYGjphpho6f2y5TjNNJYFvgKck6dhCpNHgLDgkv5hbtcX1kw==");
+        change.put("cwsexpirydate", cal.getTimeInMillis());
+
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = 602188777075148683L;
-
-                        {
-                            put("userPassword", "gddsw/D7LD2iSoMMcxDnQtJeA93dpzEUUHxmlg5+YmRUGt5Vy3eTICapCQwERuKLMigwp+NYDD7AnD4lh6hdOw==");
-                        }
-                    }));
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", change));
         }
         catch (UserManagementException umx)
         {
