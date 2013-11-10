@@ -550,15 +550,18 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-				hSession.invalidate();
-                HttpSession newSession = hRequest.getSession(true);
-				userAccount.setSessionId(newSession.getId());
-				newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                HttpSession newSession = null;
 
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        // check logon type
+                        newSession = hRequest.getSession(true);
+                        userAccount.setSessionId(newSession.getId());
+                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+
+                        hSession.removeAttribute(Constants.USER_ACCOUNT);
+                        hSession.invalidate();
+
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getHomeRedirect());
 
@@ -572,6 +575,13 @@ public class LoginController
                         // password expired - redirect to change password page
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
+
+                        newSession = hRequest.getSession(true);
+                        userAccount.setSessionId(newSession.getId());
+                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+
+                        hSession.removeAttribute(Constants.USER_ACCOUNT);
+                        hSession.invalidate();
 
                         if (DEBUG)
                         {
