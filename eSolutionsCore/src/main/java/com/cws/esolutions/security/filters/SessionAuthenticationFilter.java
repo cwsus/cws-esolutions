@@ -276,18 +276,22 @@ public class SessionAuthenticationFilter implements Filter
 
                         return;
                     }
+                    else
+                    {
+                        // no user account in the session
+                        ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+
+                        // invalidate the session
+                        hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
+                        hSession.invalidate();
+
+                        hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+
+                        return;
+                    }
                 }
             }
         }
-
-        // no user account in the session
-        ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
-
-        // invalidate the session
-        hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
-        hSession.invalidate();
-
-        hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
     }
 
     @Override

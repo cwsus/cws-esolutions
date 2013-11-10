@@ -559,6 +559,7 @@ public class LoginController
                 {
                     case SUCCESS:
                         // check logon type
+                        mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getHomeRedirect());
 
                         if (DEBUG)
@@ -569,7 +570,7 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        // mView = new ModelAndView(new RedirectView());
+                        mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
 
                         if (DEBUG)

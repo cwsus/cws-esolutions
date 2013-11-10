@@ -161,7 +161,7 @@
 			        <c:if test="${not empty sessionScope.userAccount}">
 			            <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
 			        </c:if>
-			        <spring:message code="theme.footer.copyright" /><br />
+			        &copy; <spring:message code="theme.footer.copyright" /><br />
 			        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default" title="Contact Us"><spring:message code="theme.contact.us" /></a><br />
 			    </p>
 			</div>
