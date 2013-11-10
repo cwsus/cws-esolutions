@@ -550,17 +550,15 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
+				hSession.invalidate();
+                HttpSession newSession = hRequest.getSession(true);
+				userAccount.setSessionId(newSession.getId());
+				newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        // username validated
                         // check logon type
-                        hSession.invalidate();
-
-                        HttpSession newSession = hRequest.getSession(true);
-                        userAccount.setSessionId(hSession.getId());
-                        newSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
                         mView.setViewName(appConfig.getHomeRedirect());
 
                         if (DEBUG)
@@ -571,8 +569,6 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
-
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
 
@@ -584,6 +580,7 @@ public class LoginController
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
+						ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
                         mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());
