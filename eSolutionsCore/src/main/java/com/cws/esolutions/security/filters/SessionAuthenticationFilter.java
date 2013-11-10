@@ -130,7 +130,7 @@ public class SessionAuthenticationFilter implements Filter
 
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
-        final HttpSession hSession = hRequest.getSession();
+        final HttpSession hSession = hRequest.getSession(false);
 		final String requestURI = hRequest.getRequestURI();
 		final String loginPage = hRequest.getContextPath() + this.loginURI;
 		final String passwdPage = hRequest.getContextPath() + this.passwordURI;
