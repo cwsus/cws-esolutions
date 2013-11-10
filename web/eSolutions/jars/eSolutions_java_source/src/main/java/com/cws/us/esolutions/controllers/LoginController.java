@@ -555,12 +555,12 @@ public class LoginController
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        //hSession.invalidate();
-
-                        //nSession = hRequest.getSession(true);
-                        userAccount.setSessionId(hSession.getId());
-
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        hRequest.getSession(false).invalidate();
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        // userAccount.setSessionId(hSession.getId());
+                        // hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getHomeRedirect());

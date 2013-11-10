@@ -34,7 +34,6 @@ import com.cws.us.esolutions.enums.LogonType;
 public class ApplicationServiceBean implements Serializable
 {
     @Autowired private String homePage = null;
-    @Autowired private String hostname = null;
     @Autowired private int requestTimeout = 10;
     @Autowired private String dateFormat = null;
     @Autowired private String fileEncoding = null;
@@ -224,19 +223,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.requestCompletePage = value;
-    }
-
-    public final void setHostname(final String value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setHostname(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.hostname = value;
     }
 
     public final void setRequestTimeout(final int value)
@@ -523,19 +509,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.homeRedirect;
-    }
-
-    public final String getHostname()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getHostname()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.hostname);
-        }
-
-        return this.hostname;
     }
 
     public final int getRequestTimeout()
