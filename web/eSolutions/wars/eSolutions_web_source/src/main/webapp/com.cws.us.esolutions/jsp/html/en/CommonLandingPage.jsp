@@ -61,7 +61,7 @@
                                 <tr>
                                     <td><spring:message code="svc.messaging.system.message.author" />&nbsp; ${message.messageAuthor}</td>
                                     <td>
-                                        <spring:message code="svc.messaging.system.message.author" />&nbsp; <a href="mailto:${message.authorEmail}?subject=<spring:message code='messaging.comments.subject' /> ${message.messageId}"
+                                        <spring:message code="svc.messaging.system.message.author" />&nbsp; <a href="mailto:${message.authorEmail}?subject=<spring:message code='svc.messaging.system.message.author' /> ${message.messageId}"
                                             title="<spring:message code="svc.messaging.system.message.author" />">${message.authorEmail}</a>
                                     </td>
                                     <td><spring:message code="svc.messaging.system.message.submit.date" /> &nbsp; ${message.submitDate}</td>
