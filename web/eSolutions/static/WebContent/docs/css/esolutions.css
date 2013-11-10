@@ -328,3 +328,37 @@ div#Footer a:hover
     font-size: 11px;
     color: #AA0000;
 }
+
+p#error
+{
+    color: #FF0000;
+    font-size: 12px;
+}
+
+p#splitter
+{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding: 5px 0px 5px 0px;
+    border-top: 1px solid #CCC;
+    width: 97%;
+}
+
+p#info
+{
+    color: #0000FF;
+    font-size: 12px;
+}
+
+p#validationError
+{
+    color: #FF0000;
+    font-size: 15px;
+}
+
+#HttpStatusCode
+{
+    color: #FF0000;
+    font-size: 11px;
+}
+

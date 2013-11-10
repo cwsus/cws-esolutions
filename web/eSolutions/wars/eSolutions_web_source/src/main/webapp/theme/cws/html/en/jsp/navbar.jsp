@@ -30,14 +30,6 @@
 
 <div id="nav">
     <ul>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />">
-                <spring:message code='theme.navbar.home' /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-                <spring:message code='theme.navbar.help' /></a>
-        </li>
         <c:if test="${empty sessionScope.userAccount}">
             <li>
                 <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
@@ -45,6 +37,14 @@
             </li>
         </c:if>
         <c:if test="${not empty sessionScope.userAccount and sessionScope.userAccount.status ne 'EXPIRED'}">
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />">
+                    <spring:message code='theme.navbar.home' /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
+                    <spring:message code='theme.navbar.help' /></a>
+            </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
                     <spring:message code='theme.navbar.logoff' /></a>

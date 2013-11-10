@@ -277,7 +277,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 					}
 					catch (KeyManagementException kmx)
 					{
-						ERROR_RECORDER.error("Failed to generate/obtain user keys");
 						ERROR_RECORDER.error(kmx.getMessage(), kmx);
 					}
 
@@ -293,8 +292,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         if (userAccount.getFailedCount() >= maxAttempts)
                         {
                             // user locked
-                            userAccount.setStatus(LoginStatus.LOCKOUT);
-
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
                             response.setResponse("Requested user account has been locked");
                         }
