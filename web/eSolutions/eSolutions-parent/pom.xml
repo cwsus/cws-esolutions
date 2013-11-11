@@ -17,12 +17,6 @@
     <version>1.0</version>
     <packaging>pom</packaging>
 
-    <scm>
-        <connection>scm:git:git@github.com:cws-us/cws-esolutions.git</connection>
-        <developerConnection>scm:git:git@github.com:cws-us/cws-esolutions.git</developerConnection>
-        <url>scm:git:git@github.com:cws-us/cws-esolutions.git</url>
-    </scm>
-
     <modules>
         <module>../jars/eSolutions_java_source</module>
         <module>../jars/eSolutions_web_config</module>
@@ -107,13 +101,6 @@
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
-                <version>2.5</version>
-                <type>jar</type>
-                <scope>provided</scope>
-            </dependency>
             <!-- spring -->
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -160,13 +147,6 @@
                         <groupId>commons-logging</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>3.2.4.RELEASE</version>
-                <type>jar</type>
-                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -223,21 +203,6 @@
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-jsp</artifactId>
                 <version>2.2.2</version>
-                <type>jar</type>
-                <scope>compile</scope>
-            </dependency>
-            <!-- quartz -->
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>2.1.7</version>
-                <type>jar</type>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>javax.transaction</groupId>
-                <artifactId>jta</artifactId>
-                <version>1.1</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>

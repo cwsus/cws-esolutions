@@ -13,12 +13,6 @@
     <name>${project.artifactId}</name>
     <version>1.0-SNAPSHOT</version>
 
-    <scm>
-        <connection>scm:git:git@github.com:cws-us/cws-esolutions.git</connection>
-        <developerConnection>scm:git:git@github.com:cws-us/cws-esolutions.git</developerConnection>
-        <url>scm:git:git@github.com:cws-us/cws-esolutions.git</url>
-    </scm>
-
     <dependencies>
         <!-- Third-party jars -->
         <!-- activemq -->
@@ -148,35 +142,6 @@
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
             <version>2.4.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>sshtools</groupId>
-            <artifactId>j2ssh-core</artifactId>
-            <version>0.2.9</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>sshtools</groupId>
-            <artifactId>j2ssh-common</artifactId>
-            <version>0.2.9</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- virtualbox -->
-        <dependency>
-        	<groupId>org.virtualbox</groupId>
-        	<artifactId>vboxjws</artifactId>
-        	<version>4.2.8</version>
-        	<type>jar</type>
-        	<scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.expectj</groupId>
-            <artifactId>expectj</artifactId>
-            <version>2.0.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

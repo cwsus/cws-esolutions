@@ -15,15 +15,6 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <url>http://maven.apache.org</url>
     <name>${project.artifactId}</name>
 
-    <organization>
-        <name>CaspersBox Web Services</name>
-    </organization>
-
-    <properties>
-        <servlet-api.version>2.4</servlet-api.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>eSolutions</groupId>

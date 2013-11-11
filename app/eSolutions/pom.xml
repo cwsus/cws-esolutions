@@ -18,18 +18,8 @@
 
     <properties>
         <platform.version>4.0.1.2</platform.version>
-        <junit.version>4.4</junit.version>
-        <slf4j.version>1.6.1-RC1</slf4j.version>
-        <ldapsdk.version>2.3.1</ldapsdk.version>
-        <dnsjava.version>2.1.1</dnsjava.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
     </properties>
-
-    <scm>
-        <connection>scm:git:git@github.com:cws-us/cws-esolutions.git</connection>
-        <developerConnection>scm:git:git@github.com:cws-us/cws-esolutions.git</developerConnection>
-        <url>scm:git:git@github.com:cws-us/cws-esolutions.git</url>
-    </scm>
 
     <dependencies>
         <dependency>
@@ -37,44 +27,6 @@
             <artifactId>android</artifactId>
             <version>${platform.version}</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- slf4j -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-android</artifactId>
-            <version>${slf4j.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- unbound id -->
-        <dependency>
-            <groupId>com.unboundid</groupId>
-            <artifactId>unboundid-ldapsdk</artifactId>
-            <version>${ldapsdk.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- dnsjava -->
-        <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-            <version>${dnsjava.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <!-- apache commons -->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
         </dependency>
         <!-- cws-shared -->
         <dependency>
@@ -87,16 +39,6 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                    <artifactId>android-maven-plugin</artifactId>
-                    <version>3.1.1</version>
-                    <extensions>true</extensions>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -107,25 +49,6 @@
             </resource>
         </resources>
         <plugins>
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>package</id>
-                        <phase>prepare-package</phase>
-                        <configuration>
-                            <tasks>
-                                <ant antfile="build.xml">
-                                    <target name="build" />
-                                </ant>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>com.jayway.maven.plugins.android.generation2</groupId>
                 <artifactId>android-maven-plugin</artifactId>
@@ -140,9 +63,6 @@
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
                 <extensions>true</extensions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
