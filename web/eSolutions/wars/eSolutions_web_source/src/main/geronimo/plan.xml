@@ -3,14 +3,14 @@
     <dep:environment xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <dep:moduleId>
             <dep:groupId>default</dep:groupId>
-            <dep:artifactId>eSolutions_web_source-1.0-1</dep:artifactId>
-            <dep:version>1384206038964</dep:version>
+            <dep:artifactId>eSolutions_web_source-1.0</dep:artifactId>
+            <dep:version>1384208926045</dep:version>
             <dep:type>war</dep:type>
         </dep:moduleId>
         <dep:dependencies>
             <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>webservices-common</dep:artifactId>
+                <dep:artifactId>sharedlib-extender</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
                 <dep:type>car</dep:type>
             </dep:dependency>
@@ -22,45 +22,9 @@
             </dep:dependency>
             <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>jaxws-tools</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>jaxws-sun-tools</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>com.sun.xml.ws</dep:groupId>
-                <dep:artifactId>jaxws-rt</dep:artifactId>
-                <dep:version>2.2.3-promoted-b07</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>com.sun.xml.ws</dep:groupId>
-                <dep:artifactId>jaxws-tools</dep:artifactId>
-                <dep:version>2.2.3-promoted-b07</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
                 <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>jaxws-deployer</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.bundles</dep:groupId>
-                <dep:artifactId>jaxb-impl</dep:artifactId>
-                <dep:version>2.2.3-1_1</dep:version>
-                <dep:type>jar</dep:type>
             </dep:dependency>
             <dep:dependency>
                 <dep:groupId>console.dbpool</dep:groupId>

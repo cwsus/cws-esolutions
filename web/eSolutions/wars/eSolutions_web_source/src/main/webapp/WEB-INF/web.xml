@@ -168,10 +168,12 @@
         <servlet-name>eSolutions</servlet-name>
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
+    <!--
     <servlet-mapping id="WSServlet_mapping">
         <servlet-name>WSServlet</servlet-name>
         <url-pattern>/ws/*</url-pattern>
     </servlet-mapping>
+    -->
 
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>
