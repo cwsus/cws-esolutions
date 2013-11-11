@@ -66,7 +66,7 @@ public class PasswordUtilsTest
     public final void testCreateHash() throws SecurityServiceException
     {
         final String salt = RandomStringUtils.randomAlphanumeric(32);
-        final String pass = "Ariana18*";
+        final String pass = "Ariana21*";
 
         System.out.println(salt);
         System.out.println(PasswordUtils.encryptText(pass, salt,

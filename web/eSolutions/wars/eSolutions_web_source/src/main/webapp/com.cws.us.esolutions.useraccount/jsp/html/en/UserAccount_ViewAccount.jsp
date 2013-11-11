@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="user.account.view.profile" /></div>
+<div id="InfoLine"><spring:message code="user.account.view.profile" arguments="${sessionScope.userAccount.displayName}" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">

@@ -4,10 +4,10 @@
     preemptiveAuthentication="true" privileged="false" reloadable="true" sendRedirectBody="true"
     sessionCookieDomain="@cookie.domain.name" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
     sessionCookiePathUsesTrailingSlash="true" swallowAbortedUploads="true" swallowOutput="true"
-    tldNamespaceAware="true" tldValidation="true" useHttpOnly="true" xmlNamespaceAware="true" xmlValidation="true"
-    addWebInfClassResources="false" allowLinking="false" antiJARLocking="true" antiResourceLocking="true"
+    tldNamespaceAware="true" tldValidation="true" useHttpOnly="true" xmlNamespaceAware="true"
+    xmlValidation="true" allowLinking="false" antiJARLocking="true" antiResourceLocking="true"
     cacheMaxSize="10240" cacheObjectMaxSize="1024" cacheTTL="30000" cachingAllowed="true"
-    jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" secure="true" workDir="@tomcat.work.dir">
+    jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" workDir="@tomcat.work.dir">
 
     <Parameter name="ldapHost" value="@ldap.host.name" override="false" />
     <Parameter name="ldapPort" value="@ldap.port.number" override="false" />
@@ -52,8 +52,9 @@
     <Resource name="jms/responseQueue" auth="Container" type="org.apache.activemq.command.ActiveMQQueue"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="CWS.RESPONSE.QUEUE"/>
 
-    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="" deny="" />
-    <Valve className="org.apache.catalina.valves.ExtendedAccessLogValve" directory="/appvol/ATS70/eSolutions/syslog" prefix="access" suffix=".log"
+    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="@allowedAddresses" deny="@deniedAddresses" />
+    <Valve className="org.apache.catalina.valves.RemoteHostValve" allow="@allowedHosts" deny="@deniedHosts" />
+    <Valve className="org.apache.catalina.valves.ExtendedAccessLogValve" directory="@sysLogDirectory" prefix="access" suffix=".log"
         fileDateFormat="yyyy-MM-dd" rotatable="true" renameOnRotate="true"
         pattern="date time time-taken bytes cs-uri cs-uri-query cs-uri-stem date s-dns s-ip sc-status c-dns x-H(remoteUser) cs-method cs-uri x-H(protocol)"
         encoding="UTF-8" locale="en_US" requestAttributesEnabled="true" buffered="true" />

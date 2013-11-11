@@ -60,6 +60,11 @@
         <replace file="${contextFile}" token="@database.host.name" value="${dsHost}" />
         <replace file="${contextFile}" token="@amq.host.name" value="${amqHostName}" />
         <replace file="${contextFile}" token="@amq.host.port" value="${amqHostPort}" />
+        <replace file="${contextFile}" token="@allowedAddresses" value="${allowedAddresses}" />
+        <replace file="${contextFile}" token="@deniedAddresses" value="${deniedAddresses}" />
+        <replace file="${contextFile}" token="@allowedHosts" value="${allowedHosts}" />
+        <replace file="${contextFile}" token="@deniedHosts" value="${deniedHosts}" />
+        <replace file="${contextFile}" token="@sysLogDirectory" value="${sysLogDirectory}" />
 
         <chmod file="${contextFile}" perm="640" />
     </target>

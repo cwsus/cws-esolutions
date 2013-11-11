@@ -22,19 +22,6 @@
         </property>
     </bean>
 
-    <bean id="hostname" factory-bean="localhost" factory-method="getHostName"/>
-    <bean id="localhost" class="java.net.InetAddress" factory-method="getLocalHost"/>
-
-    <bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/jdbc/esolutionssvc" />
-    </bean>
-
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <property name="dataSource">
-            <ref bean="dataSource" />
-        </property>
-    </bean>
-
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
         <property name="fileEncoding" value="UTF-8" />
@@ -45,7 +32,6 @@
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="uploadDirectory" value="/opt/eSolutions/uploads" /> <!-- where should we put uploads ? -->
         <property name="secEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
-        <property name="hostname" ref="hostname" />
         <!-- enable/disable services. true for on, false for off -->
         <property name="services">
             <map>
