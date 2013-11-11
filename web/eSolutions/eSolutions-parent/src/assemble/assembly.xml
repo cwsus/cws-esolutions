@@ -20,12 +20,12 @@
     </moduleSets>
     <dependencySets>
         <dependencySet>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
-            <useProjectArtifact>false</useProjectArtifact>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <useProjectArtifact>true</useProjectArtifact>
             <includes>
                 <include>*:jar</include>
             </includes>
-            <outputDirectory>/opt/Apache/tomcat/shared/app</outputDirectory>
+            <outputDirectory>shared/app</outputDirectory>
         </dependencySet>
     </dependencySets>
 </assembly>
