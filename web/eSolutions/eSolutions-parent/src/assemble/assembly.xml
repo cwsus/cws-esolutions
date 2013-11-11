@@ -10,15 +10,14 @@
         <dependencySet>
             <useTransitiveDependencies>true</useTransitiveDependencies>
             <useProjectArtifact>true</useProjectArtifact>
-            <includes>
-                <include>*:jar</include>
-            </includes>
+            <unpack>false</unpack>
+            <scope>provided</scope>
             <outputDirectory>shared/app</outputDirectory>
         </dependencySet>
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>../ears/eSolutions_web_sourceEAR</directory>
+            <directory>../ears/eSolutions_web_sourceEAR/target</directory>
             <includes>
                 <include>${project.name}.ear</include>
             </includes>
