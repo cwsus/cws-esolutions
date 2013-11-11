@@ -10,7 +10,7 @@
         <moduleSet>
             <useAllReactorProjects>false</useAllReactorProjects>
             <includes>
-                <include>eSolutions:eSolutions_web_sourceEAR</include>
+                <include>eSolutions:eSolutions_web_source</include>
             </includes>
             <binaries>
                 <outputDirectory>installableApps/${artifactId}</outputDirectory>
