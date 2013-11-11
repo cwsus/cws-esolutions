@@ -39,6 +39,9 @@
     <condition property="isWebLogic">
         <equals arg1="${target.platform}" arg2="weblogic" caseSensitive="false" />
     </condition>
+    <condition property="isGeronimo">
+        <equals arg1="${target.platform}" arg2="geronimo" caseSensitive="false" />
+    </condition>
 
     <target name="buildTomcat" if="isTomcat">
         <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
@@ -74,8 +77,6 @@
     </target>
 
     <target name="buildWebSphere" if="isWebSphere">
-        <property name="websphere.install.root" value="/appvol/DASESOLUTIONS0001US/desolutions00us.ear" />
-
         <copy file="${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" />
         <copy file="${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-ext.xmi" />
 
