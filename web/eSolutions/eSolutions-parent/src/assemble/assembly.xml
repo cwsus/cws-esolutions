@@ -8,14 +8,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <moduleSets>
         <moduleSet>
-            <useAllReactorProjects>true</useAllReactorProjects>
+            <useAllReactorProjects>false</useAllReactorProjects>
             <includes>
-                <include>eSolutions:eSolutions_web_source</include>
+                <include>eSolutions:eSolutions</include>
             </includes>
-            <binaries>
-                <outputDirectory>/opt/Apache/tomcat/installableApps/${artifactId}</outputDirectory>
-                <unpack>false</unpack>
-            </binaries>
+            <outputDirectory>installableApps</outputDirectory>
         </moduleSet>
     </moduleSets>
     <dependencySets>
