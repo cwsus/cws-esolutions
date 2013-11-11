@@ -21,7 +21,7 @@
     <dependencySets>
         <dependencySet>
             <useTransitiveDependencies>true</useTransitiveDependencies>
-            <useProjectArtifact>false</useProjectArtifact>
+            <useProjectArtifact>true</useProjectArtifact>
             <includes>
                 <include>*:jar</include>
             </includes>
