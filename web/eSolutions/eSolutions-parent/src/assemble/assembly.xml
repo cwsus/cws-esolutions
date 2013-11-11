@@ -12,7 +12,10 @@
             <includes>
                 <include>eSolutions:eSolutions</include>
             </includes>
-            <outputDirectory>installableApps</outputDirectory>
+            <binaries>
+                <outputDirectory>installableApps/${artifactId}</outputDirectory>
+                <unpack>false</unpack>
+            </binaries>
         </moduleSet>
     </moduleSets>
     <dependencySets>
