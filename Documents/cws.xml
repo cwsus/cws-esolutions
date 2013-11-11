@@ -345,99 +345,9 @@
     </reporting>
 
     <profiles>
-        <!-- START SNIPPET: build profile -->
-        <profile>
-            <id>cws-build</id>
-            <build>
-                <plugins>
-                    <!-- Create a source-release artifact that contains the
-                        fully buildable project directory source structure. This is the artifact
-                        which is the official subject of any release vote. -->
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>prepare-package</id>
-								<phase>prepare-package</phase>
-								<configuration>
-									<target>
-                                        <property name="projectName" value="${project.name}" />
-                                        <property name="projectVersion" value="${project.version}" />
-										<ant antfile="${basedir}/build.xml" />
-									</target>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-                    <!-- We want to deploy the artifact to a staging location
-                        for perusal -->
-                    <plugin>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <updateReleaseInfo>true</updateReleaseInfo>
-                        </configuration>
-                    </plugin>
-					<plugin>
-						<artifactId>maven-ear-plugin</artifactId>
-						<configuration>
-							<modules>
-								<webModule>
-									<groupId>${project.dependencies[0].groupId}</groupId>
-									<artifactId>${project.dependencies[0].artifactId}</artifactId>
-									<contextRoot>/${project.dependencies[0].artifactId}</contextRoot>
-								</webModule>
-							</modules>
-							<archive>
-								<manifestEntries>
-									<Project-Name>${project.name}</Project-Name>
-									<Subproject-Name>${project.name}</Subproject-Name>
-									<Specification-Title>${project.name}</Specification-Title>
-									<Specification-Vendor>${project.organization.name}</Specification-Vendor>
-									<Specification-Version>${project.version}</Specification-Version>
-									<Implementation-Title>${project.name}</Implementation-Title>
-									<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-									<Implementation-Version>${project.version}</Implementation-Version>
-									<Build-Date>${timestamp}</Build-Date>
-									<Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</plugin>
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Project-Name>${project.name}</Project-Name>
-                                    <Subproject-Name>${project.name}</Subproject-Name>
-                                    <Specification-Title>${project.name}</Specification-Title>
-                                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Build-Date>${timestamp}</Build-Date>
-                                    <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- START SNIPPET: release-profile -->
         <profile>
             <id>cws-release</id>
-            <activation>
-                <property>
-                    <name>releasePackage</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <!-- Create a source-release artifact that contains the
