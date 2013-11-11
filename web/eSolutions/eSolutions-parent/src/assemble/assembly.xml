@@ -20,7 +20,7 @@
     </moduleSets>
     <dependencySets>
         <dependencySet>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <useProjectArtifact>false</useProjectArtifact>
             <includes>
                 <include>*:jar</include>
