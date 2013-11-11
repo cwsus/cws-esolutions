@@ -75,12 +75,9 @@
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
-    <!-- uncomment for jax ws -->
-    <!--
     <listener>
         <listener-class>com.sun.xml.ws.transport.http.servlet.WSServletContextListener</listener-class>
     </listener>
-    -->
     <listener>
         <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
     </listener>
@@ -145,15 +142,12 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <!-- uncomment for webservice -->
-    <!--
     <servlet id="WSServlet">
         <display-name>WSServlet</display-name>
         <servlet-name>WSServlet</servlet-name>
         <servlet-class>com.sun.xml.ws.transport.http.servlet.WSServlet</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-    -->
     <servlet>
         <servlet-name>QuartzInitializer</servlet-name>
         <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
@@ -168,12 +162,10 @@
         <servlet-name>eSolutions</servlet-name>
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
-    <!--
     <servlet-mapping id="WSServlet_mapping">
         <servlet-name>WSServlet</servlet-name>
         <url-pattern>/ws/*</url-pattern>
     </servlet-mapping>
-    -->
 
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>
@@ -191,7 +183,7 @@
     </resource-ref>
     <resource-ref id="mail">
         <description>Mail Service</description>
-        <res-ref-name>jndi/mail</res-ref-name>
+        <res-ref-name>mail/MailSession</res-ref-name>
         <res-type>javax.mail.Session</res-type>
         <res-auth>Container</res-auth>
         <res-sharing-scope>Unshareable</res-sharing-scope>
