@@ -49,6 +49,7 @@
         <property name="contextFile" value="${basedir}/target/${projectName}-${projectVersion}/META-INF/context.xml" />
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
+        <copy file="${basedir}/src/main/tomcat/sun-jaxws.xml" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/sun-jaxws.xml" />
 
         <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
         <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
