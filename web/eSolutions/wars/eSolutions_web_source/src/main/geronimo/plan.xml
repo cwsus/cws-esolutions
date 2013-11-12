@@ -2,9 +2,9 @@
 <web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1">
     <dep:environment xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <dep:moduleId>
-            <dep:groupId>default</dep:groupId>
-            <dep:artifactId>eSolutions_web_source-1.0</dep:artifactId>
-            <dep:version>1384208926045</dep:version>
+            <dep:groupId>${pom.groupId}</dep:groupId>
+            <dep:artifactId>${pom.artifactId}</dep:artifactId>
+            <dep:version>${version}</dep:version>
             <dep:type>war</dep:type>
         </dep:moduleId>
         <dep:dependencies>
@@ -12,12 +12,6 @@
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib-extender</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>console.jms</dep:groupId>
-                <dep:artifactId>cws</dep:artifactId>
-                <dep:version>1.0</dep:version>
                 <dep:type>car</dep:type>
             </dep:dependency>
             <dep:dependency>
@@ -47,6 +41,16 @@
         </dep:dependencies>
     </dep:environment>
     <context-root>esolutions</context-root>
+    <service-ref>
+        <service-ref-name>services/CoreService</service-ref-name>
+        <port>
+            <port-name>AgentRequestProcessorPort</port-name>
+            <protocol>http</protocol>
+            <host>192.168.10.51</host>
+            <port>8080</port>
+            <uri>/ws/service</uri>
+        </port>
+    </service-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
@@ -66,7 +70,7 @@
         </nam:pattern>
     </nam:resource-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>jndi/mail</nam:ref-name>
+        <nam:ref-name>mail/MailSession</nam:ref-name>
         <nam:pattern>
             <nam:groupId>org.apache.geronimo.configs</nam:groupId>
             <nam:artifactId>javamail</nam:artifactId>
