@@ -51,20 +51,20 @@
 
 	<auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>ldap.caspersbox.corp</repositoryHost>
-        <repositoryPort>10389</repositoryPort>
+        <repositoryHost>@repositoryHost</repositoryHost>
+        <repositoryPort>@repositoryPort</repositoryPort>
         <repositoryDriver />
         <repositoryConnTimeout>10000</repositoryConnTimeout>
         <repositoryReadTimeout>10000</repositoryReadTimeout>
-        <repositoryUser>uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUser>
-        <repositoryPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</repositoryPass>
-        <repositorySalt>OITltocOUZjW</repositorySalt>
+        <repositoryUser>@repositoryUser</repositoryUser>
+        <repositoryPass>@repositoryPass</repositoryPass>
+        <repositorySalt>@repositorySalt</repositorySalt>
         <minConnections>1</minConnections>
         <maxConnections>10</maxConnections>
-        <baseObjectClass>cwsusperson</baseObjectClass>
-        <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryAppBase>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</repositoryAppBase>
+        <baseObjectClass>@baseObjectClass</baseObjectClass>
+        <repositoryBaseDN>@repositoryBaseDN</repositoryBaseDN>
+        <repositoryUserBase>@repositoryUserBase</repositoryUserBase>
+        <repositoryAppBase>@repositoryAppBase</repositoryAppBase>
     </auth-repo>
 
     <key-config>

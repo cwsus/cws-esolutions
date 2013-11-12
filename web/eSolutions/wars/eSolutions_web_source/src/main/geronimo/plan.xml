@@ -15,18 +15,6 @@
                 <dep:type>car</dep:type>
             </dep:dependency>
             <dep:dependency>
-                <dep:groupId>com.sun.xml.ws</dep:groupId>
-                <dep:artifactId>jaxws-rt</dep:artifactId>
-                <dep:version>2.2.3-promoted-b07</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.modules</dep:groupId>
-                <dep:artifactId>geronimo-jaxws</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
