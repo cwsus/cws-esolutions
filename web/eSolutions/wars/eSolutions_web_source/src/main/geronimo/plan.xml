@@ -9,6 +9,24 @@
         </dep:moduleId>
         <dep:dependencies>
             <dep:dependency>
+                <dep:groupId>console.jms</dep:groupId>
+                <dep:artifactId>cws</dep:artifactId>
+                <dep:version>1.0</dep:version>
+                <dep:type>car</dep:type>
+            </dep:dependency>
+            <dep:dependency>
+                <dep:groupId>com.sun.xml.ws</dep:groupId>
+                <dep:artifactId>jaxws-rt</dep:artifactId>
+                <dep:version>2.2.3-promoted-b07</dep:version>
+                <dep:type>jar</dep:type>
+            </dep:dependency>
+            <dep:dependency>
+                <dep:groupId>org.apache.geronimo.modules</dep:groupId>
+                <dep:artifactId>geronimo-jaxws</dep:artifactId>
+                <dep:version>3.0.1</dep:version>
+                <dep:type>jar</dep:type>
+            </dep:dependency>
+            <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
@@ -33,12 +51,13 @@
                 <dep:type>car</dep:type>
             </dep:dependency>
         </dep:dependencies>
+        <dep:inverse-classloading/>
     </dep:environment>
     <context-root>esolutions</context-root>
     <service-ref>
-        <service-ref-name>services/AgentRequestProcessor</service-ref-name>
+        <service-ref-name>services/CoreRequestProcessorService</service-ref-name>
         <port>
-            <port-name>AgentRequestProcessorPort</port-name>
+            <port-name>CoreRequestProcessorServicePort</port-name>
             <protocol>http</protocol>
             <host>localhost</host>
             <port>10000</port>
