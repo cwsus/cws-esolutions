@@ -9,16 +9,6 @@
     cacheMaxSize="10240" cacheObjectMaxSize="1024" cacheTTL="30000" cachingAllowed="true"
     jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" workDir="@tomcat.work.dir">
 
-    <Parameter name="ldapHost" value="@ldap.host.name" override="false" />
-    <Parameter name="ldapPort" value="@ldap.port.number" override="false" />
-    <Parameter name="connTimeout" value="10000" override="false" />
-    <Parameter name="readTimeout" value="10000" override="false" />
-    <Parameter name="minConnections" value="1" override="false" />
-    <Parameter name="maxConnections" value="10" override="false" />
-    <Parameter name="ldapUser" value="@ldap.user.name" override="false" />
-    <Parameter name="ldapPass" value="@ldap.user.pass" override="false" />
-    <Parameter name="ldapSalt" value="@ldap.user.salt" override="false" />
-
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="@database.user.name" password="@database.user.password" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://@database.host.name/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"

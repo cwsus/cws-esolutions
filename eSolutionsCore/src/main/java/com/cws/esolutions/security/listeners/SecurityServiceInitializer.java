@@ -95,7 +95,7 @@ public class SecurityServiceInitializer
             svcBean.setConfigData(configData);
             svcBean.setResourceBean(resBean);
 
-            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, null, resBean);
+            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, resBean);
 
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
@@ -173,7 +173,7 @@ public class SecurityServiceInitializer
             svcBean.setConfigData(configData);
             svcBean.setResourceBean(resBean);
 
-            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, null, resBean);
+            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, resBean);
 
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {

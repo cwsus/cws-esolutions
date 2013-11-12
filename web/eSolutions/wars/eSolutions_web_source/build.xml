@@ -49,16 +49,10 @@
         <property name="contextFile" value="${basedir}/target/${projectName}-${projectVersion}/META-INF/context.xml" />
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
-        <copy file="${basedir}/src/main/tomcat/sun-jaxws.xml" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/sun-jaxws.xml" />
 
         <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
         <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
         <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${projectName}-${projectVersion}" />
-        <replace file="${contextFile}" token="@ldap.host.name" value="${ldapHost}" />
-        <replace file="${contextFile}" token="@ldap.port.number" value="${ldapPort}" />
-        <replace file="${contextFile}" token="@ldap.user.name" value="${ldapUser}" />
-        <replace file="${contextFile}" token="@ldap.user.pass" value="${ldapPass}" />
-        <replace file="${contextFile}" token="@ldap.user.salt" value="${ldapSalt}" />
         <replace file="${contextFile}" token="@database.user.name" value="${dsUser}" />
         <replace file="${contextFile}" token="@database.user.password" value="${dsPass}" />
         <replace file="${contextFile}" token="@database.host.name" value="${dsHost}" />
