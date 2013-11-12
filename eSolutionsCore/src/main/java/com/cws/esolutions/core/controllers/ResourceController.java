@@ -77,7 +77,6 @@ public class ResourceController
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("AuthRepo: {}", authRepo);
             DEBUGGER.debug("isContainer: {}", isContainer);
-            DEBUGGER.debug("ServletContext: {}", sContext);
             DEBUGGER.debug("ResourceControllerBean: {}", resBean);
         }
 
