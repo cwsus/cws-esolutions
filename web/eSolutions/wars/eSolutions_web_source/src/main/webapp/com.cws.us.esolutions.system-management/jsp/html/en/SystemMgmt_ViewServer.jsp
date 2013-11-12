@@ -140,7 +140,7 @@
     <div id="content-left">
         <ul>
             <li>
-                <a href="${pageContext.request.contextPath}/ui/system-management/system-consoles"
+                <a href="${pageContext.request.contextPath}/ui/system-management/service-consoles"
                     title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a>
             </li>
             <li>

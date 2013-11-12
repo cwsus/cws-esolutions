@@ -373,7 +373,7 @@ public class SystemManagementController
         return mView;
     }
 
-    @RequestMapping(value = "/consoles", method = RequestMethod.GET)
+    @RequestMapping(value = "/service-consoles", method = RequestMethod.GET)
     public final ModelAndView showAdminConsoles()
     {
         final String methodName = SystemManagementController.CNAME + "#showAdminConsoles()";
@@ -457,19 +457,19 @@ public class SystemManagementController
                         DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    Server sourceServer = new Server();
-                    sourceServer.setServerType(ServerType.DMGRSERVER);
+                    Server server = new Server();
+                    server.setServerType(ServerType.DMGRSERVER);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Server: {}", sourceServer);
+                        DEBUGGER.debug("Server: {}", server);
                     }
 
                     ServerManagementRequest serviceReq = new ServerManagementRequest();
                     serviceReq.setRequestInfo(reqInfo);
                     serviceReq.setUserAccount(userAccount);
                     serviceReq.setServiceId(this.systemService);
-                    serviceReq.setSourceServer(sourceServer);
+                    serviceReq.setTargetServer(server);
                     serviceReq.setApplicationId(appConfig.getApplicationId());
                     serviceReq.setApplicationName(appConfig.getApplicationName());
 

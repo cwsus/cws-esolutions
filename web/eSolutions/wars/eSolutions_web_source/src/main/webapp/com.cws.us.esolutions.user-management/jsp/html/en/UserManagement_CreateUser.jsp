@@ -52,12 +52,12 @@
 	            <form:form id="createNewUser" name="createNewUser" action="${pageContext.request.contextPath}/ui/user-management/add-user" method="post" autocomplete="off">
 	                <table id="addUser">
 	                    <tr>
-	                        <td><label id="txtUsername"><spring:message code="admin.account.user.id" /></label></td>
+	                        <td><label id="txtUsername"><spring:message code="user.mgmt.user.name" /></label></td>
 	                        <td><form:input path="username" type="text" size="20" value="" name="username" id="username" /></td>
 	                        <td><form:errors path="username" cssClass="validationError" /></td>
 	                    </tr>
 	                    <tr>
-	                        <td><label id="txtUserRole"><spring:message code="admin.account.user.role" /></label></td>
+	                        <td><label id="txtUserRole"><spring:message code="user.mgmt.user.role" /></label></td>
 	                        <td>
 	                            <form:select path="role" name="role" id="role">
 	                                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
@@ -71,7 +71,7 @@
 	                    </tr>
 	                    <%--
 	                    <tr>
-	                        <td><label id="createUserUnit"><spring:message code="admin.account.user.dept" /></label></td>
+	                        <td><label id="createUserUnit"><spring:message code="user.mgmt.user.dept" /></label></td>
 	                        <td>
 	                            <form:select path="dept" name="dept" id="dept">
 	                                <option><spring:message code="theme.option.select" /></option>
@@ -83,37 +83,24 @@
 	                        </td>
 	                        <td><form:errors path="dept" cssClass="validationError" /></td>
 	                    </tr>
-	                    <tr>
-	                        <td><label id="createUserGroup"><spring:message code="admin.account.user.group" /></label></td>
-	                        <td>
-	                            <form:select path="group" name="group" id="group">
-	                                <option><spring:message code="theme.option.select" /></option>
-	                                <option><spring:message code="theme.option.spacer" /></option>
-	                                <c:forEach var="group" items="${selectableGroups}">
-	                                    <option value="${group}">${group}</option>
-	                                </c:forEach>
-	                            </form:select>
-	                        </td>
-	                        <td><form:errors path="group" cssClass="validationError" /></td>
-	                    </tr>
 	                    --%>
 	                    <tr>
-	                        <td><label id="txtFirstName"><spring:message code="admin.account.user.firstname" /></label></td>
+	                        <td><label id="txtFirstName"><spring:message code="user.mgmt.user.givenname" /></label></td>
 	                        <td><form:input path="givenName" type="text" size="20" value="" name="givenName" id="givenName" /></td>
 	                        <td><form:errors path="givenName" cssClass="validationError" /></td>
 	                    </tr>
 	                    <tr>
-	                        <td><label id="txtLastName"><spring:message code="admin.account.user.lastname" /></label></td>
+	                        <td><label id="txtLastName"><spring:message code="user.mgmt.user.surname" /></label></td>
 	                        <td><form:input path="surname" type="text" size="20" value="" name="surname" id="surname" /></td>
 	                        <td><form:errors path="surname" cssClass="validationError" /></td>
 	                    </tr>
 	                    <tr>
-	                        <td><label id="txtEmailAddr"><spring:message code="admin.account.user.email" /></label></td>
+	                        <td><label id="txtEmailAddr"><spring:message code="user.mgmt.user.email" /></label></td>
 	                        <td><form:input path="emailAddr" type="text" size="20" value="" name="emailAddr" id="emailAddr" /></td>
 	                        <td><form:errors path="emailAddr" cssClass="validationError" /></td>
 	                    </tr>
 	                    <tr>
-	                        <td><label id="txtLockout"><spring:message code="admin.account.user.locked" /></label></td>
+	                        <td><label id="txtLockout"><spring:message code="user.mgmt.user.locked" /></label></td>
 	                        <td><form:checkbox path="suspended" name="suspended" id="suspended" /></td>
 	                        <td><form:errors path="suspended" cssClass="validationError" /></td>
 	                    </tr>
@@ -135,7 +122,7 @@
 	            </form:form>
 	        </c:when>
 	        <c:otherwise>
-	            <spring:message code="admin.account.not.authorized" />
+	            <spring:message code="theme.system.request.unauthorized" />
 	            <c:if test="${requestScope.isUserLoggedIn != 'true'}">
 	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
 	            </c:if>
@@ -147,8 +134,8 @@
         <div id="content-left">
             <ul>
                 <li>
-                    <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
-                        title="<spring:message code='admin.account.create.user' />"><spring:message code="admin.account.create.user" /></a>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/default"
+                        title="<spring:message code='user.mgmt.search.header' />"><spring:message code="user.mgmt.search.header" /></a>
                 </li>
             </ul>
         </div>

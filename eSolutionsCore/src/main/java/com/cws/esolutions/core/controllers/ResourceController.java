@@ -25,7 +25,6 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import java.util.ResourceBundle;
 import javax.naming.InitialContext;
-import javax.servlet.ServletContext;
 import javax.naming.NamingException;
 import com.unboundid.ldap.sdk.ResultCode;
 import java.util.MissingResourceException;

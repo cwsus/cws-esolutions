@@ -24,7 +24,7 @@ import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.core.webservice.impl.WebServiceRequestProcessorImpl;
+import com.cws.esolutions.core.webservice.impl.CoreRequestProcessorService;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.agent.listener
@@ -89,7 +89,7 @@ public class CoreWebService
 
         try
         {
-            Endpoint endPoint = Endpoint.publish(serviceURL, new WebServiceRequestProcessorImpl());
+            Endpoint endPoint = Endpoint.publish(serviceURL, new CoreRequestProcessorService());
 
             if (DEBUG)
             {

@@ -67,7 +67,7 @@
                         <spring:message code='theme.navbar.system-mgmt' /></a>
                 </li>
                 <li>
-                    <a href="${pageContext.request.contextPath}/ui/messaging/default" title="<spring:message code='theme.navbar.messaging' />">
+                    <a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="<spring:message code='theme.navbar.messaging' />">
                         <spring:message code='theme.navbar.messaging' /></a>
                 </li>
             </c:if>

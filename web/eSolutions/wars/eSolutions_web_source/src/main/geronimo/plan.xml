@@ -10,12 +10,6 @@
         <dep:dependencies>
             <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>sharedlib-extender</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
                 <dep:type>car</dep:type>
@@ -41,6 +35,16 @@
         </dep:dependencies>
     </dep:environment>
     <context-root>esolutions</context-root>
+    <service-ref>
+        <service-ref-name>services/AgentRequestProcessor</service-ref-name>
+        <port>
+            <port-name>AgentRequestProcessorPort</port-name>
+            <protocol>http</protocol>
+            <host>localhost</host>
+            <port>10000</port>
+            <uri>/esolutions/ws/service</uri>
+        </port>
+    </service-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>

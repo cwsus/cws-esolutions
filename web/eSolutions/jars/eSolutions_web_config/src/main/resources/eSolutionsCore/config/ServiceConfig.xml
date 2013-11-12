@@ -13,7 +13,7 @@
     </application-config>
 
     <mq-config>
-        <connectionName>jms/mqConnectionFactory</connectionName>
+        <connectionName>DefaultActiveMQConnectionFactory</connectionName>
         <requestQueue>jms/requestQueue</requestQueue>
         <responseQueue>jms/responseQueue</responseQueue>
     </mq-config>

@@ -68,7 +68,7 @@
 	            </tr>
 	        </table>
 
-	        <table id="inputItems" name="inputItems">
+	        <table id="inputItems">
 	            <tr>
 	                <td>
 	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
@@ -86,16 +86,26 @@
 
     <div id="content-left">
         <ul>
-        <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-            title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
-        <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
-            title="<spring:message code='select.request.type.telnet' />"><spring:message code='select.request.type.telnet' /></a>
-        <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
-            title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a>
-        <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
-            title="<spring:message code='select.request.install.server' />"><spring:message code="select.request.install.server" /></a>
-        <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
-            title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+                    title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
+                    title="<spring:message code='select.request.type.telnet' />"><spring:message code='select.request.type.telnet' /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
+                    title="<spring:message code='select.request.type.date' />"><spring:message code='select.request.type.date' /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
+                    title="<spring:message code='select.request.install.server' />"><spring:message code="select.request.install.server" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
+                    title="<spring:message code='select.request.server.control' />"><spring:message code='select.request.server.control' /></a>
+            </li>
         </ul>
     </div>
 </div>

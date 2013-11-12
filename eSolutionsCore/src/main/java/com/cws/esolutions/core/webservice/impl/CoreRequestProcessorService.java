@@ -15,28 +15,25 @@
  */
 package com.cws.esolutions.core.webservice.impl;
 
-import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
-import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
+import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-import com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor;
+import com.cws.esolutions.core.webservice.interfaces.ICoreRequestProcessorService;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.listeners
- * requestProcessor.java
- *
- *
+ * com.cws.esolutions.core.webservice.impl
+ * CoreRequestProcessorService.java
  *
  * $Id: $
  * $Author: $
@@ -50,17 +47,19 @@ import com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor
  * kh05451 @ Nov 21, 2012 3:47:42 PM
  *     Created.
  */
-@WebService(endpointInterface = "com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor", portName = "AgentRequestProcessorPort", serviceName = "AgentRequestProcessor", targetNamespace = "http://agent.caspersbox.corp/s?q=esolutions")
-public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcessor
+@WebService(serviceName = "CoreRequestProcessorService",
+    portName="CoreRequestProcessorServicePort",
+    endpointInterface = "com.cws.esolutions.core.webservice.interfaces.ICoreRequestProcessorService",
+    targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
+    wsdlLocation = "WEB-INF/wsdl/CoreRequestProcessorService.wsdl")
+public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
     /*
      * Authentication Processing
      */
-    @WebMethod
-    @Override
     public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
         
         if (DEBUG)
         {
@@ -78,11 +77,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#obtainUserSecurityConfig(final AuthenticationRequest request)";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#obtainUserSecurityConfig(final AuthenticationRequest request)";
         
         if (DEBUG)
         {
@@ -100,11 +97,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#verifyUserSecurityConfig(final AuthenticationRequest request)";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#verifyUserSecurityConfig(final AuthenticationRequest request)";
         
         if (DEBUG)
         {
@@ -122,11 +117,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
 
         if (DEBUG)
         {
@@ -144,11 +137,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getDataFromDatabase(final DNSServiceRequest request)";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#getDataFromDatabase(final DNSServiceRequest request)";
 
         if (DEBUG)
         {
@@ -166,11 +157,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#createNewService(final DNSServiceRequest request) throws DNSServiceException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#createNewService(final DNSServiceRequest request) throws DNSServiceException";
 
         if (DEBUG)
         {
@@ -188,11 +177,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#pushNewService(final DNSServiceRequest request) throws DNSServiceException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#pushNewService(final DNSServiceRequest request) throws DNSServiceException";
 
         if (DEBUG)
         {
@@ -210,11 +197,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException";
 
         if (DEBUG)
         {
@@ -232,11 +217,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -254,11 +237,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -276,11 +257,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -298,11 +277,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -320,11 +297,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
         if (DEBUG)
         {
@@ -341,11 +316,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#doArticleSearch(final request request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doArticleSearch(final request request) throws SearchRequestException";
 
         if (DEBUG)
         {
@@ -363,11 +336,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#doServerSearch(final request request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doServerSearch(final request request) throws SearchRequestException";
 
         if (DEBUG)
         {
@@ -385,11 +356,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#doMessageSearch(final SearchRequest request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doMessageSearch(final SearchRequest request) throws SearchRequestException";
 
         if (DEBUG)
         {
@@ -407,11 +376,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#doApplicationSearch(final SearchRequest request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doApplicationSearch(final SearchRequest request) throws SearchRequestException";
         
         if (DEBUG)
         {
@@ -429,11 +396,9 @@ public class WebServiceRequestProcessorImpl implements IWebServiceRequestProcess
         return response;
     }
 
-    @WebMethod
-    @Override
     public SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = IWebServiceRequestProcessor.CNAME + "#doProjectSearch(final SearchRequest request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doProjectSearch(final SearchRequest request) throws SearchRequestException";
         
         if (DEBUG)
         {

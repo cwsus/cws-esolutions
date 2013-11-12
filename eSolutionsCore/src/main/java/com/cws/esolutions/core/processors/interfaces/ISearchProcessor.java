@@ -60,7 +60,7 @@ public interface ISearchProcessor
 
     SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException;
 
-    SearchResponse doArticleSearch(final SearchRequest searchRequest) throws SearchRequestException;
+    SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException;
 
-    SearchResponse doServerSearch(final SearchRequest searchRequest) throws SearchRequestException;
+    SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException;
 }

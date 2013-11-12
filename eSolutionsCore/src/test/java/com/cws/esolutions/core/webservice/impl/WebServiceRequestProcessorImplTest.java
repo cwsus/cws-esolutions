@@ -34,7 +34,7 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-import com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor;
+import com.cws.esolutions.core.webservice.interfaces.ICoreRequestProcessorService;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.webservice.impl
@@ -54,7 +54,7 @@ import com.cws.esolutions.core.webservice.interfaces.IWebServiceRequestProcessor
  */
 public class WebServiceRequestProcessorImplTest
 {
-    private IWebServiceRequestProcessor webService = null;
+    private ICoreRequestProcessorService webService = null;
     private RequestHostInfo reqInfo = new RequestHostInfo();
 
     @Before
@@ -66,7 +66,7 @@ public class WebServiceRequestProcessorImplTest
         URL url = new URL("http://localhost:8181/eSolutions/eSolutionsService?wsdl");
         QName qName = new QName("http://agent.caspersbox.corp/s?q=esolutions", "AgentRequestProcessor");
         Service service = Service.create(url, qName);
-        webService = service.getPort(IWebServiceRequestProcessor.class);
+        webService = service.getPort(ICoreRequestProcessorService.class);
     }
 
     @Test

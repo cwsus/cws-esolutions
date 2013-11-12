@@ -33,8 +33,8 @@ import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.listeners
- * IWebServiceRequestProcessor.java
+ * com.cws.esolutions.core.webservice.interfaces
+ * ICoreRequestProcessorService.java
  *
  * $Id: $
  * $Author: $
@@ -48,10 +48,10 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * kh05451 @ Jan 2, 2013 1:49:02 PM
  *     Created.
  */
-@WebService
-public interface IWebServiceRequestProcessor extends IDNSServiceRequestProcessor, IKnowledgeBaseProcessor, ISearchProcessor, IAuthenticationProcessor
+@WebService(name="CoreRequestProcessorPortType", targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions")
+public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, IKnowledgeBaseProcessor, ISearchProcessor, IAuthenticationProcessor
 {
-    static final String CNAME = IWebServiceRequestProcessor.class.getName();
+    static final String CNAME = ICoreRequestProcessorService.class.getName();
 
     static final ISearchProcessor searchSvc = new SearchProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();

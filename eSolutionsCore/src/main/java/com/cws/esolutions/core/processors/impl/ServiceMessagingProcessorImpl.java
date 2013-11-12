@@ -17,30 +17,25 @@ package com.cws.esolutions.core.processors.impl;
 
 import java.util.List;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import javax.mail.MessagingException;
-import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
@@ -123,45 +118,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 }
                 else
                 {
-                    // send an email to the requestor with the information
-                    // re-structure the subject just a bit
-                    final String emailMessageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("emailMessageId: {}", emailMessageId);
-                    }
-
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageDate(Calendar.getInstance().getTime());
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getEmailAliasId())));
-                    emailMessage.setMessageId(emailMessageId);
-                    emailMessage.setMessageSubject("[ " + emailMessageId + "] - Service message submission");
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", message);
-                    }
-
-                    try
-                    {
-                        EmailUtils.sendEmailMessage(emailMessage);
-                    }
-                    catch (MessagingException mx)
-                    {
-                        ERROR_RECORDER.error(mx.getMessage(), mx);
-                    }
-
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setMessageId(message.getMessageId());
                     response.setResponse("Successfully inserted contact message into datastore.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("MessagingResponse: {}", response);
-                    }
                 }
             }
             else

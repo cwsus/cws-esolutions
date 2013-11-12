@@ -345,7 +345,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return responseData;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public synchronized List<Object> getInstalledServer(final String attribute) throws SQLException
     {

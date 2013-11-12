@@ -1,0 +1,447 @@
+<definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+    xmlns:wsp="http://www.w3.org/ns/ws-policy"
+    xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy"
+    xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:tns="http://esolutions.caspersbox.corp/s?q=esolutions"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    targetNamespace="http://esolutions.caspersbox.corp/s?q=esolutions"
+    name="CoreRequestProcessorService">
+    <message name="performLookup">
+        <part name="parameters" element="tns:performLookup" />
+    </message>
+    <message name="performLookupResponse">
+        <part name="parameters" element="tns:performLookupResponse" />
+    </message>
+    <message name="DNSServiceException">
+        <part name="fault" element="tns:DNSServiceException" />
+    </message>
+    <message name="getDataFromDatabase">
+        <part name="parameters" element="tns:getDataFromDatabase" />
+    </message>
+    <message name="getDataFromDatabaseResponse">
+        <part name="parameters" element="tns:getDataFromDatabaseResponse" />
+    </message>
+    <message name="createNewService">
+        <part name="parameters" element="tns:createNewService" />
+    </message>
+    <message name="createNewServiceResponse">
+        <part name="parameters" element="tns:createNewServiceResponse" />
+    </message>
+    <message name="pushNewService">
+        <part name="parameters" element="tns:pushNewService" />
+    </message>
+    <message name="pushNewServiceResponse">
+        <part name="parameters" element="tns:pushNewServiceResponse" />
+    </message>
+    <message name="performSiteTransfer">
+        <part name="parameters" element="tns:performSiteTransfer" />
+    </message>
+    <message name="performSiteTransferResponse">
+        <part name="parameters" element="tns:performSiteTransferResponse" />
+    </message>
+    <message name="addNewArticle">
+        <part name="parameters" element="tns:addNewArticle" />
+    </message>
+    <message name="addNewArticleResponse">
+        <part name="parameters" element="tns:addNewArticleResponse" />
+    </message>
+    <message name="KnowledgeBaseException">
+        <part name="fault" element="tns:KnowledgeBaseException" />
+    </message>
+    <message name="updateArticle">
+        <part name="parameters" element="tns:updateArticle" />
+    </message>
+    <message name="updateArticleResponse">
+        <part name="parameters" element="tns:updateArticleResponse" />
+    </message>
+    <message name="updateArticleStatus">
+        <part name="parameters" element="tns:updateArticleStatus" />
+    </message>
+    <message name="updateArticleStatusResponse">
+        <part name="parameters" element="tns:updateArticleStatusResponse" />
+    </message>
+    <message name="getArticle">
+        <part name="parameters" element="tns:getArticle" />
+    </message>
+    <message name="getArticleResponse">
+        <part name="parameters" element="tns:getArticleResponse" />
+    </message>
+    <message name="getPendingArticles">
+        <part name="parameters" element="tns:getPendingArticles" />
+    </message>
+    <message name="getPendingArticlesResponse">
+        <part name="parameters" element="tns:getPendingArticlesResponse" />
+    </message>
+    <message name="doArticleSearch">
+        <part name="parameters" element="tns:doArticleSearch" />
+    </message>
+    <message name="doArticleSearchResponse">
+        <part name="parameters" element="tns:doArticleSearchResponse" />
+    </message>
+    <message name="SearchRequestException">
+        <part name="fault" element="tns:SearchRequestException" />
+    </message>
+    <message name="doServerSearch">
+        <part name="parameters" element="tns:doServerSearch" />
+    </message>
+    <message name="doServerSearchResponse">
+        <part name="parameters" element="tns:doServerSearchResponse" />
+    </message>
+    <message name="doMessageSearch">
+        <part name="parameters" element="tns:doMessageSearch" />
+    </message>
+    <message name="doMessageSearchResponse">
+        <part name="parameters" element="tns:doMessageSearchResponse" />
+    </message>
+    <message name="doApplicationSearch">
+        <part name="parameters" element="tns:doApplicationSearch" />
+    </message>
+    <message name="doApplicationSearchResponse">
+        <part name="parameters" element="tns:doApplicationSearchResponse" />
+    </message>
+    <message name="doProjectSearch">
+        <part name="parameters" element="tns:doProjectSearch" />
+    </message>
+    <message name="doProjectSearchResponse">
+        <part name="parameters" element="tns:doProjectSearchResponse" />
+    </message>
+    <message name="processAgentLogon">
+        <part name="parameters" element="tns:processAgentLogon" />
+    </message>
+    <message name="processAgentLogonResponse">
+        <part name="parameters" element="tns:processAgentLogonResponse" />
+    </message>
+    <message name="AuthenticationException">
+        <part name="fault" element="tns:AuthenticationException" />
+    </message>
+    <message name="obtainUserSecurityConfig">
+        <part name="parameters" element="tns:obtainUserSecurityConfig" />
+    </message>
+    <message name="obtainUserSecurityConfigResponse">
+        <part name="parameters" element="tns:obtainUserSecurityConfigResponse" />
+    </message>
+    <message name="verifyUserSecurityConfig">
+        <part name="parameters" element="tns:verifyUserSecurityConfig" />
+    </message>
+    <message name="verifyUserSecurityConfigResponse">
+        <part name="parameters" element="tns:verifyUserSecurityConfigResponse" />
+    </message>
+    <portType name="CoreRequestProcessorServiceType">
+        <operation name="performLookup">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performLookupRequest" message="tns:performLookup" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performLookupResponse" message="tns:performLookupResponse" />
+            <fault message="tns:DNSServiceException" name="DNSServiceException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performLookup/Fault/DNSServiceException" />
+        </operation>
+        <operation name="getDataFromDatabase">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getDataFromDatabaseRequest" message="tns:getDataFromDatabase" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getDataFromDatabaseResponse" message="tns:getDataFromDatabaseResponse" />
+            <fault message="tns:DNSServiceException" name="DNSServiceException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getDataFromDatabase/Fault/DNSServiceException" />
+        </operation>
+        <operation name="createNewService">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/createNewServiceRequest" message="tns:createNewService" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/createNewServiceResponse" message="tns:createNewServiceResponse" />
+            <fault message="tns:DNSServiceException" name="DNSServiceException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/createNewService/Fault/DNSServiceException" />
+        </operation>
+        <operation name="pushNewService">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/pushNewServiceRequest" message="tns:pushNewService" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/pushNewServiceResponse" message="tns:pushNewServiceResponse" />
+            <fault message="tns:DNSServiceException" name="DNSServiceException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/pushNewService/Fault/DNSServiceException" />
+        </operation>
+        <operation name="performSiteTransfer">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performSiteTransferRequest" message="tns:performSiteTransfer" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performSiteTransferResponse" message="tns:performSiteTransferResponse" />
+            <fault message="tns:DNSServiceException" name="DNSServiceException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/performSiteTransfer/Fault/DNSServiceException" />
+        </operation>
+        <operation name="addNewArticle">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/addNewArticleRequest" message="tns:addNewArticle" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/addNewArticleResponse" message="tns:addNewArticleResponse" />
+            <fault message="tns:KnowledgeBaseException" name="KnowledgeBaseException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/addNewArticle/Fault/KnowledgeBaseException" />
+        </operation>
+        <operation name="updateArticle">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticleRequest" message="tns:updateArticle" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticleResponse" message="tns:updateArticleResponse" />
+            <fault message="tns:KnowledgeBaseException" name="KnowledgeBaseException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticle/Fault/KnowledgeBaseException" />
+        </operation>
+        <operation name="updateArticleStatus">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticleStatusRequest" message="tns:updateArticleStatus" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticleStatusResponse" message="tns:updateArticleStatusResponse" />
+            <fault message="tns:KnowledgeBaseException" name="KnowledgeBaseException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/updateArticleStatus/Fault/KnowledgeBaseException" />
+        </operation>
+        <operation name="getArticle">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getArticleRequest" message="tns:getArticle" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getArticleResponse" message="tns:getArticleResponse" />
+            <fault message="tns:KnowledgeBaseException" name="KnowledgeBaseException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getArticle/Fault/KnowledgeBaseException" />
+        </operation>
+        <operation name="getPendingArticles">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getPendingArticlesRequest" message="tns:getPendingArticles" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getPendingArticlesResponse" message="tns:getPendingArticlesResponse" />
+            <fault message="tns:KnowledgeBaseException" name="KnowledgeBaseException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/getPendingArticles/Fault/KnowledgeBaseException" />
+        </operation>
+        <operation name="doArticleSearch">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doArticleSearchRequest" message="tns:doArticleSearch" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doArticleSearchResponse" message="tns:doArticleSearchResponse" />
+            <fault message="tns:SearchRequestException" name="SearchRequestException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doArticleSearch/Fault/SearchRequestException" />
+        </operation>
+        <operation name="doServerSearch">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doServerSearchRequest" message="tns:doServerSearch" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doServerSearchResponse" message="tns:doServerSearchResponse" />
+            <fault message="tns:SearchRequestException" name="SearchRequestException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doServerSearch/Fault/SearchRequestException" />
+        </operation>
+        <operation name="doMessageSearch">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doMessageSearchRequest" message="tns:doMessageSearch" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doMessageSearchResponse" message="tns:doMessageSearchResponse" />
+            <fault message="tns:SearchRequestException" name="SearchRequestException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doMessageSearch/Fault/SearchRequestException" />
+        </operation>
+        <operation name="doApplicationSearch">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doApplicationSearchRequest" message="tns:doApplicationSearch" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doApplicationSearchResponse" message="tns:doApplicationSearchResponse" />
+            <fault message="tns:SearchRequestException" name="SearchRequestException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doApplicationSearch/Fault/SearchRequestException" />
+        </operation>
+        <operation name="doProjectSearch">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doProjectSearchRequest" message="tns:doProjectSearch" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doProjectSearchResponse" message="tns:doProjectSearchResponse" />
+            <fault message="tns:SearchRequestException" name="SearchRequestException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/doProjectSearch/Fault/SearchRequestException" />
+        </operation>
+        <operation name="processAgentLogon">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/processAgentLogonRequest" message="tns:processAgentLogon" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/processAgentLogonResponse" message="tns:processAgentLogonResponse" />
+            <fault message="tns:AuthenticationException" name="AuthenticationException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/processAgentLogon/Fault/AuthenticationException" />
+        </operation>
+        <operation name="obtainUserSecurityConfig">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/obtainUserSecurityConfigRequest" message="tns:obtainUserSecurityConfig" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/obtainUserSecurityConfigResponse" message="tns:obtainUserSecurityConfigResponse" />
+            <fault message="tns:AuthenticationException" name="AuthenticationException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/obtainUserSecurityConfig/Fault/AuthenticationException" />
+        </operation>
+        <operation name="verifyUserSecurityConfig">
+            <input wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/verifyUserSecurityConfigRequest" message="tns:verifyUserSecurityConfig" />
+            <output wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/verifyUserSecurityConfigResponse" message="tns:verifyUserSecurityConfigResponse" />
+            <fault message="tns:AuthenticationException" name="AuthenticationException" wsam:Action="http://esolutions.caspersbox.corp/s?q=esolutions/CoreRequestProcessorServicePortType/verifyUserSecurityConfig/Fault/AuthenticationException" />
+        </operation>
+    </portType>
+    <binding name="CoreRequestProcessorPortBinding" type="tns:CoreRequestProcessorPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+            <operation name="performLookup">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="getDataFromDatabase">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="createNewService">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="pushNewService">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="performSiteTransfer">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="addNewArticle">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="updateArticle">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="updateArticleStatus">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="getArticle">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="getPendingArticles">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="doArticleSearch">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="doServerSearch">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="doMessageSearch">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="doApplicationSearch">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="doProjectSearch">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="processAgentLogon">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="obtainUserSecurityConfig">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal" />
+            </fault>
+        </operation>
+        <operation name="verifyUserSecurityConfig">
+            <soap:operation soapAction="" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+            <fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal" />
+            </fault>
+        </operation>
+    </binding>
+    <service name="CoreRequestProcessorService">
+        <port name="CoreRequestProcessorServicePort" binding="tns:CoreRequestProcessorPortBinding">
+            <soap:address location="http://127.0.0.1:20000/esolutions/ws/service" />
+        </port>
+    </service>
+</definitions>
