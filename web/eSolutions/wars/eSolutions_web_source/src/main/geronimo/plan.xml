@@ -2,9 +2,9 @@
 <web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1">
     <dep:environment xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <dep:moduleId>
-            <dep:groupId>${pom.groupId}</dep:groupId>
-            <dep:artifactId>${pom.artifactId}</dep:artifactId>
-            <dep:version>${version}</dep:version>
+            <dep:groupId>eSolutions</dep:groupId>
+            <dep:artifactId>eSolutions_web_source</dep:artifactId>
+            <dep:version>1.0</dep:version>
             <dep:type>war</dep:type>
         </dep:moduleId>
         <dep:dependencies>
@@ -41,16 +41,6 @@
         </dep:dependencies>
     </dep:environment>
     <context-root>esolutions</context-root>
-    <service-ref>
-        <service-ref-name>services/CoreService</service-ref-name>
-        <port>
-            <port-name>AgentRequestProcessorPort</port-name>
-            <protocol>http</protocol>
-            <host>192.168.10.51</host>
-            <port>8080</port>
-            <uri>/ws/service</uri>
-        </port>
-    </service-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
