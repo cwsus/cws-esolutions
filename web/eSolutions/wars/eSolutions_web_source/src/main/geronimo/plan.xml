@@ -42,16 +42,6 @@
         <dep:inverse-classloading/>
     </dep:environment>
     <context-root>esolutions</context-root>
-    <service-ref>
-        <service-ref-name>services/CoreRequestProcessorService</service-ref-name>
-        <port>
-            <port-name>CoreRequestProcessorServicePort</port-name>
-            <protocol>http</protocol>
-            <host>localhost</host>
-            <port>10000</port>
-            <uri>/esolutions/ws/service</uri>
-        </port>
-    </service-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
