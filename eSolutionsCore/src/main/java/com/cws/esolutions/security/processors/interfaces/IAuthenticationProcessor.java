@@ -16,6 +16,7 @@
 package com.cws.esolutions.security.processors.interfaces;
 
 import org.slf4j.Logger;
+import javax.jws.WebMethod;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.AuthData;
@@ -92,9 +93,12 @@ public interface IAuthenticationProcessor
      * @throws AuthorizationException
      * @return LoginResponse
      */
+    @WebMethod
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
 
+    @WebMethod
     AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 
+    @WebMethod
     AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 }

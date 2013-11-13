@@ -16,6 +16,7 @@
 package com.cws.esolutions.core.processors.interfaces;
 
 import org.slf4j.Logger;
+import javax.jws.WebMethod;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -54,13 +55,18 @@ public interface ISearchProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @WebMethod
     SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException;
 
+    @WebMethod
     SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException;
 
+    @WebMethod
     SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException;
 
+    @WebMethod
     SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException;
 
+    @WebMethod
     SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException;
 }
