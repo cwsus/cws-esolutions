@@ -16,7 +16,6 @@
 package com.cws.esolutions.core.processors.interfaces;
 
 import org.slf4j.Logger;
-import javax.jws.WebMethod;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -72,7 +71,6 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod(operationName = "addNewArticle")
     KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -80,7 +78,6 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod(operationName = "updateArticle")
     KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -88,7 +85,6 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod(operationName = "updateArticleStatus")
     KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -96,7 +92,6 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod(operationName = "getArticle")
     KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -104,6 +99,5 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod(operationName = "getPendingArticles")
     KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 }

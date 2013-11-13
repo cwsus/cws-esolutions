@@ -16,7 +16,6 @@
 package com.cws.esolutions.security.processors.interfaces;
 
 import org.slf4j.Logger;
-import javax.jws.WebMethod;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.AuthData;
@@ -29,15 +28,15 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /*
@@ -93,12 +92,9 @@ public interface IAuthenticationProcessor
      * @throws AuthorizationException
      * @return LoginResponse
      */
-    @WebMethod(operationName = "processAgentLogon")
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
 
-    @WebMethod(operationName = "obtainUserSecurityConfig")
     AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 
-    @WebMethod(operationName = "verifyUserSecurityConfig")
     AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 }
