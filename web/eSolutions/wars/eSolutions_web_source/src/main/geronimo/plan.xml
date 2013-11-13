@@ -39,6 +39,10 @@
                 <dep:type>car</dep:type>
             </dep:dependency>
         </dep:dependencies>
+        <hidden-classes>
+            <filter>org.apache.log4j</filter>
+            <filter>log4j</filter>
+        </hidden-classes>
         <dep:inverse-classloading/>
     </dep:environment>
     <context-root>esolutions</context-root>
