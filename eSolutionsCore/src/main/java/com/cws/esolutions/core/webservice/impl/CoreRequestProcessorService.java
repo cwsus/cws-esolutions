@@ -48,10 +48,9 @@ import com.cws.esolutions.core.webservice.interfaces.ICoreRequestProcessorServic
  *     Created.
  */
 @WebService(serviceName = "CoreRequestProcessorService",
-    portName="CoreRequestProcessorServicePort",
     endpointInterface = "com.cws.esolutions.core.webservice.interfaces.ICoreRequestProcessorService",
-    targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
-    wsdlLocation = "WEB-INF/wsdl/CoreRequestProcessorService.wsdl")
+    portName="CoreRequestProcessorServicePort",
+    targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions")
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
     /*
