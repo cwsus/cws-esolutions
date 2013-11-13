@@ -55,18 +55,18 @@ public interface ISearchProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    @WebMethod
+    @WebMethod(operationName = "doApplicationSearch")
     SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException;
 
-    @WebMethod
+    @WebMethod(operationName = "doProjectSearch")
     SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException;
 
-    @WebMethod
+    @WebMethod(operationName = "doMessageSearch")
     SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException;
 
-    @WebMethod
+    @WebMethod(operationName = "doArticleSearch")
     SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException;
 
-    @WebMethod
+    @WebMethod(operationName = "doServerSearch")
     SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException;
 }

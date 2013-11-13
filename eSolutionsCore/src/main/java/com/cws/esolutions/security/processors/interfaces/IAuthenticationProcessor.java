@@ -93,12 +93,12 @@ public interface IAuthenticationProcessor
      * @throws AuthorizationException
      * @return LoginResponse
      */
-    @WebMethod
+    @WebMethod(operationName = "processAgentLogon")
     AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException;
 
-    @WebMethod
+    @WebMethod(operationName = "obtainUserSecurityConfig")
     AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 
-    @WebMethod
+    @WebMethod(operationName = "verifyUserSecurityConfig")
     AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException;
 }

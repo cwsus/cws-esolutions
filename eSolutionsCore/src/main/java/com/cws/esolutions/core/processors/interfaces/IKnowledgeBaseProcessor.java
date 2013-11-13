@@ -72,7 +72,7 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod
+    @WebMethod(operationName = "addNewArticle")
     KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -80,7 +80,7 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod
+    @WebMethod(operationName = "updateArticle")
     KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -88,7 +88,7 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod
+    @WebMethod(operationName = "updateArticleStatus")
     KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -96,7 +96,7 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod
+    @WebMethod(operationName = "getArticle")
     KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
@@ -104,6 +104,6 @@ public interface IKnowledgeBaseProcessor
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException
      */
-    @WebMethod
+    @WebMethod(operationName = "getPendingArticles")
     KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 }

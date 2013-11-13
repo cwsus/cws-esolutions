@@ -83,7 +83,7 @@ public interface IDNSServiceRequestProcessor
      * @return <code>DNSServiceResponse</code> containing the response information, or error code
      * @throws DNSServiceException if an error occurs during processing
      */
-    @WebMethod
+    @WebMethod(operationName = "performLookup")
     DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
@@ -96,7 +96,7 @@ public interface IDNSServiceRequestProcessor
      * @return <code>DNSServiceResponse</code> containing the response information, or error code
      * @throws DNSServiceException if an error occurs during processing
      */
-    @WebMethod
+    @WebMethod(operationName = "getDataFromDatabase")
     DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
@@ -109,7 +109,7 @@ public interface IDNSServiceRequestProcessor
      * @return <code>DNSServiceResponse</code> - The response object containing data
      * @throws DNSServiceException if an exception occurs performing the create operation
      */
-    @WebMethod
+    @WebMethod(operationName = "createNewService")
     DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
@@ -120,7 +120,7 @@ public interface IDNSServiceRequestProcessor
      * @return <code>DNSServiceResponse</code> containing the response information, or error code
      * @throws DNSServiceException if an error occurs during processing
      */
-    @WebMethod
+    @WebMethod(operationName = "pushNewService")
     DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
@@ -131,6 +131,6 @@ public interface IDNSServiceRequestProcessor
      * @return <code>DNSServiceResponse</code> containing the response information, or error code
      * @throws DNSServiceException if an error occurs during processing
      */
-    @WebMethod
+    @WebMethod(operationName = "performSiteTransfer")
     DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException;
 }
