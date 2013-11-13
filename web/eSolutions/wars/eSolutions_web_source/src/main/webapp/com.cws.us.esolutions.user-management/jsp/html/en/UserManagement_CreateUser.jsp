@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="admin.create.new.account" /></div>
+<div id="InfoLine"><spring:message code="user.mgmt.create.user" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -60,7 +60,7 @@
 	                        <td><label id="txtUserRole"><spring:message code="user.mgmt.user.role" /></label></td>
 	                        <td>
 	                            <form:select path="role" name="role" id="role">
-	                                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='admin.account.user.select' /></option>
+	                                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='theme.option.select' /></option>
 	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="role" items="${roles}">
 	                                    <option value="${role}">${role}</option>

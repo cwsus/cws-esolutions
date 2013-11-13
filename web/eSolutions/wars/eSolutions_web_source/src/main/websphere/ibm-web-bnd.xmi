@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<webappbnd:WebAppBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappbnd="webappbnd.xmi" xmi:id="WebAppBinding_1" virtualHostName="esolutions">
+<webappbnd:WebAppBinding xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:webappbnd="webappbnd.xmi" xmi:id="WebAppBinding_1" virtualHostName="@vhost.name@">
     <webapp href="WEB-INF/web.xml#eSolutions_web_source"/>
     <resRefBindings xmi:id="ResourceRefBinding_esolutionssvc" jndiName="jdbc/esolutionssvc">
         <bindingResourceRef href="WEB-INF/web.xml#esolutionssvc" />

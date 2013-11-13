@@ -245,7 +245,7 @@
                         <compilerArgs>
                             <arg>-verbose</arg>
                             <arg>-g</arg>
-                            <arg>-Xlint</arg>
+                            <arg>-Xlint:all</arg>
                         </compilerArgs>
                         <debug>true</debug>
                         <optimize>true</optimize>

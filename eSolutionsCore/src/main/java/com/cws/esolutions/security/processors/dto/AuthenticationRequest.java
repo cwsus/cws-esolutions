@@ -16,8 +16,11 @@
 package com.cws.esolutions.security.processors.dto;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
+
 import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -45,6 +48,7 @@ import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
  */
 public class AuthenticationRequest implements Serializable
 {
+    private int count = 0;
     private int timeoutValue = 0;
     private String resetSmsCode = null;
     private LoginType loginType = null;
@@ -192,6 +196,19 @@ public class AuthenticationRequest implements Serializable
         this.resetSmsCode = value;
     }
 
+    public final void setCount(final int value)
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#setCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.count = value;
+    }
+
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AuthenticationRequest.CNAME + "#getHostInfo()";
@@ -320,6 +337,19 @@ public class AuthenticationRequest implements Serializable
         }
 
         return this.resetSmsCode;
+    }
+
+    public final int getCount()
+    {
+        final String methodName = AuthenticationRequest.CNAME + "#getCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.count);
+        }
+
+        return this.count;
     }
 
     @Override

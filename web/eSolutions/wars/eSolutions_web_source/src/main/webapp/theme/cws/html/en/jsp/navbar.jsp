@@ -36,7 +36,7 @@
                     <spring:message code='theme.navbar.login' /></a>
             </li>
         </c:if>
-        <c:if test="${not empty sessionScope.userAccount and sessionScope.userAccount.status ne 'EXPIRED'}">
+        <c:if test="${not empty sessionScope.userAccount and sessionScope.userAccount.status eq 'SUCCESS'}">
             <li>
                 <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />">
                     <spring:message code='theme.navbar.home' /></a>

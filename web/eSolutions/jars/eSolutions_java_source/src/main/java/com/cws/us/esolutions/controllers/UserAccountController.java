@@ -31,6 +31,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.us.esolutions.validators.PasswordValidator;
+import com.cws.us.esolutions.validators.TelephoneValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -73,6 +74,7 @@ public class UserAccountController
 {
     private String myAccountPage = null;
     private String changeEmailPage = null;
+    private String changeContactPage = null;
 	private String changeKeysComplete = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
@@ -80,6 +82,7 @@ public class UserAccountController
     private String changeEmailComplete = null;
     private String changePasswordComplete = null;
     private String changeSecurityComplete = null;
+    private TelephoneValidator telValidator = null;
     private ApplicationServiceBean appConfig = null;
     private PasswordValidator passwordValidator = null;
     private EmailAddressValidator emailValidator = null;
@@ -141,6 +144,19 @@ public class UserAccountController
         }
 
         this.changePasswordPage = value;
+    }
+
+    public final void setChangeContactPage(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setChangeContactPage(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.changeContactPage = value;
     }
 
     public final void setErrorPasswordFailed(final String value)
@@ -258,6 +274,19 @@ public class UserAccountController
         }
 
         this.emailValidator = value;
+    }
+
+    public final void setTelValidator(final TelephoneValidator value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setTelValidator(final TelephoneValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.telValidator = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -592,6 +621,76 @@ public class UserAccountController
         return mView;
     }
 
+    @RequestMapping(value = "/contact", method = RequestMethod.GET)
+    public final ModelAndView showContactChange()
+    {
+        final String methodName = UserAccountController.CNAME + "#showContactChange()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        mView.addObject("command", new UserChangeRequest());
+        mView.setViewName(this.changeContactPage);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/regenerate-keys", method = RequestMethod.GET)
     public final ModelAndView doRegenerateKeys()
     {
@@ -771,28 +870,41 @@ public class UserAccountController
             }
         }
 
+        // validate our new password here
+        passwordValidator.validate(changeReq, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            UserChangeRequest command = new UserChangeRequest();
+            changeReq.setIsReset(changeReq.isReset());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserChangeRequest: {}", command);
+            }
+
+            mView.addObject("command", command);
+            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.setViewName(this.changePasswordPage);
+        }
+
         try
         {
-            if (userAccount.getStatus() == LoginStatus.RESET)
+            if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
             {
                 userSecurity = new UserSecurity();
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                }
             }
             else
             {
                 userSecurity = new UserSecurity();
                 userSecurity.setPassword(changeReq.getCurrentPassword());
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserSecurity: {}", userSecurity);
             }
 
             RequestHostInfo reqInfo = new RequestHostInfo();
@@ -804,76 +916,57 @@ public class UserAccountController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            // validate our new password here
-            passwordValidator.validate(changeReq, bindResult);
+            AccountControlRequest request = new AccountControlRequest();
+            request.setControlType(ControlType.RESETPASS);
+            request.setHostInfo(reqInfo);
+            request.setIsLogonRequest(false);
+            request.setModType(ModificationType.PASSWORD);
+            request.setRequestor(userAccount);
+            request.setUserAccount(userAccount);
+            request.setUserSecurity(userSecurity);
+            request.setIsReset(changeReq.isReset());
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
 
-            if (bindResult.hasErrors())
+            if (DEBUG)
             {
-                UserChangeRequest command = new UserChangeRequest();
-                changeReq.setIsReset(changeReq.isReset());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserChangeRequest: {}", command);
-                }
-
-                mView.addObject("command", command);
-                mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
-                mView.setViewName(this.changePasswordPage);
+                DEBUGGER.debug("AccountControlRequest: {}", request);
             }
-            else
+
+            AccountControlResponse response = acctController.changeUserPassword(request);
+
+            if (DEBUG)
             {
-                AccountControlRequest request = new AccountControlRequest();
-                request.setControlType(ControlType.RESETPASS);
-                request.setHostInfo(reqInfo);
-                request.setIsLogonRequest(false);
-                request.setModType(ModificationType.PASSWORD);
-                request.setRequestor(userAccount);
-                request.setUserAccount(userAccount);
-                request.setUserSecurity(userSecurity);
-                request.setIsReset(changeReq.isReset());
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
 
-                if (DEBUG)
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                // yay
+                if (changeReq.isReset())
                 {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = acctController.changeUserPassword(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    // yay
-                    if (changeReq.isReset())
+                    if (DEBUG)
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Invalidating existing session object...");
-                        }
-
-                        hSession.invalidate();
-
-                        // redirect to logon page
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
-                        mView.setViewName(appConfig.getLogonRedirect());
+                        DEBUGGER.debug("Invalidating existing session object...");
                     }
-                    else
-                    {
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
-                        mView.setViewName(this.myAccountPage);
-                    }
+
+                    hRequest.getSession().invalidate();
+                    hSession.invalidate();
+
+                    // redirect to logon page
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
+                    mView.setViewName(appConfig.getLogonRedirect());
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.changePasswordPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
+                    mView.setViewName(this.myAccountPage);
                 }
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.setViewName(this.changePasswordPage);
             }
         }
         catch (AccountControlException acx)
@@ -953,6 +1046,18 @@ public class UserAccountController
             }
         }
 
+        // validate our new password here
+        securityValidator.validate(changeReq, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.setViewName(this.changeSecurityPage);
+
+            return mView;
+        }
+
         try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
@@ -964,62 +1069,50 @@ public class UserAccountController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            // validate our new password here
-            securityValidator.validate(changeReq, bindResult);
+            UserSecurity userSecurity = new UserSecurity();
+            userSecurity.setSecQuestionOne(changeReq.getSecQuestionOne());
+            userSecurity.setSecQuestionTwo(changeReq.getSecQuestionTwo());
+            userSecurity.setSecAnswerOne(changeReq.getSecQuestionOne());
+            userSecurity.setSecAnswerTwo(changeReq.getSecAnswerTwo());
+            userSecurity.setPassword(changeReq.getCurrentPassword());
 
-            if (bindResult.hasErrors())
+            if (DEBUG)
             {
-                mView.addObject("command", new UserChangeRequest());
-                mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
-                mView.setViewName(this.changeSecurityPage);
+                DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setControlType(ControlType.MODIFY);
+            request.setHostInfo(reqInfo);
+            request.setIsLogonRequest(false);
+            request.setModType(ModificationType.SECINFO);
+            request.setRequestor(userAccount);
+            request.setUserAccount(userAccount);
+            request.setUserSecurity(userSecurity);
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = acctController.changeUserSecurity(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeSecurityComplete);
+                mView.setViewName(this.myAccountPage);
             }
             else
             {
-                UserSecurity userSecurity = new UserSecurity();
-                userSecurity.setSecQuestionOne(changeReq.getSecQuestionOne());
-                userSecurity.setSecQuestionTwo(changeReq.getSecQuestionTwo());
-                userSecurity.setSecAnswerOne(changeReq.getSecQuestionOne());
-                userSecurity.setSecAnswerTwo(changeReq.getSecAnswerTwo());
-                userSecurity.setPassword(changeReq.getCurrentPassword());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                }
-
-                AccountControlRequest request = new AccountControlRequest();
-                request.setControlType(ControlType.MODIFY);
-                request.setHostInfo(reqInfo);
-                request.setIsLogonRequest(false);
-                request.setModType(ModificationType.SECINFO);
-                request.setRequestor(userAccount);
-                request.setUserAccount(userAccount);
-                request.setUserSecurity(userSecurity);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                AccountControlResponse response = acctController.changeUserSecurity(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changeSecurityComplete);
-                    mView.setViewName(this.myAccountPage);
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.changeSecurityPage);
-                }
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.setViewName(this.changeSecurityPage);
             }
         }
         catch (AccountControlException acx)
@@ -1099,6 +1192,17 @@ public class UserAccountController
             }
         }
 
+        emailValidator.validate(changeReq, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.setViewName(this.changeSecurityPage);
+
+            return mView;
+        }
+
         try
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
@@ -1110,67 +1214,207 @@ public class UserAccountController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            // validate our new password here
-            emailValidator.validate(changeReq, bindResult);
+            UserSecurity userSecurity = new UserSecurity();
+            userSecurity.setPassword(changeReq.getCurrentPassword());
 
-            if (bindResult.hasErrors())
+            if (DEBUG)
             {
-                mView.addObject("command", new UserChangeRequest());
-                mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
-                mView.setViewName(this.changeSecurityPage);
+                DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            }
+
+            UserAccount modAccount = userAccount;
+            modAccount.setEmailAddr(changeReq.getEmailAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", modAccount);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setControlType(ControlType.MODIFY);
+            request.setHostInfo(reqInfo);
+            request.setIsLogonRequest(false);
+            request.setModType(ModificationType.SECINFO);
+            request.setRequestor(userAccount);
+            request.setUserAccount(userAccount);
+            request.setUserSecurity(userSecurity);
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = acctController.changeUserEmail(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                // yay
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
+                mView.setViewName(this.myAccountPage);
             }
             else
             {
-                UserSecurity userSecurity = new UserSecurity();
-                userSecurity.setPassword(changeReq.getCurrentPassword());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.setViewName(this.changePasswordPage);
+            }
+        }
+        catch (AccountControlException acx)
+        {
+            ERROR_RECORDER.error(acx.getMessage(), acx);
+            
+            mView.setViewName(appConfig.getErrorResponsePage());
+        }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                }
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
 
-                UserAccount modAccount = userAccount;
-                modAccount.setEmailAddr(changeReq.getEmailAddr());
+        return mView;
+    }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", modAccount);
-                }
+    // TODO
+    @RequestMapping(value = "/contact", method = RequestMethod.POST)
+    public final ModelAndView doContactChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
+    {
+        final String methodName = UserAccountController.CNAME + "#doEmailChange(@ModelAttribute(\"changeReq\") final UserChangeRequest changeReq, final BindingResult bindResult)";
 
-                AccountControlRequest request = new AccountControlRequest();
-                request.setControlType(ControlType.MODIFY);
-                request.setHostInfo(reqInfo);
-                request.setIsLogonRequest(false);
-                request.setModType(ModificationType.SECINFO);
-                request.setRequestor(userAccount);
-                request.setUserAccount(userAccount);
-                request.setUserSecurity(userSecurity);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
+        ModelAndView mView = new ModelAndView();
 
-                AccountControlResponse response = acctController.changeUserEmail(request);
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
 
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    // yay
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
-                    mView.setViewName(this.myAccountPage);
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.changePasswordPage);
-                }
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        // validate our new password here
+        telValidator.validate(changeReq, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("command", new UserChangeRequest());
+            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.setViewName(this.changeSecurityPage);
+
+            return mView;
+        }
+
+        try
+        {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+            reqInfo.setHostName(hRequest.getRemoteHost());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            UserSecurity userSecurity = new UserSecurity();
+            userSecurity.setPassword(changeReq.getCurrentPassword());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            }
+
+            UserAccount modAccount = userAccount;
+            modAccount.setEmailAddr(changeReq.getEmailAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", modAccount);
+            }
+
+            AccountControlRequest request = new AccountControlRequest();
+            request.setControlType(ControlType.MODIFY);
+            request.setHostInfo(reqInfo);
+            request.setIsLogonRequest(false);
+            request.setModType(ModificationType.SECINFO);
+            request.setRequestor(userAccount);
+            request.setUserAccount(userAccount);
+            request.setUserSecurity(userSecurity);
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", request);
+            }
+
+            AccountControlResponse response = acctController.changeUserEmail(request);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlResponse: {}", response);
+            }
+
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                // yay
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
+                mView.setViewName(this.myAccountPage);
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.setViewName(this.changePasswordPage);
             }
         }
         catch (AccountControlException acx)

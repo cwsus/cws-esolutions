@@ -25,10 +25,12 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
@@ -1910,16 +1912,16 @@ kmx.printStackTrace();
                     userAccount.setSurname((String) userData.get(3));
                     userAccount.setDisplayName((String) userData.get(4));
                     userAccount.setEmailAddr((String) userData.get(5));
-                    userAccount.setPagerNumber((String) userData.get(6));
-                    userAccount.setTelephoneNumber((String) userData.get(7));
+                    userAccount.setPagerNumber((userData.get(6) == null) ? SecurityConstants.NOT_SET : (String) userData.get(6));
+                    userAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityConstants.NOT_SET : (String) userData.get(7));
                     userAccount.setRole(Role.valueOf((String) userData.get(8)));
-                    userAccount.setFailedCount((Integer) userData.get(9));
-                    userAccount.setLastLogin(new Date((Long) userData.get(10)));
-                    userAccount.setExpiryDate((Long) userData.get(11));
-                    userAccount.setSuspended((Boolean) userData.get(12));
-                    userAccount.setOlrSetup((Boolean) userData.get(13));
-                    userAccount.setOlrLocked((Boolean) userData.get(14));
-                    userAccount.setTcAccepted((Boolean) userData.get(15));
+                    userAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
+                    userAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
+                    userAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
+                    userAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                    userAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                    userAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
+                    userAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
 
                     if (DEBUG)
                     {

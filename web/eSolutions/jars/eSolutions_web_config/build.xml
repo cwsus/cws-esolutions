@@ -28,15 +28,15 @@
 
     <target name="build" depends="setWindows, setUnix">
         <copy file="${basedir}/src/main/resources/SecurityService/config/ServiceConfig.xml" tofile="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryHost" value="${repositoryHost}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryPort" value="${repositoryPort}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryUser" value="${repositoryUser}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryPass" value="${repositoryPass}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositorySalt" value="${repositorySalt}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@baseObjectClass" value="${baseObjectClass}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryBaseDN" value="${repositoryBaseDN}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryUserBase" value="${repositoryUserBase}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryAppBase" value="${repositoryAppBase}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryHost@" value="${repositoryHost}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryPort@" value="${repositoryPort}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryUser@" value="${repositoryUser}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryPass@" value="${repositoryPass}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositorySalt@" value="${repositorySalt}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@baseObjectClass@" value="${baseObjectClass}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryBaseDN@" value="${repositoryBaseDN}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryUserBase@" value="${repositoryUserBase}" />
+        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryAppBase@" value="${repositoryAppBase}" />
 
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />

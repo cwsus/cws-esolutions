@@ -99,7 +99,7 @@ public class AccountControlProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana21*");
+                        userSecurity.setPassword("Ariana16**");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("eSolutions");
@@ -351,8 +351,8 @@ public class AccountControlProcessorImplTest
     {
         // change the email
         UserSecurity reqSecurity = new UserSecurity();
-        reqSecurity.setNewPassword("Ariana17*");
-        reqSecurity.setPassword("ariana16");
+        reqSecurity.setNewPassword("Ariana16*");
+        reqSecurity.setPassword("Ariana18*");
 
         AccountControlRequest request = new AccountControlRequest();
         request.setApplicationName("esolutions");

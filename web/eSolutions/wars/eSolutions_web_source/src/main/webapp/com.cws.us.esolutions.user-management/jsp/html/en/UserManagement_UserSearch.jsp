@@ -119,10 +119,7 @@
 	                                <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
 	                                    title="${userResult.username}">${userResult.username}</a>
 	                            </td>
-	                            <td>
-	                                <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
-	                                    title="${userResult.displayName}">${userResult.displayName}</a>
-	                            </td>
+	                            <td>${userResult.displayName}</td>
 	                        </tr>
 	                    </c:forEach>
 	                </table>

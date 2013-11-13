@@ -32,15 +32,14 @@
 	    <property name="serviceName" value="userAdmin" />
 	    <property name="recordsPerPage" value="20" />
 	    <property name="resetURL" value="/ui/olr/forgot-password/" />
-	    <property name="editUserPage" value="UserManagement_EditUser" />
 	    <property name="viewUserPage" value="UserManagement_ViewUser" />
-	    <property name="viewUsersPage" value="UserManagement_ViewUsers" />
 	    <property name="viewAuditPage" value="UserManagement_UserAudit" />
 	    <property name="createUserPage" value="UserManagement_CreateUser" />
 	    <property name="searchUsersPage" value="UserManagement_UserSearch" />
+	    <property name="messageResetComplete" value="user.mgmt.reset.user.success" />
 	    <property name="messageNoUsersFound" value="no.users.found.for.criteria" />
 	    <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" />
-	    <property name="messageAccountCreated" value="admin.account.created.successfully" />
+	    <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
 	    <property name="passwordResetSubject" value="message.forgotpassword.subject" />
 	    <property name="messageSource" value="nls.OnlineResetServlet.OnlineResetServlet" />
 	</bean>

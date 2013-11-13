@@ -33,6 +33,6 @@
         <property name="messageSource" value="nls.OnlineResetServlet.OnlineResetServlet" />
         <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" /> <!-- classpath location to reset password notification message -->
         <property name="forgotUsernameEmail" value="nls/emailTemplates/forgot_userid.email" /> <!-- classpath location to forgot username notification message -->
-        <property name="passwordResetSubject" value="olr.message.forgotuserid.subject" />
+        <property name="passwordResetSubject" value="message.forgotuserid.subject" />
     </bean>
 </beans>

@@ -38,9 +38,12 @@ import com.cws.esolutions.security.SecurityConstants;
  */
 public final class UserChangeRequest implements Serializable
 {
+    private int count = 0;
     private String username = null;
+    private String telNumber = null;
     private boolean isReset = false;
     private String emailAddr = null;
+    private String pagerNumber = null;
     private String newPassword = null;
     private String secAnswerOne = null;
     private String secAnswerTwo = null;
@@ -199,6 +202,45 @@ public final class UserChangeRequest implements Serializable
         this.secQuestionTwo = value;
     }
 
+    public final void setTelNumber(final String value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setTelNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.telNumber = value;
+    }
+
+    public final void setPagerNumber(final String value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setPagerNumber(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.pagerNumber = value;
+    }
+
+    public final void setCount(final int value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.count = value;
+    }
+
     public final boolean getIsReset()
     {
         final String methodName = UserChangeRequest.CNAME + "#getIsReset()";
@@ -353,6 +395,45 @@ public final class UserChangeRequest implements Serializable
         }
 
         return this.secQuestionTwo;
+    }
+
+    public final String getTelNumber()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getTelNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.telNumber);
+        }
+
+        return this.telNumber;
+    }
+
+    public final String getPagerNumber()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getPagerNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.pagerNumber);
+        }
+
+        return this.pagerNumber;
+    }
+
+    public final int getCount()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.count);
+        }
+
+        return this.count;
     }
 
     @Override

@@ -88,6 +88,10 @@
 				    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
             </li>
             <li>
+                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
+                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/ui/user-account/password"
                     title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a>
             </li>

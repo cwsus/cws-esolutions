@@ -980,13 +980,28 @@ public class OnlineResetController
 
                         if (secResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
+                            UserSecurity userSec = secResponse.getUserSecurity();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserSecurity: {}", userSec);
+                            }
+
+                            UserChangeRequest changeReq = new UserChangeRequest();
+                            changeReq.setSecQuestionOne(userSec.getSecQuestionOne());
+                            changeReq.setSecQuestionTwo(userSec.getSecQuestionTwo());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserChangeRequest: {}", changeReq);
+                            }
+
                             // xlnt. set the user
                             // set the sessid
                             resUser.setSessionId(hSession.getId());
                             hSession.setAttribute(Constants.USER_ACCOUNT, resUser);
 
-                            mView.addObject(Constants.USER_SECURITY, secResponse.getUserSecurity());
-                            mView.addObject("command", new UserChangeRequest());
+                            mView.addObject("command", changeReq);
                             mView.setViewName(this.submitAnswersPage);
                         }
                         else
@@ -1126,6 +1141,7 @@ public class OnlineResetController
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
             authRequest.setApplicationId(appConfig.getApplicationId());
             authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setCount(request.getCount());
 
             if (DEBUG)
             {
@@ -1261,6 +1277,9 @@ public class OnlineResetController
                     hSession.removeAttribute(Constants.USER_ACCOUNT);
                     hSession.invalidate();
 
+                    hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
+                    hRequest.getSession().invalidate();
+
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);
                     mView.setViewName(appConfig.getLogonRedirect());
                 }
@@ -1270,7 +1289,7 @@ public class OnlineResetController
                     ERROR_RECORDER.error(resetRes.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
-                    mView.addObject("command", new UserChangeRequest());
+                    mView.addObject("command", request);
                     mView.setViewName(this.submitAnswersPage);
                 }
             }
@@ -1279,8 +1298,15 @@ public class OnlineResetController
                 // user not logged in, redirect
                 ERROR_RECORDER.error(response.getResponse());
 
+                request.setCount(response.getCount());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserChangeRequest: {}", request);
+                }
+
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.addObject("command", new UserChangeRequest());
+                mView.addObject("command", request);
                 mView.setViewName(this.submitAnswersPage);
             }
         }

@@ -9,6 +9,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <bean id="contactValidator" class="com.cws.us.esolutions.validators.TelephoneValidator">
+        <property name="messageNumberInvalid" value="error.tel.number.invalid" />
+        <property name="messagePasswordRequired" value="user.account.current.password.empty" />
+    </bean>
+
     <bean id="emailAddressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator">
         <property name="messageEmailAddressRequired" value="email.source.addr.required" />
     </bean>
@@ -43,6 +48,9 @@
         <property name="emailValidator">
             <ref bean="emailAddressValidator" />
         </property>
+        <property name="telValidator">
+            <ref bean="contactValidator" />
+        </property>
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -50,6 +58,7 @@
 	    <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
 	    <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
 	    <property name="changePasswordPage" value="UserAccount_ChangePassword" />
+	    <property name="changeContactPage" value="UserAccount_ChangeContact" />
 	    <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
 	    <property name="changePasswordComplete" value="user.account.password.change.success" />
 	    <property name="changeSecurityComplete" value="user.account.update.security.success" />

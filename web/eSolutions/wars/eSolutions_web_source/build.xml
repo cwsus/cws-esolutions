@@ -50,19 +50,19 @@
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
-        <replace file="${contextFile}" token="@document.base" value="${documentBase}" />
-        <replace file="${contextFile}" token="@cookie.domain.name" value="${cookieDomain}" />
-        <replace file="${contextFile}" token="@tomcat.work.dir" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${projectName}-${projectVersion}" />
-        <replace file="${contextFile}" token="@database.user.name" value="${dsUser}" />
-        <replace file="${contextFile}" token="@database.user.password" value="${dsPass}" />
-        <replace file="${contextFile}" token="@database.host.name" value="${dsHost}" />
-        <replace file="${contextFile}" token="@amq.host.name" value="${amqHostName}" />
-        <replace file="${contextFile}" token="@amq.host.port" value="${amqHostPort}" />
-        <replace file="${contextFile}" token="@allowedAddresses" value="${allowedAddresses}" />
-        <replace file="${contextFile}" token="@deniedAddresses" value="${deniedAddresses}" />
-        <replace file="${contextFile}" token="@allowedHosts" value="${allowedHosts}" />
-        <replace file="${contextFile}" token="@deniedHosts" value="${deniedHosts}" />
-        <replace file="${contextFile}" token="@sysLogDirectory" value="${sysLogDirectory}" />
+        <replace file="${contextFile}" token="@document.base@" value="${documentBase}" />
+        <replace file="${contextFile}" token="@cookie.domain.name@" value="${cookieDomain}" />
+        <replace file="${contextFile}" token="@tomcat.work.dir@" value="${tomcat.work.directory}/${projectName}-${projectVersion}/${projectName}-${projectVersion}" />
+        <replace file="${contextFile}" token="@database.user.name@" value="${dsUser}" />
+        <replace file="${contextFile}" token="@database.user.password@" value="${dsPass}" />
+        <replace file="${contextFile}" token="@database.host.name@" value="${dsHost}" />
+        <replace file="${contextFile}" token="@amq.host.name@" value="${amqHostName}" />
+        <replace file="${contextFile}" token="@amq.host.port@" value="${amqHostPort}" />
+        <replace file="${contextFile}" token="@allowedAddresses@" value="${allowedAddresses}" />
+        <replace file="${contextFile}" token="@deniedAddresses@" value="${deniedAddresses}" />
+        <replace file="${contextFile}" token="@allowedHosts@" value="${allowedHosts}" />
+        <replace file="${contextFile}" token="@deniedHosts@" value="${deniedHosts}" />
+        <replace file="${contextFile}" token="@sysLogDirectory@" value="${sysLogDirectory}" />
 
         <chmod file="${contextFile}" perm="640" />
     </target>
@@ -75,8 +75,7 @@
         <copy file="${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" />
         <copy file="${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-ext.xmi" />
 
-        <replace file="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name" value="${vhostName}" />
-        <replace file="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-ext.xmi" token="@vhost.name" value="${vhostName}" />
+        <replace file="${basedir}/target/${projectName}-${projectVersion}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name@" value="${vhostName}" />
     </target>
 
     <target name="build" depends="setWindows, setUnix, buildTomcat, buildWebLogic, buildWebSphere">

@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="user.account.update.email.address" /></div>
+<div id="InfoLine"><spring:message code="user.account.update.contact.info" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -46,15 +46,22 @@
 
         <span id="validationError"></span>
 
-	    <form:form name="submitEmailChange" id="submitEmailChange" action="${pageContext.request.contextPath}/ui/user-account/email" method="post">
+	    <form:form name="submitEmailChange" id="submitEmailChange" action="${pageContext.request.contextPath}/ui/user-account/contact" method="post">
 	        <table id="userauth">
 	            <tr>
-	                <td><label id="txtEmailAddr"><spring:message code="user.account.change.email.address" /></label></td>
+	                <td><label id="txtTelNumber"><spring:message code="user.account.telephone" /></label></td>
 	                <td>
-	                    <form:input path="emailAddr" />
-	                    <form:errors path="emailAddr" cssClass="validationError" />
+	                    <form:input path="telNumber" value="${sessionScope.userAccount.telephoneNumber}" />
+	                    <form:errors path="telNumber" cssClass="validationError" />
 	                </td>
 	            </tr>
+                <tr>
+                    <td><label id="txtPagerNumber"><spring:message code="user.account.pager" /></label></td>
+                    <td>
+                        <form:input path="pagerNumber" value="${sessionScope.userAccount.pagerNumber}" />
+                        <form:errors path="pagerNumber" cssClass="validationError" />
+                    </td>
+                </tr>
 	            <tr>
 	                <td>&nbsp;</td>
 	            </tr>
@@ -90,8 +97,8 @@
                     title="<spring:message code='user.account.view' />"><spring:message code="user.account.view" /></a>
             </li>
             <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
-                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
+                <a href="${pageContext.request.contextPath}/ui/user-account/email"
+                    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/user-account/password"

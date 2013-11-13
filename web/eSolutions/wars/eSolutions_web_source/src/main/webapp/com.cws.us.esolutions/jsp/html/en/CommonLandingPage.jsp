@@ -32,18 +32,18 @@
 <div id="content">
     <div id="content-right">
         <h1></h1>
-	    <c:if test="${not empty messageResponse}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty errorResponse}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty responseMessage}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty errorMessage}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
+        <c:if test="${not empty messageResponse}">
+            <p id="info">${messageResponse}</p>
+        </c:if>
+        <c:if test="${not empty errorResponse}">
+            <p id="error">${errorResponse}</p>
+        </c:if>
+        <c:if test="${not empty responseMessage}">
+            <p id="info"><spring:message code="${responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty errorMessage}">
+            <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
 
         <c:choose>
             <c:when test="${not empty messageList}">
@@ -59,12 +59,14 @@
                         <div class="kbauth">
                             <table id="svcMessageAuthor">
                                 <tr>
-                                    <td><spring:message code="svc.messaging.system.message.author" />&nbsp; ${message.messageAuthor}</td>
+                                    <td><spring:message code="svc.messaging.system.message.author" /></td>
+                                    <td><spring:message code="svc.messaging.system.message.submit.date" /></td>
+                                <tr>
+                                <tr>
                                     <td>
-                                        <spring:message code="svc.messaging.system.message.author" />&nbsp; <a href="mailto:${message.authorEmail}?subject=${message.messageId}"
-                                            title="<spring:message code="svc.messaging.system.message.author" />">${message.authorEmail}</a>
+                                        <a href="mailto:${message.authorEmail}?subject=${message.messageId}" title="<spring:message code='svc.messaging.system.message.author' />">${message.messageAuthor}</a>
                                     </td>
-                                    <td><spring:message code="svc.messaging.system.message.submit.date" /> &nbsp; ${message.submitDate}</td>
+                                    <td>${message.submitDate}</td>
                                 </tr>
                             </table>
                         </div>

@@ -51,20 +51,19 @@
 
 	<auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>@repositoryHost</repositoryHost>
-        <repositoryPort>@repositoryPort</repositoryPort>
-        <repositoryDriver />
+        <repositoryHost>@repositoryHost@</repositoryHost>
+        <repositoryPort>@repositoryPort@</repositoryPort>
         <repositoryConnTimeout>10000</repositoryConnTimeout>
         <repositoryReadTimeout>10000</repositoryReadTimeout>
-        <repositoryUser>@repositoryUser</repositoryUser>
-        <repositoryPass>@repositoryPass</repositoryPass>
-        <repositorySalt>@repositorySalt</repositorySalt>
+        <repositoryUser>@repositoryUser@</repositoryUser>
+        <repositoryPass>@repositoryPass@</repositoryPass>
+        <repositorySalt>@repositorySalt@</repositorySalt>
         <minConnections>1</minConnections>
         <maxConnections>10</maxConnections>
-        <baseObjectClass>@baseObjectClass</baseObjectClass>
-        <repositoryBaseDN>@repositoryBaseDN</repositoryBaseDN>
-        <repositoryUserBase>@repositoryUserBase</repositoryUserBase>
-        <repositoryAppBase>@repositoryAppBase</repositoryAppBase>
+        <baseObjectClass>@baseObjectClass@</baseObjectClass>
+        <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
+        <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
+        <repositoryAppBase>@repositoryAppBase@</repositoryAppBase>
     </auth-repo>
 
     <key-config>

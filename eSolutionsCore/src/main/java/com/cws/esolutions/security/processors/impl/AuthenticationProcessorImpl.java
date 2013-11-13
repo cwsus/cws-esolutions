@@ -20,9 +20,13 @@ import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Map;
 import java.sql.SQLException;
+
 import org.apache.commons.io.FileUtils;
+
 import com.unboundid.ldap.sdk.ResultCode;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -612,6 +616,27 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 }
                 else
                 {
+                    if (request.getCount() >= 3)
+                    {
+                        try
+                        {
+                            Map<String, Object> changeRequest = new HashMap<String, Object>();
+                            changeRequest.put(authData.getOlrLocked(), "true");
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Map<String, Object>: {}", changeRequest);
+                            }
+
+                            userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), changeRequest);
+                        }
+                        catch (UserManagementException umx)
+                        {
+                            ERROR_RECORDER.error(umx.getMessage(), umx);
+                        }
+                    }
+
+                    authResponse.setCount(request.getCount() + 1);
                     authResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
                     authResponse.setResponse("Failed to validate user security data.");
                 }

@@ -95,9 +95,7 @@ public class UserManagementController
     private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
     private String serviceName = null;
-    private String editUserPage = null;
     private String viewUserPage = null;
-    private String viewUsersPage = null;
     private String messageSource = null;
     private String viewAuditPage = null;
     private String userResetEmail = null;
@@ -105,8 +103,8 @@ public class UserManagementController
     private String searchUsersPage = null;
     private SecurityConfig secConfig = null;
     private String messageNoUsersFound = null;
+    private String messageResetComplete = null;
     private String passwordResetSubject = null;
-    private String messagePasswordReset = null;
     private String messageAccountCreated = null;
     private String messageAccountSuspended = null;
     private UserAccountValidator validator = null;
@@ -168,32 +166,6 @@ public class UserManagementController
         }
 
         this.recordsPerPage = value;
-    }
-
-    public final void setEditUserPage(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setEditUserPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.editUserPage = value;
-    }
-
-    public final void setViewUsersPage(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setViewUsersPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.viewUsersPage = value;
     }
 
     public final void setViewUserPage(final String value)
@@ -287,9 +259,9 @@ public class UserManagementController
         this.messageAccountCreated = value;
     }
 
-    public final void setMessagePasswordReset(final String value)
+    public final void setMessageResetComplete(final String value)
     {
-        final String methodName = UserManagementController.CNAME + "#setMessagePasswordReset(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setMessageResetComplete(final String value)";
 
         if (DEBUG)
         {
@@ -297,9 +269,9 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messagePasswordReset = value;
+        this.messageResetComplete = value;
     }
-    
+
     public final void setMessageAccountSuspended(final String value)
     {
         final String methodName = UserManagementController.CNAME + "#setMessageAccountSuspended(final String value)";
@@ -725,6 +697,7 @@ public class UserManagementController
                     {
                         if (response.getUserAccount() != null)
                         {
+                            mView.addObject("userRoles", Role.values());
                             mView.addObject("userAccount", response.getUserAccount());
                             mView.setViewName(this.viewUserPage);
                         }
@@ -1098,199 +1071,6 @@ public class UserManagementController
                     {
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.searchUsersPage);
-                    }
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (AccountControlException acx)
-            {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/modify/account/{userName}", method = RequestMethod.GET)
-    public final ModelAndView editAccountData(@PathVariable("userName") final String userName)
-    {
-        final String methodName = UserManagementController.CNAME + "#showAccountData(@PathVariable(\"userName\") final String userName)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("username: {}", userName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                if ((isUserAuthorized) && (isAdminAuthorized))
-                {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setUsername(userName);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setControlType(ControlType.LOOKUP);
-                    request.setHostInfo(reqInfo);
-                    request.setRequestor(userAccount);
-                    request.setUserAccount(searchAccount);
-                    request.setSearchType(SearchRequestType.USERNAME);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.searchAccounts(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        List<UserAccount> accountList = response.getUserList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("accountList: {}", accountList);
-                        }
-
-                        if ((accountList != null) && (accountList.size() != 0))
-                        {
-                            // we have a list of accounts (or at least one account
-                            if (accountList.size() == 1)
-                            {
-                                UserAccount responseUser = accountList.get(0);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("UserAccount: {}", responseUser);
-                                }
-
-                                mView.addObject("UserAccount", responseUser);
-                                mView.setViewName(this.editUserPage);
-                            }
-                            else
-                            {
-                                // multiple user accounts were found
-                                mView.addObject("UserAccounts", accountList);
-                                mView.setViewName(this.viewUsersPage);
-                            }
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.RESPONSE_MESSAGE, this.messageNoUsersFound);
-                            mView.setViewName(this.viewUsersPage);
-                        }
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.viewUsersPage);
                     }
                 }
                 else
@@ -1986,6 +1766,253 @@ public class UserManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/reset/account/{userGuid}", method = RequestMethod.GET)
+    public final ModelAndView resetUserAccount(@PathVariable("userGuid") final String userGuid)
+    {
+        final String methodName = UserManagementController.CNAME + "#resetUserAccount(@PathVariable(\"userGuid\") final String userGuid)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                IUserControlService userControl = new UserControlServiceImpl();
+                IAdminControlService adminControl = new AdminControlServiceImpl();
+
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                }
+
+                if ((isUserAuthorized) && (isAdminAuthorized))
+                {
+                    // ensure authenticated access
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                    }
+
+                    UserAccount account = new UserAccount();
+                    account.setGuid(userGuid);
+                    account.setSuspended(false);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", account);
+                    }
+
+                    AccountResetRequest request = new AccountResetRequest();
+                    request.setHostInfo(reqInfo);
+                    request.setUserAccount(account);
+                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setAlgorithm(secConfig.getAuthAlgorithm());
+                    request.setRequestor(userAccount);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetRequest: {}", request);
+                    }
+
+                    AccountResetResponse response = processor.resetUserPassword(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountResetResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        // good, send email
+                        UserAccount responseAccount = response.getUserAccount();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", responseAccount);
+                        }
+
+                        String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Message ID: {}", emailId);
+                        }
+
+                        StringBuilder targetURL = new StringBuilder()
+                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                            .append(hRequest.getContextPath() + this.resetURL + response.getResetId());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("targetURL: {}", targetURL);
+                        }
+                            
+                        String emailBody = MessageFormat.format(IOUtils.toString(
+                                this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
+                        {
+                            responseAccount.getGivenName(),
+                            new Date(System.currentTimeMillis()),
+                            reqInfo.getHostName(),
+                            targetURL.toString(),
+                            secConfig.getPasswordMinLength(),
+                            secConfig.getPasswordMaxLength()
+                        });
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Email body: {}", emailBody);
+                        }
+
+                        // good, now generate an email with the information
+                        EmailMessage emailMessage = new EmailMessage();
+                        emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                        emailMessage.setMessageBody(emailBody);
+                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                                this.passwordResetSubject, this.getClass().getClassLoader()));
+                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                        }
+
+                        EmailUtils.sendEmailMessage(emailMessage);
+
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
+                        mView.addObject(Constants.USER_ACCOUNT, response.getUserAccount());
+                        mView.setViewName(this.viewUserPage);
+                    }
+                    else
+                    {
+                        // some failure occurred
+                        ERROR_RECORDER.error(response.getResponse());
+
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.addObject("userAccount", response.getUserAccount());
+                        mView.setViewName(this.viewUserPage);
+                    }
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+            }
+            catch (AccountResetException arx)
+            {
+                ERROR_RECORDER.error(arx.getMessage(), arx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+            catch (UserControlServiceException ucsx)
+            {
+                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (AdminControlServiceException acsx)
+            {
+                ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (CoreServiceException csx)
+            {
+                ERROR_RECORDER.error(csx.getMessage(), csx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            catch (MessagingException mx)
+            {
+                ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
@@ -2267,7 +2294,6 @@ public class UserManagementController
 
                 if ((isUserAuthorized) && (isAdminAuthorized))
                 {
-                    // TODO: validate
                     RequestHostInfo hostInfo = new RequestHostInfo();
                     hostInfo.setHostAddress(hRequest.getRemoteAddr());
                     hostInfo.setHostName(hRequest.getRemoteHost());
@@ -2541,272 +2567,6 @@ public class UserManagementController
             catch (AccountControlException acx)
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/reset-user", method = RequestMethod.POST)
-    public final ModelAndView doResetUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
-    {
-        final String methodName = UserManagementController.CNAME + "#doResetUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", user);
-            DEBUGGER.debug("Value: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                if ((isUserAuthorized) && (isAdminAuthorized))
-                {
-                    // TODO: validate
-                    RequestHostInfo hostInfo = new RequestHostInfo();
-                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                    hostInfo.setHostName(hRequest.getRemoteHost());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                    }
-
-                    AccountResetRequest resetReq = new AccountResetRequest();
-                    resetReq.setHostInfo(hostInfo);
-                    resetReq.setRequestor(userAccount);
-                    resetReq.setUserAccount(user);
-                    resetReq.setAlgorithm(secConfig.getAuthAlgorithm());
-                    resetReq.setApplicationId(appConfig.getApplicationId());
-                    resetReq.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                    }
-
-                    if (secConfig.getSmsResetEnabled())
-                    {
-                        String smsCode = RandomStringUtils.randomAlphanumeric(8);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("smsCode: {}", smsCode);
-                        }
-
-                        resetReq.setSmsCode(smsCode);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                    }
-
-                    IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
-                    AccountResetResponse resetRes = resetProcess.resetUserPassword(resetReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
-                    }
-
-                    if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        // good, send email
-                        String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Message ID: {}", emailId);
-                        }
-
-                        StringBuilder targetURL = new StringBuilder()
-                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                            .append(hRequest.getContextPath() + this.resetURL + resetRes.getResponse());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("targetURL: {}", targetURL);
-                        }
-                            
-                        String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
-                        {
-                            userAccount.getGivenName(),
-                            new Date(System.currentTimeMillis()),
-                            hostInfo.getHostName(),
-                            targetURL.toString(),
-                            secConfig.getPasswordMinLength(),
-                            secConfig.getPasswordMaxLength()
-                        });
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.passwordResetSubject, this.getClass().getClassLoader()));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        if (secConfig.getSmsResetEnabled())
-                        {
-                            // send an sms code
-                            EmailMessage smsMessage = new EmailMessage();
-                            smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                            smsMessage.setMessageBody(resetReq.getSmsCode());
-                            emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-                            emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("EmailMessage: {}", smsMessage);
-                            }
-
-                            EmailUtils.sendSmsMessage(smsMessage);
-                        }
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messagePasswordReset);
-                        mView.addObject("userAccount", user);
-                        mView.setViewName(this.viewUserPage);
-                    }
-                    else
-                    {
-                        // some failure occurred
-                        ERROR_RECORDER.error(resetRes.getResponse());
-
-                        mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
-                        mView.addObject("userAccount", user);
-                        mView.setViewName(this.viewUserPage);
-                    }
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AccountResetException arx)
-            {
-                ERROR_RECORDER.error(arx.getMessage(), arx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }
