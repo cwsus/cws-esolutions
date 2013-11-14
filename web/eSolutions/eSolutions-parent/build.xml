@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="eSolutions_web_source" default="" basedir=".">
-    <description>eSolutions_web_source buildfile</description>
+<project name="eSolutions-parent" default="" basedir=".">
+    <description>eSolutions-parent buildfile</description>
 </project>
+

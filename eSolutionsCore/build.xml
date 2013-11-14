@@ -1,32 +1,12 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
-<project name = "eSolutionsCore" default = "build" basedir = ".">
+<project name="eSolutionsCore" default="build" basedir=".">
     <description>eSolutionsCore buildfile</description>
 
-    <property environment = "env" />
-    <property file = "buildProps/build.properties" />
+    <echo>hello ${maven.project.groupId}</echo>
+    <property environment="env" />
+    <property file="buildProps/build.properties" />
 
-    <condition property="is_windows">
-        <os family="windows" />
-    </condition>
-    <condition property="is_unix">
-        <os family="unix" />
-    </condition>
-
-    <target name="setWindows" if="is_windows">
-        <property name="antContribPath" value="C:/xampp/ant/lib/ant-contrib.jar" />
-    </target>
-
-    <target name="setUnix" if="is_unix">
-        <property name="antContribPath" value="/opt/Apache/ant/current/lib/ant-contrib.jar" />
-    </target>
-
-    <taskdef resource="net/sf/antcontrib/antlib.xml">
-        <classpath>
-            <pathelement location="${antContribPath}" />
-        </classpath>
-    </taskdef>
-
-    <target name="build" depends="setWindows, setUnix">
+    <target name="build">
         <tstamp>
             <format property = "TODAY" pattern = "yyyy-MM-dd HH:mm:ss" />
         </tstamp>
@@ -38,8 +18,8 @@
             <arg value="HEAD"/>
         </exec>
 
-        <touch file="${buildArea}/${projectName}-${projectVersion}.version" />
+        <touch file="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" />
 
-        <echo message="${projectName} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${projectName}-${projectVersion}.version" append="false" />
+        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" append="false" />
     </target>
 </project>

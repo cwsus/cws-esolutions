@@ -487,7 +487,7 @@ public class SystemManagementController
 
                     if (serviceRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        List<Server> serverList = (List<Server>) serviceRes.getServerList();
+                        List<Server> serverList = serviceRes.getServerList();
 
                         if (DEBUG)
                         {

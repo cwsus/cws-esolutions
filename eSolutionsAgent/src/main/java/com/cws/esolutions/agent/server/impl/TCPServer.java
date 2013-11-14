@@ -224,7 +224,7 @@ public class TCPServer extends Thread implements AgentServer
 
                         if (agentRequest != null)
                         {
-                            if (agentRequest.getRequestPayload() == (String) "SHUTDOWN")
+                            if (agentRequest.getRequestPayload() == "SHUTDOWN")
                             {
                                 break;
                             }
@@ -270,7 +270,7 @@ public class TCPServer extends Thread implements AgentServer
 
                         if (agentRequest != null)
                         {
-                            if (agentRequest.getRequestPayload() == (String) "SHUTDOWN")
+                            if (agentRequest.getRequestPayload() == "SHUTDOWN")
                             {
                                 break;
                             }

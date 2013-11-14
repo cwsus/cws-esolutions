@@ -25,12 +25,6 @@ SOURCE ./eSolutionsService.installed_applications.sql;
 SOURCE ./eSolutionsService.installed_systems.sql;
 SOURCE ./eSolutionsService.service_requests.sql;
 
---
--- Grant select, insert, update, delete and execute to user
---
-GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON esolutionssvc.* TO 'appuser'@'localhost';
-GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'localhost';
-FLUSH PRIVILEGES;
 COMMIT;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
