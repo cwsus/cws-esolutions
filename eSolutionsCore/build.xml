@@ -1,10 +1,14 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
-<project name="eSolutionsCore" default="build" basedir=".">
+<project name="eSolutionsCore" default="build" basedir="."
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
     <description>eSolutionsCore buildfile</description>
 
-    <echo>hello ${maven.project.groupId}</echo>
     <property environment="env" />
     <property file="buildProps/build.properties" />
+
+    <taskdef uri="antlib:net.sf.antcontrib" resource="net/sf/antcontrib/antlib.xml" classpath="${env.ANT_HOME}/lib/ant-contrib.jar"/>
+    <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml" classpath="${env.ANT_HOME}/lib/maven-ant-tasks-2.1.3.jar" reverseLoader="true" />
 
     <target name="build">
         <tstamp>
@@ -18,6 +22,7 @@
             <arg value="HEAD"/>
         </exec>
 
+        <mkdir dir="${buildArea}/META-INF" />
         <touch file="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" />
 
         <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" append="false" />
