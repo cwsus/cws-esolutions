@@ -560,7 +560,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 else
                 {
                     // unauthorized
-                    throw new AdminControlServiceException("Authorization for request has failed for user " + userAccount.getUsername());
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -870,7 +871,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 else
                 {
                     // unauthorized
-                    throw new AdminControlServiceException("Authorization for request has failed for user " + userAccount.getUsername());
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -1006,7 +1008,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
                 else
                 {
-                    throw new AdminControlServiceException("Requesting user was NOT authorized to perform the operation.");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -1294,8 +1297,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("The requested user account was not authorized to perform the operation.");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)

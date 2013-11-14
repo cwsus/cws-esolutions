@@ -161,7 +161,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -287,7 +287,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -427,7 +427,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -561,7 +561,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -735,7 +735,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }

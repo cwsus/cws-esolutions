@@ -76,7 +76,7 @@ public class ServerDataDAOImplTest
     @Test
     public final void testAddNewServer()
     {
-        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>
+        List<Object> data = new ArrayList<Object>
         (
             Arrays.asList
             (

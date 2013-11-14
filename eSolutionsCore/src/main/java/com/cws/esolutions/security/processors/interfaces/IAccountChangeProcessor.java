@@ -1,17 +1,13 @@
 /**
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.security.processors.interfaces;
 
@@ -26,45 +22,45 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
+import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * SecurityService
+ * eSolutionsCore
  * com.cws.esolutions.security.processors.interfaces
- * IAccountControlProcessor.java
+ * IAccountChangeProcessor.java
  *
- * $Id: IAccountControlProcessor.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
+ * $Id: $
  * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
- * @author kmhuntly@gmail.com
+ * $Date: $
+ * $Revision: $
+ * @author khuntly
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * khuntly @ Nov 23, 2008 22:39:20
+ * khuntly @ Nov 14, 2013 12:15:35 PM
  *     Created.
  */
-public interface IAccountControlProcessor
+public interface IAccountChangeProcessor
 {
-    static final String CNAME = IAccountControlProcessor.class.getName();
+    static final String CNAME = IAccountChangeProcessor.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
@@ -86,19 +82,15 @@ public interface IAccountControlProcessor
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityConstants.WARN_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
 
-    AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse createSecurityData(final AccountChangeRequest request) throws AccountChangeException;
 
-    AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException;
 
-    AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException;
 
-    AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException;
 
-    AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException;
 
-    AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException;
-
-    AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException;
-
-    AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException;
+    AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException;
 }

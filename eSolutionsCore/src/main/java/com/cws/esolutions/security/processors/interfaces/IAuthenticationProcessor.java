@@ -37,7 +37,9 @@ import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
+import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
+import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /*
  * IAuthenticationProcessor
@@ -66,6 +68,7 @@ public interface IAuthenticationProcessor
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IUserServiceInformationDAO svcInfo = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
 

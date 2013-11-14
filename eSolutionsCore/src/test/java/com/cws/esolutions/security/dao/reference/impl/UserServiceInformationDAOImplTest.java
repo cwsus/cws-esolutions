@@ -15,8 +15,6 @@
  */
 package com.cws.esolutions.security.dao.reference.impl;
 
-import java.util.Map;
-import java.util.List;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
@@ -67,9 +65,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.addProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.addProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
         }
         catch (SQLException sqx)
         {
@@ -82,9 +78,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.verifyProjectForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.verifyProjectForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
         }
         catch (SQLException sqx)
         {
@@ -97,9 +91,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.removeProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.removeProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
         }
         catch (SQLException sqx)
         {
@@ -112,9 +104,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            List<String> responseList = userSvcDAO.returnUserAuthorizedProjects("guid");
-
-            Assert.assertNotNull(responseList);
+            Assert.assertNotNull(userSvcDAO.returnUserAuthorizedProjects("guid"));
         }
         catch (SQLException sqx)
         {
@@ -127,9 +117,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.addServiceToUser("guid", "4EFF8D2E-32F6-44BD-B399-520F39D73197");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.addServiceToUser("guid", "4EFF8D2E-32F6-44BD-B399-520F39D73197"));
         }
         catch (SQLException sqx)
         {
@@ -142,9 +130,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.verifyServiceForUser("guid", "32537750-CDE2-11E2-8B8B-0800200C9A66");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.verifyServiceForUser("guid", "32537750-CDE2-11E2-8B8B-0800200C9A66"));
         }
         catch (SQLException sqx)
         {
@@ -157,9 +143,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            boolean isComplete = userSvcDAO.removeServiceFromUser("guid", "4EFF8D2E-32F6-44BD-B399-520F39D73197");
-
-            Assert.assertTrue(isComplete);
+            Assert.assertTrue(userSvcDAO.removeServiceFromUser("guid", "4EFF8D2E-32F6-44BD-B399-520F39D73197"));
         }
         catch (SQLException sqx)
         {
@@ -172,9 +156,7 @@ public class UserServiceInformationDAOImplTest
     {
         try
         {
-            Map<String, String> responseList = userSvcDAO.listServicesForUser("guid");
-
-            Assert.assertNotNull(responseList);
+            Assert.assertNotNull(userSvcDAO.listServicesForUser("guid"));
         }
         catch (SQLException sqx)
         {

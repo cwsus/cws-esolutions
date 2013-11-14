@@ -15,9 +15,7 @@
  */
 package com.cws.esolutions.security.dao.reference.impl;
 
-import java.util.Map;
 import java.util.List;
-import java.util.HashMap;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -580,7 +578,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
     }
 
     @Override
-    public synchronized Map<String, String> listServicesForUser(final String commonName) throws SQLException
+    public synchronized List<String> listServicesForUser(final String commonName) throws SQLException
     {
         final String methodName = IUserServiceInformationDAO.CNAME + "#listServicesForUser(final String commonName) throws SQLException";
 
@@ -593,7 +591,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        Map<String, String> resultsMap = null;
+        List<String> serviceList = null;
 
         try
         {
@@ -619,53 +617,27 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                if (stmt.execute())
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
                 {
-                    resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    resultSet.last();
-
-                    int iRowCount = resultSet.getRow();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("iRowCount: {}", iRowCount);
-                    }
-
-                    if (iRowCount != 0)
-                    {
-                        resultsMap = new HashMap<String, String>();
-
-                        resultSet.beforeFirst();
-
-                        while (resultSet.next())
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug(resultSet.getString("usr_lgn_svcid"));
-                            }
-
-                            resultsMap.put(resultSet.getString("usr_svc_svcid"), resultSet.getString("usr_svc_svcname"));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("resultsMap: {}", resultsMap);
-                        }
-                    }
-                    else
-                    {
-                        throw new SQLException("The provided user does not currently have any services assigned.");
-                    }
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
-                else
+
+                if (resultSet.next())
                 {
-                    throw new SQLException("The provided user does not currently have any services assigned.");
+                    resultSet.first();
+                    serviceList = new ArrayList<String>();
+
+                    while (resultSet.next())
+                    {
+                        serviceList.add(resultSet.getString(1));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", serviceList);
+                    }
                 }
             }
         }
@@ -693,6 +665,6 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             }
         }
 
-        return resultsMap;
+        return serviceList;
     }
 }

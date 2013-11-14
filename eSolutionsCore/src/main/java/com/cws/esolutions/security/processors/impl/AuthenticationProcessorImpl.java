@@ -225,6 +225,19 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setTcAccepted((Boolean) userData.get(15));
                     userAccount.setSessionId(authUser.getSessionId());
 
+                    // list user services
+                    List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", serviceList);
+                    }
+
+                    if ((serviceList != null) && (serviceList.size() != 0))
+                    {
+                        userAccount.setServiceList(serviceList);
+                    }
+
 					try
 					{
                     	// get the user keypair

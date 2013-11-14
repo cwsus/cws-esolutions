@@ -251,7 +251,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -309,7 +310,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         {
             throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
         }
-        
+
         return response;
     }
 
@@ -428,7 +429,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -556,7 +558,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -854,7 +857,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -1073,7 +1077,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -1497,7 +1502,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -1742,12 +1748,14 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     }
                     else
                     {
-                        throw new UserControlServiceException("Requesting user is NOT authorized for project");
+                        response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                        response.setResponse("The requesting user was NOT authorized to perform the operation");
                     }
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (UserControlServiceException ucsx)
@@ -1851,7 +1859,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
                 else
                 {
-                    throw new ApplicationManagementException("The requesting user was NOT authorized to perform the operation");
+                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (UserControlServiceException ucsx)

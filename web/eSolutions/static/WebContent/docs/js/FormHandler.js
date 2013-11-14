@@ -1050,6 +1050,41 @@ function validateForm(theForm, e)
             }
         }
     }
+    else if (theForm.name == 'submitContactChange')
+    {
+        if ((e.keyCode == 13) || (e.type == 'click'))
+        {
+            if (targ.id == 'cancel')
+            {
+                history.go(-1);
+            }
+            else
+            {
+                if (theForm.telNumber.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide a contact telephone number.';
+                    document.getElementById('txtTelNumber').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('telNumber').focus();
+                }
+                else if (theForm.pagerNumber.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'Please provide a notification pager number.';
+                    document.getElementById('txtPagerNumber').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('pagerNumber').focus();
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+        }
+    }
     else if (theForm.name == 'deployApplication')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))

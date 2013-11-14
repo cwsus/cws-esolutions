@@ -28,7 +28,6 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -49,7 +48,6 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -457,23 +455,6 @@ public class KnowledgeBaseController
             }
         }
 
-        // because anyone can access this, even unauthenticated,
-        // null check first
-        if ((userAccount != null) && (userAccount.getStatus() == LoginStatus.EXPIRED))
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
-        }
-
         if (appConfig.getServices().get(this.serviceName))
         {
             mView.addObject("isHelpSearch", true);
@@ -554,21 +535,6 @@ public class KnowledgeBaseController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
-        }
-
-        if ((userAccount != null) && (userAccount.getStatus() == LoginStatus.EXPIRED))
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
         }
 
         if (appConfig.getServices().get(this.serviceName))
@@ -2352,21 +2318,6 @@ public class KnowledgeBaseController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
-        }
-
-        if ((userAccount != null) && (userAccount.getStatus() == LoginStatus.EXPIRED))
-        {
-            // redirect to password page
-            mView = new ModelAndView(new RedirectView());
-            mView.setViewName(appConfig.getExpiredRedirect());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ModelAndView: {}", mView);
-            }
-
-            return mView;
         }
 
         if (appConfig.getServices().get(this.serviceName))

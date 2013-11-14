@@ -89,7 +89,7 @@ public class ServiceMessagingDAOImplTest
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
 
-        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>(
+        List<Object> data = new ArrayList<Object>(
                 Arrays.asList(
                         ServiceMessagingDAOImplTest.MESSAGE_ID,
                         "Test Message",
@@ -114,7 +114,7 @@ public class ServiceMessagingDAOImplTest
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
 
-        @SuppressWarnings("unchecked") List<Object> data = new ArrayList<Object>(
+        List<Object> data = new ArrayList<Object>(
                 Arrays.asList(
                         "Test Message",
                         "This is a test message",

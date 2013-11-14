@@ -125,8 +125,8 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -253,8 +253,8 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -460,73 +460,59 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            List<Object> responseList = messageDAO.retrieveMessage(reqMessage.getMessageId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("Response list: {}", responseList);
             }
 
-            if (isServiceAuthorized)
+            if ((responseList == null) || (responseList.isEmpty()))
             {
-                List<Object> responseList = messageDAO.retrieveMessage(reqMessage.getMessageId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Response list: {}", responseList);
-                }
-
-                if ((responseList == null) || (responseList.isEmpty()))
-                {
-                    throw new MessagingServiceException("No results were provided. Cannot continue");
-                }
-                else
-                {
-                    if ((responseList != null) && (responseList.size() != 0))
-                    {
-                        SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                        }
-
-                        ServiceMessage message = new ServiceMessage();
-                        message.setMessageId((String) responseList.get(0)); // svc_message_id
-                        message.setMessageTitle((String) responseList.get(1)); // svc_message_title
-                        message.setMessageText((String) responseList.get(2)); // svc_message_txt
-                        message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
-                        message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
-                        message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
-                        message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
-                        message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
-                        message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ServiceMessage: {}", message);
-                        }
-
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully retrieved message");
-                        response.setServiceMessage(message);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("MessageResponse: {}", response);
-                        }
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No messages were located.");
-                    }
-                }
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("The requested message could not be loaded.");
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                if ((responseList != null) && (responseList.size() != 0))
+                {
+                    SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                    }
+
+                    ServiceMessage message = new ServiceMessage();
+                    message.setMessageId((String) responseList.get(0)); // svc_message_id
+                    message.setMessageTitle((String) responseList.get(1)); // svc_message_title
+                    message.setMessageText((String) responseList.get(2)); // svc_message_txt
+                    message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
+                    message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
+                    message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
+                    message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
+                    message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
+                    message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ServiceMessage: {}", message);
+                    }
+
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    response.setResponse("Successfully retrieved message");
+                    response.setServiceMessage(message);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("MessageResponse: {}", response);
+                    }
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    response.setResponse("No messages were located.");
+                }
             }
 
             if (DEBUG)
@@ -539,12 +525,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-            throw new MessagingServiceException(ucsx.getMessage(), ucsx);
         }
         finally
         {

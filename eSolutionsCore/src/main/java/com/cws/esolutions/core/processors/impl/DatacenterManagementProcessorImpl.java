@@ -155,8 +155,8 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -289,8 +289,8 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -415,8 +415,8 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested user was not authorized to perform the operation");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)

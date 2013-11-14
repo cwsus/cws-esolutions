@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security.dto;
 
+import java.util.List;
 import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -63,6 +64,7 @@ public class UserAccount implements Serializable
     private Integer failedCount = null;
     private boolean tcAccepted = false;
     private String telephoneNumber = null;
+    private List<String> serviceList = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
@@ -317,6 +319,19 @@ public class UserAccount implements Serializable
         this.telephoneNumber = value;
     }
 
+    public final void setServiceList(final List<String> value)
+    {
+        final String methodName = UserAccount.CNAME + "#setServiceList(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceList = value;
+    }
+
     public final LoginStatus getStatus()
     {
         final String methodName = UserAccount.CNAME + "#getStatus()";
@@ -562,6 +577,19 @@ public class UserAccount implements Serializable
         }
 
         return this.telephoneNumber;
+    }
+
+    public final List<String> getServiceList()
+    {
+        final String methodName = UserAccount.CNAME + "#getServiceList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceList);
+        }
+
+        return this.serviceList;
     }
 
     @Override

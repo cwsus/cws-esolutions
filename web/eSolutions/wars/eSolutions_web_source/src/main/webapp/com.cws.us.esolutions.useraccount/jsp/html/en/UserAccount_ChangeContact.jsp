@@ -46,7 +46,7 @@
 
         <span id="validationError"></span>
 
-	    <form:form name="submitEmailChange" id="submitEmailChange" action="${pageContext.request.contextPath}/ui/user-account/contact" method="post">
+	    <form:form name="submitContactChange" id="submitContactChange" action="${pageContext.request.contextPath}/ui/user-account/contact" method="post">
 	        <table id="userauth">
 	            <tr>
 	                <td><label id="txtTelNumber"><spring:message code="user.account.telephone" /></label></td>

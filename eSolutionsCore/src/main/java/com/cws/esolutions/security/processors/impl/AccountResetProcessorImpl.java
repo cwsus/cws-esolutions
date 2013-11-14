@@ -285,7 +285,10 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 if (!(isAdminAuthorized))
                 {
                     // nope !
-                    throw new AccountResetException("Unauthorized modification request attempted by " + reqAccount.getUsername() + " for user " + userAccount.getUsername());
+                    response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                    response.setResponse("The requesting user was NOT authorized to perform the operation");
+
+                    return response;
                 }
             }
 

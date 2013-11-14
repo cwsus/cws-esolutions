@@ -12,8 +12,11 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -35,20 +38,19 @@ import com.cws.us.esolutions.validators.TelephoneValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.us.esolutions.validators.SecurityResponseValidator;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
+import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.security.processors.impl.AccountChangeProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -707,7 +709,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -763,22 +765,23 @@ public class UserAccountController
             }
 
             // reset keys !
-            AccountControlRequest req = new AccountControlRequest();
+            AccountChangeRequest req = new AccountChangeRequest();
             req.setApplicationId(appConfig.getApplicationId());
             req.setApplicationName(appConfig.getApplicationName());
             req.setHostInfo(reqInfo);
             req.setUserAccount(userAccount);
+            req.setRequestor(userAccount);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", req);
+                DEBUGGER.debug("AccountChangeRequest: {}", req);
             }
 
-            AccountControlResponse res = processor.changeUserKeys(req);
+            AccountChangeResponse res = processor.changeUserKeys(req);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", res);
+                DEBUGGER.debug("AccountChangeResponse: {}", res);
             }
 
             if (res.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -792,7 +795,7 @@ public class UserAccountController
 
             mView.setViewName(this.myAccountPage);
         }
-        catch (AccountControlException acx)
+        catch (AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -826,7 +829,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -916,8 +919,7 @@ public class UserAccountController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            AccountControlRequest request = new AccountControlRequest();
-            request.setControlType(ControlType.RESETPASS);
+            AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
             request.setIsLogonRequest(false);
             request.setModType(ModificationType.PASSWORD);
@@ -930,14 +932,14 @@ public class UserAccountController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", request);
+                DEBUGGER.debug("AccountChangeRequest: {}", request);
             }
 
-            AccountControlResponse response = acctController.changeUserPassword(request);
+            AccountChangeResponse response = processor.changeUserPassword(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -969,7 +971,7 @@ public class UserAccountController
                 mView.setViewName(this.changePasswordPage);
             }
         }
-        catch (AccountControlException acx)
+        catch (AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -1002,7 +1004,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1081,8 +1083,7 @@ public class UserAccountController
                 DEBUGGER.debug("UserSecurity: {}", userSecurity);
             }
 
-            AccountControlRequest request = new AccountControlRequest();
-            request.setControlType(ControlType.MODIFY);
+            AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
             request.setIsLogonRequest(false);
             request.setModType(ModificationType.SECINFO);
@@ -1094,14 +1095,14 @@ public class UserAccountController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", request);
+                DEBUGGER.debug("AccountChangeRequest: {}", request);
             }
 
-            AccountControlResponse response = acctController.changeUserSecurity(request);
+            AccountChangeResponse response = processor.changeUserSecurity(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -1115,7 +1116,7 @@ public class UserAccountController
                 mView.setViewName(this.changeSecurityPage);
             }
         }
-        catch (AccountControlException acx)
+        catch (AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
@@ -1148,7 +1149,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1230,8 +1231,7 @@ public class UserAccountController
                 DEBUGGER.debug("UserAccount: {}", modAccount);
             }
 
-            AccountControlRequest request = new AccountControlRequest();
-            request.setControlType(ControlType.MODIFY);
+            AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
             request.setIsLogonRequest(false);
             request.setModType(ModificationType.SECINFO);
@@ -1243,14 +1243,14 @@ public class UserAccountController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", request);
+                DEBUGGER.debug("AccountChangeRequest: {}", request);
             }
 
-            AccountControlResponse response = acctController.changeUserEmail(request);
+            AccountChangeResponse response = processor.changeUserEmail(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -1265,7 +1265,7 @@ public class UserAccountController
                 mView.setViewName(this.changePasswordPage);
             }
         }
-        catch (AccountControlException acx)
+        catch (AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
@@ -1299,7 +1299,7 @@ public class UserAccountController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
         if (DEBUG)
         {
@@ -1382,8 +1382,7 @@ public class UserAccountController
                 DEBUGGER.debug("UserAccount: {}", modAccount);
             }
 
-            AccountControlRequest request = new AccountControlRequest();
-            request.setControlType(ControlType.MODIFY);
+            AccountChangeRequest request = new AccountChangeRequest();
             request.setHostInfo(reqInfo);
             request.setIsLogonRequest(false);
             request.setModType(ModificationType.SECINFO);
@@ -1395,14 +1394,14 @@ public class UserAccountController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlRequest: {}", request);
+                DEBUGGER.debug("AccountChangeRequest: {}", request);
             }
 
-            AccountControlResponse response = acctController.changeUserEmail(request);
+            AccountChangeResponse response = processor.changeUserEmail(request);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountControlResponse: {}", response);
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
@@ -1417,7 +1416,7 @@ public class UserAccountController
                 mView.setViewName(this.changePasswordPage);
             }
         }
-        catch (AccountControlException acx)
+        catch (AccountChangeException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             

@@ -109,6 +109,7 @@ public class UserManagementController
     private String messageAccountSuspended = null;
     private UserAccountValidator validator = null;
     private ApplicationServiceBean appConfig = null;
+    private String messageRoleChangedSuccessfully = null;
 
     private static final String CNAME = UserManagementController.class.getName();
 
@@ -285,6 +286,19 @@ public class UserManagementController
         this.messageAccountSuspended = value;
     }
 
+    public final void setMessageRoleChangedSuccessfully(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageRoleChangedSuccessfully(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRoleChangedSuccessfully = value;
+    }
+
     public final void setAppConfig(final ApplicationServiceBean value)
     {
         final String methodName = UserManagementController.CNAME + "#setAppConfig(final CoreServiceBean value)";
@@ -349,6 +363,7 @@ public class UserManagementController
 
         this.passwordResetSubject = value;
     }
+
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
@@ -463,6 +478,7 @@ public class UserManagementController
         return mView;
     }
 
+
     @RequestMapping(value = "/add-user", method = RequestMethod.GET)
     public final ModelAndView showAddUser()
     {
@@ -574,6 +590,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/view/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
@@ -924,6 +941,7 @@ public class UserManagementController
         return mView;
     }
 
+
     @RequestMapping(value = "/audit/account/{userGuid}/page/{page}", method = RequestMethod.GET)
     public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid, @PathVariable("page") final int page)
     {
@@ -1105,6 +1123,7 @@ public class UserManagementController
         return mView;
     }
 
+
     @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid)
     {
@@ -1268,6 +1287,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/unlock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView unlockUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1433,6 +1453,7 @@ public class UserManagementController
         return mView;
     }
 
+
     @RequestMapping(value = "/suspend/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView suspendUserAccount(@PathVariable("userGuid") final String userGuid)
     {
@@ -1596,6 +1617,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/unsuspend/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView unsuspendUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1765,6 +1787,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/reset/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView resetUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -2013,6 +2036,146 @@ public class UserManagementController
         return mView;
     }
 
+
+    @RequestMapping(value = "/change-role/account/{userGuid}/role/{role}", method = RequestMethod.GET)
+    public final ModelAndView changeUserRole(@PathVariable("userGuid") final String userGuid, @PathVariable("role") final String role)
+    {
+        final String methodName = UserManagementController.CNAME + "#changeUserRole(@PathVariable(\"userGuid\") final String userGuid, @PathVariable(\"role\") final String role)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userGuid);
+            DEBUGGER.debug("Value: {}", role);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setRole(Role.valueOf(role));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
+
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setRequestor(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setModType(ModificationType.ROLE);
+                request.setControlType(ControlType.MODIFY);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                AccountControlResponse response = acctController.modifyUserRole(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangedSuccessfully);
+                    mView.setViewName(this.viewUserPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(appConfig.getUnavailablePage());
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
@@ -2204,6 +2367,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/add-user", method = RequestMethod.POST)
     public final ModelAndView doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
@@ -2409,6 +2573,7 @@ public class UserManagementController
 
         return mView;
     }
+
 
     @RequestMapping(value = "/suspend-user", method = RequestMethod.POST)
     public final ModelAndView doSuspendUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)

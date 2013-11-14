@@ -169,11 +169,9 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`listServicesForUser`(
 	IN userGuid VARCHAR(128)
 )
 BEGIN
-	SELECT usr_lgn_services.usr_svc_svcid, usr_lgn_services.usr_svc_svcname
-	FROM `cwssec`.`usr_lgn_services`, `cwssec`.`usr_lgn_svcmap`
-	WHERE usr_lgn_services.usr_svc_svcid = usr_lgn_svcmap.usr_svc_svcid
-	AND usr_lgn_svcmap.usr_lgn_guid = userGuid
-	ORDER BY usr_lgn_services.usr_svc_svcname ASC;
+	SELECT usr_svc_svcid
+	FROM usr_lgn_svcmap
+	WHERE usr_lgn_guid = userGuid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

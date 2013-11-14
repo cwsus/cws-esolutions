@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
@@ -209,7 +208,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -368,7 +367,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -552,7 +551,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -728,7 +727,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
@@ -1039,7 +1038,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             else
             {
                 response.setResponse("The requesting user was not authorized to perform the operation. Cannot continue.");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)

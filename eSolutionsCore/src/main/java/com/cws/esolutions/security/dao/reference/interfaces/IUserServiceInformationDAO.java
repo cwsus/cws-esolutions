@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.security.dao.reference.interfaces;
 
-import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
@@ -123,5 +122,5 @@ public interface IUserServiceInformationDAO
      * @return Map<String, String> - A hashmap of the given service UID's and their descriptions
      * @throws SQLException if a database error occurs attempting to access data
      */
-    Map<String, String> listServicesForUser(final String userGuid) throws SQLException;
+    List<String> listServicesForUser(final String userGuid) throws SQLException;
 }

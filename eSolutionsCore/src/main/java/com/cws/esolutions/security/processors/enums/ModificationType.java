@@ -37,6 +37,8 @@ public enum ModificationType
     EMAIL,
     FIRSTNAME,
     LASTNAME,
+    CONTACT,
+    ROLE,
     PASSWORD,
     SECINFO,
 }

@@ -41,6 +41,7 @@
 	    <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" />
 	    <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
 	    <property name="passwordResetSubject" value="message.forgotpassword.subject" />
+	    <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
 	    <property name="messageSource" value="nls.OnlineResetServlet.OnlineResetServlet" />
 	</bean>
 </beans>
