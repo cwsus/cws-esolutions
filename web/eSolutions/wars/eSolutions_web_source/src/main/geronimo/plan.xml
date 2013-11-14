@@ -39,11 +39,11 @@
                 <dep:type>car</dep:type>
             </dep:dependency>
         </dep:dependencies>
-        <hidden-classes>
-            <filter>org.apache.log4j</filter>
-            <filter>log4j</filter>
-        </hidden-classes>
-        <dep:inverse-classloading/>
+        <dep:hidden-classes>
+            <dep:filter>org.apache.log4j</dep:filter>
+            <dep:filter>log4j</dep:filter>
+        </dep:hidden-classes>
+        <dep:inverse-classloading />
     </dep:environment>
     <context-root>esolutions</context-root>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
