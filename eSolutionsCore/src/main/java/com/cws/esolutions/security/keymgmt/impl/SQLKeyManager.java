@@ -97,23 +97,26 @@ public class SQLKeyManager implements KeyManager
                     DEBUGGER.debug("Statement: {}", stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
+                    resultSet = stmt.getResultSet();
 
-                if (resultSet.next())
-                {
-                    resultSet.first();
-                    privKeyBytes = resultSet.getBytes(1);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
 
-                    resultSet.close();
-                    stmt.close();
-
-                    resultSet = null;
-                    stmt = null;
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+                        privKeyBytes = resultSet.getBytes(1);
+    
+                        resultSet.close();
+                        stmt.close();
+    
+                        resultSet = null;
+                        stmt = null;
+                    }
                 }
                 else
                 {
@@ -129,17 +132,20 @@ public class SQLKeyManager implements KeyManager
                     DEBUGGER.debug("Statement: {}", stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
+                    resultSet = stmt.getResultSet();
 
-                if (resultSet.next())
-                {
-                    resultSet.first();
-                    pubKeyBytes = resultSet.getBytes(1);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+                        pubKeyBytes = resultSet.getBytes(1);
+                    }
                 }
                 else
                 {

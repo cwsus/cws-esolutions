@@ -303,27 +303,26 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
                 }
             }
         }
@@ -390,54 +389,53 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[]
-                        {
-                            resultSet.getString(1), // app guid
-                            resultSet.getString(2), // app name
-                            resultSet.getString(3), // app version
-                            resultSet.getString(4), // project guid
-                            resultSet.getString(5), // platform guid
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug(str);
-                            }
-                        }
-
-                        responseData.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            for (String str1 : str)
+                            String[] data = new String[]
                             {
-                                DEBUGGER.debug(str1);
+                                resultSet.getString(1), // app guid
+                                resultSet.getString(2), // app name
+                                resultSet.getString(3), // app version
+                                resultSet.getString(4), // project guid
+                                resultSet.getString(5), // platform guid
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug(str);
+                                }
+                            }
+
+                            responseData.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (String[] str : responseData)
+                            {
+                                for (String str1 : str)
+                                {
+                                    DEBUGGER.debug(str1);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
                 }
             }
         }
@@ -504,41 +502,46 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    responseData = new ArrayList<String>
-                    (
-                        Arrays.asList
-                        (
-                            resultSet.getString(1), // app guid
-                            resultSet.getString(2), // app name
-                            resultSet.getString(3), // app version
-                            resultSet.getString(4), // base path
-                            resultSet.getString(5), // app scm path
-                            resultSet.getString(6), // cluster name
-                            resultSet.getString(7), // jvm name
-                            resultSet.getString(8), // install path
-                            resultSet.getString(9), // logs dir
-                            resultSet.getString(10), // pid dir
-                            resultSet.getString(11), // project guid
-                            resultSet.getString(12), // platform guid
-                            resultSet.getTimestamp(13).toString(), // app online date
-                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
-                        )
-                    );
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String data : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        responseData = new ArrayList<String>
+                        (
+                            Arrays.asList
+                            (
+                                resultSet.getString(1), // app guid
+                                resultSet.getString(2), // app name
+                                resultSet.getString(3), // app version
+                                resultSet.getString(4), // base path
+                                resultSet.getString(5), // app scm path
+                                resultSet.getString(6), // cluster name
+                                resultSet.getString(7), // jvm name
+                                resultSet.getString(8), // install path
+                                resultSet.getString(9), // logs dir
+                                resultSet.getString(10), // pid dir
+                                resultSet.getString(11), // project guid
+                                resultSet.getString(12), // platform guid
+                                resultSet.getTimestamp(13).toString(), // app online date
+                                (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                            )
+                        );
+
+                        if (DEBUG)
                         {
-                            DEBUGGER.debug("data: {}", data);
+                            for (String data : responseData)
+                            {
+                                DEBUGGER.debug("data: {}", data);
+                            }
                         }
                     }
                 }
@@ -609,56 +612,59 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[]
-                        {
-                            resultSet.getString(1), // app guid
-                            resultSet.getString(2), // app name
-                            resultSet.getString(3), // app version
-                            resultSet.getString(4), // base path
-                            resultSet.getString(5), // app scm path
-                            resultSet.getString(6), // cluster name
-                            resultSet.getString(7), // jvm name
-                            resultSet.getString(8), // install path
-                            resultSet.getString(9), // logs dir
-                            resultSet.getString(10), // pid dir
-                            resultSet.getString(11), // project guid
-                            resultSet.getString(12), // platform guid
-                            resultSet.getTimestamp(13).toString(), // app online date
-                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug(str);
-                            }
-                        }
-
-                        responseData.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            for (String str1 : str)
+                            String[] data = new String[]
                             {
-                                DEBUGGER.debug(str1);
+                                resultSet.getString(1), // app guid
+                                resultSet.getString(2), // app name
+                                resultSet.getString(3), // app version
+                                resultSet.getString(4), // base path
+                                resultSet.getString(5), // app scm path
+                                resultSet.getString(6), // cluster name
+                                resultSet.getString(7), // jvm name
+                                resultSet.getString(8), // install path
+                                resultSet.getString(9), // logs dir
+                                resultSet.getString(10), // pid dir
+                                resultSet.getString(11), // project guid
+                                resultSet.getString(12), // platform guid
+                                resultSet.getTimestamp(13).toString(), // app online date
+                                (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug(str);
+                                }
+                            }
+
+                            responseData.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (String[] str : responseData)
+                            {
+                                for (String str1 : str)
+                                {
+                                    DEBUGGER.debug(str1);
+                                }
                             }
                         }
                     }

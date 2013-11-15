@@ -231,17 +231,14 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
                     if (resultSet.next())
                     {
-                        resultSet.beforeFirst();
+                        resultSet.first();
+                        saltValue = resultSet.getString(1);
 
-                        while (resultSet.next())
+                        if (DEBUG)
                         {
-                            saltValue = resultSet.getString(1);
+                            DEBUGGER.debug("Value: {}", saltValue);
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("Failed to retrieve user salt value");
                 }
             }
         }
@@ -793,7 +790,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isVerified = false;
-        ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
         try
@@ -838,11 +834,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         }
         finally
         {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
             if (stmt != null)
             {
                 stmt.close();

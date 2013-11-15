@@ -145,27 +145,26 @@ public class AuditDAOImpl implements IAuditDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No audit entries were located for the provided user.");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
                 }
             }
         }
@@ -240,58 +239,57 @@ public class AuditDAOImpl implements IAuditDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseList = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[] {
-                                resultSet.getString(1), // usr_audit_sessionid
-                                resultSet.getString(2), // usr_audit_userid
-                                resultSet.getString(3), // usr_audit_userguid
-                                resultSet.getString(4), // usr_audit_role
-                                resultSet.getString(5), // usr_audit_applid
-                                resultSet.getString(6), // usr_audit_applname
-                                String.valueOf(resultSet.getLong(7)), // usr_audit_timestamp
-                                resultSet.getString(8), // usr_audit_action
-                                resultSet.getString(9), // usr_audit_srcaddr
-                                resultSet.getString(10) // usr_audit_srchost
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug(str);
-                            }
-                        }
-
-                        responseList.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseList)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            for (String str1 : str)
+                            String[] data = new String[] {
+                                    resultSet.getString(1), // usr_audit_sessionid
+                                    resultSet.getString(2), // usr_audit_userid
+                                    resultSet.getString(3), // usr_audit_userguid
+                                    resultSet.getString(4), // usr_audit_role
+                                    resultSet.getString(5), // usr_audit_applid
+                                    resultSet.getString(6), // usr_audit_applname
+                                    String.valueOf(resultSet.getLong(7)), // usr_audit_timestamp
+                                    resultSet.getString(8), // usr_audit_action
+                                    resultSet.getString(9), // usr_audit_srcaddr
+                                    resultSet.getString(10) // usr_audit_srchost
+                            };
+
+                            if (DEBUG)
                             {
-                                DEBUGGER.debug(str1);
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug(str);
+                                }
+                            }
+
+                            responseList.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (String[] str : responseList)
+                            {
+                                for (String str1 : str)
+                                {
+                                    DEBUGGER.debug(str1);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No audit entries were located for the provided user.");
                 }
             }
         }
