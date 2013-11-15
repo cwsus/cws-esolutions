@@ -65,9 +65,9 @@
     <target name="buildGeronimo" if="isGeronimo">
         <copy file="${basedir}/${geronimo}/geronimo-web.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" />
 
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml"" token="@groupId@" value="${pom.groupId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml"" token="@artifactId@" value="${pom.artifactId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml"" token="@version@" value="${pom.version}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@groupId@" value="${pom.groupId}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@artifactId@" value="${pom.artifactId}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@version@" value="${pom.version}" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
