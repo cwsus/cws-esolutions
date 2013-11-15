@@ -34,11 +34,11 @@
     <target name="buildWebSphere" if="isWebSphere" />
 
     <target name="buildGeronimo" if="isGeronimo">
-        <copy file="${basedir}/${geronimo}/geronimo-application.xml" tofile="${basedir}/${buildArea}/${projectName}/META-INF/geronimo-application.xml" />
+        <copy file="${basedir}/${geronimo}/geronimo-application.xml" tofile="${basedir}/${buildArea}/${pom.artifactId}/META-INF/geronimo-application.xml" />
 
-        <replace file="${basedir}/target/${projectName}/META-INF/geronimo-application.xml" token="@groupId@" value="${groupId}" />
-        <replace file="${basedir}/target/${projectName}/META-INF/geronimo-application.xml" token="@artifactId@" value="${artifactId}" />
-        <replace file="${basedir}/target/${projectName}/META-INF/geronimo-application.xml" token="@version@" value="${version}" />
+        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@groupId@" value="${groupId}" />
+        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@artifactId@" value="${artifactId}" />
+        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@version@" value="${version}" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
