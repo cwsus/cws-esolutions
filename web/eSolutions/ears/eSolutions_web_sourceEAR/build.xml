@@ -39,6 +39,7 @@
         <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@groupId@" value="${pom.groupId}" />
         <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@artifactId@" value="${pom.artifactId}" />
         <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@version@" value="${pom.version}" />
+        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@module@" value="${pom.project.dependencies[0].artifactId}" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
