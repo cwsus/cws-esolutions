@@ -30,13 +30,13 @@
     <body>
         <div id="Container">
             <div id="Top">
-                <h1><img src="/html/esolutions/img/logo.gif" alt="CaspersBox Web Services" width="59" height="50" class="logo" />&nbsp;</h1>
+                <h1><img src="/html/eSolutions/img/logo.gif" alt="CaspersBox Web Services" width="59" height="50" class="logo" />&nbsp;</h1>
                 <h2>&nbsp;</h2>
             </div>
 
             <tiles:insertAttribute name="navbar" />
 
-            <div id="TopImage"><img src="/html/esolutions/img/top.jpg" alt="" width="800" height="174" /></div>
+            <div id="TopImage"><img src="/html/eSolutions/img/top.jpg" alt="" width="800" height="174" /></div>
 
             <tiles:insertAttribute name="body" />
 

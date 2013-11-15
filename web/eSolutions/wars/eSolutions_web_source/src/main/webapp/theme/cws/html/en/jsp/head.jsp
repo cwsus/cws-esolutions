@@ -30,7 +30,7 @@
 
 <head>
     <title><tiles:insertAttribute name="pageTitle" /></title>
-    <link rel="stylesheet" type="text/css" media="all" href="/html/esolutions/css/esolutions.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="/html/eSolutions/css/esolutions.css" />
     <link rel="image/x-icon" href="/favicon.ico" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Script-Type" content="text/javascript" />
@@ -47,8 +47,8 @@
     <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
     <meta name="description" content="eSolutionsService" />
     <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
-    <script type="text/javascript" src="/html/esolutions/js/Scripts.js"></script>
-    <script type="text/javascript" src="/html/esolutions/js/FormHandler.js"></script>
+    <script type="text/javascript" src="/html/eSolutions/js/Scripts.js"></script>
+    <script type="text/javascript" src="/html/eSolutions/js/FormHandler.js"></script>
     <script type="text/javascript">
         <!--
         if (top != self)
