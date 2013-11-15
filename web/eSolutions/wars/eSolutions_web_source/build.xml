@@ -30,7 +30,7 @@
     <target name="buildTomcat" if="isTomcat">
         <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
-        <property name="contextFile" value="${basedir}/target/${artifactId}-${version}/META-INF/context.xml" />
+        <property name="contextFile" value="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/context.xml" />
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
@@ -52,18 +52,18 @@
     </target>
 
     <target name="buildWebLogic" if="isWebLogic">
-        <copy file="${basedir}/${weblogic}/weblogic.xml" tofile="${basedir}/target/${artifactId}-${version}/WEB-INF/weblogic.xml" />
+        <copy file="${basedir}/${weblogic}/weblogic.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/weblogic.xml" />
     </target>
 
     <target name="buildWebSphere" if="isWebSphere">
-        <copy file="${basedir}/${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${artifactId}-${version}/WEB-INF/ibm-web-bnd.xmi" />
-        <copy file="${basedir}/${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${artifactId}-${version}/WEB-INF/ibm-web-ext.xmi" />
+        <copy file="${basedir}/${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/ibm-web-bnd.xmi" />
+        <copy file="${basedir}/${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${pomartifactId}-${pom.version}/WEB-INF/ibm-web-ext.xmi" />
 
         <replace file="${basedir}/target/${artifactId}-${version}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name@" value="${vhostName}" />
     </target>
 
     <target name="buildGeronimo" if="isGeronimo">
-        <copy file="${basedir}/${geronimo}/geronimo-web.xml" tofile="${basedir}/target/${artifactId}-${version}/WEB-INF/geronimo-web.xml" />
+        <copy file="${basedir}/${geronimo}/geronimo-web.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
