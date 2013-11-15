@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security.dao.reference.interfaces;
 
+import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
@@ -56,4 +57,6 @@ public interface ISecurityReferenceDAO
      * @throws SQLException
      */
     List<String> obtainSecurityQuestionList() throws SQLException;
+
+    Map<String, String> listAvailableServices() throws SQLException;
 }

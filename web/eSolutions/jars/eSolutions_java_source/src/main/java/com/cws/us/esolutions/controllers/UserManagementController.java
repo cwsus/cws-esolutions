@@ -57,19 +57,12 @@ import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -364,7 +357,6 @@ public class UserManagementController
         this.passwordResetSubject = value;
     }
 
-
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
@@ -426,43 +418,7 @@ public class UserManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            try
-            {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                if ((isUserAuthorized) && (isAdminAuthorized))
-                {
-                    mView.addObject("command", new UserAccount());
-                    mView.setViewName(this.searchUsersPage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            
+            mView.addObject("command", new UserAccount());
             mView.setViewName(this.searchUsersPage);
         }
         else
@@ -477,7 +433,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/add-user", method = RequestMethod.GET)
     public final ModelAndView showAddUser()
@@ -540,43 +495,9 @@ public class UserManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            try
-            {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                if ((isUserAuthorized) && (isAdminAuthorized))
-                {
-                    mView.addObject("roles", Role.values());
-                    mView.addObject("command", new UserAccount());
-                    mView.setViewName(this.createUserPage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            } 
+            mView.addObject("roles", Role.values());
+            mView.addObject("command", new UserAccount());
+            mView.setViewName(this.createUserPage); 
         }
         else
         {
@@ -590,7 +511,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/view/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView showAccountData(@PathVariable("userGuid") final String userGuid)
@@ -657,82 +577,67 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                // ensure authenticated access
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid(userGuid);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
 
-                    if (DEBUG)
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(searchAccount);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setRequestor(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                AccountControlResponse response = acctController.loadUserAccount(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    if (response.getUserAccount() != null)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setGuid(userGuid);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(searchAccount);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setRequestor(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.loadUserAccount(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        if (response.getUserAccount() != null)
-                        {
-                            mView.addObject("userRoles", Role.values());
-                            mView.addObject("userAccount", response.getUserAccount());
-                            mView.setViewName(this.viewUserPage);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_MESSAGE, this.messageNoUsersFound);
-                            mView.setViewName(this.searchUsersPage);
-                        }
+                        mView.addObject("userRoles", Role.values());
+                        mView.addObject("userAccount", response.getUserAccount());
+                        mView.setViewName(this.viewUserPage);
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.messageNoUsersFound);
                         mView.setViewName(this.searchUsersPage);
                     }
                 }
-                else
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -740,18 +645,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -827,91 +720,75 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid(userGuid);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
+
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(searchAccount);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setRequestor(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                AccountControlResponse response = acctController.loadUserAudit(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    List<AuditEntry> auditEntries = response.getAuditEntries();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
                     }
 
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setGuid(userGuid);
-
-                    if (DEBUG)
+                    if ((auditEntries != null) && (auditEntries.size() != 0))
                     {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(searchAccount);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setRequestor(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.loadUserAudit(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        List<AuditEntry> auditEntries = response.getAuditEntries();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
-                        }
-
-                        if ((auditEntries != null) && (auditEntries.size() != 0))
-                        {
-                            mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
-                            mView.addObject("page", 1);
-                            mView.addObject("auditEntries", auditEntries);
-                            mView.addObject("userAccount", searchAccount);
-                            mView.setViewName(this.viewAuditPage);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                            mView.setViewName(this.viewAuditPage);
-                        }
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
+                        mView.addObject("page", 1);
+                        mView.addObject("auditEntries", auditEntries);
+                        mView.addObject("userAccount", searchAccount);
+                        mView.setViewName(this.viewAuditPage);
                     }
                     else
                     {
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
+                        mView.setViewName(this.viewAuditPage);
                     }
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -919,18 +796,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -940,7 +805,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/audit/account/{userGuid}/page/{page}", method = RequestMethod.GET)
     public final ModelAndView showAuditData(@PathVariable("userGuid") final String userGuid, @PathVariable("page") final int page)
@@ -1008,92 +872,76 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid(userGuid);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
+
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(searchAccount);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setRequestor(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setStartPage((page-1) * recordsPerPage);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                AccountControlResponse response = acctController.loadUserAudit(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    List<AuditEntry> auditEntries = response.getAuditEntries();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
                     }
 
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setGuid(userGuid);
-
-                    if (DEBUG)
+                    if ((auditEntries != null) && (auditEntries.size() != 0))
                     {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(searchAccount);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setRequestor(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setStartPage((page-1) * recordsPerPage);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.loadUserAudit(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        List<AuditEntry> auditEntries = response.getAuditEntries();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
-                        }
-
-                        if ((auditEntries != null) && (auditEntries.size() != 0))
-                        {
-                            mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
-                            mView.addObject("page", page);
-                            mView.addObject("auditEntries", auditEntries);
-                            mView.addObject("userAccount", searchAccount);
-                            mView.setViewName(this.viewAuditPage);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                            mView.setViewName(this.viewAuditPage);
-                        }
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
+                        mView.addObject("page", page);
+                        mView.addObject("auditEntries", auditEntries);
+                        mView.addObject("userAccount", searchAccount);
+                        mView.setViewName(this.viewAuditPage);
                     }
                     else
                     {
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
+                        mView.setViewName(this.viewAuditPage);
                     }
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -1101,18 +949,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1122,7 +958,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/lock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView lockUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1189,76 +1024,60 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setFailedCount(3);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setControlType(ControlType.SUSPEND);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
 
-                    UserAccount account = new UserAccount();
-                    account.setGuid(userGuid);
-                    account.setFailedCount(3);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", account);
-                    }
+                AccountControlResponse response = acctController.modifyUserLockout(request);
 
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(account);
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setControlType(ControlType.SUSPEND);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.modifyUserLockout(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -1266,18 +1085,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1287,7 +1094,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/unlock/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView unlockUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1354,76 +1160,60 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setFailedCount(0);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setControlType(ControlType.SUSPEND);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
 
-                    UserAccount account = new UserAccount();
-                    account.setGuid(userGuid);
-                    account.setFailedCount(0);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", account);
-                    }
+                AccountControlResponse response = acctController.modifyUserLockout(request);
 
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(account);
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setControlType(ControlType.SUSPEND);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.modifyUserLockout(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -1431,18 +1221,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1452,7 +1230,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/suspend/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView suspendUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1519,76 +1296,60 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setSuspended(true);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setControlType(ControlType.SUSPEND);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
 
-                    UserAccount account = new UserAccount();
-                    account.setGuid(userGuid);
-                    account.setSuspended(true);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", account);
-                    }
+                AccountControlResponse response = acctController.modifyUserSuspension(request);
 
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(account);
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setControlType(ControlType.SUSPEND);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.modifyUserSuspension(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -1596,18 +1357,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1617,7 +1366,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/unsuspend/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView unsuspendUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1684,76 +1432,60 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setSuspended(false);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setControlType(ControlType.SUSPEND);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
 
-                    UserAccount account = new UserAccount();
-                    account.setGuid(userGuid);
-                    account.setSuspended(false);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", account);
-                    }
+                AccountControlResponse response = acctController.modifyUserSuspension(request);
 
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(account);
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setControlType(ControlType.SUSPEND);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = acctController.modifyUserSuspension(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.searchUsersPage);
-                    }
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.searchUsersPage);
                 }
             }
             catch (AccountControlException acx)
@@ -1761,18 +1493,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1787,7 +1507,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/reset/account/{userGuid}", method = RequestMethod.GET)
     public final ModelAndView resetUserAccount(@PathVariable("userGuid") final String userGuid)
@@ -1854,88 +1573,73 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount account = new UserAccount();
+                account.setGuid(userGuid);
+                account.setSuspended(false);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", account);
+                }
+
+                AccountResetRequest request = new AccountResetRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(account);
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setAlgorithm(secConfig.getAuthAlgorithm());
+                request.setRequestor(userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountResetRequest: {}", request);
+                }
+
+                AccountResetResponse response = processor.resetUserPassword(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountResetResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    // good, send email
+                    UserAccount responseAccount = response.getUserAccount();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("UserAccount: {}", responseAccount);
                     }
 
-                    UserAccount account = new UserAccount();
-                    account.setGuid(userGuid);
-                    account.setSuspended(false);
+                    String emailId = RandomStringUtils.randomAlphanumeric(16);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", account);
+                        DEBUGGER.debug("Message ID: {}", emailId);
                     }
 
-                    AccountResetRequest request = new AccountResetRequest();
-                    request.setHostInfo(reqInfo);
-                    request.setUserAccount(account);
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setAlgorithm(secConfig.getAuthAlgorithm());
-                    request.setRequestor(userAccount);
+                    StringBuilder targetURL = new StringBuilder()
+                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                        .append(hRequest.getContextPath() + this.resetURL + response.getResetId());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AccountResetRequest: {}", request);
+                        DEBUGGER.debug("targetURL: {}", targetURL);
                     }
-
-                    AccountResetResponse response = processor.resetUserPassword(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountResetResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        // good, send email
-                        UserAccount responseAccount = response.getUserAccount();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", responseAccount);
-                        }
-
-                        String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Message ID: {}", emailId);
-                        }
-
-                        StringBuilder targetURL = new StringBuilder()
-                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                            .append(hRequest.getContextPath() + this.resetURL + response.getResetId());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("targetURL: {}", targetURL);
-                        }
                             
-                        String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
+                    String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
                         {
                             responseAccount.getGivenName(),
                             new Date(System.currentTimeMillis()),
@@ -1945,45 +1649,44 @@ public class UserManagementController
                             secConfig.getPasswordMaxLength()
                         });
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.passwordResetSubject, this.getClass().getClassLoader()));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
-                        mView.addObject(Constants.USER_ACCOUNT, response.getUserAccount());
-                        mView.setViewName(this.viewUserPage);
-                    }
-                    else
+                    if (DEBUG)
                     {
-                        // some failure occurred
-                        ERROR_RECORDER.error(response.getResponse());
-
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.addObject("userAccount", response.getUserAccount());
-                        mView.setViewName(this.viewUserPage);
+                        DEBUGGER.debug("Email body: {}", emailBody);
                     }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.passwordResetSubject, this.getClass().getClassLoader()));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
+                    mView.addObject(Constants.USER_ACCOUNT, response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    // some failure occurred
+                    ERROR_RECORDER.error(response.getResponse());
+
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
             }
             catch (AccountResetException arx)
@@ -1991,18 +1694,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(arx.getMessage(), arx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             catch (IOException iox)
             {
@@ -2176,6 +1867,7 @@ public class UserManagementController
         return mView;
     }
 
+
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
@@ -2241,87 +1933,67 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.USER_ADMIN);
+                RequestHostInfo hostInfo = new RequestHostInfo();
+                hostInfo.setHostAddress(hRequest.getRemoteAddr());
+                hostInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid((StringUtils.isNotEmpty(user.getGuid())) ? user.getGuid() : null);
+                searchAccount.setDisplayName((StringUtils.isNotEmpty(user.getDisplayName())) ? user.getDisplayName() : null);
+                searchAccount.setEmailAddr((StringUtils.isNotEmpty(user.getEmailAddr())) ? user.getEmailAddr() : null);
+                searchAccount.setUsername((StringUtils.isNotEmpty(user.getUsername())) ? user.getUsername() : null);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo hostInfo = new RequestHostInfo();
-                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                    hostInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
 
-                    if (DEBUG)
+                // search accounts
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(hostInfo);
+                request.setUserAccount(searchAccount);
+                request.setApplicationId(appConfig.getApplicationName());
+                request.setControlType(ControlType.LOOKUP);
+                request.setModType(ModificationType.NONE);
+                request.setSearchType(SearchRequestType.ALL);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                IAccountControlProcessor processor = new AccountControlProcessorImpl();
+                AccountControlResponse response = processor.searchAccounts(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                    }
+                        List<UserAccount> userList = response.getUserList();
 
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setGuid((StringUtils.isNotEmpty(user.getGuid())) ? user.getGuid() : null);
-                    searchAccount.setDisplayName((StringUtils.isNotEmpty(user.getDisplayName())) ? user.getDisplayName() : null);
-                    searchAccount.setEmailAddr((StringUtils.isNotEmpty(user.getEmailAddr())) ? user.getEmailAddr() : null);
-                    searchAccount.setUsername((StringUtils.isNotEmpty(user.getUsername())) ? user.getUsername() : null);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    // search accounts
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(hostInfo);
-                    request.setUserAccount(searchAccount);
-                    request.setApplicationId(appConfig.getApplicationName());
-                    request.setControlType(ControlType.LOOKUP);
-                    request.setModType(ModificationType.NONE);
-                    request.setSearchType(SearchRequestType.ALL);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                    AccountControlResponse response = processor.searchAccounts(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                        if (DEBUG)
                         {
-                            List<UserAccount> userList = response.getUserList();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("List<UserAccount> {}", userList);
-                            }
-
-                            mView.addObject("command", new UserAccount());
-                            mView.addObject("searchResults", userList);
-                            mView.setViewName(this.searchUsersPage);
+                            DEBUGGER.debug("List<UserAccount> {}", userList);
                         }
-                        else
-                        {
-                            mView.addObject("command", new UserAccount());
-                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        }
+
+                        mView.addObject("command", new UserAccount());
+                        mView.addObject("searchResults", userList);
+                        mView.setViewName(this.searchUsersPage);
                     }
                     else
                     {
@@ -2329,22 +2001,15 @@ public class UserManagementController
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
                 }
-                else
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    mView.addObject("command", new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                }
             }
             catch (AccountControlException acx)
             {
@@ -2444,115 +2109,88 @@ public class UserManagementController
 
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+                RequestHostInfo hostInfo = new RequestHostInfo();
+                hostInfo.setHostAddress(hRequest.getRemoteAddr());
+                hostInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                UserAccount newUser = new UserAccount();
+                newUser.setGuid(user.getGuid());
+                newUser.setSurname(user.getSurname());
+                newUser.setExpiryDate(System.currentTimeMillis());
+                newUser.setFailedCount(user.getFailedCount());
+                newUser.setOlrLocked(false);
+                newUser.setOlrSetup(true);
+                newUser.setSuspended(user.isSuspended());
+                newUser.setTcAccepted(false);
+                newUser.setRole(user.getRole());
+                newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
+                newUser.setEmailAddr(user.getEmailAddr());
+                newUser.setGivenName(user.getGivenName());
+                newUser.setUsername(user.getUsername());
+
+                if (DEBUG)
                 {
-                    RequestHostInfo hostInfo = new RequestHostInfo();
-                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                    hostInfo.setHostName(hRequest.getRemoteHost());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                    }
-
-                    UserAccount newUser = new UserAccount();
-                    newUser.setGuid(user.getGuid());
-                    newUser.setSurname(user.getSurname());
-                    newUser.setExpiryDate(System.currentTimeMillis());
-                    newUser.setFailedCount(user.getFailedCount());
-                    newUser.setOlrLocked(false);
-                    newUser.setOlrSetup(true);
-                    newUser.setSuspended(user.isSuspended());
-                    newUser.setTcAccepted(false);
-                    newUser.setRole(user.getRole());
-                    newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
-                    newUser.setEmailAddr(user.getEmailAddr());
-                    newUser.setGivenName(user.getGivenName());
-                    newUser.setUsername(user.getUsername());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", newUser);
-                    }
-
-                    UserSecurity security = new UserSecurity();
-                    security.setPassword(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()));
-                    security.setUserSalt(RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserSecurity: {}", security);
-                    }
-
-                    // search accounts
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(hostInfo);
-                    request.setUserAccount(newUser);
-                    request.setUserSecurity(security);
-                    request.setApplicationId(appConfig.getApplicationName());
-                    request.setAlgorithm(secConfig.getAuthAlgorithm());
-                    request.setControlType(ControlType.CREATE);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    AccountControlResponse response = processor.createNewUser(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        // account created
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountCreated);
-                        mView.addObject("command", new UserAccount());
-                        mView.setViewName(this.createUserPage);
-                    }
-                    else
-                    {
-                        mView.addObject("command", user);
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.createUserPage);
-                    }
+                    DEBUGGER.debug("UserAccount: {}", newUser);
                 }
-                else
+
+                UserSecurity security = new UserSecurity();
+                security.setPassword(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()));
+                security.setUserSalt(RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserSecurity: {}", security);
+                }
+
+                // search accounts
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(hostInfo);
+                request.setUserAccount(newUser);
+                request.setUserSecurity(security);
+                request.setApplicationId(appConfig.getApplicationName());
+                request.setAlgorithm(secConfig.getAuthAlgorithm());
+                request.setControlType(ControlType.CREATE);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                AccountControlResponse response = processor.createNewUser(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    // account created
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountCreated);
+                    mView.addObject("command", new UserAccount());
+                    mView.setViewName(this.createUserPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    mView.addObject("command", user);
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.createUserPage);
+                }
             }
             catch (AccountControlException acx)
             {
@@ -2640,94 +2278,66 @@ public class UserManagementController
         {
             try
             {
-                IUserControlService userControl = new UserControlServiceImpl();
-                IAdminControlService adminControl = new AdminControlServiceImpl();
-
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+                RequestHostInfo hostInfo = new RequestHostInfo();
+                hostInfo.setHostAddress(hRequest.getRemoteAddr());
+                hostInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
                 }
 
-                if ((isUserAuthorized) && (isAdminAuthorized))
+                // set the suspended flag
+                user.setSuspended(true);
+
+                if (DEBUG)
                 {
-                    // TODO: validate
-                    RequestHostInfo hostInfo = new RequestHostInfo();
-                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                    hostInfo.setHostName(hRequest.getRemoteHost());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                    }
-
-                    // set the suspended flag
-                    user.setSuspended(true);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", user);
-                    }
-
-                    // search accounts
-                    AccountControlRequest request = new AccountControlRequest();
-                    request.setHostInfo(hostInfo);
-                    request.setUserAccount(user);
-                    request.setApplicationId(appConfig.getApplicationName());
-                    request.setAlgorithm(secConfig.getAuthAlgorithm());
-                    request.setControlType(ControlType.SUSPEND);
-                    request.setModType(ModificationType.NONE);
-                    request.setRequestor(userAccount);
-                    request.setIsLogonRequest(false);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                    AccountControlResponse response = processor.modifyUserSuspension(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        // account suspended
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspended);
-                        mView.addObject("command", user);
-                        mView.setViewName(this.viewUserPage);
-                    }
-                    else
-                    {
-                        mView.addObject("command", new UserAccount());
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    }
+                    DEBUGGER.debug("UserAccount: {}", user);
                 }
-                else
+
+                // search accounts
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(hostInfo);
+                request.setUserAccount(user);
+                request.setApplicationId(appConfig.getApplicationName());
+                request.setAlgorithm(secConfig.getAuthAlgorithm());
+                request.setControlType(ControlType.SUSPEND);
+                request.setModType(ModificationType.NONE);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                IAccountControlProcessor processor = new AccountControlProcessorImpl();
+                AccountControlResponse response = processor.modifyUserSuspension(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    // account suspended
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspended);
+                    mView.addObject("command", user);
+                    mView.setViewName(this.viewUserPage);
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    mView.addObject("command", new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                }
             }
             catch (AccountControlException acx)
             {

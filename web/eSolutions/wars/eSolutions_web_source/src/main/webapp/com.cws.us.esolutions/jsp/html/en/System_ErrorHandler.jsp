@@ -48,7 +48,7 @@
 
 	    <c:choose>
 	        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
-	            <p><a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />"><spring:message code="theme.click.continue" arguments="${pageContext.request.contextPath}/ui/home/default" /></a></p>
+	            <p><a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />"><spring:message code="theme.click.continue" arguments="${pageContext.request.contextPath}/ui/common/default" /></a></p>
 	        </c:when>
 	        <c:otherwise>
 	            <p><a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />"><spring:message code="theme.click.continue" arguments="${pageContext.request.contextPath}/ui/login/default" /></a></p>

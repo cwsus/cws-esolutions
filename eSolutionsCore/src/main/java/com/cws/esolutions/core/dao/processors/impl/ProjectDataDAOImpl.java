@@ -296,37 +296,36 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    responseData = new ArrayList<String>(
-                            Arrays.asList(
-                                resultSet.getString(1), // project guid
-                                resultSet.getString(2), // project code
-                                resultSet.getString(3), // project status
-                                resultSet.getString(4), // primary owner
-                                resultSet.getString(5), // secondary owner
-                                resultSet.getString(6), // contact email
-                                resultSet.getString(7), // incident q
-                                resultSet.getString(8))); // chg q
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String str : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        responseData = new ArrayList<String>(
+                                Arrays.asList(
+                                    resultSet.getString(1), // project guid
+                                    resultSet.getString(2), // project code
+                                    resultSet.getString(3), // project status
+                                    resultSet.getString(4), // primary owner
+                                    resultSet.getString(5), // secondary owner
+                                    resultSet.getString(6), // contact email
+                                    resultSet.getString(7), // incident q
+                                    resultSet.getString(8))); // chg q
+
+                        if (DEBUG)
                         {
-                            DEBUGGER.debug(str);
+                            for (String str : responseData)
+                            {
+                                DEBUGGER.debug(str);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found for the provided project code and region");
                 }
             }
         }
@@ -391,22 +390,25 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
                     }
                 }
             }
@@ -474,45 +476,48 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    projectList = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[] {
-                            resultSet.getString(1), // project guid
-                            resultSet.getString(2), // project code
-                            resultSet.getString(3), // project status
-                            resultSet.getString(4), // primary owner
-                            resultSet.getString(5), // secondary owner
-                            resultSet.getString(6), // contact email
-                            resultSet.getString(7), // incident q
-                            resultSet.getString(8) // chg q
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        projectList.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("projectList: {}", projectList);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        projectList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[] {
+                                resultSet.getString(1), // project guid
+                                resultSet.getString(2), // project code
+                                resultSet.getString(3), // project status
+                                resultSet.getString(4), // primary owner
+                                resultSet.getString(5), // secondary owner
+                                resultSet.getString(6), // contact email
+                                resultSet.getString(7), // incident q
+                                resultSet.getString(8) // chg q
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug("data: {}", str);
+                                }
+                            }
+
+                            projectList.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("projectList: {}", projectList);
+                        }
                     }
                 }
             }
@@ -582,51 +587,50 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseList = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[]
-                        {
-                            resultSet.getString(1), // project guid
-                            resultSet.getString(2), // project code
-                            resultSet.getString(3), // project region
-                            resultSet.getString(4), // primary owner
-                            resultSet.getString(5), // secondary owner
-                            resultSet.getString(6), // contact email
-                            resultSet.getString(7), // incident q
-                            resultSet.getString(8) // chg q
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        responseList.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("responseList: {}", responseList);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[]
+                            {
+                                resultSet.getString(1), // project guid
+                                resultSet.getString(2), // project code
+                                resultSet.getString(3), // project region
+                                resultSet.getString(4), // primary owner
+                                resultSet.getString(5), // secondary owner
+                                resultSet.getString(6), // contact email
+                                resultSet.getString(7), // incident q
+                                resultSet.getString(8) // chg q
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug("data: {}", str);
+                                }
+                            }
+
+                            responseList.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("responseList: {}", responseList);
+                        }
+                    }
                 }
             }
         }

@@ -1681,7 +1681,6 @@ public class ApplicationManagementController
         return mView;
     }
 
-
     @RequestMapping(value = "/list-files/application/{application}/platform/{platform}/server/{server}", method = RequestMethod.GET)
     public final ModelAndView showListFiles(@PathVariable("application") final String application, @PathVariable("platform") final String platform, @PathVariable("server") final String server, @RequestParam(value = "vpath", required = true) final String vpath)
     {
@@ -1933,7 +1932,6 @@ public class ApplicationManagementController
         return mView;
     }
 
-
     @RequestMapping(value = "/deploy-application/application/{application}", method = RequestMethod.GET)
     public final ModelAndView showDeployApplication(@PathVariable("application") final String application)
     {
@@ -2108,7 +2106,6 @@ public class ApplicationManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/deploy-application/application/{application}/platform/{platform}", method = RequestMethod.GET)
     public final ModelAndView showDeployApplication(@PathVariable("application") final String application, @PathVariable("platform") final String platform)
@@ -2335,8 +2332,6 @@ public class ApplicationManagementController
 
         return mView;
     }
-
-    
 
     @RequestMapping(value = "/add-application", method = RequestMethod.POST)
     public final ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
@@ -2647,8 +2642,6 @@ public class ApplicationManagementController
 
         return mView;
     }
-
-
 
     @RequestMapping(value = "/deploy-application", method = RequestMethod.POST)
     public final ModelAndView doDeployApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)

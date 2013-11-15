@@ -45,7 +45,7 @@
         </dep:hidden-classes>
         <dep:inverse-classloading />
     </dep:environment>
-    <context-root>@groupId@</context-root>
+    <context-root>@contextRoot@</context-root>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>

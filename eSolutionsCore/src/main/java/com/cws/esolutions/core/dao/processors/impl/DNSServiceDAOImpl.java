@@ -80,53 +80,56 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.beforeFirst();
-                    response = new ArrayList<Vector<String>>();
+                    resultSet = stmt.getResultSet();
 
-                    while (resultSet.next())
+                    if (resultSet.next())
                     {
-                        Vector<String> vector = new Vector<String>(
-                                Arrays.asList(
-                                        resultSet.getString(1), // PROJECT_CODE
-                                        resultSet.getString(2), // ZONE_FILE
-                                        String.valueOf(resultSet.getBoolean(3)), // APEX_RECORD
-                                        resultSet.getString(4), // RR_ORIGIN
-                                        String.valueOf(resultSet.getInt(5)), // RR_TIMETOLIVE
-                                        resultSet.getString(6), // RR_HOSTNAME
-                                        resultSet.getString(7), // RR_OWNER
-                                        resultSet.getString(8), // RR_HOSTMASTER
-                                        String.valueOf(resultSet.getString(9)), // RR_SERIAL
-                                        String.valueOf(resultSet.getString(10)), // RR_REFRESH
-                                        String.valueOf(resultSet.getString(11)), // RR_RETRY
-                                        String.valueOf(resultSet.getString(12)), // RR_EXPIRY
-                                        String.valueOf(resultSet.getString(13)), // RR_CACHETIME
-                                        resultSet.getString(14), // RR_CLASS
-                                        resultSet.getString(15), // RR_TYPE
-                                        String.valueOf(resultSet.getString(16)), // RR_PORT
-                                        String.valueOf(resultSet.getString(17)), // RR_WEIGHT
-                                        resultSet.getString(18), // RR_SERVICE
-                                        resultSet.getString(19), // RR_PROTOCOL
-                                        String.valueOf(resultSet.getString(20)), // RR_PRIORITY
-                                        resultSet.getString(21), // RR_TARGET
-                                        resultSet.getString(22), // SECONDARY_TARGET
-                                        resultSet.getString(23) // TERTIARY_TARGET
-                                ));
+                        resultSet.beforeFirst();
+                        response = new ArrayList<Vector<String>>();
+
+                        while (resultSet.next())
+                        {
+                            Vector<String> vector = new Vector<String>(
+                                    Arrays.asList(
+                                            resultSet.getString(1), // PROJECT_CODE
+                                            resultSet.getString(2), // ZONE_FILE
+                                            String.valueOf(resultSet.getBoolean(3)), // APEX_RECORD
+                                            resultSet.getString(4), // RR_ORIGIN
+                                            String.valueOf(resultSet.getInt(5)), // RR_TIMETOLIVE
+                                            resultSet.getString(6), // RR_HOSTNAME
+                                            resultSet.getString(7), // RR_OWNER
+                                            resultSet.getString(8), // RR_HOSTMASTER
+                                            String.valueOf(resultSet.getString(9)), // RR_SERIAL
+                                            String.valueOf(resultSet.getString(10)), // RR_REFRESH
+                                            String.valueOf(resultSet.getString(11)), // RR_RETRY
+                                            String.valueOf(resultSet.getString(12)), // RR_EXPIRY
+                                            String.valueOf(resultSet.getString(13)), // RR_CACHETIME
+                                            resultSet.getString(14), // RR_CLASS
+                                            resultSet.getString(15), // RR_TYPE
+                                            String.valueOf(resultSet.getString(16)), // RR_PORT
+                                            String.valueOf(resultSet.getString(17)), // RR_WEIGHT
+                                            resultSet.getString(18), // RR_SERVICE
+                                            resultSet.getString(19), // RR_PROTOCOL
+                                            String.valueOf(resultSet.getString(20)), // RR_PRIORITY
+                                            resultSet.getString(21), // RR_TARGET
+                                            resultSet.getString(22), // SECONDARY_TARGET
+                                            resultSet.getString(23) // TERTIARY_TARGET
+                                    ));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Vector: {}", vector);
+                            }
+
+                            response.add(vector);
+                        }
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Vector: {}", vector);
+                            DEBUGGER.debug("response: {}", response);
                         }
-
-                        response.add(vector);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("response: {}", response);
                     }
                 }
             }

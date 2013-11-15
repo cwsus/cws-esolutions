@@ -293,33 +293,37 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.first();
-                    articleData = new ArrayList<String>(
-                            Arrays.asList(
-                                    resultSet.getString(1),
-                                    resultSet.getString(2),
-                                    String.valueOf(resultSet.getString(3)),
-                                    resultSet.getString(4),
-                                    resultSet.getString(5),
-                                    resultSet.getString(6),
-                                    resultSet.getString(7),
-                                    resultSet.getString(8),
-                                    resultSet.getString(9),
-                                    resultSet.getString(10),
-                                    resultSet.getString(11),
-                                    String.valueOf(resultSet.getString(12)),
-                                    String.valueOf(resultSet.getString(13)),
-                                    resultSet.getString(14),
-                                    resultSet.getString(15),
-                                    resultSet.getString(15)));
-                    
-                    if (DEBUG)
+                    resultSet = stmt.getResultSet();
+
+                    if (resultSet.next())
                     {
-                        DEBUGGER.debug("Article data: {}", articleData);
+                        resultSet.first();
+
+                        articleData = new ArrayList<String>(
+                                Arrays.asList(
+                                        resultSet.getString(1),
+                                        resultSet.getString(2),
+                                        String.valueOf(resultSet.getString(3)),
+                                        resultSet.getString(4),
+                                        resultSet.getString(5),
+                                        resultSet.getString(6),
+                                        resultSet.getString(7),
+                                        resultSet.getString(8),
+                                        resultSet.getString(9),
+                                        resultSet.getString(10),
+                                        resultSet.getString(11),
+                                        String.valueOf(resultSet.getString(12)),
+                                        String.valueOf(resultSet.getString(13)),
+                                        resultSet.getString(14),
+                                        resultSet.getString(15),
+                                        resultSet.getString(15)));
+                    
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Article data: {}", articleData);
+                        }
                     }
                 }
             }
@@ -382,49 +386,53 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
                 stmt = sqlConn.prepareCall("{CALL retrPendingArticles(?)}");
                 stmt.setString(1, author);
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.beforeFirst();
-                    articleData = new ArrayList<String[]>();
+                    resultSet = stmt.getResultSet();
 
-                    while (resultSet.next())
+                    if (resultSet.next())
                     {
-                        String[] data = new String[]
+                        resultSet.beforeFirst();
+
+                        articleData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                                resultSet.getString(1),
-                                resultSet.getString(2),
-                                String.valueOf(resultSet.getString(3)),
-                                resultSet.getString(4),
-                                resultSet.getString(5),
-                                resultSet.getString(6),
-                                resultSet.getString(7),
-                                resultSet.getString(8),
-                                resultSet.getString(9),
-                                resultSet.getString(10),
-                                resultSet.getString(11),
-                                String.valueOf(resultSet.getString(12)),
-                                String.valueOf(resultSet.getString(13)),
-                                resultSet.getString(14),
-                                resultSet.getString(15),
-                                resultSet.getString(15)
-                        };
+                            String[] data = new String[]
+                            {
+                                    resultSet.getString(1),
+                                    resultSet.getString(2),
+                                    String.valueOf(resultSet.getString(3)),
+                                    resultSet.getString(4),
+                                    resultSet.getString(5),
+                                    resultSet.getString(6),
+                                    resultSet.getString(7),
+                                    resultSet.getString(8),
+                                    resultSet.getString(9),
+                                    resultSet.getString(10),
+                                    resultSet.getString(11),
+                                    String.valueOf(resultSet.getString(12)),
+                                    String.valueOf(resultSet.getString(13)),
+                                    resultSet.getString(14),
+                                    resultSet.getString(15),
+                                    resultSet.getString(15)
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug("data: {}", str);
+                                }
+                            }
+
+                            articleData.add(data);
+                        }
 
                         if (DEBUG)
                         {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
+                            DEBUGGER.debug("articleData: {}", articleData);
                         }
-
-                        articleData.add(data);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("articleData: {}", articleData);
                     }
                 }
             }
@@ -492,48 +500,52 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.beforeFirst();
-                    responseList = new ArrayList<String[]>();
+                    resultSet = stmt.getResultSet();
 
-                    while (resultSet.next())
+                    if (resultSet.next())
                     {
-                        String[] articleData = new String[]
+                        resultSet.beforeFirst();
+
+                        responseList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            resultSet.getString(1), // kbase_page_hits
-                            resultSet.getString(2), // kbase_article_id
-                            resultSet.getString(3), // kbase_article_createdate
-                            resultSet.getString(4), // kbase_article_author
-                            resultSet.getString(5), // kbase_article_keywords
-                            resultSet.getString(6), // kbase_article_title
-                            resultSet.getString(7), // kbase_article_symptoms
-                            resultSet.getString(8), // kbase_article_cause
-                            resultSet.getString(9), // kbase_article_resolution
-                            resultSet.getString(10), // kbase_article_status
-                            resultSet.getString(11), // kbase_article_reviewedby
-                            resultSet.getString(12), // kbase_article_revieweddate
-                            resultSet.getString(13), // kbase_article_modifieddate
-                            resultSet.getString(14), // kbase_article_modifiedby
-                            resultSet.getString(15), // kbase_article_author_email
-                        };
+                            String[] articleData = new String[]
+                            {
+                                resultSet.getString(1), // kbase_page_hits
+                                resultSet.getString(2), // kbase_article_id
+                                resultSet.getString(3), // kbase_article_createdate
+                                resultSet.getString(4), // kbase_article_author
+                                resultSet.getString(5), // kbase_article_keywords
+                                resultSet.getString(6), // kbase_article_title
+                                resultSet.getString(7), // kbase_article_symptoms
+                                resultSet.getString(8), // kbase_article_cause
+                                resultSet.getString(9), // kbase_article_resolution
+                                resultSet.getString(10), // kbase_article_status
+                                resultSet.getString(11), // kbase_article_reviewedby
+                                resultSet.getString(12), // kbase_article_revieweddate
+                                resultSet.getString(13), // kbase_article_modifieddate
+                                resultSet.getString(14), // kbase_article_modifiedby
+                                resultSet.getString(15), // kbase_article_author_email
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : articleData)
+                                {
+                                    DEBUGGER.debug(str);
+                                }
+                            }
+
+                            responseList.add(articleData);
+                        }
 
                         if (DEBUG)
                         {
-                            for (String str : articleData)
-                            {
-                                DEBUGGER.debug(str);
-                            }
+                            DEBUGGER.debug("Response: {}", responseList);
                         }
-
-                        responseList.add(articleData);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Response: {}", responseList);
                     }
                 }
             }

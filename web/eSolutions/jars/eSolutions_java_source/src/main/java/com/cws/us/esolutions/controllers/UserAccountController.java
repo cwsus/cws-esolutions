@@ -532,6 +532,10 @@ public class UserAccountController
                 mView.addObject("command", new UserChangeRequest());
                 mView.setViewName(this.changeSecurityPage);
             }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
             else
             {
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -788,6 +792,10 @@ public class UserAccountController
             {
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeKeysComplete);
             }
+            else if (res.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
             else
             {
                 mView.addObject(Constants.ERROR_RESPONSE, res.getResponse());
@@ -893,7 +901,7 @@ public class UserAccountController
 
         try
         {
-            if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
+            if (userAccount.getStatus() == LoginStatus.RESET)
             {
                 userSecurity = new UserSecurity();
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
@@ -964,6 +972,10 @@ public class UserAccountController
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
                     mView.setViewName(this.myAccountPage);
                 }
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1109,6 +1121,10 @@ public class UserAccountController
             {
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeSecurityComplete);
                 mView.setViewName(this.myAccountPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1258,6 +1274,10 @@ public class UserAccountController
                 // yay
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
                 mView.setViewName(this.myAccountPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1409,6 +1429,10 @@ public class UserAccountController
                 // yay
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
                 mView.setViewName(this.myAccountPage);
+            }
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             else
             {

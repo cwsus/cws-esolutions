@@ -84,82 +84,85 @@ public class SQLAuthenticator implements Authenticator
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.last();
-                    int x = resultSet.getRow();
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("x: {}", x);
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
                     }
 
-                    if ((x == 0) || (x > 1))
+                    if (resultSet.next())
                     {
-                        throw new AuthenticatorException("No user account was located for the provided data.");
+                        resultSet.last();
+                        int x = resultSet.getRow();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("x: {}", x);
+                        }
+
+                        if ((x == 0) || (x > 1))
+                        {
+                            throw new AuthenticatorException("No user account was located for the provided data.");
+                        }
+                        else
+                        {
+                            resultSet.first();
+
+                            userAccount = new ArrayList<Object>();
+                            userAccount.add(resultSet.getString(authData.getCommonName()));
+                            userAccount.add(resultSet.getString(authData.getUserId()));
+                            userAccount.add(resultSet.getString(authData.getGivenName()));
+                            userAccount.add(resultSet.getString(authData.getSurname()));
+                            userAccount.add(resultSet.getString(authData.getDisplayName()));
+                            userAccount.add(resultSet.getString(authData.getEmailAddr()));
+                            userAccount.add(resultSet.getString(authData.getPagerNumber()));
+                            userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
+                            userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
+                            userAccount.add(resultSet.getInt(authData.getLockCount()));
+                            userAccount.add(resultSet.getLong(authData.getLastLogin()));
+                            userAccount.add(resultSet.getLong(authData.getExpiryDate()));
+                            userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
+                            userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
+                            userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
+                            userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
+                            userAccount.add(resultSet.getBytes(authData.getPublicKey()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", userAccount);
+                            }
+
+                            stmt.close();
+                            stmt = null;
+                            stmt = sqlConn.prepareCall("{ CALL loginSuccess(?, ?) }");
+                            stmt.setString(1, guid); // common name
+                            stmt.setString(2, password); // username
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("stmt: {}", stmt);
+                            }
+
+                            int y = stmt.executeUpdate();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Result: {}", y);
+                            }
+
+                            if (y != 1)
+                            {
+                                ERROR_RECORDER.error("Failed to update last logon and authentication count.");
+                            }
+                        }
                     }
                     else
                     {
-                        resultSet.first();
-
-                        userAccount = new ArrayList<Object>();
-                        userAccount.add(resultSet.getString(authData.getCommonName()));
-                        userAccount.add(resultSet.getString(authData.getUserId()));
-                        userAccount.add(resultSet.getString(authData.getGivenName()));
-                        userAccount.add(resultSet.getString(authData.getSurname()));
-                        userAccount.add(resultSet.getString(authData.getDisplayName()));
-                        userAccount.add(resultSet.getString(authData.getEmailAddr()));
-                        userAccount.add(resultSet.getString(authData.getPagerNumber()));
-                        userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                        userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
-                        userAccount.add(resultSet.getInt(authData.getLockCount()));
-                        userAccount.add(resultSet.getLong(authData.getLastLogin()));
-                        userAccount.add(resultSet.getLong(authData.getExpiryDate()));
-                        userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
-                        userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
-                        userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
-                        userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
-                        userAccount.add(resultSet.getBytes(authData.getPublicKey()));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", userAccount);
-                        }
-
-                        stmt.close();
-                        stmt = null;
-                        stmt = sqlConn.prepareCall("{ CALL loginSuccess(?, ?) }");
-                        stmt.setString(1, guid); // common name
-                        stmt.setString(2, password); // username
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("stmt: {}", stmt);
-                        }
-
-                        int y = stmt.executeUpdate();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Result: {}", y);
-                        }
-
-                        if (y != 1)
-                        {
-                            ERROR_RECORDER.error("Failed to update last logon and authentication count.");
-                        }
+                        throw new AuthenticatorException("No user account was located for the provided data.");
                     }
-                }
-                else
-                {
-                    throw new AuthenticatorException("No user account was located for the provided data.");
                 }
             }
         }
@@ -475,17 +478,20 @@ public class SQLAuthenticator implements Authenticator
                     DEBUGGER.debug("Statement: {}", stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
+                    resultSet = stmt.getResultSet();
 
-                if (resultSet.next())
-                {
-                    resultSet.first();
-                    isAuthorized = resultSet.getBoolean(1);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+                        isAuthorized = resultSet.getBoolean(1);
+                    }
                 }
             }
         }
@@ -560,30 +566,33 @@ public class SQLAuthenticator implements Authenticator
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    userSecurity = new ArrayList<String>(
-                        Arrays.asList(
-                            resultSet.getString(authData.getSecQuestionOne()),
-                            resultSet.getString(authData.getSecQuestionTwo())));
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("userSecurity: {}", userSecurity);
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new AuthenticatorException("No user account was located for the provided data.");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        userSecurity = new ArrayList<String>(
+                            Arrays.asList(
+                                resultSet.getString(authData.getSecQuestionOne()),
+                                resultSet.getString(authData.getSecQuestionTwo())));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("userSecurity: {}", userSecurity);
+                        }
+                    }
+                    else
+                    {
+                        throw new AuthenticatorException("No user account was located for the provided data.");
+                    }
                 }
             }
         }

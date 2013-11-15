@@ -15,7 +15,9 @@
  */
 package com.cws.esolutions.security.dao.reference.impl;
 
+import java.util.Map;
 import java.util.List;
+import java.util.HashMap;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -232,5 +234,92 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         }
 
         return questionList;
+    }
+
+    @Override
+    public synchronized Map<String, String> listAvailableServices() throws SQLException
+    {
+        final String methodName = ISecurityReferenceDAO.CNAME + "#listAvailableServices() throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        Map<String, String> serviceMap = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{CALL retrAvailableServices()}");
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        serviceMap = new HashMap<String, String>();
+
+                        while (resultSet.next())
+                        {
+                            serviceMap.put(resultSet.getString(1), resultSet.getString(2));
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Map<String, String>: {}", serviceMap);
+                        }
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage());
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return serviceMap;
     }
 }

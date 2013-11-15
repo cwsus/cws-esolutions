@@ -42,11 +42,8 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -280,77 +277,65 @@ public class SystemCheckController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Server server = new Server();
+                server.setServerGuid(value);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                // a source server is *required*
+                ServerManagementRequest request = new ServerManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setTargetServer(server);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
+                }
+
+                ServerManagementResponse response = processor.getServerData(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    Server resServer = response.getServer();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("Server: {}", resServer);
                     }
 
-                    Server server = new Server();
-                    server.setServerGuid(value);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    // a source server is *required*
-                    ServerManagementRequest request = new ServerManagementRequest();
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setTargetServer(server);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementRequest: {}", request);
-                    }
-
-                    ServerManagementResponse response = processor.getServerData(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        Server resServer = response.getServer();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", resServer);
-                        }
-
-                        mView.addObject("server", resServer);
-                        mView.addObject("command", new SystemCheckRequest());
-                        mView.setViewName(this.remoteDatePage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getErrorResponsePage());
-                    }
+                    mView.addObject("server", resServer);
+                    mView.addObject("command", new SystemCheckRequest());
+                    mView.setViewName(this.remoteDatePage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
@@ -358,12 +343,6 @@ public class SystemCheckController
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -495,6 +474,10 @@ public class SystemCheckController
                     mView.addObject("command", new SystemCheckRequest());
                     mView.setViewName(this.testTelnetPage);
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -586,77 +569,65 @@ public class SystemCheckController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Server server = new Server();
+                server.setServerGuid(value);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                // a source server is *required*
+                ServerManagementRequest request = new ServerManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setTargetServer(server);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
+                }
+
+                ServerManagementResponse response = processor.getServerData(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    Server resServer = response.getServer();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("Server: {}", resServer);
                     }
 
-                    Server server = new Server();
-                    server.setServerGuid(value);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    // a source server is *required*
-                    ServerManagementRequest request = new ServerManagementRequest();
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setTargetServer(server);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementRequest: {}", request);
-                    }
-
-                    ServerManagementResponse response = processor.getServerData(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        Server resServer = response.getServer();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", resServer);
-                        }
-
-                        mView.addObject("server", resServer);
-                        mView.addObject("command", new SystemCheckRequest());
-                        mView.setViewName(this.netstatPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getErrorResponsePage());
-                    }
+                    mView.addObject("server", resServer);
+                    mView.addObject("command", new SystemCheckRequest());
+                    mView.setViewName(this.netstatPage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
@@ -664,12 +635,6 @@ public class SystemCheckController
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -750,77 +715,65 @@ public class SystemCheckController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Server server = new Server();
+                server.setServerGuid(value);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                // a source server is *required*
+                ServerManagementRequest request = new ServerManagementRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+                request.setTargetServer(server);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
+                }
+
+                ServerManagementResponse response = processor.getServerData(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    Server resServer = response.getServer();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("Server: {}", resServer);
                     }
 
-                    Server server = new Server();
-                    server.setServerGuid(value);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    // a source server is *required*
-                    ServerManagementRequest request = new ServerManagementRequest();
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-                    request.setTargetServer(server);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementRequest: {}", request);
-                    }
-
-                    ServerManagementResponse response = processor.getServerData(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        Server resServer = response.getServer();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", resServer);
-                        }
-
-                        mView.addObject("server", resServer);
-                        mView.addObject("command", new SystemCheckRequest());
-                        mView.setViewName(this.listProcessesPage);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getErrorResponsePage());
-                    }
+                    mView.addObject("server", resServer);
+                    mView.addObject("command", new SystemCheckRequest());
+                    mView.setViewName(this.listProcessesPage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
@@ -828,12 +781,6 @@ public class SystemCheckController
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -984,6 +931,12 @@ public class SystemCheckController
                 {
                     // all set
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
                 }
                 else
                 {
@@ -1148,6 +1101,12 @@ public class SystemCheckController
                     }
 
                     mView.addObject(Constants.MESSAGE_RESPONSE, responseMessage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
                 }
                 else
                 {
@@ -1317,6 +1276,12 @@ public class SystemCheckController
                     // all set
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
+                }
                 else
                 {
                     // nooo
@@ -1476,6 +1441,12 @@ public class SystemCheckController
                 {
                     // all set
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
                 }
                 else
                 {

@@ -243,15 +243,12 @@
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
                         <compilerArgs>
-                            <arg>-verbose</arg>
                             <arg>-g</arg>
                             <arg>-Xlint:all</arg>
                         </compilerArgs>
-                        <debug>true</debug>
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
-                        <verbose>true</verbose>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -306,6 +303,9 @@
                 <plugin>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.9.1</version>
+                    <configuration>
+                        <quiet>true</quiet>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
@@ -347,140 +347,149 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-package</id>
+                        <phase>prepare-package</phase>
+                        <configuration>
+                            <target>
+                                <ant antfile="${basedir}/build.xml" />
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+                    <tarLongFileFormat>gnu</tarLongFileFormat>
+                    <descriptors>
+                        <descriptor>src/assemble/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>release-assembly</id>
+                        <phase>post-package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <applicationName>${project.artifactId}</applicationName>
+                    <description>${project.description}</description>
+                    <displayName>${project.artifactId}</displayName>
+                    <generateModuleId>true</generateModuleId>
+                    <initializeInOrder>true</initializeInOrder>
+                    <archive>
+                        <manifestEntries>
+                            <Project-Name>${project.name}</Project-Name>
+                            <Subproject-Name>${project.name}</Subproject-Name>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Build-Date>${timestamp}</Build-Date>
+                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Project-Name>${project.name}</Project-Name>
+                            <Subproject-Name>${project.name}</Subproject-Name>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Build-Date>${timestamp}</Build-Date>
+                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Project-Name>${project.name}</Project-Name>
+                            <Subproject-Name>${project.name}</Subproject-Name>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Build-Date>${maven.build.timestamp}</Build-Date>
+                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+                    <archive>
+                        <manifestEntries>
+                            <Project-Name>${project.name}</Project-Name>
+                            <Subproject-Name>${project.name}</Subproject-Name>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Build-Date>${timestamp}</Build-Date>
+                            <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
-        <!-- START SNIPPET: release-profile -->
-        <profile>
-            <id>cws-build</id>
-            <build>
-                <plugins>
-                    <!-- Create a source-release artifact that contains the
-                        fully buildable project directory source structure. This is the artifact
-                        which is the official subject of any release vote. -->
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>prepare-package</id>
-								<phase>prepare-package</phase>
-								<configuration>
-									<target>
-										<ant antfile="${basedir}/build.xml" />
-									</target>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-							<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                            <descriptors>
-								<descriptor>src/assemble/assembly.xml</descriptor>
-							</descriptors>
-                            <tarLongFileFormat>gnu</tarLongFileFormat>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>release-assembly</id>
-                                <phase>post-package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-					<plugin>
-						<artifactId>maven-ear-plugin</artifactId>
-						<configuration>
-                            <packagingIncludes>META-INF/**, **/*.war</packagingIncludes>
-							<modules>
-								<webModule>
-									<groupId>${project.dependencies[0].groupId}</groupId>
-									<artifactId>${project.dependencies[0].artifactId}</artifactId>
-									<contextRoot>/${project.dependencies[0].artifactId}</contextRoot>
-								</webModule>
-							</modules>
-							<archive>
-								<manifestEntries>
-									<Project-Name>${project.name}</Project-Name>
-									<Subproject-Name>${project.name}</Subproject-Name>
-									<Specification-Title>${project.name}</Specification-Title>
-									<Specification-Vendor>${project.organization.name}</Specification-Vendor>
-									<Specification-Version>${project.version}</Specification-Version>
-									<Implementation-Title>${project.name}</Implementation-Title>
-									<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-									<Implementation-Version>${project.version}</Implementation-Version>
-									<Build-Date>${timestamp}</Build-Date>
-									<Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</plugin>
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Project-Name>${project.name}</Project-Name>
-                                    <Subproject-Name>${project.name}</Subproject-Name>
-                                    <Specification-Title>${project.name}</Specification-Title>
-                                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Build-Date>${timestamp}</Build-Date>
-                                    <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Project-Name>${project.name}</Project-Name>
-                                    <Subproject-Name>${project.name}</Subproject-Name>
-                                    <Specification-Title>${project.name}</Specification-Title>
-                                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Build-Date>${maven.build.timestamp}</Build-Date>
-                                    <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
         <!-- START SNIPPET: release-profile -->
         <profile>
             <id>cws-release</id>
@@ -489,42 +498,6 @@
                     <!-- Create a source-release artifact that contains the
                         fully buildable project directory source structure. This is the artifact
                         which is the official subject of any release vote. -->
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>prepare-package</id>
-								<phase>prepare-package</phase>
-								<configuration>
-									<target>
-										<ant antfile="${basedir}/build.xml" />
-									</target>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-                    <plugin>
-                        <artifactId>maven-assembly-plugin</artifactId>
-                        <configuration>
-							<runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-                            <descriptors>
-								<descriptor>src/assemble/assembly.xml</descriptor>
-							</descriptors>
-                            <tarLongFileFormat>gnu</tarLongFileFormat>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>release-assembly</id>
-                                <phase>post-package</phase>
-                                <goals>
-                                    <goal>single</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
                     <!-- We want to deploy the artifact to a staging location
                         for perusal -->
                     <plugin>
@@ -533,63 +506,6 @@
                         <configuration>
                             <updateReleaseInfo>true</updateReleaseInfo>
                         </configuration>
-                    </plugin>
-					<plugin>
-						<artifactId>maven-ear-plugin</artifactId>
-						<configuration>
-                            <packagingIncludes>META-INF/**, **/*.war</packagingIncludes>
-							<modules>
-								<webModule>
-									<groupId>${project.dependencies[0].groupId}</groupId>
-									<artifactId>${project.dependencies[0].artifactId}</artifactId>
-									<contextRoot>/${project.dependencies[0].artifactId}</contextRoot>
-								</webModule>
-							</modules>
-							<archive>
-								<manifestEntries>
-									<Project-Name>${project.name}</Project-Name>
-									<Subproject-Name>${project.name}</Subproject-Name>
-									<Specification-Title>${project.name}</Specification-Title>
-									<Specification-Vendor>${project.organization.name}</Specification-Vendor>
-									<Specification-Version>${project.version}</Specification-Version>
-									<Implementation-Title>${project.name}</Implementation-Title>
-									<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-									<Implementation-Version>${project.version}</Implementation-Version>
-									<Build-Date>${timestamp}</Build-Date>
-									<Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</plugin>
-                    <plugin>
-                        <artifactId>maven-jar-plugin</artifactId>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Project-Name>${project.name}</Project-Name>
-                                    <Subproject-Name>${project.name}</Subproject-Name>
-                                    <Specification-Title>${project.name}</Specification-Title>
-                                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Build-Date>${timestamp}</Build-Date>
-                                    <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-javadocs</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
                     </plugin>
                     <!-- We want to sign the artifact, the POM, and all attached artifacts -->
                     <plugin>
@@ -607,33 +523,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <goals>
-                                    <goal>jar</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                        <configuration>
-                            <archive>
-                                <manifestEntries>
-                                    <Project-Name>${project.name}</Project-Name>
-                                    <Subproject-Name>${project.name}</Subproject-Name>
-                                    <Specification-Title>${project.name}</Specification-Title>
-                                    <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-                                    <Specification-Version>${project.version}</Specification-Version>
-                                    <Implementation-Title>${project.name}</Implementation-Title>
-                                    <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                                    <Implementation-Version>${project.version}</Implementation-Version>
-                                    <Build-Date>${maven.build.timestamp}</Build-Date>
-                                    <Build-Platform>${os.name} ${os.arch} ${os.version}</Build-Platform>
-                                </manifestEntries>
-                            </archive>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>

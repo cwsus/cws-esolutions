@@ -90,7 +90,7 @@
 	        <c:otherwise>
 	            <spring:message code="theme.system.request.unauthorized" />
 	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
-	                <p>Click <a href="${pageContext.request.contextPath}/ui/home/default" title="Home">here</a> to continue.</p>
+	                <p>Click <a href="${pageContext.request.contextPath}/ui/common/default" title="Home">here</a> to continue.</p>
 	            </c:if>
 	        </c:otherwise>
 	    </c:choose>

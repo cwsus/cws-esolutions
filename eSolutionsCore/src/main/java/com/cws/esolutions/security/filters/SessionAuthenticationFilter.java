@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
  * SSLEnforcementFilter
  * Provides consistent SSL enforcement within the application
@@ -250,32 +249,46 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if ((userAccount.getStatus() == LoginStatus.EXPIRED) || (userAccount.getStatus() == LoginStatus.RESET)
-                    && (!(StringUtils.equals(requestURI, loginPage))))
+                switch (userAccount.getStatus())
                 {
-                    // redirect to the change password page
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Request authenticated. No action taken");
-                    }
-
-                    hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
-
-                    return;
-                }
-                else
-                {
-                    if ((userAccount.getStatus() == LoginStatus.SUCCESS) && (StringUtils.equals(userAccount.getSessionId(), hSession.getId())))
-                    {
-                        if (DEBUG)
+                    case EXPIRED:
+                        if ((!(StringUtils.equals(requestURI, passwdPage))))
                         {
-                            DEBUGGER.debug("Request authenticated. No action taken !");
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Account is expired and this request is not for the password page. Redirecting !");
+                            }
+
+                            hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+
+                            return;
                         }
 
                         filterChain.doFilter(sRequest, sResponse);
 
                         return;
-                    }
+                    case RESET:
+                        if ((!(StringUtils.equals(requestURI, passwdPage))))
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Account has status RESET and this request is not for the password page. Redirecting !");
+                            }
+
+                            hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+
+                            return;
+                        }
+
+                        filterChain.doFilter(sRequest, sResponse);
+
+                        return;
+                    case SUCCESS:
+                        filterChain.doFilter(sRequest, sResponse);
+
+                        return;
+                    default:
+                        break;
                 }
             }
         }

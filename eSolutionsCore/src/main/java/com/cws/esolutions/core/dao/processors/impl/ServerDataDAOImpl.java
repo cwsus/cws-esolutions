@@ -241,80 +241,79 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<Object[]>();
-
-                    while (resultSet.next())
-                    {
-                        Object[] serverData = new Object[]
-                        {
-                            resultSet.getString(1), // SYSTEM_GUID
-                            resultSet.getString(2), // SYSTEM_OSTYPE
-                            resultSet.getString(3), // SYSTEM_STATUS
-                            resultSet.getString(4), // SYSTEM_REGION
-                            resultSet.getString(5), // NETWORK_PARTITION
-                            resultSet.getString(6), // DATACENTER_GUID
-                            resultSet.getString(7), // SYSTEM_TYPE
-                            resultSet.getString(8), // DOMAIN_NAME
-                            resultSet.getString(9), // CPU_TYPE
-                            resultSet.getInt(10), // CPU_COUNT
-                            resultSet.getString(11), // SERVER_RACK
-                            resultSet.getString(12), // RACK_POSITION
-                            resultSet.getString(13), // SERVER_MODEL
-                            resultSet.getString(14), // SERIAL_NUMBER
-                            resultSet.getInt(15), // INSTALLED_MEMORY
-                            resultSet.getString(16), // OPER_IP
-                            resultSet.getString(17), // OPER_HOSTNAME
-                            resultSet.getString(18), // MGMT_IP
-                            resultSet.getString(19), // MGMT_HOSTNAME
-                            resultSet.getString(20), // BKUP_IP
-                            resultSet.getString(21), // BKUP_HOSTNAME
-                            resultSet.getString(22), // NAS_IP
-                            resultSet.getString(23), // NAS_HOSTNAME
-                            resultSet.getString(24), // NAT_ADDR
-                            resultSet.getString(25), // COMMENTS
-                            resultSet.getString(26), // ASSIGNED_ENGINEER
-                            resultSet.getTimestamp(27), // ADD_DATE
-                            resultSet.getTimestamp(28), // DELETE_DATE
-                            resultSet.getInt(29), // DMGR_PORT
-                            resultSet.getString(30), // OWNING_DMGR
-                            resultSet.getString(31) // MGR_ENTRY
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (Object obj : serverData)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
-                        }
-
-                        responseData.add(serverData);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (Object[] objArr : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<Object[]>();
+
+                        while (resultSet.next())
                         {
-                            for (Object obj : objArr)
+                            Object[] serverData = new Object[]
                             {
-                                DEBUGGER.debug("Value: {}", obj);
+                                resultSet.getString(1), // SYSTEM_GUID
+                                resultSet.getString(2), // SYSTEM_OSTYPE
+                                resultSet.getString(3), // SYSTEM_STATUS
+                                resultSet.getString(4), // SYSTEM_REGION
+                                resultSet.getString(5), // NETWORK_PARTITION
+                                resultSet.getString(6), // DATACENTER_GUID
+                                resultSet.getString(7), // SYSTEM_TYPE
+                                resultSet.getString(8), // DOMAIN_NAME
+                                resultSet.getString(9), // CPU_TYPE
+                                resultSet.getInt(10), // CPU_COUNT
+                                resultSet.getString(11), // SERVER_RACK
+                                resultSet.getString(12), // RACK_POSITION
+                                resultSet.getString(13), // SERVER_MODEL
+                                resultSet.getString(14), // SERIAL_NUMBER
+                                resultSet.getInt(15), // INSTALLED_MEMORY
+                                resultSet.getString(16), // OPER_IP
+                                resultSet.getString(17), // OPER_HOSTNAME
+                                resultSet.getString(18), // MGMT_IP
+                                resultSet.getString(19), // MGMT_HOSTNAME
+                                resultSet.getString(20), // BKUP_IP
+                                resultSet.getString(21), // BKUP_HOSTNAME
+                                resultSet.getString(22), // NAS_IP
+                                resultSet.getString(23), // NAS_HOSTNAME
+                                resultSet.getString(24), // NAT_ADDR
+                                resultSet.getString(25), // COMMENTS
+                                resultSet.getString(26), // ASSIGNED_ENGINEER
+                                resultSet.getTimestamp(27), // ADD_DATE
+                                resultSet.getTimestamp(28), // DELETE_DATE
+                                resultSet.getInt(29), // DMGR_PORT
+                                resultSet.getString(30), // OWNING_DMGR
+                                resultSet.getString(31) // MGR_ENTRY
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (Object obj : serverData)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
+                            }
+
+                            responseData.add(serverData);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (Object[] objArr : responseData)
+                            {
+                                for (Object obj : objArr)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
                 }
             }
         }
@@ -383,59 +382,58 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    responseData = new ArrayList<Object>(
-                            Arrays.asList(
-                                    resultSet.getString(1), // SYSTEM_GUID
-                                    resultSet.getString(2), // SYSTEM_OSTYPE
-                                    resultSet.getString(3), // SYSTEM_STATUS
-                                    resultSet.getString(4), // SYSTEM_REGION
-                                    resultSet.getString(5), // NETWORK_PARTITION
-                                    resultSet.getString(6), // DATACENTER_GUID
-                                    resultSet.getString(7), // SYSTEM_TYPE
-                                    resultSet.getString(8), // DOMAIN_NAME
-                                    resultSet.getString(9), // CPU_TYPE
-                                    resultSet.getInt(10), // CPU_COUNT
-                                    resultSet.getString(11), // SERVER_RACK
-                                    resultSet.getString(12), // RACK_POSITION
-                                    resultSet.getString(13), // SERVER_MODEL
-                                    resultSet.getString(14), // SERIAL_NUMBER
-                                    resultSet.getInt(15), // INSTALLED_MEMORY
-                                    resultSet.getString(16), // OPER_IP
-                                    resultSet.getString(17), // OPER_HOSTNAME
-                                    resultSet.getString(18), // MGMT_IP
-                                    resultSet.getString(19), // MGMT_HOSTNAME
-                                    resultSet.getString(20), // BKUP_IP
-                                    resultSet.getString(21), // BKUP_HOSTNAME
-                                    resultSet.getString(22), // NAS_IP
-                                    resultSet.getString(23), // NAS_HOSTNAME
-                                    resultSet.getString(24), // NAT_ADDR
-                                    resultSet.getString(25), // COMMENTS
-                                    resultSet.getString(26), // ASSIGNED_ENGINEER
-                                    resultSet.getTimestamp(27), // ADD_DATE
-                                    resultSet.getTimestamp(28), // DELETE_DATE
-                                    resultSet.getInt(29), // DMGR_PORT
-                                    resultSet.getString(30), // OWNING_DMGR
-                                    resultSet.getString(31))); // MGR_ENTRY
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("responseData: {}", responseData);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        responseData = new ArrayList<Object>(
+                                Arrays.asList(
+                                        resultSet.getString(1), // SYSTEM_GUID
+                                        resultSet.getString(2), // SYSTEM_OSTYPE
+                                        resultSet.getString(3), // SYSTEM_STATUS
+                                        resultSet.getString(4), // SYSTEM_REGION
+                                        resultSet.getString(5), // NETWORK_PARTITION
+                                        resultSet.getString(6), // DATACENTER_GUID
+                                        resultSet.getString(7), // SYSTEM_TYPE
+                                        resultSet.getString(8), // DOMAIN_NAME
+                                        resultSet.getString(9), // CPU_TYPE
+                                        resultSet.getInt(10), // CPU_COUNT
+                                        resultSet.getString(11), // SERVER_RACK
+                                        resultSet.getString(12), // RACK_POSITION
+                                        resultSet.getString(13), // SERVER_MODEL
+                                        resultSet.getString(14), // SERIAL_NUMBER
+                                        resultSet.getInt(15), // INSTALLED_MEMORY
+                                        resultSet.getString(16), // OPER_IP
+                                        resultSet.getString(17), // OPER_HOSTNAME
+                                        resultSet.getString(18), // MGMT_IP
+                                        resultSet.getString(19), // MGMT_HOSTNAME
+                                        resultSet.getString(20), // BKUP_IP
+                                        resultSet.getString(21), // BKUP_HOSTNAME
+                                        resultSet.getString(22), // NAS_IP
+                                        resultSet.getString(23), // NAS_HOSTNAME
+                                        resultSet.getString(24), // NAT_ADDR
+                                        resultSet.getString(25), // COMMENTS
+                                        resultSet.getString(26), // ASSIGNED_ENGINEER
+                                        resultSet.getTimestamp(27), // ADD_DATE
+                                        resultSet.getTimestamp(28), // DELETE_DATE
+                                        resultSet.getInt(29), // DMGR_PORT
+                                        resultSet.getString(30), // OWNING_DMGR
+                                        resultSet.getString(31))); // MGR_ENTRY
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("responseData: {}", responseData);
+                        }
+                    }
                 }
             }
         }
@@ -499,27 +497,26 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No server entries were located.");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
                 }
             }
         }
@@ -595,73 +592,76 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<Object[]>();
-
-                    while (resultSet.next())
-                    {
-                        Object[] serverData = new Object[]
-                        {
-                                resultSet.getString(1), // SYSTEM_GUID
-                                resultSet.getString(2), // SYSTEM_OSTYPE
-                                resultSet.getString(3), // SYSTEM_STATUS
-                                resultSet.getString(4), // SYSTEM_REGION
-                                resultSet.getString(5), // NETWORK_PARTITION
-                                resultSet.getString(6), // DATACENTER_GUID
-                                resultSet.getString(7), // SYSTEM_TYPE
-                                resultSet.getString(8), // DOMAIN_NAME
-                                resultSet.getString(9), // CPU_TYPE
-                                resultSet.getInt(10), // CPU_COUNT
-                                resultSet.getString(11), // SERVER_RACK
-                                resultSet.getString(12), // RACK_POSITION
-                                resultSet.getString(13), // SERVER_MODEL
-                                resultSet.getString(14), // SERIAL_NUMBER
-                                resultSet.getInt(15), // INSTALLED_MEMORY
-                                resultSet.getString(16), // OPER_IP
-                                resultSet.getString(17), // OPER_HOSTNAME
-                                resultSet.getString(18), // MGMT_IP
-                                resultSet.getString(19), // MGMT_HOSTNAME
-                                resultSet.getString(20), // BKUP_IP
-                                resultSet.getString(21), // BKUP_HOSTNAME
-                                resultSet.getString(22), // NAS_IP
-                                resultSet.getString(23), // NAS_HOSTNAME
-                                resultSet.getString(24), // NAT_ADDR
-                                resultSet.getString(25), // COMMENTS
-                                resultSet.getString(26), // ASSIGNED_ENGINEER
-                                resultSet.getTimestamp(27), // ADD_DATE
-                                resultSet.getTimestamp(28), // DELETE_DATE
-                                resultSet.getInt(29), // DMGR_PORT
-                                resultSet.getString(30), // OWNING_DMGR
-                                resultSet.getString(31) // MGR_ENTRY
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (Object obj : serverData)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
-                        }
-
-                        responseData.add(serverData);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (Object[] objArr : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<Object[]>();
+
+                        while (resultSet.next())
                         {
-                            for (Object obj : objArr)
+                            Object[] serverData = new Object[]
                             {
-                                DEBUGGER.debug("Value: {}", obj);
+                                    resultSet.getString(1), // SYSTEM_GUID
+                                    resultSet.getString(2), // SYSTEM_OSTYPE
+                                    resultSet.getString(3), // SYSTEM_STATUS
+                                    resultSet.getString(4), // SYSTEM_REGION
+                                    resultSet.getString(5), // NETWORK_PARTITION
+                                    resultSet.getString(6), // DATACENTER_GUID
+                                    resultSet.getString(7), // SYSTEM_TYPE
+                                    resultSet.getString(8), // DOMAIN_NAME
+                                    resultSet.getString(9), // CPU_TYPE
+                                    resultSet.getInt(10), // CPU_COUNT
+                                    resultSet.getString(11), // SERVER_RACK
+                                    resultSet.getString(12), // RACK_POSITION
+                                    resultSet.getString(13), // SERVER_MODEL
+                                    resultSet.getString(14), // SERIAL_NUMBER
+                                    resultSet.getInt(15), // INSTALLED_MEMORY
+                                    resultSet.getString(16), // OPER_IP
+                                    resultSet.getString(17), // OPER_HOSTNAME
+                                    resultSet.getString(18), // MGMT_IP
+                                    resultSet.getString(19), // MGMT_HOSTNAME
+                                    resultSet.getString(20), // BKUP_IP
+                                    resultSet.getString(21), // BKUP_HOSTNAME
+                                    resultSet.getString(22), // NAS_IP
+                                    resultSet.getString(23), // NAS_HOSTNAME
+                                    resultSet.getString(24), // NAT_ADDR
+                                    resultSet.getString(25), // COMMENTS
+                                    resultSet.getString(26), // ASSIGNED_ENGINEER
+                                    resultSet.getTimestamp(27), // ADD_DATE
+                                    resultSet.getTimestamp(28), // DELETE_DATE
+                                    resultSet.getInt(29), // DMGR_PORT
+                                    resultSet.getString(30), // OWNING_DMGR
+                                    resultSet.getString(31) // MGR_ENTRY
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (Object obj : serverData)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
+                            }
+
+                            responseData.add(serverData);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (Object[] objArr : responseData)
+                            {
+                                for (Object obj : objArr)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
                             }
                         }
                     }
@@ -749,80 +749,79 @@ public class ServerDataDAOImpl implements IServerDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<Object[]>();
-
-                    while (resultSet.next())
-                    {
-                        Object[] serverData = new Object[]
-                        {
-                                resultSet.getString(1), // SYSTEM_GUID
-                                resultSet.getString(2), // SYSTEM_OSTYPE
-                                resultSet.getString(3), // SYSTEM_STATUS
-                                resultSet.getString(4), // SYSTEM_REGION
-                                resultSet.getString(5), // NETWORK_PARTITION
-                                resultSet.getString(6), // DATACENTER_GUID
-                                resultSet.getString(7), // SYSTEM_TYPE
-                                resultSet.getString(8), // DOMAIN_NAME
-                                resultSet.getString(9), // CPU_TYPE
-                                resultSet.getInt(10), // CPU_COUNT
-                                resultSet.getString(11), // SERVER_RACK
-                                resultSet.getString(12), // RACK_POSITION
-                                resultSet.getString(13), // SERVER_MODEL
-                                resultSet.getString(14), // SERIAL_NUMBER
-                                resultSet.getInt(15), // INSTALLED_MEMORY
-                                resultSet.getString(16), // OPER_IP
-                                resultSet.getString(17), // OPER_HOSTNAME
-                                resultSet.getString(18), // MGMT_IP
-                                resultSet.getString(19), // MGMT_HOSTNAME
-                                resultSet.getString(20), // BKUP_IP
-                                resultSet.getString(21), // BKUP_HOSTNAME
-                                resultSet.getString(22), // NAS_IP
-                                resultSet.getString(23), // NAS_HOSTNAME
-                                resultSet.getString(24), // NAT_ADDR
-                                resultSet.getString(25), // COMMENTS
-                                resultSet.getString(26), // ASSIGNED_ENGINEER
-                                resultSet.getTimestamp(27), // ADD_DATE
-                                resultSet.getTimestamp(28), // DELETE_DATE
-                                resultSet.getInt(29), // DMGR_PORT
-                                resultSet.getString(30), // OWNING_DMGR
-                                resultSet.getString(31) // MGR_ENTRY
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (Object obj : serverData)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
-                        }
-
-                        responseData.add(serverData);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (Object[] objArr : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<Object[]>();
+
+                        while (resultSet.next())
                         {
-                            for (Object obj : objArr)
+                            Object[] serverData = new Object[]
                             {
-                                DEBUGGER.debug("Value: {}", obj);
+                                    resultSet.getString(1), // SYSTEM_GUID
+                                    resultSet.getString(2), // SYSTEM_OSTYPE
+                                    resultSet.getString(3), // SYSTEM_STATUS
+                                    resultSet.getString(4), // SYSTEM_REGION
+                                    resultSet.getString(5), // NETWORK_PARTITION
+                                    resultSet.getString(6), // DATACENTER_GUID
+                                    resultSet.getString(7), // SYSTEM_TYPE
+                                    resultSet.getString(8), // DOMAIN_NAME
+                                    resultSet.getString(9), // CPU_TYPE
+                                    resultSet.getInt(10), // CPU_COUNT
+                                    resultSet.getString(11), // SERVER_RACK
+                                    resultSet.getString(12), // RACK_POSITION
+                                    resultSet.getString(13), // SERVER_MODEL
+                                    resultSet.getString(14), // SERIAL_NUMBER
+                                    resultSet.getInt(15), // INSTALLED_MEMORY
+                                    resultSet.getString(16), // OPER_IP
+                                    resultSet.getString(17), // OPER_HOSTNAME
+                                    resultSet.getString(18), // MGMT_IP
+                                    resultSet.getString(19), // MGMT_HOSTNAME
+                                    resultSet.getString(20), // BKUP_IP
+                                    resultSet.getString(21), // BKUP_HOSTNAME
+                                    resultSet.getString(22), // NAS_IP
+                                    resultSet.getString(23), // NAS_HOSTNAME
+                                    resultSet.getString(24), // NAT_ADDR
+                                    resultSet.getString(25), // COMMENTS
+                                    resultSet.getString(26), // ASSIGNED_ENGINEER
+                                    resultSet.getTimestamp(27), // ADD_DATE
+                                    resultSet.getTimestamp(28), // DELETE_DATE
+                                    resultSet.getInt(29), // DMGR_PORT
+                                    resultSet.getString(30), // OWNING_DMGR
+                                    resultSet.getString(31) // MGR_ENTRY
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (Object obj : serverData)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
+                            }
+
+                            responseData.add(serverData);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (Object[] objArr : responseData)
+                            {
+                                for (Object obj : objArr)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
                 }
             }
         }

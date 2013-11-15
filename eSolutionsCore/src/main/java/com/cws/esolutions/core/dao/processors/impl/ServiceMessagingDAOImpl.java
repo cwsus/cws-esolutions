@@ -144,14 +144,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                boolean requestComplete = stmt.execute();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("requestComplete: {}", requestComplete);
-                }
-
-                if (requestComplete)
+                if (stmt.execute())
                 {
                     resultSet = stmt.getResultSet();
 
@@ -176,10 +169,6 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                             DEBUGGER.debug("svcMessage: {}", svcMessage);
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No service messages exist.");
                 }
             }
         }
@@ -243,41 +232,44 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
+                    resultSet = stmt.getResultSet();
 
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    response = new ArrayList<Object[]>();
-
-                    while (resultSet.next())
+                    if (DEBUG)
                     {
-                        Object[] data = new Object[]
-                        {
-                            resultSet.getString(1), // svc_message_id
-                            resultSet.getString(2), // svc_message_title
-                            resultSet.getString(3), // svc_message_txt
-                            resultSet.getString(4), // svc_message_author
-                            resultSet.getString(5), // svc_message_email
-                            resultSet.getLong(6), // svc_message_submitdate
-                            resultSet.getBoolean(7), // svc_message_active
-                            resultSet.getBoolean(8), // svc_message_expires
-                            resultSet.getLong(9), // svc_message_expirydate
-                            resultSet.getLong(10), // svc_message_modifiedon
-                            resultSet.getString(11) // svc_message_modifiedby
-                        };
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
 
-                        if (DEBUG)
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        response = new ArrayList<Object[]>();
+
+                        while (resultSet.next())
                         {
-                            DEBUGGER.debug("data: {}", data);
+                            Object[] data = new Object[]
+                            {
+                                resultSet.getString(1), // svc_message_id
+                                resultSet.getString(2), // svc_message_title
+                                resultSet.getString(3), // svc_message_txt
+                                resultSet.getString(4), // svc_message_author
+                                resultSet.getString(5), // svc_message_email
+                                resultSet.getLong(6), // svc_message_submitdate
+                                resultSet.getBoolean(7), // svc_message_active
+                                resultSet.getBoolean(8), // svc_message_expires
+                                resultSet.getLong(9), // svc_message_expirydate
+                                resultSet.getLong(10), // svc_message_modifiedon
+                                resultSet.getString(11) // svc_message_modifiedby
+                            };
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("data: {}", data);
+                            }
+
+                            response.add(data);
                         }
-
-                        response.add(data);
                     }
                 }
             }
@@ -479,60 +471,59 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] messageData = new String[]
-                        {
-                            resultSet.getString(1), // svc_message_id
-                            resultSet.getString(2), // svc_message_title
-                            resultSet.getString(3), // svc_message_txt
-                            resultSet.getString(4), // svc_message_author
-                            resultSet.getString(5), // svc_message_email
-                            String.valueOf(resultSet.getLong(6)), // svc_message_submitdate
-                            String.valueOf(resultSet.getBoolean(7)), // svc_message_active
-                            String.valueOf(resultSet.getBoolean(8)), // svc_message_expires
-                            String.valueOf(resultSet.getLong(9)), // svc_message_expirydate
-                            String.valueOf(resultSet.getLong(10)), // svc_message_modifiedon
-                            resultSet.getString(11), // svc_message_modifiedby
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : messageData)
-                            {
-                                DEBUGGER.debug(str);
-                            }
-                        }
-
-                        responseData.add(messageData);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
                         {
-                            for (String str1 : str)
+                            String[] messageData = new String[]
                             {
-                                DEBUGGER.debug(str1);
+                                resultSet.getString(1), // svc_message_id
+                                resultSet.getString(2), // svc_message_title
+                                resultSet.getString(3), // svc_message_txt
+                                resultSet.getString(4), // svc_message_author
+                                resultSet.getString(5), // svc_message_email
+                                String.valueOf(resultSet.getLong(6)), // svc_message_submitdate
+                                String.valueOf(resultSet.getBoolean(7)), // svc_message_active
+                                String.valueOf(resultSet.getBoolean(8)), // svc_message_expires
+                                String.valueOf(resultSet.getLong(9)), // svc_message_expirydate
+                                String.valueOf(resultSet.getLong(10)), // svc_message_modifiedon
+                                resultSet.getString(11), // svc_message_modifiedby
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : messageData)
+                                {
+                                    DEBUGGER.debug(str);
+                                }
+                            }
+
+                            responseData.add(messageData);
+                        }
+
+                        if (DEBUG)
+                        {
+                            for (String[] str : responseData)
+                            {
+                                for (String str1 : str)
+                                {
+                                    DEBUGGER.debug(str1);
+                                }
                             }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
                 }
             }
         }

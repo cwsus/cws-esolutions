@@ -54,13 +54,10 @@ import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -332,33 +329,8 @@ public class SystemManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            try
-            {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    mView.addObject("command", new SearchRequest());
-                    mView.setViewName(this.defaultPage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
+            mView.addObject("command", new SearchRequest());
+            mView.setViewName(this.defaultPage);
         }
         else
         {
@@ -437,81 +409,69 @@ public class SystemManagementController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Server server = new Server();
+                server.setServerType(ServerType.DMGRSERVER);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                ServerManagementRequest serviceReq = new ServerManagementRequest();
+                serviceReq.setRequestInfo(reqInfo);
+                serviceReq.setUserAccount(userAccount);
+                serviceReq.setServiceId(this.systemService);
+                serviceReq.setTargetServer(server);
+                serviceReq.setApplicationId(appConfig.getApplicationId());
+                serviceReq.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", serviceReq);
+                }
+
+                ServerManagementResponse serviceRes = serverMgr.listServersByType(serviceReq);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", serviceRes);
+                }
+
+                if (serviceRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Server> serverList = serviceRes.getServerList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("serverList: {}", serverList);
                     }
 
-                    Server server = new Server();
-                    server.setServerType(ServerType.DMGRSERVER);
-
-                    if (DEBUG)
+                    if ((serverList != null) && (serverList.size() != 0))
                     {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    ServerManagementRequest serviceReq = new ServerManagementRequest();
-                    serviceReq.setRequestInfo(reqInfo);
-                    serviceReq.setUserAccount(userAccount);
-                    serviceReq.setServiceId(this.systemService);
-                    serviceReq.setTargetServer(server);
-                    serviceReq.setApplicationId(appConfig.getApplicationId());
-                    serviceReq.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementRequest: {}", serviceReq);
-                    }
-
-                    ServerManagementResponse serviceRes = serverMgr.listServersByType(serviceReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementResponse: {}", serviceRes);
-                    }
-
-                    if (serviceRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Server> serverList = serviceRes.getServerList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("serverList: {}", serverList);
-                        }
-
-                        if ((serverList != null) && (serverList.size() != 0))
-                        {
-                            mView.addObject("serverList", serverList);
-                            mView.setViewName(this.adminConsolePage);
-                        }
-                        else
-                        {
-                            mView.setViewName(appConfig.getUnavailablePage());
-                        }
+                        mView.addObject("serverList", serverList);
+                        mView.setViewName(this.adminConsolePage);
                     }
                     else
                     {
                         mView.setViewName(appConfig.getUnavailablePage());
                     }
                 }
-                else
+                else if (serviceRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.setViewName(appConfig.getUnavailablePage());
                 }
             }
             catch (ServerManagementException smx)
@@ -519,12 +479,6 @@ public class SystemManagementController
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(appConfig.getUnavailablePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -605,108 +559,99 @@ public class SystemManagementController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Server target = new Server();
+                target.setServerGuid(serverGuid);
+
+                if (DEBUG)
                 {
-                    // ensure authenticated access
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
+                    DEBUGGER.debug("Server: {}", target);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                ServerManagementRequest guidRequest = new ServerManagementRequest();
+                guidRequest.setRequestInfo(reqInfo);
+                guidRequest.setUserAccount(userAccount);
+                guidRequest.setServiceId(this.systemService);
+                guidRequest.setTargetServer(target);
+                guidRequest.setApplicationId(appConfig.getApplicationId());
+                guidRequest.setApplicationName(appConfig.getApplicationName());
 
-                    Server target = new Server();
-                    target.setServerGuid(serverGuid);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", guidRequest);
+                }
+
+                ServerManagementResponse guidResponse = serverMgr.getServerData(guidRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", guidResponse);
+                }
+
+                if (guidResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    // yay
+                    mView.addObject("server", guidResponse.getServer());
+                    mView.setViewName(this.viewServerPage);
+                }
+                else if (guidResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    // maybe we have a hostname
+                    target.setOperHostName(serverGuid);
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("Server: {}", target);
                     }
 
-                    ServerManagementRequest guidRequest = new ServerManagementRequest();
-                    guidRequest.setRequestInfo(reqInfo);
-                    guidRequest.setUserAccount(userAccount);
-                    guidRequest.setServiceId(this.systemService);
-                    guidRequest.setTargetServer(target);
-                    guidRequest.setApplicationId(appConfig.getApplicationId());
-                    guidRequest.setApplicationName(appConfig.getApplicationName());
+                    ServerManagementRequest hostRequest = new ServerManagementRequest();
+                    hostRequest.setRequestInfo(reqInfo);
+                    hostRequest.setUserAccount(userAccount);
+                    hostRequest.setServiceId(this.systemService);
+                    hostRequest.setTargetServer(target);
+                    hostRequest.setApplicationId(appConfig.getApplicationId());
+                    hostRequest.setApplicationName(appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ServerManagementRequest: {}", guidRequest);
+                        DEBUGGER.debug("ServerManagementRequest: {}", hostRequest);
                     }
 
-                    ServerManagementResponse guidResponse = serverMgr.getServerData(guidRequest);
+                    ServerManagementResponse hostResponse = serverMgr.listServersByType(hostRequest);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ServerManagementResponse: {}", guidResponse);
+                        DEBUGGER.debug("ServerManagementResponse: {}", hostResponse);
                     }
 
-                    if (guidResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    if (hostResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
                         // yay
-                        mView.addObject("server", guidResponse.getServer());
+                        mView.addObject("server", hostResponse.getServer());
                         mView.setViewName(this.viewServerPage);
+                    }
+                    else if (hostResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                    {
+                        mView.setViewName(appConfig.getUnauthorizedPage());
                     }
                     else
                     {
-                        // maybe we have a hostname
-                        target.setOperHostName(serverGuid);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", target);
-                        }
-
-                        ServerManagementRequest hostRequest = new ServerManagementRequest();
-                        hostRequest.setRequestInfo(reqInfo);
-                        hostRequest.setUserAccount(userAccount);
-                        hostRequest.setServiceId(this.systemService);
-                        hostRequest.setTargetServer(target);
-                        hostRequest.setApplicationId(appConfig.getApplicationId());
-                        hostRequest.setApplicationName(appConfig.getApplicationName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ServerManagementRequest: {}", hostRequest);
-                        }
-
-                        ServerManagementResponse hostResponse = serverMgr.listServersByType(hostRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ServerManagementResponse: {}", hostResponse);
-                        }
-
-                        if (hostResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            // yay
-                            mView.addObject("server", hostResponse.getServer());
-                            mView.setViewName(this.viewServerPage);
-                        }
-                        else
-                        {
-                            // boo
-                            mView.addObject(Constants.ERROR_RESPONSE, hostResponse.getResponse());
-                            mView.setViewName(this.defaultPage);
-                        }
+                        // boo
+                        mView.addObject(Constants.ERROR_RESPONSE, hostResponse.getResponse());
+                        mView.setViewName(this.defaultPage);
                     }
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
             }
             catch (ServerManagementException smx)
@@ -714,12 +659,6 @@ public class SystemManagementController
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -797,32 +736,7 @@ public class SystemManagementController
         if (appConfig.getServices().get(this.serviceName))
         {
             // TODO
-            try
-            {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    mView.setViewName(this.defaultPage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
+            mView.setViewName(this.defaultPage);
         }
         else
         {
@@ -900,143 +814,130 @@ public class SystemManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+    
+            if (DEBUG)
+            {
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            }
+
+            Server dmgrServer = new Server();
+            dmgrServer.setServerType(ServerType.DMGRSERVER);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Server: {}", dmgrServer);
+            }
+
+            ServerManagementRequest dmgrRequest = new ServerManagementRequest();
+            dmgrRequest.setRequestInfo(reqInfo);
+            dmgrRequest.setUserAccount(userAccount);
+            dmgrRequest.setServiceId(this.systemService);
+            dmgrRequest.setTargetServer(dmgrServer);
+            dmgrRequest.setApplicationId(appConfig.getApplicationId());
+            dmgrRequest.setApplicationName(appConfig.getApplicationName());
+
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
+                ServerManagementResponse dmgrResponse = processor.listServersByType(dmgrRequest);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
                 }
 
-                if (isUserAuthorized)
+                if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-    
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    Server dmgrServer = new Server();
-                    dmgrServer.setServerType(ServerType.DMGRSERVER);
+                    List<Server> dmgrServers = dmgrResponse.getServerList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Server: {}", dmgrServer);
+                        DEBUGGER.debug("List<Server>: {}", dmgrServers);
                     }
 
-                    ServerManagementRequest dmgrRequest = new ServerManagementRequest();
-                    dmgrRequest.setRequestInfo(reqInfo);
-                    dmgrRequest.setUserAccount(userAccount);
-                    dmgrRequest.setServiceId(this.systemService);
-                    dmgrRequest.setTargetServer(dmgrServer);
-                    dmgrRequest.setApplicationId(appConfig.getApplicationId());
-                    dmgrRequest.setApplicationName(appConfig.getApplicationName());
+                    mView.addObject("dmgrServers", dmgrServers);
+                }
+                else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
 
-                    try
-                    {
-                        ServerManagementResponse dmgrResponse = processor.listServersByType(dmgrRequest);
+                    return mView;
+                }
+            }
+            catch (ServerManagementException smx)
+            {
+                // don't do anything with it
+                ERROR_RECORDER.error(smx.getMessage(), smx);
+            }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
-                        }
+            // list datacenters
+            DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
+            dcRequest.setRequestInfo(reqInfo);
+            dcRequest.setServiceId(this.dcService);
+            dcRequest.setUserAccount(userAccount);
+            dcRequest.setApplicationId(appConfig.getApplicationId());
+            dcRequest.setApplicationName(appConfig.getApplicationName());
 
-                        if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            List<Server> dmgrServers = dmgrResponse.getServerList();
+            if (DEBUG)
+            {
+                DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+            }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("List<Server>: {}", dmgrServers);
-                            }
+            try
+            {
+                DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
 
-                            mView.addObject("dmgrServers", dmgrServers);
-                        }
-                    }
-                    catch (ServerManagementException smx)
-                    {
-                        // don't do anything with it
-                        ERROR_RECORDER.error(smx.getMessage(), smx);
-                    }
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
+                }
 
-                    // list datacenters
-                    DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
-                    dcRequest.setRequestInfo(reqInfo);
-                    dcRequest.setServiceId(this.dcService);
-                    dcRequest.setUserAccount(userAccount);
-                    dcRequest.setApplicationId(appConfig.getApplicationId());
-                    dcRequest.setApplicationName(appConfig.getApplicationName());
+                if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<DataCenter> datacenters = dcResponse.getDatacenterList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+                        DEBUGGER.debug("List<DataCenter>: {}", datacenters);
                     }
 
-                    try
-                    {
-                        DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+                    mView.addObject("datacenters", datacenters);
+                }
+                else if (dcResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
-                        }
-
-                        if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            List<DataCenter> datacenters = dcResponse.getDatacenterList();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("List<DataCenter>: {}", datacenters);
-                            }
-
-                            mView.addObject("datacenters", datacenters);
-                        }
-                        else
-                        {
-                            // redirect to add datacenter
-                            mView = new ModelAndView(new RedirectView());
-                            mView.setViewName(this.addDatacenterRedirect);
-
-                            return mView;
-                        }
-                    }
-                    catch (DatacenterManagementException dmx)
-                    {
-                        ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-                        // redirect to add datacenter
-                        mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.addDatacenterRedirect);
-
-                        return mView;
-                    }
-
-                    mView.addObject("domainList", this.availableDomains);
-                    mView.addObject("serverTypes", ServerType.values());
-                    mView.addObject("serverStatuses", ServerStatus.values());
-                    mView.addObject("serverRegions", ServiceRegion.values());
-                    mView.addObject("networkPartitions", NetworkPartition.values());
-                    mView.addObject("command", new ServerRequest());
-                    mView.setViewName(this.addServerPage);
+                    return mView;
                 }
                 else
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    // redirect to add datacenter
+                    mView = new ModelAndView(new RedirectView());
+                    mView.setViewName(this.addDatacenterRedirect);
+
+                    return mView;
                 }
             }
-            catch (UserControlServiceException ucsx)
+            catch (DatacenterManagementException dmx)
             {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+                ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                // redirect to add datacenter
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(this.addDatacenterRedirect);
+
+                return mView;
             }
+
+            mView.addObject("domainList", this.availableDomains);
+            mView.addObject("serverTypes", ServerType.values());
+            mView.addObject("serverStatuses", ServerStatus.values());
+            mView.addObject("serverRegions", ServiceRegion.values());
+            mView.addObject("networkPartitions", NetworkPartition.values());
+            mView.addObject("command", new ServerRequest());
+            mView.setViewName(this.addServerPage);
         }
         else
         {
@@ -1129,390 +1030,402 @@ public class SystemManagementController
 
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                // figure out the type
+                switch (request.getServerType())
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    // figure out the type
-                    switch (request.getServerType())
-                    {
-                        case APPSERVER:
-                            // if its an application server, theres no location configured
-                            // because its driven by the owning dmgr
-                            Server dmgrServer = new Server();
-                            dmgrServer.setServerGuid(request.getOwningDmgr());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Server: {}", dmgrServer);
-                            }
-
-                            // find out what datacenter/partition/etc
-                            ServerManagementRequest dmgrRequest = new ServerManagementRequest();
-                            dmgrRequest.setRequestInfo(reqInfo);
-                            dmgrRequest.setServiceId(this.systemService);
-                            dmgrRequest.setTargetServer(dmgrServer);
-                            dmgrRequest.setUserAccount(userAccount);
-                            dmgrRequest.setApplicationId(appConfig.getApplicationId());
-                            dmgrRequest.setApplicationName(appConfig.getApplicationName());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ServerManagementRequest: {}", dmgrRequest);
-                            }
-
-                            ServerManagementResponse dmgrResponse = serverMgr.getServerData(dmgrRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
-                            }
-
-                            if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                            {
-                                // excellent
-                                Server owningDmgr = dmgrResponse.getServer();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Server: {}", owningDmgr);
-                                }
-
-                                request.setDomainName(owningDmgr.getDomainName());
-                                request.setServerRegion(owningDmgr.getServerRegion());
-                                request.setNetworkPartition(owningDmgr.getNetworkPartition());
-                                request.setDatacenter(owningDmgr.getDatacenter().getDatacenterGuid());
-                            }
-                            else
-                            {
-                                Server dmServer = new Server();
-                                dmServer.setServerType(ServerType.DMGRSERVER);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Server: {}", dmServer);
-                                }
-
-                                ServerManagementRequest dmRequest = new ServerManagementRequest();
-                                dmRequest.setRequestInfo(reqInfo);
-                                dmRequest.setUserAccount(userAccount);
-                                dmRequest.setServiceId(this.systemService);
-                                dmRequest.setTargetServer(dmServer);
-                                dmRequest.setApplicationId(appConfig.getApplicationId());
-                                dmRequest.setApplicationName(appConfig.getApplicationName());
-
-                                try
-                                {
-                                    ServerManagementResponse dmResponse = serverMgr.listServersByType(dmgrRequest);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("ServerManagementResponse: {}", dmResponse);
-                                    }
-
-                                    if (dmResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                                    {
-                                        List<Server> dmgrServers = dmResponse.getServerList();
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("List<Server>: {}", dmgrServers);
-                                        }
-
-                                        mView.addObject("dmgrServers", dmgrServers);
-                                    }
-                                }
-                                catch (ServerManagementException smx)
-                                {
-                                    // don't do anything with it
-                                    ERROR_RECORDER.error(smx.getMessage(), smx);
-                                }
-
-                                // list datacenters
-                                DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
-                                dcRequest.setRequestInfo(reqInfo);
-                                dcRequest.setServiceId(this.dcService);
-                                dcRequest.setUserAccount(userAccount);
-                                dcRequest.setApplicationId(appConfig.getApplicationId());
-                                dcRequest.setApplicationName(appConfig.getApplicationName());
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
-                                }
-
-                                try
-                                {
-                                    DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
-                                    }
-
-                                    if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                                    {
-                                        List<DataCenter> datacenters = dcResponse.getDatacenterList();
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("List<DataCenter>: {}", datacenters);
-                                        }
-
-                                        mView.addObject("datacenters", datacenters);
-                                    }
-                                    else
-                                    {
-                                        // redirect to add datacenter
-                                        mView = new ModelAndView(new RedirectView());
-                                        mView.setViewName(this.addDatacenterRedirect);
-
-                                        return mView;
-                                    }
-                                }
-                                catch (DatacenterManagementException dmx)
-                                {
-                                    ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-                                    // redirect to add datacenter
-                                    mView = new ModelAndView(new RedirectView());
-                                    mView.setViewName(this.addDatacenterRedirect);
-
-                                    return mView;
-                                }
-
-                                // no dmgr information found for the request
-                                mView.addObject(Constants.ERROR_RESPONSE, dmgrResponse.getResponse());
-                                mView.addObject("domainList", this.availableDomains);
-                                mView.addObject("serverTypes", ServerType.values());
-                                mView.addObject("serverStatuses", ServerStatus.values());
-                                mView.addObject("serverRegions", ServiceRegion.values());
-                                mView.addObject("networkPartitions", NetworkPartition.values());
-                                mView.addObject("command", request);
-                                mView.setViewName(this.addServerPage);
-
-                                return mView;
-                            }
-
-                            break;
-                        default:
-                            break;
-                    }
-
-                    DataCenter datacenter = new DataCenter();
-                    datacenter.setDatacenterGuid(request.getDatacenter());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("DataCenter: {}", datacenter);
-                    }
-
-                    Server server = new Server();
-                    server.setVirtualId(request.getVirtualId());
-                    server.setOsName(request.getOsName());
-                    server.setDomainName(request.getDomainName());
-                    server.setOperIpAddress(request.getOperIpAddress());
-                    server.setOperHostName(request.getOperHostName());
-                    server.setMgmtIpAddress(request.getMgmtIpAddress());
-                    server.setMgmtHostName(request.getMgmtHostName());
-                    server.setBkIpAddress(request.getBkIpAddress());
-                    server.setBkHostName(request.getBkHostName());
-                    server.setNasIpAddress(request.getNasIpAddress());
-                    server.setNasHostName(request.getNasHostName());
-                    server.setNatAddress(request.getNatAddress());
-                    server.setServerRegion(request.getServerRegion());
-                    server.setServerStatus(request.getServerStatus());
-                    server.setServerType(request.getServerType());
-                    server.setServerComments(request.getServerComments());
-                    server.setDmgrPort(request.getDmgrPort());
-                    server.setMgrUrl(request.getMgrUrl());
-                    server.setOwningDmgr(request.getOwningDmgr());
-                    server.setCpuType(request.getCpuType());
-                    server.setCpuCount(request.getCpuCount());
-                    server.setServerRack(request.getServerRack());
-                    server.setServerModel(request.getServerModel());
-                    server.setRackPosition(request.getRackPosition());
-                    server.setSerialNumber(request.getSerialNumber());
-                    server.setInstalledMemory(request.getInstalledMemory());
-                    server.setNetworkPartition(request.getNetworkPartition());
-                    server.setDatacenter(datacenter);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    ServerManagementRequest serverReq = new ServerManagementRequest();
-                    serverReq.setRequestInfo(reqInfo);
-                    serverReq.setUserAccount(userAccount);
-                    serverReq.setServiceId(this.systemService);
-                    serverReq.setTargetServer(server);
-                    serverReq.setApplicationId(appConfig.getApplicationId());
-                    serverReq.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementRequest: {}", request);
-                    }
-
-                    ServerManagementResponse response = serverMgr.addNewServer(serverReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServerManagementResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        // all set
-                        // at this point we should be kicking off a request to install the agent
-                        /*ServerManagementRequest installRequest = new ServerManagementRequest();
-                        installRequest.setInstallAgent(true);
-                        installRequest.setRequestInfo(reqInfo);
-                        installRequest.setUserAccount(userAccount);
-                        installRequest.setTargetServer(request);
-                        installRequest.setServiceId(this.systemService);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ServerManagementRequest: {}", installRequest);
-                        }
-
-                        serverMgr.installSoftwarePackage(installRequest);*/ // we are NOT waiting for a response here
-
+                    case APPSERVER:
+                        // if its an application server, theres no location configured
+                        // because its driven by the owning dmgr
                         Server dmgrServer = new Server();
-                        dmgrServer.setServerType(ServerType.DMGRSERVER);
+                        dmgrServer.setServerGuid(request.getOwningDmgr());
 
                         if (DEBUG)
                         {
                             DEBUGGER.debug("Server: {}", dmgrServer);
                         }
 
+                        // find out what datacenter/partition/etc
                         ServerManagementRequest dmgrRequest = new ServerManagementRequest();
                         dmgrRequest.setRequestInfo(reqInfo);
-                        dmgrRequest.setUserAccount(userAccount);
                         dmgrRequest.setServiceId(this.systemService);
                         dmgrRequest.setTargetServer(dmgrServer);
+                        dmgrRequest.setUserAccount(userAccount);
                         dmgrRequest.setApplicationId(appConfig.getApplicationId());
                         dmgrRequest.setApplicationName(appConfig.getApplicationName());
 
-                        try
+                        if (DEBUG)
                         {
-                            ServerManagementResponse dmgrResponse = serverMgr.listServersByType(dmgrRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
-                            }
-
-                            if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                            {
-                                List<Server> dmgrServers = dmgrResponse.getServerList();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("List<Server>: {}", dmgrServers);
-                                }
-
-                                mView.addObject("dmgrServers", dmgrServers);
-                            }
-                        }
-                        catch (ServerManagementException smx)
-                        {
-                            // don't do anything with it
-                            ERROR_RECORDER.error(smx.getMessage(), smx);
+                            DEBUGGER.debug("ServerManagementRequest: {}", dmgrRequest);
                         }
 
-                        // list datacenters
-                        DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
-                        dcRequest.setRequestInfo(reqInfo);
-                        dcRequest.setServiceId(this.dcService);
-                        dcRequest.setUserAccount(userAccount);
-                        dcRequest.setApplicationId(appConfig.getApplicationId());
-                        dcRequest.setApplicationName(appConfig.getApplicationName());
+                        ServerManagementResponse dmgrResponse = serverMgr.getServerData(dmgrRequest);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+                            DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
                         }
 
-                        try
+                        if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                         {
-                            DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+                            // excellent
+                            Server owningDmgr = dmgrResponse.getServer();
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
+                                DEBUGGER.debug("Server: {}", owningDmgr);
                             }
 
-                            if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                            request.setDomainName(owningDmgr.getDomainName());
+                            request.setServerRegion(owningDmgr.getServerRegion());
+                            request.setNetworkPartition(owningDmgr.getNetworkPartition());
+                            request.setDatacenter(owningDmgr.getDatacenter().getDatacenterGuid());
+                        }
+                        else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                        {
+                            mView.setViewName(appConfig.getUnauthorizedPage());
+
+                            return mView;
+                        }
+                        else
+                        {
+                            Server dmServer = new Server();
+                            dmServer.setServerType(ServerType.DMGRSERVER);
+
+                            if (DEBUG)
                             {
-                                List<DataCenter> datacenters = dcResponse.getDatacenterList();
+                                DEBUGGER.debug("Server: {}", dmServer);
+                            }
+
+                            ServerManagementRequest dmRequest = new ServerManagementRequest();
+                            dmRequest.setRequestInfo(reqInfo);
+                            dmRequest.setUserAccount(userAccount);
+                            dmRequest.setServiceId(this.systemService);
+                            dmRequest.setTargetServer(dmServer);
+                            dmRequest.setApplicationId(appConfig.getApplicationId());
+                            dmRequest.setApplicationName(appConfig.getApplicationName());
+
+                            try
+                            {
+                                ServerManagementResponse dmResponse = serverMgr.listServersByType(dmgrRequest);
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("List<DataCenter>: {}", datacenters);
+                                    DEBUGGER.debug("ServerManagementResponse: {}", dmResponse);
                                 }
 
-                                mView.addObject("datacenters", datacenters);
+                                if (dmResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                                {
+                                    List<Server> dmgrServers = dmResponse.getServerList();
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("List<Server>: {}", dmgrServers);
+                                    }
+
+                                    mView.addObject("dmgrServers", dmgrServers);
+                                }
+                                else if (dmResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                                {
+                                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                                    return mView;
+                                }
                             }
-                            else
+                            catch (ServerManagementException smx)
                             {
+                                // don't do anything with it
+                                ERROR_RECORDER.error(smx.getMessage(), smx);
+                            }
+
+                            // list datacenters
+                            DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
+                            dcRequest.setRequestInfo(reqInfo);
+                            dcRequest.setServiceId(this.dcService);
+                            dcRequest.setUserAccount(userAccount);
+                            dcRequest.setApplicationId(appConfig.getApplicationId());
+                            dcRequest.setApplicationName(appConfig.getApplicationName());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+                            }
+
+                            try
+                            {
+                                DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
+                                }
+
+                                if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                                {
+                                    List<DataCenter> datacenters = dcResponse.getDatacenterList();
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("List<DataCenter>: {}", datacenters);
+                                    }
+
+                                    mView.addObject("datacenters", datacenters);
+                                }
+                                else if (dcResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                                {
+                                    mView.setViewName(appConfig.getUnauthorizedPage());
+                                }
+                                else
+                                {
+                                    // redirect to add datacenter
+                                    mView = new ModelAndView(new RedirectView());
+                                    mView.setViewName(this.addDatacenterRedirect);
+
+                                    return mView;
+                                }
+                            }
+                            catch (DatacenterManagementException dmx)
+                            {
+                                ERROR_RECORDER.error(dmx.getMessage(), dmx);
+
                                 // redirect to add datacenter
                                 mView = new ModelAndView(new RedirectView());
                                 mView.setViewName(this.addDatacenterRedirect);
 
                                 return mView;
                             }
-                        }
-                        catch (DatacenterManagementException dmx)
-                        {
-                            ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
+                            // no dmgr information found for the request
+                            mView.addObject(Constants.ERROR_RESPONSE, dmgrResponse.getResponse());
+                            mView.addObject("domainList", this.availableDomains);
+                            mView.addObject("serverTypes", ServerType.values());
+                            mView.addObject("serverStatuses", ServerStatus.values());
+                            mView.addObject("serverRegions", ServiceRegion.values());
+                            mView.addObject("networkPartitions", NetworkPartition.values());
+                            mView.addObject("command", request);
+                            mView.setViewName(this.addServerPage);
+
+                            return mView;
+                        }
+
+                        break;
+                    default:
+                        break;
+                }
+
+                DataCenter datacenter = new DataCenter();
+                datacenter.setDatacenterGuid(request.getDatacenter());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("DataCenter: {}", datacenter);
+                }
+
+                Server server = new Server();
+                server.setVirtualId(request.getVirtualId());
+                server.setOsName(request.getOsName());
+                server.setDomainName(request.getDomainName());
+                server.setOperIpAddress(request.getOperIpAddress());
+                server.setOperHostName(request.getOperHostName());
+                server.setMgmtIpAddress(request.getMgmtIpAddress());
+                server.setMgmtHostName(request.getMgmtHostName());
+                server.setBkIpAddress(request.getBkIpAddress());
+                server.setBkHostName(request.getBkHostName());
+                server.setNasIpAddress(request.getNasIpAddress());
+                server.setNasHostName(request.getNasHostName());
+                server.setNatAddress(request.getNatAddress());
+                server.setServerRegion(request.getServerRegion());
+                server.setServerStatus(request.getServerStatus());
+                server.setServerType(request.getServerType());
+                server.setServerComments(request.getServerComments());
+                server.setDmgrPort(request.getDmgrPort());
+                server.setMgrUrl(request.getMgrUrl());
+                server.setOwningDmgr(request.getOwningDmgr());
+                server.setCpuType(request.getCpuType());
+                server.setCpuCount(request.getCpuCount());
+                server.setServerRack(request.getServerRack());
+                server.setServerModel(request.getServerModel());
+                server.setRackPosition(request.getRackPosition());
+                server.setSerialNumber(request.getSerialNumber());
+                server.setInstalledMemory(request.getInstalledMemory());
+                server.setNetworkPartition(request.getNetworkPartition());
+                server.setDatacenter(datacenter);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
+                ServerManagementRequest serverReq = new ServerManagementRequest();
+                serverReq.setRequestInfo(reqInfo);
+                serverReq.setUserAccount(userAccount);
+                serverReq.setServiceId(this.systemService);
+                serverReq.setTargetServer(server);
+                serverReq.setApplicationId(appConfig.getApplicationId());
+                serverReq.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
+                }
+
+                ServerManagementResponse response = serverMgr.addNewServer(serverReq);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    // all set
+                    // at this point we should be kicking off a request to install the agent
+                    /*ServerManagementRequest installRequest = new ServerManagementRequest();
+                    installRequest.setInstallAgent(true);
+                    installRequest.setRequestInfo(reqInfo);
+                    installRequest.setUserAccount(userAccount);
+                    installRequest.setTargetServer(request);
+                    installRequest.setServiceId(this.systemService);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ServerManagementRequest: {}", installRequest);
+                    }
+
+                    serverMgr.installSoftwarePackage(installRequest);*/ // we are NOT waiting for a response here
+
+                    Server dmgrServer = new Server();
+                    dmgrServer.setServerType(ServerType.DMGRSERVER);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Server: {}", dmgrServer);
+                    }
+
+                    ServerManagementRequest dmgrRequest = new ServerManagementRequest();
+                    dmgrRequest.setRequestInfo(reqInfo);
+                    dmgrRequest.setUserAccount(userAccount);
+                    dmgrRequest.setServiceId(this.systemService);
+                    dmgrRequest.setTargetServer(dmgrServer);
+                    dmgrRequest.setApplicationId(appConfig.getApplicationId());
+                    dmgrRequest.setApplicationName(appConfig.getApplicationName());
+
+                    try
+                    {
+                        ServerManagementResponse dmgrResponse = serverMgr.listServersByType(dmgrRequest);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ServerManagementResponse: {}", dmgrResponse);
+                        }
+
+                        if (dmgrResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                        {
+                            List<Server> dmgrServers = dmgrResponse.getServerList();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("List<Server>: {}", dmgrServers);
+                            }
+
+                            mView.addObject("dmgrServers", dmgrServers);
+                        }
+                        else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                        {
+                            mView.setViewName(appConfig.getUnauthorizedPage());
+                        }
+                    }
+                    catch (ServerManagementException smx)
+                    {
+                        // don't do anything with it
+                        ERROR_RECORDER.error(smx.getMessage(), smx);
+                    }
+
+                    // list datacenters
+                    DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
+                    dcRequest.setRequestInfo(reqInfo);
+                    dcRequest.setServiceId(this.dcService);
+                    dcRequest.setUserAccount(userAccount);
+                    dcRequest.setApplicationId(appConfig.getApplicationId());
+                    dcRequest.setApplicationName(appConfig.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DatacenterManagementRequest: {}", dcRequest);
+                    }
+
+                    try
+                    {
+                        DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("DatacenterManagementResponse: {}", dcResponse);
+                        }
+
+                        if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                        {
+                            List<DataCenter> datacenters = dcResponse.getDatacenterList();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("List<DataCenter>: {}", datacenters);
+                            }
+
+                            mView.addObject("datacenters", datacenters);
+                        }
+                        else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                        {
+                            mView.setViewName(appConfig.getUnauthorizedPage());
+                        }
+                        else
+                        {
                             // redirect to add datacenter
                             mView = new ModelAndView(new RedirectView());
                             mView.setViewName(this.addDatacenterRedirect);
 
                             return mView;
                         }
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageServerAdded);
-                        mView.addObject("domainList", this.availableDomains);
-                        mView.addObject("serverTypes", ServerType.values());
-                        mView.addObject("serverStatuses", ServerStatus.values());
-                        mView.addObject("serverRegions", ServiceRegion.values());
-                        mView.addObject("networkPartitions", NetworkPartition.values());
-                        mView.addObject("command", new ServerRequest());
                     }
-                    else
+                    catch (DatacenterManagementException dmx)
                     {
-                        // nooo
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.addObject("command", request);
+                        ERROR_RECORDER.error(dmx.getMessage(), dmx);
+
+                        // redirect to add datacenter
+                        mView = new ModelAndView(new RedirectView());
+                        mView.setViewName(this.addDatacenterRedirect);
+
+                        return mView;
                     }
 
-                    mView.setViewName(this.addServerPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageServerAdded);
+                    mView.addObject("domainList", this.availableDomains);
+                    mView.addObject("serverTypes", ServerType.values());
+                    mView.addObject("serverStatuses", ServerStatus.values());
+                    mView.addObject("serverRegions", ServiceRegion.values());
+                    mView.addObject("networkPartitions", NetworkPartition.values());
+                    mView.addObject("command", new ServerRequest());
                 }
-                else
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
+                else
+                {
+                    // nooo
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.addObject("command", request);
+                }
+
+                mView.setViewName(this.addServerPage);
             }
             catch (ServerManagementException smx)
             {
@@ -1520,13 +1433,6 @@ public class SystemManagementController
 
                 mView.addObject(Constants.ERROR_MESSAGE, smx.getMessage());
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, ucsx.getMessage());
-                mView.setViewName(appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -1605,40 +1511,13 @@ public class SystemManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            try
+            RequestHostInfo reqInfo = new RequestHostInfo();
+            reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setHostAddress(hRequest.getRemoteAddr());
+
+            if (DEBUG)
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    // TODO
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
         }
         else
@@ -1720,71 +1599,53 @@ public class SystemManagementController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.systemService);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                SearchRequest req = new SearchRequest();
+                req.setRequestInfo(reqInfo);
+                req.setSearchTerms(value.getSearchTerms());
+                req.setUserAccount(userAccount);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    SearchRequest req = new SearchRequest();
-                    req.setRequestInfo(reqInfo);
-                    req.setSearchTerms(value.getSearchTerms());
-                    req.setUserAccount(userAccount);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SearchRequest: {}", req);
-                    }
-
-                    SearchResponse res = processor.doServerSearch(req);
-
-                    if (res.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<SearchResult> serverList = res.getResults();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<Server>: {}", serverList);
-                        }
-
-                        mView.addObject("pages", (int) Math.ceil(res.getEntryCount() * 1.0 / recordsPerPage));
-                        mView.addObject("page", 1);
-                        mView.addObject(Constants.SEARCH_RESULTS, serverList);
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageNoSearchResults());
-                    }
-
-                    // regardless of what happens we still allow the user to
-                    // make the request
-                    mView.addObject("command", new SearchRequest());
-                    mView.setViewName(this.defaultPage);
+                    DEBUGGER.debug("SearchRequest: {}", req);
                 }
-                else
+
+                SearchResponse res = processor.doServerSearch(req);
+
+                if (res.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<SearchResult> serverList = res.getResults();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Server>: {}", serverList);
+                    }
+
+                    mView.addObject("pages", (int) Math.ceil(res.getEntryCount() * 1.0 / recordsPerPage));
+                    mView.addObject("page", 1);
+                    mView.addObject(Constants.SEARCH_RESULTS, serverList);
+                }
+                else if (res.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+                else
+                {
+                    mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageNoSearchResults());
+                }
 
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                // regardless of what happens we still allow the user to
+                // make the request
+                mView.addObject("command", new SearchRequest());
+                mView.setViewName(this.defaultPage);
             }
             catch (SearchRequestException srx)
             {

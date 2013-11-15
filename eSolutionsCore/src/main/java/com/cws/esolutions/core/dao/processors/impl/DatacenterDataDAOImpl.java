@@ -213,27 +213,26 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No datacenters were located.");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
                 }
             }
         }
@@ -307,39 +306,38 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[]
-                        {
-                                resultSet.getString(1), // DATACENTER_GUID
-                                resultSet.getString(2), // DATACENTER_NAME
-                                resultSet.getString(3), // DATACENTER_STATUS
-                                resultSet.getString(4) // DATACENTER_DESC
-                        };
-
-                        responseData.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<String>: {}", responseData);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[]
+                            {
+                                    resultSet.getString(1), // DATACENTER_GUID
+                                    resultSet.getString(2), // DATACENTER_NAME
+                                    resultSet.getString(3), // DATACENTER_STATUS
+                                    resultSet.getString(4) // DATACENTER_DESC
+                            };
+
+                            responseData.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", responseData);
+                        }
+                    }
                 }
             }
         }
@@ -407,39 +405,38 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[]
-                        {
-                                resultSet.getString(1), // DATACENTER_GUID
-                                resultSet.getString(2), // DATACENTER_NAME
-                                resultSet.getString(3), // DATACENTER_STATUS
-                                resultSet.getString(4) // DATACENTER_DESC
-                        };
-
-                        responseData.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<String>: {}", responseData);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        responseData = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[]
+                            {
+                                    resultSet.getString(1), // DATACENTER_GUID
+                                    resultSet.getString(2), // DATACENTER_NAME
+                                    resultSet.getString(3), // DATACENTER_STATUS
+                                    resultSet.getString(4) // DATACENTER_DESC
+                            };
+
+                            responseData.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", responseData);
+                        }
+                    }
                 }
             }
         }
@@ -508,32 +505,31 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    responseData = new ArrayList<String>(
-                            Arrays.asList(
-                                    resultSet.getString(1), // DATACENTER_GUID
-                                    resultSet.getString(2), // DATACENTER_NAME
-                                    resultSet.getString(3), // DATACENTER_STATUS
-                                    resultSet.getString(4))); // DATACENTER_DESC
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("responseData: {}", responseData);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        responseData = new ArrayList<String>(
+                                Arrays.asList(
+                                        resultSet.getString(1), // DATACENTER_GUID
+                                        resultSet.getString(2), // DATACENTER_NAME
+                                        resultSet.getString(3), // DATACENTER_STATUS
+                                        resultSet.getString(4))); // DATACENTER_DESC
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("responseData: {}", responseData);
+                        }
+                    }
                 }
             }
         }

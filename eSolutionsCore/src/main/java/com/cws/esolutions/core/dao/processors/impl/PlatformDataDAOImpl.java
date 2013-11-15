@@ -296,36 +296,35 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    responseData = new ArrayList<String>(
-                            Arrays.asList(
-                                    resultSet.getString(1), // guid
-                                    resultSet.getString(2), // name
-                                    resultSet.getString(3), // region
-                                    resultSet.getString(4), // dmgr
-                                    resultSet.getString(5), // appserver list
-                                    resultSet.getString(6), // webserver list
-                                    resultSet.getString(7))); // description
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        for (String str : responseData)
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        responseData = new ArrayList<String>(
+                                Arrays.asList(
+                                        resultSet.getString(1), // guid
+                                        resultSet.getString(2), // name
+                                        resultSet.getString(3), // region
+                                        resultSet.getString(4), // dmgr
+                                        resultSet.getString(5), // appserver list
+                                        resultSet.getString(6), // webserver list
+                                        resultSet.getString(7))); // description
+
+                        if (DEBUG)
                         {
-                            DEBUGGER.debug(str);
+                            for (String str : responseData)
+                            {
+                                DEBUGGER.debug(str);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    throw new SQLException("No results were found for the provided project code and region");
                 }
             }
         }
@@ -389,27 +388,26 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                     DEBUGGER.debug("stmt: {}", stmt);
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("count: {}", count);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
                     }
-                }
-                else
-                {
-                    throw new SQLException("No platforms were located.");
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
                 }
             }
         }
@@ -483,44 +481,47 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    platformList = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[] {
-                                resultSet.getString(1), // guid
-                                resultSet.getString(2), // name
-                                resultSet.getString(3), // region
-                                resultSet.getString(4), // dmgr
-                                resultSet.getString(5), // appserver list
-                                resultSet.getString(6), // webserver list
-                                resultSet.getString(7) // description
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        platformList.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        platformList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[] {
+                                    resultSet.getString(1), // guid
+                                    resultSet.getString(2), // name
+                                    resultSet.getString(3), // region
+                                    resultSet.getString(4), // dmgr
+                                    resultSet.getString(5), // appserver list
+                                    resultSet.getString(6), // webserver list
+                                    resultSet.getString(7) // description
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug("data: {}", str);
+                                }
+                            }
+
+                            platformList.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("platformList: {}", platformList);
+                        }
                     }
                 }
             }
@@ -590,44 +591,47 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    platformList = new ArrayList<String[]>();
-
-                    while (resultSet.next())
-                    {
-                        String[] data = new String[] {
-                            resultSet.getString(1), // guid
-                            resultSet.getString(2), // name
-                            resultSet.getString(3), // region
-                            resultSet.getString(4), // dmgr
-                            resultSet.getString(5), // appserver list
-                            resultSet.getString(6), // webserver list
-                            resultSet.getString(7) // description
-                        };
-
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        platformList.add(data);
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        platformList = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] data = new String[] {
+                                resultSet.getString(1), // guid
+                                resultSet.getString(2), // name
+                                resultSet.getString(3), // region
+                                resultSet.getString(4), // dmgr
+                                resultSet.getString(5), // appserver list
+                                resultSet.getString(6), // webserver list
+                                resultSet.getString(7) // description
+                            };
+
+                            if (DEBUG)
+                            {
+                                for (String str : data)
+                                {
+                                    DEBUGGER.debug("data: {}", str);
+                                }
+                            }
+
+                            platformList.add(data);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("platformList: {}", platformList);
+                        }
                     }
                 }
             }

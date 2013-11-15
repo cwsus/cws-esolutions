@@ -30,7 +30,7 @@
     <target name="buildTomcat" if="isTomcat">
         <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
         <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
-        <property name="contextFile" value="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/context.xml" />
+        <property name="contextFile" value="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" />
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
@@ -68,6 +68,7 @@
         <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@groupId@" value="${pom.groupId}" />
         <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@artifactId@" value="${pom.artifactId}" />
         <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@version@" value="${pom.version}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@contextRoot@" value="${pom.properties.context.root}" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">

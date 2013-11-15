@@ -14,6 +14,10 @@
     <packaging>war</packaging>
     <name>${project.artifactId}</name>
 
+    <properties>
+        <context.root>eSolutions</context.root>
+    </properties>
+
     <dependencies>
         <!-- Provided dependencies -->
         <!-- tld's -->

@@ -93,28 +93,30 @@
 	    </form:form>
     </div>
 
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/default"
-                    title="<spring:message code='user.account.view' />"><spring:message code="user.account.view" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/email"
-                    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
-                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/security"
-                    title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys"
-                    title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a>
-            </li>
-        </ul>
-    </div>
+    <c:if test="${sessionScope.userAccount.status eq 'SUCCESS'}">
+	    <div id="content-left">
+	        <ul>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/user-account/default"
+	                    title="<spring:message code='user.account.view' />"><spring:message code="user.account.view" /></a>
+	            </li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/user-account/email"
+	                    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
+	            </li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
+	                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
+	            </li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/user-account/security"
+	                    title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a>
+	            </li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys"
+	                    title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a>
+	            </li>
+	        </ul>
+	    </div>
+	</c:if>
 </div>

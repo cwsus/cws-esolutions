@@ -77,26 +77,52 @@ public class SQLUserManager implements UserManager
             }
             else
             {
-                if ((StringUtils.isNotEmpty(userId)) && (StringUtils.isNotEmpty(userGuid)))
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+                stmt.setString(1, userGuid);
+
+                if (DEBUG)
                 {
-                    sqlConn.setAutoCommit(true);
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.executeQuery();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        throw new UserManagementException("A user currently exists with the provided UUID");
+                    }
+
+                    if (resultSet != null)
+                    {
+                        resultSet.close();
+                        resultSet = null;
+                    }
+
+                    if (stmt != null)
+                    {
+                        stmt.close();
+                        stmt = null;
+                    }
 
                     stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+                    stmt.setString(1, userId);
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("stmt: {}", stmt);
                     }
 
-                    if (stmt != null)
+                    if (stmt.execute())
                     {
-                        stmt.setString(1, userGuid);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("stmt: {}", stmt);
-                        }
-
                         resultSet = stmt.executeQuery();
 
                         if (DEBUG)
@@ -106,62 +132,9 @@ public class SQLUserManager implements UserManager
 
                         if (resultSet.next())
                         {
-                            throw new UserManagementException("A user currently exists with the provided UUID");
-                        }
-
-                        if (resultSet != null)
-                        {
-                            resultSet.close();
-                            resultSet = null;
-                        }
-
-                        if (stmt != null)
-                        {
-                            stmt.close();
-                            stmt = null;
-                        }
-
-                        stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("stmt: {}", stmt);
-                        }
-
-                        if (stmt != null)
-                        {
-                            stmt.setString(1, userId);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("stmt: {}", stmt);
-                            }
-
-                            resultSet = stmt.executeQuery();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ResultSet: {}", resultSet);
-                            }
-
-                            if (resultSet.next())
-                            {
-                                throw new UserManagementException("A user currently exists with the provided username");
-                            }
-                        }
-                        else
-                        {
-                            throw new SQLException("Failed to create callable statement against connection");
+                            throw new UserManagementException("A user currently exists with the provided username");
                         }
                     }
-                    else
-                    {
-                        throw new SQLException("Failed to create callable statement against connection");
-                    }
-                }
-                else
-                {
-                    throw new NullPointerException("Either provided userid or user guid is blank. Cannot complete verification");
                 }
             }
         }
@@ -471,50 +444,53 @@ public class SQLUserManager implements UserManager
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.beforeFirst();
-                    results = new ArrayList<String[]>();
+                    resultSet = stmt.getResultSet();
 
-                    while (resultSet.next())
+                    if (resultSet.next())
                     {
-                        String[] userData = new String[] {
-                            resultSet.getString(authData.getCommonName()),
-                            resultSet.getString(authData.getUserId()),
-                            resultSet.getString(authData.getGivenName()),
-                            resultSet.getString(authData.getSurname()),
-                            resultSet.getString(authData.getDisplayName()),
-                            resultSet.getString(authData.getEmailAddr()),
-                            resultSet.getString(authData.getUserRole()),
-                            resultSet.getString(authData.getLockCount()),
-                            resultSet.getString(authData.getLastLogin()),
-                            resultSet.getString(authData.getExpiryDate()),
-                            resultSet.getString(authData.getIsSuspended()),
-                            resultSet.getString(authData.getOlrSetupReq()),
-                            resultSet.getString(authData.getOlrLocked()),
-                            resultSet.getString(authData.getTcAccepted()),
-                            resultSet.getString(authData.getPublicKey()),
-                        };
+                        resultSet.beforeFirst();
+                        results = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] userData = new String[] {
+                                resultSet.getString(authData.getCommonName()),
+                                resultSet.getString(authData.getUserId()),
+                                resultSet.getString(authData.getGivenName()),
+                                resultSet.getString(authData.getSurname()),
+                                resultSet.getString(authData.getDisplayName()),
+                                resultSet.getString(authData.getEmailAddr()),
+                                resultSet.getString(authData.getUserRole()),
+                                resultSet.getString(authData.getLockCount()),
+                                resultSet.getString(authData.getLastLogin()),
+                                resultSet.getString(authData.getExpiryDate()),
+                                resultSet.getString(authData.getIsSuspended()),
+                                resultSet.getString(authData.getOlrSetupReq()),
+                                resultSet.getString(authData.getOlrLocked()),
+                                resultSet.getString(authData.getTcAccepted()),
+                                resultSet.getString(authData.getPublicKey()),
+                            };
+
+                            if (DEBUG)
+                            {
+                                if (userData != null)
+                                {
+                                    for (String str : userData)
+                                    {
+                                        DEBUGGER.debug(str);
+                                    }
+                                }
+                            }
+
+                            results.add(userData);
+                        }
 
                         if (DEBUG)
                         {
-                            if (userData != null)
-                            {
-                                for (String str : userData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
+                            DEBUGGER.debug("List: {}", results);
                         }
-
-                        results.add(userData);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
@@ -590,50 +566,53 @@ public class SQLUserManager implements UserManager
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.executeQuery();
-
-                if (resultSet.next())
+                if (stmt.execute())
                 {
-                    resultSet.beforeFirst();
-                    results = new ArrayList<String[]>();
+                    resultSet = stmt.getResultSet();
 
-                    while (resultSet.next())
+                    if (resultSet.next())
                     {
-                        String[] userData = new String[] {
-                            resultSet.getString(authData.getCommonName()),
-                            resultSet.getString(authData.getUserId()),
-                            resultSet.getString(authData.getGivenName()),
-                            resultSet.getString(authData.getSurname()),
-                            resultSet.getString(authData.getDisplayName()),
-                            resultSet.getString(authData.getEmailAddr()),
-                            resultSet.getString(authData.getUserRole()),
-                            resultSet.getString(authData.getLockCount()),
-                            resultSet.getString(authData.getLastLogin()),
-                            resultSet.getString(authData.getExpiryDate()),
-                            resultSet.getString(authData.getIsSuspended()),
-                            resultSet.getString(authData.getOlrSetupReq()),
-                            resultSet.getString(authData.getOlrLocked()),
-                            resultSet.getString(authData.getTcAccepted()),
-                            resultSet.getString(authData.getPublicKey()),
-                        };
+                        resultSet.beforeFirst();
+                        results = new ArrayList<String[]>();
+
+                        while (resultSet.next())
+                        {
+                            String[] userData = new String[] {
+                                resultSet.getString(authData.getCommonName()),
+                                resultSet.getString(authData.getUserId()),
+                                resultSet.getString(authData.getGivenName()),
+                                resultSet.getString(authData.getSurname()),
+                                resultSet.getString(authData.getDisplayName()),
+                                resultSet.getString(authData.getEmailAddr()),
+                                resultSet.getString(authData.getUserRole()),
+                                resultSet.getString(authData.getLockCount()),
+                                resultSet.getString(authData.getLastLogin()),
+                                resultSet.getString(authData.getExpiryDate()),
+                                resultSet.getString(authData.getIsSuspended()),
+                                resultSet.getString(authData.getOlrSetupReq()),
+                                resultSet.getString(authData.getOlrLocked()),
+                                resultSet.getString(authData.getTcAccepted()),
+                                resultSet.getString(authData.getPublicKey()),
+                            };
+
+                            if (DEBUG)
+                            {
+                                if (userData != null)
+                                {
+                                    for (String str : userData)
+                                    {
+                                        DEBUGGER.debug(str);
+                                    }
+                                }
+                            }
+
+                            results.add(userData);
+                        }
 
                         if (DEBUG)
                         {
-                            if (userData != null)
-                            {
-                                for (String str : userData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
+                            DEBUGGER.debug("List: {}", results);
                         }
-
-                        results.add(userData);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
@@ -701,17 +680,16 @@ public class SQLUserManager implements UserManager
                 sqlConn.setAutoCommit(true);
 
                 stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }");
+                stmt.setString(1, guid); // common name
 
-                if (stmt != null)
+                if (DEBUG)
                 {
-                    stmt.setString(1, guid); // common name
+                    DEBUGGER.debug("PreparedStatement: {}", stmt);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("stmt: {}", stmt);
-                    }
-
-                    resultSet = stmt.executeQuery();
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
@@ -765,10 +743,6 @@ public class SQLUserManager implements UserManager
                     {
                         throw new UserManagementException("No users were located with the provided information");
                     }
-                }
-                else
-                {
-                    throw new SQLException("Unable to create prepared statement against SQL connection");
                 }
             }
         }

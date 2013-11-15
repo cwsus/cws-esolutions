@@ -37,9 +37,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -262,6 +259,10 @@ public class ServiceMessagingController
                 mView.addObject("messageList", response.getSvcMessages());
                 mView.setViewName(this.viewServiceMessagesPage);
             }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
             else
             {
                 // no existing service messages
@@ -343,33 +344,8 @@ public class ServiceMessagingController
             }
         }
 
-        try
-        {
-            IUserControlService control = new UserControlServiceImpl();
-
-            boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
-
-            if (isUserAuthorized)
-            {
-                mView.addObject("command", new ServiceMessage());
-                mView.setViewName(this.addServiceMessagePage);
-            }
-            else
-            {
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-            mView.setViewName(appConfig.getErrorResponsePage());
-        }
+        mView.addObject("command", new ServiceMessage());
+        mView.setViewName(this.addServiceMessagePage);
 
         if (DEBUG)
         {
@@ -490,6 +466,14 @@ public class ServiceMessagingController
 
                 mView.addObject("message", responseMessage);
                 mView.setViewName(this.editServiceMessagePage);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -627,6 +611,12 @@ public class ServiceMessagingController
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageSuccessfullyUpdated);
                 }
             }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+
+                return mView;
+            }
             else
             {
                 // no existing service messages
@@ -657,6 +647,12 @@ public class ServiceMessagingController
                 mView.addObject("dateFormat", appConfig.getDateFormat());
                 mView.addObject("messageList", mResponse.getSvcMessages());
                 mView.setViewName(this.viewServiceMessagesPage);
+            }
+            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+            {
+                mView.setViewName(appConfig.getUnauthorizedPage());
+
+                return mView;
             }
             else
             {

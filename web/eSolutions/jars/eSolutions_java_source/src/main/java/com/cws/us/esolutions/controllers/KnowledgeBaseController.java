@@ -57,9 +57,6 @@ import com.cws.esolutions.core.processors.impl.KnowledgeBaseProcessorImpl;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -85,9 +82,9 @@ public class KnowledgeBaseController
     private String serviceId = null;
     private String serviceName = null;
     private String articleList = null;
-    private String defaultHandler = null;
     private String messageSource = null;
     private int newIdentifierLength = 8; // default of 8
+    private String defaultHandler = null;
     private String editArticlePage = null;
     private String showArticlePage = null;
     private String createArticlePage = null;
@@ -682,44 +679,19 @@ public class KnowledgeBaseController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            try
+            Article article = new Article();
+            article.setAuthor(userAccount.getDisplayName());
+            article.setAuthorEmail(userAccount.getEmailAddr());
+            article.setArticleStatus(ArticleStatus.NEW);
+            article.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
+
+            if (DEBUG)
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if (isUserAuthorized)
-                {
-                    Article article = new Article();
-                    article.setAuthor(userAccount.getDisplayName());
-                    article.setAuthorEmail(userAccount.getEmailAddr());
-                    article.setArticleStatus(ArticleStatus.NEW);
-                    article.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", article);
-                    }
-
-                    mView.addObject("command", article);
-                    mView.setViewName(this.createArticlePage);
-                }
-                else
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
+                DEBUGGER.debug("Article: {}", article);
             }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
+            mView.addObject("command", article);
+            mView.setViewName(this.createArticlePage);
         }
         else
         {
@@ -801,84 +773,66 @@ public class KnowledgeBaseController
             {
                 try
                 {
-                    IUserControlService control = new UserControlServiceImpl();
-
-                    boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    if (isUserAuthorized)
+                    Article article = new Article();
+                    article.setArticleId(articleId);
+
+                    if (DEBUG)
                     {
-                        RequestHostInfo reqInfo = new RequestHostInfo();
-                        reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                        reqInfo.setHostName(hRequest.getRemoteHost());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                        }
-
-                        Article article = new Article();
-                        article.setArticleId(articleId);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Article: {}", article);
-                        }
-
-                        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                        request.setArticle(article);
-                        request.setRequestInfo(reqInfo);
-                        request.setUserAccount(userAccount);
-                        request.setServiceId(this.serviceId);
-                        request.setApplicationId(appConfig.getApplicationId());
-                        request.setApplicationName(appConfig.getApplicationName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                        }
-
-                        KnowledgeBaseResponse response = kbase.getArticle(request);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                        }
-
-                        if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                        {
-                            Article resArticle = response.getArticle();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Article: {}", resArticle);
-                            }
-
-                            mView.addObject("article", resArticle);
-                            mView.setViewName(this.editArticlePage);
-                        }
-                        else
-                        {
-                            mView.addObject("command", new SearchRequest());
-                            mView.addObject("isHelpSearch", true);
-                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                            mView.setViewName(this.defaultHandler);
-                        }
+                        DEBUGGER.debug("Article: {}", article);
                     }
-                    else
+
+                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                    request.setArticle(article);
+                    request.setRequestInfo(reqInfo);
+                    request.setUserAccount(userAccount);
+                    request.setServiceId(this.serviceId);
+                    request.setApplicationId(appConfig.getApplicationId());
+                    request.setApplicationName(appConfig.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                    }
+
+                    KnowledgeBaseResponse response = kbase.getArticle(request);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        Article resArticle = response.getArticle();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Article: {}", resArticle);
+                        }
+
+                        mView.addObject("article", resArticle);
+                        mView.setViewName(this.editArticlePage);
+                    }
+                    else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                     {
                         mView.setViewName(appConfig.getUnauthorizedPage());
                     }
-                }
-                catch (UserControlServiceException ucsx)
-                {
-                    ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    else
+                    {
+                        mView.addObject("command", new SearchRequest());
+                        mView.addObject("isHelpSearch", true);
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.defaultHandler);
+                    }
                 }
                 catch (KnowledgeBaseException kbx)
                 {
@@ -965,85 +919,67 @@ public class KnowledgeBaseController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.getPendingArticles(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Article> pendingArticles = response.getArticleList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("pendingArticles: {}", pendingArticles);
                     }
 
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
+                    if ((pendingArticles != null) && (pendingArticles.size() != 0))
                     {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.getPendingArticles(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Article> pendingArticles = response.getArticleList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("pendingArticles: {}", pendingArticles);
-                        }
-
-                        if ((pendingArticles != null) && (pendingArticles.size() != 0))
-                        {
-                            mView.addObject(this.articleList, pendingArticles);
-                            mView.setViewName(this.pendingArticlesPage);
-                        }
-                        else
-                        {
-                            mView.addObject("command", new SearchRequest());
-                            mView.addObject("isHelpSearch", true);
-                            mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                            mView.setViewName(this.defaultHandler);
-                        }
+                        mView.addObject(this.articleList, pendingArticles);
+                        mView.setViewName(this.pendingArticlesPage);
                     }
                     else
                     {
-                        mView.addObject("isHelpSearch", true);
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.addObject("command", new SearchRequest());
+                        mView.addObject("isHelpSearch", true);
+                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                         mView.setViewName(this.defaultHandler);
                     }
                 }
-                else
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    mView.addObject("isHelpSearch", true);
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultHandler);
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -1130,109 +1066,91 @@ public class KnowledgeBaseController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Article reqArticle = new Article();
+                reqArticle.setArticleId(article);
+                reqArticle.setArticleStatus(ArticleStatus.DELETED);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    Article reqArticle = new Article();
-                    reqArticle.setArticleId(article);
-                    reqArticle.setArticleStatus(ArticleStatus.DELETED);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", reqArticle);
-                    }
-
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setArticle(reqArticle);
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.deleteArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.deleteArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleDeleted);
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
-                    else
-                    {
-                        // failure
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
+                    DEBUGGER.debug("Article: {}", reqArticle);
                 }
-                else
+
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setArticle(reqArticle);
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("emailId: {}", emailId);
+                    }
+
+                    final String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.deleteArticleEmail)), new Object[] { reqArticle.getArticleId() });
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Email body: {}", emailBody);
+                    }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(false);
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.deleteArticleEmail, this.getClass().getClassLoader()));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleDeleted);
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    // failure
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -1343,109 +1261,91 @@ public class KnowledgeBaseController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Article reqArticle = new Article();
+                reqArticle.setArticleId(article);
+                reqArticle.setArticleStatus(ArticleStatus.APPROVED);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    Article reqArticle = new Article();
-                    reqArticle.setArticleId(article);
-                    reqArticle.setArticleStatus(ArticleStatus.APPROVED);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", reqArticle);
-                    }
-
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setArticle(reqArticle);
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.approveArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.approveArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleApproved);
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
-                    else
-                    {
-                        // failure
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
+                    DEBUGGER.debug("Article: {}", reqArticle);
                 }
-                else
+
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setArticle(reqArticle);
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("emailId: {}", emailId);
+                    }
+
+                    final String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.approveArticleEmail)), new Object[] { reqArticle.getArticleId() });
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Email body: {}", emailBody);
+                    }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(false);
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.approveArticleEmail, this.getClass().getClassLoader()));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleApproved);
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    // failure
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -1556,109 +1456,91 @@ public class KnowledgeBaseController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                Article reqArticle = new Article();
+                reqArticle.setArticleId(article);
+                reqArticle.setArticleStatus(ArticleStatus.REJECTED);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    Article reqArticle = new Article();
-                    reqArticle.setArticleId(article);
-                    reqArticle.setArticleStatus(ArticleStatus.REJECTED);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", reqArticle);
-                    }
-
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setArticle(reqArticle);
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.rejectArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.rejectArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleRejected);
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
-                    else
-                    {
-                        // failure
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(appConfig.getSearchRequestPage());
-                    }
+                    DEBUGGER.debug("Article: {}", reqArticle);
                 }
-                else
+
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setArticle(reqArticle);
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("emailId: {}", emailId);
+                    }
+
+                    final String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.rejectArticleEmail)), new Object[] { reqArticle.getArticleId() });
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Email body: {}", emailBody);
+                    }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(false);
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.rejectArticleEmail, this.getClass().getClassLoader()));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleRejected);
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    // failure
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getSearchRequestPage());
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -1879,58 +1761,47 @@ public class KnowledgeBaseController
 
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setArticle(article);
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.addNewArticle(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    // article created
+                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("emailId: {}", emailId);
                     }
 
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setArticle(article);
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.addNewArticle(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        // article created
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.createArticleEmail)), new Object[]
+                    final String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.createArticleEmail)), new Object[]
                         {
                             article.getArticleId(),
                             userAccount.getDisplayName(),
@@ -1941,50 +1812,43 @@ public class KnowledgeBaseController
                             article.getResolution()
                         });
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.createArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.addObject("command", new Article());
-                        mView.setViewName(this.createArticlePage);
-                    }
-                    else
+                    if (DEBUG)
                     {
-                        // failure
-                        mView.addObject("command", article);
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.createArticlePage);
+                        DEBUGGER.debug("Email body: {}", emailBody);
                     }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(false);
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.createArticleEmail, this.getClass().getClassLoader()));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.addObject("command", new Article());
+                    mView.setViewName(this.createArticlePage);
                 }
-                else
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    // failure
+                    mView.addObject("command", article);
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.createArticlePage);
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -2107,58 +1971,47 @@ public class KnowledgeBaseController
 
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setArticle(article);
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.updateArticle(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    // article created
+                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                        DEBUGGER.debug("emailId: {}", emailId);
                     }
 
-                    KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-                    request.setArticle(article);
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
-                    request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
-                    }
-
-                    KnowledgeBaseResponse response = kbase.updateArticle(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        // article created
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.updateArticleEmail)), new Object[]
+                    final String emailBody = MessageFormat.format(IOUtils.toString(
+                            this.getClass().getClassLoader().getResourceAsStream(this.updateArticleEmail)), new Object[]
                         {
                             article.getArticleId(),
                             userAccount.getDisplayName(),
@@ -2169,50 +2022,43 @@ public class KnowledgeBaseController
                             article.getResolution()
                         });
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.updateArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
-
-                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.addObject("command", new Article());
-                        mView.setViewName(this.createArticlePage);
-                    }
-                    else
+                    if (DEBUG)
                     {
-                        // failure
-                        mView.addObject("command", article);
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.createArticlePage);
+                        DEBUGGER.debug("Email body: {}", emailBody);
                     }
+
+                    // good, now generate an email with the information
+                    EmailMessage emailMessage = new EmailMessage();
+                    emailMessage.setIsAlert(false);
+                    emailMessage.setMessageBody(emailBody);
+                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                            this.updateArticleEmail, this.getClass().getClassLoader()));
+                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                    }
+
+                    EmailUtils.sendEmailMessage(emailMessage);
+
+                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                    mView.addObject("command", new Article());
+                    mView.setViewName(this.createArticlePage);
                 }
-                else
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    // failure
+                    mView.addObject("command", article);
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(this.createArticlePage);
+                }
             }
             catch (KnowledgeBaseException kbx)
             {
@@ -2324,64 +2170,48 @@ public class KnowledgeBaseController
         {
             try
             {
-                IUserControlService control = new UserControlServiceImpl();
-
-                boolean isUserAuthorized = control.isUserAuthorizedForService(userAccount.getGuid(), this.serviceId);
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                if (isUserAuthorized)
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+
+                if (DEBUG)
                 {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    DEBUGGER.debug("SearchRequest: {}", request);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
+                SearchResponse searchRes = searchProcessor.doArticleSearch(request);
 
-                    request.setRequestInfo(reqInfo);
-                    request.setUserAccount(userAccount);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("VirtualServiceResponse: {}", searchRes);
+                }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SearchRequest: {}", request);
-                    }
-
-                    SearchResponse searchRes = searchProcessor.doArticleSearch(request);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("VirtualServiceResponse: {}", searchRes);
-                    }
-
-                    if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
-                    }
-                    else
-                    {
-                        mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
-                    }
-
+                if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
                     mView.addObject("command", new SearchRequest());
                     mView.addObject("isHelpSearch", true);
                     mView.setViewName(this.defaultHandler);
                 }
-                else
+                else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(appConfig.getUnauthorizedPage());
                 }
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject("command", new SearchRequest());
+                    mView.addObject("isHelpSearch", true);
+                    mView.setViewName(this.defaultHandler);
+                }
             }
             catch (SearchRequestException srx)
             {

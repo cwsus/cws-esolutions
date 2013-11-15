@@ -516,7 +516,6 @@ public class ServiceManagementController
             DEBUGGER.debug("ModelAndView: {}", mView);
         }
 
-        // in here, we're going to get all the messages to display and such
         return mView;
     }
 
@@ -625,6 +624,10 @@ public class ServiceManagementController
                     mView.addObject("page", 1);
                     mView.addObject("platformList", platformList);
                     mView.setViewName(this.viewPlatformList);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -759,6 +762,10 @@ public class ServiceManagementController
                     mView.addObject("platformList", platformList);
                     mView.setViewName(this.viewPlatformList);
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -890,6 +897,10 @@ public class ServiceManagementController
                     mView.addObject("page", 1);
                     mView.addObject("projectList", projectList);
                     mView.setViewName(this.viewProjectsList);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1025,6 +1036,10 @@ public class ServiceManagementController
                     mView.addObject("projectList", projectList);
                     mView.setViewName(this.viewProjectsList);
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -1156,6 +1171,10 @@ public class ServiceManagementController
                     mView.addObject("page", 1);
                     mView.addObject("datacenterList", datacenterList);
                     mView.setViewName(this.viewDatacentersPage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1290,6 +1309,10 @@ public class ServiceManagementController
                     mView.addObject("page", page);
                     mView.addObject("datacenterList", datacenterList);
                     mView.setViewName(this.viewDatacentersPage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1432,6 +1455,10 @@ public class ServiceManagementController
                     mView.addObject("project", resProject);
                     mView.setViewName(this.viewProjectPage);
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -1573,6 +1600,10 @@ public class ServiceManagementController
                     mView.addObject("platform", resPlatform);
                     mView.setViewName(this.viewPlatformPage);
                 }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
@@ -1713,6 +1744,10 @@ public class ServiceManagementController
 
                     mView.addObject("datacenter", resDatacenter);
                     mView.setViewName(this.viewDatacenterPage);
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2010,6 +2045,10 @@ public class ServiceManagementController
                     mView.addObject("dmgrList", listing);
                     mView.setViewName(this.selectDmgrPage);
                 }
+                else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     // no dmgrs were found. redirect over to the add server page
@@ -2184,6 +2223,12 @@ public class ServiceManagementController
 
                         mView.addObject("appServerList", appServerList);
                     }
+                    else if (appServerResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                    {
+                        mView.setViewName(appConfig.getUnauthorizedPage());
+
+                        return mView;
+                    }
 
                     // get the list of webservers associated with this dmgr
                     Server webserver = new Server();
@@ -2228,10 +2273,20 @@ public class ServiceManagementController
 
                         mView.addObject("webServerList", webServerList);
                     }
+                    else if (webResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                    {
+                        mView.setViewName(appConfig.getUnauthorizedPage());
+
+                        return mView;
+                    }
 
                     mView.addObject("statusList", ServiceStatus.values());
                     mView.addObject("command", platformRequest);
                     mView.setViewName(this.addPlatformPage);
+                }
+                else if (dmgrServerResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2479,6 +2534,12 @@ public class ServiceManagementController
                         mView.addObject(Constants.ERROR_RESPONSE, platformResponse.getResponse());
                     }
                 }
+                else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
+                }
                 else
                 {
                     // selected dmgr was invalid
@@ -2535,6 +2596,12 @@ public class ServiceManagementController
                     }
 
                     mView.addObject("dmgrList", dmgrList);
+                }
+                else if (serverRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
                 }
 
                 mView.addObject("command", new Server());
@@ -2676,6 +2743,10 @@ public class ServiceManagementController
                     mView.addObject("command", new DataCenter());
                     mView.setViewName(this.addDatacenterPage);
                 }
+                else if (dcResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, dcResponse.getResponse());
@@ -2801,6 +2872,10 @@ public class ServiceManagementController
                 if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageProjectSuccessfullyAdded);
+                }
+                else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
                 }
                 else
                 {

@@ -49,7 +49,7 @@
 	    <c:choose>
 	        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
 	            <p>
-	                <a href="${pageContext.request.contextPath}/ui/home/default" title="<spring:message code='theme.navbar.home' />">
+	                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
 	                    <spring:message code="theme.click.continue" /></a>
 	            </p>
 	        </c:when>

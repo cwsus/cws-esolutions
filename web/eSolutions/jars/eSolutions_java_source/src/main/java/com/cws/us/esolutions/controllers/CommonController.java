@@ -36,7 +36,7 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
- * HomeController.java
+ * CommonController.java
  *
  * $Id$
  * $Author$
@@ -51,14 +51,14 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
  *     Created.
  */
 @Controller
-@RequestMapping("/home")
-public class HomeController
+@RequestMapping("/common")
+public class CommonController
 {
     private String homePage = null;
     private String serviceId = null;
     private ApplicationServiceBean appConfig = null;
 
-    private static final String CNAME = HomeController.class.getName();
+    private static final String CNAME = CommonController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -66,7 +66,7 @@ public class HomeController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = HomeController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = CommonController.CNAME + "#setAppConfig(final CoreServiceBean value)";
 
         if (DEBUG)
         {
@@ -79,7 +79,7 @@ public class HomeController
 
     public final void setHomePage(final String value)
     {
-        final String methodName = HomeController.CNAME + "#setHomePage(final String value)";
+        final String methodName = CommonController.CNAME + "#setHomePage(final String value)";
 
         if (DEBUG)
         {
@@ -92,7 +92,7 @@ public class HomeController
 
     public final void setServiceId(final String value)
     {
-        final String methodName = HomeController.CNAME + "#setServiceId(final String value)";
+        final String methodName = CommonController.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -106,7 +106,7 @@ public class HomeController
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
-        final String methodName = HomeController.CNAME + "#showDefaultPage()";
+        final String methodName = CommonController.CNAME + "#showDefaultPage()";
 
         if (DEBUG)
         {
@@ -213,6 +213,70 @@ public class HomeController
         }
 
         // in here, we're going to get all the messages to display and such
+        return mView;
+    }
+
+    @RequestMapping(value = "/unauthorized", method = RequestMethod.GET)
+    public final ModelAndView showUnauthorizedPage()
+    {
+        final String methodName = CommonController.CNAME + "#showUnauthorizedPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        mView.setViewName(appConfig.getUnauthorizedPage());
+
         return mView;
     }
 }
