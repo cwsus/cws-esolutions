@@ -508,6 +508,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         
         Connection sqlConn = null;
         boolean isComplete = false;
+		ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
         try
@@ -535,22 +536,25 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                ResultSet resultSet = stmt.executeQuery();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    isComplete = resultSet.getBoolean(1);
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        isComplete = resultSet.getBoolean(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
                     }
                 }
             }
@@ -563,6 +567,11 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         }
         finally
         {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
             if (stmt != null)
             {
                 stmt.close();
@@ -617,26 +626,29 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
                     DEBUGGER.debug(stmt.toString());
                 }
 
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
+                if (stmt.execute())
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-                    serviceList = new ArrayList<String>();
-
-                    while (resultSet.next())
-                    {
-                        serviceList.add(resultSet.getString(1));
-                    }
+                    resultSet = stmt.getResultSet();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<String>: {}", serviceList);
+                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.beforeFirst();
+                        serviceList = new ArrayList<String>();
+
+                        while (resultSet.next())
+                        {
+                            serviceList.add(resultSet.getString(1));
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", serviceList);
+                        }
                     }
                 }
             }
