@@ -2,9 +2,9 @@
 <web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1">
     <dep:environment xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <dep:moduleId>
-            <dep:groupId>${groupId}</dep:groupId>
-            <dep:artifactId>${artifactId}</dep:artifactId>
-            <dep:version>${version}</dep:version>
+            <dep:groupId>@groupId@</dep:groupId>
+            <dep:artifactId>@artifactId@</dep:artifactId>
+            <dep:version>@version@</dep:version>
             <dep:type>war</dep:type>
         </dep:moduleId>
         <dep:dependencies>
@@ -45,7 +45,7 @@
         </dep:hidden-classes>
         <dep:inverse-classloading />
     </dep:environment>
-    <context-root>${artifactId}</context-root>
+    <context-root>@groupId@</context-root>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
