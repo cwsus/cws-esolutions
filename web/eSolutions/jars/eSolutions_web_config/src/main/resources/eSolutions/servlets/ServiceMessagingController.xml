@@ -19,5 +19,6 @@
         <property name="viewServiceMessagesPage" value="ServiceMessaging_ViewMessages" />
         <property name="messageSuccessfullyAdded" value="message.sentmessage.success" />
         <property name="messageSuccessfullyUpdated" value="message.sentmessage.success" />
+        <property name="createMessageRedirect" value="redirect:/ui/service-messaging/add-message" />
     </bean>
 </beans>

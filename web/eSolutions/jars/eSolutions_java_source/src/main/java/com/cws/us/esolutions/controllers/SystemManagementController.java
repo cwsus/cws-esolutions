@@ -12,11 +12,16 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -87,7 +92,9 @@ public class SystemManagementController
     private String addServerPage = null;
     private String viewServerPage = null;
     private String adminConsolePage = null;
+    private String addServerRedirect = null;
     private String messageServerAdded = null;
+    private String messageNoDmgrsFound = null;
     private String addDatacenterRedirect = null;
     private List<String> availableDomains = null;
     private ServerValidator serverValidator = null;
@@ -162,6 +169,32 @@ public class SystemManagementController
         }
 
         this.viewServerPage = value;
+    }
+
+    public final void setMessageNoDmgrsFound(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setMessageNoDmgrsFound(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoDmgrsFound = value;
+    }
+
+    public final void setAddServerRedirect(final String value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setAddServerRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addServerRedirect = value;
     }
 
     public final void setAdminConsolePage(final String value)
@@ -462,7 +495,9 @@ public class SystemManagementController
                     }
                     else
                     {
-                        mView.setViewName(appConfig.getUnavailablePage());
+                        mView = new ModelAndView(new RedirectView());
+                        mView.addObject(Constants.MESSAGE_RESPONSE, this.messageNoDmgrsFound);
+                        mView.setViewName(this.addServerRedirect);
                     }
                 }
                 else if (serviceRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)

@@ -788,7 +788,7 @@ public class UserManagementController
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.searchUsersPage);
+                    mView.setViewName(this.viewAuditPage);
                 }
             }
             catch (AccountControlException acx)

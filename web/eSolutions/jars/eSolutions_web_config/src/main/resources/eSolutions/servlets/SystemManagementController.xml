@@ -32,6 +32,8 @@
 		<property name="messageCpuTypeRequired" value="system.server.cpu.type.required" />
 		<property name="messageCpuCountRequired" value="system.server.cpu.count.required" />
 		<property name="messageNetworkPartitionRequired" value="system.server.network.partition.required" />
+		<property name="messageNoDmgrsFound" value="system.mgmt.no.dmgrs" />
+		<property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
     </bean>
 
     <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">

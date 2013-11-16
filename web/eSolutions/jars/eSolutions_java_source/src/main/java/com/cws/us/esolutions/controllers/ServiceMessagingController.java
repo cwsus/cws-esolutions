@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -489,8 +490,8 @@ public class ServiceMessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView = new ModelAndView(new RedirectView());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
 				mView.setViewName(this.createMessageRedirect);
             }
         }
@@ -669,8 +670,8 @@ public class ServiceMessagingController
             else
             {
                 // no existing service messages
-                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView = new ModelAndView(new RedirectView());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
 				mView.setViewName(this.createMessageRedirect);
             }
         }

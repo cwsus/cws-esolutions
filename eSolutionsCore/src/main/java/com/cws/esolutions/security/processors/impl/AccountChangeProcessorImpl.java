@@ -138,6 +138,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 if (isComplete)
                 {
+                    UserAccount retAccount = userAccount;
+                    retAccount.setEmailAddr(userAccount.getEmailAddr());
+
+                    response.setUserAccount(retAccount);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Modification request successfully performed");
                 }
@@ -280,6 +284,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 if (isComplete)
                 {
+                    UserAccount retAccount = userAccount;
+                    retAccount.setTelephoneNumber(userAccount.getTelephoneNumber());
+                    retAccount.setPagerNumber(userAccount.getPagerNumber());
+
+                    response.setUserAccount(retAccount);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Modification request successfully performed");
                 }
@@ -1065,6 +1074,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 if (isComplete)
                 {
+                    UserAccount retAccount = userAccount;
+                    retAccount.setOlrSetup(false);
+
+                    response.setUserAccount(retAccount);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Successfully added security questions/answers for user.");
                 }

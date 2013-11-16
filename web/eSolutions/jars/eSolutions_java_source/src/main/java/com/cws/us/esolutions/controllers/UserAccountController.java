@@ -77,7 +77,6 @@ public class UserAccountController
 	private String changeKeysComplete = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
-    private String errorPasswordFailed = null;
     private String changeEmailComplete = null;
     private String changeContactComplete = null;
     private String changePasswordComplete = null;
@@ -157,19 +156,6 @@ public class UserAccountController
         }
 
         this.changeContactPage = value;
-    }
-
-    public final void setErrorPasswordFailed(final String value)
-    {
-        final String methodName = UserAccountController.CNAME + "#setErrorPasswordFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.errorPasswordFailed = value;
     }
 
     public final void setChangeEmailComplete(final String value)
@@ -792,24 +778,29 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeRequest: {}", req);
             }
 
-            AccountChangeResponse res = processor.changeUserKeys(req);
+            AccountChangeResponse response = processor.changeUserKeys(req);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AccountChangeResponse: {}", res);
+                DEBUGGER.debug("AccountChangeResponse: {}", response);
             }
 
-            if (res.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
+
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeKeysComplete);
             }
-            else if (res.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+            else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
                 mView.setViewName(appConfig.getUnauthorizedPage());
+
+                return mView;
             }
             else
             {
-                mView.addObject(Constants.ERROR_RESPONSE, res.getResponse());
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
             }
 
             mView.setViewName(this.myAccountPage);
@@ -1278,6 +1269,9 @@ public class UserAccountController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 // yay
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
+
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
                 mView.setViewName(this.myAccountPage);
             }
@@ -1306,7 +1300,6 @@ public class UserAccountController
         return mView;
     }
 
-    // TODO
     @RequestMapping(value = "/contact", method = RequestMethod.POST)
     public final ModelAndView doContactChange(@ModelAttribute("changeReq") final UserChangeRequest changeReq, final BindingResult bindResult)
     {
@@ -1433,6 +1426,9 @@ public class UserAccountController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 // yay
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
+
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeContactComplete);
                 mView.setViewName(this.myAccountPage);
             }
