@@ -71,7 +71,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditCount`(
-    IN userguid VARCHAR(45)
+    IN userguid VARCHAR(128)
 )
 BEGIN
     SELECT COUNT(*)
@@ -90,7 +90,7 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditInterval`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditInterval`(
-    IN userguid VARCHAR(45),
+    IN userguid VARCHAR(128),
     IN startRow INT
 )
 BEGIN
@@ -124,7 +124,7 @@ DROP PROCEDURE IF EXISTS `cwssec`.`insertAuditEntry`$$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`insertAuditEntry`(
     IN usersessid VARCHAR(100),
     IN username VARCHAR(45),
-    IN userguid VARCHAR(45),
+    IN userguid VARCHAR(128),
     IN userrole VARCHAR(45),
     IN applid VARCHAR(128),
     IN applname VARCHAR(128),
