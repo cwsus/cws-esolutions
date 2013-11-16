@@ -144,7 +144,7 @@ DELIMITER ;
 COMMIT;
 
 --
--- Definition of procedure `esolutionssvc`.`getDatacenterData`
+-- Definition of procedure `esolutionssvc`.`retrDataCenter`
 --
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrDataCenter`$$

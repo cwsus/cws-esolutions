@@ -24,6 +24,7 @@ SOURCE ./eSolutionsService.service_messages.sql;
 SOURCE ./eSolutionsService.installed_applications.sql;
 SOURCE ./eSolutionsService.installed_systems.sql;
 SOURCE ./eSolutionsService.service_requests.sql;
+SOURCE ./eSolutionsService.service_datacenters.sql;
 
 COMMIT;
 

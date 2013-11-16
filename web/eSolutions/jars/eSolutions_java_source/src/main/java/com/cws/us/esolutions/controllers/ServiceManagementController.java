@@ -13,13 +13,18 @@ package com.cws.us.esolutions.controllers;
 
 import java.util.Map;
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -105,6 +110,7 @@ public class ServiceManagementController
     private String messageNoDmgrFound = null;
     private String viewDatacenterPage = null;
     private String viewDatacentersPage = null;
+    private String messageNoDatacenters = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
     private String messageProjectSuccessfullyAdded = null;
@@ -428,6 +434,19 @@ public class ServiceManagementController
         }
 
         this.messageProjectSuccessfullyAdded = value;
+    }
+
+    public final void setMessageNoDatacenters(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setMessageNoDatacenters(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageNoDatacenters = value;
     }
 
     public final void setAddServerRedirect(final String value)
@@ -1167,10 +1186,19 @@ public class ServiceManagementController
                         DEBUGGER.debug("List<DataCenter>: {}", datacenterList);
                     }
 
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("datacenterList", datacenterList);
-                    mView.setViewName(this.viewDatacentersPage);
+                    if ((datacenterList != null) && (datacenterList.size() != 0))
+                    {
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                        mView.addObject("page", 1);
+                        mView.addObject("datacenterList", datacenterList);
+                        mView.setViewName(this.viewDatacentersPage);
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.MESSAGE_RESPONSE, this.messageNoDatacenters);
+                        mView.addObject("command", new DataCenter());
+                        mView.setViewName(this.addDatacenterPage);
+                    }
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {

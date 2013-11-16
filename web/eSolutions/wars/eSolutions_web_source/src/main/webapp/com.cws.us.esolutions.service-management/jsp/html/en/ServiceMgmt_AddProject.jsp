@@ -49,10 +49,10 @@
 	    <form:form id="createNewProject" name="createNewProject" action="${pageContext.request.contextPath}/ui/service-management/add-project" method="post">
 	        <table id="projectDetail">
 	            <tr>
-	                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.project.code" /></label></td>
+	                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label></td>
 	                <td><form:input path="projectCode" /></td>
 	                <td><form:errors path="projectCode" cssClass="validationError" /></td>
-	                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.project.status" /></label></td>
+	                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
 	                <td>
 	                    <form:select path="projectStatus">
 	                        <option><spring:message code="theme.option.select" /></option>

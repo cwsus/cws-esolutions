@@ -54,5 +54,6 @@
 	    <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
 	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
+        <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
     </bean>
 </beans>
