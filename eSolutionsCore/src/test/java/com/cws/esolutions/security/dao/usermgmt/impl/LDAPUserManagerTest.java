@@ -171,8 +171,8 @@ public class LDAPUserManagerTest
         cal.add(Calendar.DATE, 45);
 
         Map<String, Object> change = new HashMap<String, Object>();
-        change.put("userPassword", "ubvQJn2UJa6E7d1zZ1/03d1UgptoV2eLNl9V5HaBv0GTj0myaGBnuVLiAOEFsYAOgRtmfD8LIhYH8qX9k205RQ==");
-        change.put("cwsexpirydate", cal.getTimeInMillis());
+        change.put("userPassword", "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ==");
+        // change.put("cwsexpirydate", cal.getTimeInMillis());
 
         try
         {

@@ -50,10 +50,6 @@
 	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
 	                    <spring:message code='theme.navbar.help' /></a>
 	            </li>
-	            <li>
-	                <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
-	                    <spring:message code='theme.navbar.logoff' /></a>
-	            </li>
 	            <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
 	                <li>
 	                    <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">

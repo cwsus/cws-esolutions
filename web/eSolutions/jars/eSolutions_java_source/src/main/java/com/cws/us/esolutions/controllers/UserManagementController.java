@@ -1727,7 +1727,6 @@ public class UserManagementController
         return mView;
     }
 
-
     @RequestMapping(value = "/change-role/account/{userGuid}/role/{role}", method = RequestMethod.GET)
     public final ModelAndView changeUserRole(@PathVariable("userGuid") final String userGuid, @PathVariable("role") final String role)
     {
@@ -1866,7 +1865,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
@@ -2032,7 +2030,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/add-user", method = RequestMethod.POST)
     public final ModelAndView doAddUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
@@ -2211,7 +2208,6 @@ public class UserManagementController
 
         return mView;
     }
-
 
     @RequestMapping(value = "/suspend-user", method = RequestMethod.POST)
     public final ModelAndView doSuspendUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)

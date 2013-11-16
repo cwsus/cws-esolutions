@@ -79,9 +79,9 @@
 	                    <td id="userRoleInput" style="display: block;">${userAccount.role}</td>
                         <td id="userRoleModify" style="display: none;">
                             <select name="selectRole" id="selectRole">
+                                <option value="${userAccount.role}" selected="selected">${userAccount.role}</option>
                                 <option><spring:message code="theme.option.select" /></option>
                                 <option><spring:message code="theme.option.spacer" /></option>
-                                <option value="${userAccount.role}" selected="selected">${userAccount.role}</option>
                                 <c:forEach var="role" items="${userRoles}">
                                     <option value="${role}">${role}</option>
                                 </c:forEach>

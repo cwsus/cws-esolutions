@@ -766,7 +766,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("requestMap: {}", requestMap);
                     }
 
-                    boolean isComplete = userManager.modifyUserInformation(account.getUsername(), account.getGuid(), requestMap);
+                    boolean isComplete = userManager.modifyUserInformation((String) userData.get(0), (String) userData.get(1), requestMap);
 
                     if (DEBUG)
                     {

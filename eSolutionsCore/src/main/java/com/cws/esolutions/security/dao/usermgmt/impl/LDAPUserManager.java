@@ -326,9 +326,9 @@ public class LDAPUserManager implements UserManager
     }
 
     @Override
-    public synchronized boolean modifyUserInformation(final String userId, final String userGuid, Map<String, Object> changeRequest) throws UserManagementException
+    public synchronized boolean modifyUserInformation(final String userId, final String userGuid, final Map<String, Object> changeRequest) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#modifyUserInformation(final String userDN, final String changeAttrib, final Object changeValue) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#modifyUserInformation(final String userId, final String userGuid, final Map<String, Object> changeRequest) throws UserManagementException";
 
         if (DEBUG)
         {
