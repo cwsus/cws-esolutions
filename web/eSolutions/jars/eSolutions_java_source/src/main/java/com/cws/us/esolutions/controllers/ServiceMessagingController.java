@@ -59,6 +59,7 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 public class ServiceMessagingController
 {
     private String serviceId = null;
+    private String createMessageRedirect = null;
     private String addServiceMessagePage = null;
     private String editServiceMessagePage = null;
     private String viewServiceMessagesPage = null;
@@ -135,6 +136,19 @@ public class ServiceMessagingController
         }
 
         this.editServiceMessagePage = value;
+    }
+
+    public final void setCreateMessageRedirect(final String value)
+    {
+        final String methodName = ServiceMessagingController.CNAME + "#setCreateMessageRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.createMessageRedirect = value;
     }
 
     public final void setMessageSuccessfullyAdded(final String value)
@@ -267,7 +281,8 @@ public class ServiceMessagingController
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.setViewName(this.addServiceMessagePage);
+                mView = new ModelAndView(new RedirectView());
+				mView.setViewName(this.createMessageRedirect);
             }
         }
         catch (MessagingServiceException msx)
@@ -471,15 +486,12 @@ public class ServiceMessagingController
             {
                 mView.setViewName(appConfig.getUnauthorizedPage());
             }
-            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
             else
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.setViewName(this.viewServiceMessagesPage);
+                mView = new ModelAndView(new RedirectView());
+				mView.setViewName(this.createMessageRedirect);
             }
         }
         catch (MessagingServiceException msx)
@@ -658,7 +670,8 @@ public class ServiceMessagingController
             {
                 // no existing service messages
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.setViewName(this.addServiceMessagePage);
+                mView = new ModelAndView(new RedirectView());
+				mView.setViewName(this.createMessageRedirect);
             }
         }
         catch (MessagingServiceException msx)

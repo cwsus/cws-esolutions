@@ -12,11 +12,8 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
@@ -82,6 +79,7 @@ public class UserAccountController
     private String changePasswordPage = null;
     private String errorPasswordFailed = null;
     private String changeEmailComplete = null;
+    private String changeContactComplete = null;
     private String changePasswordComplete = null;
     private String changeSecurityComplete = null;
     private TelephoneValidator telValidator = null;
@@ -211,6 +209,19 @@ public class UserAccountController
         }
 
         this.changeSecurityComplete = value;
+    }
+
+    public final void setChangeContactComplete(final String value)
+    {
+        final String methodName = UserAccountController.CNAME + "#setChangeContactComplete(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.changeContactComplete = value;
     }
 
     public final void setChangeKeysComplete(final String value)
@@ -889,13 +900,8 @@ public class UserAccountController
             UserChangeRequest command = new UserChangeRequest();
             changeReq.setIsReset(changeReq.isReset());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("UserChangeRequest: {}", command);
-            }
-
             mView.addObject("command", command);
-            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.setViewName(this.changePasswordPage);
         }
 
@@ -1066,7 +1072,7 @@ public class UserAccountController
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.setViewName(this.changeSecurityPage);
 
             return mView;
@@ -1214,7 +1220,7 @@ public class UserAccountController
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
             mView.setViewName(this.changeSecurityPage);
 
             return mView;
@@ -1369,8 +1375,8 @@ public class UserAccountController
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, this.errorPasswordFailed);
-            mView.setViewName(this.changeSecurityPage);
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.setViewName(this.changeContactPage);
 
             return mView;
         }
@@ -1417,7 +1423,7 @@ public class UserAccountController
                 DEBUGGER.debug("AccountChangeRequest: {}", request);
             }
 
-            AccountChangeResponse response = processor.changeUserEmail(request);
+            AccountChangeResponse response = processor.changeUserContact(request);
 
             if (DEBUG)
             {
@@ -1427,7 +1433,7 @@ public class UserAccountController
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
                 // yay
-                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeEmailComplete);
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changeContactComplete);
                 mView.setViewName(this.myAccountPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -1437,7 +1443,7 @@ public class UserAccountController
             else
             {
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                mView.setViewName(this.changePasswordPage);
+                mView.setViewName(this.changeContactPage);
             }
         }
         catch (AccountChangeException acx)
