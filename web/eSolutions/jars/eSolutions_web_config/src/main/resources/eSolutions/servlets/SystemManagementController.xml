@@ -32,8 +32,6 @@
 		<property name="messageCpuTypeRequired" value="system.server.cpu.type.required" />
 		<property name="messageCpuCountRequired" value="system.server.cpu.count.required" />
 		<property name="messageNetworkPartitionRequired" value="system.server.network.partition.required" />
-		<property name="messageNoDmgrsFound" value="system.mgmt.no.dmgrs" />
-		<property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
     </bean>
 
     <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">
@@ -58,6 +56,8 @@
 	    <property name="defaultPage" value="SystemMgmt_DefaultHandler" />
 	    <property name="adminConsolePage" value="SystemMgmt_AdminConsoles" />
 	    <property name="messageServerAdded" value="system.mgmt.server.successfully.added" />
+        <property name="messageNoDmgrsFound" value="system.mgmt.no.dmgrs" />
+        <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
         <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
     </bean>
 </beans>
