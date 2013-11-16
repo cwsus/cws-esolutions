@@ -37,14 +37,14 @@
             </li>
         </c:if>
         <c:if test="${not empty sessionScope.userAccount}">
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
-                    <spring:message code='theme.navbar.logoff' /></a>
-            </li>
             <c:if test="${sessionScope.userAccount.status eq 'SUCCESS'}">
 	            <li>
 	                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
 	                    <spring:message code='theme.navbar.home' /></a>
+	            </li>
+	            <li>
+	                <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
+	                    <spring:message code='theme.navbar.logoff' /></a>
 	            </li>
 	            <li>
 	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
