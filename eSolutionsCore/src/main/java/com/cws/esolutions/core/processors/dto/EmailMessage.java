@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.core.Constants;
 /**
@@ -432,7 +431,11 @@ public class EmailMessage implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (field.getModifiers() != Modifier.STATIC)
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

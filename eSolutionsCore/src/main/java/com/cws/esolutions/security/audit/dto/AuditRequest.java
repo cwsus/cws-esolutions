@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.security.SecurityConstants;
 /**
@@ -123,7 +122,11 @@ public class AuditRequest implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (field.getModifiers() != Modifier.STATIC)
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

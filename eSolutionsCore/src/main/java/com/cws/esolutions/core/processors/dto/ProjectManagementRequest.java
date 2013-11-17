@@ -19,11 +19,10 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.dto.UserAccount;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
@@ -260,7 +259,11 @@ public class ProjectManagementRequest implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (field.getModifiers() != Modifier.STATIC)
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

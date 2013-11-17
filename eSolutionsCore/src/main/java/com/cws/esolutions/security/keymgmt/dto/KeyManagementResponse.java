@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.security.KeyPair;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -150,7 +149,12 @@ public class KeyManagementResponse implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (field.getModifiers() != Modifier.STATIC)
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("keyPair"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

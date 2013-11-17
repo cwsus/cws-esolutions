@@ -16,12 +16,14 @@
 package com.cws.esolutions.core;
 
 import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
-import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
+import com.cws.esolutions.security.SecurityConstants;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core
@@ -239,7 +241,12 @@ public class CoreServiceBean
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (field.getModifiers() != Modifier.STATIC)
+            if (!(field.getName().equals("methodName")) &&
+                    (!(field.getName().equals("CNAME"))) &&
+                    (!(field.getName().equals("DEBUGGER"))) &&
+                    (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("instance"))) &&
+                    (!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {
