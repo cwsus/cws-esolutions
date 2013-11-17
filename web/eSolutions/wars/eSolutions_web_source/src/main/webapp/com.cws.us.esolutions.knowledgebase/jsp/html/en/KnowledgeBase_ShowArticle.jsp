@@ -80,31 +80,31 @@
 
 	    <table id="ShowArticle">
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
 	            <td>${article.symptoms}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
 	            <td>${article.cause}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
 	            <td>${article.keywords}</td>
 	        </tr>
 	    </table>
 	    <br />
-	    <strong><spring:message code="kbase.view-article.article-resolution" /></strong>
+	    <strong><spring:message code="kbase.article.resolution" /></strong>
 	    <br />
 	    ${article.resolution}
 	    <br /><br />
 	    <table class="kbauth">
 	        <tr>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-author" /></strong></td>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-created" /></strong></td>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modifier" /></strong></td>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modified" /></strong></td>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approver" /></strong></td>
-	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approved" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.author" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.created" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modifier" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modified" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approver" /></strong></td>
+	            <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approved" /></strong></td>
 	        </tr>
 	        <tr>
 	            <td align="center" valign="middle">

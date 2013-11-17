@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="kbase.approve-article.select-article" /></div>
+<div id="InfoLine"><spring:message code="kbase.article.select" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">

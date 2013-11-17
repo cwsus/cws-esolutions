@@ -47,7 +47,7 @@
 	    <form:form id="confirmArticleDeletion" name="confirmArticleDeletion" action="${pageContext.request.contextPath}/ui/knowledgebase/delete-article" method="post">
 	        <table id="confirmDeletion">
 	            <tr>
-	                <td><spring:message code="kbase.delete-article.confirm" arguments="${requestScope.articleId}"/>
+	                <td><spring:message code="kbase.article.delete.confirm" arguments="${requestScope.articleId}"/>
 	            </tr>
 	        </table>
 	        <br /><br />

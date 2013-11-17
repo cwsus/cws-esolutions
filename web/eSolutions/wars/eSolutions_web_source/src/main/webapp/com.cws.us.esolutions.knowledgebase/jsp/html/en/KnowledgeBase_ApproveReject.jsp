@@ -46,28 +46,28 @@
 
 	    <table id="ShowArticle">
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
 	            <td>${articleInfo.articleId}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
 	            <td>${articleInfo.articleTitle}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
 	            <td>${articleInfo.articleSymptoms}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
 	            <td>${articleInfo.articleCause}</td>
 	        </tr>
 	        <tr>
-	            <td><strong><em><spring:message code="kbase.view-article.article-keywords" /></em></strong></td>
+	            <td><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
 	            <td>${articleInfo.articleKeywords}</td>
 	        </tr>
 	    </table>
 	    <br />
-	    <strong><spring:message code="kbase.view-article.article-resolution" /></strong>
+	    <strong><spring:message code="kbase.article.resolution" /></strong>
 	    <br />
 	    ${articleInfo.articleResolution}
     </div>
@@ -77,11 +77,11 @@
             <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/approve-article/${article.articleId}"
-                    title="<spring:message code='kbase.approve-article.approve-link' />"><spring:message code='kbase.approve-article.approve-link' /></a>
+                    title="<spring:message code='kbase.article.approve' />"><spring:message code='kbase.article.approve' /></a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/reject-article/${article.articleId}"
-                    title="<spring:message code='kbase.approve-article.reject-link' />"><spring:message code='kbase.approve-article.reject-link' /></a>
+                    title="<spring:message code='kbase.article.reject' />"><spring:message code='kbase.article.reject' /></a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"

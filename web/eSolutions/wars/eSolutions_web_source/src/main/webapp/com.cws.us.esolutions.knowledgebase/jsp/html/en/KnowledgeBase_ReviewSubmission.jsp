@@ -84,39 +84,39 @@
 
 	        <table id="ShowArticle">
 	            <tr>
-	                <td id="txtArticleId"><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
+	                <td id="txtArticleId"><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
 	                <td><form:input path="articleId" readonly="true" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
+	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
 	                <td><form:input path="title" readonly="true" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
 	                <td><form:input path="symptoms" readonly="true" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
 	                <td><form:input path="cause" readonly="true" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.article-keywords" /></em></strong></td>
+	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
 	                <td><form:input path="keywords" readonly="true" /></td>
 	            </tr>
 	        </table>
 	        <br />
-	        <label id="txtArticleResolution"><strong><spring:message code="kbase.view-article.article-resolution" /></strong></label>
+	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
 	        <br />
 	        <form:textarea path="resolution" cols="90" rows="10" readonly="true" />
 	        <br /><br />
 	        <table class="kbauth">
 	            <tr>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-author" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-created" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modifier" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modified" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approver" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approved" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.author" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.created" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modifier" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modified" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approver" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approved" /></strong></td>
 	            </tr>
 	            <tr>
 	                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>

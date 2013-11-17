@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="kbase.create-article.begin-updates" /></div>
+<div id="InfoLine"><spring:message code="kbase.article.create.banner" arguments="${command.articleId}" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -52,44 +52,44 @@
 
 	        <table id="ShowArticle">
 	            <tr>
-	                <td id="txtArticleId"><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
+	                <td id="txtArticleId"><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
 	                <td><form:input path="articleId" readonly="true" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
+	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
 	                <td><form:input path="title" /></td>
 	                <td><form:errors path="title" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
 	                <td><form:input path="symptoms" /></td>
 	                <td><form:errors path="symptoms" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
 	                <td><form:input path="cause" /></td>
 	                <td><form:errors path="cause" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.article-keywords" /></em></strong></td>
+	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
 	                <td><form:input path="keywords" /></td>
 	                <td><form:errors path="keywords" cssClass="validationError" /></td>
 	            </tr>
 	        </table>
 	        <br />
-	        <label id="txtArticleResolution"><strong><spring:message code="kbase.view-article.article-resolution" /></strong></label>
+	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
 	        <br />
 	        <form:textarea path="resolution" cols="90" rows="10" />
 	        <form:errors path="resolution" />
 	        <br /><br />
 	        <table class="kbauth">
 	            <tr>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-author" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-created" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modifier" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-modified" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approver" /></strong></td>
-	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.view-article.article-approved" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.author" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.created" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modifier" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.modified" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approver" /></strong></td>
+	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approved" /></strong></td>
 	            </tr>
 	            <tr>
 	                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>

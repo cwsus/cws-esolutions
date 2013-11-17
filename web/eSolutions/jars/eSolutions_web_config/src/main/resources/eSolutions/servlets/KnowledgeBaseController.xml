@@ -35,10 +35,10 @@
         <property name="createArticlePage" value="KnowledgeBase_CreateArticle" />
         <property name="reviewArticlePage" value="KnowledgeBase_ReviewSubmission" />
         <property name="pendingArticlesPage" value="KnowledgeBase_ShowPendingApprovals" />
-        <property name="messageArticleDeleted" value="kbase.delete-article.delete-success" />
+        <property name="messageArticleDeleted" value="kbase.article.delete.success" />
         <property name="messageSource" value="nls.KnowledgeBaseServlet.KnowledgeBaseServlet" />
-        <property name="messageArticleApproved" value="kbase.approve-article.approval-success" />
-        <property name="messageArticleRejected" value="kbase.approve-article.article-rejected" />
+        <property name="messageArticleApproved" value="kbase.article.approve.success" />
+        <property name="messageArticleRejected" value="kbase.article.reject.success" />
         <property name="createArticleEmail" value="nls/emailTemplates/kbase_create_article.email" />
         <property name="updateArticleEmail" value="nls/emailTemplates/kbase_update_article.email" />
         <property name="approveArticleEmail" value="nls/emailTemplates/kbase_approve_article.email" />

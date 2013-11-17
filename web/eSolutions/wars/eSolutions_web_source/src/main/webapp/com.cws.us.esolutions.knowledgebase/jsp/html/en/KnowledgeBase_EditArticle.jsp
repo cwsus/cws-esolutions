@@ -51,32 +51,32 @@
 
 	       <table id="ShowArticle">
 	           <tr>
-	               <td id="txtArticleId"><strong><em><spring:message code="kbase.view-article.article-id" /></em></strong></td>
+	               <td id="txtArticleId"><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
 	               <td>${article.articleId}</td>
 	           </tr>
 	           <tr>
-	               <td id="txtArticleTitle"><strong><em><spring:message code="kbase.view-article.article-title" /></em></strong></td>
+	               <td id="txtArticleTitle"><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
 	               <td><form:input path="title" id="title" name="title" value="${article.title}" /></td>
 	               <td><form:errors path="title" cssClass="validationError" /></td>
 	           </tr>
 	           <tr>
-	               <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.view-article.article-symptoms" /></em></strong></td>
+	               <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
 	               <td><form:input path="symptoms" type="text" id="symptoms" name="symptoms" value="${article.symptoms}" /></td>
 	               <td><form:errors path="symptoms" cssClass="validationError" /></td>
 	           </tr>
 	           <tr>
-	               <td id="txtArticleCause"><strong><em><spring:message code="kbase.view-article.article-cause" /></em></strong></td>
+	               <td id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
 	               <td><form:input path="cause" type="text" id="cause" name="cause" value="${article.cause}" /></td>
 	               <td><form:errors path="cause" cssClass="validationError" /></td>
 	           </tr>
 	           <tr>
-	               <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.article-keywords" /></em></strong></td>
+	               <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.keywords" /></em></strong></td>
 	               <td><form:input path="keywords" type="text" id="keywords" name="keywords" value="${article.keywords}" /></td>
 	               <td><form:errors path="keywords" cssClass="validationError" /></td>
 	           </tr>
 	       </table>
             <br />
-	        <label id="txtArticleResolution"><strong><spring:message code="kbase.view-article.article-resolution" /></strong></label>
+	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
 	        <br />
 	        <c:if test="${requestScope.isHTMLEnabled eq 'true'}">
 	            <spring:message code="kbase.edit.article.html.enabled" />
