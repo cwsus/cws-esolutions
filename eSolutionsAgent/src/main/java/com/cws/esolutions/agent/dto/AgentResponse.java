@@ -47,8 +47,10 @@ public class AgentResponse implements Serializable
 
     private static final String CNAME = AgentResponse.class.getName();
     private static final long serialVersionUID = 8147483886425734062L;
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setRequestStatus(final AgentStatus value)
     {

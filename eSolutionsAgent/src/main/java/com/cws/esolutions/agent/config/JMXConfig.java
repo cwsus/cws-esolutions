@@ -64,8 +64,10 @@ public final class JMXConfig implements Serializable
 
     private static final long serialVersionUID = 6140525804689763849L;
     private static final String CNAME = JMXConfig.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setDmgrPort(final int value)
     {

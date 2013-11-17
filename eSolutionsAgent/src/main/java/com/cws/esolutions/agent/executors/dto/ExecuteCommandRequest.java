@@ -48,8 +48,10 @@ public class ExecuteCommandRequest implements Serializable
 
     private static final long serialVersionUID = -2995144040596681519L;
     private static final String CNAME = ExecuteCommandRequest.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setCommand(final List<String> value)
     {

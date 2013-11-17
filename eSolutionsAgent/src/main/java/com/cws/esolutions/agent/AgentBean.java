@@ -16,7 +16,9 @@
 package com.cws.esolutions.agent;
 
 import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.config.ConfigurationData;
@@ -46,9 +48,11 @@ public class AgentBean
 
     private static AgentBean instance = null;
 
+    private static final String CNAME = AgentBean.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final String CNAME = AgentBean.class.getName();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     /**
      * Returns a static instance of this bean
