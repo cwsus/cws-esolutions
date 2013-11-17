@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -200,14 +199,14 @@ public class SQLUserManager implements UserManager
                 sqlConn.setAutoCommit(true);
 
                 stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-                stmt.setString(1, (String) createRequest.get(0));
-                stmt.setString(2, (String) createRequest.get(1));
-                stmt.setString(3, (String) createRequest.get(2));
-                stmt.setString(4, (String) createRequest.get(3));
-                stmt.setString(5, (String) createRequest.get(4));
-                stmt.setString(6, (String) createRequest.get(5));
-                stmt.setString(7, (String) createRequest.get(6));
-                stmt.setString(8, (String) createRequest.get(7));
+                stmt.setString(1, createRequest.get(0));
+                stmt.setString(2, createRequest.get(1));
+                stmt.setString(3, createRequest.get(2));
+                stmt.setString(4, createRequest.get(3));
+                stmt.setString(5, createRequest.get(4));
+                stmt.setString(6, createRequest.get(5));
+                stmt.setString(7, createRequest.get(6));
+                stmt.setString(8, createRequest.get(7));
 
                 if (DEBUG)
                 {

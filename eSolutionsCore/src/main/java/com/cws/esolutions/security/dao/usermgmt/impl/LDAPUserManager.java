@@ -374,6 +374,8 @@ public class LDAPUserManager implements UserManager
                             authData.getUserId(),
                             authData.getDisplayName(),
                             authData.getEmailAddr(),
+                            authData.getTelephoneNumber(),
+                            authData.getPagerNumber(),
                             authData.getExpiryDate(),
                             authData.getGivenName(),
                             authData.getIsSuspended(),
@@ -468,7 +470,7 @@ public class LDAPUserManager implements UserManager
         catch (LDAPException lx)
         {
             ERROR_RECORDER.error(lx.getMessage(), lx);
-
+lx.printStackTrace();
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)

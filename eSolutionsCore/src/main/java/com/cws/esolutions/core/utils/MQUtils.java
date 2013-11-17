@@ -297,14 +297,7 @@ public final class MQUtils
                 DEBUGGER.debug("ObjectMessage: {}", message);
             }
 
-            ObjectMessage responseMessage = (ObjectMessage) message;
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ObjectMessage: {}", responseMessage);
-            }
-
-            response = responseMessage.getObject();
+            response = message.getObject();
 
             if (DEBUG)
             {

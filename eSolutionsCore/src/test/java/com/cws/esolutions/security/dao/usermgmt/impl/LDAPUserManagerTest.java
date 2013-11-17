@@ -205,6 +205,27 @@ public class LDAPUserManagerTest
         }
     }
 
+    @Test
+    public final void testModifyUserContact()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("pager", "716-341-5669");
+                            put("telephoneNumber", "716-341-5669");
+                        }
+                    }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
     @After
     public void tearDown()
     {
