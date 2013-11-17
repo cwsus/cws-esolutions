@@ -8,8 +8,9 @@ import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.us.esolutions.Constants;
@@ -843,11 +844,7 @@ public class ApplicationServiceBean implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (!(field.getName().equals("methodName")) &&
-                    (!(field.getName().equals("CNAME"))) &&
-                    (!(field.getName().equals("DEBUGGER"))) &&
-                    (!(field.getName().equals("DEBUG"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+            if (field.getModifiers() != Modifier.STATIC)
             {
                 try
                 {

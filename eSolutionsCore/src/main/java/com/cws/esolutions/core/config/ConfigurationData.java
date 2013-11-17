@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.Modifier;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -102,6 +103,7 @@ public final class ConfigurationData implements Serializable
 
         this.mailConfig = value;
     }
+
     public final void setResourceConfig(final ResourceConfig value)
     {
         final String methodName = ConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
@@ -352,11 +354,7 @@ public final class ConfigurationData implements Serializable
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (!(field.getName().equals("methodName")) &&
-                    (!(field.getName().equals("CNAME"))) &&
-                    (!(field.getName().equals("DEBUGGER"))) &&
-                    (!(field.getName().equals("DEBUG"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+            if (field.getModifiers() != Modifier.STATIC)
             {
                 try
                 {

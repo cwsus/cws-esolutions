@@ -16,10 +16,9 @@
 package com.cws.esolutions.agent;
 
 import org.slf4j.Logger;
-
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
+import java.lang.reflect.Modifier;
 
 import com.cws.esolutions.agent.config.ConfigurationData;
 /**
@@ -239,12 +238,7 @@ public class AgentBean
                 DEBUGGER.debug("field: {}", field);
             }
 
-            if (!(field.getName().equals("methodName")) &&
-                    (!(field.getName().equals("CNAME"))) &&
-                    (!(field.getName().equals("DEBUGGER"))) &&
-                    (!(field.getName().equals("DEBUG"))) &&
-                    (!(field.getName().equals("instance"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+            if (field.getModifiers() != Modifier.STATIC)
             {
                 try
                 {

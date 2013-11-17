@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -911,11 +912,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                 DEBUGGER.debug("field: {}", field);
                             }
 
-                            if (!(field.getName().equals("methodName")) &&
-                                    (!(field.getName().equals("CNAME"))) &&
-                                    (!(field.getName().equals("DEBUGGER"))) &&
-                                    (!(field.getName().equals("DEBUG"))) &&
-                                    (!(field.getName().equals("serialVersionUID"))))
+                            if (field.getModifiers() != Modifier.STATIC)
                             {
                                 try
                                 {

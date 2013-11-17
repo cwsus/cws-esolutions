@@ -754,7 +754,6 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-
     @Test
     public final void modifyServer()
     {
@@ -825,6 +824,32 @@ public class ServerManagementProcessorImplTest
         {
             ServerManagementResponse response = processor.updateServerData(request);
 
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (ServerManagementException smx)
+        {
+            Assert.fail(smx.getMessage());
+        }
+    }
+
+    @Test
+    public final void getServersByAttribute()
+    {
+        Server server = new Server();
+        server.setServerType(ServerType.DMGRSERVER);
+
+        ServerManagementRequest request = new ServerManagementRequest();
+        request.setRequestInfo(hostInfo);
+        request.setUserAccount(userAccount);
+        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
+        request.setTargetServer(server);
+        request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
+        request.setApplicationName("esolutions");
+
+        try
+        {
+            ServerManagementResponse response = processor.listServersByType(request);
+System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (ServerManagementException smx)
