@@ -155,7 +155,8 @@ public class ProjectManagementProcessorImplTest
             project.setProjectGuid(java.util.UUID.randomUUID().toString());
             project.setProjectCode(RandomStringUtils.randomAlphabetic(8));
             project.setChangeQueue("change-queue");
-            project.setContactEmail("email@domain.com");
+            project.setDevEmail("dev@email.com");
+            project.setProdEmail("prod@email.com");
             project.setIncidentQueue("ticket-queue");
             project.setPrimaryContact("primary@domain.com");
             project.setSecondaryContact("secondary@domain.com");

@@ -105,7 +105,7 @@ public class ServerManagementProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana21*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("esolutions");
@@ -160,7 +160,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(strings[x]);
@@ -229,7 +229,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -284,7 +284,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -338,7 +338,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -393,7 +393,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -447,7 +447,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -502,7 +502,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -554,7 +554,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -607,7 +607,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -659,7 +659,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -707,23 +707,21 @@ public class ServerManagementProcessorImplTest
     @Test
     public final void addNewServerAsVmgr()
     {
-        String name = RandomStringUtils.randomAlphabetic(8);
-
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("1a43f39e-cbdf-4305-a558-0c32a32a6b93");
+        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
         server.setOsName("CentOS");
         server.setDomainName("caspersbox.corp");
-        server.setOperIpAddress("192.168.10.55");
-        server.setOperHostName(RandomStringUtils.randomAlphanumeric(8).toLowerCase());
-        server.setMgmtIpAddress("192.168.10.155");
-        server.setMgmtHostName(name + "-mgt");
+        server.setOperIpAddress("192.168.10.250");
+        server.setOperHostName("caspersb-vbox1");
+        server.setMgmtIpAddress("192.168.11.250");
+        server.setMgmtHostName("caspersb-vbox1-mgt");
         server.setBkIpAddress("172.16.10.55");
-        server.setBkHostName(name + "-bak");
+        server.setBkHostName("caspersb-vbox1-bak");
         server.setNasIpAddress("172.15.10.55");
-        server.setNasHostName(name + "-nas");
+        server.setNasHostName("caspersb-vbox1-nas");
         server.setServerRegion(ServiceRegion.PRD);
         server.setServerStatus(ServerStatus.ONLINE);
         server.setServerType(ServerType.VIRTUALHOST);
@@ -733,7 +731,7 @@ public class ServerManagementProcessorImplTest
         server.setCpuCount(1);
         server.setServerModel("Virtual Server");
         server.setSerialNumber("1YU391");
-        server.setMgrUrl("https://vmgr.myserver.org:18003/console");
+        server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
         server.setDatacenter(dataCenter);
@@ -755,6 +753,7 @@ public class ServerManagementProcessorImplTest
             Assert.fail(smx.getMessage());
         }
     }
+
 
     @Test
     public final void modifyServer()

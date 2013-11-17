@@ -42,10 +42,11 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  */
 public class Project implements Serializable
 {
+    private String devEmail = null;
+    private String prodEmail = null;
     private String projectGuid = null;
     private String projectCode = null;
     private String changeQueue = null;
-    private String contactEmail = null;
     private String incidentQueue = null;
     private String primaryContact = null;
     private String secondaryContact = null;
@@ -98,9 +99,9 @@ public class Project implements Serializable
         this.changeQueue = value;
     }
 
-    public final void setContactEmail(final String value)
+    public final void setDevEmail(final String value)
     {
-        final String methodName = Project.CNAME + "#setContactEmail(final String value)";
+        final String methodName = Project.CNAME + "#setDevEmail(final String value)";
 
         if (DEBUG)
         {
@@ -108,7 +109,20 @@ public class Project implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.contactEmail = value;
+        this.devEmail = value;
+    }
+
+    public final void setProdEmail(final String value)
+    {
+        final String methodName = Project.CNAME + "#setProdEmail(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.prodEmail = value;
     }
 
     public final void setIncidentQueue(final String value)
@@ -215,17 +229,30 @@ public class Project implements Serializable
         return this.changeQueue;
     }
 
-    public final String getContactEmail()
+    public final String getDevEmail()
     {
-        final String methodName = Project.CNAME + "#getContactEmail()";
+        final String methodName = Project.CNAME + "#getDevEmail()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.contactEmail);
+            DEBUGGER.debug("Value: {}", this.devEmail);
         }
 
-        return this.contactEmail;
+        return this.devEmail;
+    }
+
+    public final String getProdEmail()
+    {
+        final String methodName = Project.CNAME + "#getProdEmail()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.prodEmail);
+        }
+
+        return this.prodEmail;
     }
 
     public final String getIncidentQueue()

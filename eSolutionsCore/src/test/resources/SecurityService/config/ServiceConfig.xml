@@ -50,7 +50,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>ldap.caspersbox.corp</repositoryHost>
+        <repositoryHost>192.168.10.54</repositoryHost>
         <repositoryPort>10389</repositoryPort>
         <repositoryDriver />
         <repositoryConnTimeout>10000</repositoryConnTimeout>

@@ -28,10 +28,10 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="service.unavailable" /></div>
+<div id="InfoLine"><spring:message code="theme.service.unavailable" /></div>
 <div id="content">
     <div id="content-right">
-        <spring:message code="system.service.unavailable" />
+        <spring:message code="theme.system.service.unavailable" />
 
         <c:choose>
             <c:when test="${requestScope.isUserLoggedIn != 'true'}">

@@ -1451,9 +1451,10 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
                                 project.setPrimaryContact(projectList.get(3));
                                 project.setSecondaryContact(projectList.get(4));
-                                project.setContactEmail(projectList.get(5));
-                                project.setIncidentQueue(projectList.get(6));
-                                project.setChangeQueue(projectList.get(7));
+                                project.setDevEmail(projectList.get(5));
+                                project.setProdEmail(projectList.get(6));
+                                project.setIncidentQueue(projectList.get(7));
+                                project.setChangeQueue(projectList.get(8));
 
                                 if (DEBUG)
                                 {

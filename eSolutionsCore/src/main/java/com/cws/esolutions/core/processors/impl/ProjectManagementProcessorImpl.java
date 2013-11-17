@@ -122,7 +122,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                                     project.getProjectCode(),
                                     project.getPrimaryContact(),
                                     (StringUtils.isNotEmpty(project.getSecondaryContact())) ? project.getSecondaryContact() : Constants.NOT_SET,
-                                    project.getContactEmail(),
+                                    project.getDevEmail(),
+                                    project.getProdEmail(),
                                     project.getIncidentQueue(),
                                     project.getChangeQueue(),
                                     project.getProjectStatus().name()));
@@ -254,7 +255,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                                 project.getProjectCode(),
                                 project.getPrimaryContact(),
                                 (StringUtils.isNotEmpty(project.getSecondaryContact())) ? project.getSecondaryContact() : Constants.NOT_SET,
-                                project.getContactEmail(),
+                                project.getDevEmail(),
+                                project.getProdEmail(),
                                 project.getIncidentQueue(),
                                 project.getChangeQueue(),
                                 project.getProjectStatus().name()));
@@ -398,9 +400,10 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
                         resProject.setPrimaryContact(data[3]);
                         resProject.setSecondaryContact(data[4]);
-                        resProject.setContactEmail(data[5]);
-                        resProject.setIncidentQueue(data[6]);
-                        resProject.setChangeQueue(data[7]);
+                        resProject.setDevEmail(data[5]);
+                        resProject.setProdEmail(data[6]);
+                        resProject.setIncidentQueue(data[7]);
+                        resProject.setChangeQueue(data[8]);
 
                         if (DEBUG)
                         {
@@ -533,9 +536,10 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
                         resProject.setPrimaryContact(data[3]);
                         resProject.setSecondaryContact(data[4]);
-                        resProject.setContactEmail(data[5]);
-                        resProject.setIncidentQueue(data[6]);
-                        resProject.setChangeQueue(data[7]);
+                        resProject.setDevEmail(data[5]);
+                        resProject.setProdEmail(data[6]);
+                        resProject.setIncidentQueue(data[7]);
+                        resProject.setChangeQueue(data[8]);
 
                         if (DEBUG)
                         {
@@ -664,9 +668,10 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
                         project.setPrimaryContact(projectList.get(3));
                         project.setSecondaryContact(projectList.get(4));
-                        project.setContactEmail(projectList.get(5));
-                        project.setIncidentQueue(projectList.get(6));
-                        project.setChangeQueue(projectList.get(7));
+                        project.setDevEmail(projectList.get(5));
+                        project.setProdEmail(projectList.get(6));
+                        project.setIncidentQueue(projectList.get(7));
+                        project.setChangeQueue(projectList.get(8));
 
                         // get the list of applications associated with this project
                         List<String[]> appList = appDao.getApplicationsByAttribute(projectList.get(0), 0);

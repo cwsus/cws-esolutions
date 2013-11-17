@@ -75,15 +75,16 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, projectDetail.get(0)); // project guid
                 stmt.setString(2, projectDetail.get(1)); // project code
                 stmt.setString(3, projectDetail.get(2)); // project status
                 stmt.setString(4, projectDetail.get(3)); // primary owner
                 stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
-                stmt.setString(6, projectDetail.get(5)); // contact email
-                stmt.setString(7, projectDetail.get(6)); // incident q
-                stmt.setString(8, projectDetail.get(7)); // change q
+                stmt.setString(6, projectDetail.get(5)); // dev email
+                stmt.setString(7, projectDetail.get(6)); // prod email
+                stmt.setString(8, projectDetail.get(7)); // incident q
+                stmt.setString(9, projectDetail.get(8)); // change q
 
                 if (DEBUG)
                 {
@@ -216,15 +217,16 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL updateProjectDetail(?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL updateProjectDetail(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, projectDetail.get(0)); // project guid
                 stmt.setString(2, projectDetail.get(1)); // project code
                 stmt.setString(3, projectDetail.get(2)); // project status
                 stmt.setString(4, projectDetail.get(3)); // primary owner
                 stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
-                stmt.setString(6, projectDetail.get(5)); // contact email
-                stmt.setString(7, projectDetail.get(6)); // incident q
-                stmt.setString(8, projectDetail.get(7)); // change q
+                stmt.setString(6, projectDetail.get(5)); // dev email
+                stmt.setString(7, projectDetail.get(6)); // prod email
+                stmt.setString(8, projectDetail.get(7)); // incident q
+                stmt.setString(9, projectDetail.get(8)); // change q
 
                 if (DEBUG)
                 {
@@ -314,9 +316,10 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                                     resultSet.getString(3), // project status
                                     resultSet.getString(4), // primary owner
                                     resultSet.getString(5), // secondary owner
-                                    resultSet.getString(6), // contact email
-                                    resultSet.getString(7), // incident q
-                                    resultSet.getString(8))); // chg q
+                                    resultSet.getString(6), // dev email
+                                    resultSet.getString(7), // prod email
+                                    resultSet.getString(8), // incident q
+                                    resultSet.getString(9))); // chg q
 
                         if (DEBUG)
                         {
@@ -493,14 +496,15 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                         while (resultSet.next())
                         {
                             String[] data = new String[] {
-                                resultSet.getString(1), // project guid
-                                resultSet.getString(2), // project code
-                                resultSet.getString(3), // project status
-                                resultSet.getString(4), // primary owner
-                                resultSet.getString(5), // secondary owner
-                                resultSet.getString(6), // contact email
-                                resultSet.getString(7), // incident q
-                                resultSet.getString(8) // chg q
+                                    resultSet.getString(1), // project guid
+                                    resultSet.getString(2), // project code
+                                    resultSet.getString(3), // project status
+                                    resultSet.getString(4), // primary owner
+                                    resultSet.getString(5), // secondary owner
+                                    resultSet.getString(6), // dev email
+                                    resultSet.getString(7), // prod email
+                                    resultSet.getString(8), // incident q
+                                    resultSet.getString(9) // chg q
                             };
 
                             if (DEBUG)
@@ -605,14 +609,15 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                         {
                             String[] data = new String[]
                             {
-                                resultSet.getString(1), // project guid
-                                resultSet.getString(2), // project code
-                                resultSet.getString(3), // project region
-                                resultSet.getString(4), // primary owner
-                                resultSet.getString(5), // secondary owner
-                                resultSet.getString(6), // contact email
-                                resultSet.getString(7), // incident q
-                                resultSet.getString(8) // chg q
+                                    resultSet.getString(1), // project guid
+                                    resultSet.getString(2), // project code
+                                    resultSet.getString(3), // project status
+                                    resultSet.getString(4), // primary owner
+                                    resultSet.getString(5), // secondary owner
+                                    resultSet.getString(6), // dev email
+                                    resultSet.getString(7), // prod email
+                                    resultSet.getString(8), // incident q
+                                    resultSet.getString(9) // chg q
                             };
 
                             if (DEBUG)

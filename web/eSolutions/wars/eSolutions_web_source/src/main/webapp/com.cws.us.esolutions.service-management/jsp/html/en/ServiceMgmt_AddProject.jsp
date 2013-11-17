@@ -49,6 +49,9 @@
 	    <form:form id="createNewProject" name="createNewProject" action="${pageContext.request.contextPath}/ui/service-management/add-project" method="post">
 	        <table id="projectDetail">
 	            <tr>
+	                <td><label id="txtProjectInfo"><spring:message code="svc.mgmt.add.info" /></label></td>
+	            </tr>
+	            <tr>
 	                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label></td>
 	                <td><form:input path="projectCode" /></td>
 	                <td><form:errors path="projectCode" cssClass="validationError" /></td>
@@ -63,15 +66,23 @@
 	                <td><form:errors path="projectStatus" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
+	                <td><label id="txtContactInfo"><spring:message id="svc.mgmt.project.contact" /></label></td>
+	            </tr>
+	            <tr>
 	                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
 	                <td><form:input path="primaryContact" /></td>
 	                <td><form:errors path="primaryContact" cssClass="validationError" /></td>
 	                <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label></td>
 	                <td><form:input path="secondaryContact" /></td>
 	                <td><form:errors path="secondaryContact" cssClass="validationError" /></td>
-	                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label></td>
-	                <td><form:input path="contactEmail" /></td>
-	                <td><form:errors path="contactEmail" cssClass="validationError" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.dev.group" /></label></td>
+	                <td><form:input path="devGroup" /></td>
+	                <td><form:errors path="devGroup" cssClass="validationError" /></td>
+                    <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.prod.group" /></label></td>
+                    <td><form:input path="prodGroup" /></td>
+                    <td><form:errors path="prodGroup" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
 	                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label></td>
