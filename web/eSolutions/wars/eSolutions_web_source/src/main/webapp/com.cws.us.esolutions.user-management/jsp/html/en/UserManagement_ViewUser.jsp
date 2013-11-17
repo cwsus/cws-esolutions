@@ -110,19 +110,22 @@
 	                </tr>
 	                <tr>
 	                    <td><spring:message code="user.mgmt.user.locked" /></td>
-	                    <td>${userAccount.failedCount}</td>
-	                    <c:if test="${userAccount.failedCount ge 3}">
-	                        <td>
-	                            <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
-	                                title="<spring:message code='user.mgmt.unlock.account' />"><spring:message code='user.mgmt.unlock.account' /></a>
-	                        </td>
-	                    </c:if>
-	                    <c:if test="${userAccount.failedCount le 3}">
-	                        <td>
-	                            <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
-	                                title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a>
-	                        </td>
-	                    </c:if>
+	                    <c:choose>
+	                        <c:when test="${userAccount.failedCount ge 3}">
+	                            <td><spring:message code="theme.true" /></td>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
+                                        title="<spring:message code='user.mgmt.unlock.account' />"><spring:message code='user.mgmt.unlock.account' /></a>
+                                </td>
+	                        </c:when>
+	                        <c:otherwise>
+	                            <td><spring:message code="theme.false" /></td>
+	                            <td>
+	                                <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
+	                                    title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a>
+	                            </td>
+	                        </c:otherwise>
+	                    </c:choose>
 	                </tr>
 	                <tr>
 	                    <td><spring:message code="user.mgmt.last.logon" /></td>
@@ -165,6 +168,10 @@
                 <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
                         title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
+                </li>
+                <li>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/services/account/${userAccount.guid}"
+                        title="<spring:message code='user.mgmt.user.services' />"><spring:message code='user.mgmt.user.services' /></a>
                 </li>
                 <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}"

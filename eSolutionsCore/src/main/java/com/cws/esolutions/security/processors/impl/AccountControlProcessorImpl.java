@@ -492,7 +492,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), account.getGuid(), account.isSuspended());
+                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), (String) userData.get(0), account.isSuspended());
 
                     if (DEBUG)
                     {
@@ -629,7 +629,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("requestMap: {}", requestMap);
                     }
 
-                    boolean isComplete = userManager.modifyUserInformation(account.getUsername(), account.getGuid(), requestMap);
+                    boolean isComplete = userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), requestMap);
 
                     if (DEBUG)
                     {

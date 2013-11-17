@@ -149,12 +149,12 @@ public class LDAPUserManagerTest
     {
         try
         {
-            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+            Assert.assertTrue(userManager.modifyUserInformation("test", "99504de2-ac12-486a-b835-12c8c164d8bc", new HashMap<String, Object>()
                     {
                         private static final long serialVersionUID = 602188777075148683L;
 
                         {
-                            put("cwsfailedpwdcount", 0);
+                            put("cwsfailedpwdcount", 5);
                         }
                     }));
         }
