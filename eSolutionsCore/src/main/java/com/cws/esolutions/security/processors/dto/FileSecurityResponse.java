@@ -16,12 +16,16 @@
 package com.cws.esolutions.security.processors.dto;
 
 import java.io.File;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * Project: eSolutionsCore
@@ -53,6 +57,7 @@ public class FileSecurityResponse implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
     public final void setRequestStatus(final SecurityRequestStatus value)
     {
@@ -219,7 +224,7 @@ public class FileSecurityResponse implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

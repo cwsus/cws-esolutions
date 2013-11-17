@@ -71,6 +71,7 @@ public class UserAccount implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
     public final void setStatus(final LoginStatus value)
     {
@@ -410,6 +411,19 @@ public class UserAccount implements Serializable
         return this.olrLocked;
     }
 
+    public final boolean isOlrLocked()
+    {
+        final String methodName = UserAccount.CNAME + "#isOlrLocked()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.olrLocked);
+        }
+
+        return this.olrLocked;
+    }
+
     public final boolean getOlrSetup()
     {
         final String methodName = UserAccount.CNAME + "#getOlrSetup()";
@@ -627,7 +641,7 @@ public class UserAccount implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

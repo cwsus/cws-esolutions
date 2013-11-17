@@ -49,7 +49,6 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
@@ -707,6 +706,7 @@ public class OnlineResetController
 
             UserAccount reqAccount = new UserAccount();
             reqAccount.setEmailAddr(request.getEmailAddr());
+            reqAccount.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -915,109 +915,72 @@ public class OnlineResetController
 
             UserAccount reqAccount = new UserAccount();
             reqAccount.setUsername(request.getUsername());
+            reqAccount.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("UserAccount: {}", reqAccount);
             }
 
-            AuthenticationRequest authRequest = new AuthenticationRequest();
-            authRequest.setHostInfo(reqInfo);
-            authRequest.setUserAccount(reqAccount);
-            authRequest.setAuthType(AuthenticationType.RESET);
-            authRequest.setLoginType(LoginType.USERNAME);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            AuthenticationRequest secRequest = new AuthenticationRequest();
+            secRequest.setAuthType(AuthenticationType.RESET);
+            secRequest.setLoginType(LoginType.SECCONFIG);
+            secRequest.setHostInfo(reqInfo);
+            secRequest.setUserAccount(reqAccount);
+            secRequest.setApplicationId(appConfig.getApplicationId());
+            secRequest.setApplicationName(appConfig.getApplicationName());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationRequest: {}", authRequest);
+                DEBUGGER.debug("AuthenticationRequest: {}", secRequest);
             }
 
-            AuthenticationResponse authResponse = authProcessor.processAgentLogon(authRequest);
+            AuthenticationResponse response = authProcessor.obtainUserSecurityConfig(secRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
+                DEBUGGER.debug("AuthenticationResponse: {}", response);
             }
 
-            if (authResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                UserAccount resUser = authResponse.getUserAccount();
+                UserAccount resAccount = response.getUserAccount();
+
+                if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
+                {
+                    mView = new ModelAndView(new RedirectView());
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+
+                    return mView;
+                }
+
+                UserSecurity userSec = response.getUserSecurity();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", resUser);
+                    DEBUGGER.debug("UserSecurity: {}", userSec);
                 }
 
-                if (resUser.getStatus() != LoginStatus.SUSPENDED)
+                UserChangeRequest changeReq = new UserChangeRequest();
+                changeReq.setSecQuestionOne(userSec.getSecQuestionOne());
+                changeReq.setSecQuestionTwo(userSec.getSecQuestionTwo());
+
+                if (DEBUG)
                 {
-                    // account not suspended, we can continue
-                    if (resUser.getOlrLocked())
-                    {
-                        // account olr locked
-                        mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
-                        mView.setViewName(appConfig.getErrorResponsePage());
-                    }
-                    else
-                    {
-                        // continue
-                        AuthenticationRequest secRequest = new AuthenticationRequest();
-                        secRequest.setAuthType(AuthenticationType.RESET);
-                        secRequest.setLoginType(LoginType.SECCONFIG);
-                        secRequest.setHostInfo(reqInfo);
-                        secRequest.setUserAccount(resUser);
-                        secRequest.setApplicationId(appConfig.getApplicationId());
-                        secRequest.setApplicationName(appConfig.getApplicationName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AuthenticationRequest: {}", secRequest);
-                        }
-
-                        AuthenticationResponse secResponse = authProcessor.obtainUserSecurityConfig(secRequest);
-
-                        if (secResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                        {
-                            UserSecurity userSec = secResponse.getUserSecurity();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserSecurity: {}", userSec);
-                            }
-
-                            UserChangeRequest changeReq = new UserChangeRequest();
-                            changeReq.setSecQuestionOne(userSec.getSecQuestionOne());
-                            changeReq.setSecQuestionTwo(userSec.getSecQuestionTwo());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-                            }
-
-                            // xlnt. set the user
-                            // set the sessid
-                            resUser.setSessionId(hSession.getId());
-                            hSession.setAttribute(Constants.USER_ACCOUNT, resUser);
-
-                            mView.addObject("command", changeReq);
-                            mView.setViewName(this.submitAnswersPage);
-                        }
-                        else
-                        {
-                            mView.addObject(Constants.ERROR_RESPONSE, secResponse.getResponse());
-                            mView.setViewName(appConfig.getErrorResponsePage());
-                        }
-                    }
+                    DEBUGGER.debug("UserChangeRequest: {}", changeReq);
                 }
-                else
-                {
-                    // account is suspended
-                    mView.addObject("command", new UserChangeRequest());
-                    mView.addObject(Constants.ERROR_RESPONSE, authResponse.getResponse());
-                    mView.setViewName(this.submitUsernamePage);
-                }
+
+                // xlnt. set the user
+                hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
+
+                mView.addObject("command", changeReq);
+                mView.setViewName(this.submitAnswersPage);
+            }
+            else
+            {
+                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.addObject("command", new UserChangeRequest());
+                mView.setViewName(this.submitUsernamePage);
             }
         }
         catch (AuthenticationException ax)

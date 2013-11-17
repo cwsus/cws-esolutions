@@ -49,8 +49,10 @@ public class AuditResponse implements Serializable
 
     private static final long serialVersionUID = 4340210996951737264L;
     private static final String CNAME = AuditResponse.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
     public final void setRequestStatus(final SecurityRequestStatus value)
     {
@@ -191,7 +193,7 @@ public class AuditResponse implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

@@ -52,8 +52,10 @@ public final class ScriptConfig implements Serializable
 
     private static final long serialVersionUID = -3642577456377481341L;
     private static final String CNAME = ScriptConfig.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setScriptTimeout(final int value)
     {
@@ -143,7 +145,7 @@ public final class ScriptConfig implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

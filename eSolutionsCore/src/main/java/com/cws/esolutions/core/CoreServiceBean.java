@@ -16,11 +16,14 @@
 package com.cws.esolutions.core;
 
 import org.slf4j.Logger;
+
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
+import com.cws.esolutions.security.SecurityConstants;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core
@@ -47,9 +50,11 @@ public class CoreServiceBean
 
     private static CoreServiceBean instance = null;
 
+    private static final String CNAME = CoreServiceBean.class.getName();
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final String CNAME = CoreServiceBean.class.getName();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     /**
      * Returns a static instance of this bean
@@ -252,7 +257,7 @@ public class CoreServiceBean
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

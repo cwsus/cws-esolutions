@@ -57,8 +57,10 @@ public final class SSHConfig implements Serializable
 
     private static final String CNAME = SSHConfig.class.getName();
     private static final long serialVersionUID = -4670903285628304991L;
+
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setSshUserAccount(final String value)
     {
@@ -310,7 +312,7 @@ public final class SSHConfig implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

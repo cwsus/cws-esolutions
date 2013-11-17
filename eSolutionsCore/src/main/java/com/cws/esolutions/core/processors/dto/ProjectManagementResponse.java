@@ -53,6 +53,7 @@ public class ProjectManagementResponse implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setRequestStatus(final CoreServicesStatus value)
     {
@@ -219,7 +220,7 @@ public class ProjectManagementResponse implements Serializable
                 }
                 catch (IllegalAccessException iax)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(iax.getMessage(), iax);
                 }
             }
         }

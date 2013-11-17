@@ -119,7 +119,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 }
                 catch (SQLException sqx)
                 {
-                    // don't do anything with it
+                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
                 }
 
                 if (DEBUG)

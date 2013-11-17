@@ -903,7 +903,6 @@ public class SystemManagementController
             }
             catch (ServerManagementException smx)
             {
-                // don't do anything with it
                 ERROR_RECORDER.error(smx.getMessage(), smx);
             }
 
@@ -1177,7 +1176,6 @@ public class SystemManagementController
                             }
                             catch (ServerManagementException smx)
                             {
-                                // don't do anything with it
                                 ERROR_RECORDER.error(smx.getMessage(), smx);
                             }
 
@@ -1380,7 +1378,6 @@ public class SystemManagementController
                     }
                     catch (ServerManagementException smx)
                     {
-                        // don't do anything with it
                         ERROR_RECORDER.error(smx.getMessage(), smx);
                     }
 

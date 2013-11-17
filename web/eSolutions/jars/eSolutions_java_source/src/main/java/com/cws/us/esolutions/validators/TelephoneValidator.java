@@ -11,9 +11,12 @@
  */
 package com.cws.us.esolutions.validators;
 
+import java.util.List;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
+import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -117,19 +120,53 @@ public class TelephoneValidator implements Validator
             DEBUGGER.debug("UserChangeRequest: {}", request);
         }
 
-        final Pattern pattern = Pattern.compile("\\d{3}-\\d{7}");
+        boolean patternMatch = false;
+        final List<Pattern> patternList = new ArrayList<Pattern>(
+                Arrays.asList(
+                        Pattern.compile("\\d{10}"),
+                        Pattern.compile("\\d{3}-\\d{3}-\\d{4}"),
+                        Pattern.compile("\\d{3}.\\d{3}.\\d{4}"),
+                        Pattern.compile("\\d{3}/\\d{3}.\\d{4}"),
+                        Pattern.compile("\\d{3}/\\d{3}-\\d{4}")));
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Pattern: {}", pattern);
+            DEBUGGER.debug("List<Pattern>: {}", patternList);
         }
 
-        if (!(pattern.matcher(request.getTelNumber()).matches()))
+        for (Pattern pattern : patternList)
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Pattern: {}", pattern);
+            }
+
+            if (pattern.matcher(request.getTelNumber()).matches())
+            {
+                patternMatch = true;
+
+                break;
+            }
+        }
+
+        for (Pattern pattern : patternList)
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Pattern: {}", pattern);
+            }
+
+            if (pattern.matcher(request.getPagerNumber()).matches())
+            {
+                patternMatch = true;
+
+                break;
+            }
+        }
+
+        if (!(patternMatch))
         {
             errors.reject("telNumber", this.messageNumberInvalid);
-        }
-        else if (!(pattern.matcher(request.getPagerNumber()).matches()))
-        {
             errors.reject("pagerNumber", this.messageNumberInvalid);
         }
     }

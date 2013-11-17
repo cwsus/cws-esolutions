@@ -479,6 +479,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
+        UserAccount resAccount = null;
         AuthenticationResponse response = new AuthenticationResponse();
 
         final RequestHostInfo reqInfo = request.getHostInfo();
@@ -492,33 +493,98 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<String> securityData = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
+            List<String[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, userAccount.getUsername());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserAccount: {}", userAccount);
+                DEBUGGER.debug("User list: {}", userInfo);
             }
 
-            if ((securityData != null) && (!(securityData.isEmpty())))
+            if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
             {
-                UserSecurity userSecurity = new UserSecurity();
-                userSecurity.setSecQuestionOne(securityData.get(0));
-                userSecurity.setSecQuestionTwo(securityData.get(1));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                }
-
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Account successfully loaded");
-                response.setUserSecurity(userSecurity);
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setResponse("Invalid authentication data.");
             }
             else
             {
-                // null data
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Unable to load security questions. Cannot continue.");
+                String[] userData = userInfo.get(0);
+
+                if (DEBUG)
+                {
+                    for (String str : userData)
+                    {
+                        DEBUGGER.debug("userData: {}", str);
+                    }
+                }
+
+                List<Object> accountInfo = userManager.loadUserAccount(userData[0]);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Object>: {}", accountInfo);
+                }
+
+                if ((accountInfo != null) && accountInfo.size() != 0)
+                {
+                    resAccount = new UserAccount();
+                    resAccount.setGuid((String) accountInfo.get(0));
+                    resAccount.setUsername((String) accountInfo.get(1));
+                    resAccount.setGivenName((String) accountInfo.get(2));
+                    resAccount.setSurname((String) accountInfo.get(3));
+                    resAccount.setDisplayName((String) accountInfo.get(4));
+                    resAccount.setEmailAddr((String) accountInfo.get(5));
+                    resAccount.setPagerNumber((String) accountInfo.get(6));
+                    resAccount.setTelephoneNumber((String) accountInfo.get(7));
+                    resAccount.setRole(Role.valueOf((String) accountInfo.get(8)));
+                    resAccount.setFailedCount((Integer) accountInfo.get(9));
+                    resAccount.setLastLogin(new Date((Long) accountInfo.get(10)));
+                    resAccount.setExpiryDate((Long) accountInfo.get(11));
+                    resAccount.setSuspended((Boolean) accountInfo.get(12));
+                    resAccount.setOlrSetup((Boolean) accountInfo.get(13));
+                    resAccount.setOlrLocked((Boolean) accountInfo.get(14));
+                    resAccount.setTcAccepted((Boolean) accountInfo.get(15));
+                    resAccount.setSessionId(userAccount.getSessionId());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", resAccount);
+                    }
+
+                    List<String> securityData = authenticator.obtainSecurityData(resAccount.getUsername(), resAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
+
+                    if ((securityData != null) && (!(securityData.isEmpty())))
+                    {
+                        UserSecurity userSecurity = new UserSecurity();
+                        userSecurity.setSecQuestionOne(securityData.get(0));
+                        userSecurity.setSecQuestionTwo(securityData.get(1));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+                        }
+
+                        response.setUserAccount(resAccount);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Account successfully loaded");
+                        response.setUserSecurity(userSecurity);
+                    }
+                    else
+                    {
+                        // null data
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("Unable to load security questions. Cannot continue.");
+                    }
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Unable to locate provided user account. Cannot continue.");
+                }
             }
 
             if (DEBUG)
@@ -532,36 +598,45 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             throw new AuthenticationException(ax.getMessage(), ax);
         }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AuthenticationException(umx.getMessage(), umx);
+        }
         finally
         {
-            // audit
-            try
+            if (resAccount != null)
             {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADSECURITY);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
+                // audit
+                try
                 {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setHostInfo(reqInfo);
+                    auditEntry.setAuditType(AuditType.LOADSECURITY);
+                    auditEntry.setUserAccount(resAccount);
+                    auditEntry.setApplicationId(request.getApplicationId());
+                    auditEntry.setApplicationName(request.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                    }
+
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    }
+
+                    auditor.auditRequest(auditRequest);
                 }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
+                catch (AuditServiceException asx)
                 {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                    ERROR_RECORDER.error(asx.getMessage(), asx);
                 }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
         }
 
