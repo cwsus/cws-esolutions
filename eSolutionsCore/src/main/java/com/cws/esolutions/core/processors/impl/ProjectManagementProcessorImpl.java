@@ -425,7 +425,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                 }
                 else
                 {
-                    throw new ProjectManagementException("No projects were located in the asset datasource.");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    response.setResponse("No projects were located for the provided information.");
                 }
             }
             else
