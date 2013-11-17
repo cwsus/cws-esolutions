@@ -13,18 +13,13 @@ package com.cws.us.esolutions.controllers;
 
 import java.util.Map;
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -109,8 +104,11 @@ public class ServiceManagementController
     private String addServerRedirect = null;
     private String messageNoDmgrFound = null;
     private String viewDatacenterPage = null;
+    private String addProjectRedirect = null;
     private String viewDatacentersPage = null;
+    private String addPlatformRedirect = null;
     private String messageNoDatacenters = null;
+    private String addDatacenterRedirect = null;
     private ApplicationServiceBean appConfig = null;
     private PlatformValidator platformValidator = null;
     private String messageProjectSuccessfullyAdded = null;
@@ -187,6 +185,45 @@ public class ServiceManagementController
         }
 
         this.dcService = value;
+    }
+
+    public final void setAddPlatformRedirect(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setAddPlatformRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addPlatformRedirect = value;
+    }
+
+    public final void setAddProjectRedirect(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setAddProjectRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addProjectRedirect = value;
+    }
+
+    public final void setAddDatacenterRedirect(final String value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setAddDatacenterRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addDatacenterRedirect = value;
     }
 
     public final void setDefaultPage(final String value)
@@ -650,8 +687,9 @@ public class ServiceManagementController
                 }
                 else
                 {
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(this.addPlatformRedirect);
                 }
             }
             catch (PlatformManagementException pmx)
@@ -923,8 +961,9 @@ public class ServiceManagementController
                 }
                 else
                 {
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(this.addProjectRedirect);
                 }
             }
             catch (ProjectManagementException pmx)
@@ -1206,8 +1245,9 @@ public class ServiceManagementController
                 }
                 else
                 {
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(this.addDatacenterRedirect);
                 }
             }
             catch (DatacenterManagementException dmx)

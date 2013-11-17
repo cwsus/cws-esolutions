@@ -103,6 +103,7 @@ public class ApplicationManagementController
     private String addPlatformRedirect = null;
     private String messageFileUploaded = null;
     private String viewApplicationsPage = null;
+    private String addApplicationRedirect = null;
     private String messageNoBinaryProvided = null;
     private String messageApplicationAdded = null;
     private ApplicationServiceBean appConfig = null;
@@ -431,6 +432,19 @@ public class ApplicationManagementController
         this.messageApplicationRetired = value;
     }
 
+    public final void setAddApplicationRedirect(final String value)
+    {
+        final String methodName = ApplicationManagementController.CNAME + "#setAddApplicationRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.addApplicationRedirect = value;
+    }
+
     @RequestMapping(value = "/default", method = RequestMethod.GET)
     public final ModelAndView showDefaultPage()
     {
@@ -625,8 +639,9 @@ public class ApplicationManagementController
                 }
                 else
                 {
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.ERROR_RESPONSE, appResponse.getResponse());
-                    mView.setViewName(this.defaultPage);
+                    mView.setViewName(this.addApplicationRedirect);
                 }
             }
             catch (ApplicationManagementException amx)

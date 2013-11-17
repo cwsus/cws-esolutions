@@ -66,5 +66,6 @@
         <property name="messageApplicationRetired" value="app.mgmt.application.retired" />
         <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
         <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
+        <property name="addApplicationRedirect" value="redirect:/ui/application-management/add-application" />
     </bean>
 </beans>

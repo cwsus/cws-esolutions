@@ -55,5 +55,8 @@
 	    <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
         <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
+        <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
+        <property name="addProjectRedirect" value="redirect:/ui/service-management/add-project" />
+        <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
     </bean>
 </beans>
