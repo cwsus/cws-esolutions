@@ -16,17 +16,14 @@
 package com.cws.esolutions.security.processors.dto;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
-
 import org.slf4j.LoggerFactory;
-
 import java.lang.reflect.Field;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 /**
@@ -377,6 +374,7 @@ public class AuthenticationRequest implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

@@ -16,14 +16,12 @@
 package com.cws.esolutions.core;
 
 import org.slf4j.Logger;
-
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-import com.cws.esolutions.security.SecurityConstants;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core
@@ -245,6 +243,7 @@ public class CoreServiceBean
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("instance"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {

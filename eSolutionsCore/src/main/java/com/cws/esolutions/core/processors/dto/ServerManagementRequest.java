@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
@@ -455,6 +455,7 @@ public class ServerManagementRequest implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

@@ -275,6 +275,7 @@ public final class SecurityServiceConfiguration implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

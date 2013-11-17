@@ -16,9 +16,7 @@
 package com.cws.esolutions.agent;
 
 import org.slf4j.Logger;
-
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.config.ConfigurationData;
@@ -244,6 +242,7 @@ public class AgentBean
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("instance"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

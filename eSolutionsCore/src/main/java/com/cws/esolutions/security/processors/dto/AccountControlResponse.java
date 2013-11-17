@@ -21,9 +21,9 @@ import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
-import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * SecurityService
@@ -292,6 +292,7 @@ public class AccountControlResponse implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

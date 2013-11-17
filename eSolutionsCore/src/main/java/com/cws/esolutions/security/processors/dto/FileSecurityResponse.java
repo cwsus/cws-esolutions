@@ -16,12 +16,9 @@
 package com.cws.esolutions.security.processors.dto;
 
 import java.io.File;
-
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -213,6 +210,7 @@ public class FileSecurityResponse implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

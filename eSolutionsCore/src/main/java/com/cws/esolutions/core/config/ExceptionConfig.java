@@ -15,17 +15,16 @@
  */
 package com.cws.esolutions.core.config;
 
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.List;
-
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.core.Constants;
 /**
@@ -165,6 +164,7 @@ public final class ExceptionConfig implements Serializable
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
+                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try
