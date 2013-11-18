@@ -53,9 +53,9 @@ public class SessionAuthenticationFilter implements Filter
     private String[] ignoreURIs = null;
 
     private static final String LOGIN_URI = "login.uri";
-    private static final String PASSWORD_URI = "password.change.uri";
     private static final String USER_ACCOUNT = "userAccount";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
+    private static final String PASSWORD_URI = "password.change.uri";
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
     private static final String CNAME = SessionAuthenticationFilter.class.getName();
