@@ -241,9 +241,10 @@
 
     <session-config>
         <session-timeout>15</session-timeout>
-        <tracking-mode>COOKIE</tracking-mode>
         <cookie-config>
+            <tracking-mode>COOKIE</tracking-mode>
             <http-only>true</http-only>
+            <secure>true</secure>
         </cookie-config>
     </session-config>
 </web-app>
