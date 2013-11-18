@@ -822,7 +822,7 @@ public class LoginController
             authRequest.setLoginType(LoginType.PASSWORD);
             authRequest.setHostInfo(reqInfo);
             authRequest.setTimeoutValue(appConfig.getRequestTimeout());
-            authRequest.setUserAccount((UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT));
+            authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
             authRequest.setApplicationId(appConfig.getApplicationId());
             authRequest.setApplicationName(appConfig.getApplicationName());
