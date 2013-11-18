@@ -192,7 +192,7 @@ public class EmailControlServiceImpl implements IEmailControlService
                 {
                     if (StringUtils.equals(user.getEmailAddr(), sender))
                     {
-                        isAuthorized = userControl.isUserAuthorizedForService(user.getGuid(), EMAIL_SVC_ID);
+                        isAuthorized = userControl.isUserAuthorizedForService(user, EMAIL_SVC_ID);
 
                         if (DEBUG)
                         {

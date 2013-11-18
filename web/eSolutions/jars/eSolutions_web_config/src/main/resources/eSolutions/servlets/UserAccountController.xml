@@ -14,14 +14,7 @@
         <property name="messagePasswordRequired" value="user.account.current.password.empty" />
     </bean>
 
-    <bean id="emailAddressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator">
-        <property name="messageEmailAddressRequired" value="email.source.addr.required" />
-    </bean>
-
     <bean id="passwordValidator" class="com.cws.us.esolutions.validators.PasswordValidator">
-        <property name="secConfig">
-            <ref bean="securityConfig" />
-        </property>
 		<property name="messagePasswordFailedValidation" value="error.password.requirement.failure" />
 		<property name="messagePasswordMatch" value="user.account.current.matches.new" />
 		<property name="messageConfirmPasswordRequired" value="user.account.confirm.password.empty" />
@@ -63,5 +56,6 @@
 	    <property name="changePasswordComplete" value="user.account.password.change.success" />
 	    <property name="changeSecurityComplete" value="user.account.update.security.success" />
 		<property name="changeKeysComplete" value="user.account.update.keys.success" />
+		<property name="changeContactComplete" value="user.account.update.contact.success" />
     </bean>
 </beans>

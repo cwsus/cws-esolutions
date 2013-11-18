@@ -57,7 +57,7 @@
         <ul>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                    title="<spring:message code='select.request.add.server' />"><spring:message code="select.request.add.server" /></a>
+                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
             </li>
         </ul>
     </div>

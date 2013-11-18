@@ -420,7 +420,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             {
                 // this will require admin and service authorization
                 boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -657,7 +657,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             {
                 // this will require admin and service authorization
                 boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -990,7 +990,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             {
                 // this will require admin and service authorization
                 boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1102,7 +1102,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         {
             try
             {
-                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {

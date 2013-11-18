@@ -22,8 +22,29 @@
         </property>
     </bean>
 
+    <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
+
+    <bean id="messageValidator" class="com.cws.us.esolutions.validators.EmailMessageValidator">
+        <property name="messageSubjectRequired" value="theme.subject.required" />
+        <property name="messageBodyRequired" value="theme.body.required" />
+        <property name="messageFromRequired" value="theme.from.required" />
+    </bean>
+
+    <bean id="addressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator">
+        <property name="messageEmailAddressRequired" value="email.source.addr.required" />
+    </bean>
+
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
+        <property name="securityConfig">
+            <ref bean="secConfig" />
+        </property>
+        <property name="messageValidator">
+            <ref bean="messageValidator" />
+        </property>
+        <property name="emailValidator">
+            <ref bean="addressValidator" />
+        </property>
         <property name="fileEncoding" value="UTF-8" />
         <property name="applicationName" value="eSolutions" /> <!-- application name -->
         <property name="applicationId" value="6236B840-88B0-4230-BCBC-8EC33EE837D9" />
@@ -74,10 +95,11 @@
 	    <property name="messageRequestProcessingFailure" value="theme.system.service.failure" />
 	    <property name="messageValidationFailed" value="theme.request.validation.failed" />
 	    <property name="messageNoSearchResults" value="theme.search.no.results" />
+	    <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
     </bean>
 
     <!-- internationalization -->
-    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames">
             <list>
 				<value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
@@ -95,8 +117,9 @@
             </list>
         </property>
         <property name="cacheSeconds">
-            <value>60</value>
+            <value>-1</value>
         </property>
         <property name="fallbackToSystemLocale" value="true" />
+        <property name="defaultEncoding" value="UTF-8" />
     </bean>
 </beans>

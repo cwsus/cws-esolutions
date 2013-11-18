@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+import java.lang.reflect.Field;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
@@ -29,8 +30,12 @@ import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.core.processors.dto.DataCenter;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -43,14 +48,10 @@ import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
@@ -96,7 +97,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -142,7 +143,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                     }
 
-                    @SuppressWarnings("unchecked") List<Object> insertData = new ArrayList<Object>(
+                    List<Object> insertData = new ArrayList<Object>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
                                     requestServer.getOsName(),
@@ -286,7 +287,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -307,62 +308,180 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     }
                 }
 
-                List<String> insertData = new ArrayList<String>(
-                        Arrays.asList(
-                                (StringUtils.isNotEmpty(requestServer.getServerGuid())) ? requestServer.getServerGuid() : UUID.randomUUID().toString(),
-                                requestServer.getOsName(),
-                                requestServer.getServerStatus().name(),
-                                requestServer.getServerRegion().name(),
-                                requestServer.getNetworkPartition().name(),
-                                requestServer.getDatacenter().getDatacenterGuid(),
-                                requestServer.getServerType().name(),
-                                requestServer.getDomainName(),
-                                requestServer.getCpuType(),
-                                String.valueOf(requestServer.getCpuCount()),
-                                requestServer.getServerModel(),
-                                requestServer.getSerialNumber(),
-                                String.valueOf(requestServer.getInstalledMemory()),
-                                requestServer.getOperIpAddress(),
-                                requestServer.getOperHostName(),
-                                (StringUtils.isNotEmpty(requestServer.getMgmtIpAddress())) ? requestServer.getMgmtIpAddress() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getMgmtHostName())) ? requestServer.getMgmtHostName() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getBkIpAddress())) ? requestServer.getBkIpAddress() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getBkHostName())) ? requestServer.getBkHostName() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getNasIpAddress())) ? requestServer.getNasIpAddress() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getNasHostName())) ? requestServer.getNasHostName() : Constants.NOT_SET,
-                                (StringUtils.isNotEmpty(requestServer.getNatAddress())) ? requestServer.getNatAddress() : Constants.NOT_SET,
-                                requestServer.getServerComments(),
-                                requestServer.getAssignedEngineer(),
-                                (StringUtils.isNotBlank(requestServer.getMgrUrl())) ? requestServer.getMgrUrl() : Constants.NOT_SET,
-                                String.valueOf(requestServer.getDmgrPort()),
-                                (StringUtils.isNotBlank(requestServer.getServerRack())) ? requestServer.getServerRack() : Constants.NOT_SET,
-                                (StringUtils.isNotBlank(requestServer.getRackPosition())) ? requestServer.getRackPosition() : Constants.NOT_SET,
-                                (StringUtils.isNotBlank(requestServer.getOwningDmgr())) ? requestServer.getOwningDmgr() : Constants.NOT_SET));
+                // load the server
+                List<Object> serverData = serverDAO.getInstalledServer(requestServer.getServerGuid());
 
                 if (DEBUG)
                 {
-                    for (Object str : insertData)
+                    DEBUGGER.debug("serverData: {}", serverData);
+                }
+
+                if ((serverData != null) && (serverData.size() != 0))
+                {
+                    List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5)); // DATACENTER_GUID
+
+                    if (DEBUG)
                     {
-                        DEBUGGER.debug("Value: {}", str);
+                        DEBUGGER.debug("List<String>: {}", datacenter);
                     }
-                }
 
-                boolean isComplete = serverDAO.modifyServerData(insertData);
+                    if ((datacenter != null) && (datacenter.size() != 0))
+                    {
+                        DataCenter dataCenter = new DataCenter();
+                        dataCenter.setDatacenterGuid(datacenter.get(0));
+                        dataCenter.setDatacenterName(datacenter.get(1));
+                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
+                        dataCenter.setDatacenterDesc(datacenter.get(3));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("DataCenter: {}", dataCenter);
+                        }
 
-                if (isComplete)
-                {
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully added " + requestServer.getOperHostName() + " to the asset datasource");
+                        Server server = new Server();
+                        server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
+                        server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
+                        server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
+                        server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
+                        server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
+                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
+                        server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
+                        server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
+                        server.setCpuType((String) serverData.get(8)); // CPU_TYPE
+                        server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
+                        server.setServerRack((String) serverData.get(10)); // SERVER_RACK
+                        server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
+                        server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
+                        server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
+                        server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
+                        server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
+                        server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
+                        server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
+                        server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
+                        server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
+                        server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
+                        server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
+                        server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
+                        server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
+                        server.setServerComments((String) serverData.get(24)); // COMMENTS
+                        server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
+                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
+                        server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
+                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", server);
+                        }
+
+                        for (Field field : requestServer.getClass().getDeclaredFields())
+                        {
+                            field.setAccessible(true); // private fields, make them accessible
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("field: {}", field);
+                            }
+
+                            if (!(field.getName().equals("methodName")) &&
+                                    (!(field.getName().equals("CNAME"))) &&
+                                    (!(field.getName().equals("DEBUGGER"))) &&
+                                    (!(field.getName().equals("DEBUG"))) &&
+                                    (!(field.getName().equals("ERROR_RECORDER"))) &&
+                                    (!(field.getName().equals("serialVersionUID"))))
+                            {
+                                try
+                                {
+                                    if (field.get(requestServer) != null)
+                                    {
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("Value: {}", field.get(requestServer));
+                                        }
+
+                                        if (!(field.get(requestServer).equals(field.get(server))))
+                                        {
+                                            field.set(server, field.get(requestServer));
+                                        }
+
+                                        break;
+                                    }
+                                }
+                                catch (IllegalAccessException iax)
+                                {
+                                    ERROR_RECORDER.error(iax.getMessage(), iax);
+                                }
+                            }
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", server);
+                        }
+
+                        List<Object> insertData = new ArrayList<Object>(
+                                Arrays.asList(
+                                        server.getOsName(),
+                                        server.getServerStatus().name(),
+                                        server.getServerRegion().name(),
+                                        server.getNetworkPartition().name(),
+                                        server.getDatacenter().getDatacenterGuid(),
+                                        server.getServerType().name(),
+                                        server.getDomainName(),
+                                        server.getCpuType(),
+                                        String.valueOf(server.getCpuCount()),
+                                        server.getServerModel(),
+                                        server.getSerialNumber(),
+                                        String.valueOf(server.getInstalledMemory()),
+                                        server.getOperIpAddress(),
+                                        server.getOperHostName(),
+                                        server.getMgmtIpAddress(),
+                                        server.getMgmtHostName(),
+                                        server.getBkIpAddress(),
+                                        server.getBkHostName(),
+                                        server.getNasIpAddress(),
+                                        server.getNasHostName(),
+                                        server.getNatAddress(),
+                                        requestServer.getServerComments(),
+                                        requestServer.getAssignedEngineer(),
+                                        requestServer.getMgrUrl(),
+                                        String.valueOf(requestServer.getDmgrPort()),
+                                        requestServer.getServerRack(),
+                                        requestServer.getRackPosition(),
+                                        requestServer.getOwningDmgr()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", insertData);
+                        }
+
+                        boolean isComplete = serverDAO.modifyServerData(server.getServerGuid(), insertData);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
+
+                        if (isComplete)
+                        {
+                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                            response.setResponse("Successfully updated " + requestServer.getOperHostName() + " in the asset datasource");
+                        }
+                        else
+                        {
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+                            response.setResponse("Failed to update " + requestServer.getOperHostName() + " in the asset datasource");
+                        }
+                    }
+                    else
+                    {
+                        throw new ServerManagementException("The server provided has no associated datacenter.");
+                    }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to add " + requestServer.getOperHostName() + " to the asset datasource");
+                    response.setResponse("No server was located with the provided information");
                 }
             }
             else
@@ -445,7 +564,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -629,7 +748,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -941,7 +1060,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {

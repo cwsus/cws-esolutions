@@ -82,7 +82,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -210,7 +210,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -351,7 +351,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -572,7 +572,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {

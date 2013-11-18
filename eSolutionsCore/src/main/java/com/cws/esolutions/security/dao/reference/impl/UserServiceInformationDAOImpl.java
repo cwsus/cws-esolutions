@@ -314,14 +314,6 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
                             DEBUGGER.debug("List<String>: {}", projectList);
                         }
                     }
-                    else
-                    {
-                        throw new SQLException("The provided user does not currently have any services assigned.");
-                    }
-                }
-                else
-                {
-                    throw new SQLException("The provided user does not currently have any services assigned.");
                 }
             }
         }

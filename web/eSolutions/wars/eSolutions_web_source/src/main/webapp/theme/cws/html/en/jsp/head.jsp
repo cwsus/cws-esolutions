@@ -40,7 +40,6 @@
     <meta http-equiv="expires" content="-1" />
     <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="max-age" content="0" />
-    <meta http-equiv="refresh" content="${pageContext.session.maxInactiveInterval}; url=${pageContext.request.contextPath}/ui/login/logout" />
     <meta name="robots" content="index,follow,noarchive" />
     <meta name="GoogleBot" content="noarchive" />
     <meta name="Author" content="eSolutions" />
@@ -59,17 +58,18 @@
     </script>
     <script type="text/javascript">
         <!--
-            var enable = false;
+            var documentURI = window.location.pathname + window.location.search;
+            var ignoreURIs = new Array("/ui/login", "/ui/online-reset", "/ui/knowledgebase", "/ui/common/submit-contact");
 
-            if (enable)
+            for (var x = 0; x < ignoreURIs.length; x++)
             {
-                var documentURI = window.location.pathname + window.location.search;
-
-                if (documentURI != '${pageContext.request.contextPath}/ui/login/warn')
+                if (documentURI == ignoreURIs[x])
                 {
-                    var popupURI = "${pageContext.request.contextPath}/ui/login/warn";
-
-                    setInterval("popup(popupURI, 'Timeout', '280', '170', '0', '0', '0', '0')", ${pageContext.session.maxInactiveInterval} - 90);
+                    break;
+                }
+                else
+                {
+                	setTimeout(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, ${pageContext.session.maxInactiveInterval});
                 }
             }
         //-->

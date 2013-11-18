@@ -33,7 +33,10 @@
         <c:if test="${not empty sessionScope.userAccount}">
             <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
         </c:if>
+        <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
+            title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a><br />
         &copy; <spring:message code="theme.footer.copyright" /><br />
-        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default" title="Contact Us"><spring:message code="theme.contact.us" /></a><br />
+        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
+            title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a><br />
     </p>
 </div>

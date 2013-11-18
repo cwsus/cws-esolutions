@@ -31,8 +31,12 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -43,19 +47,13 @@ import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
-import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
-import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
@@ -112,7 +110,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -313,6 +311,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -350,7 +349,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -491,6 +490,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -528,7 +528,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -620,6 +620,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -649,7 +650,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             try
             {
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -691,8 +692,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     else
                     {
                         // pull a list of projects the user has access to
-                        IUserServiceInformationDAO serviceDAO = new UserServiceInformationDAOImpl();
-                        serviceList = serviceDAO.returnUserAuthorizedProjects(userAccount.getGuid());
+                        serviceList = userAccount.getProjectList();
                     }
 
                     if (DEBUG)
@@ -952,7 +952,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1139,6 +1139,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1168,7 +1169,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             try
             {
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1559,6 +1560,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1590,7 +1592,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             try
             {
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1605,7 +1607,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     }
 
                     // need to authorize for project
-                    boolean isAuthorizedForRequest = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                    boolean isAuthorizedForRequest = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                     if (DEBUG)
                     {
@@ -1817,6 +1819,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+
     @Override
     public ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1846,7 +1849,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             try
             {
                 // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {

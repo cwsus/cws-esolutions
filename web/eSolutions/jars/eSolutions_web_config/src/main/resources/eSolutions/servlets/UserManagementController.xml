@@ -22,13 +22,11 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="secConfig">
-            <ref bean="securityConfig" />
-        </property>
         <property name="validator">
             <ref bean="accountValidator" />
         </property>
         <property name="serviceId" value="AEB46994-57B4-4E92-90AA-A4046F60B830" />
+        <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
 	    <property name="serviceName" value="userAdmin" />
 	    <property name="recordsPerPage" value="20" />
 	    <property name="resetURL" value="/ui/olr/forgot-password/" />
@@ -43,5 +41,9 @@
 	    <property name="passwordResetSubject" value="message.forgotpassword.subject" />
 	    <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
 	    <property name="messageSource" value="nls.OnlineResetServlet.OnlineResetServlet" />
+	    <property name="messageAccountLocked" value="user.mgmt.account.locked" />
+	    <property name="messageAccountUnlocked" value="user.mgmt.account.unlocked" />
+	    <property name="messageAccountUnsuspended" value="user.mgmt.account.unsuspended" />
+	    <property name="messageAccountSuspended" value="user.mgmt.account.suspended" />
 	</bean>
 </beans>

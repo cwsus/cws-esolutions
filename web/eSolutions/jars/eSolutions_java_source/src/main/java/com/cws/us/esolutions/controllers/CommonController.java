@@ -12,21 +12,31 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
+import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
+import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.us.esolutions.validators.EmailAddressValidator;
+import com.cws.us.esolutions.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -277,6 +287,195 @@ public class CommonController
         }
 
         mView.setViewName(appConfig.getUnauthorizedPage());
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/submit-contact", method = RequestMethod.GET)
+    public final ModelAndView showContactPage()
+    {
+        final String methodName = CommonController.CNAME + "#showContactPage()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        mView.addObject("command", new EmailMessage());
+        mView.setViewName(appConfig.getContactAdminsPage());
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/submit-contact", method = RequestMethod.POST)
+    public final ModelAndView doCombinedLogin(@ModelAttribute("message") final EmailMessage message, final BindingResult bindResult)
+    {
+        final String methodName = CommonController.CNAME + "#doCombinedLogin(@ModelAttribute(\"message\") final EmailMessage message, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("EmailMessage: {}", message);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final EmailMessageValidator messageValidator = appConfig.getMessageValidator();
+        final EmailAddressValidator addressValidator = appConfig.getEmailValidator();
+        final String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("EmailMessageValidator: {}", messageValidator);
+            DEBUGGER.debug("EmailAddressValidator: {}", addressValidator);
+            DEBUGGER.debug("emailId: {}", emailId);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        messageValidator.validate(message, bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("errors", bindResult.getAllErrors());
+            mView.addObject("command", message);
+            mView.setViewName(appConfig.getContactAdminsPage());
+
+            return mView;
+        }
+
+        addressValidator.validate(message.getMessageFrom().get(0), bindResult);
+
+        if (bindResult.hasErrors())
+        {
+            mView.addObject("errors", bindResult.getAllErrors());
+            mView.addObject("command", message);
+            mView.setViewName(appConfig.getContactAdminsPage());
+
+            return mView;
+        }
+
+        try
+        {
+            EmailMessage emailMessage = new EmailMessage();
+            emailMessage.setIsAlert(false); // set this to alert so it shows as high priority
+            emailMessage.setMessageBody(message.getMessageBody());
+            emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+            emailMessage.setMessageSubject("[ " + emailId + " ] - " + message.getMessageSubject());
+            emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+            emailMessage.setMessageFrom(message.getMessageFrom());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("EmailMessage: {}", emailMessage);
+            }
+
+            EmailUtils.sendEmailMessage(emailMessage);
+
+            mView.addObject("command", new EmailMessage());
+            mView.setViewName(appConfig.getContactAdminsPage());
+            mView.addObject(Constants.MESSAGE_RESPONSE, appConfig.getMessageEmailSentSuccess());
+        }
+        catch (MessagingException mx)
+        {
+            ERROR_RECORDER.error(mx.getMessage(), mx);
+
+            mView.addObject("command", new EmailMessage());
+            mView.setViewName(appConfig.getContactAdminsPage());
+            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
 
         return mView;
     }

@@ -692,6 +692,7 @@ public class KnowledgeBaseController
             }
 
             mView.addObject("command", article);
+            mView.addObject("dateFormat", appConfig.getDateFormat());
             mView.setViewName(this.createArticlePage);
         }
         else
@@ -1800,49 +1801,81 @@ public class KnowledgeBaseController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // article created
-                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("emailId: {}", emailId);
-                    }
+                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
-                    final String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.createArticleEmail)), new Object[]
+                        if (DEBUG)
                         {
-                            article.getArticleId(),
-                            userAccount.getDisplayName(),
-                            article.getTitle(),
-                            article.getSymptoms(),
-                            article.getCause(),
-                            article.getKeywords(),
-                            article.getResolution()
-                        });
+                            DEBUGGER.debug("emailId: {}", emailId);
+                        }
+
+                        final String emailBody = MessageFormat.format(IOUtils.toString(
+                                this.getClass().getClassLoader().getResourceAsStream(this.createArticleEmail)), new Object[]
+                            {
+                                article.getArticleId(),
+                                userAccount.getDisplayName(),
+                                article.getTitle(),
+                                article.getSymptoms(),
+                                article.getCause(),
+                                article.getKeywords(),
+                                article.getResolution()
+                            });
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Email body: {}", emailBody);
+                        }
+
+                        // good, now generate an email with the information
+                        EmailMessage emailMessage = new EmailMessage();
+                        emailMessage.setIsAlert(false);
+                        emailMessage.setMessageBody(emailBody);
+                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                                this.createArticleEmail, this.getClass().getClassLoader()));
+                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                        }
+
+                        EmailUtils.sendEmailMessage(emailMessage);
+                    }
+                    catch (MessagingException mx)
+                    {
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                    }
+                    catch (IOException iox)
+                    {
+                        ERROR_RECORDER.error(iox.getMessage(), iox);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                    }
+                    catch (CoreServiceException csx)
+                    {
+                        ERROR_RECORDER.error(csx.getMessage(), csx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                    }
+
+                    Article newArticle = new Article();
+                    newArticle.setAuthor(userAccount.getDisplayName());
+                    newArticle.setAuthorEmail(userAccount.getEmailAddr());
+                    newArticle.setArticleStatus(ArticleStatus.NEW);
+                    newArticle.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        DEBUGGER.debug("Article: {}", newArticle);
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.createArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
-
-                    EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.addObject("command", new Article());
+                    mView.addObject("command", newArticle);
                     mView.setViewName(this.createArticlePage);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -1852,7 +1885,18 @@ public class KnowledgeBaseController
                 else
                 {
                     // failure
-                    mView.addObject("command", article);
+                    Article newArticle = new Article();
+                    newArticle.setAuthor(userAccount.getDisplayName());
+                    newArticle.setAuthorEmail(userAccount.getEmailAddr());
+                    newArticle.setArticleStatus(ArticleStatus.NEW);
+                    newArticle.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Article: {}", newArticle);
+                    }
+
+                    mView.addObject("command", newArticle);
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.createArticlePage);
                 }
@@ -1862,30 +1906,6 @@ public class KnowledgeBaseController
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
             }
         }
         else

@@ -84,7 +84,6 @@ public class UserAccountController
     private TelephoneValidator telValidator = null;
     private ApplicationServiceBean appConfig = null;
     private PasswordValidator passwordValidator = null;
-    private EmailAddressValidator emailValidator = null;
     private SecurityResponseValidator securityValidator = null;
 
     private static final String CNAME = UserAccountController.class.getName();
@@ -260,19 +259,6 @@ public class UserAccountController
         }
 
         this.securityValidator = value;
-    }
-
-    public final void setEmailValidator(final EmailAddressValidator value)
-    {
-        final String methodName = UserAccountController.CNAME + "#setEmailValidator(final EmailAddressValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.emailValidator = value;
     }
 
     public final void setTelValidator(final TelephoneValidator value)
@@ -969,6 +955,16 @@ public class UserAccountController
                 }
                 else
                 {
+                    UserAccount resAccount = response.getUserAccount();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", resAccount);
+                    }
+
+                    hSession.removeAttribute(Constants.USER_ACCOUNT);
+                    hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
+
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
                     mView.setViewName(this.myAccountPage);
                 }
@@ -1165,6 +1161,7 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final EmailAddressValidator emailValidator = appConfig.getEmailValidator();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
@@ -1173,7 +1170,7 @@ public class UserAccountController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("EmailAddressValidator: {}", emailValidator);
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -1210,13 +1207,13 @@ public class UserAccountController
             }
         }
 
-        emailValidator.validate(changeReq, bindResult);
+        emailValidator.validate(changeReq.getEmailAddr(), bindResult);
 
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
             mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
-            mView.setViewName(this.changeSecurityPage);
+            mView.setViewName(this.changeEmailPage);
 
             return mView;
         }
@@ -1400,7 +1397,8 @@ public class UserAccountController
             }
 
             UserAccount modAccount = userAccount;
-            modAccount.setEmailAddr(changeReq.getEmailAddr());
+            modAccount.setPagerNumber(changeReq.getPagerNumber());
+            modAccount.setTelephoneNumber(changeReq.getTelNumber());
 
             if (DEBUG)
             {

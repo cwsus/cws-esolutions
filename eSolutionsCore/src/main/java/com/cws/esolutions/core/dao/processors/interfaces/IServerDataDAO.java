@@ -57,7 +57,7 @@ public interface IServerDataDAO
 
     boolean removeExistingServer(final String serverGuid) throws SQLException;
 
-    boolean modifyServerData(final List<String> serverData) throws SQLException;
+    boolean modifyServerData(final String serverGuid, final List<Object> serverData) throws SQLException;
 
     List<Object> getInstalledServer(final String serverGuid) throws SQLException;
 

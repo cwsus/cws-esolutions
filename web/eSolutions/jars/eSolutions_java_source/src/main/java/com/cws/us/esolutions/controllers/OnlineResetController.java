@@ -12,17 +12,24 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.Date;
+
 import org.slf4j.Logger;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.text.MessageFormat;
+
 import org.slf4j.LoggerFactory;
+
 import javax.mail.MessagingException;
+
 import org.apache.commons.io.IOUtils;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.validation.BindingResult;
@@ -38,10 +45,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.us.esolutions.dto.UserChangeRequest;
+import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
@@ -92,7 +99,6 @@ public class OnlineResetController
     private String resetURL = null;
     private String messageSource = null;
     private String userResetEmail = null;
-    private SecurityConfig secConfig = null;
     private String submitAnswersPage = null;
     private String messageOlrComplete = null;
     private String submitUsernamePage = null;
@@ -184,19 +190,6 @@ public class OnlineResetController
         }
 
         this.appConfig = value;
-    }
-
-    public final void setSecConfig(final SecurityConfig value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setSecConfig(final SecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secConfig = value;
     }
 
     public final void setValidator(final OnlineResetValidator value)
@@ -1010,6 +1003,7 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final SecurityConfig secConfig = appConfig.getSecurityConfig();
         final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
@@ -1018,6 +1012,7 @@ public class OnlineResetController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("SecurityConfig: {}", secConfig);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 

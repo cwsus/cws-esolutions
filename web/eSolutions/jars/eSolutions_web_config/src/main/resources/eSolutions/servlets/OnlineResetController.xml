@@ -19,9 +19,6 @@
         <property name="validator">
             <ref bean="onlineResetValidator" />
         </property>
-        <property name="secConfig">
-            <ref bean="securityConfig" />
-        </property>
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>

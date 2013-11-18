@@ -28,6 +28,25 @@
  */
 --%>
 
+<script type="text/javascript">
+    <!--
+    function changeView()
+    {
+        document.getElementById('serverStatusInput').style.display = 'none';
+        document.getElementById('serverStatusModify').style.display = 'block';
+        document.getElementById('selectStatusChange').style.display = 'none';
+        document.getElementById('submitStatusChange').style.display = 'block';
+    }
+
+    function submitStatusChange(selectable)
+    {
+        var newStatus = selectable.options[selectable.selectedIndex].text;
+
+        window.location.href = '${pageContext.request.contextPath}/ui/system-management/change-status/server/${server.serverGuid}/status/' + newStatus;
+    }
+    //-->
+</script>
+
 <div id="InfoLine"><spring:message code="system.mgmt.view.server" arguments="${server.osName}" /></div>
 <div id="content">
     <div id="content-right">
@@ -57,7 +76,23 @@
 	            <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label>
 	            <td>${server.serverType}</td>
 	            <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label>
-	            <td>${server.serverStatus}</td>
+	            <td id="serverStatusInput" style="display: block;">${server.serverStatus}</td>
+	            <td id="serverStatusModify" style="display: none;">
+                    <select name="status" id="status">
+                        <option value="${server.serverStatus}" selected="selected">${server.serverStatus}</option>
+                        <option><spring:message code="theme.option.select" /></option>
+                        <option><spring:message code="theme.option.spacer" /></option>
+                        <c:forEach var="serverStatus" items="${statusList}">
+                            <option value="${serverStatus}">${serverStatus}</option>
+                        </c:forEach>
+                    </select>
+                </td>
+                <td>
+                    <a id="selectStatusChange" href="#" onclick="changeView();"
+                        title="<spring:message code='server.mgmt.change.status' />" style="display: block;"><spring:message code='server.mgmt.change.status' /></a>
+                    <a id="submitStatusChange" href="#" onclick="submitStatusChange(document.getElementById('status'));"
+                        title="<spring:message code='server.mgmt.change.status' />" style="display: none;"><spring:message code='server.mgmt.change.status' /></a>
+                </td>
 	        </tr>
 	        <tr>
 	            <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label>

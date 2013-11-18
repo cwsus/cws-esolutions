@@ -29,8 +29,8 @@
 --%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<jsp:useBean id="submissionDate" class="java.util.Date" />
-<jsp:useBean id="expirationDate" class="java.util.Date" />
+<jsp:useBean id="submissionDate" class="java.util.Date" scope="page" />
+<jsp:useBean id="expirationDate" class="java.util.Date" scope="page" />
 
 <div id="InfoLine"><spring:message code="svc.messaging.list" /></div>
 <div id="content">

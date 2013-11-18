@@ -11,16 +11,14 @@
  */
 package com.cws.us.esolutions.validators;
 
-import java.util.regex.Pattern;
-
 import org.slf4j.Logger;
+import java.util.regex.Pattern;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.UserChangeRequest;
 /**
  * CWSPWS_java_source
  * com.cws.us.pws.validators
@@ -71,7 +69,7 @@ public class EmailAddressValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = UserChangeRequest.class.isAssignableFrom(value);
+        final boolean isSupported = String.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -93,17 +91,17 @@ public class EmailAddressValidator implements Validator
             DEBUGGER.debug("errors: {}", errors);
         }
 
-        final UserChangeRequest request = (UserChangeRequest) target;
+        final String address = (String) target;
         final Pattern pattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserChangeRequest: {}", request);
+            DEBUGGER.debug("address: {}", address);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageEmailAddressRequired);
 
-        if (!(pattern.matcher(request.getEmailAddr()).matches()))
+        if (!(pattern.matcher(address).matches()))
         {
             errors.reject("emailAddr", this.messageEmailAddressRequired);
         }

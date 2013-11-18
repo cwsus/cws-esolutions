@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.enums.LogonType;
+import com.cws.esolutions.security.config.SecurityConfig;
+import com.cws.us.esolutions.validators.EmailAddressValidator;
+import com.cws.us.esolutions.validators.EmailMessageValidator;
 /**
  * Project: eSolutions_java_source
  * Package: com.cws.us.esolutions
@@ -51,6 +54,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String errorResponsePage = null;
     @Autowired private String searchRequestPage = null;
     @Autowired private String requestCompletePage = null;
+    @Autowired private SecurityConfig securityConfig = null;
     @Autowired private String messageNoSearchResults = null;
     @Autowired private String messageEmailSendFailed = null;
     @Autowired private String messageRequestCanceled = null;
@@ -58,8 +62,11 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String messagePasswordExpired = null;
     @Autowired private String messageUserNotLoggedIn = null;
     @Autowired private String messageValidationFailed = null;
+    @Autowired private String messageEmailSentSuccess = null;
+    @Autowired private EmailAddressValidator emailValidator = null;
     @Autowired private List<String> allowedAppFileExtensions = null;
     @Autowired private List<String> allowedWebFileExtensions = null;
+    @Autowired private EmailMessageValidator messageValidator = null;
     @Autowired private String messageRequestProcessingFailure = null;
     @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
 
@@ -446,7 +453,59 @@ public class ApplicationServiceBean implements Serializable
 
         this.messageNoSearchResults = value;
     }
-    
+
+    public final void setMessageEmailSentSuccess(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageEmailSentSuccess(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageEmailSentSuccess = value;
+    }
+
+    public final void setSecurityConfig(final SecurityConfig value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setSecConfig(final SecurityConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.securityConfig = value;
+    }
+
+    public final void setEmailValidator(final EmailAddressValidator value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setEmailValidator(final EmailAddressValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.emailValidator = value;
+    }
+
+    public final void setMessageValidator(final EmailMessageValidator value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setMessageValidator(final EmailMessageValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageValidator = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -822,6 +881,58 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageNoSearchResults;
+    }
+
+    public final String getMessageEmailSentSuccess()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "# getMessageEmailSentSuccess()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageEmailSentSuccess);
+        }
+
+        return this.messageEmailSentSuccess;
+    }
+
+    public final SecurityConfig getSecurityConfig()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getSecurityConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.securityConfig);
+        }
+
+        return this.securityConfig;
+    }
+
+    public final EmailAddressValidator getEmailValidator()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getEmailValidator()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.emailValidator);
+        }
+
+        return this.emailValidator;
+    }
+
+    public final EmailMessageValidator getMessageValidator()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getMessageValidator(final EmailMessageValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.messageValidator);
+        }
+
+        return this.messageValidator ;
     }
 
     public final String toString()

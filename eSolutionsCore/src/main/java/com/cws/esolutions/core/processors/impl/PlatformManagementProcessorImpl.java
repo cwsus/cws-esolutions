@@ -88,7 +88,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -277,7 +277,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -433,7 +433,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -844,7 +844,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1246,7 +1246,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {

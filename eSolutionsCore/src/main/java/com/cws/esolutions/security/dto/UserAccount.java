@@ -64,6 +64,7 @@ public class UserAccount implements Serializable
     private boolean tcAccepted = false;
     private String telephoneNumber = null;
     private List<String> serviceList = null;
+    private List<String> projectList = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
@@ -304,6 +305,19 @@ public class UserAccount implements Serializable
         }
 
         this.serviceList = value;
+    }
+
+    public final void setProjectList(final List<String> value)
+    {
+        final String methodName = UserAccount.CNAME + "#setProjectList(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.projectList = value;
     }
 
     public final void setUserKeys(final KeyPair value)
@@ -563,6 +577,19 @@ public class UserAccount implements Serializable
         }
 
         return this.serviceList;
+    }
+
+    public final List<String> getProjectList()
+    {
+        final String methodName = UserAccount.CNAME + "#getProjectList()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.projectList);
+        }
+
+        return this.projectList;
     }
 
     public final KeyPair getUserKeys()

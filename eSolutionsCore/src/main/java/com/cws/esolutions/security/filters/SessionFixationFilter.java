@@ -15,7 +15,9 @@
  */
 package com.cws.esolutions.security.filters;
 
+import java.util.Map;
 import org.slf4j.Logger;
+import java.util.HashMap;
 import java.io.IOException;
 import javax.servlet.Filter;
 import java.util.Enumeration;
@@ -72,15 +74,18 @@ public class SessionFixationFilter implements Filter
             DEBUGGER.debug("ServletResponse: {}", sResponse);
         }
 
+        Map<String, Object> currentSession = null;
+
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
-        final HttpSession hSession = hRequest.getSession(false);
+        final HttpSession hSession = hRequest.getSession();
 
         if (DEBUG)
         {
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("HttpSession.getId(): {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -115,6 +120,79 @@ public class SessionFixationFilter implements Filter
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
         }
+
+        Enumeration<String> sessionAttributes = hSession.getAttributeNames();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Enumeration<String>: {}", sessionAttributes);
+        }
+
+        if (sessionAttributes.hasMoreElements())
+        {
+            while (sessionAttributes.hasMoreElements())
+            {
+                String sessionElement = sessionAttributes.nextElement();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("sessionElement: {}", sessionElement);
+                }
+
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("sessionValue: {}", sessionValue);
+                }
+
+                currentSession = new HashMap<String, Object>();
+                currentSession.put(sessionElement, sessionValue);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Map<String, Object>: {}", currentSession);
+                }
+            }
+            
+            hSession.invalidate();
+
+            HttpSession nSession = hRequest.getSession(true);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("HttpSession: {}", nSession);
+                DEBUGGER.debug("HttpSession.getId(): {}", nSession.getId());
+            }
+
+            for (String key : currentSession.keySet())
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Key: {}", key);
+                }
+
+                nSession.setAttribute(key, currentSession.get(key));
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("HttpSession: {}", nSession);
+
+                DEBUGGER.debug("Dumping session content:");
+                Enumeration<String> sessionEnumeration = nSession.getAttributeNames();
+
+                while (sessionEnumeration.hasMoreElements())
+                {
+                    String newSesionElement = sessionEnumeration.nextElement();
+                    Object newSessionValue = nSession.getAttribute(newSesionElement);
+
+                    DEBUGGER.debug("Attribute: " + newSesionElement + "; Value: " + newSessionValue);
+                }
+            }
+        }
+
+        filterChain.doFilter(sRequest, sResponse);
     }
 
     @Override

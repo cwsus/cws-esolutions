@@ -78,36 +78,34 @@
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
 	    </c:if>
 
-	    <form:form id="reviewArticleData" name="reviewArticleData" action="" method="post" commandName="article">
-	        <form:hidden path="author" value="${sessionScope.userAccount.username}" />
-	        <form:hidden path="authorEmail" value="${sessionScope.userAccount.emailAddr}" />
+	    <form:form id="reviewArticleData" name="reviewArticleData" action="${pageContext.request.contextPath}/ui/knowledgebase/submit-article" method="post" commandName="article">
+	        <form:hidden path="author" value="${article.author}" />
+	        <form:hidden path="authorEmail" value="${article.authorEmail}" />
+	        <form:hidden path="articleId" value="${article.articleId}" />
+            <form:hidden path="title" value="${article.title}" />
+            <form:hidden path="symptoms" value="${article.symptoms}" />
+            <form:hidden path="cause" value="${article.cause}" />
+            <form:hidden path="keywords" value="${article.keywords}" />
+            <form:hidden path="resolution" value="${article.resolution}" />
 
 	        <table id="ShowArticle">
 	            <tr>
-	                <td id="txtArticleId"><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
-	                <td><form:input path="articleId" readonly="true" /></td>
+	                <td><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
+	                <td>${article.symptoms}</td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleTitle"><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
-	                <td><form:input path="title" readonly="true" /></td>
+	                <td><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
+	                <td>${article.cause}</td>
 	            </tr>
 	            <tr>
-	                <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
-	                <td><form:input path="symptoms" readonly="true" /></td>
-	            </tr>
-	            <tr>
-	                <td id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
-	                <td><form:input path="cause" readonly="true" /></td>
-	            </tr>
-	            <tr>
-	                <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
-	                <td><form:input path="keywords" readonly="true" /></td>
+	                <td><strong><em><spring:message code="kbase.article.keywords" /></em></strong></td>
+	                <td>${article.keywords}</td>
 	            </tr>
 	        </table>
 	        <br />
-	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
+	        <strong><spring:message code="kbase.article.resolution" /></strong>
 	        <br />
-	        <form:textarea path="resolution" cols="90" rows="10" readonly="true" />
+	        ${article.resolution}
 	        <br /><br />
 	        <table class="kbauth">
 	            <tr>
@@ -119,25 +117,31 @@
 	                <td id="top" align="center" valign="middle"><strong><spring:message code="kbase.article.approved" /></strong></td>
 	            </tr>
 	            <tr>
-	                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>
-	                <td align="center" valign="middle"><em>${createDate}</em></td>
-	                <td align="center" valign="middle"><em>${modifiedBy}</em></td>
-	                <td align="center" valign="middle"><em>${modifiedOn}</em></td>
-	                <td align="center" valign="middle"><em>${reviewedBy}</em></td>
-	                <td align="center" valign="middle"><em>${reviewedOn}</em></td>
+	                <td align="center" valign="middle">
+	                    <em><a href="mailto:${article.authorEmail}?subject=Request for Comments: ${article.articleId}"
+	                        title="Request for Comments: ${article.articleId}">${article.author}</a></em>
+	                </td>
+	                <td align="center" valign="middle"><em>${article.createDate}</em></td>
+	                <td align="center" valign="middle">
+	                    <em><a href="mailto:${systemEmailAddress}?subject=Request for Comments: ${article.articleId}"
+	                        title="Request for Comments: ${article.articleId}">${article.modifiedBy}</a></em>
+	                </td>
+	                <td align="center" valign="middle"><em>${article.modifiedOn}</em></td>
+	                <td align="center" valign="middle">
+	                    <em><a href="mailto:${systemEmailAddress}?subject=Request for Comments: ${article.articleId}"
+	                        title="Request for Comments: ${article.articleId}">${article.reviewedBy}</a></em>
+	                </td>
+	                <td align="center" valign="middle"><em>${article.reviewedOn}</em></td>
 	            </tr>
 	        </table>
 
 	        <table id="inputItems">
 	            <tr>
 	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event, '${pageContext.request.contextPath}');" />
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); this.form.submit();" />
 	                </td>
 	                <td>
 	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="javascript:history.go(-1);" />
-	                </td>
-	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
 	                </td>
 	            </tr>
 	        </table>

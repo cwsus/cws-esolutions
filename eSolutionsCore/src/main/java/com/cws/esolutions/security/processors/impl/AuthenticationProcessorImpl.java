@@ -100,7 +100,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             DEBUGGER.debug("UserAccount: {}", authUser);
             DEBUGGER.debug("maxAttempts: {}", maxAttempts);
         }
-        
+
         try
         {
             String password = null;
@@ -225,6 +225,18 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     if ((serviceList != null) && (serviceList.size() != 0))
                     {
                         userAccount.setServiceList(serviceList);
+                    }
+
+                    List<String> authorizedProjects = svcInfo.returnUserAuthorizedProjects(userAccount.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", authorizedProjects);
+                    }
+
+                    if ((authorizedProjects != null) && (authorizedProjects.size() != 0))
+                    {
+                        userAccount.setProjectList(authorizedProjects);
                     }
 
 					try

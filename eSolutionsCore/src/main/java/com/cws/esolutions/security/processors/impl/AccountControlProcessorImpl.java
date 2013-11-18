@@ -495,6 +495,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     if (isComplete)
                     {
+                        response.setUserAccount(account);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully performed suspension modification.");
                     }
@@ -769,6 +770,47 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     if (isComplete)
                     {
+                        List<Object> resData = userManager.loadUserAccount((String) userData.get(0));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<Object>: {}", resData);
+                        }
+
+                        if ((resData != null) && (!(resData.isEmpty())))
+                        {
+                            UserAccount resAccount = new UserAccount();
+                            resAccount.setGuid((String) userData.get(0));
+                            resAccount.setUsername((String) userData.get(1));
+                            resAccount.setGivenName((String) userData.get(2));
+                            resAccount.setSurname((String) userData.get(3));
+                            resAccount.setDisplayName((String) userData.get(4));
+                            resAccount.setEmailAddr((String) userData.get(5));
+                            resAccount.setPagerNumber((userData.get(6) == null) ? SecurityConstants.NOT_SET : (String) userData.get(6));
+                            resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityConstants.NOT_SET : (String) userData.get(7));
+                            resAccount.setRole(Role.valueOf((String) userData.get(8)));
+                            resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
+                            resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
+                            resAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
+                            resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                            resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                            resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
+                            resAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", resAccount);
+                            }
+
+                            response.setUserAccount(resAccount);
+                        }
+                        else
+                        {
+                            // if we have an issue re-loading the account
+                            // just put the existing one in. its something.
+                            response.setUserAccount(account);
+                        }
+
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully performed role modification.");
                     }
@@ -909,6 +951,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                     (!(field.getName().equals("CNAME"))) &&
                                     (!(field.getName().equals("DEBUGGER"))) &&
                                     (!(field.getName().equals("DEBUG"))) &&
+                                    (!(field.getName().equals("ERROR_RECORDER"))) &&
                                     (!(field.getName().equals("serialVersionUID"))))
                             {
                                 try
@@ -962,20 +1005,23 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                         for (String[] userData : userList)
                         {
-                            UserAccount userInfo = new UserAccount();
-                            userInfo.setGuid(userData[0]);
-                            userInfo.setUsername(userData[1]);
-                            userInfo.setGivenName(userData[2]);
-                            userInfo.setSurname(userData[3]);
-                            userInfo.setEmailAddr(userData[5]);
-                            userInfo.setDisplayName(userData[4]);
-
-                            if (DEBUG)
+                            if (!(StringUtils.equals(requestor.getGuid(), userData[0])))
                             {
-                                DEBUGGER.debug("UserAccount: {}", userInfo);
-                            }
+                                UserAccount userInfo = new UserAccount();
+                                userInfo.setGuid(userData[0]);
+                                userInfo.setUsername(userData[1]);
+                                userInfo.setGivenName(userData[2]);
+                                userInfo.setSurname(userData[3]);
+                                userInfo.setEmailAddr(userData[5]);
+                                userInfo.setDisplayName(userData[4]);
 
-                            userAccounts.add(userInfo);
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("UserAccount: {}", userInfo);
+                                }
+
+                                userAccounts.add(userInfo);
+                            }
                         }
 
                         if (DEBUG)
@@ -983,9 +1029,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("userAccounts: {}", userAccounts);
                         }
 
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded matching accounts");
-                        response.setUserList(userAccounts);
+                        if ((userAccounts == null) || (userAccounts.size() == 0))
+                        {
+                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                            response.setResponse("No accounts were found with the provided data");
+                        }
+                        else
+                        {
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                            response.setResponse("Successfully loaded matching accounts");
+                            response.setUserList(userAccounts);
+                        }
                     }
                 }
                 else

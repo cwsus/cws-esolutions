@@ -80,7 +80,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -231,7 +231,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -367,7 +367,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), request.getServiceId());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {

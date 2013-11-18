@@ -147,7 +147,7 @@ public class UserControlServiceImplTest
     {
         try
         {
-            Assert.assertTrue(service.isUserAuthorizedForService(userAccount.getGuid(), "ef628254-e692-4029-8189-aedb9cf1e380"));
+            Assert.assertTrue(service.isUserAuthorizedForService(userAccount, "ef628254-e692-4029-8189-aedb9cf1e380"));
         }
         catch (UserControlServiceException ucsx)
         {

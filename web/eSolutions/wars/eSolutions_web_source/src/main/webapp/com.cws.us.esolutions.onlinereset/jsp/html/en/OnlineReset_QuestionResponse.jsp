@@ -49,6 +49,8 @@
         <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
             <form:hidden path="isReset" value="true" />
             <form:hidden path="resetType" value="QUESTIONS" />
+            <form:hidden path="secQuestionOne" value="${command.secQuestionOne}" />
+            <form:hidden path="secQuestionTwo" value="${command.secQuestionTwo}" />
 
             <table id="userauth">
                 <tr>

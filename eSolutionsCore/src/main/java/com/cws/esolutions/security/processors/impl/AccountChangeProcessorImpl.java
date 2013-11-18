@@ -32,6 +32,7 @@ import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
@@ -463,6 +464,13 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                             if (isComplete)
                             {
+                                if (userAccount.getStatus() == LoginStatus.EXPIRED)
+                                {
+                                    // update the account
+                                    userAccount.setStatus(LoginStatus.SUCCESS);
+                                }
+
+                                response.setUserAccount(userAccount);
                                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                                 response.setResponse("Successfully changed password.");
                             }

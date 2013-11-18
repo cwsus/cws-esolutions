@@ -18,6 +18,7 @@ package com.cws.esolutions.security.access.control.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
@@ -57,7 +58,7 @@ public interface IUserControlService
      * @return boolean
      * @throws UserControlServiceException
      */
-    boolean isUserAuthorizedForProject(final String userGuid, final String projectGuid) throws UserControlServiceException;
+    boolean isUserAuthorizedForProject(final UserAccount userAccount, final String projectGuid) throws UserControlServiceException;
 
     /**
      * Determines if the requested user has the proper level of authority to
@@ -71,5 +72,5 @@ public interface IUserControlService
      * @return boolean
      * @throws UserControlServiceException
      */
-    boolean isUserAuthorizedForService(final String userGuid, final String serviceGuid) throws UserControlServiceException;
+    boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException;
 }

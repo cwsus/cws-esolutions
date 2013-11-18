@@ -42,6 +42,7 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
@@ -51,17 +52,23 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
+import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
+import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
+import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
+import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
  * eSolutions_java_source
@@ -88,19 +95,22 @@ public class UserManagementController
     private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
     private String serviceName = null;
+    private String projectMgmt = null;
     private String viewUserPage = null;
     private String messageSource = null;
     private String viewAuditPage = null;
     private String userResetEmail = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
-    private SecurityConfig secConfig = null;
     private String messageNoUsersFound = null;
+    private String messageAccountLocked = null;
     private String messageResetComplete = null;
     private String passwordResetSubject = null;
     private String messageAccountCreated = null;
+    private String messageAccountUnlocked = null;
     private String messageAccountSuspended = null;
     private UserAccountValidator validator = null;
+    private String messageAccountUnsuspended = null;
     private ApplicationServiceBean appConfig = null;
     private String messageRoleChangedSuccessfully = null;
 
@@ -121,6 +131,19 @@ public class UserManagementController
         }
 
         this.serviceId = value;
+    }
+
+    public final void setProjectMgmt(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setProjectMgmt(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.projectMgmt = value;
     }
 
     public final void setValidator(final UserAccountValidator value)
@@ -266,6 +289,45 @@ public class UserManagementController
         this.messageResetComplete = value;
     }
 
+    public final void setMessageAccountLocked(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountLocked(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountLocked = value;
+    }
+
+    public final void setMessageAccountUnlocked(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnlocked(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountUnlocked = value;
+    }
+
+    public final void setMessageAccountUnsuspended(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnsuspended(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAccountUnsuspended = value;
+    }
+
     public final void setMessageAccountSuspended(final String value)
     {
         final String methodName = UserManagementController.CNAME + "#setMessageAccountSuspended(final String value)";
@@ -303,19 +365,6 @@ public class UserManagementController
         }
 
         this.appConfig = value;
-    }
-
-    public final void setSecConfig(final SecurityConfig value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setSecConfig(final SecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secConfig = value;
     }
 
     public final void setResetURL(final String value)
@@ -450,6 +499,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IProjectManagementProcessor processor = new ProjectManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -495,9 +545,67 @@ public class UserManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("roles", Role.values());
-            mView.addObject("command", new UserAccount());
-            mView.setViewName(this.createUserPage); 
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                ProjectManagementRequest request = new ProjectManagementRequest();
+                request.setUserAccount(userAccount);
+                request.setRequestInfo(reqInfo);
+                request.setServiceId(this.projectMgmt);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
+                }
+
+                ProjectManagementResponse response = processor.listProjects(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Project> projectList = response.getProjectList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Project>: {}", projectList);
+                    }
+
+                    mView.addObject("projectList", projectList);
+                    mView.addObject("roles", Role.values());
+                    mView.addObject("command", new UserAccount());
+                    mView.setViewName(this.createUserPage);
+                }
+                if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.setViewName(appConfig.getErrorResponsePage());
+                }
+            }
+            catch (ProjectManagementException pmx)
+            {
+                ERROR_RECORDER.error(pmx.getMessage(), pmx);
+
+                mView.setViewName(appConfig.getErrorResponsePage());
+            }
         }
         else
         {
@@ -1071,8 +1179,10 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.setViewName(this.searchUsersPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLocked);
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1208,8 +1318,10 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.setViewName(this.searchUsersPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlocked);
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1345,8 +1457,10 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.setViewName(this.searchUsersPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspended);
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1354,6 +1468,7 @@ public class UserManagementController
                 }
                 else
                 {
+                    mView.addObject("command", new UserAccount());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.searchUsersPage);
                 }
@@ -1482,8 +1597,10 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.setViewName(this.searchUsersPage);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspended);
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
+                    mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1531,6 +1648,7 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final SecurityConfig secConfig = appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -1539,6 +1657,7 @@ public class UserManagementController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("SecurityConfig: {}", secConfig);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
@@ -1680,7 +1799,8 @@ public class UserManagementController
                     EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
-                    mView.addObject(Constants.USER_ACCOUNT, response.getUserAccount());
+                    mView.addObject("userRoles", Role.values());
+                    mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -2057,6 +2177,7 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final SecurityConfig secConfig = appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
@@ -2065,7 +2186,7 @@ public class UserManagementController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("SecurityConfig: {}", secConfig);
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
@@ -2196,152 +2317,6 @@ public class UserManagementController
                     mView.addObject("command", user);
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.createUserPage);
-                }
-            }
-            catch (AccountControlException acx)
-            {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-
-                mView.setViewName(appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/suspend-user", method = RequestMethod.POST)
-    public final ModelAndView doSuspendUser(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
-    {
-        final String methodName = UserManagementController.CNAME + "#doSuspendUser(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", user);
-            DEBUGGER.debug("Value: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo hostInfo = new RequestHostInfo();
-                hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                hostInfo.setHostName(hRequest.getRemoteHost());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
-                }
-
-                // set the suspended flag
-                user.setSuspended(true);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", user);
-                }
-
-                // search accounts
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(hostInfo);
-                request.setUserAccount(user);
-                request.setApplicationId(appConfig.getApplicationName());
-                request.setAlgorithm(secConfig.getAuthAlgorithm());
-                request.setControlType(ControlType.SUSPEND);
-                request.setModType(ModificationType.NONE);
-                request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                AccountControlResponse response = processor.modifyUserSuspension(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    // account suspended
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspended);
-                    mView.addObject("command", user);
-                    mView.setViewName(this.viewUserPage);
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject("command", new UserAccount());
-                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 }
             }
             catch (AccountControlException acx)

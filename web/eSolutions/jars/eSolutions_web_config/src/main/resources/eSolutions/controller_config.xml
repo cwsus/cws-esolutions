@@ -36,8 +36,6 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
     </bean>
 
-    <bean id="securityConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
-
     <!-- import controllers -->
     <import resource="classpath:/eSolutions/servlets/ApplicationManagementController.xml" />
     <import resource="classpath:/eSolutions/servlets/DNSServiceController.xml" />

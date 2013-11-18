@@ -204,7 +204,7 @@ BEGIN
     FROM `esolutionssvc`.`service_messages`
     WHERE svc_message_active = TRUE
     AND svc_message_expires >= UNIX_TIMESTAMP(NOW())
-    OR svc_message_expires = 0
+    OR svc_message_expires = FALSE
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

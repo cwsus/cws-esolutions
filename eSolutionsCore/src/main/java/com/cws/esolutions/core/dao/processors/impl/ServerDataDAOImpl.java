@@ -696,17 +696,101 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
-    public synchronized boolean modifyServerData(final List<String> serverData) throws SQLException
+    public synchronized boolean modifyServerData(final String serverGuid, final List<Object> serverData) throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#modifyServerData(final List<String> serverData) throws SQLException";
+        final String methodName = IServerDataDAO.CNAME + "#modifyServerData(final String serverGuid, final List<Object> serverData) throws SQLException";
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
-            DEBUGGER.debug("request: {}", serverData);
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", serverGuid);
+
+            for (Object str : serverData)
+            {
+                DEBUGGER.debug("Value: {}", str);
+            }
         }
-        
-        return false;
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareCall("{CALL updateServerData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt.setString(1, serverGuid); // systemGuid
+                stmt.setString(2, (String) serverData.get(1)); // systemOs
+                stmt.setString(3, (String) serverData.get(2)); // systemStatus
+                stmt.setString(4, (String) serverData.get(3)); // systemRegion
+                stmt.setString(5, (String) serverData.get(4)); // networkPartiton
+                stmt.setString(6, (String) serverData.get(5)); // datacenter
+                stmt.setString(7, (String) serverData.get(6)); // systemType
+                stmt.setString(8, (String) serverData.get(7)); // domainName
+                stmt.setString(9, (String) serverData.get(8)); // cpuType
+                stmt.setInt(10, (Integer) serverData.get(9)); // cpuCount
+                stmt.setString(11, (String) serverData.get(10)); // serverModel
+                stmt.setString(12, (String) serverData.get(11)); // serialNumber
+                stmt.setInt(13, (Integer) serverData.get(12)); // installedMemory
+                stmt.setString(14, (String) serverData.get(13)); // operIp
+                stmt.setString(15, (String) serverData.get(14)); // operHostname
+                stmt.setString(16, (String) serverData.get(15)); // mgmtIp
+                stmt.setString(17, (String) serverData.get(16)); // mgmtHostname
+                stmt.setString(18, (String) serverData.get(17)); // backupIp
+                stmt.setString(19, (String) serverData.get(18)); // backupHostname
+                stmt.setString(20, (String) serverData.get(19)); // nasIp
+                stmt.setString(21, (String) serverData.get(20)); // nasHostname
+                stmt.setString(22, (String) serverData.get(21)); // natAddr
+                stmt.setString(23, (String) serverData.get(22)); // systemComments
+                stmt.setString(24, (String) serverData.get(23)); // engineer
+                stmt.setString(25, (String) serverData.get(24)); // mgrEntry
+                stmt.setInt(26, (Integer) serverData.get(25)); // dmgrPort
+                stmt.setString(27, (String) serverData.get(26)); // serverRack
+                stmt.setString(28, (String) serverData.get(27)); // rackPosition
+                stmt.setString(29, (String) serverData.get(28)); // owningDmgr
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
     }
 
     @Override

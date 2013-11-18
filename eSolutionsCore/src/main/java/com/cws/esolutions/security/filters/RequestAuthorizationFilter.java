@@ -332,7 +332,7 @@ public class RequestAuthorizationFilter implements Filter
                         {
                             // make sure the user is authorized for the service
                             IUserControlService userControl = new UserControlServiceImpl();
-                            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount.getGuid(), serviceMap.get(key));
+                            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, serviceMap.get(key));
 
                             if (DEBUG)
                             {

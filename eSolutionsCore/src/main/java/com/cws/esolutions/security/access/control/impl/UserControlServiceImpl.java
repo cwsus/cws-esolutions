@@ -19,6 +19,7 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.dto.UserAccount;
 /*
  * AdminControlServiceImpl
  * Determines if the provided user has the proper level of authority
@@ -36,47 +37,57 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
 public class UserControlServiceImpl implements IUserControlService
 {
     @Override
-    public boolean isUserAuthorizedForService(final String userGuid, final String serviceGuid) throws UserControlServiceException
+    public boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException
     {
-        final String methodName = IUserControlService.CNAME + "#isUserAuthorizedForService(final String userGuid, final String serviceGuid) throws UserControlServiceException";
+        final String methodName = IUserControlService.CNAME + "#isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
 
         boolean isUserAuthorized = false;
 
-        try
+        switch (userAccount.getRole())
         {
-            isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userGuid, serviceGuid);
+            case SITEADMIN:
+                isUserAuthorized = true;
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                break;
+            default:
+                try
+                {
+                    isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
 
-            throw new UserControlServiceException(sqx.getMessage(), sqx);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    }
+                }
+                catch (SQLException sqx)
+                {
+                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+                    throw new UserControlServiceException(sqx.getMessage(), sqx);
+                }
+
+                break;
         }
 
         return isUserAuthorized;
     }
 
     @Override
-    public boolean isUserAuthorizedForProject(final String userGuid, final String serviceGuid) throws UserControlServiceException
+    public boolean isUserAuthorizedForProject(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException
     {
-        final String methodName = IUserControlService.CNAME + "#isUserAuthorizedForProject(final String userGuid, final String serviceGuid) throws UserControlServiceException";
+        final String methodName = IUserControlService.CNAME + "#isUserAuthorizedForProject(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
 
@@ -84,7 +95,7 @@ public class UserControlServiceImpl implements IUserControlService
 
         try
         {
-            isUserAuthorized = sqlServiceDAO.verifyProjectForUser(userGuid, serviceGuid);
+            isUserAuthorized = sqlServiceDAO.verifyProjectForUser(userAccount.getGuid(), serviceGuid);
 
             if (DEBUG)
             {

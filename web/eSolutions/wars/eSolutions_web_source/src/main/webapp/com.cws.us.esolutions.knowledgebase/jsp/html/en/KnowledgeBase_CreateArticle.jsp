@@ -27,7 +27,7 @@
  *     Created.
  */
 --%>
-
+<jsp:useBean id="submissionDate" class="java.util.Date" scope="page" />
 <div id="InfoLine"><spring:message code="kbase.article.create.banner" arguments="${command.articleId}" /></div>
 <div id="content">
     <div id="content-right">
@@ -79,7 +79,7 @@
 	        <br />
 	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
 	        <br />
-	        <form:textarea path="resolution" cols="90" rows="10" />
+	        <form:textarea path="resolution" cols="65" rows="10" />
 	        <form:errors path="resolution" />
 	        <br /><br />
 	        <table class="kbauth">
@@ -93,7 +93,7 @@
 	            </tr>
 	            <tr>
 	                <td align="center" valign="middle"><em>${sessionScope.userAccount.username}</em></td>
-	                <td align="center" valign="middle"><em>${createDate}</em></td>
+	                <td align="center" valign="middle"><em><fmt:formatDate value="${submissionDate}" pattern="${dateFormat}" /></em></td>
 	                <td align="center" valign="middle"><em>${modifiedBy}</em></td>
 	                <td align="center" valign="middle"><em>${modifiedOn}</em></td>
 	                <td align="center" valign="middle"><em>${reviewedBy}</em></td>

@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="messaging.send.email.message" /></div>
+<div id="InfoLine"><spring:message code="theme.messaging.send.email.message" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty messageResponse}">
@@ -46,18 +46,23 @@
 
         <span id="validationError"></span>
 
-	    <form:form name="submitContactForm" method="post" action="${pageRequest.request.contextPath}/ui/messaging/send-email">
+	    <form:form name="submitContactForm" method="post" action="${pageRequest.request.contextPath}/ui/common/submit-contact">
 	        <table>
 	            <tr>
-	                <td><label id="txtMessageSubject"><spring:message code="add.contact.request.subject" /></label></td>
+	                <td><label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label></td>
 	                <td><form:errors path="messageSubject" cssClass="validationError" /></td>
 	                <td><form:input path="messageSubject" /></td>
 	            </tr>
 	            <tr>
-	                <td><label id="txtMessageBody"><spring:message code="add.contact.request.body" /></label></td>
+	                <td><label id="txtMessageBody"><spring:message code="theme.add.contact.request.body" /></label></td>
 	                <td><form:errors path="messageBody" cssClass="validationError" /></td>
 	                <td><form:textarea path="messageBody" /></td>
 	            </tr>
+                <tr>
+                    <td><label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label></td>
+                    <td><form:errors path="messageFrom" cssClass="validationError" /></td>
+                    <td><form:textarea path="messageFrom" /></td>
+                </tr>
 	        </table>
 
 	        <table id="inputItems">

@@ -18,6 +18,7 @@ input
 input#disabled
 {
     border: none;
+    background-color: #FFFFFF;
 }
 
 /*
