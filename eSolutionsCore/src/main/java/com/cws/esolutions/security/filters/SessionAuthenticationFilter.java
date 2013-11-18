@@ -217,6 +217,20 @@ public class SessionAuthenticationFilter implements Filter
             }
         }
 
+		if (hRequest.isRequestedSessionIdFromURL())
+        {
+			ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+
+			// invalidate the session
+            hRequest.getSession(false).invalidate()
+			hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
+			hSession.invalidate();
+
+			hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+
+            return;
+		}
+
         Enumeration<String> sessionAttributes = hSession.getAttributeNames();
 
         if (DEBUG)
