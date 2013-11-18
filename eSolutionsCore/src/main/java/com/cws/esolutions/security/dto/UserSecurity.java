@@ -213,6 +213,18 @@ public class UserSecurity implements Serializable
         return this.otpValue;
     }
 
+    public final String getSecQuestionOne()
+    {
+        final String methodName = UserSecurity.CNAME + "#getSecQuestionOne()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.secQuestionOne;
+    }
+
     public final String getSecQuestionTwo()
     {
         final String methodName = UserSecurity.CNAME + "#getSecQuestionTwo()";
@@ -223,18 +235,6 @@ public class UserSecurity implements Serializable
         }
 
         return this.secQuestionTwo;
-    }
-
-    public final String getSecAnswer()
-    {
-        final String methodName = UserSecurity.CNAME + "#getSecAnswer()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.secAnswer;
     }
 
     public final String getSecAnswerOne()

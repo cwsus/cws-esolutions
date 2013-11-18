@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
+import java.security.KeyPair;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,7 @@ public class UserAccount implements Serializable
     private String emailAddr = null;
     private String givenName = null;
     private String sessionId = null;
+    private KeyPair userKeys = null;
     private boolean olrSetup = false;
     private String displayName = null;
     private boolean olrLocked = false;
@@ -318,6 +320,18 @@ public class UserAccount implements Serializable
         this.serviceList = value;
     }
 
+    public final void setUserKeys(final KeyPair value)
+    {
+        final String methodName = UserAccount.CNAME + "#setUserKeys(final KeyPair value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.userKeys = value;
+    }
+
     public final LoginStatus getStatus()
     {
         final String methodName = UserAccount.CNAME + "#getStatus()";
@@ -578,6 +592,18 @@ public class UserAccount implements Serializable
         return this.serviceList;
     }
 
+    public final KeyPair getUserKeys()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserKeys()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.userKeys;
+    }
+
     @Override
     public final String toString()
     {
@@ -603,6 +629,7 @@ public class UserAccount implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("userKeys"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

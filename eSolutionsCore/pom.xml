@@ -87,6 +87,13 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-api</artifactId>
+			<version>7.0.47</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
         <!-- agent -->
         <dependency>
             <groupId>com.cws</groupId>
