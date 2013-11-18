@@ -75,7 +75,7 @@ public class FileSecurityProcessorImplTest
 
             UserAccount account = new UserAccount();
             account.setUsername("khuntly");
-            account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
             try
             {
@@ -110,7 +110,7 @@ public class FileSecurityProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
-                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+                            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                             Assert.assertEquals(LoginStatus.SUCCESS, userAccount.getStatus());
                         }

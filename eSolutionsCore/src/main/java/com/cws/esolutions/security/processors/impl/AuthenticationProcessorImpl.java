@@ -134,7 +134,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 authAccount = new UserAccount();
                 authAccount.setGuid(userData[0]);
                 authAccount.setUsername(userData[1]);
-                authAccount.setSessionId(authUser.getSessionId());
 
                 if (DEBUG)
                 {
@@ -214,7 +213,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setOlrSetup((Boolean) userData.get(13));
                     userAccount.setOlrLocked((Boolean) userData.get(14));
                     userAccount.setTcAccepted((Boolean) userData.get(15));
-                    userAccount.setSessionId(authUser.getSessionId());
 
                     // list user services
                     List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
@@ -534,7 +532,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     resAccount.setOlrSetup((Boolean) accountInfo.get(13));
                     resAccount.setOlrLocked((Boolean) accountInfo.get(14));
                     resAccount.setTcAccepted((Boolean) accountInfo.get(15));
-                    resAccount.setSessionId(userAccount.getSessionId());
 
                     if (DEBUG)
                     {

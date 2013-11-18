@@ -496,6 +496,7 @@ public class LoginController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -504,7 +505,6 @@ public class LoginController
 
             UserAccount reqUser = new UserAccount();
             reqUser.setUsername(loginRequest.getLoginUser());
-            reqUser.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -553,7 +553,6 @@ public class LoginController
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
@@ -567,7 +566,6 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
@@ -693,6 +691,7 @@ public class LoginController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteHost());
             reqInfo.setHostName(hRequest.getRemoteAddr());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -701,7 +700,6 @@ public class LoginController
 
             UserAccount reqUser = new UserAccount();
             reqUser.setUsername(user.getUsername());
-            reqUser.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -901,7 +899,6 @@ public class LoginController
                     case SUCCESS:
                         // username validated
                         // check logon type
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView.setViewName(appConfig.getHomeRedirect());
@@ -909,7 +906,6 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
@@ -1060,7 +1056,6 @@ public class LoginController
                     case SUCCESS:
                         // username validated
                         // check logon type
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView.setViewName(appConfig.getHomeRedirect());
@@ -1068,7 +1063,6 @@ public class LoginController
                         return mView;
                     case EXPIRED:
                         // password expired - redirect to change password page
-                        userAccount.setSessionId(hSession.getId());
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());

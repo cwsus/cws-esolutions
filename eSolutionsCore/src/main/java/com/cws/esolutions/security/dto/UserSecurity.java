@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.SecurityConstants;
 /**
  * SecurityService
@@ -55,7 +54,6 @@ public class UserSecurity implements Serializable
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
     public final void setUserSalt(final String value)
     {

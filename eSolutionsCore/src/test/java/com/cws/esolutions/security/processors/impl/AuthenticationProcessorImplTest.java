@@ -78,7 +78,7 @@ public class AuthenticationProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");
@@ -107,7 +107,7 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
         account.setUsername("khuntly");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana16*");
@@ -138,7 +138,7 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
         account.setUsername("khuntly");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana16*");
@@ -168,7 +168,7 @@ public class AuthenticationProcessorImplTest
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana18*");
@@ -199,7 +199,7 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");
@@ -228,7 +228,7 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setSecAnswerOne("answerone");

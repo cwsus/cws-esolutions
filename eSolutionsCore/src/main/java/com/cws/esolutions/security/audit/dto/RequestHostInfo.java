@@ -43,6 +43,7 @@ import com.cws.esolutions.security.SecurityConstants;
 public class RequestHostInfo implements Serializable
 {
     private String hostName = null;
+    private String sessionId = null;
     private String hostAddress = null;
 
     private static final long serialVersionUID = -3333451729768743405L;
@@ -91,6 +92,19 @@ public class RequestHostInfo implements Serializable
         return this.hostName;
     }
 
+    public final void setSessionId(final String value)
+    {
+        final String methodName = RequestHostInfo.CNAME + "#setSessionId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.sessionId = value;
+    }
+
     public final String getHostAddress()
     {
         final String methodName = RequestHostInfo.CNAME + "#getHostAddress()";
@@ -102,6 +116,19 @@ public class RequestHostInfo implements Serializable
         }
 
         return this.hostAddress;
+    }
+
+    public final String getSessionId()
+    {
+        final String methodName = RequestHostInfo.CNAME + "#getSessionId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.sessionId);
+        }
+
+        return this.sessionId;
     }
 
     @Override

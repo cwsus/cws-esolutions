@@ -85,7 +85,7 @@ public class AccountResetProcessorImplTest
         account.setSuspended(false);
         account.setFailedCount(0);
         account.setTcAccepted(true);
-        account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AccountResetRequest request = new AccountResetRequest();
         request.setApplicationName("esolutions");

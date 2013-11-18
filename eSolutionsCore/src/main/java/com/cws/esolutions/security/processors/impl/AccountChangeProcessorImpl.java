@@ -450,7 +450,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the modification in the user repository
                             isComplete = authenticator.changeUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(
-                                            reqSecurity.getNewPassword(),
+                                            newPassword,
                                             newUserSalt,
                                             svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
                                             svcBean.getConfigData().getSecurityConfig().getIterations()),
@@ -956,8 +956,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
         try
         {
-            String resetSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-
             boolean isSaltInserted = userSec.addUserSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
 
             if (DEBUG)

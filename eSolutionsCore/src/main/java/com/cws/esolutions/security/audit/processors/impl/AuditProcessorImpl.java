@@ -86,7 +86,7 @@ public class AuditProcessorImpl implements IAuditProcessor
             switch (auditEntry.getAuditType())
             {
                 case LOGON:
-                    auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
+                    auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(SecurityConstants.NOT_SET); // usr_audit_userguid
                     auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
@@ -98,7 +98,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                     break;
                 default:
-                    auditList.add(userAccount.getSessionId()); // usr_audit_sessionid
+                    auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(userAccount.getGuid()); // usr_audit_userguid
                     auditList.add(userAccount.getRole().name()); // usr_audit_role
@@ -200,7 +200,6 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                         // capture
                         UserAccount userAccount = new UserAccount();
-                        userAccount.setSessionId(array[0]); // usr_audit_sessionid
                         userAccount.setUsername(array[1]); // usr_audit_userid
                         userAccount.setGuid(array[2]); // usr_audit_userguid
                         userAccount.setRole(Role.valueOf(array[3])); // usr_audit_role
@@ -213,6 +212,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                         RequestHostInfo reqInfo = new RequestHostInfo();
                         reqInfo.setHostAddress(array[8]);
                         reqInfo.setHostName(array[9]);
+                        reqInfo.setSessionId(array[0]);
 
                         if (DEBUG)
                         {

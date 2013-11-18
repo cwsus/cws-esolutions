@@ -464,6 +464,7 @@ public class OnlineResetController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -512,13 +513,6 @@ public class OnlineResetController
                 else
                 {
                     // add in the session id
-                    userAccount.setSessionId(hSession.getId());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
                     hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                     mView.setViewName(appConfig.getExpiredRedirect());
@@ -698,6 +692,7 @@ public class OnlineResetController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -706,7 +701,6 @@ public class OnlineResetController
 
             UserAccount reqAccount = new UserAccount();
             reqAccount.setEmailAddr(request.getEmailAddr());
-            reqAccount.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -907,6 +901,7 @@ public class OnlineResetController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -915,7 +910,6 @@ public class OnlineResetController
 
             UserAccount reqAccount = new UserAccount();
             reqAccount.setUsername(request.getUsername());
-            reqAccount.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -1080,6 +1074,7 @@ public class OnlineResetController
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostAddress(hRequest.getRemoteAddr());
             reqInfo.setHostName(hRequest.getRemoteHost());
+            reqInfo.setSessionId(hSession.getId());
 
             if (DEBUG)
             {

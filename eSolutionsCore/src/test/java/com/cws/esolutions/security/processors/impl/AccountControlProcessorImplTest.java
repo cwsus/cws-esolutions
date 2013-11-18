@@ -77,7 +77,7 @@ public class AccountControlProcessorImplTest
 
             UserAccount account = new UserAccount();
             account.setUsername("khuntly");
-            account.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
             try
             {
@@ -94,7 +94,7 @@ public class AccountControlProcessorImplTest
                 if (userResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
                     UserAccount authUser = userResponse.getUserAccount();
-                    authUser.setSessionId(account.getSessionId());
+                    hostInfo.setSessionId(hostInfo.getSessionId());
 
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
@@ -115,7 +115,7 @@ public class AccountControlProcessorImplTest
                         if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                         {
                             userAccount = passResponse.getUserAccount();
-                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+                            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                             Assert.assertEquals(LoginStatus.SUCCESS, userAccount.getStatus());
                         }

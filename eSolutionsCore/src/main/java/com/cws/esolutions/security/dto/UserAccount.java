@@ -53,7 +53,6 @@ public class UserAccount implements Serializable
     private String username = null;
     private String emailAddr = null;
     private String givenName = null;
-    private String sessionId = null;
     private KeyPair userKeys = null;
     private boolean olrSetup = false;
     private String displayName = null;
@@ -84,19 +83,6 @@ public class UserAccount implements Serializable
         }
 
         this.status = value;
-    }
-
-    public final void setSessionId(final String value)
-    {
-        final String methodName = UserAccount.CNAME + "#setSessionId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sessionId = value;
     }
 
     public final void setGuid(final String value)
@@ -538,19 +524,6 @@ public class UserAccount implements Serializable
         }
 
         return this.username;
-    }
-
-    public final String getSessionId()
-    {
-        final String methodName = UserAccount.CNAME + "#getSessionId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sessionId);
-        }
-
-        return this.sessionId;
     }
 
     public final String getPagerNumber()
