@@ -222,7 +222,7 @@ public class SessionAuthenticationFilter implements Filter
 			ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
 
 			// invalidate the session
-            hRequest.getSession(false).invalidate()
+            hRequest.getSession(false).invalidate();
 			hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
 			hSession.invalidate();
 
