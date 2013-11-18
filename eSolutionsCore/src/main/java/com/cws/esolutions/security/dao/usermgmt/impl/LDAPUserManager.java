@@ -240,17 +240,7 @@ public class LDAPUserManager implements UserManager
                     newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
                     newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("newAttributes: {}", newAttributes);
-                    }
-
                     AddRequest addRequest = new AddRequest(userDN, newAttributes);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AddRequest: {}", addRequest);
-                    }
 
                     ldapResult = ldapConn.add(addRequest);
 
@@ -470,7 +460,7 @@ public class LDAPUserManager implements UserManager
         catch (LDAPException lx)
         {
             ERROR_RECORDER.error(lx.getMessage(), lx);
-lx.printStackTrace();
+
             throw new UserManagementException(lx.getMessage(), lx);
         }
         catch (ConnectException cx)

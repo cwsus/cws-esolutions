@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
-import java.security.KeyPair;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,6 @@ public class UserAccount implements Serializable
     private Date lastLogin = null;
     private Long expiryDate = null;
     private String username = null;
-    private KeyPair userKeys = null;
     private String emailAddr = null;
     private String givenName = null;
     private String sessionId = null;
@@ -279,19 +277,6 @@ public class UserAccount implements Serializable
         }
 
         this.username = value;
-    }
-
-    public final void setUserKeys(final KeyPair value)
-    {
-        final String methodName = UserAccount.CNAME + "#setUserKeys(final KeyPair value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userKeys = value;
     }
 
     public final void setPagerNumber(final String value)
@@ -552,19 +537,6 @@ public class UserAccount implements Serializable
         }
 
         return this.sessionId;
-    }
-
-    public final KeyPair getUserKeys()
-    {
-        final String methodName = UserAccount.CNAME + "#getUserKeys()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userKeys);
-        }
-
-        return this.userKeys;
     }
 
     public final String getPagerNumber()

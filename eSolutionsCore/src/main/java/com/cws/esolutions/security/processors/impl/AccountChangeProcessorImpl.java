@@ -107,11 +107,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // ok, authenticate first
             String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("userSalt: {}", userSalt);
-            }
-
             if (StringUtils.isNotEmpty(userSalt))
             {
                 // we aren't getting the data back here because we don't need it. if the request
@@ -251,11 +246,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         {
             // ok, authenticate first
             String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("userSalt: {}", userSalt);
-            }
 
             if (StringUtils.isNotEmpty(userSalt))
             {
@@ -421,19 +411,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     // ok, authenticate first
                     String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("userSalt: {}", userSalt);
-                    }
-
                     if (StringUtils.isNotEmpty(userSalt))
                     {
                         currentPassword = PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Value: {}", currentPassword);
-                        }
 
                         // we aren't getting the data back here because we don't need it. if the request
                         // fails we'll get an exception and not process further. this might not be the
@@ -444,11 +424,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 // ok, thats out of the way. lets keep moving.
                 String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Value: {}", newUserSalt);
-                }
 
                 if (StringUtils.isNotEmpty(newUserSalt))
                 {
@@ -471,11 +446,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         {
                             // good
                             String newPassword = PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Value: {}", newPassword);
-                            }
 
                             // make the modification in the user repository
                             isComplete = authenticator.changeUserPassword(userAccount.getGuid(),
@@ -637,19 +607,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 // ok, authenticate first
                 String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.LOGON.name());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("userSalt: {}", userSalt);
-                }
-
                 if (StringUtils.isNotEmpty(userSalt))
                 {
                     String password = PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", password);
-                    }
 
                     // we aren't getting the data back here because we don't need it. if the request
                     // fails we'll get an exception and not process further. this might not be the
@@ -670,30 +630,14 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the backout
                             List<String> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("currentSec: {}", currentSec);
-                            }
-
                             Map<String, Object> backout = new HashMap<String, Object>();
                             backout.put(authData.getSecQuestionOne(), currentSec.get(0));
                             backout.put(authData.getSecQuestionTwo(), currentSec.get(1));
                             backout.put(authData.getSecAnswerOne(), currentSec.get(2));
                             backout.put(authData.getSecAnswerTwo(), currentSec.get(3));
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("backout: {}", backout);
-                            }
-
                             String secAnswerOne = PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt);
                             String secAnswerTwo = PasswordUtils.encryptText(reqSecurity.getSecAnswerTwo(), newUserSalt);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Value: {}", secAnswerOne);
-                                DEBUGGER.debug("Value: {}", secAnswerTwo);
-                            }
 
                             // good, move forward
                             // make the modification in the user repository
@@ -702,11 +646,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             changeMap.put(authData.getSecQuestionTwo(), reqSecurity.getSecQuestionTwo());
                             changeMap.put(authData.getSecAnswerOne(), secAnswerOne);
                             changeMap.put(authData.getSecAnswerTwo(), secAnswerTwo);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("changeMap: {}", changeMap);
-                            }
 
                             boolean isComplete = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), changeMap);
 
@@ -733,12 +672,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // intervention
                                     boolean backoutData = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), backout);
                                     boolean backoutSalt = userSec.updateUserSalt(userAccount.getGuid(), existingSalt, SaltType.RESET.name());
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("backoutData: {}", backoutData);
-                                        DEBUGGER.debug("backoutSalt: {}", backoutSalt);
-                                    }
 
                                     if (!(backoutData) && (!(backoutSalt)))
                                     {
@@ -1009,7 +942,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("Requestor: {}", requestor);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+			DEBUGGER.debug("UserAccount: {}", requestor);
         }
 
         if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
@@ -1025,11 +958,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         {
             String resetSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("resetSalt: {}", resetSalt);
-            }
-
             boolean isSaltInserted = userSec.addUserSalt(userAccount.getGuid(), newUserSalt, SaltType.RESET.name());
 
             if (DEBUG)
@@ -1042,12 +970,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 String secAnswerOne = PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
                 String secAnswerTwo = PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), newUserSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Value: {}", secAnswerOne);
-                    DEBUGGER.debug("Value: {}", secAnswerTwo);
-                }
-
                 List<String> securityList = new ArrayList<String>
                 (
                     Arrays.asList
@@ -1059,11 +981,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         secAnswerTwo
                     )
                 );
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("securityList: {}", securityList);
-                }
 
                 boolean isComplete = authenticator.createSecurityData(userAccount.getUsername(), userAccount.getGuid(), securityList);
 

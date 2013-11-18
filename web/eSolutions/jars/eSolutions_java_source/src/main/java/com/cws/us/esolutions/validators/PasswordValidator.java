@@ -173,8 +173,6 @@ public class PasswordValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug("UserChangeRequest: {}", changeReq);
-            DEBUGGER.debug("newPassword: {}", newPassword);
-            DEBUGGER.debug("existingPassword: {}", existingPassword);
             DEBUGGER.debug("minLength: {}", minLength);
             DEBUGGER.debug("maxLength: {}", maxLength);
             DEBUGGER.debug("pattern: {}", pattern);

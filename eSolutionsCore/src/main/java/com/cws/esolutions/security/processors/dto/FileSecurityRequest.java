@@ -96,7 +96,6 @@ public class FileSecurityRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSecurity = value;
@@ -226,7 +225,6 @@ public class FileSecurityRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSecurity);
         }
 
         return this.userSecurity;
@@ -348,6 +346,7 @@ public class FileSecurityRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("userSecurity"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

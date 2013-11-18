@@ -98,7 +98,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserSecurity: {}", userSecurity);
-            DEBUGGER.debug("newUserSalt: {}", newUserSalt);
             DEBUGGER.debug("userDN: {}", userDN);
         }
 
@@ -174,11 +173,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 {
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
                             secConfig.getAuthAlgorithm(), secConfig.getIterations());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", newPassword);
-                    }
 
                     List<String> accountData = new ArrayList<String>(
                         Arrays.asList(

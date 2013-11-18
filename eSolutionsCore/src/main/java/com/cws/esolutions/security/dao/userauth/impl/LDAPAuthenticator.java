@@ -66,7 +66,6 @@ public class LDAPAuthenticator implements Authenticator
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", guid);
             DEBUGGER.debug("String: {}", username);
-            DEBUGGER.debug("String: {}", password);
             DEBUGGER.debug("String: {}", groupName);
         }
 
@@ -266,7 +265,6 @@ public class LDAPAuthenticator implements Authenticator
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("User GUID: {}", userGuid);
-            DEBUGGER.debug("newPass: {}", newPass);
             DEBUGGER.debug("expiry: {}", expiry);
         }
 
@@ -339,11 +337,6 @@ public class LDAPAuthenticator implements Authenticator
                                 Arrays.asList(
                                         new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
                                         new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(expiry))));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("modifyList: {}", modifyList);
-                        }
 
                         LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
 
@@ -529,7 +522,6 @@ public class LDAPAuthenticator implements Authenticator
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", data);
         }
 
         boolean isComplete = false;
@@ -605,11 +597,6 @@ public class LDAPAuthenticator implements Authenticator
                                 new Modification(ModificationType.ADD, authData.getSecAnswerTwo(), data.get(3))
                             )
                         );
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("modifyList: {}", modifyList);
-                        }
 
                         LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
 
@@ -724,21 +711,11 @@ public class LDAPAuthenticator implements Authenticator
 
                     SearchResult searchResult = ldapConn.search(searchRequest);
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
                     if (searchResult.getResultCode() == ResultCode.SUCCESS)
                     {
                         if (searchResult.getSearchEntries().size() == 1)
                         {
                             SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResultEntry: {}", entry);
-                            }
 
                             // ensure the user exists in the requested application
                             // i think we shouldnt necessarily require it but whatever
@@ -747,11 +724,6 @@ public class LDAPAuthenticator implements Authenticator
                             userSecurity.add(entry.getAttributeValue(authData.getSecQuestionTwo()));
                             userSecurity.add(entry.getAttributeValue(authData.getSecAnswerOne()));
                             userSecurity.add(entry.getAttributeValue(authData.getSecAnswerTwo()));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("userSecurity: {}", userSecurity);
-                            }
                         }
                         else
                         {
@@ -804,7 +776,6 @@ public class LDAPAuthenticator implements Authenticator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Request data: {}", request);
         }
 
         boolean isAuthorized = false;
@@ -837,11 +808,6 @@ public class LDAPAuthenticator implements Authenticator
                             "(&(" + authData.getUserId() + "=" + request.get(1) + "))" +
                             "(&(" + authData.getSecAnswerOne() + "=" + request.get(2) + "))" +
                             "(&(" + authData.getSecAnswerTwo() + "=" + request.get(3) + ")))");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Filter: {}", searchFilter);
-                    }
 
                     SearchRequest searchReq = new SearchRequest(
                             authRepo.getRepositoryBaseDN(),

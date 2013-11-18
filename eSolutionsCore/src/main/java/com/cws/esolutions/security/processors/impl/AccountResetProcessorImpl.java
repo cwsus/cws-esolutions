@@ -18,7 +18,6 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Calendar;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -31,13 +30,13 @@ import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
-import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
@@ -85,7 +84,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             DEBUGGER.debug("Calendar: {}", cal);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
         }
         
         try
@@ -99,11 +97,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             // the request id should be in here, so lets make sure it exists
             List<String> resetData = userSec.getResetData(userSecurity.getResetRequestId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("resetData: {}", resetData);
-            }
 
             final String commonName = resetData.get(0);
             final Long resetTimestamp = Long.valueOf(resetData.get(1));
@@ -303,11 +296,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
                     secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Value: {}", tmpPassword);
-            }
-
             if (StringUtils.isNotEmpty(tmpPassword))
             {
                 // update the authentication datastore with the new password
@@ -324,11 +312,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 // now generate a temporary id to stuff into the database
                 // this will effectively replace the current salt value
                 String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resetId: {}", resetId);
-                }
 
                 if (StringUtils.isNotEmpty(resetId))
                 {

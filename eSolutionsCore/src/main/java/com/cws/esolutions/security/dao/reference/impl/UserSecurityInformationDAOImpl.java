@@ -54,7 +54,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("commonName: {}", commonName);
-            DEBUGGER.debug("saltValue: {}", saltValue);
             DEBUGGER.debug("saltType: {}", saltType);
         }
 
@@ -78,11 +77,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt.setString(1, commonName);
                 stmt.setString(2, saltValue);
                 stmt.setString(3, saltType);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 if (!(stmt.execute()))
                 {
@@ -121,7 +115,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("commonName: {}", commonName);
-            DEBUGGER.debug("saltValue: {}", saltValue);
             DEBUGGER.debug("saltType: {}", saltType);
         }
 
@@ -145,11 +138,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt.setString(1, commonName);
                 stmt.setString(2, saltValue);
                 stmt.setString(3, saltType);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 if (!(stmt.execute()))
                 {
@@ -224,20 +212,10 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 {
                     resultSet = stmt.getResultSet();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
                     if (resultSet.next())
                     {
                         resultSet.first();
                         saltValue = resultSet.getString(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Value: {}", saltValue);
-                        }
                     }
                 }
             }
@@ -305,29 +283,14 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt.setString(1, commonName);
                 stmt.setString(2, dataType);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
                 if (stmt.execute())
                 {
                     resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
 
                     if (resultSet.next())
                     {
                         resultSet.first();
                         response = resultSet.getObject(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Value: {}", response);
-                        }
                     }
                 }
                 else
@@ -440,9 +403,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("commonName: {}", resetId);
-            DEBUGGER.debug("resetId: {}", resetId);
-            DEBUGGER.debug("smsCode: {}", resetId);
+            DEBUGGER.debug("commonName: {}", commonName);
         }
 
         Connection sqlConn = null;
@@ -468,11 +429,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt.setString(2, resetId);
                 stmt.setLong(3, System.currentTimeMillis());
                 stmt.setString(4, smsCode);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 isComplete = (!(stmt.execute()));
 
@@ -543,11 +499,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 {
                     resultSet = stmt.getResultSet();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
                     if (resultSet.next())
                     {
                         resultSet.beforeFirst();
@@ -557,20 +508,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                         {
                             String[] data = new String[] { resultSet.getString(1), resultSet.getString(2), String.valueOf(resultSet.getLong(3)) };
 
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
                             response.add(data);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("response: {}", response);
                         }
                     }
                 }
@@ -615,7 +553,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Request ID: {}", resetId);
         }
 
         Connection sqlConn = null;
@@ -642,19 +579,9 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt = sqlConn.prepareCall("{CALL getResetData(?)}");
                 stmt.setString(1, resetId);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
                 if (stmt.execute())
                 {
                     resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
 
                     if (resultSet.next())
                     {
@@ -664,11 +591,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                                 Arrays.asList(
                                         resultSet.getString(1),
                                         String.valueOf(resultSet.getLong(2))));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("resetData: {}", resetData);
-                        }
                     }
                     else
                     {
@@ -713,7 +635,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("commonName: {}", resetId);
-            DEBUGGER.debug("resetId: {}", resetId);
         }
 
         Connection sqlConn = null;
@@ -739,11 +660,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt = sqlConn.prepareCall("{CALL removeResetData(?, ?)}");
                 stmt.setString(1, commonName);
                 stmt.setString(2, resetId);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 isComplete = (!(stmt.execute()));
 
@@ -784,8 +700,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("resetId: {}", resetId);
-            DEBUGGER.debug("smsCode: {}", smsCode);
         }
 
         Connection sqlConn = null;
@@ -812,11 +726,6 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 stmt.setString(1, userGuid);
                 stmt.setString(2, resetId);
                 stmt.setString(3, smsCode);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 isVerified = stmt.execute(); // this will return true if theres a resultset, which we expect
 

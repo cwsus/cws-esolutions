@@ -97,7 +97,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSecurity = value;
@@ -175,7 +174,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resetRequestId = value;
@@ -188,7 +186,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resetSmsCode = value;
@@ -240,7 +237,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSecurity);
         }
 
         return this.userSecurity;
@@ -318,7 +314,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resetRequestId);
         }
 
         return this.resetRequestId;
@@ -331,7 +326,6 @@ public class AuthenticationRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resetSmsCode);
         }
 
         return this.resetSmsCode;
@@ -375,6 +369,9 @@ public class AuthenticationRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("userSecurity"))) &&
+				    (!(field.getName().equals("resetSmsCode"))) &&
+				    (!(field.getName().equals("resetRequestId"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

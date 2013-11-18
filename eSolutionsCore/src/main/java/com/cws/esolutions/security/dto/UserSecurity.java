@@ -17,7 +17,6 @@ package com.cws.esolutions.security.dto;
 
 import org.slf4j.Logger;
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -42,11 +41,8 @@ import com.cws.esolutions.security.SecurityConstants;
 public class UserSecurity implements Serializable
 {
     private String userSalt = null;
-    private String sequence = null;
     private String otpValue = null;
     private String password = null;
-    private String secAnswer = null;
-    private String secQuestion = null;
     private String newPassword = null;
     private String secAnswerOne = null;
     private String secAnswerTwo = null;
@@ -68,7 +64,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSalt = value;
@@ -81,7 +76,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.password = value;
@@ -94,7 +88,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.newPassword = value;
@@ -107,36 +100,9 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.otpValue = value;
-    }
-
-    public final void setSequence(final String value)
-    {
-        final String methodName = UserSecurity.CNAME + "#setSequence(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sequence = value;
-    }
-
-    public final void setSecQuestion(final String value)
-    {
-        final String methodName = UserSecurity.CNAME + "#setSecQuestion(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secQuestion = value;
     }
 
     public final void setSecQuestionOne(final String value)
@@ -146,7 +112,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secQuestionOne = value;
@@ -159,23 +124,9 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secQuestionTwo = value;
-    }
-
-    public final void setSecAnswer(final String value)
-    {
-        final String methodName = UserSecurity.CNAME + "#setSecAnswer(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secAnswer = value;
     }
 
     public final void setSecAnswerOne(final String value)
@@ -185,7 +136,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerOne = value;
@@ -198,7 +148,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerTwo = value;
@@ -211,7 +160,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resetRequestId = value;
@@ -224,7 +172,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSalt);
         }
 
         return this.userSalt;
@@ -237,7 +184,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.password);
         }
 
         return this.password;
@@ -250,7 +196,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.newPassword);
         }
 
         return this.newPassword;
@@ -263,49 +208,9 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.otpValue);
         }
 
         return this.otpValue;
-    }
-
-    public final String getSequence()
-    {
-        final String methodName = UserSecurity.CNAME + "#getSequence()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sequence);
-        }
-
-        return this.sequence;
-    }
-
-    public final String getSecQuestion()
-    {
-        final String methodName = UserSecurity.CNAME + "#getSecQuestion()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestion);
-        }
-
-        return this.secQuestion;
-    }
-
-    public final String getSecQuestionOne()
-    {
-        final String methodName = UserSecurity.CNAME + "#getSecQuestionOne()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionOne);
-        }
-
-        return this.secQuestionOne;
     }
 
     public final String getSecQuestionTwo()
@@ -315,7 +220,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secQuestionTwo);
         }
 
         return this.secQuestionTwo;
@@ -328,7 +232,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswer);
         }
 
         return this.secAnswer;
@@ -341,7 +244,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerOne);
         }
 
         return this.secAnswerOne;
@@ -354,7 +256,6 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
         }
 
         return this.secAnswerTwo;
@@ -367,60 +268,8 @@ public class UserSecurity implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resetRequestId);
         }
 
         return this.resetRequestId;
-    }
-
-    @Override
-    public final String toString()
-    {
-        final String methodName = UserSecurity.CNAME + "#toString()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
-
-        for (Field field : this.getClass().getDeclaredFields())
-        {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: {}", field);
-            }
-
-            if (!(field.getName().equals("methodName")) &&
-                    (!(field.getName().equals("CNAME"))) &&
-                    (!(field.getName().equals("DEBUGGER"))) &&
-                    (!(field.getName().equals("DEBUG"))) &&
-                    (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
-            {
-                try
-                {
-                    if (field.get(this) != null)
-                    {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
-                    }
-                }
-                catch (IllegalAccessException iax)
-                {
-                    ERROR_RECORDER.error(iax.getMessage(), iax);
-                }
-            }
-        }
-
-        sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
-        }
-
-        return sBuilder.toString();
     }
 }

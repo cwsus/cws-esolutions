@@ -106,7 +106,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.currentPassword = value;
@@ -119,7 +118,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.newPassword = value;
@@ -132,7 +130,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.confirmPassword = value;
@@ -158,7 +155,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerOne = value;
@@ -171,7 +167,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.secAnswerTwo = value;
@@ -301,7 +296,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.currentPassword);
         }
 
         return this.currentPassword;
@@ -314,7 +308,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.newPassword);
         }
 
         return this.newPassword;
@@ -327,7 +320,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.confirmPassword);
         }
 
         return this.confirmPassword;
@@ -353,7 +345,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerOne);
         }
 
         return this.secAnswerOne;
@@ -366,7 +357,6 @@ public final class UserChangeRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secAnswerTwo);
         }
 
         return this.secAnswerTwo;
@@ -462,6 +452,11 @@ public final class UserChangeRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("newPassword"))) &&
+				    (!(field.getName().equals("secAnswerOne"))) &&
+				    (!(field.getName().equals("secAnswerTwo"))) &&
+				    (!(field.getName().equals("currentPassword"))) &&
+				    (!(field.getName().equals("confirmPassword"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

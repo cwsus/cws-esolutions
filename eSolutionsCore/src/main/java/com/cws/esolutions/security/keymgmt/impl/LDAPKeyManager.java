@@ -206,11 +206,6 @@ public class LDAPKeyManager implements KeyManager
                         throw new KeyManagementException("No private key was found for the provided user.");
                     }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("privKeyBytes: {}", pubKeyBytes);
-                    }
-
                     // get the public key
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
                             "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");

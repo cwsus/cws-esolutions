@@ -164,11 +164,6 @@ public class SecurityResponseValidator implements Validator
 
         final UserChangeRequest request = (UserChangeRequest) target;
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserChangeRequest: {}", request);
-        }
-
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionOne", this.messageSecurityQuestionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secQuestionTwo", this.messageSecurityQuestionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageSecurityAnswerRequired);

@@ -92,7 +92,6 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.userSecurity = value;
@@ -157,7 +156,6 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.smsCode = value;
@@ -196,7 +194,6 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userSecurity);
         }
 
         return this.userSecurity;
@@ -261,7 +258,6 @@ public class AccountResetRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.smsCode);
         }
 
         return this.smsCode;
@@ -292,6 +288,8 @@ public class AccountResetRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("userSecurity"))) &&
+				    (!(field.getName().equals("smsCode"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

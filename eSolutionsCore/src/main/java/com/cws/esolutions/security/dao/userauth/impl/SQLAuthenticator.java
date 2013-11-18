@@ -53,7 +53,6 @@ public class SQLAuthenticator implements Authenticator
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", guid);
             DEBUGGER.debug("String: {}", username);
-            DEBUGGER.debug("String: {}", password);
             DEBUGGER.debug("String: {}", groupName);
         }
 
@@ -78,11 +77,6 @@ public class SQLAuthenticator implements Authenticator
                 stmt.setString(1, guid); // common name
                 stmt.setString(2, username); // username
                 stmt.setString(2, password); // password
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
 
                 if (stmt.execute())
                 {

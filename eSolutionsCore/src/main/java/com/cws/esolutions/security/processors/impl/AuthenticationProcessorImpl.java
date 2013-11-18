@@ -15,18 +15,15 @@
  */
 package com.cws.esolutions.security.processors.impl;
 
+import java.util.Map;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.Map;
 import java.sql.SQLException;
-
 import org.apache.commons.io.FileUtils;
-
 import com.unboundid.ldap.sdk.ResultCode;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -101,7 +98,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", authUser);
-            DEBUGGER.debug("UserSecurity: {}", authSec);
             DEBUGGER.debug("maxAttempts: {}", maxAttempts);
         }
         
@@ -167,11 +163,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         throw new AuthenticatorException("OTP authentication has not yet been implemented.");
                     default:
                         String userSalt = userSec.getUserSalt(authAccount.getGuid(), SaltType.LOGON.name());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("userSalt: {}", userSalt);
-                        }
 
                         if (StringUtils.isNotEmpty(userSalt))
                         {
@@ -664,17 +655,11 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
         }
 
         try
         {
             final String userSalt = userSec.getUserSalt(userAccount.getGuid(), SaltType.RESET.name());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("userSalt: {}", userSalt);
-            }
 
             if (StringUtils.isNotEmpty(userSalt))
             {
@@ -684,11 +669,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                                 userAccount.getUsername(),
                                 PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt),
                                 PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt)));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("requestList: {}", requestList);
-                }
 
                 boolean isVerified = authenticator.verifySecurityData(requestList);
 

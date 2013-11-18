@@ -116,7 +116,6 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
         }
 
         this.resetId = value;
@@ -194,7 +193,6 @@ public class AccountResetResponse implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resetId);
         }
 
         return this.resetId;
@@ -238,6 +236,7 @@ public class AccountResetResponse implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
+				    (!(field.getName().equals("resetId"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

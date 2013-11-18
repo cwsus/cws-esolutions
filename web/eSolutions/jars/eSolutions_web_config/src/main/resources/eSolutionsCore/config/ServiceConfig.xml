@@ -55,7 +55,7 @@
     </ssh-config>
 
     <mail-config>
-        <dataSourceName>jndi/mail</dataSourceName>
+        <dataSourceName>mail/MailSession</dataSourceName>
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
         <mailFrom>eSolutions@caspersbox.com</mailFrom>
     </mail-config>
