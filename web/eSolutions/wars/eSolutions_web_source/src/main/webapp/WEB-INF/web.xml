@@ -240,7 +240,6 @@
     </jsp-config>
 
     <session-config>
-        <tracking-mode>COOKIE</tracking-mode>
         <session-timeout>15</session-timeout>
         <cookie-config>
             <name>ESOLUTIONS_ID</name>
