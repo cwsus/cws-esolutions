@@ -210,11 +210,25 @@ public class LoginController
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
 
             DEBUGGER.debug("Dumping request content:");
             @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
@@ -239,7 +253,7 @@ public class LoginController
             }
         }
 
-        @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hRequest.getSession().getAttributeNames();
+        @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
         while (sessionEnumeration.hasMoreElements())
         {
@@ -250,7 +264,7 @@ public class LoginController
                 DEBUGGER.debug("sessionElement: {}", sessionElement);
             }
 
-            Object sessionValue = hRequest.getSession().getAttribute(sessionElement);
+            Object sessionValue = hSession.getAttribute(sessionElement);
 
             if (DEBUG)
             {
@@ -268,7 +282,7 @@ public class LoginController
 
                 if (sessionAccount.getStatus() == null)
                 {
-                    hRequest.getSession().invalidate();
+                    hSession.invalidate();
 
                     break;
                 }
@@ -287,7 +301,7 @@ public class LoginController
 
                             return mView;
                         default:
-                            hRequest.getSession().invalidate();
+                            hSession.invalidate();
 
                             break;
                     }
@@ -421,12 +435,26 @@ public class LoginController
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
 
             DEBUGGER.debug("Dumping request content:");
             @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
@@ -476,7 +504,7 @@ public class LoginController
 
             UserAccount reqUser = new UserAccount();
             reqUser.setUsername(loginRequest.getLoginUser());
-            reqUser.setSessionId(hRequest.getSession().getId());
+            reqUser.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -522,16 +550,16 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                HttpSession hSession = null;
+                HttpSession nSession = null;
 
                 switch (userAccount.getStatus())
                 {
                     case SUCCESS:
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getHomeRedirect());
@@ -546,9 +574,9 @@ public class LoginController
                         // password expired - redirect to change password page
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
@@ -612,12 +640,26 @@ public class LoginController
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
 
             DEBUGGER.debug("Dumping request content:");
             @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
@@ -667,7 +709,7 @@ public class LoginController
 
             UserAccount reqUser = new UserAccount();
             reqUser.setUsername(user.getUsername());
-            reqUser.setSessionId(hRequest.getSession().getId());
+            reqUser.setSessionId(hSession.getId());
 
             if (DEBUG)
             {
@@ -775,12 +817,26 @@ public class LoginController
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
 
             DEBUGGER.debug("Dumping request content:");
             @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
@@ -848,7 +904,7 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: ", userAccount);
                 }
 
-                HttpSession hSession = null;
+                HttpSession nSession = null;
 
                 switch (userAccount.getStatus())
                 {
@@ -857,9 +913,9 @@ public class LoginController
                         // check logon type
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView.setViewName(appConfig.getHomeRedirect());
 
@@ -868,9 +924,9 @@ public class LoginController
                         // password expired - redirect to change password page
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
@@ -928,12 +984,26 @@ public class LoginController
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
         if (DEBUG)
         {
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
 
             DEBUGGER.debug("Dumping request content:");
             @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
@@ -1001,7 +1071,7 @@ public class LoginController
                     DEBUGGER.debug("UserAccount: ", userAccount);
                 }
 
-                HttpSession hSession = null;
+                HttpSession nSession = null;
 
                 switch (userAccount.getStatus())
                 {
@@ -1010,9 +1080,9 @@ public class LoginController
                         // check logon type
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView.setViewName(appConfig.getHomeRedirect());
 
@@ -1021,9 +1091,9 @@ public class LoginController
                         // password expired - redirect to change password page
                         hRequest.getSession().invalidate();
 
-                        hSession = hRequest.getSession();
-                        userAccount.setSessionId(hSession.getId());
-                        hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
+                        nSession = hRequest.getSession(true);
+                        userAccount.setSessionId(nSession.getId());
+                        nSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
                         mView.setViewName(appConfig.getExpiredRedirect());
