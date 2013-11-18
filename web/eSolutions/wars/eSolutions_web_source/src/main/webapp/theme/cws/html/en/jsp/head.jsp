@@ -40,6 +40,7 @@
     <meta http-equiv="expires" content="-1" />
     <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
     <meta http-equiv="max-age" content="0" />
+    <meta http-equiv="refresh" content="900, ${pageContext.request.contextPath}/ui/login/logout" />
     <meta name="robots" content="index,follow,noarchive" />
     <meta name="GoogleBot" content="noarchive" />
     <meta name="Author" content="eSolutions" />
@@ -69,7 +70,7 @@
                 }
                 else
                 {
-                	setTimeout(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, ${pageContext.session.maxInactiveInterval});
+                	setTimeout(function() { window.location.href = ''; }, ${pageContext.session.maxInactiveInterval});
                 }
             }
         //-->

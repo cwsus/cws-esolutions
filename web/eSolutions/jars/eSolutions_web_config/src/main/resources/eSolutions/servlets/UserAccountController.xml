@@ -38,9 +38,6 @@
         <property name="securityValidator">
             <ref bean="securityResponseValidator" />
         </property>
-        <property name="emailValidator">
-            <ref bean="emailAddressValidator" />
-        </property>
         <property name="telValidator">
             <ref bean="contactValidator" />
         </property>

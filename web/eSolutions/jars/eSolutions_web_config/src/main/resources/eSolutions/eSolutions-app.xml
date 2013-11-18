@@ -99,7 +99,7 @@
     </bean>
 
     <!-- internationalization -->
-    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list>
 				<value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
