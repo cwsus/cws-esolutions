@@ -59,6 +59,7 @@
     </script>
     <script type="text/javascript">
         <!--
+            var timeout = ${pageContext.session.maxInactiveInterval} * 1000;
             var documentURI = window.location.pathname + window.location.search;
             var ignoreURIs = new Array("/ui/login", "/ui/online-reset", "/ui/knowledgebase", "/ui/common/submit-contact");
 
@@ -70,7 +71,7 @@
                 }
                 else
                 {
-                	setTimeout(function() { window.location.href = ''; }, ${pageContext.session.maxInactiveInterval});
+                	setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, timeout);
                 }
             }
         //-->
