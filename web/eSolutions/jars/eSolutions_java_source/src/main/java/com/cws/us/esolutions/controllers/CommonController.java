@@ -357,9 +357,9 @@ public class CommonController
     }
 
     @RequestMapping(value = "/submit-contact", method = RequestMethod.POST)
-    public final ModelAndView doCombinedLogin(@ModelAttribute("message") final EmailMessage message, final BindingResult bindResult)
+    public final ModelAndView doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final BindingResult bindResult)
     {
-        final String methodName = CommonController.CNAME + "#doCombinedLogin(@ModelAttribute(\"message\") final EmailMessage message, final BindingResult bindResult)";
+        final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final BindingResult bindResult)";
 
         if (DEBUG)
         {

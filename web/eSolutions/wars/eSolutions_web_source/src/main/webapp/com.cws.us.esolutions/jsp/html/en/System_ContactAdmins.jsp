@@ -61,7 +61,7 @@
                 <tr>
                     <td><label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label></td>
                     <td><form:errors path="messageFrom" cssClass="validationError" /></td>
-                    <td><form:textarea path="messageFrom" /></td>
+                    <td><form:input path="messageFrom" /></td>
                 </tr>
 	        </table>
 

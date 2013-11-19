@@ -356,7 +356,7 @@ p#info
     font-size: 12px;
 }
 
-p#validationError
+span#validationError
 {
     color: #FF0000;
     font-size: 15px;
