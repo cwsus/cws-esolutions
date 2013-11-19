@@ -45,8 +45,6 @@ import com.cws.esolutions.security.processors.enums.ModificationType;
 public class AccountChangeRequest implements Serializable
 {
     private boolean isReset = false;
-    private String algorithm = null;
-    private String serviceId = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -127,19 +125,6 @@ public class AccountChangeRequest implements Serializable
         this.applicationId = value;
     }
 
-    public final void setAlgorithm(final String value)
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#setAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.algorithm = value;
-    }
-
     public final void setModType(final ModificationType value)
     {
         final String methodName = AccountChangeRequest.CNAME + "#setControlType(final ModificationType value)";
@@ -190,19 +175,6 @@ public class AccountChangeRequest implements Serializable
         }
 
         this.isLoginRequest = value;
-    }
-
-    public final void setServiceId(final String value)
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#setServiceId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceId = value;
     }
 
     public final RequestHostInfo getHostInfo()
@@ -269,19 +241,6 @@ public class AccountChangeRequest implements Serializable
         return this.applicationId;
     }
 
-    public final String getAlgorithm()
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#getAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.algorithm);
-        }
-
-        return this.algorithm;
-    }
-
     public final ModificationType getModType()
     {
         final String methodName = AccountChangeRequest.CNAME + "#getControlType()";
@@ -332,19 +291,6 @@ public class AccountChangeRequest implements Serializable
         }
 
         return this.isLoginRequest;
-    }
-
-    public final String getServiceId()
-    {
-        final String methodName = AccountChangeRequest.CNAME + "#getServiceId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceId);
-        }
-
-        return this.serviceId;
     }
 
     @Override

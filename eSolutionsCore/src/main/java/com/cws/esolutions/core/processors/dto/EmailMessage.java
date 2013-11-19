@@ -51,11 +51,11 @@ public class EmailMessage implements Serializable
     private String firstName = null;
     private String messageBody = null;
     private String messageSubject = null;
+    private List<String> emailAddr = null;
     private List<String> messageCC = null;
     private List<String> messageTo = null;
     private List<String> messageBCC = null;
     private String[] messageSources = null;
-    private List<String> messageFrom = null;
     private Map<String, InputStream> messageAttachments = null;
 
     private static final String CNAME = EmailMessage.class.getName();
@@ -143,9 +143,9 @@ public class EmailMessage implements Serializable
         this.messageTo = to;
     }
 
-    public final void setMessageFrom(final List<String> from)
+    public final void setEmailAddr(final List<String> from)
     {
-        final String methodName = EmailMessage.CNAME + "#setMessageFrom(final List<String> from)";
+        final String methodName = EmailMessage.CNAME + "#setEmailAddr(final List<String> from)";
 
         if (DEBUG)
         {
@@ -153,7 +153,7 @@ public class EmailMessage implements Serializable
             DEBUGGER.debug("Address: {}", from);
         }
 
-        this.messageFrom = from;
+        this.emailAddr = from;
     }
 
     public final void setMessageSources(final String[] sources)
@@ -316,17 +316,17 @@ public class EmailMessage implements Serializable
         return this.messageTo;
     }
 
-    public final List<String> getMessageFrom()
+    public final List<String> getEmailAddr()
     {
-        final String methodName = EmailMessage.CNAME + "#getMessageFrom()";
+        final String methodName = EmailMessage.CNAME + "#getEmailAddr()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Address: {}", this.messageFrom);
+            DEBUGGER.debug("Address: {}", this.emailAddr);
         }
 
-        return this.messageFrom;
+        return this.emailAddr;
     }
 
     public final String[] getMessageSources()

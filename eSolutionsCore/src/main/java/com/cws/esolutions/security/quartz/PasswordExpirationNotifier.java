@@ -27,8 +27,8 @@ import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -56,9 +56,9 @@ public class PasswordExpirationNotifier implements Job
     private static final String CNAME = PasswordExpirationNotifier.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + PasswordExpirationNotifier.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + PasswordExpirationNotifier.CNAME);
 
     public PasswordExpirationNotifier()
     {
@@ -147,7 +147,7 @@ public class PasswordExpirationNotifier implements Job
                         // generate an email for the user
                         EmailMessage message = new EmailMessage();
                         message.setIsAlert(false);
-                        message.setMessageFrom(new ArrayList<String>(Arrays.asList((String) jobData.get(sendMessageAs))));
+                        message.setEmailAddr(new ArrayList<String>(Arrays.asList((String) jobData.get(sendMessageAs))));
                         message.setMessageTo(new ArrayList<String>(Arrays.asList(emailAddr)));
                         message.setMessageSubject(messageSubject);
                         message.setMessageBody(messageBody);

@@ -232,7 +232,7 @@ public final class EmailUtils
                         mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     }
 
-                    mailMessage.setFrom(new InternetAddress(emailMessage.getMessageFrom().get(0)));
+                    mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
                     mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
                     mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
                     mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
@@ -374,7 +374,7 @@ public final class EmailUtils
                         mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     }
 
-                    mailMessage.setFrom(new InternetAddress(emailMessage.getMessageFrom().get(0)));
+                    mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
                     mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
                     mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
                     mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
@@ -510,7 +510,7 @@ public final class EmailUtils
                         mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
                     }
 
-                    mailMessage.setFrom(new InternetAddress(emailMessage.getMessageFrom().get(0)));
+                    mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
                     mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
                     mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
                     mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
@@ -736,7 +736,7 @@ public final class EmailUtils
                                             emailMessage.setMessageTo(toList);
                                             emailMessage.setMessageCC(ccList);
                                             emailMessage.setMessageBCC(bccList);
-                                            emailMessage.setMessageFrom(fromList);
+                                            emailMessage.setEmailAddr(fromList);
                                             emailMessage.setMessageAttachments(attachmentList);
                                             emailMessage.setMessageDate(message.getSentDate());
                                             emailMessage.setMessageSubject(message.getSubject());

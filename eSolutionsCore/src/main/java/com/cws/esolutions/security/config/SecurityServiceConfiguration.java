@@ -55,6 +55,7 @@ public final class SecurityServiceConfiguration implements Serializable
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
     private ExceptionConfig exceptionConfig = null;
+    private FileSecurityConfig fileSecurityConfig = null;
 
     private static final long serialVersionUID = -795898942156658458L;
     private static final String CNAME = SecurityServiceConfiguration.class.getName();
@@ -154,6 +155,19 @@ public final class SecurityServiceConfiguration implements Serializable
         this.exceptionConfig = value;
     }
 
+    public final void setFileSecurityConfig(final FileSecurityConfig value)
+    {
+        final String methodName = SecurityServiceConfiguration.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.fileSecurityConfig = value;
+    }
+
     @XmlElement(name = "email-address")
     public final String getEmailAddr()
     {
@@ -250,6 +264,20 @@ public final class SecurityServiceConfiguration implements Serializable
         }
         
         return this.exceptionConfig;
+    }
+
+    @XmlElement(name = "file-security-config")
+    public final FileSecurityConfig getFileSecurityConfig()
+    {
+        final String methodName = SecurityServiceConfiguration.CNAME + "#getFileSecurityConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.fileSecurityConfig);
+        }
+
+        return this.fileSecurityConfig;
     }
 
     public final String toString()

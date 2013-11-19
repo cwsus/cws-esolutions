@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
@@ -50,9 +50,9 @@ public class IdleAccountLocker implements Job
     private static final String CNAME = IdleAccountLocker.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + IdleAccountLocker.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + IdleAccountLocker.CNAME);
 
     public IdleAccountLocker()
     {

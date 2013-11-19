@@ -122,7 +122,7 @@ public class EmailMessageValidator implements Validator
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "messageBody", this.messageBodyRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "messageFrom", this.messageFromRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageFromRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "messageSubject", this.messageSubjectRequired);
     }
 }

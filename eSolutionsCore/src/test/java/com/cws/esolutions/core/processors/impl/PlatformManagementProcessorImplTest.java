@@ -289,7 +289,6 @@ public class PlatformManagementProcessorImplTest
         {
             PlatformManagementResponse response = processor.getPlatformData(request);
 
-            System.out.println(response);
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
         catch (PlatformManagementException pmx)

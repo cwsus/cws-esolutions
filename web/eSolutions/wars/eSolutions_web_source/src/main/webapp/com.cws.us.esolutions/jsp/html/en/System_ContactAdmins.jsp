@@ -46,7 +46,7 @@
 
         <span id="validationError"></span>
 
-	    <form:form name="submitContactForm" method="post" action="${pageRequest.request.contextPath}/ui/common/submit-contact">
+	    <form:form name="submitContactForm" method="post" action="${pageContext.request.contextPath}/ui/common/submit-contact">
 	        <table>
 	            <tr>
 	                <td><label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label></td>
@@ -60,8 +60,8 @@
 	            </tr>
                 <tr>
                     <td><label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label></td>
-                    <td><form:errors path="messageFrom" cssClass="validationError" /></td>
-                    <td><form:input path="messageFrom" /></td>
+                    <td><form:errors path="emailAddr" cssClass="validationError" /></td>
+                    <td><form:input path="emailAddr" /></td>
                 </tr>
 	        </table>
 

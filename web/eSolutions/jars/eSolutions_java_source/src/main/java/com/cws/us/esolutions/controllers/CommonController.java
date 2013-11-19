@@ -431,7 +431,7 @@ public class CommonController
             return mView;
         }
 
-        addressValidator.validate(message.getMessageFrom().get(0), bindResult);
+        addressValidator.validate(message.getEmailAddr().get(0), bindResult);
 
         if (bindResult.hasErrors())
         {
@@ -450,7 +450,7 @@ public class CommonController
             emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
             emailMessage.setMessageSubject("[ " + emailId + " ] - " + message.getMessageSubject());
             emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-            emailMessage.setMessageFrom(message.getMessageFrom());
+            emailMessage.setEmailAddr(message.getEmailAddr());
 
             if (DEBUG)
             {

@@ -676,8 +676,10 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         Arrays.asList(
                                 userAccount.getGuid(),
                                 userAccount.getUsername(),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt),
-                                PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt)));
+                                PasswordUtils.encryptText(userSecurity.getSecAnswerOne(), userSalt,
+                                        secConfig.getAuthAlgorithm(), secConfig.getIterations()),
+                                PasswordUtils.encryptText(userSecurity.getSecAnswerTwo(), userSalt,
+                                        secConfig.getAuthAlgorithm(), secConfig.getIterations())));
 
                 boolean isVerified = authenticator.verifySecurityData(requestList);
 

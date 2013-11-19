@@ -49,7 +49,6 @@ public class AccountControlRequest implements Serializable
 {
     private int startPage = 0;
     private boolean isReset = false;
-    private String algorithm = null;
     private String projectId = null;
     private String serviceId = null;
     private String applicationId = null;
@@ -133,19 +132,6 @@ public class AccountControlRequest implements Serializable
         }
 
         this.applicationId = value;
-    }
-
-    public final void setAlgorithm(final String value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.algorithm = value;
     }
 
     public final void setControlType(final ControlType value)
@@ -340,19 +326,6 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.applicationId;
-    }
-
-    public final String getAlgorithm()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#getAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.algorithm);
-        }
-
-        return this.algorithm;
     }
 
     public final ControlType getControlType()

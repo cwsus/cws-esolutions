@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -48,10 +48,10 @@ public class ResetRequestReaper implements Job
 {
     private static final String CNAME = ResetRequestReaper.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(Constants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
 
     public ResetRequestReaper()
     {

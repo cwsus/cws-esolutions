@@ -15,8 +15,6 @@
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
-        <encryptionAlgorithm>RSA</encryptionAlgorithm>
-        <signingAlgorithm>SHA1withRSA</signingAlgorithm>
         <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
         <passwordManager>com.cws.esolutions.security.dao.passwordmgmt.impl.LDAPPasswordManager</passwordManager>
@@ -72,6 +70,11 @@
         <keyDirectory>/opt/eSolutions/keys</keyDirectory>
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
+
+    <file-security-config>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm>
+        <encryptionAlgorithm>RSA</encryptionAlgorithm>
+    </file-security-config>
 
     <exception-config>
         <sendExceptionNotifications>false</sendExceptionNotifications>

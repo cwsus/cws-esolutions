@@ -15,18 +15,16 @@
  */
 package com.cws.esolutions.security.access.control.exception;
 
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.control
+ * com.cws.esolutions.security.access.control.exception
  * EmailControlServiceException.java
  *
- *
- *
- * $Id: EmailControlServiceException.java 2253 2012-12-27 20:57:13Z kmhuntly@gmail.com $
+ * $Id: $
  * $Author: $
- * $Date: 2012-12-27 15:57:13 -0500 (Thu, 27 Dec 2012) $
- * $Revision: 2253 $
+ * $Date: $
+ * $Revision: $
  * @author kmhuntly@gmail.com
  * @version 1.0
  *
@@ -35,7 +33,7 @@ import com.cws.esolutions.core.exception.CoreServiceException;
  * kh05451 @ Nov 17, 2012 12:41:13 PM
  *     Created.
  */
-public class EmailControlServiceException extends CoreServiceException
+public class EmailControlServiceException extends SecurityServiceException
 {
     private static final long serialVersionUID = -1245777962692294793L;
 

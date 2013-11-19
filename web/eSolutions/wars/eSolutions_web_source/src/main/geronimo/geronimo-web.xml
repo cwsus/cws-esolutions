@@ -7,6 +7,7 @@
             <dep:version>@version@</dep:version>
             <dep:type>war</dep:type>
         </dep:moduleId>
+
         <dep:dependencies>
             <dep:dependency>
                 <dep:groupId>console.jms</dep:groupId>
@@ -39,13 +40,57 @@
                 <dep:type>car</dep:type>
             </dep:dependency>
         </dep:dependencies>
+
         <dep:hidden-classes>
             <dep:filter>org.apache.log4j</dep:filter>
             <dep:filter>log4j</dep:filter>
         </dep:hidden-classes>
+
         <dep:inverse-classloading />
     </dep:environment>
+
     <context-root>@contextRoot@</context-root>
+
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryHost</nam:ref-name>
+        <nam:string>file:///etc/myConfigFile</nam:string>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryPort</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryConnTimeout</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryReadTimeout</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/minConnections</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/maxConnections</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryUser</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryPass</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositorySalt</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/baseObjectClass</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryBaseDN</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryUserBase</nam:ref-name>
+    </nam:resource-ref>
+    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:ref-name>ldap/repositoryAppBase</nam:ref-name>
+    </nam:resource-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>

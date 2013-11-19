@@ -302,7 +302,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 // we never show the user the password, we're only doing this
                 // to prevent unauthorized access (or further unauthorized access)
                 // we get a return code back but we aren't going to use it really
-                boolean isComplete = authenticator.changeUserPassword(userAccount.getGuid(), tmpPassword, System.currentTimeMillis());
+                boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, System.currentTimeMillis());
 
                 if (DEBUG)
                 {

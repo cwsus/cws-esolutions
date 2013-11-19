@@ -736,6 +736,140 @@ public class LDAPUserManager implements UserManager
     }
 
     @Override
+    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException
+    {
+        final String methodName = LDAPUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("User GUID: {}", userGuid);
+            DEBUGGER.debug("expiry: {}", expiry);
+        }
+
+        boolean isComplete = false;
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (!(ldapPool.isClosed()))
+            {
+                ldapConn = ldapPool.getConnection();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                }
+
+                if (ldapConn.isConnected())
+                {
+                    // need to get the userdn
+                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("searchFilter: {}", searchFilter);
+                    }
+
+                    SearchRequest searchReq = new SearchRequest(
+                        authRepo.getRepositoryBaseDN(),
+                        SearchScope.SUB,
+                        searchFilter,
+                        authData.getUserId(),
+                        authData.getCommonName(),
+                        authData.getGivenName(),
+                        authData.getSurname(),
+                        authData.getEmailAddr());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("searchRequest: {}", searchReq);
+                    }
+
+                    SearchResult searchResult = ldapConn.search(searchReq);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("searchResult: {}", searchResult);
+                    }
+
+                    if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 1))
+                    {
+                        SearchResultEntry entry = searchResult.getSearchEntries().get(0);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SearchResultEntry: {}", entry);
+                        }
+
+                        // perform the modification here
+                        List<Modification> modifyList = new ArrayList<Modification>(
+                                Arrays.asList(
+                                        new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
+                                        new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(expiry))));
+
+                        LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("LDAPResult: {}", ldapResult);
+                        }
+
+                        isComplete = (ldapResult.getResultCode() == ResultCode.SUCCESS);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
+                    }
+                    else
+                    {
+                        throw new LDAPException(ResultCode.NO_RESULTS_RETURNED, "Unable to locate provided user. Cannot continue.");
+                    }
+                }
+                else
+                {
+                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                }
+            }
+            else
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
+
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            ERROR_RECORDER.error(cx.getMessage(), cx);
+
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            {
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
     public synchronized boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#removeUserAccount(final String userId, final String userGuid) throws UserManagementException";

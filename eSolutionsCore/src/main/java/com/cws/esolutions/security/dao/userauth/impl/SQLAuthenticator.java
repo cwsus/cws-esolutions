@@ -23,7 +23,6 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -58,7 +57,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<Object> userAccount = null;
 
         try
@@ -195,82 +194,6 @@ public class SQLAuthenticator implements Authenticator
     }
 
     @Override
-    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws AuthenticatorException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("userGuid: {}", userGuid);
-            DEBUGGER.debug("newPass: {}", newPass);
-            DEBUGGER.debug("expiry: {}", expiry);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        PreparedStatement stmt = null;
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
-            {
-                sqlConn.setAutoCommit(true);
-
-                // first make sure the existing password is proper
-                // then make sure the new password doesnt match the existing password
-                stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
-                stmt.setString(1, userGuid);
-                stmt.setString(2, newPass);
-                stmt.setLong(3, expiry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                if (stmt.executeUpdate() == 1)
-                {
-                    isComplete = true;
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
-    }
-
-    @Override
     public synchronized void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#boolean lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException";
@@ -283,7 +206,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         try
         {
@@ -344,96 +267,6 @@ public class SQLAuthenticator implements Authenticator
     }
 
     @Override
-    public synchronized boolean createSecurityData(final String userId, final String userGuid, final List<String> request) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#createSecurityData(final String userId, final String userGuid, final List<String> request) throws AuthenticatorException";
-
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", request);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
-            {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{ CALL addOrUpdateSecurityQuestions(?, ?, ?, ?, ?, ?, ? }");
-                stmt.setString(1, userGuid); // guid
-                stmt.setString(2, userId); // password
-                stmt.setString(4, request.get(3)); // secques 1
-                stmt.setString(5, request.get(4)); // secques 2
-                stmt.setString(6, request.get(5)); // secques 1
-                stmt.setString(7, request.get(6)); // secques 2
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Statement: {}", stmt.toString());
-                }
-
-                int x = stmt.executeUpdate();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Update: {}", x);
-                }
-
-                if (x == 1)
-                {
-                    isComplete = true;
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-            
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
-    }
-
-    @Override
     public synchronized boolean verifySecurityData(final List<String> request) throws AuthenticatorException
     {
         final String methodName = SQLAuthenticator.CNAME + "#verifySecurityData(final List<String> request) throws AuthenticatorException";
@@ -447,7 +280,7 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         boolean isAuthorized = false;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
 
         try
         {
@@ -537,7 +370,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        CallableStatement stmt = null;
+        PreparedStatement stmt = null;
         List<String> userSecurity = null;
 
         try

@@ -149,7 +149,6 @@ public class FileSecurityProcessorImplTest
         FileSecurityRequest request = new FileSecurityRequest();
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
-        request.setAlgorithm("SHA1withRSA");
         request.setSignedFile(FileUtils.getFile("C:/Temp/myfile.sig"));
         request.setUnsignedFile(FileUtils.getFile("C:/Temp/myfile.txt"));
 
@@ -171,7 +170,6 @@ public class FileSecurityProcessorImplTest
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
         FileSecurityRequest request = new FileSecurityRequest();
-        request.setAlgorithm("SHA1withRSA");
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setSignedFile(FileUtils.getFile("C:/Temp/myfile.sig"));
@@ -195,7 +193,6 @@ public class FileSecurityProcessorImplTest
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
         FileSecurityRequest request = new FileSecurityRequest();
-        request.setAlgorithm("RSA");
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setDecryptedFile(FileUtils.getFile("C:/Temp/myfile.txt"));
@@ -219,7 +216,6 @@ public class FileSecurityProcessorImplTest
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
         FileSecurityRequest request = new FileSecurityRequest();
-        request.setAlgorithm("RSA");
         request.setHostInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setDecryptedFile(FileUtils.getFile("C:/Temp/myfile.txt"));

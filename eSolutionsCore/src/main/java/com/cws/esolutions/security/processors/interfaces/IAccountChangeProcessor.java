@@ -82,8 +82,6 @@ public interface IAccountChangeProcessor
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityConstants.WARN_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
 
-    AccountChangeResponse createSecurityData(final AccountChangeRequest request) throws AccountChangeException;
-
     AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException;
 
     AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException;

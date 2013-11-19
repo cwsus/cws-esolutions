@@ -53,7 +53,7 @@ public interface IUserControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userGuid
+     * @param userAccount
      * @param projectGuid
      * @return boolean
      * @throws UserControlServiceException
@@ -67,7 +67,7 @@ public interface IUserControlService
      * portlet service. It should also query an applicable user datastore,
      * in the event the session data may have been tampered.
      *
-     * @param userGuid
+     * @param userAccount
      * @param serviceGuid
      * @return boolean
      * @throws UserControlServiceException

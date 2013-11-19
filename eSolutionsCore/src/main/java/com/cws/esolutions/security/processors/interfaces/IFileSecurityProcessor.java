@@ -18,11 +18,11 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.ApplicationConfig;
-import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
+import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.config.FileSecurityConfig;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
+import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
@@ -44,14 +44,15 @@ import com.cws.esolutions.security.processors.exception.FileSecurityException;
  */
 public interface IFileSecurityProcessor
 {
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final String CNAME = IApplicationManagementProcessor.class.getName();
-    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final String CNAME = IFileSecurityProcessor.class.getName();
+    static final SecurityServiceConfiguration secConfig = secBean.getConfigData();
+    static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityConstants.WARN_LOGGER + CNAME);
 
     FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException;
 

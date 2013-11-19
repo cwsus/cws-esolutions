@@ -21,9 +21,10 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
@@ -65,6 +66,7 @@ public class AuthenticationProcessorImplTest
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");
             hostInfo.setHostName("junit");
+            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
         }
         catch (Exception e)
         {
@@ -141,7 +143,7 @@ public class AuthenticationProcessorImplTest
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setPassword("Ariana16*");
+        userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -228,7 +230,7 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        account.setRole(Role.SITEADMIN);
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setSecAnswerOne("answerone");
@@ -236,8 +238,7 @@ public class AuthenticationProcessorImplTest
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("eSolutions");
-        request.setAuthType(AuthenticationType.LOGIN);
-        request.setLoginType(LoginType.USERNAME);
+        request.setAuthType(AuthenticationType.SECURITY);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
         request.setApplicationId("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");

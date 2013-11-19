@@ -79,6 +79,9 @@ public class ResourceController
             DEBUGGER.debug("ResourceControllerBean: {}", resBean);
         }
 
+        int minConnections = 1;
+        int maxConnections = 10;
+
         final AuthRepositoryType authType = AuthRepositoryType.valueOf(authRepo.getRepoType());
 
         if (DEBUG)
@@ -97,21 +100,61 @@ public class ResourceController
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setAutoReconnect(true);
                     connOpts.setBindWithDNRequiresPassword(true);
-                    connOpts.setConnectTimeoutMillis(authRepo.getRepositoryConnTimeout());
-                    connOpts.setResponseTimeoutMillis(authRepo.getRepositoryReadTimeout());
 
-                    ldapConn = new LDAPConnection(connOpts,
-                        authRepo.getRepositoryHost(),
-                        authRepo.getRepositoryPort(),
-                        authRepo.getRepositoryUser(),
-                        PasswordUtils.decryptText(
-                            authRepo.getRepositoryPass(),
-                            authRepo.getRepositorySalt().length()));
+                    if (isContainer)
+                    {
+                        Context initContext = new InitialContext();
+                        Context envContext = (Context) initContext.lookup(DS_CONTEXT);
+
+                        minConnections = (Integer) envContext.lookup(authRepo.getMinConnections());
+                        maxConnections = (Integer) envContext.lookup(authRepo.getMaxConnections());
+                                
+                        connOpts.setConnectTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryConnTimeout()));
+                        connOpts.setResponseTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryReadTimeout()));
+
+                        ldapConn = new LDAPConnection(connOpts,
+                                (String) envContext.lookup(authRepo.getRepositoryHost()),
+                                (Integer) envContext.lookup(authRepo.getRepositoryPort()),
+                                (String) envContext.lookup(authRepo.getRepositoryUser()),
+                                PasswordUtils.decryptText(
+                                        (String) envContext.lookup(authRepo.getRepositoryPass()),
+                                        ((String) envContext.lookup(authRepo.getRepositorySalt())).length()));
+                    }
+                    else
+                    {
+                        minConnections = Integer.parseInt(authRepo.getMinConnections());
+                        maxConnections = Integer.parseInt(authRepo.getMaxConnections());
+
+                        connOpts.setConnectTimeoutMillis(Integer.parseInt(authRepo.getRepositoryConnTimeout()));
+                        connOpts.setResponseTimeoutMillis(Integer.parseInt(authRepo.getRepositoryReadTimeout()));
+
+                        ldapConn = new LDAPConnection(connOpts,
+                                authRepo.getRepositoryHost(),
+                                Integer.parseInt(authRepo.getRepositoryPort()),
+                                authRepo.getRepositoryUser(),
+                                PasswordUtils.decryptText(
+                                    authRepo.getRepositoryPass(),
+                                    authRepo.getRepositorySalt().length()));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    }
 
                     if (ldapConn.isConnected())
                     {
-                        LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
-                            authRepo.getMinConnections(), authRepo.getMaxConnections());
+                        LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
+                        }
 
                         if (!(connPool.isClosed()))
                         {
@@ -132,6 +175,12 @@ public class ResourceController
                     ERROR_RECORDER.error(lx.getMessage(), lx);
 
                     throw new CoreServiceException(lx.getMessage(), lx);
+                }
+                catch (NamingException nx)
+                {
+                    ERROR_RECORDER.error(nx.getMessage(), nx);
+
+                    throw new CoreServiceException(nx.getMessage(), nx);
                 }
 
                 break;

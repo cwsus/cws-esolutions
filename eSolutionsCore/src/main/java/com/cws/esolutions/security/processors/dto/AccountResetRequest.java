@@ -44,7 +44,6 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 public class AccountResetRequest implements Serializable
 {
     private String smsCode = null;
-    private String algorithm = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -121,19 +120,6 @@ public class AccountResetRequest implements Serializable
         }
 
         this.applicationId = value;
-    }
-
-    public final void setAlgorithm(final String value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.algorithm = value;
     }
 
     public final void setRequestor(final UserAccount value)
@@ -223,19 +209,6 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.applicationId;
-    }
-
-    public final String getAlgorithm()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.algorithm);
-        }
-
-        return this.algorithm;
     }
 
     public final UserAccount getRequestor()

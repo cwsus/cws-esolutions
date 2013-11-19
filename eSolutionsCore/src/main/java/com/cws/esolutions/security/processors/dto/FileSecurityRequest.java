@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
@@ -47,7 +46,6 @@ public class FileSecurityRequest implements Serializable
 {
     private String appName = null;
     private File signedFile = null;
-    private String algorithm = null;
     private File unsignedFile = null;
     private File decryptedFile = null;
     private File encryptedFile = null;
@@ -59,7 +57,7 @@ public class FileSecurityRequest implements Serializable
     private static final long serialVersionUID = 3260829311647276588L;
     private static final String CNAME = FileSecurityRequest.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
@@ -179,19 +177,6 @@ public class FileSecurityRequest implements Serializable
         this.decryptedFile = value;
     }
 
-    public final void setAlgorithm(final String value)
-    {
-        final String methodName = FileSecurityRequest.CNAME + "#setAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.algorithm = value;
-    }
-
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = FileSecurityRequest.CNAME + "#getHostInfo()";
@@ -308,19 +293,6 @@ public class FileSecurityRequest implements Serializable
         return this.decryptedFile;
     }
 
-    public final String getAlgorithm()
-    {
-        final String methodName = FileSecurityRequest.CNAME + "#getAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.algorithm);
-        }
-
-        return this.algorithm;
-    }
-
     @Override
     public final String toString()
     {
@@ -332,7 +304,7 @@ public class FileSecurityRequest implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityConstants.LINE_BREAK + "{" + SecurityConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -353,7 +325,7 @@ public class FileSecurityRequest implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

@@ -55,7 +55,6 @@ public class SecurityServiceListener implements ServletContextListener
 {
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
-    private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSCONFIG_FILE = "SecurityServiceConfig";
     private static final String INIT_SYSLOGGING_FILE = "SecurityServiceLogger";
     private static final String CNAME = SecurityServiceListener.class.getName();
@@ -130,7 +129,7 @@ public class SecurityServiceListener implements ServletContextListener
                     svcBean.setResourceBean(resBean);
 
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(DS_CONTEXT);
+                    Context envContext = (Context) initContext.lookup(SecurityConstants.DS_CONTEXT);
 
                     ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), true, resBean);
 

@@ -73,7 +73,7 @@ public class EmailUtilsTest
         message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageFrom(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageBody("This is a test message");
 
         try
@@ -106,7 +106,7 @@ public class EmailUtilsTest
             message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
             message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
             message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setMessageFrom(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
             message.setMessageBody("This is a test message");
             message.setMessageAttachments(attachments);
 
@@ -131,7 +131,7 @@ public class EmailUtilsTest
         message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageTo(new ArrayList<String>(Arrays.asList("7163415669@vmobl.com")));
-        message.setMessageFrom(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageBody("This is a test message");
 
         try

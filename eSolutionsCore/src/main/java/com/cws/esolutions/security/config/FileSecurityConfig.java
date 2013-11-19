@@ -15,22 +15,22 @@
  */
 package com.cws.esolutions.security.config;
 
-import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.security.SecurityConstants;
 /**
- * eSolutionsCore
+ * SecurityService
  * com.cws.esolutions.security.config
- * ExceptionConfig.java
+ * Configuration.java
+ *
+ *
  *
  * $Id: $
  * $Author: $
@@ -44,24 +44,23 @@ import com.cws.esolutions.security.SecurityConstants;
  * kh05451 @ Nov 23, 2012 8:21:09 AM
  *     Created.
  */
-@XmlRootElement(name = "exception-config")
+@XmlType(name = "file-security-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ExceptionConfig implements Serializable
+public final class FileSecurityConfig implements Serializable
 {
-    private String emailFrom = null;
-    private boolean sendNotifications = true;
-    private List<String> notificationAddress = null;
+    private String signatureAlgorithm = null;
+    private String encryptionAlgorithm = null;
 
-    private static final long serialVersionUID = 5834154758068491231L;
-    private static final String CNAME = ExceptionConfig.class.getName();
+    private static final String CNAME = FileSecurityConfig.class.getName();
+    private static final long serialVersionUID = -6570315707032254956L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
-    public final void setSendNotifications(final boolean value)
+    public final void setSignatureAlgorithm(final String value)
     {
-        final String methodName = ExceptionConfig.CNAME + "#setSendNotifications(final boolean value)";
+        final String methodName = FileSecurityConfig.CNAME + "#setSignatureAlgorithm(final String value)";
 
         if (DEBUG)
         {
@@ -69,12 +68,12 @@ public final class ExceptionConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sendNotifications = value;
+        this.signatureAlgorithm = value;
     }
 
-    public final void setEmailFrom(final String value)
+    public final void setEncryptionAlgorithm(final String value)
     {
-        final String methodName = ExceptionConfig.CNAME + "#setEmailFrom(final String value)";
+        final String methodName = FileSecurityConfig.CNAME + "#setEncryptionAlgorithm(final String value)";
 
         if (DEBUG)
         {
@@ -82,68 +81,40 @@ public final class ExceptionConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.emailFrom = value;
+        this.encryptionAlgorithm = value;
     }
 
-    public final void setNotificationAddress(final List<String> value)
+    @XmlElement(name = "signatureAlgorithm")
+    public final String getSignatureAlgorithm()
     {
-        final String methodName = ExceptionConfig.CNAME + "#setNotificationAddress(final List<String> value)";
+        final String methodName = FileSecurityConfig.CNAME + "#getSignatureAlgorithm()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.signatureAlgorithm);
         }
 
-        this.notificationAddress = value;
+        return this.signatureAlgorithm;
     }
 
-    @XmlElement(name = "sendExceptionNotifications")
-    public final boolean getSendExceptionNotifications()
+    @XmlElement(name = "encryptionAlgorithm")
+    public final String getEncryptionAlgorithm()
     {
-        final String methodName = ExceptionConfig.CNAME + "#getSendExceptionNotifications()";
+        final String methodName = FileSecurityConfig.CNAME + "#getEncryptionAlgorithm()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sendNotifications);
+            DEBUGGER.debug("Value: {}", this.encryptionAlgorithm);
         }
 
-        return this.sendNotifications;
-    }
-
-    @XmlElement(name = "emailFrom")
-    public final String getEmailFrom()
-    {
-        final String methodName = ExceptionConfig.CNAME + "#getEmailFrom()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.emailFrom);
-        }
-
-        return this.emailFrom;
-    }
-
-    @XmlElement(name = "emailAddress")
-    @XmlElementWrapper(name = "notificationAddresses")
-    public final List<String> getNotificationAddress()
-    {
-        final String methodName = ExceptionConfig.CNAME + "#getNotificationAddress()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.notificationAddress);
-        }
-
-        return this.notificationAddress;
+        return this.encryptionAlgorithm;
     }
 
     public final String toString()
     {
-        final String methodName = ExceptionConfig.CNAME + "#toString()";
+        final String methodName = FileSecurityConfig.CNAME + "#toString()";
 
         if (DEBUG)
         {

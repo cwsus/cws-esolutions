@@ -94,7 +94,7 @@ public class SecurityServiceException extends Exception
             EmailMessage email = new EmailMessage();
             email.setIsAlert(true);
             email.setMessageSubject("SecurityServiceException occurred !");
-            email.setMessageFrom(new ArrayList<String>(Arrays.asList(config.getEmailFrom())));
+            email.setEmailAddr(new ArrayList<String>(Arrays.asList(config.getEmailFrom())));
             email.setMessageTo(config.getNotificationAddress());
             email.setMessageBody(builder.toString());
 

@@ -63,9 +63,7 @@ public final class SecurityConfig implements Serializable
     private boolean performAudit = true; // default true to perform audit
     private String passwordManager = null;
     private boolean allowUserReset = false;
-    private String signingAlgorithm = null;
     private boolean smsResetEnabled = false;
-    private String encryptionAlgorithm = null;
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -283,32 +281,6 @@ public final class SecurityConfig implements Serializable
         }
 
         this.resetTimeout = value;
-    }
-
-    public final void setSigningAlgorithm(final String value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setSigningAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.signingAlgorithm = value;
-    }
-
-    public final void setEncryptionAlgorithm(final String value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setEncryptionAlgorithm(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.encryptionAlgorithm = value;
     }
 
     @XmlElement(name = "maxAttempts")
@@ -533,34 +505,6 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.resetTimeout;
-    }
-
-    @XmlElement(name = "signingAlgorithm")
-    public final String getSigningAlgorithm()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getSigningAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.signingAlgorithm);
-        }
-
-        return this.signingAlgorithm;
-    }
-
-    @XmlElement(name = "encryptionAlgorithm")
-    public final String getEncryptionAlgorithm()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getEncryptionAlgorithm()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.encryptionAlgorithm);
-        }
-
-        return this.encryptionAlgorithm;
     }
 
     public final String toString()

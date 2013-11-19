@@ -36,10 +36,8 @@ import com.cws.esolutions.security.access.control.exception.EmailControlServiceE
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.control
+ * com.cws.esolutions.security.access.control.imp
  * EmailControlService.java
- *
- *
  *
  * $Id: $
  * $Author: $

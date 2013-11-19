@@ -74,10 +74,6 @@ public interface Authenticator
 
     void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException;
 
-    boolean changeUserPassword(final String userDN, final String newPass, final Long expiry) throws AuthenticatorException;
-
-    boolean createSecurityData(final String userId, final String userGuid, final List<String> data) throws AuthenticatorException;
-
     List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException;
 
     /**

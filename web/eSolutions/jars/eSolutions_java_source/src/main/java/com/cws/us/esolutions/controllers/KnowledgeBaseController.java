@@ -1134,7 +1134,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.deleteArticleEmail, this.getClass().getClassLoader()));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1330,7 +1330,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.approveArticleEmail, this.getClass().getClassLoader()));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1526,7 +1526,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.rejectArticleEmail, this.getClass().getClassLoader()));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1835,7 +1835,7 @@ public class KnowledgeBaseController
                         emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                                 this.createArticleEmail, this.getClass().getClassLoader()));
                         emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                        emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
                         if (DEBUG)
                         {
@@ -2063,7 +2063,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.updateArticleEmail, this.getClass().getClassLoader()));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {

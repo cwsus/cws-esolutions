@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context cookies="true" crossContext="false" docBase="@document.base@"
-    fireRequestListenersOnForwards="true" logEffectiveWebXml="false" override="false"
-    preemptiveAuthentication="true" privileged="false" reloadable="true" sendRedirectBody="true"
-    sessionCookieDomain="@cookie.domain.name@" sessionCookieName="ESOLUTIONS_ID" sessionCookiePath="/"
-    sessionCookiePathUsesTrailingSlash="true" swallowAbortedUploads="true" swallowOutput="true"
-    tldNamespaceAware="true" tldValidation="true" useHttpOnly="true" xmlNamespaceAware="true"
-    xmlValidation="true" allowLinking="false" antiJARLocking="true" antiResourceLocking="true"
-    cacheMaxSize="10240" cacheObjectMaxSize="1024" cacheTTL="30000" cachingAllowed="true"
-    jndiExceptionOnFailedWrite="true" processTlds="true" useNaming="true" workDir="@tomcat.work.dir@">
+<Context docBase="@document.base@" workDir="@tomcat.work.dir@"
+    sessionCookieDomain="@cookie.domain.name@" sessionCookieName="ESOLUTIONS_ID"
+    sessionCookiePath="/" sessionCookiePathUsesTrailingSlash="true">
+
+    <Environment name="ldap/repositoryHost" type="java.lang.String" value="@repositoryHost@" override="false" />
+    <Environment name="ldap/repositoryPort" type="java.lang.Integer" value="@repositoryPort@" override="false" />
+    <Environment name="ldap/repositoryConnTimeout" type="java.lang.Integer" value="@repositoryConnTimeout@" override="false" />
+    <Environment name="ldap/repositoryReadTimeout" type="java.lang.Integer" value="@repositoryReadTimeout@" override="false" />
+    <Environment name="ldap/minConnections" type="java.lang.Integer" value="@minConnections@" override="false" />
+    <Environment name="ldap/maxConnections" type="java.lang.Integer" value="@maxConnections@" override="false" />
+    <Environment name="ldap/repositoryUser" type="java.lang.String" value="@repositoryUser@" override="false" />
+    <Environment name="ldap/repositoryPass" type="java.lang.String" value="@repositoryPass@" override="false" />
+    <Environment name="ldap/repositorySalt" type="java.lang.String" value="@repositorySalt@" override="false" />
+    <Environment name="ldap/baseObjectClass" type="java.lang.String" value="@baseObjectClass@" override="false" />
+    <Environment name="ldap/repositoryBaseDN" type="java.lang.String" value="@repositoryBaseDN@" override="false" />
+    <Environment name="ldap/repositoryUserBase" type="java.lang.String" value="@repositoryUserBase@" override="false" />
+    <Environment name="ldap/repositoryAppBase" type="java.lang.String" value="@repositoryAppBase@" override="false" />
 
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
@@ -42,8 +50,6 @@
     <Resource name="jms/responseQueue" auth="Container" type="org.apache.activemq.command.ActiveMQQueue"
         factory="org.apache.activemq.jndi.JNDIReferenceFactory" physicalName="CWS.RESPONSE.QUEUE"/>
 
-    <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="@allowedAddresses@" deny="@deniedAddresses@" />
-    <Valve className="org.apache.catalina.valves.RemoteHostValve" allow="@allowedHosts@" deny="@deniedHosts@" />
     <Valve className="org.apache.catalina.valves.ExtendedAccessLogValve" directory="@sysLogDirectory@" prefix="access" suffix=".log"
         fileDateFormat="yyyy-MM-dd" rotatable="true" renameOnRotate="true"
         pattern="date time time-taken bytes cs-uri cs-uri-query cs-uri-stem date s-dns s-ip sc-status c-dns x-H(remoteUser) cs-method cs-uri x-H(protocol)"

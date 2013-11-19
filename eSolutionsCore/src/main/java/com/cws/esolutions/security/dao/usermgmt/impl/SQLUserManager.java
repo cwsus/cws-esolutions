@@ -339,6 +339,82 @@ public class SQLUserManager implements UserManager
     }
 
     @Override
+    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("newPass: {}", newPass);
+            DEBUGGER.debug("expiry: {}", expiry);
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        PreparedStatement stmt = null;
+
+        try
+        {
+            sqlConn = SQLUserManager.dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+
+                // first make sure the existing password is proper
+                // then make sure the new password doesnt match the existing password
+                stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
+                stmt.setString(1, userGuid);
+                stmt.setString(2, newPass);
+                stmt.setLong(3, expiry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                if (stmt.executeUpdate() == 1)
+                {
+                    isComplete = true;
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
     public synchronized boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#removeUserAccount(final String userId, final String userGuid) throws UserManagementException";

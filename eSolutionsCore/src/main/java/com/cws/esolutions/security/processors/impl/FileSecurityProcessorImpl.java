@@ -86,7 +86,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Signature signature = Signature.getInstance(request.getAlgorithm());
+            Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
             signature.initSign(keys.getPrivate());
             signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
 
@@ -214,7 +214,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 DEBUGGER.debug("sigToVerify: {}", sigToVerify);
             }
 
-            Signature signature = Signature.getInstance(request.getAlgorithm());
+            Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
             signature.initVerify(keys.getPublic());
             signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
 
@@ -317,7 +317,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Cipher cipher = Cipher.getInstance(request.getAlgorithm());
+            Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, keys.getPrivate());
 
             if (DEBUG)
@@ -435,7 +435,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Cipher cipher = Cipher.getInstance(request.getAlgorithm());
+            Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
             cipher.init(Cipher.DECRYPT_MODE, keys.getPublic());
 
             if (DEBUG)

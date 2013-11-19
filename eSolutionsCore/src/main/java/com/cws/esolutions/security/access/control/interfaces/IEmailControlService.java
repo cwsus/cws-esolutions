@@ -29,12 +29,10 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.control.interfaces
+ * com.cws.esolutions.security.access.control.interfaces
  * IEmailControlService.java
  *
- *
- *
- * $Id: IEmailControlService.java 2276 2013-01-03 16:32:52Z kmhuntly@gmail.com $
+ * $Id: $
  * $Author: $
  * $Date: $
  * $Revision: $

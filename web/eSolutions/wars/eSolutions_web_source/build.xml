@@ -34,6 +34,19 @@
 
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${contextFile}" />
 
+		<replace file="${contextFile}" token="@repositoryHost@" value="${repositoryHost}" />
+		<replace file="${contextFile}" token="@repositoryPort@" value="${repositoryPort}" />
+		<replace file="${contextFile}" token="@repositoryConnTimeout@" value="${repositoryConnTimeout}" />
+		<replace file="${contextFile}" token="@repositoryReadTimeout@" value="${repositoryReadTimeout}" />
+		<replace file="${contextFile}" token="@minConnections@" value="${minConnections}" />
+		<replace file="${contextFile}" token="@maxConnections@" value="${maxConnections}" />
+		<replace file="${contextFile}" token="@repositoryUser@" value="${repositoryUser}" />
+		<replace file="${contextFile}" token="@repositoryPass@" value="${repositoryPass}" />
+		<replace file="${contextFile}" token="@repositorySalt@" value="${repositorySalt}" />
+		<replace file="${contextFile}" token="@baseObjectClass@" value="${baseObjectClass}" />
+		<replace file="${contextFile}" token="@repositoryBaseDN@" value="${repositoryBaseDN}" />
+		<replace file="${contextFile}" token="@repositoryUserBase@" value="${repositoryUserBase}" />
+		<replace file="${contextFile}" token="@repositoryAppBase@" value="${repositoryAppBase}" />
         <replace file="${contextFile}" token="@document.base@" value="${documentBase}" />
         <replace file="${contextFile}" token="@cookie.domain.name@" value="${cookieDomain}" />
         <replace file="${contextFile}" token="@tomcat.work.dir@" value="${tomcat.work.directory}/${artifactId}-${version}/${artifactId}-${version}" />

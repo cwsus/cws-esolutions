@@ -56,6 +56,7 @@ public class SecurityConstants
     public static final String TRUE = "true";
     public static final String FALSE = "false";
     public static final String NOT_SET = "Unconfigured";
+    public static final String DS_CONTEXT = "java:comp/env";
     public static final String INIT_AUDITDS_MANAGER = "AuditDataSource";
     public static final String INIT_CONFIG_FILE = "SecurityServiceConfig";
     public static final String INIT_SESSIONDS_MANAGER = "SessionDataSource";

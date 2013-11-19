@@ -1723,7 +1723,6 @@ public class UserManagementController
                 request.setUserAccount(account);
                 request.setApplicationName(appConfig.getApplicationName());
                 request.setApplicationId(appConfig.getApplicationId());
-                request.setAlgorithm(secConfig.getAuthAlgorithm());
                 request.setRequestor(userAccount);
 
                 if (DEBUG)
@@ -1788,7 +1787,7 @@ public class UserManagementController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -2280,7 +2279,6 @@ public class UserManagementController
                 request.setUserAccount(newUser);
                 request.setUserSecurity(security);
                 request.setApplicationId(appConfig.getApplicationName());
-                request.setAlgorithm(secConfig.getAuthAlgorithm());
                 request.setControlType(ControlType.CREATE);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);

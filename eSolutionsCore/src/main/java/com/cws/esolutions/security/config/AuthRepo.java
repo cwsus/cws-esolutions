@@ -48,21 +48,21 @@ import com.cws.esolutions.security.SecurityConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AuthRepo implements Serializable
 {
-    private int minConnections = 0;
     private String repoType = null;
-    private int repositoryPort = 0;
-    private int maxConnections = 10;
+    private String minConnections = null;
+    private String maxConnections = null;
+    private String repositoryPort = null;
     private String repositoryHost = null;
     private String repositoryUser = null;
     private String repositoryPass = null;
     private String repositorySalt = null;
-    private int repositoryConnTimeout = 0;
-    private int repositoryReadTimeout = 0;
     private String baseObjectClass = null;
     private String repositoryDriver = null;
     private String repositoryBaseDN = null;
     private String repositoryAppBase = null;
     private String repositoryUserBase = null;
+    private String repositoryConnTimeout = null;
+    private String repositoryReadTimeout = null;
 
     private static final String CNAME = AuthRepo.class.getName();
     private static final long serialVersionUID = 6881939686004481606L;
@@ -84,9 +84,9 @@ public final class AuthRepo implements Serializable
         this.repoType = value;
     }
 
-    public final void setRepositoryPort(final int value)
+    public final void setRepositoryPort(final String value)
     {
-        final String methodName = AuthRepo.CNAME + "#setRepositoryPort(final int value)";
+        final String methodName = AuthRepo.CNAME + "#setRepositoryPort(final String value)";
 
         if (DEBUG)
         {
@@ -149,7 +149,7 @@ public final class AuthRepo implements Serializable
         this.repositorySalt = value;
     }
 
-    public final void setRepositoryConnTimeout(final int value)
+    public final void setRepositoryConnTimeout(final String value)
     {
         final String methodName = AuthRepo.CNAME + "#setRepositoryConnTimeout(final String value)";
 
@@ -162,7 +162,7 @@ public final class AuthRepo implements Serializable
         this.repositoryConnTimeout = value;
     }
 
-    public final void setRepositoryReadTimeout(final int value)
+    public final void setRepositoryReadTimeout(final String value)
     {
         final String methodName = AuthRepo.CNAME + "#setRepositoryReadTimeout(final String value)";
 
@@ -240,9 +240,9 @@ public final class AuthRepo implements Serializable
         this.repositoryUserBase = value;
     }
 
-    public final void setMinConnections(final int value)
+    public final void setMinConnections(final String value)
     {
-        final String methodName = AuthRepo.CNAME + "#setMinConnections(final int value)";
+        final String methodName = AuthRepo.CNAME + "#setMinConnections(final String value)";
 
         if (DEBUG)
         {
@@ -253,9 +253,9 @@ public final class AuthRepo implements Serializable
         this.minConnections = value;
     }
 
-    public final void setMaxConnections(final int value)
+    public final void setMaxConnections(final String value)
     {
-        final String methodName = AuthRepo.CNAME + "#setMaxConnections(final int value)";
+        final String methodName = AuthRepo.CNAME + "#setMaxConnections(final String value)";
 
         if (DEBUG)
         {
@@ -281,7 +281,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "repositoryPort")
-    public final int getRepositoryPort()
+    public final String getRepositoryPort()
     {
         final String methodName = AuthRepo.CNAME + "#getRepositoryPort()";
 
@@ -351,7 +351,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "repositoryConnTimeout")
-    public final int getRepositoryConnTimeout()
+    public final String getRepositoryConnTimeout()
     {
         final String methodName = AuthRepo.CNAME + "#getRepositoryConnTimeout()";
 
@@ -365,7 +365,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "repositoryReadTimeout")
-    public final int getRepositoryReadTimeout()
+    public final String getRepositoryReadTimeout()
     {
         final String methodName = AuthRepo.CNAME + "#getRepositoryReadTimeout()";
 
@@ -449,7 +449,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "minConnections")
-    public final int getMinConnections()
+    public final String getMinConnections()
     {
         final String methodName = AuthRepo.CNAME + "#getMinConnections()";
 
@@ -463,7 +463,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "maxConnections")
-    public final int getMaxConnections()
+    public final String getMaxConnections()
     {
         final String methodName = AuthRepo.CNAME + "#getMaxConnections()";
 

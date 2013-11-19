@@ -36,6 +36,7 @@ package com.cws.esolutions.security.dao.userauth.enums;
 public enum AuthenticationType
 {
     LOGIN,
+    SECURITY,
     LOGOFF,
     RESET;
 }

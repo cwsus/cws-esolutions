@@ -51,15 +51,15 @@
 
 	<auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>@repositoryHost@</repositoryHost>
-        <repositoryPort>@repositoryPort@</repositoryPort>
-        <repositoryConnTimeout>10000</repositoryConnTimeout>
-        <repositoryReadTimeout>10000</repositoryReadTimeout>
-        <repositoryUser>@repositoryUser@</repositoryUser>
-        <repositoryPass>@repositoryPass@</repositoryPass>
-        <repositorySalt>@repositorySalt@</repositorySalt>
-        <minConnections>1</minConnections>
-        <maxConnections>10</maxConnections>
+        <repositoryHost>ldap/repositoryHost</repositoryHost>
+        <repositoryPort>ldap/repositoryPort</repositoryPort>
+        <repositoryConnTimeout>ldap/repositoryConnTimeout</repositoryConnTimeout>
+        <repositoryReadTimeout>ldap/repositoryReadTimeout</repositoryReadTimeout>
+        <repositoryUser>ldap/repositoryUser</repositoryUser>
+        <repositoryPass>ldap/repositoryPass</repositoryPass>
+        <repositorySalt>ldap/repositorySalt</repositorySalt>
+        <minConnections>ldap/minConnections</minConnections>
+        <maxConnections>ldap/maxConnections</maxConnections>
         <baseObjectClass>@baseObjectClass@</baseObjectClass>
         <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
         <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
@@ -72,6 +72,11 @@
         <keyDirectory>/opt/eSolutions/keys</keyDirectory>
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
+
+    <file-security-config>
+        <signatureAlgorithm>SHA1withRSA</signatureAlgorithm>
+        <encryptionAlgorithm>RSA</encryptionAlgorithm>
+    </file-security-config>
 
     <exception-config>
         <sendExceptionNotifications>true</sendExceptionNotifications>

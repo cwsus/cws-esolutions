@@ -763,7 +763,7 @@ public class OnlineResetController
                 emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                         this.passwordResetSubject, this.getClass().getClassLoader()));
                 emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-                emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
 
                 if (DEBUG)
                 {
@@ -1116,7 +1116,6 @@ public class OnlineResetController
                 resetReq.setHostInfo(reqInfo);
                 resetReq.setRequestor(userAccount);
                 resetReq.setUserAccount(userAccount);
-                resetReq.setAlgorithm(secConfig.getAuthAlgorithm());
                 resetReq.setApplicationId(appConfig.getApplicationId());
                 resetReq.setApplicationName(appConfig.getApplicationName());
 
@@ -1199,7 +1198,7 @@ public class OnlineResetController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -1216,7 +1215,7 @@ public class OnlineResetController
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetReq.getSmsCode());
                         emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
-                        emailMessage.setMessageFrom(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
 
                         if (DEBUG)
                         {
