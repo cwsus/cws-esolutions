@@ -3,20 +3,6 @@
     sessionCookieDomain="@cookie.domain.name@" sessionCookieName="ESOLUTIONS_ID"
     sessionCookiePath="/" sessionCookiePathUsesTrailingSlash="true">
 
-    <Environment name="ldap/repositoryHost" type="java.lang.String" value="@repositoryHost@" override="false" />
-    <Environment name="ldap/repositoryPort" type="java.lang.Integer" value="@repositoryPort@" override="false" />
-    <Environment name="ldap/repositoryConnTimeout" type="java.lang.Integer" value="@repositoryConnTimeout@" override="false" />
-    <Environment name="ldap/repositoryReadTimeout" type="java.lang.Integer" value="@repositoryReadTimeout@" override="false" />
-    <Environment name="ldap/minConnections" type="java.lang.Integer" value="@minConnections@" override="false" />
-    <Environment name="ldap/maxConnections" type="java.lang.Integer" value="@maxConnections@" override="false" />
-    <Environment name="ldap/repositoryUser" type="java.lang.String" value="@repositoryUser@" override="false" />
-    <Environment name="ldap/repositoryPass" type="java.lang.String" value="@repositoryPass@" override="false" />
-    <Environment name="ldap/repositorySalt" type="java.lang.String" value="@repositorySalt@" override="false" />
-    <Environment name="ldap/baseObjectClass" type="java.lang.String" value="@baseObjectClass@" override="false" />
-    <Environment name="ldap/repositoryBaseDN" type="java.lang.String" value="@repositoryBaseDN@" override="false" />
-    <Environment name="ldap/repositoryUserBase" type="java.lang.String" value="@repositoryUserBase@" override="false" />
-    <Environment name="ldap/repositoryAppBase" type="java.lang.String" value="@repositoryAppBase@" override="false" />
-
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://@database.host.name@/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"

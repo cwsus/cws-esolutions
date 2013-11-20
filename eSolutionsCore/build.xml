@@ -24,9 +24,8 @@
             <arg value="HEAD"/>
         </exec>
 
-        <mkdir dir="${buildArea}/META-INF" />
-        <touch file="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" />
+        <touch file="${buildArea}//${pom.artifactId}-${pom.version}.version" />
 
-        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/META-INF/${pom.artifactId}-${pom.version}.version" append="false" />
+        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${pom.artifactId}-${pom.version}.version" append="false" />
     </target>
 </project>

@@ -51,7 +51,7 @@
 
 	<auth-repo>
         <repoType>LDAP</repoType>
-        <configFile>jndi/ldapConfigurationFile</configFile>
+        <configFile>/opt/cws/eSolutions/config/ldapConfig.properties</configFile>
         <repositoryHost>repositoryHost</repositoryHost>
         <repositoryPort>repositoryPort</repositoryPort>
         <repositoryConnTimeout>repositoryConnTimeout</repositoryConnTimeout>
@@ -61,16 +61,16 @@
         <repositorySalt>repositorySalt</repositorySalt>
         <minConnections>minConnections</minConnections>
         <maxConnections>maxConnections</maxConnections>
-        <baseObjectClass>baseObjectClass</baseObjectClass>
-        <repositoryBaseDN>repositoryBaseDN</repositoryBaseDN>
-        <repositoryUserBase>repositoryUserBase</repositoryUserBase>
-        <repositoryAppBase>repositoryAppBase</repositoryAppBase>
+        <baseObjectClass>@baseObjectClass@</baseObjectClass>
+        <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
+        <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
+        <repositoryAppBase>@repositoryAppBase@</repositoryAppBase>
     </auth-repo>
 
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm>
         <keySize>4096</keySize> <!-- if algorithm is DSA, this MUST be 1024: http://docs.oracle.com/javase/6/docs/technotes/guides/security/SunProviders.html -->
-        <keyDirectory>/opt/eSolutions/keys</keyDirectory>
+        <keyDirectory>/opt/cws/eSolutions/keys</keyDirectory>
         <keyManager>com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager</keyManager>
     </key-config>
 

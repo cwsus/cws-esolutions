@@ -39,6 +39,7 @@ import com.cws.esolutions.security.SecurityConstants;
 public final class UserChangeRequest implements Serializable
 {
     private int count = 0;
+    private String resetKey = null;
     private String username = null;
     private String telNumber = null;
     private boolean isReset = false;
@@ -71,6 +72,19 @@ public final class UserChangeRequest implements Serializable
         }
 
         this.isReset = value;
+    }
+
+    public final void setResetKey(final String value)
+    {
+        final String methodName = UserChangeRequest.CNAME + "#setResetKey(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.resetKey = value;
     }
 
     public final void setResetType(final ResetRequestType value)
@@ -261,6 +275,19 @@ public final class UserChangeRequest implements Serializable
         }
 
         return this.isReset;
+    }
+
+    public final String getResetKey()
+    {
+        final String methodName = UserChangeRequest.CNAME + "#getResetKey(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.resetKey);
+        }
+
+        return this.resetKey;
     }
 
     public final ResetRequestType getResetType()

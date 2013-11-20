@@ -12,13 +12,18 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -405,7 +410,17 @@ public class UserAccountController
 
         if ((userAccount.getStatus() == LoginStatus.RESET) || (userAccount.getStatus() == LoginStatus.EXPIRED))
         {
+            if (userAccount.getStatus() == LoginStatus.RESET)
+            {
+                changeReq.setIsReset(true);
+            }
+
             mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessagePasswordExpired());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserChangeRequest: {}", changeReq);
         }
 
         mView.addObject("command", changeReq);
@@ -681,6 +696,79 @@ public class UserAccountController
         return mView;
     }
 
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    public final ModelAndView doCancelRequest()
+    {
+        final String methodName = UserAccountController.CNAME + "#doCancelRequest()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        hSession.removeAttribute(Constants.USER_ACCOUNT);
+        hSession.invalidate();
+
+        mView = new ModelAndView(new RedirectView());
+        mView.setViewName(appConfig.getLogonRedirect());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/regenerate-keys", method = RequestMethod.GET)
     public final ModelAndView doRegenerateKeys()
     {
@@ -889,6 +977,7 @@ public class UserAccountController
             if (userAccount.getStatus() == LoginStatus.RESET)
             {
                 userSecurity = new UserSecurity();
+                userSecurity.setResetRequestId(changeReq.getResetKey());
                 userSecurity.setNewPassword(changeReq.getConfirmPassword());
             }
             else
@@ -946,12 +1035,18 @@ public class UserAccountController
                         DEBUGGER.debug("Invalidating existing session object...");
                     }
 
+                    hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
                     hRequest.getSession().invalidate();
+
+                    hSession.removeAttribute(Constants.USER_ACCOUNT);
                     hSession.invalidate();
 
                     // redirect to logon page
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
                     mView.setViewName(appConfig.getLogonRedirect());
+
+                    return mView;
                 }
                 else
                 {

@@ -2,8 +2,8 @@
 <configuration>
     <application-config>
         <appName>eSolutionsCore</appName>
-        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
-        <archiveRootDirectory>/opt/eSolutions/archive</archiveRootDirectory>
+        <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
         <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
         <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
         <connectTimeout>15000</connectTimeout>

@@ -89,16 +89,16 @@
     </ssh-config>
 
     <proxy-config>
-        <proxyServiceRequired>true</proxyServiceRequired>
-        <proxyAuthRequired>true</proxyAuthRequired>
-        <proxyAuthType>basic</proxyAuthType>
-        <proxyServerName>proxy.caspersbox.corp</proxyServerName>
-        <proxyServerPort>3128</proxyServerPort>
+        <proxyServiceRequired>false</proxyServiceRequired>
+        <proxyAuthRequired />
+        <proxyAuthType />
+        <proxyServerName />
+        <proxyServerPort />
         <proxyServerRealm />
         <proxyAuthDomain />
-        <proxyUserId>khuntly</proxyUserId>
-        <proxyPassword>1508hailey27*</proxyPassword>
-        <proxyPwdSalt></proxyPwdSalt>
+        <proxyUserId />
+        <proxyPassword />
+        <proxyPwdSalt />
     </proxy-config>
 
     <exception-config>

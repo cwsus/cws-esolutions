@@ -73,7 +73,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
-        UserAccount userAccount = null;
         AccountResetResponse response = new AccountResetResponse();
 
         final Calendar cal = Calendar.getInstance();
@@ -134,7 +133,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                             }
                         }
 
-                        userAccount = new UserAccount();
+                        UserAccount userAccount = new UserAccount();
                         userAccount.setStatus(LoginStatus.RESET);
                         userAccount.setGuid(userData[0]);
                         userAccount.setUsername(userData[1]);
@@ -147,19 +146,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         if (DEBUG)
                         {
                             DEBUGGER.debug("UserAccount: {}", userAccount);
-                        }
-
-                        // remove the reset request
-                        boolean isRemoved = userSec.removeResetData(userData[0], userSecurity.getResetRequestId());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isRemoved: {}", isRemoved);
-                        }
-
-                        if (!(isRemoved))
-                        {
-                            ERROR_RECORDER.error("Failed to remove provided reset request from datastore");
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
@@ -198,38 +184,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.VERIFYRESET);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
         }
 
         return response;

@@ -15,7 +15,7 @@
  */
 package com.cws.esolutions.core.controllers;
 
-import java.net.URL;
+import java.io.File;
 import java.util.Map;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -25,12 +25,12 @@ import java.util.Properties;
 import javax.naming.Context;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.io.BufferedReader;
+import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
 import java.util.ResourceBundle;
-import java.io.InputStreamReader;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import java.util.MissingResourceException;
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +39,7 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import org.apache.commons.dbcp.BasicDataSource;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
- 
+
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -102,56 +102,75 @@ public class ResourceController
 
                 try
                 {
-                    connOpts.setAbandonOnTimeout(true);
-                    connOpts.setAutoReconnect(true);
-                    connOpts.setBindWithDNRequiresPassword(true);
+                    File ldapConfigFile = FileUtils.getFile(authRepo.getConfigFile());
 
-                    if (isContainer)
+                    if (DEBUG)
                     {
-                        Context initContext = new InitialContext();
-                        Context envContext = (Context) initContext.lookup(DS_CONTEXT);
+                        DEBUGGER.debug("File: {}", ldapConfigFile);
+                    }
 
-                        URL ldapConfigFile = (URL) envContext.lookup(authRepo.getConfigFile());
+                    if (ldapConfigFile.canRead())
+                    {
+                        FileInputStream fileStream = new FileInputStream(ldapConfigFile);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("ldapConfigFile: {}", ldapConfigFile);
+                            DEBUGGER.debug("FileInputStream: {}", fileStream);
                         }
 
-                        if (ldapConfigFile != null)
+                        if (fileStream.available() != 0)
                         {
-                            BufferedReader configReader = new BufferedReader(new InputStreamReader(ldapConfigFile.openStream(), "UTF-8")); // TODO: string encoding should be config option
+                            Properties ldapProperties = new Properties();
+                            ldapProperties.load(fileStream);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("BufferedReader: {}", configReader);
+                                DEBUGGER.debug("Properties: {}", ldapProperties);
                             }
 
-                            if (configReader.ready())
+                            connOpts.setAbandonOnTimeout(true);
+                            connOpts.setAutoReconnect(true);
+                            connOpts.setBindWithDNRequiresPassword(true);
+                            connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryConnTimeout())));
+                            connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryReadTimeout())));
+
+                            if (DEBUG)
                             {
-                                Properties ldapProperties = new Properties();
-                                ldapProperties.load(configReader);
+                                DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
+                            }
+
+                            ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
+                                    Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
+                                    ldapProperties.getProperty(authRepo.getRepositoryUser()),
+                                    PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
+                                            ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                            }
+
+                            if ((ldapConn != null) && (ldapConn.isConnected()))
+                            {
+                                LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Properties: {}", ldapProperties);
+                                    DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
                                 }
 
-                                minConnections = Integer.parseInt(ldapProperties.getProperty(authRepo.getMinConnections()));
-                                maxConnections = Integer.parseInt(ldapProperties.getProperty(authRepo.getMaxConnections()));
-
-                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryConnTimeout())));
-                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryReadTimeout())));
-
-                                ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
-                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
-                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
-                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
-                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
+                                if (!(connPool.isClosed()))
+                                {
+                                    resBean.setAuthDataSource(connPool);
+                                }
+                                else
+                                {
+                                    throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
+                                }
                             }
                             else
                             {
-                                throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
+                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
                             }
                         }
                         else
@@ -161,52 +180,7 @@ public class ResourceController
                     }
                     else
                     {
-                        minConnections = Integer.parseInt(authRepo.getMinConnections());
-                        maxConnections = Integer.parseInt(authRepo.getMaxConnections());
-
-                        connOpts.setConnectTimeoutMillis(Integer.parseInt(authRepo.getRepositoryConnTimeout()));
-                        connOpts.setResponseTimeoutMillis(Integer.parseInt(authRepo.getRepositoryReadTimeout()));
-
-                        ldapConn = new LDAPConnection(connOpts,
-                                authRepo.getRepositoryHost(),
-                                Integer.parseInt(authRepo.getRepositoryPort()),
-                                authRepo.getRepositoryUser(),
-                                PasswordUtils.decryptText(
-                                authRepo.getRepositoryPass(),
-                                authRepo.getRepositorySalt().length()));
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                    }
-
-                    if ((ldapConn != null) && (ldapConn.isConnected()))
-                    {
-                        LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
-                        }
-
-                        if (!(connPool.isClosed()))
-                        {
-                            resBean.setAuthDataSource(connPool);
-                        }
-                        else
-                        {
-                            throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
-                        }
-                    }
-                    else
-                    {
-                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                        throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
                     }
                 }
                 catch (LDAPException lx)
@@ -214,12 +188,6 @@ public class ResourceController
                     ERROR_RECORDER.error(lx.getMessage(), lx);
 
                     throw new CoreServiceException(lx.getMessage(), lx);
-                }
-                catch (NamingException nx)
-                {
-                    ERROR_RECORDER.error(nx.getMessage(), nx);
-
-                    throw new CoreServiceException(nx.getMessage(), nx);
                 }
                 catch (IOException iox)
                 {

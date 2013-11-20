@@ -52,10 +52,6 @@
     <context-root>@contextRoot@</context-root>
 
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>jndi/ldapConfigurationFile</nam:ref-name>
-        <nam:url>${config.root}/ldapConfig.properties</nam:url>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
             <nam:groupId>console.dbpool</nam:groupId>

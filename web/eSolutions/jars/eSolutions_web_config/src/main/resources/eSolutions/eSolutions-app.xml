@@ -51,7 +51,7 @@
         <property name="logonType" value="COMBINED" />
         <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
-        <property name="uploadDirectory" value="/opt/eSolutions/uploads" /> <!-- where should we put uploads ? -->
+        <property name="uploadDirectory" value="/opt/cws/eSolutions/deployments" /> <!-- where should we put uploads ? -->
         <property name="secEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
         <!-- enable/disable services. true for on, false for off -->
         <property name="services">
@@ -88,6 +88,7 @@
 	    <property name="logonRedirect" value="redirect:/ui/login/default" />
 	    <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
 	    <property name="homeRedirect" value="redirect:/ui/common/default" />
+	    <property name="themeMessageSource" value="nls.theme.resources" />
 	    <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
 	    <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
 	    <property name="messagePasswordExpired" value="theme.login.user.expired" />

@@ -46,19 +46,29 @@
 
         <spring:message code="system.request.complete" />
 
-	    <c:choose>
-	        <c:when test="${requestScope.isUserLoggedIn != 'true'}">
-	            <p>
-	                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-	                    <spring:message code="theme.click.continue" /></a>
-	            </p>
-	        </c:when>
-	        <c:otherwise>
+        <c:choose>
+            <c:when test="${empty sessionScope.userAccount}">
                 <p>
                     <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
                         <spring:message code="theme.click.continue" /></a>
                 </p>
-	        </c:otherwise>
-	    </c:choose>
+            </c:when>
+            <c:otherwise>
+                <c:choose>
+                    <c:when test="${sessionScope.userAccount.status eq 'SUCCESS'">
+                        <p>
+                            <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                                <spring:message code="theme.click.continue" /></a>
+                        </p>
+                    </c:when>
+                    <c:otherwise>
+                        <p>
+                            <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
+                                <spring:message code="theme.click.continue" /></a>
+                        </p>
+                    </c:otherwise>
+                </c:choose>
+            </c:otherwise>
+        </c:choose>
     </div>
 </div>

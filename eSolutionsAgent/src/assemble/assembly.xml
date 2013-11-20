@@ -5,7 +5,7 @@
     <formats>
         <format>tar.gz</format>
     </formats>
-    <includeBaseDirectory>true</includeBaseDirectory>
+    <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
             <useTransitiveDependencies>true</useTransitiveDependencies>
@@ -18,11 +18,11 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>src/main/scripts/etc</directory>
+            <directory>src/main/scripts/config</directory>
             <includes>
                 <include>**/*</include>
             </includes>
-            <outputDirectory>etc</outputDirectory>
+            <outputDirectory>config</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>src/main/scripts/bin</directory>
@@ -36,7 +36,7 @@
             <includes>
                 <include>**/*</include>
             </includes>
-            <outputDirectory>etc</outputDirectory>
+            <outputDirectory>config</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>target</directory>

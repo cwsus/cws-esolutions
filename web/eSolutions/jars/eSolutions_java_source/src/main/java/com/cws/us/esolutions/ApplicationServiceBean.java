@@ -53,6 +53,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String contactAdminsPage = null;
     @Autowired private String errorResponsePage = null;
     @Autowired private String searchRequestPage = null;
+    @Autowired private String themeMessageSource = null;
     @Autowired private String requestCompletePage = null;
     @Autowired private SecurityConfig securityConfig = null;
     @Autowired private String messageNoSearchResults = null;
@@ -506,6 +507,19 @@ public class ApplicationServiceBean implements Serializable
         this.messageValidator = value;
     }
 
+    public final void setThemeMessageSource(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setThemeMessageSource(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.themeMessageSource = value;
+    }
+
     public final String getFileEncoding()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getFileEncoding()";
@@ -933,6 +947,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageValidator ;
+    }
+
+    public final String getThemeMessageSource()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getThemeMessageSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.themeMessageSource);
+        }
+
+        return this.themeMessageSource;
     }
 
     public final String toString()

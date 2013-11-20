@@ -263,46 +263,49 @@ public class SessionAuthenticationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                switch (userAccount.getStatus())
+                if (userAccount.getStatus() != null)
                 {
-                    case EXPIRED:
-                        if ((!(StringUtils.equals(requestURI, passwdPage))))
-                        {
-                            if (DEBUG)
+                    switch (userAccount.getStatus())
+                    {
+                        case EXPIRED:
+                            if ((!(StringUtils.equals(requestURI, passwdPage))))
                             {
-                                DEBUGGER.debug("Account is expired and this request is not for the password page. Redirecting !");
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Account is expired and this request is not for the password page. Redirecting !");
+                                }
+
+                                hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+
+                                return;
                             }
 
-                            hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+                            filterChain.doFilter(sRequest, sResponse);
 
                             return;
-                        }
-
-                        filterChain.doFilter(sRequest, sResponse);
-
-                        return;
-                    case RESET:
-                        if ((!(StringUtils.equals(requestURI, passwdPage))))
-                        {
-                            if (DEBUG)
+                        case RESET:
+                            if ((!(StringUtils.equals(requestURI, passwdPage))))
                             {
-                                DEBUGGER.debug("Account has status RESET and this request is not for the password page. Redirecting !");
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Account has status RESET and this request is not for the password page. Redirecting !");
+                                }
+
+                                hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+
+                                return;
                             }
 
-                            hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
+                            filterChain.doFilter(sRequest, sResponse);
 
                             return;
-                        }
+                        case SUCCESS:
+                            filterChain.doFilter(sRequest, sResponse);
 
-                        filterChain.doFilter(sRequest, sResponse);
-
-                        return;
-                    case SUCCESS:
-                        filterChain.doFilter(sRequest, sResponse);
-
-                        return;
-                    default:
-                        break;
+                            return;
+                        default:
+                            break;
+                    }
                 }
             }
         }

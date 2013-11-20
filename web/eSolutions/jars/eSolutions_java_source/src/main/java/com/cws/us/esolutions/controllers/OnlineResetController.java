@@ -97,7 +97,6 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
 public class OnlineResetController
 {
     private String resetURL = null;
-    private String messageSource = null;
     private String userResetEmail = null;
     private String submitAnswersPage = null;
     private String messageOlrComplete = null;
@@ -108,6 +107,7 @@ public class OnlineResetController
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
 
+    private static final String RESET_KEY_ID = "resetKey";
     private static final String CNAME = OnlineResetController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
@@ -229,19 +229,6 @@ public class OnlineResetController
         }
 
         this.passwordResetSubject = value;
-    }
-
-    public final void setMessageSource(final String value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setMessageSource(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageSource = value;
     }
 
     public final void setForgotUsernameEmail(final String value)
@@ -508,6 +495,7 @@ public class OnlineResetController
                     // add in the session id
                     hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
+                    mView.addObject(OnlineResetController.RESET_KEY_ID, resetId);
                     mView.setViewName(appConfig.getExpiredRedirect());
                 }
             }
@@ -760,7 +748,7 @@ public class OnlineResetController
                 emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                 emailMessage.setMessageBody(emailBody);
                 emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
                         this.passwordResetSubject, this.getClass().getClassLoader()));
                 emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
                 emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
@@ -1196,7 +1184,7 @@ public class OnlineResetController
                     emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                     emailMessage.setMessageBody(emailBody);
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
                             this.passwordResetSubject, this.getClass().getClassLoader()));
                     emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
                     emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
