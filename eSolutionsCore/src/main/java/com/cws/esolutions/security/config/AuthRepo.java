@@ -49,6 +49,7 @@ import com.cws.esolutions.security.SecurityConstants;
 public final class AuthRepo implements Serializable
 {
     private String repoType = null;
+    private String configFile = null;
     private String minConnections = null;
     private String maxConnections = null;
     private String repositoryPort = null;
@@ -82,6 +83,19 @@ public final class AuthRepo implements Serializable
         }
 
         this.repoType = value;
+    }
+
+    public final void setConfigFile(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setConfigFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.configFile = value;
     }
 
     public final void setRepositoryPort(final String value)
@@ -280,6 +294,20 @@ public final class AuthRepo implements Serializable
         return this.repoType;
     }
 
+    @XmlElement(name = "configFile")
+    public final String getConfigFile()
+    {
+        final String methodName = AuthRepo.CNAME + "#getConfigFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.configFile);
+        }
+        
+        return this.configFile;
+    }
+
     @XmlElement(name = "repositoryPort")
     public final String getRepositoryPort()
     {
@@ -476,6 +504,7 @@ public final class AuthRepo implements Serializable
         return this.maxConnections;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = AuthRepo.CNAME + "#toString()";

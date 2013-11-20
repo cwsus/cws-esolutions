@@ -15,26 +15,43 @@
  */
 package com.cws.esolutions.core.controllers;
 
+import java.net.URL;
 import java.util.Map;
 import java.util.Locale;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
+import java.io.IOException;
+import java.util.Properties;
+
 import javax.naming.Context;
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+import java.io.BufferedReader;
+
 import org.slf4j.LoggerFactory;
+
 import java.util.ResourceBundle;
+import java.io.InputStreamReader;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+
 import com.unboundid.ldap.sdk.ResultCode;
+
 import java.util.MissingResourceException;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
+
 import org.apache.commons.dbcp.BasicDataSource;
+
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
-
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -106,19 +123,55 @@ public class ResourceController
                         Context initContext = new InitialContext();
                         Context envContext = (Context) initContext.lookup(DS_CONTEXT);
 
-                        minConnections = (Integer) envContext.lookup(authRepo.getMinConnections());
-                        maxConnections = (Integer) envContext.lookup(authRepo.getMaxConnections());
-                                
-                        connOpts.setConnectTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryConnTimeout()));
-                        connOpts.setResponseTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryReadTimeout()));
+                        URL ldapConfigFile = (URL) envContext.lookup(authRepo.getConfigFile());
 
-                        ldapConn = new LDAPConnection(connOpts,
-                                (String) envContext.lookup(authRepo.getRepositoryHost()),
-                                (Integer) envContext.lookup(authRepo.getRepositoryPort()),
-                                (String) envContext.lookup(authRepo.getRepositoryUser()),
-                                PasswordUtils.decryptText(
-                                        (String) envContext.lookup(authRepo.getRepositoryPass()),
-                                        ((String) envContext.lookup(authRepo.getRepositorySalt())).length()));
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ldapConfigFile: {}", ldapConfigFile);
+                        }
+
+                        if (ldapConfigFile != null)
+                        {
+                            BufferedReader configReader = new BufferedReader(new InputStreamReader(ldapConfigFile.openStream(), "UTF-8")); // TODO: string encoding should be config option
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("BufferedReader: {}", configReader);
+                            }
+
+                            if (configReader.ready())
+                            {
+                                Properties ldapProperties = new Properties();
+                                ldapProperties.load(configReader);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Properties: {}", ldapProperties);
+                                }
+
+                                minConnections = (Integer) envContext.lookup(authRepo.getMinConnections());
+                                maxConnections = (Integer) envContext.lookup(authRepo.getMaxConnections());
+
+                                connOpts.setConnectTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryConnTimeout()));
+                                connOpts.setResponseTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryReadTimeout()));
+
+                                ldapConn = new LDAPConnection(connOpts,
+                                        (String) envContext.lookup(authRepo.getRepositoryHost()),
+                                        (Integer) envContext.lookup(authRepo.getRepositoryPort()),
+                                        (String) envContext.lookup(authRepo.getRepositoryUser()),
+                                        PasswordUtils.decryptText(
+                                                (String) envContext.lookup(authRepo.getRepositoryPass()),
+                                                ((String) envContext.lookup(authRepo.getRepositorySalt())).length()));
+                            }
+                            else
+                            {
+                                throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
+                            }
+                        }
+                        else
+                        {
+                            throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
+                        }
                     }
                     else
                     {
@@ -133,8 +186,8 @@ public class ResourceController
                                 Integer.parseInt(authRepo.getRepositoryPort()),
                                 authRepo.getRepositoryUser(),
                                 PasswordUtils.decryptText(
-                                    authRepo.getRepositoryPass(),
-                                    authRepo.getRepositorySalt().length()));
+                                authRepo.getRepositoryPass(),
+                                authRepo.getRepositorySalt().length()));
                     }
 
                     if (DEBUG)
@@ -147,7 +200,7 @@ public class ResourceController
                         DEBUGGER.debug("LDAPConnection: {}", ldapConn);
                     }
 
-                    if (ldapConn.isConnected())
+                    if ((ldapConn != null) && (ldapConn.isConnected()))
                     {
                         LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
 
@@ -181,6 +234,12 @@ public class ResourceController
                     ERROR_RECORDER.error(nx.getMessage(), nx);
 
                     throw new CoreServiceException(nx.getMessage(), nx);
+                }
+                catch (IOException iox)
+                {
+                    ERROR_RECORDER.error(iox.getMessage(), iox);
+
+                    throw new CoreServiceException(iox.getMessage(), iox);
                 }
 
                 break;

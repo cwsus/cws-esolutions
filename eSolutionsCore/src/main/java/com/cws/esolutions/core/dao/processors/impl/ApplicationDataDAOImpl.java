@@ -67,11 +67,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -100,6 +96,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 {
                     DEBUGGER.debug("isComplete: {}", isComplete);
                 }
+            }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -147,11 +147,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -180,6 +176,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 {
                     DEBUGGER.debug("isComplete: {}", isComplete);
                 }
+            }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -223,11 +223,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -245,6 +241,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                 {
                     DEBUGGER.debug("isComplete: {}", isComplete);
                 }
+            }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -288,11 +288,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -324,6 +320,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                         }
                     }
                 }
+            }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -373,11 +373,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -438,6 +434,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     }
                 }
             }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
         }
         catch (SQLException sqx)
         {
@@ -486,11 +486,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -546,6 +542,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     }
                 }
             }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
         }
         catch (SQLException sqx)
         {
@@ -595,11 +595,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-            else
+            if (!(sqlConn.isClosed()))
             {
                 sqlConn.setAutoCommit(true);
 
@@ -669,6 +665,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                         }
                     }
                 }
+            }
+            else
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)

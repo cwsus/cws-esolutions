@@ -53,55 +53,7 @@
 
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>ldap/repositoryHost</nam:ref-name>
-        <nam:string>ldap.caspersbox.corp</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryPort</nam:ref-name>
-        <nam:integer>10389</nam:integer>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryConnTimeout</nam:ref-name>
-        <nam:integer>10000</nam:integer>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryReadTimeout</nam:ref-name>
-        <nam:integer>10000</nam:integer>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/minConnections</nam:ref-name>
-        <nam:integer>1</nam:integer>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/maxConnections</nam:ref-name>
-        <nam:integer>10</nam:integer>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryUser</nam:ref-name>
-        <nam:string>uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryPass</nam:ref-name>
-        <nam:string>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositorySalt</nam:ref-name>
-        <nam:string>OITltocOUZjW</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/baseObjectClass</nam:ref-name>
-        <nam:string>cwsusperson</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryBaseDN</nam:ref-name>
-        <nam:string>dc=caspersbox,dc=com</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryUserBase</nam:ref-name>
-        <nam:string>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</nam:string>
-    </nam:resource-ref>
-    <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:ref-name>ldap/repositoryAppBase</nam:ref-name>
-        <nam:string>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</nam:string>
+        <nam:url>${config.root}/ldap.properties</nam:url>
     </nam:resource-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>

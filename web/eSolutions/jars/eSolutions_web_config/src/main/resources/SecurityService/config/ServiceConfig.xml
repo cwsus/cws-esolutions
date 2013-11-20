@@ -51,19 +51,7 @@
 
 	<auth-repo>
         <repoType>LDAP</repoType>
-        <repositoryHost>ldap/repositoryHost</repositoryHost>
-        <repositoryPort>ldap/repositoryPort</repositoryPort>
-        <repositoryConnTimeout>ldap/repositoryConnTimeout</repositoryConnTimeout>
-        <repositoryReadTimeout>ldap/repositoryReadTimeout</repositoryReadTimeout>
-        <repositoryUser>ldap/repositoryUser</repositoryUser>
-        <repositoryPass>ldap/repositoryPass</repositoryPass>
-        <repositorySalt>ldap/repositorySalt</repositorySalt>
-        <minConnections>ldap/minConnections</minConnections>
-        <maxConnections>ldap/maxConnections</maxConnections>
-        <baseObjectClass>@baseObjectClass@</baseObjectClass>
-        <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
-        <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
-        <repositoryAppBase>@repositoryAppBase@</repositoryAppBase>
+        <configFile>jndi/ldapConfigurationFile</configFile>
     </auth-repo>
 
     <key-config>

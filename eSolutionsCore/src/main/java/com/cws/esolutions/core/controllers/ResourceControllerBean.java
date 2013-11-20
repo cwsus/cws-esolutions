@@ -121,6 +121,7 @@ public class ResourceControllerBean implements Serializable
         return this.dataSource;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = ResourceControllerBean.CNAME + "#toString()";
