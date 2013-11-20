@@ -18,40 +18,28 @@ package com.cws.esolutions.core.controllers;
 import java.net.URL;
 import java.util.Map;
 import java.util.Locale;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.io.IOException;
 import java.util.Properties;
-
 import javax.naming.Context;
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
 import java.io.BufferedReader;
-
 import org.slf4j.LoggerFactory;
-
 import java.util.ResourceBundle;
 import java.io.InputStreamReader;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-
 import com.unboundid.ldap.sdk.ResultCode;
-
 import java.util.MissingResourceException;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
-
 import org.apache.commons.dbcp.BasicDataSource;
-
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
+ 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -149,19 +137,19 @@ public class ResourceController
                                     DEBUGGER.debug("Properties: {}", ldapProperties);
                                 }
 
-                                minConnections = (Integer) envContext.lookup(authRepo.getMinConnections());
-                                maxConnections = (Integer) envContext.lookup(authRepo.getMaxConnections());
+                                minConnections = Integer.parseInt(ldapProperties.get(authRepo.getMinConnections()));
+                                maxConnections = Integer.parseInt(ldapProperties.get(authRepo.getMaxConnections()));
 
-                                connOpts.setConnectTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryConnTimeout()));
-                                connOpts.setResponseTimeoutMillis((Integer) envContext.lookup(authRepo.getRepositoryReadTimeout()));
+                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryConnTimeout()));
+                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryReadTimeout()));
 
                                 ldapConn = new LDAPConnection(connOpts,
-                                        (String) envContext.lookup(authRepo.getRepositoryHost()),
-                                        (Integer) envContext.lookup(authRepo.getRepositoryPort()),
-                                        (String) envContext.lookup(authRepo.getRepositoryUser()),
+                                        ldapProperties.get(authRepo.getRepositoryHost()),
+                                        ldapProperties.get(authRepo.getRepositoryPort()),
+                                        ldapProperties.get(authRepo.getRepositoryUser()),
                                         PasswordUtils.decryptText(
-                                                (String) envContext.lookup(authRepo.getRepositoryPass()),
-                                                ((String) envContext.lookup(authRepo.getRepositorySalt())).length()));
+												ldapProperties.get(authRepo.getRepositoryPass()),
+												ldapProperties.get(authRepo.getRepositorySalt()).length());
                             }
                             else
                             {
