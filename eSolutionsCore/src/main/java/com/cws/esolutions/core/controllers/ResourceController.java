@@ -140,8 +140,8 @@ public class ResourceController
                                 minConnections = Integer.parseInt(ldapProperties.get(authRepo.getMinConnections()));
                                 maxConnections = Integer.parseInt(ldapProperties.get(authRepo.getMaxConnections()));
 
-                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryConnTimeout()));
-                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryReadTimeout()));
+                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryConnTimeout())));
+                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryReadTimeout())));
 
                                 ldapConn = new LDAPConnection(connOpts,
                                         ldapProperties.get(authRepo.getRepositoryHost()),
@@ -149,7 +149,7 @@ public class ResourceController
                                         ldapProperties.get(authRepo.getRepositoryUser()),
                                         PasswordUtils.decryptText(
 												ldapProperties.get(authRepo.getRepositoryPass()),
-												ldapProperties.get(authRepo.getRepositorySalt()).length());
+												ldapProperties.get(authRepo.getRepositorySalt()).length()));
                             }
                             else
                             {
