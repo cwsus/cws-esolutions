@@ -137,19 +137,17 @@ public class ResourceController
                                     DEBUGGER.debug("Properties: {}", ldapProperties);
                                 }
 
-                                minConnections = Integer.parseInt(ldapProperties.get(authRepo.getMinConnections()));
-                                maxConnections = Integer.parseInt(ldapProperties.get(authRepo.getMaxConnections()));
+                                minConnections = Integer.parseInt(ldapProperties.getProperty(authRepo.getMinConnections()));
+                                maxConnections = Integer.parseInt(ldapProperties.getProperty(authRepo.getMaxConnections()));
 
-                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryConnTimeout())));
-                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.get(authRepo.getRepositoryReadTimeout())));
+                                connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryConnTimeout())));
+                                connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryReadTimeout())));
 
-                                ldapConn = new LDAPConnection(connOpts,
-                                        ldapProperties.get(authRepo.getRepositoryHost()),
-                                        ldapProperties.get(authRepo.getRepositoryPort()),
-                                        ldapProperties.get(authRepo.getRepositoryUser()),
-                                        PasswordUtils.decryptText(
-												ldapProperties.get(authRepo.getRepositoryPass()),
-												ldapProperties.get(authRepo.getRepositorySalt()).length()));
+                                ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
+                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
+                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
+                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
+                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
                             }
                             else
                             {
