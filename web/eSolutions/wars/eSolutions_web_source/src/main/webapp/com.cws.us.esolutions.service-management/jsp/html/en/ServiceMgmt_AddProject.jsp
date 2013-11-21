@@ -31,17 +31,23 @@
 <div id="InfoLine"><spring:message code="svc.mgmt.add.project" /></div>
 <div id="content">
     <div id="content-right">
-	    <c:if test="${not empty messageResponse}">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty errorResponse}">
+	    <c:if test="${not empty fn:trim(errorResponse)}">
 	        <p id="error">${errorResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty responseMessage}">
+	    <c:if test="${not empty fn:trim(responseMessage)}">
 	        <p id="info"><spring:message code="${responseMessage}" /></p>
 	    </c:if>
-	    <c:if test="${not empty errorMessage}">
+	    <c:if test="${not empty fn:trim(errorMessage)}">
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
         <span id="validationError"></span>
@@ -66,7 +72,7 @@
 	                <td><form:errors path="projectStatus" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
-	                <td><label id="txtContactInfo"><spring:message id="svc.mgmt.project.contact" /></label></td>
+	                <td><label id="txtContactInfo"><spring:message code="svc.mgmt.project.contact" /></label></td>
 	            </tr>
 	            <tr>
 	                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
@@ -78,11 +84,11 @@
 	            </tr>
 	            <tr>
 	                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.dev.group" /></label></td>
-	                <td><form:input path="devGroup" /></td>
-	                <td><form:errors path="devGroup" cssClass="validationError" /></td>
+	                <td><form:input path="devEmail" /></td>
+	                <td><form:errors path="devEmail" cssClass="validationError" /></td>
                     <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.prod.group" /></label></td>
-                    <td><form:input path="prodGroup" /></td>
-                    <td><form:errors path="prodGroup" cssClass="validationError" /></td>
+                    <td><form:input path="prodEmail" /></td>
+                    <td><form:errors path="prodEmail" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
 	                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label></td>

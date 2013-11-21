@@ -31,18 +31,24 @@
 <div id="InfoLine"><spring:message code="app.mgmt.deploy.application" /></div>
 <div id="content">
     <div id="content-right">
-        <c:if test="${not empty messageResponse}">
-            <p id="info">${messageResponse}</p>
-        </c:if>
-        <c:if test="${not empty errorResponse}">
-            <p id="error">${errorResponse}</p>
-        </c:if>
-        <c:if test="${not empty responseMessage}">
-            <p id="info"><spring:message code="${responseMessage}" /></p>
-        </c:if>
-        <c:if test="${not empty errorMessage}">
-            <p id="error"><spring:message code="${errorMessage}" /></p>
-        </c:if>
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
         <span id="validationError"></span>
 
@@ -90,7 +96,7 @@
 	                        <td><label id="txtPlatformName"><spring:message code="app.mgmt.application.platform" /></label></td>
 	                        <td>${platform.platformName}</td>
 	                    </tr>
-	                    <c:if test="${not empty application.scmPath}">
+	                    <c:if test="${not empty fn:trim(application.scmPath)}">
 	                        <tr>
 	                            <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
 	                            <td>${application.scmPath}</td>
@@ -113,7 +119,7 @@
 	                            <form:errors path="version" cssClass="validationError" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
 	                        </td>
 	                    </tr>
-	                    <c:if test="${empty application.scmPath}">
+	                    <c:if test="${empty fn:trim(application.scmPath)}">
 	                        <tr>
 	                            <td><label id="txtFileName"><spring:message code="app.mgmt.select.file" /></label></td>
 	                            <td><input type="file" name="applicationBinary" id="applicationBinary" size="30" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>

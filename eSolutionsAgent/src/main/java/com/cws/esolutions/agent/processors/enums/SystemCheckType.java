@@ -37,5 +37,6 @@ public enum SystemCheckType
     STATUS,
     NETSTAT,
     REMOTEDATE,
-    TELNET;
+    TELNET,
+    PROCESSLIST;
 }

@@ -1038,13 +1038,15 @@ public class UserAccountController
                     hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
                     hRequest.getSession().invalidate();
 
-                    hSession.removeAttribute(Constants.USER_ACCOUNT);
-                    hSession.invalidate();
-
                     // redirect to logon page
                     mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
                     mView.setViewName(appConfig.getLogonRedirect());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ModelAndView: {}", mView);
+                    }
 
                     return mView;
                 }
@@ -1070,6 +1072,7 @@ public class UserAccountController
             }
             else
             {
+                mView.addObject("command", new UserChangeRequest());
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.setViewName(this.changePasswordPage);
             }

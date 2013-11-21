@@ -34,15 +34,11 @@
     {
         if (box.checked)
         {
-            document.getElementById('tdScmPath').style.display = 'block';
-            document.getElementById('tdScmPathInput').style.display = 'block';
-            document.getElementById('tdScmPathErrors').style.display = 'block';
+            document.getElementById('scmData').style.display = 'block';
         }
         else
         {
-            document.getElementById('tdScmPath').style.display = 'none';
-            document.getElementById('tdScmPathInput').style.display = 'none';
-            document.getElementById('tdScmPathErrors').style.display = 'none';
+            document.getElementById('scmData').style.display = 'none';
         }
     }
     //-->
@@ -51,17 +47,23 @@
 <div id="InfoLine"><spring:message code="app.mgmt.add.application" /></div>
 <div id="content">
     <div id="content-right">
-        <c:if test="${not empty messageResponse}">
+        <c:if test="${not empty fn:trim(messageResponse)}">
             <p id="info">${messageResponse}</p>
         </c:if>
-        <c:if test="${not empty errorResponse}">
+        <c:if test="${not empty fn:trim(errorResponse)}">
             <p id="error">${errorResponse}</p>
         </c:if>
-        <c:if test="${not empty responseMessage}">
+        <c:if test="${not empty fn:trim(responseMessage)}">
             <p id="info"><spring:message code="${responseMessage}" /></p>
         </c:if>
-        <c:if test="${not empty errorMessage}">
+        <c:if test="${not empty fn:trim(errorMessage)}">
             <p id="error"><spring:message code="${errorMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.responseMessage)}">
+            <p id="info"><spring:message code="${param.responseMessage}" /></p>
+        </c:if>
+        <c:if test="${not empty fn:trim(param.errorMessage)}">
+            <p id="error"><spring:message code="${param.errorMessage}" /></p>
         </c:if>
 
         <span id="validationError"></span>
@@ -144,9 +146,13 @@
                     <td><label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label></td>
                     <td><form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" /></td>
                     <td><form:errors path="isScmEnabled" cssClass="validationError" /></td>
-                    <td id="tdScmPath" style="display: none;"><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
-                    <td id="tdScmPathInput" style="display: none;"><form:input path="scmPath" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
-                    <td id="tdScmPathErrors" style="display: none;"><form:errors path="scmPath" cssClass="validationError" /></td>
+                </tr>
+            </table>
+            <table id="scmData" style="display: none;">
+                <tr>
+                    <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
+                    <td><form:input path="scmPath" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+                    <td><form:errors path="scmPath" cssClass="validationError" /></td>
                 </tr>
             </table>
 

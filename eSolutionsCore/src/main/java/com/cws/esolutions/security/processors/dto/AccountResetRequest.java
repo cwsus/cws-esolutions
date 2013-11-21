@@ -43,7 +43,6 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
  */
 public class AccountResetRequest implements Serializable
 {
-    private String smsCode = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -135,18 +134,6 @@ public class AccountResetRequest implements Serializable
         this.requestor = value;
     }
 
-    public final void setSmsCode(final String value)
-    {
-        final String methodName = AccountResetRequest.CNAME + "#setSmsCode(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        this.smsCode = value;
-    }
-
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountResetRequest.CNAME + "#getHostInfo()";
@@ -222,18 +209,6 @@ public class AccountResetRequest implements Serializable
         }
 
         return this.requestor;
-    }
-
-    public final String getSmsCode()
-    {
-        final String methodName = AccountResetRequest.CNAME + "#getSmsCode()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        return this.smsCode;
     }
 
     @Override

@@ -985,6 +985,7 @@ public class OnlineResetController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
+        boolean resetError = false;
         ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
@@ -1112,23 +1113,6 @@ public class OnlineResetController
                     DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                 }
 
-                if (secConfig.getSmsResetEnabled())
-                {
-                    String smsCode = RandomStringUtils.randomAlphanumeric(8);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("smsCode: {}", smsCode);
-                    }
-
-                    resetReq.setSmsCode(smsCode);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountResetRequest: {}", resetReq);
-                }
-
                 AccountResetResponse resetRes = resetProcess.resetUserPassword(resetReq);
 
                 if (DEBUG)
@@ -1194,14 +1178,23 @@ public class OnlineResetController
                         DEBUGGER.debug("EmailMessage: {}", emailMessage);
                     }
 
-                    EmailUtils.sendEmailMessage(emailMessage);
+                    try
+                    {
+                        EmailUtils.sendSmsMessage(emailMessage);
+                    }
+                    catch (MessagingException mx)
+                    {
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                    }
 
                     if (secConfig.getSmsResetEnabled())
                     {
                         // send an sms code
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        smsMessage.setMessageBody(resetReq.getSmsCode());
+                        smsMessage.setMessageBody(resetRes.getSmsCode());
                         emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
                         emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
 
@@ -1210,18 +1203,17 @@ public class OnlineResetController
                             DEBUGGER.debug("EmailMessage: {}", smsMessage);
                         }
 
-                        EmailUtils.sendSmsMessage(smsMessage);
+                        try
+                        {
+                            EmailUtils.sendSmsMessage(smsMessage);
+                        }
+                        catch (MessagingException mx)
+                        {
+                            ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        }
                     }
-
-                    // invalidate the session at this point
-                    hSession.removeAttribute(Constants.USER_ACCOUNT);
-                    hSession.invalidate();
-
-                    hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
-                    hRequest.getSession().invalidate();
-
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);
-                    mView.setViewName(appConfig.getLogonRedirect());
                 }
                 else
                 {
@@ -1229,8 +1221,7 @@ public class OnlineResetController
                     ERROR_RECORDER.error(resetRes.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
-                    mView.addObject("command", request);
-                    mView.setViewName(this.submitAnswersPage);
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
             else
@@ -1245,6 +1236,7 @@ public class OnlineResetController
                     DEBUGGER.debug("UserChangeRequest: {}", request);
                 }
 
+                resetError = true;
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView.addObject("command", request);
                 mView.setViewName(this.submitAnswersPage);
@@ -1253,12 +1245,6 @@ public class OnlineResetController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            mView.setViewName(appConfig.getErrorResponsePage());
-        }
-        catch (MessagingException mx)
-        {
-            ERROR_RECORDER.error(mx.getMessage(), mx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
         }
@@ -1279,6 +1265,21 @@ public class OnlineResetController
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
             mView.setViewName(appConfig.getErrorResponsePage());
+        }
+        finally
+        {
+            if (!(resetError))
+            {
+                // invalidate the session at this point
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.invalidate();
+
+                hRequest.getSession().removeAttribute(Constants.USER_ACCOUNT);
+                hRequest.getSession().invalidate();
+
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);
+                mView.setViewName(appConfig.getLogonRedirect());
+            }
         }
 
         if (DEBUG)

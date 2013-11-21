@@ -65,17 +65,23 @@
 <div id="InfoLine"><strong>${article.articleId} - ${article.title}</strong></div>
 <div id="content">
     <div id="content-right">
-	    <c:if test="${not empty messageResponse}">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty errorResponse}">
+	    <c:if test="${not empty fn:trim(errorResponse)}">
 	        <p id="error">${errorResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty responseMessage}">
+	    <c:if test="${not empty fn:trim(responseMessage)}">
 	        <p id="info"><spring:message code="${responseMessage}" /></p>
 	    </c:if>
-	    <c:if test="${not empty errorMessage}">
+	    <c:if test="${not empty fn:trim(errorMessage)}">
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
 	    <table id="ShowArticle">
@@ -126,7 +132,7 @@
 	    </table>
     </div>
 
-    <c:if test="${not empty sessionScope.userAccount}">
+    <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
 	    <div id="content-left">
 	        <ul>
 	            <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>

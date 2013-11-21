@@ -87,4 +87,6 @@ public interface IServerManagementProcessor
     ServerManagementResponse runTelnetCheck(final ServerManagementRequest request) throws ServerManagementException;
 
     ServerManagementResponse runRemoteDateCheck(final ServerManagementRequest request) throws ServerManagementException;
+
+    ServerManagementResponse runProcessListCheck(final ServerManagementRequest request) throws ServerManagementException;
 }

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<server-config>
-	    <transportType>TCP</transportType>
-	    <listenAddress>127.0.0.1</listenAddress>
-	    <portNumber>61616</portNumber>
-	    <backlog>10</backlog>
-	    <sslEnabled />
-	    <sslKeystore />
-	    <sslKeyPassword />
-	    <sslKeySalt />
+    <server-config>
+        <transportType>TCP</transportType>
+        <listenAddress>127.0.0.1</listenAddress>
+        <portNumber>61616</portNumber>
+        <backlog>10</backlog>
+        <sslEnabled />
+        <sslKeystore />
+        <sslKeyPassword />
+        <sslKeySalt />
         <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
         <serverClass>com.cws.esolutions.agent.server.impl.MQServer</serverClass>
-	</server-config>
+    </server-config>
 
     <application-config>
         <appName>eSolutionsServer</appName>
-        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
-        <archiveRootDirectory>C:/Temp/archive</archiveRootDirectory>
-        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
+        <fileRepositoryRoot>/opt/cws/eSolutions/repository</fileRepositoryRoot>
         <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
         <proxyConfigFile>eSolutions/ProxyConfig.xml</proxyConfigFile>
         <connectTimeout>15000</connectTimeout>
@@ -32,8 +32,8 @@
         <protocol>t3</protocol>
         <serverName>192.168.10.251</serverName>
         <portNumber>19024</portNumber>
-        <userConfig>C:/Users/kh05451/kh05451-WebLogicConfig.properties</userConfig>
-        <keyConfig>C:/Users/kh05451/kh05451-WebLogicKey.properties</keyConfig>
+        <userConfig>/opt/cws/eSolutions/config/WebLogicConfig.properties</userConfig>
+        <keyConfig>/opt/cws/eSolutions/config/WebLogicKey.properties</keyConfig>
         <nmPort>19024</nmPort>
         <isSecure>false</isSecure>
         <sslKeystore />
@@ -54,7 +54,8 @@
     </deployment-config>
 
     <script-config>
-        <netstatCmd>C:/temp/bin/netstat.cmd</netstatCmd>
+        <netstatCmd>/opt/cws/eSolutions/lib/netstat.cmd</netstatCmd>
+        <processListCmd>/opt/cws/eSolutions/lib/processList.cmd</processListCmd>
     </script-config>
 
     <mail-config>

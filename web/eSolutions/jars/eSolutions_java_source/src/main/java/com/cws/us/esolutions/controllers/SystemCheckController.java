@@ -1438,7 +1438,7 @@ public class SystemCheckController
                     DEBUGGER.debug("ServerManagementRequest: {}", serverReq);
                 }
 
-                ServerManagementResponse response = processor.runTelnetCheck(serverReq); // TODO
+                ServerManagementResponse response = processor.runProcessListCheck(serverReq);
 
                 if (DEBUG)
                 {

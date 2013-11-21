@@ -272,6 +272,16 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                         if (userData.get(16) == null)
                         {
+                            // remove any existing keys first
+                            try
+                            {
+                                keyManager.removeKeys(keyRequest);
+                            }
+                            catch (KeyManagementException kmx)
+                            {
+                                ERROR_RECORDER.error(kmx.getMessage(), kmx);
+                            }
+
                             keyResponse = keyManager.createKeys(keyRequest);
                         }
                         else

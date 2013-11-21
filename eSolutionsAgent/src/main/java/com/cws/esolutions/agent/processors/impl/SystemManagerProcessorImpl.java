@@ -68,17 +68,17 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
         Socket socket = null;
         File sourceFile = null;
+        List<String> commandList = null;
+        ExecuteCommandRequest cmdRequest = null;
+        ExecuteCommandResponse cmdResponse = null;
         SystemManagerResponse response = new SystemManagerResponse();
+        IExecuteRequestCommand execCommand = new ExecuteRequestCommandImpl();
 
         try
         {
             switch (request.getRequestType())
             {
                 case NETSTAT:
-                    ExecuteCommandRequest cmdRequest = new ExecuteCommandRequest();
-                    ExecuteCommandResponse cmdResponse = new ExecuteCommandResponse();
-                    IExecuteRequestCommand execCommand = new ExecuteRequestCommandImpl();
-
                     sourceFile = new File(scriptConfig.getNetstatCmd());
 
                     if (DEBUG)
@@ -91,7 +91,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         sourceFile.setExecutable(true);
                     }
 
-                    List<String> commandList = new ArrayList<String>();
+                    commandList = new ArrayList<String>();
                     commandList.add(sourceFile.toString());
 
                     if (request.getPortNumber() != 0)
@@ -104,6 +104,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         DEBUGGER.debug("commandList: {}", commandList);
                     }
 
+                    cmdRequest = new ExecuteCommandRequest();
                     cmdRequest.setCommand(commandList);
                     cmdRequest.setPrintOutput(true);
                     cmdRequest.setPrintError(true);
@@ -201,6 +202,70 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                             response.setRequestStatus(AgentStatus.FAILURE);
                             response.setResponseData("Telnet connection to " + targetServer + " on port " + request.getPortNumber() + " failed with message: " + cx.getMessage());
                         }
+                    }
+
+                    break;
+                case PROCESSLIST:
+                    sourceFile = new File(scriptConfig.getProcessListCmd());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("scriptFile: {}", sourceFile);
+                    }
+
+                    if (!(sourceFile.canExecute()))
+                    {
+                        sourceFile.setExecutable(true);
+                    }
+
+                    commandList = new ArrayList<String>();
+                    commandList.add(sourceFile.toString());
+
+                    if (request.getPortNumber() != 0)
+                    {
+                        commandList.add(request.getProcessName());
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("commandList: {}", commandList);
+                    }
+
+                    cmdRequest = new ExecuteCommandRequest();
+                    cmdRequest.setCommand(commandList);
+                    cmdRequest.setPrintOutput(true);
+                    cmdRequest.setPrintError(true);
+                    cmdRequest.setTimeout(SCRIPT_TIMEOUT);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ExecuteCommandRequest: {}", cmdRequest);
+                    }
+
+                    cmdResponse = execCommand.executeCommand(cmdRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ExecuteCommandResponse: {}", cmdResponse);
+                    }
+
+                    if (cmdResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                    {
+                        if ((cmdResponse.getErrorStream().length() != 0) || (cmdResponse.getOutputStream().length() == 0))
+                        {
+                            response.setRequestStatus(AgentStatus.FAILURE);
+                            response.setResponseData("Command request failed. Error response: " + cmdResponse.getErrorStream().toString());
+                        }
+                        else
+                        {
+                            response.setRequestStatus(AgentStatus.SUCCESS);
+                            response.setResponseData(cmdResponse.getOutputStream().toString());
+                        }
+                    }
+                    else
+                    {
+                        response.setRequestStatus(AgentStatus.FAILURE);
+                        response.setResponseData("Command request failed. Error response: " + cmdResponse.getResponse());
                     }
 
                     break;

@@ -31,18 +31,24 @@
 <div id="InfoLine"><spring:message code="system.mgmt.list.processes" /></div>
 <div id="content">
     <div id="content-right">
-        <c:if test="${not empty messageResponse}">
-            <p id="info">${messageResponse}</p>
-        </c:if>
-        <c:if test="${not empty errorResponse}">
-            <p id="error">${errorResponse}</p>
-        </c:if>
-        <c:if test="${not empty responseMessage}">
-            <p id="info"><spring:message code="${responseMessage}" /></p>
-        </c:if>
-        <c:if test="${not empty errorMessage}">
-            <p id="error"><spring:message code="${errorMessage}" /></p>
-        </c:if>
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
         <span id="validationError"></span>
 
@@ -55,9 +61,9 @@
                     <td>${server.operHostName}</td>
                 </tr>
                 <tr>
-                    <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
-                    <td><form:input path="targetPort" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
-                    <td><form:errors path="targetPort" cssClass="validationError" /></td>
+                    <td><label id="txtProcessName"><spring:message code="process.request.provide.name" /></label></td>
+                    <td><form:input path="processName" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+                    <td><form:errors path="processName" cssClass="validationError" /></td>
                 </tr>
             </table>
 

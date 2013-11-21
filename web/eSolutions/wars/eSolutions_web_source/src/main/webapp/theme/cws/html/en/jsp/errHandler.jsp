@@ -99,7 +99,7 @@
 			                <spring:message code='theme.navbar.home' /></a>
 			        </li>
 			        <c:choose>
-			            <c:when test="${not empty sessionScope.userAccount and sessionScope.userAccount.status ne 'EXPIRED'}">
+			            <c:when test="${not empty fn:trim(sessionScope.userAccount) and sessionScope.userAccount.status ne 'EXPIRED'}">
 			                <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
 			                    <li>
 			                        <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
@@ -158,7 +158,7 @@
 
 			<div id="Footer">
 			    <p>
-			        <c:if test="${not empty sessionScope.userAccount}">
+			        <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
 			            <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
 			        </c:if>
 			        &copy; <spring:message code="theme.footer.copyright" /><br />

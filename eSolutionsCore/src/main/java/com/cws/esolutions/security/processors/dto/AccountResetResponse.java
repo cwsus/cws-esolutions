@@ -44,6 +44,7 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 public class AccountResetResponse implements Serializable
 {
     private String resetId = null;
+    private String smsCode = null;
     private String response = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
@@ -121,6 +122,18 @@ public class AccountResetResponse implements Serializable
         this.resetId = value;
     }
 
+    public final void setSmsCode(final String value)
+    {
+        final String methodName = AccountResetResponse.CNAME + "#setSmsCode(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        this.smsCode = value;
+    }
+
     public final void setQuestionList(final List<String> value)
     {
         final String methodName = AccountResetResponse.CNAME + "#setQuestionList(final List<String> value)";
@@ -196,6 +209,18 @@ public class AccountResetResponse implements Serializable
         }
 
         return this.resetId;
+    }
+
+    public final String getSmsCode()
+    {
+        final String methodName = AccountResetResponse.CNAME + "#getSmsCode()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.smsCode;
     }
 
     public final List<String> getQuestionList()

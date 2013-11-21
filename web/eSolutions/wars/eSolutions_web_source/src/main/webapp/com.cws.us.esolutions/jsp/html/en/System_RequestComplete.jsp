@@ -31,23 +31,29 @@
 <div id="InfoLine"><spring:message code="request.complete" /></div>
 <div id="content">
     <div id="content-right">
-	    <c:if test="${not empty messageResponse}">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
 	        <p id="info">${messageResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty errorResponse}">
+	    <c:if test="${not empty fn:trim(errorResponse)}">
 	        <p id="error">${errorResponse}</p>
 	    </c:if>
-	    <c:if test="${not empty responseMessage}">
+	    <c:if test="${not empty fn:trim(responseMessage)}">
 	        <p id="info"><spring:message code="${responseMessage}" /></p>
 	    </c:if>
-	    <c:if test="${not empty errorMessage}">
+	    <c:if test="${not empty fn:trim(errorMessage)}">
 	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
 	    </c:if>
 
         <spring:message code="system.request.complete" />
 
         <c:choose>
-            <c:when test="${empty sessionScope.userAccount}">
+            <c:when test="${empty fn:trim(sessionScope.userAccount) or empty fn:trim(sessionScope.userAccount.status)}">
                 <p>
                     <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
                         <spring:message code="theme.click.continue" /></a>
@@ -55,7 +61,7 @@
             </c:when>
             <c:otherwise>
                 <c:choose>
-                    <c:when test="${sessionScope.userAccount.status eq 'SUCCESS'">
+                    <c:when test="${sessionScope.userAccount.status == 'SUCCESS'}">
                         <p>
                             <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
                                 <spring:message code="theme.click.continue" /></a>

@@ -54,20 +54,15 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
-import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
-import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /**
@@ -97,7 +92,6 @@ public class UserManagementController
     private String serviceName = null;
     private String projectMgmt = null;
     private String viewUserPage = null;
-    private String messageSource = null;
     private String viewAuditPage = null;
     private String userResetEmail = null;
     private String createUserPage = null;
@@ -235,19 +229,6 @@ public class UserManagementController
         }
 
         this.searchUsersPage = value;
-    }
-
-    public final void setMessageSource(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setMessageSource(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageSource = value;
     }
 
     public final void setMessageNoUsersFound(final String value)
@@ -1650,7 +1631,7 @@ public class UserManagementController
         final HttpSession hSession = hRequest.getSession();
         final SecurityConfig secConfig = appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountResetProcessor processor = new AccountResetProcessorImpl();
+        final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1709,65 +1690,87 @@ public class UserManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                UserAccount account = new UserAccount();
-                account.setGuid(userGuid);
-                account.setSuspended(false);
+                // load the user account
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid(userGuid);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", account);
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
                 }
 
-                AccountResetRequest request = new AccountResetRequest();
+                AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
-                request.setUserAccount(account);
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setUserAccount(searchAccount);
                 request.setApplicationId(appConfig.getApplicationId());
                 request.setRequestor(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountResetRequest: {}", request);
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
                 }
 
-                AccountResetResponse response = processor.resetUserPassword(request);
+                AccountControlResponse response = processor.loadUserAccount(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountResetResponse: {}", response);
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    // good, send email
-                    UserAccount responseAccount = response.getUserAccount();
+                    UserAccount account = response.getUserAccount();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", responseAccount);
+                        DEBUGGER.debug("UserAccount: {}", account);
                     }
 
-                    String emailId = RandomStringUtils.randomAlphanumeric(16);
+                    AccountControlRequest resetReq = new AccountControlRequest();
+                    resetReq.setHostInfo(reqInfo);
+                    resetReq.setUserAccount(account);
+                    resetReq.setApplicationName(appConfig.getApplicationName());
+                    resetReq.setApplicationId(appConfig.getApplicationId());
+                    resetReq.setRequestor(userAccount);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Message ID: {}", emailId);
+                        DEBUGGER.debug("AccountResetRequest: {}", resetReq);
                     }
 
-                    StringBuilder targetURL = new StringBuilder()
-                        .append(hRequest.getScheme() + "://" + hRequest.getServerName())
-                        .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
-                        .append(hRequest.getContextPath() + this.resetURL + response.getResetId());
+                    AccountControlResponse resetRes = processor.modifyUserPassword(request);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("targetURL: {}", targetURL);
+                        DEBUGGER.debug("AccountResetResponse: {}", resetRes);
                     }
-                            
-                    String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
+
+                    if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                        if (DEBUG)
                         {
-                            responseAccount.getGivenName(),
+                            DEBUGGER.debug("Message ID: {}", emailId);
+                        }
+
+                        StringBuilder targetURL = new StringBuilder()
+                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                            .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("targetURL: {}", targetURL);
+                        }
+                            
+                        String emailBody = MessageFormat.format(IOUtils.toString(
+                                this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
+                        {
+                            account.getGivenName(),
                             new Date(System.currentTimeMillis()),
                             reqInfo.getHostName(),
                             targetURL.toString(),
@@ -1775,32 +1778,81 @@ public class UserManagementController
                             secConfig.getPasswordMaxLength()
                         });
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Email body: {}", emailBody);
+                        }
+
+                        // good, now generate an email with the information
+                        EmailMessage emailMessage = new EmailMessage();
+                        emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                        emailMessage.setMessageBody(emailBody);
+                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
+                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
+                                this.passwordResetSubject, this.getClass().getClassLoader()));
+                        emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(account.getEmailAddr())));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                        }
+
+                        try
+                        {
+                            EmailUtils.sendSmsMessage(emailMessage);
+                        }
+                        catch (MessagingException mx)
+                        {
+                            ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        }
+
+                        if (secConfig.getSmsResetEnabled())
+                        {
+                            // send an sms code
+                            EmailMessage smsMessage = new EmailMessage();
+                            smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                            smsMessage.setMessageBody(resetRes.getSmsCode());
+                            emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(account.getPagerNumber())));
+                            emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("EmailMessage: {}", smsMessage);
+                            }
+
+                            try
+                            {
+                                EmailUtils.sendSmsMessage(smsMessage);
+                            }
+                            catch (MessagingException mx)
+                            {
+                                ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                            }
+                        }
+
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
+                        mView.addObject("userRoles", Role.values());
+                        mView.addObject("userAccount", response.getUserAccount());
+                        mView.setViewName(this.viewUserPage);
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
-
-                    if (DEBUG)
+                    else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                     {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
+                        mView.setViewName(appConfig.getUnauthorizedPage());
                     }
+                    else
+                    {
+                        // some failure occurred
+                        ERROR_RECORDER.error(response.getResponse());
 
-                    EmailUtils.sendEmailMessage(emailMessage);
-
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
-                    mView.addObject("userRoles", Role.values());
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.addObject("userAccount", account);
+                        mView.setViewName(this.viewUserPage);
+                    }
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1812,13 +1864,12 @@ public class UserManagementController
                     ERROR_RECORDER.error(response.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.addObject("userAccount", response.getUserAccount());
-                    mView.setViewName(this.viewUserPage);
+                    mView.setViewName(appConfig.getErrorResponsePage());
                 }
             }
-            catch (AccountResetException arx)
+            catch (AccountControlException acx)
             {
-                ERROR_RECORDER.error(arx.getMessage(), arx);
+                ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(appConfig.getErrorResponsePage());
             }
@@ -1831,12 +1882,6 @@ public class UserManagementController
             catch (CoreServiceException csx)
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.setViewName(appConfig.getUnauthorizedPage());
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
 
                 mView.setViewName(appConfig.getUnauthorizedPage());
             }

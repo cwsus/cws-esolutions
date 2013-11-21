@@ -800,14 +800,23 @@ function validateForm(theForm, e)
                     document.getElementById('execute').disabled = false;
                     document.getElementById('projectCode').focus();
                 }
-                else if (theForm.contactEmail.value == '')
+                else if (theForm.devEmail.value == '')
                 {
                     clearText(theForm);
 
                     document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
                     document.getElementById('txtContactEmail').style.color = '#FF0000';
                     document.getElementById('execute').disabled = false;
-                    document.getElementById('projectCode').focus();
+                    document.getElementById('devEmail').focus();
+                }
+                else if (theForm.prodEmail.value == '')
+                {
+                    clearText(theForm);
+
+                    document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
+                    document.getElementById('txtContactEmail').style.color = '#FF0000';
+                    document.getElementById('execute').disabled = false;
+                    document.getElementById('prodEmail').focus();
                 }
                 else if (theForm.changeQueue.value == '')
                 {

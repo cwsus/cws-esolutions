@@ -75,7 +75,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+                stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
                 stmt.setString(1, projectDetail.get(0)); // project guid
                 stmt.setString(2, projectDetail.get(1)); // project code
                 stmt.setString(3, projectDetail.get(2)); // project status

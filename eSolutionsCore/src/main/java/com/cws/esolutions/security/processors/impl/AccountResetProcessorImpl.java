@@ -24,7 +24,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
@@ -35,14 +34,12 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
-import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
 /**
  * eSolutionsCore
  * com.cws.esolutions.security.processors.impl
@@ -221,111 +218,70 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         {
             if (!(StringUtils.equals(userAccount.getGuid(), reqAccount.getGuid())))
             {
-                // requesting user is not the same as the user being reset. authorize
-                boolean isAdminAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                if (!(isAdminAuthorized))
-                {
-                    // nope !
-                    response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
-
-                    return response;
-                }
+                return response;
             }
 
-            // otherwise, keep going
-            // this is a reset request, so we need to do a few things
-            // 1, we need to generate a unique id that we can email off
-            // to the user, that we can then look up to confirm
-            // then once we have that we can actually do the reset
-            // first, change the existing password
-            // 128 character values - its possible that the reset is
-            // coming as a result of a possible compromise
-            String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
-                    secConfig.getAuthAlgorithm(), secConfig.getIterations());
+            String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
+            String smsReset = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
 
-            if (StringUtils.isNotEmpty(tmpPassword))
+            if (StringUtils.isNotEmpty(resetId))
             {
-                // update the authentication datastore with the new password
-                // we never show the user the password, we're only doing this
-                // to prevent unauthorized access (or further unauthorized access)
-                // we get a return code back but we aren't going to use it really
-                boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, System.currentTimeMillis());
+                boolean isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? smsReset : null));
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("isComplete: {}", isComplete);
                 }
 
-                // now generate a temporary id to stuff into the database
-                // this will effectively replace the current salt value
-                String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
-
-                if (StringUtils.isNotEmpty(resetId))
+                if (isComplete)
                 {
-                    isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, request.getSmsCode());
+                    // load the user account for the email response
+                    List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
+                        DEBUGGER.debug("UserData: {}", userData);
                     }
 
-                    if (isComplete)
+                    if ((userData != null) && (!(userData.isEmpty())))
                     {
-                        // load the user account for the email response
-                        List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
+                        UserAccount responseAccount = new UserAccount();
+                        responseAccount.setGuid((String) userData.get(0));
+                        responseAccount.setUsername((String) userData.get(1));
+                        responseAccount.setGivenName((String) userData.get(2));
+                        responseAccount.setSurname((String) userData.get(3));
+                        responseAccount.setDisplayName((String) userData.get(4));
+                        responseAccount.setEmailAddr((String) userData.get(5));
+                        responseAccount.setPagerNumber((String) userData.get(6));
+                        responseAccount.setTelephoneNumber((String) userData.get(7));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("UserData: {}", userData);
+                            DEBUGGER.debug("UserAccount: {}", responseAccount);
                         }
 
-                        if ((userData != null) && (!(userData.isEmpty())))
-                        {
-                            UserAccount responseAccount = new UserAccount();
-                            responseAccount.setGuid((String) userData.get(0));
-                            responseAccount.setUsername((String) userData.get(1));
-                            responseAccount.setGivenName((String) userData.get(2));
-                            responseAccount.setSurname((String) userData.get(3));
-                            responseAccount.setDisplayName((String) userData.get(4));
-                            responseAccount.setEmailAddr((String) userData.get(5));
-                            responseAccount.setPagerNumber((String) userData.get(6));
-                            responseAccount.setTelephoneNumber((String) userData.get(7));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", responseAccount);
-                            }
-
-                            response.setResetId(resetId);
-                            response.setUserAccount(responseAccount);
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setResponse("Successfully generated password reset request");
-                        }
-                        else
-                        {
-                            throw new AuthenticatorException("Failed to locate user account in authentication repository. Cannot continue.");
-                        }
+                        response.setResetId(resetId);
+                        response.setSmsCode(((secConfig.getSmsResetEnabled()) ? smsReset : null));
+                        response.setUserAccount(responseAccount);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Successfully generated password reset request");
                     }
                     else
                     {
-                        throw new AccountResetException("Unable to insert password identifier into database. Cannot continue.");
+                        throw new AuthenticatorException("Failed to locate user account in authentication repository. Cannot continue.");
                     }
                 }
                 else
                 {
-                    throw new AccountResetException("Unable to generate a unique identifier. Cannot continue.");
+                    throw new AccountResetException("Unable to insert password identifier into database. Cannot continue.");
                 }
             }
             else
             {
-                throw new AccountResetException("Failed to generate a temporary password. Cannot continue.");
+                throw new AccountResetException("Unable to generate a unique identifier. Cannot continue.");
             }
         }
         catch (SQLException sqx)
@@ -333,12 +289,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
             
             throw new AccountResetException(sqx.getMessage(), sqx);
-        }
-        catch (AdminControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-            
-            throw new AccountResetException(acsx.getMessage(), acsx);
         }
         catch (UserManagementException umx)
         {

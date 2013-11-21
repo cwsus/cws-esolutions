@@ -67,10 +67,10 @@ public class PasswordUtilsTest
     public final void testCreateHash() throws SecurityServiceException
     {
         final String salt = RandomStringUtils.randomAlphanumeric(32);
-        final String pass = "Ariana16*";
+        final String pass = "Ariana21*";
 
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText(pass, salt,
+        System.out.println(PasswordUtils.encryptText(pass, "c11QMzm4myXM3WgmdUTJvzh0A6qeELb0mLnCNcaLPqDyKQvLaaT5Kc19IqpME8wP",
                 bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
     }
 

@@ -37,6 +37,7 @@ import com.cws.us.esolutions.Constants;
 public class SystemCheckRequest implements Serializable
 {
     private int targetPort = 0;
+    private String processName = null;
     private String sourceServer = null;
     private String targetServer = null;
 
@@ -58,6 +59,19 @@ public class SystemCheckRequest implements Serializable
         }
 
         this.targetPort = value;
+    }
+
+    public final void setProcessName(final String value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setProcessName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.processName = value;
     }
 
     public final void setSourceServer(final String value)
@@ -97,6 +111,19 @@ public class SystemCheckRequest implements Serializable
         }
 
         return this.targetPort;
+    }
+
+    public final String getProcessName()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getProcessName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.processName);
+        }
+
+        return this.processName;
     }
 
     public final String getSourceServer()

@@ -46,6 +46,7 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 public class SystemManagerRequest implements Serializable
 {
     private int portNumber = 0;
+    private String processName = null;
     private String targetServer = null;
     private String extTargetDir = null;
     private boolean installAgent = false;
@@ -125,6 +126,19 @@ public class SystemManagerRequest implements Serializable
         }
 
         this.portNumber = value;
+    }
+
+    public final void setProcessName(final String value)
+    {
+        final String methodName = SystemManagerRequest.CNAME + "#setProcessName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.processName = value;
     }
 
     public final void setExtTargetDir(final String value)
@@ -242,6 +256,19 @@ public class SystemManagerRequest implements Serializable
         }
 
         return this.portNumber;
+    }
+
+    public final String getProcessName()
+    {
+        final String methodName = SystemManagerRequest.CNAME + "#getProcessName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.processName);
+        }
+
+        return this.processName;
     }
 
     public final String getExtTargetDir()

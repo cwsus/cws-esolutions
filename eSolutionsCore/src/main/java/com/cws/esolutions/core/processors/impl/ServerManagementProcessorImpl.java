@@ -1340,4 +1340,138 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         return response;
     }
+
+    @Override
+    public ServerManagementResponse runProcessListCheck(final ServerManagementRequest request) throws ServerManagementException
+    {
+        final String methodName = IServerManagementProcessor.CNAME + "#runProcessListCheck(final ServerManagementRequest request)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServerManagementRequest: ", request);
+        }
+
+        ServerManagementResponse response = new ServerManagementResponse();
+
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+        final UserAccount userAccount = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            SystemManagerRequest systemReq = new SystemManagerRequest();
+            systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+            systemReq.setRequestType(SystemCheckType.PROCESSLIST);
+            systemReq.setProcessName(request.getProcessName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SystemManagerRequest: {}", request);
+            }
+
+            Server sourceServer = request.getSourceServer();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Server: {}", sourceServer);
+            }
+
+            AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setAppName(appConfig.getAppName());
+            agentRequest.setRequestPayload(systemReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AgentRequest: {}", agentRequest);
+            }
+
+            // always make the tcp conn to the oper hostname - thats where the agent should be listening
+            String correlator = MQUtils.sendMqMessage(agentRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("correlator: {}", correlator);
+            }
+
+            if (StringUtils.isNotEmpty(correlator))
+            {
+                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                }
+
+                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                {
+                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                    }
+
+                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                    response.setResponse(systemRes.getResponse());
+                    response.setResponseObject(systemRes.getResponseData());
+                }
+                else
+                {
+                    response.setResponse(agentResponse.getResponse());
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                }
+            }
+            else
+            {
+                response.setResponse("Failed to send message to configured request queue for action");
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+            }
+        }
+        catch (UtilityException ux)
+        {
+            ERROR_RECORDER.error(ux.getMessage(), ux);
+
+            throw new ServerManagementException(ux.getMessage(), ux);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.NETSTAT);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
 }

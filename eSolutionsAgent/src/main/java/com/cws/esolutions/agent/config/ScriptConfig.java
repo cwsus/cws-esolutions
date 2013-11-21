@@ -48,6 +48,7 @@ public final class ScriptConfig implements Serializable
 {
     private int scriptTimeout = 0;
     private String netstatCmd = null;
+    private String processListCmd = null;
     
     private static final String CNAME = ScriptConfig.class.getName();
     private static final long serialVersionUID = -190318672398494206L;
@@ -72,6 +73,19 @@ public final class ScriptConfig implements Serializable
     public final void setNetstatCmd(final String value)
     {
         final String methodName = ScriptConfig.CNAME + "#setNetstatCmd(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.netstatCmd = value;
+    }
+
+    public final void setProcessListCmd(final String value)
+    {
+        final String methodName = ScriptConfig.CNAME + "#setProcessListCmd(final String value)";
 
         if (DEBUG)
         {
@@ -108,6 +122,20 @@ public final class ScriptConfig implements Serializable
         }
 
         return this.netstatCmd;
+    }
+
+    @XmlElement(name = "processListCmd")
+    public final String getProcessListCmd()
+    {
+        final String methodName = ScriptConfig.CNAME + "#getProcessListCmd()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.processListCmd);
+        }
+
+        return this.processListCmd;
     }
 
     public final String toString()

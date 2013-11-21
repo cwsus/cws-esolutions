@@ -48,6 +48,7 @@ public class ServerManagementRequest implements Serializable
     private int startPage = 0;
     private int portNumber = 0;
     private String serviceId = null;
+    private String processName = null;
     private Server sourceServer = null;
     private Server targetServer = null;
     private String extTargetDir = null;
@@ -208,6 +209,19 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.portNumber = value;
+    }
+
+    public final void setProcessName(final String value)
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#setProcessName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.processName = value;
     }
 
     public final void setExtTargetDir(final String value)
@@ -390,6 +404,19 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.portNumber;
+    }
+
+    public final String getProcessName()
+    {
+        final String methodName = ServerManagementRequest.CNAME + "#getProcessName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.processName);
+        }
+
+        return this.processName;
     }
 
     public final String getExtTargetDir()

@@ -30,14 +30,14 @@
 
 <div id="nav">
     <ul>
-        <c:if test="${empty sessionScope.userAccount}">
+        <c:if test="${empty fn:trim(sessionScope.userAccount)}">
             <li>
                 <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
                     <spring:message code='theme.navbar.login' /></a>
             </li>
         </c:if>
-        <c:if test="${not empty sessionScope.userAccount}">
-            <c:if test="${sessionScope.userAccount.status eq 'SUCCESS'}">
+        <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
+            <c:if test="${sessionScope.userAccount.status == 'SUCCESS'}">
 	            <li>
 	                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
 	                    <spring:message code='theme.navbar.home' /></a>

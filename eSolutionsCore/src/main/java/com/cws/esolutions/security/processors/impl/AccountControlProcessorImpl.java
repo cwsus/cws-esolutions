@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
@@ -876,6 +877,164 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             }
         }
 
+
+        return response;
+    }
+
+    @Override
+    public AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException
+    {
+        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserPassword(final AccountControlRequest request) throws AccountControlException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountControlRequest: {}", request);
+        }
+
+        AccountControlResponse response = new AccountControlResponse();
+
+        final Calendar calendar = Calendar.getInstance();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
+
+        calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Calendar: {}", calendar);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
+        try
+        {
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+            }
+
+            if (isAuthorized)
+            {
+                // this is a reset request, so we need to do a few things
+                // 1, we need to generate a unique id that we can email off
+                // to the user, that we can then look up to confirm
+                // then once we have that we can actually do the reset
+                // first, change the existing password
+                // 128 character values - its possible that the reset is
+                // coming as a result of a possible compromise
+                String tmpPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()),
+                        secConfig.getAuthAlgorithm(), secConfig.getIterations());
+                String tmpSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
+
+                if ((StringUtils.isNotEmpty(tmpPassword)) && (StringUtils.isNotEmpty(tmpSalt)))
+                {
+                    // update the authentication datastore with the new password
+                    // we never show the user the password, we're only doing this
+                    // to prevent unauthorized access (or further unauthorized access)
+                    // we get a return code back but we aren't going to use it really
+                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, System.currentTimeMillis());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isComplete: {}", isComplete);
+                    }
+
+                    // now generate a temporary id to stuff into the database
+                    // this will effectively replace the current salt value
+                    String resetId = RandomStringUtils.randomAlphanumeric(secConfig.getResetIdLength());
+                    String resetSms = RandomStringUtils.randomAlphanumeric(secConfig.getSmsCodeLength());
+
+                    if ((StringUtils.isNotEmpty(resetId)) && (StringUtils.isNotEmpty(resetSms)))
+                    {
+                        isComplete = userSec.insertResetData(userAccount.getGuid(), resetId, ((secConfig.getSmsResetEnabled()) ? resetSms : null));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isComplete: {}", isComplete);
+                        }
+
+                        if (isComplete)
+                        {
+                            response.setResetId(resetId);
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                            response.setResponse("Successfully generated password reset request");
+                        }
+                        else
+                        {
+                            throw new AccountControlException("Unable to insert password identifier into database. Cannot continue.");
+                        }
+                    }
+                    else
+                    {
+                        throw new AccountControlException("Unable to generate a unique identifier. Cannot continue.");
+                    }
+                }
+                else
+                {
+                    throw new AccountControlException("Failed to generate a temporary password. Cannot continue.");
+                }
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new AccountControlException(sqx.getMessage(), sqx);
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new AccountControlException(acsx.getMessage(), acsx);
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.RESETPASS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
 
         return response;
     }
