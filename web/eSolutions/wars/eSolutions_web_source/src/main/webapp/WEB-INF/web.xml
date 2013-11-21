@@ -180,11 +180,6 @@
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
 
-    <resource-ref id="ldapConfigurationFile">
-        <description>LDAP Configuration File</description>
-        <res-ref-name>jndi/ldapConfigurationFile</res-ref-name>
-        <res-type>java.net.URL</res-type>
-    </resource-ref>
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>
         <res-ref-name>jdbc/esolutionssvc</res-ref-name>
