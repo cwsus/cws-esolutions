@@ -125,6 +125,12 @@
                 <version>3.2.4.RELEASE</version>
                 <type>jar</type>
                 <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>aopalliance</artifactId>
+                        <groupId>aopalliance</groupId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -155,6 +161,14 @@
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-api</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <artifactId>commons-beanutils</artifactId>
+                        <groupId>commons-beanutils</groupId>
+                    </exclusion>
+                    <exclusion>
+                        <artifactId>commons-digester</artifactId>
+                        <groupId>commons-digester</groupId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -171,30 +185,6 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
-        	<dependency>
-        		<groupId>org.springframework</groupId>
-        		<artifactId>spring-web</artifactId>
-        		<exclusions>
-        			<exclusion>
-        				<artifactId>aopalliance</artifactId>
-        				<groupId>aopalliance</groupId>
-        			</exclusion>
-        		</exclusions>
-        	</dependency>
-        	<dependency>
-        		<groupId>org.apache.tiles</groupId>
-        		<artifactId>tiles-core</artifactId>
-        		<exclusions>
-        			<exclusion>
-        				<artifactId>commons-beanutils</artifactId>
-        				<groupId>commons-beanutils</groupId>
-        			</exclusion>
-        			<exclusion>
-        				<artifactId>commons-digester</artifactId>
-        				<groupId>commons-digester</groupId>
-        			</exclusion>
-        		</exclusions>
-        	</dependency>
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
