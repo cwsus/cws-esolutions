@@ -9,14 +9,14 @@
  * the materials be disclosed to third parties without the
  * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.us.esolutions.dto;
+package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.Constants;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.dto

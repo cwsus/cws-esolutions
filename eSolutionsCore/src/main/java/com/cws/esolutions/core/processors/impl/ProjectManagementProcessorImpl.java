@@ -251,7 +251,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
             {
                 List<String> insertData = new ArrayList<String>(
                         Arrays.asList(
-                                (StringUtils.isNotEmpty(project.getProjectGuid())) ? project.getProjectGuid() : UUID.randomUUID().toString(),
+                                project.getProjectGuid(),
                                 project.getProjectCode(),
                                 project.getPrimaryContact(),
                                 (StringUtils.isNotEmpty(project.getSecondaryContact())) ? project.getSecondaryContact() : Constants.NOT_SET,

@@ -134,6 +134,7 @@ public enum AuditType
     ADDDATACENTER,
     LISTDATACENTERS,
     LOADDATACENTER,
+    UPDATEDATACENTER,
 
     // added to satisfy service tests
     // DO NOT REMOVE

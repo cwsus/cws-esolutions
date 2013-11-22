@@ -12,16 +12,11 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,9 +29,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.ServerRequest;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.us.esolutions.dto.SystemCheckRequest;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.us.esolutions.validators.ServerValidator;
@@ -973,7 +966,7 @@ public class SystemManagementController
             mView.addObject("serverStatuses", ServerStatus.values());
             mView.addObject("serverRegions", ServiceRegion.values());
             mView.addObject("networkPartitions", NetworkPartition.values());
-            mView.addObject("command", new ServerRequest());
+            mView.addObject("command", new Server());
             mView.setViewName(this.addServerPage);
         }
         else
@@ -990,7 +983,7 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/add-server", method = RequestMethod.POST)
-    public final ModelAndView addNewServer(@ModelAttribute("request") final ServerRequest request, final BindingResult binding)
+    public final ModelAndView addNewServer(@ModelAttribute("request") final Server request, final BindingResult binding)
     {
         final String methodName = SystemManagementController.CNAME + "#addNewServer(@ModelAttribute(\"request\") final ServerRequest request, final BindingResult binding)";
 
@@ -1061,7 +1054,7 @@ public class SystemManagementController
                 ERROR_RECORDER.error("Request failed validation: {}", binding.getAllErrors());
 
                 // send back to page
-                mView.addObject("command", new ServerRequest());
+                mView.addObject("command", new Server());
                 mView.setViewName(this.addServerPage);
             }
 
@@ -1125,7 +1118,7 @@ public class SystemManagementController
                             request.setDomainName(owningDmgr.getDomainName());
                             request.setServerRegion(owningDmgr.getServerRegion());
                             request.setNetworkPartition(owningDmgr.getNetworkPartition());
-                            request.setDatacenter(owningDmgr.getDatacenter().getDatacenterGuid());
+                            request.setDatacenter(owningDmgr.getDatacenter());
                         }
                         else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                         {
@@ -1258,54 +1251,11 @@ public class SystemManagementController
                         break;
                 }
 
-                DataCenter datacenter = new DataCenter();
-                datacenter.setDatacenterGuid(request.getDatacenter());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("DataCenter: {}", datacenter);
-                }
-
-                Server server = new Server();
-                server.setVirtualId(request.getVirtualId());
-                server.setOsName(request.getOsName());
-                server.setDomainName(request.getDomainName());
-                server.setOperIpAddress(request.getOperIpAddress());
-                server.setOperHostName(request.getOperHostName());
-                server.setMgmtIpAddress(request.getMgmtIpAddress());
-                server.setMgmtHostName(request.getMgmtHostName());
-                server.setBkIpAddress(request.getBkIpAddress());
-                server.setBkHostName(request.getBkHostName());
-                server.setNasIpAddress(request.getNasIpAddress());
-                server.setNasHostName(request.getNasHostName());
-                server.setNatAddress(request.getNatAddress());
-                server.setServerRegion(request.getServerRegion());
-                server.setServerStatus(request.getServerStatus());
-                server.setServerType(request.getServerType());
-                server.setServerComments(request.getServerComments());
-                server.setDmgrPort(request.getDmgrPort());
-                server.setMgrUrl(request.getMgrUrl());
-                server.setOwningDmgr(request.getOwningDmgr());
-                server.setCpuType(request.getCpuType());
-                server.setCpuCount(request.getCpuCount());
-                server.setServerRack(request.getServerRack());
-                server.setServerModel(request.getServerModel());
-                server.setRackPosition(request.getRackPosition());
-                server.setSerialNumber(request.getSerialNumber());
-                server.setInstalledMemory(request.getInstalledMemory());
-                server.setNetworkPartition(request.getNetworkPartition());
-                server.setDatacenter(datacenter);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", server);
-                }
-
                 ServerManagementRequest serverReq = new ServerManagementRequest();
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
                 serverReq.setServiceId(this.systemService);
-                serverReq.setTargetServer(server);
+                serverReq.setTargetServer(request);
                 serverReq.setApplicationId(appConfig.getApplicationId());
                 serverReq.setApplicationName(appConfig.getApplicationName());
 
@@ -1448,7 +1398,7 @@ public class SystemManagementController
                     mView.addObject("serverStatuses", ServerStatus.values());
                     mView.addObject("serverRegions", ServiceRegion.values());
                     mView.addObject("networkPartitions", NetworkPartition.values());
-                    mView.addObject("command", new ServerRequest());
+                    mView.addObject("command", new Server());
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -1457,6 +1407,11 @@ public class SystemManagementController
                 else
                 {
                     // nooo
+                    mView.addObject("domainList", this.availableDomains);
+                    mView.addObject("serverTypes", ServerType.values());
+                    mView.addObject("serverStatuses", ServerStatus.values());
+                    mView.addObject("serverRegions", ServiceRegion.values());
+                    mView.addObject("networkPartitions", NetworkPartition.values());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.addObject("command", request);
                 }
@@ -1485,14 +1440,14 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/server-control", method = RequestMethod.POST)
-    public final ModelAndView runServerControlOperation(@ModelAttribute("request") final SystemCheckRequest request, final BindingResult binding)
+    public final ModelAndView runServerControlOperation(@ModelAttribute("request") final Server request, final BindingResult binding)
     {
-        final String methodName = SystemManagementController.CNAME + "#runServerControlOperation(@ModelAttribute(\"request\") final SystemCheckRequest request, final BindingResult binding)";
+        final String methodName = SystemManagementController.CNAME + "#runServerControlOperation(@ModelAttribute(\"request\") final Server request, final BindingResult binding)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SystemCheckRequest: {}", request);
+            DEBUGGER.debug("Server: {}", request);
             DEBUGGER.debug("BindingResult: {}", binding);
         }
 

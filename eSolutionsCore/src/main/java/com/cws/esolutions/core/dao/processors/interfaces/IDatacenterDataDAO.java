@@ -55,6 +55,8 @@ public interface IDatacenterDataDAO
 
     boolean addNewDatacenter(final List<String> serverData) throws SQLException;
 
+    boolean updateDatacenter(final List<String> serverData) throws SQLException;
+
     boolean removeExistingDatacenter(final String serverGuid) throws SQLException;
 
     int getDatacenterCount() throws SQLException;

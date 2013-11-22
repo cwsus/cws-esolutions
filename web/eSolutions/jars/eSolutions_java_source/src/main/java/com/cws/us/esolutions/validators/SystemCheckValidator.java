@@ -18,7 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.SystemCheckRequest;
+import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators

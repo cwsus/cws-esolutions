@@ -68,6 +68,8 @@ public interface IDatacenterManagementProcessor
 
     DatacenterManagementResponse addNewDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException;
 
+    DatacenterManagementResponse updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException;
+
     DatacenterManagementResponse listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException;
 
     DatacenterManagementResponse getDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException;

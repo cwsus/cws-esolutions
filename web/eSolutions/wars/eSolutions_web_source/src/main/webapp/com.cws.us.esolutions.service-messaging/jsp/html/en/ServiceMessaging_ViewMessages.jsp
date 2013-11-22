@@ -64,7 +64,7 @@
 	                    </h3>
 	                    <br />
 	                    ${message.messageText}
-	                    <br /><br />
+	                    <br />
 	                    <table class="kbauth">
 	                        <tr>
 	                            <td id="top" align="center" valign="middle"><strong><spring:message code="svc.messaging.system.message.author" /></strong></td>
@@ -76,7 +76,7 @@
 	                                <em><a href="mailto:${message.authorEmail}?subject=Request for Comments: ${message.messageId}"
 	                                    title="Request for Comments: ${message.messageId}">${message.messageAuthor}</a></em>
 	                            </td>
-	                            
+
 	                            <jsp:setProperty name="submissionDate" property="time" value="${message.submitDate}" />
 	                            <td align="center" valign="middle"><em><fmt:formatDate value="${submissionDate}" pattern="${dateFormat}" /></em></td>
 	                            <jsp:setProperty name="expirationDate" property="time" value="${message.expiryDate}" />

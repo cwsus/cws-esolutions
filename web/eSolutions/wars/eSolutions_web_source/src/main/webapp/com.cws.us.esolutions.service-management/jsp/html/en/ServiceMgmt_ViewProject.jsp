@@ -96,6 +96,10 @@
     <div id="content-left">
         <ul>
             <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/modify-service/project/${project.projectGuid}"
+                    title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
                     title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
             </li>

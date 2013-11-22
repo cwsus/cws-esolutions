@@ -80,6 +80,8 @@ public interface IServerManagementProcessor
 
     ServerManagementResponse listServersByType(final ServerManagementRequest request) throws ServerManagementException;
 
+    ServerManagementResponse listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException;
+
     ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;
 
     ServerManagementResponse runNetstatCheck(final ServerManagementRequest request) throws ServerManagementException;

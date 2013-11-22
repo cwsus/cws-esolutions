@@ -24,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.us.esolutions.dto.ApplicationRequest;
+import com.cws.esolutions.core.processors.dto.Application;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -146,7 +146,7 @@ public class DeploymentValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(value);
+        final boolean isSupported = Application.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -172,7 +172,7 @@ public class DeploymentValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deploymentType", this.messageDeploymentTypeRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationBinary", this.messageDeploymentFilesRequired);
 
-        final ApplicationRequest request = (ApplicationRequest) target;
+        final Application request = (Application) target;
 
         if (DEBUG)
         {
@@ -181,7 +181,7 @@ public class DeploymentValidator implements Validator
 
         if (request.getApplicationBinary() != null)
         {
-            MultipartFile binary = request.getApplicationBinary();
+            MultipartFile binary = (MultipartFile) request.getApplicationBinary();
 
             if (DEBUG)
             {

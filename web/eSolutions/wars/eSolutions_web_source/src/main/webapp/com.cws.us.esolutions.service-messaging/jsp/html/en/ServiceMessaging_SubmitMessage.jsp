@@ -28,7 +28,15 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="svc.messaging.create.banner" /></div>
+<c:choose>
+    <c:when test="${not empty fn:trim(command.authorEmail)}">
+        <div id="InfoLine"><spring:message code="svc.messaging.system.message.edit.banner" arguments="${message.messageId}" /></div>
+    </c:when>
+    <c:otherwise>
+        <div id="InfoLine"><spring:message code="svc.messaging.create.banner" /></div>
+    </c:otherwise>
+</c:choose>
+
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty fn:trim(messageResponse)}">
@@ -53,12 +61,6 @@
         <span id="validationError"></span>
 
         <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post" autocomplete="off">
-            <form:hidden path="submitDate" />
-            <form:hidden path="messageId" />
-            <form:hidden path="authorEmail" />
-            <form:hidden path="messageAuthor" />
-            <form:hidden path="isNewMessage" value="false" />
-
             <table id="contactTable">
                 <tr>
                     <td id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></td>
@@ -99,7 +101,7 @@
     <div id="content-left">
         <ul>
             <li>
-                <a href="${pageContext.request.contextPath}/ui/service-messages/default"
+                <a href="${pageContext.request.contextPath}/ui/service-messaging/default"
                     title="<spring:message code='svc.messaging.list.messages' />"><spring:message code='svc.messaging.list.messages' /></a>
             </li>
         </ul>

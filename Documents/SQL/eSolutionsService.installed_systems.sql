@@ -166,6 +166,24 @@ DELIMITER ;
 COMMIT;
 
 --
+-- Definition of procedure `esolutionssvc`.`validateServerHostName`
+--
+DELIMITER $$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`validateServerHostName`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`validateServerHostName`(
+    IN operHostname VARCHAR(128)
+)
+BEGIN
+    SELECT COUNT(*)
+    FROM `esolutionssvc`.`installed_systems`
+    WHERE OPER_HOSTNAME = operHostname;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+
+DELIMITER ;
+
+--
 -- Definition of procedure `esolutionssvc`.`insertNewServer`
 --
 DELIMITER $$

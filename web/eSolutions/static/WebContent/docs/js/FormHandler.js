@@ -945,7 +945,7 @@ function validateForm(theForm, e)
             }
         }
     }
-    else if (theForm.name == 'createNewPlatform')
+    else if (theForm.name == 'submitPlatformData')
     {
         if ((e.keyCode == 13) || (e.type == 'click'))
         {
@@ -973,7 +973,7 @@ function validateForm(theForm, e)
                     document.getElementById('execute').disabled = false;
                     document.getElementById('platformName').focus();
                 }
-                else if (theForm.appServers.value == '')
+                else if ((theForm.appServers) && (theForm.appServers.value == ''))
                 {
                     clearText(theForm);
 
@@ -982,7 +982,7 @@ function validateForm(theForm, e)
                     document.getElementById('execute').disabled = false;
                     document.getElementById('platformName').focus();
                 }
-                else if (theForm.webServers.value == '')
+                else if ((theForm.webServers) && (theForm.webServers.value == ''))
                 {
                     clearText(theForm);
 

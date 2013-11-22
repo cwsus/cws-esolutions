@@ -123,12 +123,8 @@
     </definition>
 
     <!-- Messaging -->
-    <definition name="ServiceMessaging_EditMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Create Message" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.service-messaging/jsp/html/en/ServiceMessaging_EditMessage.jsp" cascade="true" />
-    </definition>
     <definition name="ServiceMessaging_SubmitMessage" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Edit Message" cascade="true" />
+        <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Submit Message" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.service-messaging/jsp/html/en/ServiceMessaging_SubmitMessage.jsp" cascade="true" />
     </definition>
     <definition name="ServiceMessaging_ViewMessages" extends="baseLayout">

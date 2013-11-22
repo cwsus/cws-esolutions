@@ -311,7 +311,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
-
     @Override
     public ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -490,7 +489,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
-
     @Override
     public ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -619,7 +617,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
         return response;
     }
-
 
     @Override
     public ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException
@@ -1139,7 +1136,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
-
     @Override
     public ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1560,7 +1556,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
-
     @Override
     public ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1818,7 +1813,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         
         return response;
     }
-
 
     @Override
     public ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException

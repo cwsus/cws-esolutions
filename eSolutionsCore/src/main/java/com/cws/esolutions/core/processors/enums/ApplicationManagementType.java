@@ -13,26 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.us.esolutions.enums;
+package com.cws.esolutions.core.processors.enums;
+
 /**
- * Project: eSolutions_java_source
- * Package: com.cws.us.esolutions.enums
- * File: DeploymentType.java
+ * eSolutionsCore
+ * com.cws.esolutions.core.processors.dto
+ * ApplicationManagementRequest.java
  *
  * $Id: $
  * $Author: $
  * $Date: $
  * $Revision: $
- * @author 35033355
+ * @author kmhuntly@gmail.com
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Oct 17, 2013 10:08:04 AM
+ * 35033355 @ Apr 1, 2013 4:12:25 PM
  *     Created.
  */
-public enum DeploymentType
+public enum ApplicationManagementType
 {
-    APP,
-    WEB;
+    DEPLOY,
+    UNDEPLOY;
 }

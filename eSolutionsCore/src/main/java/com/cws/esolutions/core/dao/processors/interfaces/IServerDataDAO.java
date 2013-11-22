@@ -16,9 +16,13 @@
 package com.cws.esolutions.core.dao.processors.interfaces;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -62,6 +66,8 @@ public interface IServerDataDAO
     List<Object> getInstalledServer(final String serverGuid) throws SQLException;
 
     int getServerCount() throws SQLException;
+
+    int validateServerHostName(final String hostName) throws SQLException;
 
     List<Object[]> getInstalledServers(final int startRow) throws SQLException;
 

@@ -555,6 +555,97 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
+    public synchronized int validateServerHostName(final String hostName) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#validateServerHostName(final String hostName) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        int count = 0;
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+                stmt = sqlConn.prepareCall("{ CALL validateServerHostName(?) }");
+                stmt.setString(1, hostName);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("stmt: {}", stmt);
+                }
+
+                if (stmt.execute())
+                {
+                    resultSet = stmt.getResultSet();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("resultSet: {}", resultSet);
+                    }
+
+                    if (resultSet.next())
+                    {
+                        resultSet.first();
+
+                        count = resultSet.getInt(1);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("count: {}", count);
+                        }
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (resultSet != null)
+                {
+                    resultSet.close();
+                }
+
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
+
+        return count;
+    }
+
+    @Override
     public synchronized List<Object[]> getServersByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value, final int startRow) throws SQLException";

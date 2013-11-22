@@ -20,7 +20,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.ServerRequest;
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 /**
  * eSolutions_java_source
@@ -366,7 +366,7 @@ public class ServerValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = ServerRequest.class.isAssignableFrom(value);
+        final boolean isSupported = Server.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -403,7 +403,7 @@ public class ServerValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "serverRegion", this.messageServerRegionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "networkPartition", this.messageNetworkPartitionRequired);
 
-        final ServerRequest request = (ServerRequest) target;
+        final Server request = (Server) target;
         final Pattern pattern = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
         if (DEBUG)

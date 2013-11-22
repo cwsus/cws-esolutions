@@ -33,6 +33,6 @@ package com.cws.esolutions.core.processors.enums;
  */
 public enum DeploymentType
 {
-    DEPLOY,
-    UNDEPLOY;
+    WEB,
+    APP;
 }

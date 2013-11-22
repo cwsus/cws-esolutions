@@ -19,7 +19,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.ApplicationRequest;
+import com.cws.esolutions.core.processors.dto.Application;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -210,7 +210,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Class: ", target);
         }
 
-        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(target);
+        final boolean isSupported = Application.class.isAssignableFrom(target);
 
         if (DEBUG)
         {
@@ -243,19 +243,19 @@ public class ApplicationValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pidDirectory", this.messagePidDirectoryRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
         
-        ApplicationRequest request = (ApplicationRequest) target;
+        Application request = (Application) target;
 
         if (DEBUG)
         {
             DEBUGGER.debug("ApplicationRequest: {}", request);
         }
 
-        if (StringUtils.equals(request.getVersion(), "0.0"))
+        if (StringUtils.equals(request.getApplicationVersion(), "0.0"))
         {
             errors.reject("version", this.messageApplicationVersionRequired);
         }
 
-        if ((request.isScmEnabled()) && (StringUtils.isEmpty(request.getScmPath())))
+        if ((request.isScmEnabled()) && (StringUtils.isEmpty(request.getScmPath()))) 
         {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "scmPath", this.messageScmPathRequired);
         }

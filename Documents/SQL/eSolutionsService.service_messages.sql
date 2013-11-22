@@ -86,27 +86,13 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`submitSvcMessage
 BEGIN
     INSERT INTO `esolutionssvc`.`service_messages`
     (
-        svc_message_id,
-        svc_message_title,
-        svc_message_txt,
-        svc_message_author,
-        svc_message_email,
-        svc_message_submitdate,
-        svc_message_active,
-        svc_message_expires,
-        svc_message_expirydate
+        svc_message_id, svc_message_title, svc_message_txt, svc_message_author, svc_message_email,
+        svc_message_submitdate, svc_message_active,  svc_message_expires, svc_message_expirydate
     )
     VALUES
     (
-        messageId,
-        messageTitle,
-        messageText,
-        messageAuthor,
-        authorEmail,
-        UNIX_TIMESTAMP(NOW()),
-        active,
-        expiry,
-        expiryDate
+        messageId, messageTitle, messageText, messageAuthor, authorEmail,
+        UNIX_TIMESTAMP(NOW()), active, expiry, expiryDate
     );
 
     COMMIT;

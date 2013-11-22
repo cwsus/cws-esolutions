@@ -18,7 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.dto.PlatformRequest;
+import com.cws.esolutions.core.processors.dto.Platform;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -111,7 +111,7 @@ public class PlatformValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = PlatformRequest.class.isAssignableFrom(value);
+        final boolean isSupported = Platform.class.isAssignableFrom(value);
 
         if (DEBUG)
         {

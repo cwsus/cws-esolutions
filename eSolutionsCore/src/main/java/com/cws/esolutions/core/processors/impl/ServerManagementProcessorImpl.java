@@ -112,11 +112,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 }
 
                 // make sure all the platform data is there
-                List<Object[]> validator = null;
+                int validator = 0;
 
                 try
                 {
-                    validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
+                    validator = serverDAO.validateServerHostName(requestServer.getOperHostName());
                 }
                 catch (SQLException sqx)
                 {
@@ -128,7 +128,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     DEBUGGER.debug("Validator: {}", validator);
                 }
 
-                if ((validator == null) || (validator.size() == 0))
+                if (validator == 0)
                 {
                     // valid server
                     if ((requestServer.getServerType() == ServerType.VIRTUALHOST) || (requestServer.getServerType() == ServerType.DMGRSERVER))
@@ -655,6 +655,195 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         else
                         {
                             ERROR_RECORDER.error("Server " + data[0] + " has no associated datacenter");
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("serverList: {}", serverList);
+                    }
+
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    response.setResponse("Successfully loaded installed server information.");
+                    response.setServerList(serverList);
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requested user was not authorized to perform the operation");
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServerManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            
+            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTSERVERS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public ServerManagementResponse listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException
+    {
+        final String methodName = IServerManagementProcessor.CNAME + "#listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServerManagementRequest: {}", request);
+        }
+
+        ServerManagementResponse response = new ServerManagementResponse();
+
+        final Server sourceServer = request.getSourceServer(); // dmgr
+        final Server requestServer = request.getTargetServer(); // search server type
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", requestServer);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+            }
+
+            if (isServiceAuthorized)
+            {
+                List<Object[]> serverData = serverDAO.getServersByAttribute(requestServer.getServerType().name(), request.getStartPage());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serverList: {}", serverData);
+                }
+
+                if ((serverData != null) && (serverData.size() != 0))
+                {
+                    List<Server> serverList = new ArrayList<Server>();
+
+                    for (Object[] data : serverData)
+                    {
+                        if (StringUtils.equals((String) data[29], sourceServer.getServerGuid()))
+                        {
+                            if (DEBUG)
+                            {
+                                for (Object obj : data)
+                                {
+                                    DEBUGGER.debug("Value: {}", obj);
+                                }
+                            }
+
+                            List<String> datacenter = datactrDAO.getDatacenter((String) data[5]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("List<String>: {}", datacenter);
+                            }
+
+                            if ((datacenter != null) && (datacenter.size() != 0))
+                            {
+                                DataCenter dataCenter = new DataCenter();
+                                dataCenter.setDatacenterGuid(datacenter.get(0));
+                                dataCenter.setDatacenterName(datacenter.get(1));
+                                dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
+                                dataCenter.setDatacenterDesc(datacenter.get(3));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("DataCenter: {}", dataCenter);
+                                }
+
+                                Server server = new Server();
+                                server.setServerGuid((String) data[0]); // SYSTEM_GUID
+                                server.setOsName((String) data[1]); // SYSTEM_OSTYPE
+                                server.setServerStatus(ServerStatus.valueOf((String) data[2])); // SYSTEM_STATUS
+                                server.setServerRegion(ServiceRegion.valueOf((String) data[3])); // SYSTEM_REGION
+                                server.setNetworkPartition(NetworkPartition.valueOf((String) data[4])); // NETWORK_PARTITION
+                                server.setDatacenter(dataCenter); // datacenter as earlier obtained
+                                server.setServerType(ServerType.valueOf((String) data[6])); // SYSTEM_TYPE
+                                server.setDomainName((String) data[7]); // DOMAIN_NAME
+                                server.setCpuType((String) data[8]); // CPU_TYPE
+                                server.setCpuCount((Integer) data[9]); // CPU_COUNT
+                                server.setServerRack((String) data[10]); // SERVER_RACK
+                                server.setRackPosition((String) data[11]); // RACK_POSITION
+                                server.setServerModel((String) data[12]); // SERVER_MODEL
+                                server.setSerialNumber((String) data[13]); // SERIAL_NUMBER
+                                server.setInstalledMemory((Integer) data[14]); // INSTALLED_MEMORY
+                                server.setOperIpAddress((String) data[15]); // OPER_IP
+                                server.setOperHostName((String) data[16]); // OPER_HOSTNAME
+                                server.setMgmtIpAddress((String) data[17]); // MGMT_IP
+                                server.setMgmtHostName((String) data[18]); // MGMT_HOSTNAME
+                                server.setBkIpAddress((String) data[19]); // BKUP_IP
+                                server.setBkHostName((String) data[20]); // BKUP_HOSTNAME
+                                server.setNasIpAddress((String) data[21]); // NAS_IP
+                                server.setNasHostName((String) data[22]); // NAS_HOSTNAME
+                                server.setNatAddress((String) data[23]); // NAT_ADDR
+                                server.setServerComments((String) data[24]); // COMMENTS
+                                server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
+                                server.setDmgrPort((Integer) data[28]); // DMGR_PORT
+                                server.setOwningDmgr((String) data[29]); // OWNING_DMGR
+                                server.setMgrUrl((String) data[30]); // MGR_ENTRY
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("Server: {}", server);
+                                }
+
+                                serverList.add(server);
+                            }
+                            else
+                            {
+                                ERROR_RECORDER.error("Server " + data[0] + " has no associated datacenter");
+                            }
                         }
                     }
 

@@ -17,12 +17,17 @@ package com.cws.esolutions.core.processors.dto;
 
 import java.io.File;
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.processors.enums.ApplicationManagementType;
+import com.cws.esolutions.core.processors.enums.DeploymentType;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
@@ -46,6 +51,7 @@ public class Application implements Serializable
     private String jvmName = null;
     private String basePath = null;
     private String pidDirectory = null;
+    private boolean scmEnabled = false;
     private String applicationGuid = null;
     private String applicationName = null;
     private File applicationBinary = null;
@@ -54,7 +60,9 @@ public class Application implements Serializable
     private String applicationLogsPath = null;
     private Project applicationProject = null;
     private String applicationInstallPath = null;
+    private DeploymentType deploymentType = null;
     private List<Platform> applicationPlatforms = null;
+    private ApplicationManagementType managementType = null;
 
     private static final String CNAME = Application.class.getName();
     private static final long serialVersionUID = -7939041322590386615L;
@@ -100,6 +108,19 @@ public class Application implements Serializable
         }
 
         this.basePath = value;
+    }
+
+    public final void setScmEnabled(final boolean value)
+    {
+        final String methodName = Application.CNAME + "#setScmEnabled(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.scmEnabled = value;
     }
 
     public final void setScmPath(final String value)
@@ -232,6 +253,32 @@ public class Application implements Serializable
         this.jvmName = value;
     }
 
+    public final void setDeploymentType(final DeploymentType value)
+    {
+        final String methodName = Application.CNAME + "#setDeploymentType(final DeploymentType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.deploymentType = value;
+    }
+
+    public final void setManagementType(final ApplicationManagementType value)
+    {
+        final String methodName = Application.CNAME + "#setManagementType(final ApplicationManagementType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.managementType = value;
+    }
+
     public final String getApplicationGuid()
     {
         final String methodName = Application.CNAME + "#getApplicationGuid()";
@@ -308,6 +355,32 @@ public class Application implements Serializable
         }
 
         return this.basePath;
+    }
+
+    public final boolean getIsScmEnabled()
+    {
+        final String methodName = Application.CNAME + "#getIsScmEnabled()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.scmEnabled);
+        }
+
+        return this.scmEnabled;
+    }
+
+    public final boolean isScmEnabled()
+    {
+        final String methodName = Application.CNAME + "#isScmEnabled(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.scmEnabled);
+        }
+
+        return this.scmEnabled;
     }
 
     public final String getScmPath()
@@ -399,6 +472,32 @@ public class Application implements Serializable
         }
 
         return this.jvmName;
+    }
+
+    public final DeploymentType getDeploymentType()
+    {
+        final String methodName = Application.CNAME + "#getDeploymentType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.deploymentType);
+        }
+
+        return this.deploymentType;
+    }
+
+    public final ApplicationManagementType getManagementType()
+    {
+        final String methodName = Application.CNAME + "#getManagementType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.managementType);
+        }
+
+        return this.managementType;
     }
 
     @Override

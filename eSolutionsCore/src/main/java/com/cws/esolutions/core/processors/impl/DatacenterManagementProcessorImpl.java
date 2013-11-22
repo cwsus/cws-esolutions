@@ -208,6 +208,133 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
     }
 
     @Override
+    public DatacenterManagementResponse updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
+    {
+        final String methodName = IDatacenterManagementProcessor.CNAME + "#updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("DatacenterManagementRequest: {}", request);
+        }
+
+        DatacenterManagementResponse response = new DatacenterManagementResponse();
+
+        final DataCenter dataCenter = request.getDataCenter();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("DataCenter: {}", dataCenter);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+            }
+
+            if (isServiceAuthorized)
+            {
+                if (dataCenter == null)
+                {
+                    throw new DatacenterManagementException("No datacenter was provided. Cannot continue.");
+                }
+
+                List<String> insertData = new ArrayList<String>(
+                    Arrays.asList(
+                        dataCenter.getDatacenterGuid(),
+                        dataCenter.getDatacenterName(),
+                        dataCenter.getDatacenterStatus().name(),
+                        dataCenter.getDatacenterDesc()));
+
+                if (DEBUG)
+                {
+                    for (Object str : insertData)
+                    {
+                        DEBUGGER.debug("Value: {}", str);
+                    }
+                }
+
+                boolean isComplete = datactrDAO.updateDatacenter(insertData);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    response.setResponse("Successfully updated " + dataCenter.getDatacenterName() + " in the asset datasource");
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    response.setResponse("Failed to update " + dataCenter.getDatacenterName() + " in the asset datasource");
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("The requesting user was NOT authorized to perform the operation");
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new DatacenterManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new DatacenterManagementException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.UPDATEDATACENTER);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
     public DatacenterManagementResponse listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
         final String methodName = IDatacenterManagementProcessor.CNAME + "#listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException";

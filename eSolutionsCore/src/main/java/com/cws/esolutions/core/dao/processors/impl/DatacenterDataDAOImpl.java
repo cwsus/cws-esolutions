@@ -116,6 +116,78 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
     }
 
     @Override
+    public synchronized boolean updateDatacenter(final List<String> data) throws SQLException
+    {
+        final String methodName = IDatacenterDataDAO.CNAME + "#updateDatacenter(final List<String> data) throws SQLException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+
+            for (Object str : data)
+            {
+                DEBUGGER.debug("Value: {}", str);
+            }
+        }
+
+        Connection sqlConn = null;
+        boolean isComplete = false;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+            else
+            {
+                sqlConn.setAutoCommit(true);
+
+                stmt = sqlConn.prepareCall("{CALL updateDatacenter(?, ?, ?, ?)}");
+                stmt.setString(1, data.get(0)); // datacenterGuid
+                stmt.setString(2, data.get(1)); // datacenterName
+                stmt.setString(3, data.get(2)); // datacenterStatus
+                stmt.setString(4, data.get(3)); // datacenterDesc
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug(stmt.toString());
+                }
+
+                isComplete = (!(stmt.execute()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return isComplete;
+    }
+
+    @Override
     public synchronized boolean removeExistingDatacenter(final String datacenter) throws SQLException
     {
         final String methodName = IDatacenterDataDAO.CNAME + "#removeExistingDatacenter(final String datacenter) throws SQLException";

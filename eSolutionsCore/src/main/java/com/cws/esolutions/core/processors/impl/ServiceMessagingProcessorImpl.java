@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
@@ -94,7 +95,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             {
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
-                                message.getMessageId(),
+                                RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength()),
                                 message.getMessageTitle(),
                                 message.getMessageText(),
                                 userAccount.getUsername(),

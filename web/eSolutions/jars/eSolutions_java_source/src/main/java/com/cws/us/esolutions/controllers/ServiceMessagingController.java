@@ -62,7 +62,6 @@ public class ServiceMessagingController
     private String serviceId = null;
     private String createMessageRedirect = null;
     private String addServiceMessagePage = null;
-    private String editServiceMessagePage = null;
     private String viewServiceMessagesPage = null;
     private String messageSuccessfullyAdded = null;
     private ApplicationServiceBean appConfig = null;
@@ -124,19 +123,6 @@ public class ServiceMessagingController
         }
 
         this.viewServiceMessagesPage = value;
-    }
-
-    public final void setEditServiceMessagePage(final String value)
-    {
-        final String methodName = ServiceMessagingController.CNAME + "#setEditServiceMessagePage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.editServiceMessagePage = value;
     }
 
     public final void setCreateMessageRedirect(final String value)
@@ -482,8 +468,8 @@ public class ServiceMessagingController
                     DEBUGGER.debug("ServiceMessage: {}", responseMessage);
                 }
 
-                mView.addObject("message", responseMessage);
-                mView.setViewName(this.editServiceMessagePage);
+                mView.addObject("command", responseMessage);
+                mView.setViewName(this.addServiceMessagePage);
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
@@ -600,16 +586,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = null;
-
-            if (message.getIsNewMessage())
-            {
-                response = msgProcessor.addNewMessage(request);
-            }
-            else
-            {
-                response = msgProcessor.updateExistingMessage(request);
-            }
+            MessagingResponse response = (message.getIsNewMessage()) ? msgProcessor.addNewMessage(request) : msgProcessor.updateExistingMessage(request);
 
             if (DEBUG)
             {
@@ -635,48 +612,11 @@ public class ServiceMessagingController
             }
             else
             {
-                // no existing service messages
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
             }
 
-            MessagingRequest mRequest = new MessagingRequest();
-            mRequest.setRequestInfo(reqInfo);
-            mRequest.setServiceId(this.serviceId);
-            mRequest.setUserAccount(userAccount);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingRequest: {}", mRequest);
-            }
-
-            MessagingResponse mResponse = msgProcessor.showMessages(request);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", mResponse);
-            }
-
-            if (mResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("dateFormat", appConfig.getDateFormat());
-                mView.addObject("messageList", mResponse.getSvcMessages());
-                mView.setViewName(this.viewServiceMessagesPage);
-            }
-            else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-            {
-                mView.setViewName(appConfig.getUnauthorizedPage());
-
-                return mView;
-            }
-            else
-            {
-                // no existing service messages
-                mView = new ModelAndView(new RedirectView());
-                mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-				mView.setViewName(this.createMessageRedirect);
-            }
+            mView.addObject("command", new ServiceMessage());
+            mView.setViewName(this.createMessageRedirect);
         }
         catch (MessagingServiceException msx)
         {

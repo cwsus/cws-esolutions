@@ -320,7 +320,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                 List<String> insertData = new ArrayList<String>(
                         Arrays.asList(
-                                (StringUtils.isNotEmpty(platform.getPlatformGuid())) ? platform.getPlatformGuid() : UUID.randomUUID().toString(),
+                                platform.getPlatformGuid(),
                                 platform.getPlatformName(),
                                 platform.getPlatformRegion().name(),
                                 platform.getPlatformDmgr().getServerGuid(),

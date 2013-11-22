@@ -59,7 +59,7 @@
 	        </tr>
 	        <tr>
 	            <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
-	            <td>${datacenter.datacenterStatus}</td>
+	            <td id="dataCenterStatus" style="display: block;">${datacenter.datacenterStatus}</td>
 	        </tr>
 	        <tr>
 	            <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
@@ -70,6 +70,10 @@
 
     <div id="content-left">
         <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/service-management/modify-service/datacenter/${datacenter.datacenterGuid}"
+                    title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a>
+            </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
                     title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>

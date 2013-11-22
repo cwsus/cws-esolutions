@@ -14,7 +14,6 @@
             <ref bean="appConfig" />
         </property>
         <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
-        <property name="editServiceMessagePage" value="ServiceMessaging_EditMessage" />
         <property name="addServiceMessagePage" value="ServiceMessaging_SubmitMessage" />
         <property name="viewServiceMessagesPage" value="ServiceMessaging_ViewMessages" />
         <property name="messageSuccessfullyAdded" value="svc.messaging.sentmessage.success" />

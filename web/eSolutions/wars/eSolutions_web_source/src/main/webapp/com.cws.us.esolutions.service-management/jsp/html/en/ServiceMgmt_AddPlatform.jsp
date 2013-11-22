@@ -74,51 +74,47 @@
 	            </tr>
 	            <tr>
 	                <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-	                <td><form:input path="platformDmgrName" readonly="true" /></td>
+	                <td>${command.platformDmgrName}</td>
 	            </tr>
 	            <tr>
-	                <c:if test="${not empty appServerList}">
-	                    <td><label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label></td>
-	                    <c:choose>
-	                        <c:when test="${not empty appServerList}">
-	                            <td>
-	                                <form:select path="appServers" multiple="true">
-	                                    <c:forEach var="appserver" items="${appServerList}">
-	                                        <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
-	                                    </c:forEach>
-	                                </form:select>
-	                            </td>
-	                        </c:when>
-	                        <c:otherwise>
-	                            <td>
-	                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
-	                                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
-	                            </td>
-	                        </c:otherwise>
-	                    </c:choose>
-	                </c:if>
+	                <c:choose>
+	                    <c:when test="${not empty appServerList}">
+	                        <td><label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label></td>
+                            <td>
+                                <form:select path="appServers" multiple="true">
+                                    <c:forEach var="appserver" items="${appServerList}">
+                                        <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
+                                    </c:forEach>
+                                </form:select>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+                                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
+                            </td>
+                        </c:otherwise>
+                    </c:choose>
 	            </tr>
 	            <tr>
-	                <c:if test="${not empty webServerList}">
-	                    <td><label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
-	                    <c:choose>
-	                        <c:when test="${not empty webServerList}">
-	                            <td>
-	                                <form:select path="webServers" multiple="true">
-	                                    <c:forEach var="webserver" items="${webServerList}">
-	                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
-	                                    </c:forEach>
-	                                </form:select>
-	                            </td>
-	                        </c:when>
-	                        <c:otherwise>
-	                            <td>
-	                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
-	                                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
-	                            </td>
-	                        </c:otherwise>
-	                    </c:choose>
-	                </c:if>
+                    <c:choose>
+                        <c:when test="${not empty webServerList}">
+                            <td><label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label></td>
+                            <td>
+                                <form:select path="webServers" multiple="true">
+                                    <c:forEach var="webserver" items="${webServerList}">
+                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
+                                    </c:forEach>
+                                </form:select>
+                            </td>
+                        </c:when>
+                        <c:otherwise>
+                            <td>
+                                <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+                                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
+                            </td>
+                        </c:otherwise>
+                    </c:choose>
 	            </tr>
 	            <tr>
 	                <td><label id="txtPlatformDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
