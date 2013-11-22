@@ -5,7 +5,7 @@
 
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>2.2</version>
+    <version>3.0</version>
     <packaging>pom</packaging>
     <name>CaspersBox Web Services</name>
 
@@ -249,6 +249,8 @@
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
+                        <source>1.7</source>
+                        <target>1.7</target>
                     </configuration>
                 </plugin>
                 <plugin>

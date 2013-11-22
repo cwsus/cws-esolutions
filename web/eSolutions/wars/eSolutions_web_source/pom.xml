@@ -51,6 +51,11 @@
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-jsp</artifactId>
         </dependency>
+        <!-- override log4j because of geronimo bitchiness -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
         <!-- eSolutions jars -->
         <dependency>
             <groupId>eSolutions</groupId>

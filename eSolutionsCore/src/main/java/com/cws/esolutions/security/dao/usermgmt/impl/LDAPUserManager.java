@@ -1162,7 +1162,7 @@ public class LDAPUserManager implements UserManager
                     }
                     else
                     {
-                        throw new ConnectException("No users were located with the search data provided");
+                        throw new UserManagementException("No users were located with the search data provided");
                     }
                 }
                 else

@@ -95,7 +95,7 @@ public final class AccountChangeProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana21*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("eSolutions");
@@ -132,6 +132,7 @@ public final class AccountChangeProcessorImplTest
             }
             catch (Exception e)
             {
+                e.printStackTrace();
                 Assert.fail(e.getMessage());
 
                 System.exit(1);
@@ -275,7 +276,7 @@ public final class AccountChangeProcessorImplTest
     public final void testChangeUserSecurity()
     {
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setPassword("Ariana16*");
+        userSecurity.setPassword("Ariana21*");
         userSecurity.setSecQuestionOne("What is your favourite car ?");
         userSecurity.setSecQuestionTwo("What is your least favourite colour ?");
         userSecurity.setSecAnswerOne("answerone");

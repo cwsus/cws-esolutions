@@ -9,94 +9,22 @@
         </dep:moduleId>
         <dep:dependencies>
             <dep:dependency>
-                <dep:groupId>org.apache.geronimo.bundles</dep:groupId>
-                <dep:artifactId>jstl</dep:artifactId>
-                <dep:version>1.2_1</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>sharedlib-extender</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>console.jms</dep:groupId>
-                <dep:artifactId>cws</dep:artifactId>
-                <dep:version>1.0</dep:version>
-                <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.ext.tomcat</dep:groupId>
-                <dep:artifactId>shared</dep:artifactId>
-                <dep:version>7.0.39.2</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.bundles</dep:groupId>
-                <dep:artifactId>commons-httpclient</dep:artifactId>
-                <dep:version>3.1_2</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>commons-net</dep:groupId>
-                <dep:artifactId>commons-net</dep:artifactId>
-                <dep:version>2.0</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
                 <dep:groupId>org.apache.geronimo.configs</dep:groupId>
                 <dep:artifactId>sharedlib</dep:artifactId>
                 <dep:version>3.0.1</dep:version>
                 <dep:type>car</dep:type>
             </dep:dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.configs</groupId>
+                <artifactId>javamail</artifactId>
+                <version>3.0.1</version>
+                <type>car</type>
+            </dependency>
             <dep:dependency>
-                <dep:groupId>org.apache.geronimo.javamail</dep:groupId>
-                <dep:artifactId>geronimo-javamail_1.4_mail</dep:artifactId>
-                <dep:version>1.8.3</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>commons-lang</dep:groupId>
-                <dep:artifactId>commons-lang</dep:artifactId>
-                <dep:version>2.6</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.configs</dep:groupId>
-                <dep:artifactId>javamail</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
+                <dep:groupId>console.jms</dep:groupId>
+                <dep:artifactId>cws</dep:artifactId>
+                <dep:version>1.0</dep:version>
                 <dep:type>car</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.modules</dep:groupId>
-                <dep:artifactId>geronimo-mail</dep:artifactId>
-                <dep:version>3.0.1</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>commons-dbcp</dep:groupId>
-                <dep:artifactId>commons-dbcp</dep:artifactId>
-                <dep:version>1.4</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.activemq</dep:groupId>
-                <dep:artifactId>activemq-core</dep:artifactId>
-                <dep:version>5.4.3</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>commons-fileupload</dep:groupId>
-                <dep:artifactId>commons-fileupload</dep:artifactId>
-                <dep:version>1.2.1</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>org.apache.geronimo.bundles</dep:groupId>
-                <dep:artifactId>jaxb-impl</dep:artifactId>
-                <dep:version>2.2.3-1_1</dep:version>
-                <dep:type>jar</dep:type>
             </dep:dependency>
             <dep:dependency>
                 <dep:groupId>console.dbpool</dep:groupId>
@@ -110,18 +38,12 @@
                 <dep:version>1.0</dep:version>
                 <dep:type>car</dep:type>
             </dep:dependency>
-            <dep:dependency>
-                <dep:groupId>commons-pool</dep:groupId>
-                <dep:artifactId>commons-pool</dep:artifactId>
-                <dep:version>1.5.4</dep:version>
-                <dep:type>jar</dep:type>
-            </dep:dependency>
         </dep:dependencies>
         <dep:hidden-classes>
 			<dep:filter>org.apache.log4j</dep:filter>
             <dep:filter>log4j</dep:filter>
         </dep:hidden-classes>
-        <dep:inverse-classloading/>
+        <dep:inverse-classloading />
     </dep:environment>
     <context-root>eSolutions_web_source</context-root>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
