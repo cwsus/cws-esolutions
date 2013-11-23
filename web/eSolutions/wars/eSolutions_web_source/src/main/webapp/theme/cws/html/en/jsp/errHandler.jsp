@@ -138,15 +138,6 @@
 			    </div>
 			</div>
 
-            <div id="content-left">
-                <ul>
-                    <li>
-                        <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                            <spring:message code='theme.navbar.home' /></a>
-                    </li>
-                </ul>
-            </div>
-
             <div id="Footer">
                 <p>
                     <c:choose>
@@ -155,15 +146,17 @@
                             <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
                                 <spring:message code='theme.navbar.logoff' /></a> |
                             <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-                                <spring:message code="theme.navbar.myaccount" /></a><br />
+                                <spring:message code="theme.navbar.myaccount" /></a> |
                         </c:when>
                         <c:otherwise>
                             <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
-                                <spring:message code='theme.navbar.login' /></a><br />
+                                <spring:message code='theme.navbar.login' /></a> |
                         </c:otherwise>
                     </c:choose>
+                    <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                        <spring:message code='theme.navbar.home' /></a> |
                     <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-                        <spring:message code='theme.navbar.help' /></a><br />
+                        <spring:message code='theme.navbar.help' /></a> |
                     <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
                         title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a><br />
                     &copy; <spring:message code="theme.footer.copyright" /><br />
