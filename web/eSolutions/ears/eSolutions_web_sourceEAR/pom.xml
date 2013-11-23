@@ -5,7 +5,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     <parent>
         <groupId>eSolutions</groupId>
         <artifactId>eSolutions-parent</artifactId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../../eSolutions-parent/pom.xml</relativePath>
     </parent>
 
@@ -19,13 +19,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         <dependency>
             <groupId>eSolutions</groupId>
             <artifactId>eSolutions_web_source</artifactId>
-            <version>1.0</version>
+            <version>1.0-SNAPSHOT</version>
             <type>war</type>
         </dependency>
     </dependencies>
 
     <build>
-        <finalName>${project.name}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-ear-plugin</artifactId>
