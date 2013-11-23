@@ -52,7 +52,6 @@ import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProces
  */
 public class ServerValidator implements Validator
 {
-    private String serviceId = null;
     private String dcService = null;
     private ApplicationServiceBean appConfig = null;
     private String messageDatacenterRequired = null;
@@ -104,19 +103,6 @@ public class ServerValidator implements Validator
         }
 
         this.appConfig = value;
-    }
-
-    public final void setServiceId(final String value)
-    {
-        final String methodName = ServerValidator.CNAME + "#setServiceId(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceId = value;
     }
 
     public final void setDcService(final String value)
@@ -320,7 +306,7 @@ public class ServerValidator implements Validator
                 {
                     try
                     {
-                        if (StringUtils.isBlank((String) field.get(server)))
+                        if (field.get(server) == null)
                         {
                             if (DEBUG)
                             {

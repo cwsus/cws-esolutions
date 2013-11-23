@@ -18,6 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -138,7 +139,7 @@ public class UserAccountValidator implements Validator
             DEBUGGER.debug("Class: ", target);
         }
 
-        final boolean isSupported = com.cws.esolutions.security.dto.UserAccount.class.isAssignableFrom(target);
+        final boolean isSupported = UserAccount.class.isAssignableFrom(target);
 
         if (DEBUG)
         {
