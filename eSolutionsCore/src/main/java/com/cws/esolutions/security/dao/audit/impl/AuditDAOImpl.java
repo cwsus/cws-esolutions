@@ -61,27 +61,25 @@ public class AuditDAOImpl implements IAuditDAO
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
+            stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
+            stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
+            stmt.setString(4, auditRequest.get(3)); // usr_audit_role
+            stmt.setString(5, auditRequest.get(4)); // usr_audit_applid
+            stmt.setString(6, auditRequest.get(5)); // usr_audit_applname
+            stmt.setString(7, auditRequest.get(6)); // usr_audit_action
+            stmt.setString(8, auditRequest.get(7)); // usr_audit_srcaddr
+            stmt.setString(9, auditRequest.get(8)); // usr_audit_srchost
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL insertAuditEntry(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
-                stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
-                stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
-                stmt.setString(4, auditRequest.get(3)); // usr_audit_role
-                stmt.setString(5, auditRequest.get(4)); // usr_audit_applid
-                stmt.setString(6, auditRequest.get(5)); // usr_audit_applname
-                stmt.setString(7, auditRequest.get(6)); // usr_audit_action
-                stmt.setString(8, auditRequest.get(7)); // usr_audit_srcaddr
-                stmt.setString(9, auditRequest.get(8)); // usr_audit_srchost
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                stmt.execute();
+                DEBUGGER.debug(stmt.toString());
             }
+
+            stmt.execute();
         }
         catch (SQLException sqx)
         {
@@ -134,36 +132,34 @@ public class AuditDAOImpl implements IAuditDAO
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{ CALL getAuditCount(?) }");
+            stmt.setString(1, guid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{ CALL getAuditCount(?) }");
-                stmt.setString(1, guid);
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        count = resultSet.getInt(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("count: {}", count);
-                        }
+                        DEBUGGER.debug("count: {}", count);
                     }
                 }
             }
@@ -227,66 +223,65 @@ public class AuditDAOImpl implements IAuditDAO
             {
                 throw new SQLException("Unable to obtain audit datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getAuditInterval(?, ?)}");
+            stmt.setString(1, guid);
+            stmt.setInt(2, startRow);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getAuditInterval(?, ?)}");
-                stmt.setString(1, guid);
-                stmt.setInt(2, startRow);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseList = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] data = new String[]
                         {
-                            String[] data = new String[] {
-                                    resultSet.getString(1), // usr_audit_sessionid
-                                    resultSet.getString(2), // usr_audit_userid
-                                    resultSet.getString(3), // usr_audit_userguid
-                                    resultSet.getString(4), // usr_audit_role
-                                    resultSet.getString(5), // usr_audit_applid
-                                    resultSet.getString(6), // usr_audit_applname
-                                    String.valueOf(resultSet.getLong(7)), // usr_audit_timestamp
-                                    resultSet.getString(8), // usr_audit_action
-                                    resultSet.getString(9), // usr_audit_srcaddr
-                                    resultSet.getString(10) // usr_audit_srchost
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            responseList.add(data);
-                        }
+                                resultSet.getString(1), // usr_audit_sessionid
+                                resultSet.getString(2), // usr_audit_userid
+                                resultSet.getString(3), // usr_audit_userguid
+                                resultSet.getString(4), // usr_audit_role
+                                resultSet.getString(5), // usr_audit_applid
+                                resultSet.getString(6), // usr_audit_applname
+                                String.valueOf(resultSet.getLong(7)), // usr_audit_timestamp
+                                resultSet.getString(8), // usr_audit_action
+                                resultSet.getString(9), // usr_audit_srcaddr
+                                resultSet.getString(10) // usr_audit_srchost
+                        };
 
                         if (DEBUG)
                         {
-                            for (String[] str : responseList)
+                            for (String str : data)
                             {
-                                for (String str1 : str)
-                                {
-                                    DEBUGGER.debug(str1);
-                                }
+                                DEBUGGER.debug(str);
+                            }
+                        }
+
+                        responseList.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (String[] str : responseList)
+                        {
+                            for (String str1 : str)
+                            {
+                                DEBUGGER.debug(str1);
                             }
                         }
                     }

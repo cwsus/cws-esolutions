@@ -74,8 +74,6 @@ public class FileKeyManager implements KeyManager
         
         InputStream pubStream = null;
         InputStream privStream = null;
-        OutputStream publicStream = null;
-        OutputStream privateStream = null;
         KeyManagementResponse response = new KeyManagementResponse();
 
         final File keyDirectory = FileUtils.getFile(request.getKeyDirectory() + request.getGuid() + "/");
@@ -155,16 +153,6 @@ public class FileKeyManager implements KeyManager
         }
         finally
         {
-            if (publicStream != null)
-            {
-                IOUtils.closeQuietly(publicStream);
-            }
-
-            if (privateStream != null)
-            {
-                IOUtils.closeQuietly(privateStream);
-            }
-
             if (privStream != null)
             {
                 IOUtils.closeQuietly(privStream);
@@ -189,9 +177,7 @@ public class FileKeyManager implements KeyManager
         	DEBUGGER.debug(methodName);
             DEBUGGER.debug("KeyManagementRequest: ", request);
         }
-        
-        InputStream pubStream = null;
-        InputStream privStream = null;
+
         OutputStream publicStream = null;
         OutputStream privateStream = null;
         KeyManagementResponse response = new KeyManagementResponse();
@@ -281,16 +267,6 @@ public class FileKeyManager implements KeyManager
             if (privateStream != null)
             {
                 IOUtils.closeQuietly(privateStream);
-            }
-
-            if (privStream != null)
-            {
-                IOUtils.closeQuietly(privStream);
-            }
-
-            if (pubStream != null)
-            {
-                IOUtils.closeQuietly(pubStream);
             }
         }
 

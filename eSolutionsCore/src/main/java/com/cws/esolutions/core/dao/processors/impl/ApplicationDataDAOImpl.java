@@ -373,70 +373,68 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
-                sqlConn.setAutoCommit(true);
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
 
-                stmt = sqlConn.prepareCall("{CALL listApplications(?)}");
-                stmt.setInt(1, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL listApplications(?)}");
+            stmt.setInt(1, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseData = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] data = new String[]
                         {
-                            String[] data = new String[]
-                            {
                                 resultSet.getString(1), // app guid
                                 resultSet.getString(2), // app name
                                 resultSet.getString(3), // app version
                                 resultSet.getString(4), // project guid
                                 resultSet.getString(5), // platform guid
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            responseData.add(data);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            for (String[] str : responseData)
+                            for (String str : data)
                             {
-                                for (String str1 : str)
-                                {
-                                    DEBUGGER.debug(str1);
-                                }
+                                DEBUGGER.debug(str);
+                            }
+                        }
+
+                        responseData.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (String[] str : responseData)
+                        {
+                            for (String str1 : str)
+                            {
+                                DEBUGGER.debug(str1);
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -511,7 +509,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     {
                         resultSet.first();
 
-                        responseData = new ArrayList<String>
+                        responseData = new ArrayList<>
                         (
                             Arrays.asList
                             (
@@ -620,7 +618,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     if (resultSet.next())
                     {
                         resultSet.beforeFirst();
-                        responseData = new ArrayList<String[]>();
+                        responseData = new ArrayList<>();
 
                         while (resultSet.next())
                         {

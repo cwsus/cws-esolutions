@@ -286,25 +286,23 @@ public class LoginController
 
                     break;
                 }
-                else
+
+                switch (sessionAccount.getStatus())
                 {
-                    switch (sessionAccount.getStatus())
-                    {
-                        case SUCCESS:
-                            mView = new ModelAndView(new RedirectView());
-                            mView.setViewName(appConfig.getHomeRedirect());
+                    case SUCCESS:
+                        mView = new ModelAndView(new RedirectView());
+                        mView.setViewName(appConfig.getHomeRedirect());
 
-                            return mView;
-                        case EXPIRED:
-                            mView = new ModelAndView(new RedirectView());
-                            mView.setViewName(appConfig.getExpiredRedirect());
+                        return mView;
+                    case EXPIRED:
+                        mView = new ModelAndView(new RedirectView());
+                        mView.setViewName(appConfig.getExpiredRedirect());
 
-                            return mView;
-                        default:
-                            hSession.invalidate();
+                        return mView;
+                    default:
+                        hSession.invalidate();
 
-                            break;
-                    }
+                        break;
                 }
             }
         }

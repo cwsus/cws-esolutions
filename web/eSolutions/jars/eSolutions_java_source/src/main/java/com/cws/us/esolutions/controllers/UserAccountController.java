@@ -1050,21 +1050,19 @@ public class UserAccountController
 
                     return mView;
                 }
-                else
+
+                UserAccount resAccount = response.getUserAccount();
+
+                if (DEBUG)
                 {
-                    UserAccount resAccount = response.getUserAccount();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", resAccount);
-                    }
-
-                    hSession.removeAttribute(Constants.USER_ACCOUNT);
-                    hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
-
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
-                    mView.setViewName(this.myAccountPage);
+                    DEBUGGER.debug("UserAccount: {}", resAccount);
                 }
+
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
+
+                mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
+                mView.setViewName(this.myAccountPage);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {

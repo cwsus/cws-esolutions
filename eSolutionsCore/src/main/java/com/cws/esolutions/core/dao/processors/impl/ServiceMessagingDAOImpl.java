@@ -66,25 +66,23 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, (String) messageList.get(0)); // message id
+            stmt.setString(2, (String) messageList.get(1)); // message title
+            stmt.setString(3, (String) messageList.get(2)); // message text
+            stmt.setString(4, (String) messageList.get(3)); // message author
+            stmt.setString(5, (String) messageList.get(4)); // author email
+            stmt.setBoolean(6, (Boolean) messageList.get(5)); // is active
+            stmt.setBoolean(7, (Boolean) messageList.get(6)); // does expire
+            stmt.setLong(8, (messageList.get(7) == null) ? 0 : (Long) messageList.get(7)); // expiry date
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL submitSvcMessage(?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, (String) messageList.get(0)); // message id
-                stmt.setString(2, (String) messageList.get(1)); // message title
-                stmt.setString(3, (String) messageList.get(2)); // message text
-                stmt.setString(4, (String) messageList.get(3)); // message author
-                stmt.setString(5, (String) messageList.get(4)); // author email
-                stmt.setBoolean(6, (Boolean) messageList.get(5)); // is active
-                stmt.setBoolean(7, (Boolean) messageList.get(6)); // does expire
-                stmt.setLong(8, (messageList.get(7) == null) ? 0 : (Long) messageList.get(7)); // expiry date
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -133,41 +131,39 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrServiceMessage(?)}");
+            stmt.setString(1, messageId);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrServiceMessage(?)}");
-                stmt.setString(1, messageId);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
+                    resultSet.first();
+                    svcMessage = new ArrayList<>();
+                    svcMessage.add(resultSet.getString(1)); // svc_message_id
+                    svcMessage.add(resultSet.getString(2)); // svc_message_title
+                    svcMessage.add(resultSet.getString(3)); // svc_message_txt
+                    svcMessage.add(resultSet.getString(4)); // svc_message_author
+                    svcMessage.add(resultSet.getString(5)); // svc_message_email
+                    svcMessage.add(resultSet.getLong(6)); // svc_message_submitdate
+                    svcMessage.add(resultSet.getBoolean(7)); // svc_message_active
+                    svcMessage.add(resultSet.getBoolean(8)); // svc_message_expires
+                    svcMessage.add(resultSet.getLong(9)); // svc_message_expirydate
+                    svcMessage.add(resultSet.getLong(10)); // svc_message_modifiedon
+                    svcMessage.add(resultSet.getString(11)); // svc_message_modifiedby
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
+                    if (DEBUG)
                     {
-                        resultSet.first();
-                        svcMessage = new ArrayList<Object>();
-                        svcMessage.add(resultSet.getString(1)); // svc_message_id
-                        svcMessage.add(resultSet.getString(2)); // svc_message_title
-                        svcMessage.add(resultSet.getString(3)); // svc_message_txt
-                        svcMessage.add(resultSet.getString(4)); // svc_message_author
-                        svcMessage.add(resultSet.getString(5)); // svc_message_email
-                        svcMessage.add(resultSet.getLong(6)); // svc_message_submitdate
-                        svcMessage.add(resultSet.getBoolean(7)); // svc_message_active
-                        svcMessage.add(resultSet.getBoolean(8)); // svc_message_expires
-                        svcMessage.add(resultSet.getLong(9)); // svc_message_expirydate
-                        svcMessage.add(resultSet.getLong(10)); // svc_message_modifiedon
-                        svcMessage.add(resultSet.getString(11)); // svc_message_modifiedby
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("svcMessage: {}", svcMessage);
-                        }
+                        DEBUGGER.debug("svcMessage: {}", svcMessage);
                     }
                 }
             }
