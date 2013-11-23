@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application application-name="${artifactId}" xmlns="http://geronimo.apache.org/xml/ns/j2ee/application-2.0">
+<application application-name="@artifactId@" xmlns="http://geronimo.apache.org/xml/ns/j2ee/application-2.0">
     <environment xmlns="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <moduleId>
             <groupId>@groupId@</groupId>

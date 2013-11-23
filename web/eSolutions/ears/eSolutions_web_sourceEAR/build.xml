@@ -32,16 +32,16 @@
     <target name="buildWebLogic" if="isWebLogic" />
 
     <target name="buildWebSphere" if="isWebSphere">
-        <copy file="${basedir}/${websphere}/ibm-application-bnd.xmi" tofile="${basedir}/${buildArea}/${pom.artifactId}/META-INF/ibm-application-bnd.xmi" />
+        <copy file="${basedir}/${websphere}/ibm-application-bnd.xmi" tofile="${basedir}/${buildArea}/${pom.artifactId}-${pom.version}/META-INF/ibm-application-bnd.xmi" />
     </target>
     
     <target name="buildGeronimo" if="isGeronimo">
-        <copy file="${basedir}/${geronimo}/geronimo-application.xml" tofile="${basedir}/${buildArea}/${pom.artifactId}/META-INF/geronimo-application.xml" />
+        <copy file="${basedir}/${geronimo}/geronimo-application.xml" tofile="${basedir}/${buildArea}/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" />
 
-        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@groupId@" value="${pom.groupId}" />
-        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@artifactId@" value="${pom.artifactId}" />
-        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@version@" value="${pom.version}" />
-        <replace file="${basedir}/target/${pom.artifactId}/META-INF/geronimo-application.xml" token="@module@" value="${pom.dependencies[0].artifactId}-${pom.dependencies[0].version}.${pom.dependencies[0].type}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@groupId@" value="${pom.groupId}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@artifactId@" value="${pom.artifactId}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@version@" value="${pom.version}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@module@" value="${pom.dependencies[0].artifactId}-${pom.dependencies[0].version}.${pom.dependencies[0].type}" />
     </target>
 
     <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
