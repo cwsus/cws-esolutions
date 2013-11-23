@@ -67,10 +67,12 @@
 	            <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label>
 	            <td>${project.secondaryContact}</td>
 	        </tr>
-	        <tr>
-	            <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.email" /></label>
-	            <td>${project.contactEmail}</td>
-	        </tr>
+            <tr>
+                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.dev.group" /></label></td>
+                <td>${project.devEmail}</td>
+                <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.prod.group" /></label></td>
+                <td>${project.prodEmail}</td>
+            </tr>
 	        <tr>
 	            <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label>
 	            <td>${project.changeQueue}</td>

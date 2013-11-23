@@ -11,7 +11,12 @@
  */
 package com.cws.us.esolutions.validators;
 
+import java.util.List;
+import java.util.Arrays;
 import org.slf4j.Logger;
+import java.util.Collection;
+import java.util.Collections;
+import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
@@ -19,7 +24,22 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
+import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
+import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
+import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
+import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
+import com.cws.esolutions.core.processors.exception.ProjectManagementException;
+import com.cws.esolutions.core.processors.exception.PlatformManagementException;
+import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
+import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
@@ -39,26 +59,34 @@ import com.cws.esolutions.core.processors.dto.Application;
  */
 public class ApplicationValidator implements Validator
 {
-    private String messageJvmNameRequired = null;
+    private String platformService = null;
+    private String projectService = null;
     private String messageScmPathRequired = null;
-    private String messageBasePathRequired = null;
-    private String messagePidDirectoryRequired = null;
-    private String messageApplicationNameRequired = null;
-    private String messageApplicationClusterRequired = null;
+    private ApplicationServiceBean appConfig = null;
     private String messageApplicationVersionRequired = null;
     private String messageApplicationProjectRequired = null;
-    private String messageApplicationLogsPathRequired = null;
     private String messageApplicationPlatformRequired = null;
-    private String messageApplicationInstallPathRequired = null;
 
     private static final String CNAME = ApplicationValidator.class.getName();
+    private static final Collection<String> ignoreList = Collections.unmodifiableList(
+            Arrays.asList(
+                    "CNAME",
+                    "DEBUGGER",
+                    "DEBUG",
+                    "ERROR_RECORDER",
+                    "serialVersionUID",
+                    "deploymentType",
+                    "managementType",
+                    "applicationBinary",
+                    "scmPath",
+                    "applicationGuid"));
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setMessageApplicationNameRequired(final String value)
+    public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationNameRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -66,12 +94,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationNameRequired = value;
+        this.appConfig = value;
     }
 
-    public final void setMessageApplicationLogsPathRequired(final String value)
+    public final void setPlatformService(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationLogsPathRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setPlatformService(final String value)";
 
         if (DEBUG)
         {
@@ -79,7 +107,20 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationLogsPathRequired = value;
+        this.platformService = value;
+    }
+
+    public final void setProjectService(final String value)
+    {
+        final String methodName = ApplicationValidator.CNAME + "#setProjectService(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.projectService = value;
     }
 
     public final void setMessageApplicationProjectRequired(final String value)
@@ -108,19 +149,6 @@ public class ApplicationValidator implements Validator
         this.messageApplicationVersionRequired = value;
     }
 
-    public final void setMessageApplicationClusterRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationClusterRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageApplicationClusterRequired = value;
-    }
-
     public final void setMessageApplicationPlatformRequired(final String value)
     {
         final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationPlatformRequired(final String value)";
@@ -132,58 +160,6 @@ public class ApplicationValidator implements Validator
         }
 
         this.messageApplicationPlatformRequired = value;
-    }
-
-    public final void setMessageApplicationInstallPathRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationInstallPathRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageApplicationInstallPathRequired = value;
-    }
-
-    public final void setMessageJvmNameRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageJvmNameRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageJvmNameRequired = value;
-    }
-
-    public final void setMessageBasePathRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageBasePathRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageBasePathRequired = value;
-    }
-
-    public final void setMessagePidDirectoryRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessagePidDirectoryRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePidDirectoryRequired = value;
     }
 
     public final void setMessageScmPathRequired(final String value)
@@ -210,7 +186,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Class: ", target);
         }
 
-        final boolean isSupported = Application.class.isAssignableFrom(target);
+        final boolean isSupported = List.class.isAssignableFrom(target);
 
         if (DEBUG)
         {
@@ -232,30 +208,136 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "jvmName", this.messageJvmNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "project", this.messageApplicationProjectRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "basePath", this.messageBasePathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platform", this.messageApplicationPlatformRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsPath", this.messageApplicationLogsPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "clusterName", this.messageApplicationClusterRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageApplicationInstallPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pidDirectory", this.messagePidDirectoryRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
-        
-        Application request = (Application) target;
+        final List<Object> requestList = (List<Object>) target;
+        final IProjectManagementProcessor projectProcessor = new ProjectManagementProcessorImpl();
+        final IPlatformManagementProcessor platformProcessor = new PlatformManagementProcessorImpl();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("ApplicationRequest: {}", request);
+            DEBUGGER.debug("List<Object>: {}", requestList);
         }
 
-        if (StringUtils.equals(request.getApplicationVersion(), "0.0"))
+        final Application application = (Application) requestList.get(0);
+        final RequestHostInfo reqInfo = (RequestHostInfo) requestList.get(1);
+        final UserAccount userAccount = (UserAccount) requestList.get(2);
+
+        for (Field field : application.getClass().getDeclaredFields())
+        {
+            field.setAccessible(true);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("field: {}", field);
+            }
+
+            for (String str : ignoreList)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String: {}", str);
+                }
+
+                if (!(StringUtils.equals(str, field.getName())))
+                {
+                    try
+                    {
+                        if (field.get(application) == null)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Rejecting value for " + field.getName());
+                            }
+
+                            errors.reject(field.getName(), appConfig.getMessageValidationFailed());
+
+                            return;
+                        }
+                    }
+                    catch (IllegalAccessException iax)
+                    {
+                        // nothing
+                    }
+                }
+            }
+        }
+
+        for (Platform platform : application.getApplicationPlatforms())
+        {
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Platform: {}", platform);
+            }
+
+            PlatformManagementRequest request = new PlatformManagementRequest();
+            request.setApplicationId(appConfig.getApplicationId());
+            request.setApplicationName(appConfig.getApplicationName());
+            request.setPlatform(platform);
+            request.setRequestInfo(reqInfo);
+            request.setServiceId(this.platformService);
+            request.setUserAccount(userAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            }
+
+            try
+            {
+                PlatformManagementResponse response = platformProcessor.getPlatformData(request);
+
+                if (response.getRequestStatus() != CoreServicesStatus.SUCCESS)
+                {
+                    errors.reject(this.messageApplicationPlatformRequired);
+
+                    return;
+                }
+            }
+            catch (PlatformManagementException pmx)
+            {
+                errors.reject(this.messageApplicationPlatformRequired);
+
+                return;
+            }
+        }
+
+        ProjectManagementRequest projectReq = new ProjectManagementRequest();
+        projectReq.setApplicationId(appConfig.getApplicationId());
+        projectReq.setApplicationName(appConfig.getApplicationName());
+        projectReq.setProject(application.getApplicationProject());
+        projectReq.setRequestInfo(reqInfo);
+        projectReq.setServiceId(this.projectService);
+        projectReq.setUserAccount(userAccount);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ProjectManagementRequest: {}", projectReq);
+        }
+
+        try
+        {
+            ProjectManagementResponse projectRes = projectProcessor.getProjectData(projectReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ProjectManagementResponse: {}", projectRes);
+            }
+
+            if (projectRes.getRequestStatus() != CoreServicesStatus.SUCCESS)
+            {
+                errors.reject(this.messageApplicationProjectRequired);
+            }
+        }
+        catch (ProjectManagementException pmx)
+        {
+            errors.reject(this.messageApplicationProjectRequired);
+        }
+
+        if (StringUtils.equals(application.getApplicationVersion(), "0.0"))
         {
             errors.reject("version", this.messageApplicationVersionRequired);
         }
 
-        if ((request.isScmEnabled()) && (StringUtils.isEmpty(request.getScmPath()))) 
+        if ((application.isScmEnabled()) && (StringUtils.isEmpty(application.getScmPath()))) 
         {
             ValidationUtils.rejectIfEmptyOrWhitespace(errors, "scmPath", this.messageScmPathRequired);
         }

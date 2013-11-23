@@ -962,6 +962,7 @@ public class ApplicationServiceBean implements Serializable
         return this.themeMessageSource;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#toString()";

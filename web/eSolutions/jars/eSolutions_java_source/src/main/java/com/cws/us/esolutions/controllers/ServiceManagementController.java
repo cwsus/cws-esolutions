@@ -12,7 +12,9 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.List;
+import java.util.Arrays;
 import org.slf4j.Logger;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpSession;
@@ -523,7 +525,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -534,7 +536,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -545,7 +547,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -600,7 +602,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -611,7 +613,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -622,7 +624,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -738,7 +740,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -749,7 +751,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -760,7 +762,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -876,7 +878,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -887,7 +889,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -898,7 +900,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1015,7 +1017,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1026,7 +1028,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1037,7 +1039,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1153,7 +1155,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1164,7 +1166,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1175,7 +1177,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1301,7 +1303,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1312,7 +1314,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1323,7 +1325,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1440,7 +1442,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1451,7 +1453,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1462,7 +1464,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1586,7 +1588,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1597,7 +1599,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1608,7 +1610,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1732,7 +1734,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1743,7 +1745,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1754,7 +1756,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1877,7 +1879,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1888,7 +1890,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1899,7 +1901,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1955,7 +1957,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1966,7 +1968,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1977,7 +1979,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2034,7 +2036,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2045,7 +2047,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2056,7 +2058,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2182,7 +2184,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2193,7 +2195,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2204,7 +2206,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2461,7 +2463,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2472,7 +2474,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2483,7 +2485,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2708,7 +2710,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2719,7 +2721,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2730,7 +2732,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2743,18 +2745,6 @@ public class ServiceManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
-            platformValidator.validate(request, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // something was missing from the request
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
-                mView.addObject("command", request);
-                mView.setViewName(this.addPlatformPage);
-
-                return mView;
-            }
-
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -2765,6 +2755,29 @@ public class ServiceManagementController
                 if (DEBUG)
                 {
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                List<Object> validateList = new ArrayList<Object>(
+                        Arrays.asList(
+                                request,
+                                reqInfo,
+                                userAccount));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<Object>: {}", validateList);
+                }
+
+                platformValidator.validate(validateList, bindResult);
+
+                if (bindResult.hasErrors())
+                {
+                    // something was missing from the request
+                    mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+                    mView.addObject("command", request);
+                    mView.setViewName(this.addPlatformPage);
+
+                    return mView;
                 }
 
                 ServerManagementRequest dmgrRequest = new ServerManagementRequest();
@@ -2999,7 +3012,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -3010,7 +3023,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -3021,7 +3034,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -3141,7 +3154,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -3152,7 +3165,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -3163,7 +3176,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {

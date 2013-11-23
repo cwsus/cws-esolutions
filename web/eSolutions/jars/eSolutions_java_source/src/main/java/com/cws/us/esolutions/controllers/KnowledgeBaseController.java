@@ -419,7 +419,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -430,7 +430,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -441,7 +441,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -501,7 +501,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -512,7 +512,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -523,7 +523,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -645,7 +645,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -656,7 +656,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -667,7 +667,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -736,7 +736,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -747,7 +747,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -758,7 +758,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -885,7 +885,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -896,7 +896,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -907,7 +907,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1033,7 +1033,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1044,7 +1044,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1055,7 +1055,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1133,8 +1133,8 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.deleteArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1229,7 +1229,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1240,7 +1240,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1251,7 +1251,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1329,8 +1329,8 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.approveArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1425,7 +1425,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1436,7 +1436,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1447,7 +1447,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1525,8 +1525,8 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.rejectArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1621,7 +1621,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1632,7 +1632,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1643,7 +1643,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1720,7 +1720,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1731,7 +1731,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1742,7 +1742,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1834,8 +1834,8 @@ public class KnowledgeBaseController
                         emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                         emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                                 this.createArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                        emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                         if (DEBUG)
                         {
@@ -1950,7 +1950,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1961,7 +1961,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1972,7 +1972,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2062,8 +2062,8 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.updateArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -2161,7 +2161,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2172,7 +2172,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2183,7 +2183,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {

@@ -268,7 +268,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -279,7 +279,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -290,7 +290,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -336,7 +336,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -347,7 +347,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -358,7 +358,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -405,7 +405,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -416,7 +416,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -427,7 +427,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -546,7 +546,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -557,7 +557,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -568,7 +568,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -620,7 +620,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -631,7 +631,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -642,7 +642,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -750,8 +750,8 @@ public class OnlineResetController
                 emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                 emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
                         this.passwordResetSubject, this.getClass().getClassLoader()));
-                emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(userAccount.getEmailAddr())));
-                emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
+                emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
 
                 if (DEBUG)
                 {
@@ -830,7 +830,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -841,7 +841,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -852,7 +852,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1006,7 +1006,7 @@ public class OnlineResetController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1017,7 +1017,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1028,7 +1028,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1170,8 +1170,8 @@ public class OnlineResetController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
                             this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getEmailAddr())));
 
                     if (DEBUG)
                     {
@@ -1195,8 +1195,8 @@ public class OnlineResetController
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetRes.getSmsCode());
-                        emailMessage.setMessageTo(new ArrayList<String>(Arrays.asList(responseAccount.getPagerNumber())));
-                        emailMessage.setEmailAddr(new ArrayList<String>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
+                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
 
                         if (DEBUG)
                         {

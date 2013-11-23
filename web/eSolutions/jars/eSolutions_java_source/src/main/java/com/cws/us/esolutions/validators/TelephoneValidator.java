@@ -121,7 +121,7 @@ public class TelephoneValidator implements Validator
         }
 
         boolean patternMatch = false;
-        final List<Pattern> patternList = new ArrayList<Pattern>(
+        final List<Pattern> patternList = new ArrayList<>(
                 Arrays.asList(
                         Pattern.compile("\\d{10}"),
                         Pattern.compile("\\d{3}-\\d{3}-\\d{4}"),
