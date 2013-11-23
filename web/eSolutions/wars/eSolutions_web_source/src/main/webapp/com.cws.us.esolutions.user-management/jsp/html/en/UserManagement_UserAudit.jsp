@@ -102,13 +102,9 @@
 	    </c:choose>
     </div>
 
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                    <spring:message code='theme.navbar.home' /></a>
-            </li>
-            <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+        <div id="content-left">
+            <ul>
                 <li>
                     <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userAccount.guid}"
                         title="<spring:message code='theme.previous.page' />"><spring:message code='theme.previous.page' /></a>
@@ -117,7 +113,7 @@
                     <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
                         title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
                 </li>
-            </c:if>
-        </ul>
-    </div>
+            </ul>
+        </div>
+    </c:if>
 </div>

@@ -90,10 +90,6 @@
     <div id="content-left">
         <ul>
             <li>
-                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                    <spring:message code='theme.navbar.home' /></a>
-            </li>
-            <li>
 				<a href="${pageContext.request.contextPath}/ui/user-account/email"
 				    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
             </li>

@@ -125,10 +125,6 @@
     <div id="content-left">
         <ul>
             <li>
-                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                    <spring:message code='theme.navbar.home' /></a>
-            </li>
-            <li>
 				<a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}"
 				    title="<spring:message code='app.mgmt.file.retrieval' />"><spring:message code="app.mgmt.file.retrieval" /></a>
             </li>

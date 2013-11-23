@@ -95,14 +95,10 @@
 	    </c:if>
     </div>
 
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                    <spring:message code='theme.navbar.home' /></a>
-            </li>
-            <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
-	            <li>
+    <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
+        <div id="content-left">
+            <ul>
+                <li>
 	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
 	                    title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
 	            </li>
@@ -112,7 +108,7 @@
 	                        title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
 	                </li>
 	            </c:if>
-            </c:if>
-        </ul>
-    </div>
+            </ul>
+        </div>
+    </c:if>
 </div>
