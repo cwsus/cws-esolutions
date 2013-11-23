@@ -93,7 +93,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                List<Object> messageList = new ArrayList<>(
+                List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
                                 RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength()),
                                 message.getMessageTitle(),
@@ -218,7 +218,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                List<Object> messageList = new ArrayList<>(
+                List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
                                 message.getMessageTitle(),
                                 message.getMessageText(),

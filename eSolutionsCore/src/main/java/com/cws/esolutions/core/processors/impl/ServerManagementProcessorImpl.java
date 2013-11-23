@@ -141,7 +141,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                     }
 
-                    List<Object> insertData = new ArrayList<>(
+                    List<Object> insertData = new ArrayList<Object>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
                                     requestServer.getOsName(),
