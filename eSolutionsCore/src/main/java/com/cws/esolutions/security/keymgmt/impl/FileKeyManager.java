@@ -86,49 +86,47 @@ public class FileKeyManager implements KeyManager
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
-            else
+
+            if (keyDirectory.exists())
             {
-                if (keyDirectory.exists())
+                File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
+                File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
+
+                if ((publicFile.exists()) && (privateFile.exists()))
                 {
-                    File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
-                    File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
+                    privStream = new FileInputStream(privateFile);
+                    byte[] privKeyBytes = IOUtils.toByteArray(privStream);
 
-                    if ((publicFile.exists()) && (privateFile.exists()))
-                    {
-                        privStream = new FileInputStream(privateFile);
-                        byte[] privKeyBytes = IOUtils.toByteArray(privStream);
+                    pubStream = new FileInputStream(publicFile);
+                    byte[] pubKeyBytes = IOUtils.toByteArray(pubStream);
 
-                        pubStream = new FileInputStream(publicFile);
-                        byte[] pubKeyBytes = IOUtils.toByteArray(pubStream);
+                    // files exist
+                    KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
 
-                        // files exist
-                        KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
+                    // generate private key
+                    PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
+                    PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
 
-                        // generate private key
-                        PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
-                        PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
+                    // generate pubkey
+                    X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
+                    PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-                        // generate pubkey
-                        X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
-                        PublicKey pubKey = keyFactory.generatePublic(publicSpec);
+                    // make the keypair
+                    KeyPair keyPair = new KeyPair(pubKey, privKey);
 
-                        // make the keypair
-                        KeyPair keyPair = new KeyPair(pubKey, privKey);
-
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded user keys");
-                        response.setKeyPair(keyPair);
-                    }
-                    else
-                    {
-                        // files dont exist
-                        throw new KeyManagementException("Failed to locate user keys");
-                    }
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Successfully loaded user keys");
+                    response.setKeyPair(keyPair);
                 }
                 else
                 {
-                    throw new KeyManagementException("User key directory does not exist");
+                    // files dont exist
+                    throw new KeyManagementException("Failed to locate user keys");
                 }
+            }
+            else
+            {
+                throw new KeyManagementException("User key directory does not exist");
             }
         }
         catch (FileNotFoundException fnfx)
@@ -206,55 +204,53 @@ public class FileKeyManager implements KeyManager
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
+
+            if (!(keyDirectory.exists()))
+            {
+                if (!(keyDirectory.mkdir()))
+                {
+                    throw new IOException("Failed to create user key directory");
+                }
+            }
+
+            keyDirectory.setExecutable(true, true);
+
+            SecureRandom random = new SecureRandom();
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
+            keyGenerator.initialize(request.getKeySize(), random);
+            KeyPair keyPair = keyGenerator.generateKeyPair();
+
+            if (keyPair != null)
+            {
+                File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
+                File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
+
+                if (!(privateFile.createNewFile()))
+                {
+                    throw new IOException("Failed to store private key file");
+                }
+
+                if (!(publicFile.createNewFile()))
+                {
+                    throw new IOException("Failed to store public key file");
+                }
+
+                privateFile.setWritable(true, true);
+                publicFile.setWritable(true, true);
+
+                privateStream = new FileOutputStream(privateFile);
+                publicStream = new FileOutputStream(publicFile);
+
+                IOUtils.write(keyPair.getPrivate().getEncoded(), privateStream);
+                IOUtils.write(keyPair.getPublic().getEncoded(), publicStream);
+
+                // assume success, as we'll get an IOException if the write failed
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setResponse("Successfully generated and added the user keypair.");
+            }
             else
             {
-                if (!(keyDirectory.exists()))
-                {
-                    if (!(keyDirectory.mkdir()))
-                    {
-                        throw new IOException("Failed to create user key directory");
-                    }
-                }
-
-                keyDirectory.setExecutable(true, true);
-
-                SecureRandom random = new SecureRandom();
-                KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
-                keyGenerator.initialize(request.getKeySize(), random);
-                KeyPair keyPair = keyGenerator.generateKeyPair();
-
-                if (keyPair != null)
-                {
-                    File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
-                    File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
-
-                    if (!(privateFile.createNewFile()))
-                    {
-                        throw new IOException("Failed to store private key file");
-                    }
-
-                    if (!(publicFile.createNewFile()))
-                    {
-                        throw new IOException("Failed to store public key file");
-                    }
-
-                    privateFile.setWritable(true, true);
-                    publicFile.setWritable(true, true);
-
-                    privateStream = new FileOutputStream(privateFile);
-                    publicStream = new FileOutputStream(publicFile);
-
-                    IOUtils.write(keyPair.getPrivate().getEncoded(), privateStream);
-                    IOUtils.write(keyPair.getPublic().getEncoded(), publicStream);
-
-                    // assume success, as we'll get an IOException if the write failed
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully generated and added the user keypair.");
-                }
-                else
-                {
-                    throw new KeyManagementException("Failed to generate keypair. Cannot continue.");
-                }
+                throw new KeyManagementException("Failed to generate keypair. Cannot continue.");
             }
         }
         catch (FileNotFoundException fnfx)
@@ -322,41 +318,39 @@ public class FileKeyManager implements KeyManager
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
-            else
+
+            if ((request.getKeyDirectory().canWrite()) && (keyDirectory.canWrite()))
             {
-                if ((request.getKeyDirectory().canWrite()) && (keyDirectory.canWrite()))
+                // delete the files ...
+                for (File file : keyDirectory.listFiles())
                 {
-                    // delete the files ...
-                    for (File file : keyDirectory.listFiles())
+                    if (DEBUG)
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("File: {}", file);
-                        }
-
-                        if (!(file.delete()))
-                        {
-                            throw new IOException("Failed to delete file: " + file);
-                        }
+                        DEBUGGER.debug("File: {}", file);
                     }
 
-                    // ... then delete the dir
-                    if (keyDirectory.delete())
+                    if (!(file.delete()))
                     {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully removed user keypair");
+                        throw new IOException("Failed to delete file: " + file);
                     }
-                    else
-                    {
-                        // failed to remove key directory (which means keys could still exist)
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Failed to delete user keys. Please remove manually.");
-                    }
+                }
+
+                // ... then delete the dir
+                if (keyDirectory.delete())
+                {
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Successfully removed user keypair");
                 }
                 else
                 {
-                    throw new IOException("Unable to remove user keys");
+                    // failed to remove key directory (which means keys could still exist)
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Failed to delete user keys. Please remove manually.");
                 }
+            }
+            else
+            {
+                throw new IOException("Unable to remove user keys");
             }
         }
         catch (FileNotFoundException fnfx)

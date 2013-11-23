@@ -247,7 +247,7 @@ public class LDAPAuthenticator implements Authenticator
         }
         finally
         {
-            if ((ldapConn != null) && (ldapConn.isConnected()))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -490,7 +490,7 @@ public class LDAPAuthenticator implements Authenticator
         }
         finally
         {
-            if ((ldapConn != null) && (ldapConn.isConnected()))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }

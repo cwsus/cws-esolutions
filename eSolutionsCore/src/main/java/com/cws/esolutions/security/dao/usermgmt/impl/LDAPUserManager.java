@@ -184,7 +184,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -306,7 +306,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -471,7 +471,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -599,7 +599,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -726,7 +726,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -860,7 +860,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -990,7 +990,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -1186,7 +1186,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -1342,7 +1342,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }
@@ -1492,7 +1492,7 @@ public class LDAPUserManager implements UserManager
         }
         finally
         {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
             {
                 ldapPool.releaseConnection(ldapConn);
             }

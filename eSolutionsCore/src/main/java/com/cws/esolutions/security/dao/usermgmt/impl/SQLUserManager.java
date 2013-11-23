@@ -74,12 +74,39 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt.setString(1, userGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.executeQuery();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    throw new UserManagementException("A user currently exists with the provided UUID");
+                }
+
+                resultSet.close();
+                resultSet = null;
+
+                stmt.close();
+                stmt = null;
 
                 stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
-                stmt.setString(1, userGuid);
+                stmt.setString(1, userId);
 
                 if (DEBUG)
                 {
@@ -97,42 +124,7 @@ public class SQLUserManager implements UserManager
 
                     if (resultSet.next())
                     {
-                        throw new UserManagementException("A user currently exists with the provided UUID");
-                    }
-
-                    if (resultSet != null)
-                    {
-                        resultSet.close();
-                        resultSet = null;
-                    }
-
-                    if (stmt != null)
-                    {
-                        stmt.close();
-                        stmt = null;
-                    }
-
-                    stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
-                    stmt.setString(1, userId);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("stmt: {}", stmt);
-                    }
-
-                    if (stmt.execute())
-                    {
-                        resultSet = stmt.executeQuery();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ResultSet: {}", resultSet);
-                        }
-
-                        if (resultSet.next())
-                        {
-                            throw new UserManagementException("A user currently exists with the provided username");
-                        }
+                        throw new UserManagementException("A user currently exists with the provided username");
                     }
                 }
             }
@@ -194,29 +186,27 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
+            stmt.setString(1, createRequest.get(0));
+            stmt.setString(2, createRequest.get(1));
+            stmt.setString(3, createRequest.get(2));
+            stmt.setString(4, createRequest.get(3));
+            stmt.setString(5, createRequest.get(4));
+            stmt.setString(6, createRequest.get(5));
+            stmt.setString(7, createRequest.get(6));
+            stmt.setString(8, createRequest.get(7));
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-                stmt.setString(1, createRequest.get(0));
-                stmt.setString(2, createRequest.get(1));
-                stmt.setString(3, createRequest.get(2));
-                stmt.setString(4, createRequest.get(3));
-                stmt.setString(5, createRequest.get(4));
-                stmt.setString(6, createRequest.get(5));
-                stmt.setString(7, createRequest.get(6));
-                stmt.setString(8, createRequest.get(7));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                if (!(stmt.execute()))
-                {
-                    isComplete = true;
-                }
+            if (!(stmt.execute()))
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -273,40 +263,38 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            int x = 1;
+            sqlConn.setAutoCommit(true);
+            StringBuilder sBuilder = new StringBuilder()
+                .append("UPDATE usr_lgn \n")
+                .append("SET \n");
+
+            for (String key : changeRequest.keySet())
             {
-                int x = 1;
-                sqlConn.setAutoCommit(true);
-                StringBuilder sBuilder = new StringBuilder()
-                    .append("UPDATE usr_lgn \n")
-                    .append("SET \n");
+                sBuilder.append(key + " = " + changeRequest.get(key) + " ");
 
-                for (String key : changeRequest.keySet())
+                if (x != changeRequest.size())
                 {
-                    sBuilder.append(key + " = " + changeRequest.get(key) + " ");
-
-                    if (x != changeRequest.size())
-                    {
-                        sBuilder.append(", ");
-                    }
-
-                    x++;
+                    sBuilder.append(", ");
                 }
 
-                sBuilder.append("WHERE uid = '" + userId + "' \n");
-                sBuilder.append("AND cn = '" + userGuid + "'");
+                x++;
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(sBuilder.toString());
-                }
+            sBuilder.append("WHERE uid = '" + userId + "' \n");
+            sBuilder.append("AND cn = '" + userGuid + "'");
 
-                x = sqlConn.createStatement().executeUpdate(sBuilder.toString());
+            if (DEBUG)
+            {
+                DEBUGGER.debug(sBuilder.toString());
+            }
 
-                if (x == 1)
-                {
-                    isComplete = true;
-                }
+            x = sqlConn.createStatement().executeUpdate(sBuilder.toString());
+
+            if (x == 1)
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -363,26 +351,24 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            // first make sure the existing password is proper
+            // then make sure the new password doesnt match the existing password
+            stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
+            stmt.setString(1, userGuid);
+            stmt.setString(2, newPass);
+            stmt.setLong(3, expiry);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                // first make sure the existing password is proper
-                // then make sure the new password doesnt match the existing password
-                stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
-                stmt.setString(1, userGuid);
-                stmt.setString(2, newPass);
-                stmt.setLong(3, expiry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                if (stmt.executeUpdate() == 1)
-                {
-                    isComplete = true;
-                }
+            if (stmt.executeUpdate() == 1)
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -438,22 +424,20 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL removeUserAccount(?) }");
+            stmt.setString(1, userGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL removeUserAccount(?) }");
-                stmt.setString(1, userGuid);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                if (!(stmt.execute()))
-                {
-                    isComplete = true;
-                }
+            if (!(stmt.execute()))
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -508,29 +492,29 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL listUserAccounts() }");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL listUserAccounts() }");
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
-                if (DEBUG)
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
+                    resultSet.beforeFirst();
+                    results = new ArrayList<>();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-                        results = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] userData = new String[]
                         {
-                            String[] userData = new String[] {
                                 resultSet.getString(authData.getCommonName()),
                                 resultSet.getString(authData.getUserId()),
                                 resultSet.getString(authData.getGivenName()),
@@ -546,26 +530,22 @@ public class SQLUserManager implements UserManager
                                 resultSet.getString(authData.getOlrLocked()),
                                 resultSet.getString(authData.getTcAccepted()),
                                 resultSet.getString(authData.getPublicKey()),
-                            };
-
-                            if (DEBUG)
-                            {
-                                if (userData != null)
-                                {
-                                    for (String str : userData)
-                                    {
-                                        DEBUGGER.debug(str);
-                                    }
-                                }
-                            }
-
-                            results.add(userData);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List: {}", results);
+                            for (String str : userData)
+                            {
+                                DEBUGGER.debug(str);
+                            }
                         }
+
+                        results.add(userData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
@@ -629,30 +609,30 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt.setString(1, searchData);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
-                stmt.setString(1, searchData);
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
-                if (DEBUG)
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
+                    resultSet.beforeFirst();
+                    results = new ArrayList<>();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-                        results = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] userData = new String[]
                         {
-                            String[] userData = new String[] {
                                 resultSet.getString(authData.getCommonName()),
                                 resultSet.getString(authData.getUserId()),
                                 resultSet.getString(authData.getGivenName()),
@@ -668,26 +648,22 @@ public class SQLUserManager implements UserManager
                                 resultSet.getString(authData.getOlrLocked()),
                                 resultSet.getString(authData.getTcAccepted()),
                                 resultSet.getString(authData.getPublicKey()),
-                            };
-
-                            if (DEBUG)
-                            {
-                                if (userData != null)
-                                {
-                                    for (String str : userData)
-                                    {
-                                        DEBUGGER.debug(str);
-                                    }
-                                }
-                            }
-
-                            results.add(userData);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List: {}", results);
+                            for (String str : userData)
+                            {
+                                DEBUGGER.debug(str);
+                            }
                         }
+
+                        results.add(userData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List: {}", results);
                     }
                 }
             }
@@ -750,75 +726,71 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }");
-                stmt.setString(1, guid); // common name
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL loadUserAccount(?) }");
+            stmt.setString(1, guid); // common name
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("PreparedStatement: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PreparedStatement: {}", stmt);
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.last();
+                    int x = resultSet.getRow();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                        DEBUGGER.debug("x: {}", x);
                     }
 
-                    if (resultSet.next())
+                    if ((x == 0) || (x > 1))
                     {
-                        resultSet.last();
-                        int x = resultSet.getRow();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("x: {}", x);
-                        }
-
-                        if ((x == 0) || (x > 1))
-                        {
-                            throw new UserManagementException("No user account was located for the provided data.");
-                        }
-                        else
-                        {
-                            resultSet.first();
-
-                            userAccount = new ArrayList<Object>();
-                            userAccount.add(resultSet.getString(authData.getCommonName()));
-                            userAccount.add(resultSet.getString(authData.getUserId()));
-                            userAccount.add(resultSet.getString(authData.getGivenName()));
-                            userAccount.add(resultSet.getString(authData.getSurname()));
-                            userAccount.add(resultSet.getString(authData.getDisplayName()));
-                            userAccount.add(resultSet.getString(authData.getEmailAddr()));
-                            userAccount.add(resultSet.getString(authData.getPagerNumber()));
-                            userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                            userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
-                            userAccount.add(resultSet.getInt(authData.getLockCount()));
-                            userAccount.add(resultSet.getLong(authData.getLastLogin()));
-                            userAccount.add(resultSet.getLong(authData.getExpiryDate()));
-                            userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
-                            userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
-                            userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
-                            userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
-                            userAccount.add(resultSet.getBytes(authData.getPublicKey()));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", userAccount);
-                            }
-                        }
+                        throw new UserManagementException("No user account was located for the provided data.");
                     }
-                    else
+
+                    resultSet.first();
+
+                    userAccount = new ArrayList<>();
+                    userAccount.add(resultSet.getString(authData.getCommonName()));
+                    userAccount.add(resultSet.getString(authData.getUserId()));
+                    userAccount.add(resultSet.getString(authData.getGivenName()));
+                    userAccount.add(resultSet.getString(authData.getSurname()));
+                    userAccount.add(resultSet.getString(authData.getDisplayName()));
+                    userAccount.add(resultSet.getString(authData.getEmailAddr()));
+                    userAccount.add(resultSet.getString(authData.getPagerNumber()));
+                    userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
+                    userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
+                    userAccount.add(resultSet.getInt(authData.getLockCount()));
+                    userAccount.add(resultSet.getLong(authData.getLastLogin()));
+                    userAccount.add(resultSet.getLong(authData.getExpiryDate()));
+                    userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
+                    userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
+                    userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
+                    userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
+                    userAccount.add(resultSet.getBytes(authData.getPublicKey()));
+
+                    if (DEBUG)
                     {
-                        throw new UserManagementException("No users were located with the provided information");
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
                 }
+            }
+            else
+            {
+                throw new UserManagementException("No users were located with the provided information");
             }
         }
         catch (SQLException sqx)
@@ -880,30 +852,28 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL modifyUserSuspension(?, ?) }");
+            stmt.setString(1, userGuid);
+            stmt.setBoolean(2, isSuspended);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL modifyUserSuspension(?, ?) }");
-                stmt.setString(1, userGuid);
-                stmt.setBoolean(2, isSuspended);
+            int x = stmt.executeUpdate();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Update: {}", x);
+            }
 
-                int x = stmt.executeUpdate();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Update: {}", x);
-                }
-
-                if (x == 1)
-                {
-                    isComplete = true;
-                }
+            if (x == 1)
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -959,29 +929,27 @@ public class SQLUserManager implements UserManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL unlockUserAccount(?) }");
+            stmt.setString(1, userGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL unlockUserAccount(?) }");
-                stmt.setString(1, userGuid);
+            int x = stmt.executeUpdate();
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Update: {}", x);
+            }
 
-                int x = stmt.executeUpdate();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Update: {}", x);
-                }
-
-                if (x == 1)
-                {
-                    isComplete = true;
-                }
+            if (x == 1)
+            {
+                isComplete = true;
             }
         }
         catch (SQLException sqx)

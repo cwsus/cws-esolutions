@@ -133,13 +133,19 @@ public final class MQUtils
             }
 
             // Create a MessageProducer from the Session to the Topic or Queue
-            try
+            if (envContext != null)
             {
-                producer = session.createProducer((Destination) envContext.lookup(requestQueue));
+                try
+                {
+                    producer = session.createProducer((Destination) envContext.lookup(requestQueue));
+                }
+                catch (NamingException nx)
+                {
+                    ERROR_RECORDER.error(nx.getMessage(), nx);
+                }
             }
-            catch (NamingException nx)
+            else
             {
-                // we're probably not in a container
                 Destination destination = session.createQueue(requestQueue);
 
                 if (DEBUG)
@@ -148,6 +154,11 @@ public final class MQUtils
                 }
 
                 producer = session.createProducer(destination);
+            }
+
+            if (producer == null)
+            {
+                throw new JMSException("Failed to create a producer object");
             }
 
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -268,6 +279,7 @@ public final class MQUtils
                 DEBUGGER.debug("Session: ", session);
             }
 
+            // TODO: FIX ME
             try
             {
                 consumer = session.createConsumer((Destination) envContext.lookup(responseQueue), "JMSCorrelationID='" + messageId + "'");

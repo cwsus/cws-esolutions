@@ -139,26 +139,24 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     {
                         ERROR_RECORDER.error(umx.getMessage(), umx);
 
-                        if (StringUtils.contains(umx.getMessage(), "UUID"))
-                        {
-                            userGuid = UUID.randomUUID().toString();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Value: {}", userGuid);
-                            }
-
-                            x++;
-
-                            continue;
-                        }
-                        else
+                        if (!(StringUtils.contains(umx.getMessage(), "UUID")))
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
                             response.setResponse("A user already exists with the provided username.");
 
                             return response;
                         }
+
+                        userGuid = UUID.randomUUID().toString();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Value: {}", userGuid);
+                        }
+
+                        x++;
+
+                        continue;
                     }
                 }
 

@@ -165,11 +165,11 @@
 	                        <option><spring:message code="theme.option.select" /></option>
 	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <c:forEach var="dcObject" items="${datacenters}">
-	                            <form:option value="${dcObject}" label="${dcObject.datacenterName}"/>
+	                            <form:option value="${dcObject.datacenterGuid}" label="${dcObject.datacenterName}"/>
 	                        </c:forEach>
 	                    </form:select>
-                        <td><form:errors path="datacenter" cssClass="validationError" /></td>
-	                </td>
+                    </td>
+                    <td><form:errors path="datacenter" cssClass="validationError" /></td>
 	                <td><form:errors path="serverRegion" cssClass="validationError" /></td>
 	                <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
 	                <td>

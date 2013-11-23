@@ -309,7 +309,7 @@ public class LDAPKeyManager implements KeyManager
         {
             try
             {
-                if ((ldapConn != null) && (ldapConn.isConnected()))
+                if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
                 {
                     ldapPool.releaseConnection(ldapConn);
                 }
@@ -452,7 +452,7 @@ public class LDAPKeyManager implements KeyManager
 
                         if (!(stmt.execute()))
                         {
-                            List<Modification> modifyList = new ArrayList<Modification>(
+                            List<Modification> modifyList = new ArrayList<>(
                                     Arrays.asList(
                                             new Modification(ModificationType.ADD, authData.getPublicKey(), keyPair.getPublic().getEncoded())));
 
@@ -548,7 +548,7 @@ public class LDAPKeyManager implements KeyManager
         {
             try
             {
-                if ((ldapConn != null) && (ldapConn.isConnected()))
+                if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
                 {
                     ldapPool.releaseConnection(ldapConn);
                 }
@@ -684,7 +684,7 @@ public class LDAPKeyManager implements KeyManager
                     if (!(stmt.execute()))
                     {
                         // and then delete the pubkey
-                        List<Modification> modifyList = new ArrayList<Modification>(
+                        List<Modification> modifyList = new ArrayList<>(
                                 Arrays.asList(
                                         new Modification(ModificationType.DELETE, authData.getPublicKey())));
 
@@ -739,7 +739,7 @@ public class LDAPKeyManager implements KeyManager
         {
             try
             {
-                if ((ldapConn != null) && (ldapConn.isConnected()))
+                if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
                 {
                     ldapPool.releaseConnection(ldapConn);
                 }

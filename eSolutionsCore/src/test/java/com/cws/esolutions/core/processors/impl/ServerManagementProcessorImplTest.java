@@ -199,7 +199,7 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setMgrUrl("https://dmgr.myserver.org:18003/console");
             server.setDmgrPort(18003);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
             server.setNetworkPartition(NetworkPartition.DMZ);
 
             ServerManagementRequest request = new ServerManagementRequest();
@@ -255,7 +255,7 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setOwningDmgr("bc55f443-202b-4f7c-9118-47dd80500ffb");
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -309,7 +309,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -364,7 +364,7 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setOwningDmgr("dac2e765-109e-4385-8563-aab66d6713f9");
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -418,7 +418,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -473,7 +473,7 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setOwningDmgr("fde6d6e9-8bac-4a82-99c6-ef225945d846");
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -527,7 +527,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -579,7 +579,7 @@ public class ServerManagementProcessorImplTest
         server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter(dataCenter);
+        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -632,7 +632,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter(dataCenter);
+            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -684,7 +684,7 @@ public class ServerManagementProcessorImplTest
         server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter(dataCenter);
+        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -734,7 +734,7 @@ public class ServerManagementProcessorImplTest
         server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter(dataCenter);
+        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);

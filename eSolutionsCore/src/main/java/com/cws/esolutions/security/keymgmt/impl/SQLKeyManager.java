@@ -85,102 +85,100 @@ public class SQLKeyManager implements KeyManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
+            stmt.setString(1, request.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Statement: {}", stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+                    privKeyBytes = resultSet.getBytes(1);
+
+                    resultSet.close();
+                    stmt.close();
+
+                    resultSet = null;
+                    stmt = null;
+                }
+            }
             else
             {
-                sqlConn.setAutoCommit(true);
+                // no privkey
+                throw new KeyManagementException("No private key was found for the provided user.");
+            }
 
-                stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
-                stmt.setString(1, request.getGuid());
+            stmt = sqlConn.prepareCall("{ CALL retrPublicKey(?) }");
+            stmt.setString(1, request.getGuid());
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Statement: {}", stmt.toString());
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Statement: {}", stmt.toString());
+            }
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-                        privKeyBytes = resultSet.getBytes(1);
-    
-                        resultSet.close();
-                        stmt.close();
-    
-                        resultSet = null;
-                        stmt = null;
-                    }
-                }
-                else
-                {
-                    // no privkey
-                    throw new KeyManagementException("No private key was found for the provided user.");
-                }
-
-                stmt = sqlConn.prepareCall("{ CALL retrPublicKey(?) }");
-                stmt.setString(1, request.getGuid());
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Statement: {}", stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-                        pubKeyBytes = resultSet.getBytes(1);
-                    }
+                    resultSet.first();
+                    pubKeyBytes = resultSet.getBytes(1);
                 }
-                else
-                {
-                    // no privkey
-                    throw new KeyManagementException("No public key was found for the provided user.");
-                }
+            }
+            else
+            {
+                // no privkey
+                throw new KeyManagementException("No public key was found for the provided user.");
+            }
 
-                // if we got this far we're probably good
-                // get the public key
-                if ((privKeyBytes != null) && (pubKeyBytes != null))
-                {
-                    // xlnt, make the keypair
-                    KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
+            // if we got this far we're probably good
+            // get the public key
+            if ((privKeyBytes != null) && (pubKeyBytes != null))
+            {
+                // xlnt, make the keypair
+                KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
 
-                    // generate private key
-                    PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
-                    PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
+                // generate private key
+                PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
+                PrivateKey privKey = keyFactory.generatePrivate(privateSpec);
 
-                    // generate pubkey
-                    X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
-                    PublicKey pubKey = keyFactory.generatePublic(publicSpec);
+                // generate pubkey
+                X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
+                PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-                    KeyPair keyPair = new KeyPair(pubKey, privKey);
+                KeyPair keyPair = new KeyPair(pubKey, privKey);
 
-                    response = new KeyManagementResponse();
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully loaded user keys");
-                    response.setKeyPair(keyPair);
-                }
-                else
-                {
-                    response = new KeyManagementResponse();
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to load user keys");
-                }
+                response = new KeyManagementResponse();
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setResponse("Successfully loaded user keys");
+                response.setKeyPair(keyPair);
+            }
+            else
+            {
+                response = new KeyManagementResponse();
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setResponse("Failed to load user keys");
             }
         }
         catch (InvalidKeySpecException iksx)
@@ -255,135 +253,128 @@ public class SQLKeyManager implements KeyManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+
+            sqlConn.setAutoCommit(true);
+
+            SecureRandom random = new SecureRandom();
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
+            keyGenerator.initialize(request.getKeySize(), random);
+            KeyPair keyPair = keyGenerator.generateKeyPair();
+
+            // ok we should have a keypair now
+            if (keyPair != null)
             {
-                sqlConn.setAutoCommit(true);
+                // store the private key
+                PrivateKey privKey = keyPair.getPrivate();
 
-                SecureRandom random = new SecureRandom();
-                KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
-                keyGenerator.initialize(request.getKeySize(), random);
-                KeyPair keyPair = keyGenerator.generateKeyPair();
-
-                // ok we should have a keypair now
-                if (keyPair != null)
+                if (DEBUG)
                 {
-                    // store the private key
-                    PrivateKey privKey = keyPair.getPrivate();
+                    DEBUGGER.debug("PrivateKey: {}", privKey);
+                }
+
+                if (privKey != null)
+                {
+                    stmt = sqlConn.prepareCall("{ CALL addUserKeys(?, ?) }");
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PrivateKey: {}", privKey);
+                        DEBUGGER.debug("stmt: {}", stmt);
                     }
 
-                    if (privKey != null)
+                    if (stmt == null)
                     {
-                        stmt = sqlConn.prepareCall("{ CALL addUserKeys(?, ?) }");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("stmt: {}", stmt);
-                        }
-
-                        if (stmt != null)
-                        {
-                            stmt.setString(1, request.getGuid()); // guid
-                            stmt.setBytes(2, privKey.getEncoded()); // privkey
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Statement: {}", stmt);
-                            }
-
-                            int update = stmt.executeUpdate();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Response: {}", update);
-                            }
-
-                            if (update != 0)
-                            {
-                                // roll back the request
-                                sqlConn.rollback();
-
-                                throw new KeyManagementException("Failed to insert private key. Cannot continue.");
-                            }
-                        }
-                        else
-                        {
-                            throw new SQLException("Failed to create callable statement against connection");
-                        }
-                    }
-                    else
-                    {
-                        throw new KeyManagementException("Private key is null. Cannot continue.");
+                        throw new SQLException("Failed to create callable statement against connection");
                     }
 
-                    PublicKey pubKey = keyPair.getPublic();
+                    stmt.setString(1, request.getGuid()); // guid
+                    stmt.setBytes(2, privKey.getEncoded()); // privkey
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PublicKey: {}", pubKey);
+                        DEBUGGER.debug("Statement: {}", stmt);
                     }
 
-                    if (pubKey != null)
+                    int update = stmt.executeUpdate();
+
+                    if (DEBUG)
                     {
-                        stmt = sqlConn.prepareCall("{ CALL addPublicKey(?, ?) }");
-                        stmt.setString(1, request.getGuid()); // guid
-                        stmt.setBytes(2, pubKey.getEncoded()); // privkey
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Statement: {}", stmt);
-                        }
-
-                        int update = stmt.executeUpdate();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Response: {}", update);
-                        }
-
-                        if (update != 0)
-                        {
-                            sqlConn.rollback();
-
-                            throw new KeyManagementException("Failed to insert public key. Cannot continue.");
-                        }
+                        DEBUGGER.debug("Response: {}", update);
                     }
-                    else
+
+                    if (update != 0)
                     {
-                        // roll back the privkey'
+                        // roll back the request
                         sqlConn.rollback();
 
-                        if (stmt != null)
-                        {
-                            stmt.close();
-                        }
-
-                        stmt = null;
-                        stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
-                        stmt.setString(1, request.getGuid());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Statement: {}", stmt);
-                        }
-
-                        stmt.execute();
-
-                        throw new KeyManagementException("Public key is null. Cannot continue.");
+                        throw new KeyManagementException("Failed to insert private key. Cannot continue.");
                     }
-
-                    response = new KeyManagementResponse();
-                    response.setResponse("Successfully created user keypair");
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
                 else
                 {
-                    // failed to generate keypair
-                    throw new KeyManagementException("Failed to generate a user keypair");
+                    throw new KeyManagementException("Private key is null. Cannot continue.");
                 }
+
+                PublicKey pubKey = keyPair.getPublic();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("PublicKey: {}", pubKey);
+                }
+
+                if (pubKey != null)
+                {
+                    stmt = sqlConn.prepareCall("{ CALL addPublicKey(?, ?) }");
+                    stmt.setString(1, request.getGuid()); // guid
+                    stmt.setBytes(2, pubKey.getEncoded()); // privkey
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Statement: {}", stmt);
+                    }
+
+                    int update = stmt.executeUpdate();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Response: {}", update);
+                    }
+
+                    if (update != 0)
+                    {
+                        sqlConn.rollback();
+
+                        throw new KeyManagementException("Failed to insert public key. Cannot continue.");
+                    }
+                }
+                else
+                {
+                    // roll back the privkey
+                    sqlConn.rollback();
+
+                    stmt.close();
+                    stmt = null;
+                    stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
+                    stmt.setString(1, request.getGuid());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Statement: {}", stmt);
+                    }
+
+                    stmt.execute();
+
+                    throw new KeyManagementException("Public key is null. Cannot continue.");
+                }
+
+                response = new KeyManagementResponse();
+                response.setResponse("Successfully created user keypair");
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+            }
+            else
+            {
+                // failed to generate keypair
+                throw new KeyManagementException("Failed to generate a user keypair");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -446,32 +437,30 @@ public class SQLKeyManager implements KeyManager
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
+
+            sqlConn.setAutoCommit(true);
+            response = new KeyManagementResponse();
+
+            // remove the user keys from the store
+            stmt = sqlConn.prepareCall("{CALL deleteUserKeys(?)}");
+            stmt.setString(1, request.getGuid());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Statement: {}", stmt);
+            }
+
+            if (!(stmt.execute()))
+            {
+                // good
+                response = new KeyManagementResponse();
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setResponse("Successfully removed user keypair");
+            }
             else
             {
-                sqlConn.setAutoCommit(true);
-                response = new KeyManagementResponse();
-
-                // remove the user keys from the store
-                stmt = sqlConn.prepareCall("{CALL deleteUserKeys(?)}");
-                stmt.setString(1, request.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Statement: {}", stmt);
-                }
-
-                if (!(stmt.execute()))
-                {
-                    // good
-                    response = new KeyManagementResponse();
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully removed user keypair");
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to removed user keypair");
-                }
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setResponse("Failed to removed user keypair");
             }
         }
         catch (SQLException sqx)
