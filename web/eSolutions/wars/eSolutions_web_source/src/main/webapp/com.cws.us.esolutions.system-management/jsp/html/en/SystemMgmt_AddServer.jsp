@@ -165,7 +165,7 @@
 	                        <option><spring:message code="theme.option.select" /></option>
 	                        <option><spring:message code="theme.option.spacer" /></option>
 	                        <c:forEach var="datacenter" items="${datacenters}">
-	                            <form:option value="${datacenter.datacenterGuid}" label="${datacenter.datacenterName}"/>
+	                            <form:option value="${datacenter}" label="${datacenter.datacenterName}"/>
 	                        </c:forEach>
 	                    </form:select>
 	                </td>
@@ -201,7 +201,7 @@
 	                                <option><spring:message code="theme.option.select" /></option>
 	                                <option><spring:message code="theme.option.spacer" /></option>
 	                                <c:forEach var="dmgr" items="${dmgrServers}">
-	                                    <form:option value="${dmgr.serverGuid}" label="${dmgr.operHostName}"/>
+	                                    <form:option value="${dmgr}" label="${dmgr.operHostName}"/>
 	                                </c:forEach>
 	                            </form:select>
 	                        </c:when>

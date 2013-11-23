@@ -94,7 +94,9 @@
                                 <form:select path="project" multiple="false">
                                     <option><spring:message code="theme.option.select" /></option>
                                     <option><spring:message code="theme.option.spacer" /></option>
-                                    <form:options items="${projectListing}" />
+                                    <c:forEach var="project" items="${projectListing}">
+                                        <form:option value="${project}" label="${project.projectCode}" />
+                                    </c:forEach>
                                 </form:select>
                             </td>
                         </c:when>
@@ -113,7 +115,9 @@
                                 <form:select path="platform" multiple="false">
                                     <option><spring:message code="theme.option.select" /></option>
                                     <option><spring:message code="theme.option.spacer" /></option>
-                                    <form:options items="${platformListing}" />
+                                    <c:forEach var="platform" items="${platformListing}">
+                                        <form:option value="${platform}" label="${platform.platformName}" />
+                                    </c:forEach>
                                 </form:select>
                             </td>
                         </c:when>

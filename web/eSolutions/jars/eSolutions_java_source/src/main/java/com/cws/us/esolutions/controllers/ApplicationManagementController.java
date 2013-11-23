@@ -905,34 +905,14 @@ public class ApplicationManagementController
 
                 if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Project> projects = projectResponse.getProjectList();
+                    List<Project> projectListing = projectResponse.getProjectList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("projects: {}", projects);
+                        DEBUGGER.debug("projectListing: {}", projectListing);
                     }
 
-                    if ((projects != null) && (projects.size() != 0))
-                    {
-                        Map<String, String> projectListing = new HashMap<>();
-
-                        for (Project project : projects)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Project: {}", project);
-                            }
-
-                            projectListing.put(project.getProjectGuid(), project.getProjectCode());
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("projectListing: {}", projectListing);
-                        }
-
-                        mView.addObject("projectListing", projectListing);
-                    }
+                    mView.addObject("projectListing", projectListing);
                 }
                 else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -986,27 +966,7 @@ public class ApplicationManagementController
                         DEBUGGER.debug("platformList: {}", platformList);
                     }
 
-                    if ((platformList != null) && (platformList.size() != 0))
-                    {
-                        Map<String, String> platformListing = new HashMap<>();
-
-                        for (Platform platform : platformList)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Platform: {}", platform);
-                            }
-
-                            platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformListing: {}", platformListing);
-                        }
-
-                        mView.addObject("platformListing", platformListing);
-                    }
+                    mView.addObject("platformList", platformList);
                 }
                 else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {

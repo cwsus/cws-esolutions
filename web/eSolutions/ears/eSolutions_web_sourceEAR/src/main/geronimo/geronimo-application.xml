@@ -1,31 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<application application-name="${artifactId}"
-    xmlns="http://geronimo.apache.org/xml/ns/j2ee/application-2.0">
+<application application-name="${artifactId}" xmlns="http://geronimo.apache.org/xml/ns/j2ee/application-2.0">
     <environment xmlns="http://geronimo.apache.org/xml/ns/deployment-1.2">
         <moduleId>
             <groupId>@groupId@</groupId>
             <artifactId>@artifactId@</artifactId>
             <version>@version@</version>
-            <type>car</type>
+            <type>ear</type>
         </moduleId>
         <dependencies />
     </environment>
 
     <module>
         <web>@module@</web>
-        <web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1">
-            <!--
-            <service-ref>
-                <service-ref-name>service/CoreRequestService</service-ref-name>
-                <port>
-                    <port-name>CoreRequestServicePort</port-name>
-                    <protocol>http</protocol>
-                    <host>localhost</host>
-                    <port>8080</port>
-                    <uri>/esolutions/ws/CoreRequestService</uri>
-                </port>
-            </service-ref>
-            -->
-        </web-app>
+        <alt-dd>@module@/WEB-INF/geronimo-web.xml</alt-dd>
     </module>
 </application>
