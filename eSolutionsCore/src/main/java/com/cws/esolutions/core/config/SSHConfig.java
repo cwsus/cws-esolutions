@@ -278,6 +278,7 @@ public final class SSHConfig implements Serializable
         return this.sshProperties;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = SSHConfig.CNAME + "#toString()";

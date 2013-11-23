@@ -164,10 +164,11 @@
 	                    <form:select path="datacenter">
 	                        <option><spring:message code="theme.option.select" /></option>
 	                        <option><spring:message code="theme.option.spacer" /></option>
-	                        <c:forEach var="datacenter" items="${datacenters}">
-	                            <form:option value="${datacenter}" label="${datacenter.datacenterName}"/>
+	                        <c:forEach var="dcObject" items="${datacenters}">
+	                            <form:option value="${dcObject}" label="${dcObject.datacenterName}"/>
 	                        </c:forEach>
 	                    </form:select>
+                        <td><form:errors path="datacenter" cssClass="validationError" /></td>
 	                </td>
 	                <td><form:errors path="serverRegion" cssClass="validationError" /></td>
 	                <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>

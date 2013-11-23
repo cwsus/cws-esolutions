@@ -62,7 +62,8 @@ public class SSLEnforcementFilter implements Filter
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String CNAME = SSLEnforcementFilter.class.getName();
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
-    private static final Set<String> LOCALHOST = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList("localhost", "127.0.0.1")));
+    private static final Set<String> LOCALHOST = Collections.unmodifiableSet(new HashSet<>(
+            Arrays.asList("localhost", "127.0.0.1")));
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -194,58 +195,56 @@ public class SSLEnforcementFilter implements Filter
 
                 return;
             }
-            else
-            {
-                if ((this.ignoreHosts != null) && (this.ignoreHosts.length != 0))
-                {
-                    for (String host : this.ignoreHosts)
-                    {
-                        String requestHost = host.trim();
 
+            if ((this.ignoreHosts != null) && (this.ignoreHosts.length != 0))
+            {
+                for (String host : this.ignoreHosts)
+                {
+                    String requestHost = host.trim();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug(host);
+                        DEBUGGER.debug(requestHost);
+                    }
+    
+                    if (StringUtils.equals(requestHost, sRequest.getServerName().trim()))
+                    {
                         if (DEBUG)
                         {
-                            DEBUGGER.debug(host);
-                            DEBUGGER.debug(requestHost);
+                            DEBUGGER.debug("Host found in ignore list. Not processing request!");
                         }
-    
-                        if (StringUtils.equals(requestHost, sRequest.getServerName().trim()))
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Host found in ignore list. Not processing request!");
-                            }
 
-                            filterChain.doFilter(sRequest, sResponse);
+                        filterChain.doFilter(sRequest, sResponse);
     
-                            return;
-                        }
+                        return;
                     }
                 }
+            }
 
-                if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
+            if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
+            {
+                // no hosts in ignore list
+                for (String uri : this.ignoreURIs)
                 {
-                    // no hosts in ignore list
-                    for (String uri : this.ignoreURIs)
-                    {
-                        String requestURI = uri.trim();
+                    String requestURI = uri.trim();
 
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug(uri);
+                        DEBUGGER.debug(requestURI);
+                    }
+    
+                    if (StringUtils.equals(requestURI, hRequest.getRequestURI().trim()))
+                    {
                         if (DEBUG)
                         {
-                            DEBUGGER.debug(uri);
-                            DEBUGGER.debug(requestURI);
+                            DEBUGGER.debug("URI found in ignore list. Not processing request!");
                         }
-    
-                        if (StringUtils.equals(requestURI, hRequest.getRequestURI().trim()))
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("URI found in ignore list. Not processing request!");
-                            }
 
-                            filterChain.doFilter(sRequest, sResponse);
-    
-                            return;
-                        }
+                        filterChain.doFilter(sRequest, sResponse);
+
+                        return;
                     }
                 }
             }

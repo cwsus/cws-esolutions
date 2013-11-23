@@ -229,7 +229,7 @@ public class LDAPUserManager implements UserManager
                 if (ldapConn.isConnected())
                 {
                     // have a connection, create the user
-                    List<Attribute> newAttributes = new ArrayList<Attribute>();
+                    List<Attribute> newAttributes = new ArrayList<>();
                     newAttributes.add(new Attribute("objectClass", authRepo.getBaseObjectClass()));
                     newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
                     newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
@@ -253,7 +253,7 @@ public class LDAPUserManager implements UserManager
                     {
                         if (StringUtils.isNotEmpty(groupName))
                         {
-                            List<Modification> modifyList = new ArrayList<Modification>(
+                            List<Modification> modifyList = new ArrayList<>(
                                     Arrays.asList(
                                             new Modification(ModificationType.ADD, "uniqueMember", userDN)));
 
@@ -406,7 +406,7 @@ public class LDAPUserManager implements UserManager
                                 DEBUGGER.debug("SearchResultEntry: {}", entry);
                             }
 
-                            List<Modification> modifyList = new ArrayList<Modification>();
+                            List<Modification> modifyList = new ArrayList<>();
 
                             for (String key : changeRequest.keySet())
                             {
@@ -549,7 +549,7 @@ public class LDAPUserManager implements UserManager
                             DEBUGGER.debug("SearchResultEntry: {}", entry);
                         }
 
-                        List<Modification> modifyList = new ArrayList<Modification>
+                        List<Modification> modifyList = new ArrayList<>
                         (
                             Arrays.asList
                             (
@@ -676,7 +676,7 @@ public class LDAPUserManager implements UserManager
                             DEBUGGER.debug("SearchResultEntry: {}", entry);
                         }
 
-                        List<Modification> modifyList = new ArrayList<Modification>
+                        List<Modification> modifyList = new ArrayList<>
                         (
                             Arrays.asList
                             (
@@ -812,7 +812,7 @@ public class LDAPUserManager implements UserManager
                         }
 
                         // perform the modification here
-                        List<Modification> modifyList = new ArrayList<Modification>(
+                        List<Modification> modifyList = new ArrayList<>(
                                 Arrays.asList(
                                         new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
                                         new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(expiry))));
@@ -1038,7 +1038,7 @@ public class LDAPUserManager implements UserManager
 
                 if (ldapConn.isConnected())
                 {
-                    if ((searchType != null) && (searchType instanceof SearchRequestType))
+                    if (searchType != null)
                     {
                         switch (searchType)
                         {
@@ -1122,7 +1122,7 @@ public class LDAPUserManager implements UserManager
 
                     if (searchResult.getResultCode() == ResultCode.SUCCESS)
                     {
-                        results = new ArrayList<String[]>();
+                        results = new ArrayList<>();
 
                         for (SearchResultEntry entry : searchResult.getSearchEntries())
                         {
@@ -1148,12 +1148,9 @@ public class LDAPUserManager implements UserManager
 
                             if (DEBUG)
                             {
-                                if (userData != null)
+                                for (String str : userData)
                                 {
-                                    for (String str : userData)
-                                    {
-                                        DEBUGGER.debug(str);
-                                    }
+                                    DEBUGGER.debug(str);
                                 }
                             }
 
@@ -1287,7 +1284,7 @@ public class LDAPUserManager implements UserManager
                             }
 
                             // valid user, load the information
-                            userAccount = new ArrayList<Object>();
+                            userAccount = new ArrayList<>();
                             userAccount.add(entry.getAttributeValue(authData.getCommonName()));
                             userAccount.add(entry.getAttributeValue(authData.getUserId()));
                             userAccount.add(entry.getAttributeValue(authData.getGivenName()));
@@ -1433,7 +1430,7 @@ public class LDAPUserManager implements UserManager
 
                     if (searchResult.getResultCode() == ResultCode.SUCCESS)
                     {
-                        results = new ArrayList<String[]>();
+                        results = new ArrayList<>();
 
                         for (SearchResultEntry entry : searchResult.getSearchEntries())
                         {
@@ -1457,12 +1454,9 @@ public class LDAPUserManager implements UserManager
 
                             if (DEBUG)
                             {
-                                if (userData != null)
+                                for (String str : userData)
                                 {
-                                    for (String str : userData)
-                                    {
-                                        DEBUGGER.debug(str);
-                                    }
+                                    DEBUGGER.debug(str);
                                 }
                             }
 

@@ -127,7 +127,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 {
                     if ((entry.getApexRecords() == null) || (entry.getApexRecords().size() == 0))
                     {
-                        list = new ArrayList<DNSRecord>();
+                        list = new ArrayList<>();
                     }
                     else
                     {
@@ -138,7 +138,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 {
                     if ((entry.getSubRecords() == null) || (entry.getSubRecords().size() == 0))
                     {
-                        list = new ArrayList<DNSRecord>();
+                        list = new ArrayList<>();
                     }
                     else
                     {
@@ -248,7 +248,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             if (lookup.getResult() == Lookup.SUCCESSFUL)
             {
-                if (recordList.length == 1)
+                if ((recordList != null) && (recordList.length == 1))
                 {
                     Record record = recordList[0];
 
@@ -258,7 +258,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     }
 
                     DNSRecord responseRecord = new DNSRecord();
-                    responseRecord.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
+                    responseRecord.setPrimaryAddress(new ArrayList<>(Arrays.asList(record.rdataToString())));
                     responseRecord.setRecordName(record.getName().toString());
                     responseRecord.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
 
@@ -278,36 +278,44 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 }
                 else
                 {
-                    List<DNSRecord> responseList = new ArrayList<DNSRecord>();
+                    List<DNSRecord> responseList = new ArrayList<>();
 
-                    for (Record record : recordList)
+                    if ((recordList != null) && (recordList.length != 0))
                     {
-                        if (DEBUG)
+                        for (Record record : recordList)
                         {
-                            DEBUGGER.debug("Record: {}", record);
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Record: {}", record);
+                            }
+
+                            DNSRecord rec = new DNSRecord();
+                            rec.setPrimaryAddress(new ArrayList<>(Arrays.asList(record.rdataToString())));
+                            rec.setRecordName(record.getName().toString());
+                            rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("DNSRecord: {}", rec);
+                            }
+
+                            responseList.add(rec);
                         }
 
-                        DNSRecord rec = new DNSRecord();
-                        rec.setPrimaryAddress(new ArrayList<String>(Arrays.asList(record.rdataToString())));
-                        rec.setRecordName(record.getName().toString());
-                        rec.setRecordType(DNSRecordType.valueOf(Type.string(record.getType())));
-
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("DNSRecord: {}", rec);
+                            DEBUGGER.debug("responseList: {}", responseList);
                         }
 
-                        responseList.add(rec);
+                        response.setDnsRecords(responseList);
+                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                        response.setResponse("Successfully performed service lookup");
                     }
-
-                    if (DEBUG)
+                    else
                     {
-                        DEBUGGER.debug("responseList: {}", responseList);
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        response.setResponse("No records were located for the provided query.");
                     }
-
-                    response.setDnsRecords(responseList);
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully performed service lookup");
                 }
 
                 if (DEBUG)
@@ -668,7 +676,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 if ((isAdminAuthorized) && (isServiceAuthorized))
                 {
                     // insert the apex into the database
-                    List<String> dnsList = new ArrayList<String>(
+                    List<String> dnsList = new ArrayList<>(
                             Arrays.asList(
                                     entry.getProjectCode(),
                                     entry.getFileName(),
@@ -706,7 +714,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 DEBUGGER.debug("DNSRecord: {}", record);
                             }
 
-                            List<String> dnsRecord = new ArrayList<String>(
+                            List<String> dnsRecord = new ArrayList<>(
                                     Arrays.asList(
                                             entry.getProjectCode(),
                                             entry.getFileName(),
@@ -748,7 +756,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 DEBUGGER.debug("DNSRecord: {}", record);
                             }
 
-                            List<String> dnsRecord = new ArrayList<String>(
+                            List<String> dnsRecord = new ArrayList<>(
                                     Arrays.asList(
                                             entry.getProjectCode(),
                                             entry.getFileName(),
@@ -811,7 +819,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                                 if ((dnsServers != null) && (dnsServers.size() != 0))
                                 {
-                                    NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+                                    NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
                                     List<Object[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name(), 0);
 
@@ -828,7 +836,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         {
                                             try
                                             {
-                                                NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
+                                                NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
                                             }
                                             catch (UtilityException ux)
                                             {
@@ -1122,9 +1130,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     {
                         // ok, this handles multiple apexes (e.g. DNSEntry objects)
                         // find a way to pull it all together...
-                        List<DNSEntry> entryList = new ArrayList<DNSEntry>();
-                        List<DNSRecord> apexList = new ArrayList<DNSRecord>();
-                        List<DNSRecord> subList = new ArrayList<DNSRecord>();
+                        List<DNSEntry> entryList = new ArrayList<>();
+                        List<DNSRecord> apexList = new ArrayList<>();
+                        List<DNSRecord> subList = new ArrayList<>();
 
                         for (Vector<String> vector : data)
                         {
@@ -1163,9 +1171,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 record.setRecordName(vector.get(5));
                                 record.setRecordClass(vector.get(13));
                                 record.setRecordType(DNSRecordType.valueOf(vector.get(14)));
-                                record.setPrimaryAddress(new ArrayList<String>(Arrays.asList(vector.get(20))));
-                                record.setSecondaryAddress(new ArrayList<String>(Arrays.asList(vector.get(21))));
-                                record.setTertiaryAddress(new ArrayList<String>(Arrays.asList(vector.get(22))));
+                                record.setPrimaryAddress(new ArrayList<>(Arrays.asList(vector.get(20))));
+                                record.setSecondaryAddress(new ArrayList<>(Arrays.asList(vector.get(21))));
+                                record.setTertiaryAddress(new ArrayList<>(Arrays.asList(vector.get(22))));
 
                                 switch (record.getRecordType())
                                 {
@@ -1208,7 +1216,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                         // assemble the records, in the proper order, into
                         // the right DNSEntry object for return
-                        List<DNSEntry> responseList = new ArrayList<DNSEntry>();
+                        List<DNSEntry> responseList = new ArrayList<>();
 
                         for (int x = 0; x < entryList.size(); x++)
                         {
@@ -1244,10 +1252,10 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                         }
 
                         entryList.clear();
-                        entryList = new ArrayList<DNSEntry>(responseList);
+                        entryList = new ArrayList<>(responseList);
 
                         responseList.clear();
-                        responseList = new ArrayList<DNSEntry>();
+                        responseList = new ArrayList<>();
 
                         for (int x = 0; x < entryList.size(); x++)
                         {
@@ -1282,7 +1290,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             DEBUGGER.debug("responseList: {}", responseList);
                         }
 
-                        if ((responseList != null) && (responseList.size() != 0))
+                        if (responseList.size() != 0)
                         {
                             response.setDnsEntries(responseList);
                             response.setRequestStatus(CoreServicesStatus.SUCCESS);

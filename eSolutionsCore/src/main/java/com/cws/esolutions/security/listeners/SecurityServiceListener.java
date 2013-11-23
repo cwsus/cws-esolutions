@@ -78,7 +78,7 @@ public class SecurityServiceListener implements ServletContextListener
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         SecurityServiceConfiguration configData = null;
-        Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
+        Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = sContextEvent.getServletContext();
         final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
@@ -103,15 +103,16 @@ public class SecurityServiceListener implements ServletContextListener
                     DOMConfigurator.configure(Loader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSLOGGING_FILE)));
                 }
 
-                if (sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE) == null)
+                if (sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE) != null)
+                {
+                    xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
+
+                }
+                else
                 {
                     ERROR_RECORDER.error("System configuration not found. Shutting down !");
 
                     throw new SecurityServiceException("System configuration file location not provided by application. Cannot continue.");
-                }
-                else
-                {
-                    xmlURL = classLoader.getResource(sContext.getInitParameter(SecurityServiceListener.INIT_SYSCONFIG_FILE));
                 }
 
                 if (DEBUG)

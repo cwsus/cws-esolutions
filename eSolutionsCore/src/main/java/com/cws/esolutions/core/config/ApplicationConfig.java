@@ -16,10 +16,14 @@
 package com.cws.esolutions.core.config;
 
 import java.io.File;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -363,6 +367,7 @@ public final class ApplicationConfig implements Serializable
         return this.virtualManagerClass;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = ApplicationConfig.CNAME + "#toString()";

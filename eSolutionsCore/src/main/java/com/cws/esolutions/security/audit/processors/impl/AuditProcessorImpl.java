@@ -81,7 +81,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                 throw new AuditServiceException("Cannot perform audit: RequestHostInfo / UserAccount is missing");
             }
 
-            List<String> auditList = new ArrayList<String>();
+            List<String> auditList = new ArrayList<>();
 
             switch (auditEntry.getAuditType())
             {
@@ -186,7 +186,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                 if ((dataResponse != null) && (dataResponse.size() != 0))
                 {
-                    List<AuditEntry> auditList = new ArrayList<AuditEntry>();
+                    List<AuditEntry> auditList = new ArrayList<>();
 
                     for (String[] array : dataResponse)
                     {

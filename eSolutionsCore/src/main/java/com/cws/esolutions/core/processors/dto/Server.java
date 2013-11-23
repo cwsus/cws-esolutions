@@ -57,6 +57,7 @@ public class Server implements Serializable
     private String serverRack = null;
     private String domainName = null;
     private String owningDmgr = null;
+    private String datacenter = null;
     private String serverModel = null;
     private String nasHostName = null;
     private String bkIpAddress = null;
@@ -67,7 +68,6 @@ public class Server implements Serializable
     private String nasIpAddress = null;
     private String operIpAddress = null;
     private String mgmtIpAddress = null;
-    private DataCenter datacenter = null;
     private String serverComments = null;
     private ServerType serverType = null;
     private String assignedEngineer = null;
@@ -459,9 +459,9 @@ public class Server implements Serializable
         this.networkPartition = value;
     }
 
-    public final void setDatacenter(final DataCenter value)
+    public final void setDatacenter(final String value)
     {
-        final String methodName = Server.CNAME + "#setDatacenter(final DataCenter value)";
+        final String methodName = Server.CNAME + "#setDatacenter(final String value)";
 
         if (DEBUG)
         {
@@ -849,7 +849,7 @@ public class Server implements Serializable
         return this.networkPartition;
     }
 
-    public final DataCenter getDatacenter()
+    public final String getDatacenter()
     {
         final String methodName = Server.CNAME + "#getDatacenter()";
 

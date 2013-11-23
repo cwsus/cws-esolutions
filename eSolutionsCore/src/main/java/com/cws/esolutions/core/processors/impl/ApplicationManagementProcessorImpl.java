@@ -151,7 +151,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         // different table in the database)
                         if ((application.getApplicationPlatforms() != null) && (application.getApplicationPlatforms().size() != 0))
                         {
-                            List<String> platforms = new ArrayList<String>();
+                            List<String> platforms = new ArrayList<>();
 
                             for (Platform targetPlatform : application.getApplicationPlatforms())
                             {
@@ -168,7 +168,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     DEBUGGER.debug("isPlatformValid: {}", isPlatformValid);
                                 }
 
-                                if ((isPlatformValid.size() == 0) || (isPlatformValid == null))
+                                if ((isPlatformValid == null) || (isPlatformValid.size() == 0))
                                 {
                                     throw new ApplicationManagementException("Provided platform does not exist in the asset datasource. Cannot add application.");
                                 }
@@ -190,13 +190,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 DEBUGGER.debug("isProjectValid: {}", isProjectValid);
                             }
 
-                            if ((isProjectValid.size() == 0) || (isProjectValid == null))
+                            if ((isProjectValid == null) || (isProjectValid.size() == 0))
                             {
                                 throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
                             }
 
                             // ok, good platform. we can add the application in
-                            List<String> appDataList = new ArrayList<String>(
+                            List<String> appDataList = new ArrayList<>(
                                     Arrays.asList(
                                             applGuid,
                                             application.getApplicationName(),
@@ -367,7 +367,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if (currAppData.get(11).split(",").length >= 1)
                     {
-                        List<Platform> appPlatforms = new ArrayList<Platform>();
+                        List<Platform> appPlatforms = new ArrayList<>();
 
                         for (String guid : currAppData.get(11).split(","))
                         {
@@ -656,8 +656,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isUserAuthorized)
                 {
-                    List<String> serviceList = new ArrayList<String>();
-                    List<Application> applicationList = new ArrayList<Application>();
+                    List<String> serviceList = new ArrayList<>();
+                    List<Application> applicationList = new ArrayList<>();
 
                     if (userAccount.getRole() == Role.SITEADMIN)
                     {
@@ -734,7 +734,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                                 if ((appData != null) && (appData.size() != 0))
                                 {
-                                    List<Platform> platforms = new ArrayList<Platform>();
+                                    List<Platform> platforms = new ArrayList<>();
 
                                     for (String[] data : appData)
                                     {
@@ -838,7 +838,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("applicationList: {}", applicationList);
                     }
 
-                    if ((applicationList != null) && (applicationList.size() != 0))
+                    if (applicationList.size() != 0)
                     {
                         response.setApplicationList(applicationList);
                         response.setResponse("Successfully loaded application list");
@@ -958,7 +958,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if ((isAdminAuthorized) && (isUserAuthorized))
                 {
-                    List<Application> applicationList = new ArrayList<Application>();
+                    List<Application> applicationList = new ArrayList<>();
                     List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid(), request.getStartPage());
 
                     if (DEBUG)
@@ -968,7 +968,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if ((appData != null) && (appData.size() != 0))
                     {
-                        List<Platform> platforms = new ArrayList<Platform>();
+                        List<Platform> platforms = new ArrayList<>();
 
                         for (String[] data : appData)
                         {
@@ -1192,7 +1192,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(11), ","));
                             }
 
-                            List<Platform> platformList = new ArrayList<Platform>();
+                            List<Platform> platformList = new ArrayList<>();
 
                             for (String platformGuid : appData.get(11).split(","))
                             {
@@ -1271,7 +1271,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                                     if (platformData.get(3).split(",").length >= 1)
                                     {
-                                        List<Server> appServerList = new ArrayList<Server>();
+                                        List<Server> appServerList = new ArrayList<>();
 
                                         // list application servers
                                         for (String serverGuid : platformData.get(4).split(","))
@@ -1344,7 +1344,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     // list web servers
                                     if (platformData.get(4).split(",").length >= 1)
                                     {
-                                        List<Server> webServerList = new ArrayList<Server>();
+                                        List<Server> webServerList = new ArrayList<>();
 
                                         for (String serverGuid : platformData.get(5).split(","))
                                         {

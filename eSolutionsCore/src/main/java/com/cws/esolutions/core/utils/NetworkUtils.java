@@ -959,7 +959,7 @@ public final class NetworkUtils
 
                         if (proxyConfig.isProxyAuthRequired())
                         {
-                            List<String> authList = new ArrayList<String>();
+                            List<String> authList = new ArrayList<>();
                             authList.add(AuthPolicy.BASIC);
                             authList.add(AuthPolicy.DIGEST);
                             authList.add(AuthPolicy.NTLM);
@@ -1036,10 +1036,8 @@ public final class NetworkUtils
 
                     throw new HttpException("HTTP Response Code received NOT 200: " + responseCode);
                 }
-                else
-                {
-                    return httpMethod.getResponseBody();
-                }
+
+                return httpMethod.getResponseBody();
             }
         }
         catch (ConnectException cx)

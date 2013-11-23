@@ -12,12 +12,15 @@
 package com.cws.us.esolutions.validators;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.lang.reflect.Field;
 import java.util.regex.Pattern;
+
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
@@ -26,6 +29,7 @@ import org.springframework.validation.Validator;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -331,10 +335,18 @@ public class ServerValidator implements Validator
             DEBUGGER.debug("Server: {}", server);
         }
 
+        DataCenter dataCenter = new DataCenter();
+        dataCenter.setDatacenterGuid(server.getDatacenter());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("DataCenter: {}", dataCenter);
+        }
+
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setApplicationId(appConfig.getApplicationId());
         request.setApplicationName(appConfig.getApplicationName());
-        request.setDataCenter(server.getDatacenter());
+        request.setDataCenter(dataCenter);
         request.setRequestInfo(hostInfo);
         request.setServiceId(this.dcService);
         request.setUserAccount(userAccount);

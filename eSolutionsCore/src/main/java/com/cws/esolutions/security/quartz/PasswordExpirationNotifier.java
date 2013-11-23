@@ -147,8 +147,8 @@ public class PasswordExpirationNotifier implements Job
                         // generate an email for the user
                         EmailMessage message = new EmailMessage();
                         message.setIsAlert(false);
-                        message.setEmailAddr(new ArrayList<String>(Arrays.asList((String) jobData.get(sendMessageAs))));
-                        message.setMessageTo(new ArrayList<String>(Arrays.asList(emailAddr)));
+                        message.setEmailAddr(new ArrayList<>(Arrays.asList((String) jobData.get(sendMessageAs))));
+                        message.setMessageTo(new ArrayList<>(Arrays.asList(emailAddr)));
                         message.setMessageSubject(messageSubject);
                         message.setMessageBody(messageBody);
 

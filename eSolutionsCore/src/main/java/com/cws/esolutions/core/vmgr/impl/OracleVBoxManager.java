@@ -113,7 +113,7 @@ public class OracleVBoxManager implements VirtualServiceManager
                 DEBUGGER.debug("IVirtualBox: {}", virtualBox);
             }
 
-            Map<String, String> machines = new HashMap<String, String>();
+            Map<String, String> machines = new HashMap<>();
 
             for (IMachine machine: virtualBox.getMachines())
             {

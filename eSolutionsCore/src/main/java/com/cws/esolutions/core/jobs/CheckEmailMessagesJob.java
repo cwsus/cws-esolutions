@@ -69,6 +69,7 @@ public class CheckEmailMessagesJob implements Job
         }
     }
 
+    @Override
     public void execute(final JobExecutionContext jec) throws JobExecutionException
     {
         final String methodName = CheckEmailMessagesJob.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
@@ -112,7 +113,7 @@ public class CheckEmailMessagesJob implements Job
             String pass = (String) props.get("userPass");
 
             messageList = EmailUtils.readEmailMessages(props, true,
-                    new ArrayList<String>(
+                    new ArrayList<>(
                             Arrays.asList(
                                     name,
                                     PasswordUtils.decryptText(pass, pass.length()))));

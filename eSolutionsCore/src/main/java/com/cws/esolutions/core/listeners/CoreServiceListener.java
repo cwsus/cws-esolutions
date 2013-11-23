@@ -76,7 +76,7 @@ public class CoreServiceListener implements ServletContextListener
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         ConfigurationData configData = null;
-        Map<String, DataSource> dsMap = new HashMap<String, DataSource>();
+        Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = contextEvent.getServletContext();
         final ClassLoader classLoader = CoreServiceListener.class.getClassLoader();
@@ -101,15 +101,15 @@ public class CoreServiceListener implements ServletContextListener
                     DOMConfigurator.configure(Loader.getResource(sContext.getInitParameter(CoreServiceListener.INIT_SYSLOGGING_FILE)));
                 }
 
-                if (sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE) == null)
+                if (sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE) != null)
+                {
+                    xmlURL = classLoader.getResource(sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE));
+                }
+                else
                 {
                     ERROR_RECORDER.error("System configuration not found. Shutting down !");
 
                     throw new CoreServiceException("System configuration file location not provided by application. Cannot continue.");
-                }
-                else
-                {
-                    xmlURL = classLoader.getResource(sContext.getInitParameter(CoreServiceListener.INIT_SYSAPP_FILE));
                 }
 
                 if (DEBUG)

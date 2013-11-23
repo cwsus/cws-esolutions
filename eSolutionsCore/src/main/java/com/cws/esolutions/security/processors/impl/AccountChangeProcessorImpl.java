@@ -121,7 +121,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 svcBean.getConfigData().getSecurityConfig().getIterations()),
                         request.getApplicationName());
 
-                Map<String, Object> requestMap = new HashMap<String, Object>();
+                Map<String, Object> requestMap = new HashMap<>();
                 requestMap.put(authData.getEmailAddr(), userAccount.getEmailAddr());
 
                 if (DEBUG)
@@ -261,7 +261,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 svcBean.getConfigData().getSecurityConfig().getIterations()),
                         request.getApplicationName());
 
-                Map<String, Object> requestMap = new HashMap<String, Object>();
+                Map<String, Object> requestMap = new HashMap<>();
                 requestMap.put(authData.getTelephoneNumber(), userAccount.getTelephoneNumber());
                 requestMap.put(authData.getPagerNumber(), userAccount.getPagerNumber());
 
@@ -656,7 +656,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the backout
                             List<String> currentSec = authenticator.obtainSecurityData(userAccount.getUsername(), userAccount.getGuid());
 
-                            Map<String, Object> backout = new HashMap<String, Object>();
+                            Map<String, Object> backout = new HashMap<>();
                             backout.put(authData.getSecQuestionOne(), currentSec.get(0));
                             backout.put(authData.getSecQuestionTwo(), currentSec.get(1));
                             backout.put(authData.getSecAnswerOne(), currentSec.get(2));
@@ -664,7 +664,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                             // good, move forward
                             // make the modification in the user repository
-                            Map<String, Object> changeMap = new HashMap<String, Object>();
+                            Map<String, Object> changeMap = new HashMap<>();
                             changeMap.put(authData.getSecQuestionOne(), reqSecurity.getSecQuestionOne());
                             changeMap.put(authData.getSecQuestionTwo(), reqSecurity.getSecQuestionTwo());
                             changeMap.put(authData.getSecAnswerOne(), PasswordUtils.encryptText(reqSecurity.getSecAnswerOne(), newUserSalt,

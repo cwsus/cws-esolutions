@@ -116,7 +116,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 if ((validator == null) || (validator.size() == 0))
                 {
-                    List<String> insertData = new ArrayList<String>(
+                    List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     (StringUtils.isNotEmpty(project.getProjectGuid())) ? project.getProjectGuid() : UUID.randomUUID().toString(),
                                     project.getProjectCode(),
@@ -249,7 +249,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
             if (isServiceAuthorized)
             {
-                List<String> insertData = new ArrayList<String>(
+                List<String> insertData = new ArrayList<>(
                         Arrays.asList(
                                 project.getProjectGuid(),
                                 project.getProjectCode(),
@@ -390,7 +390,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 if ((projectData != null) && (projectData.size() != 0))
                 {
-                    List<Project> projectList = new ArrayList<Project>();
+                    List<Project> projectList = new ArrayList<>();
 
                     for (String[] data : projectData)
                     {
@@ -527,7 +527,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 if ((projectData != null) && (projectData.size() != 0))
                 {
-                    List<Project> projectList = new ArrayList<Project>();
+                    List<Project> projectList = new ArrayList<>();
 
                     for (String[] data : projectData)
                     {
@@ -684,7 +684,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                         if ((appList != null) && (appList.size() != 0))
                         {
-                            List<Application> applicationList = new ArrayList<Application>();
+                            List<Application> applicationList = new ArrayList<>();
 
                             // we're only loading the application, not the platform
                             // we'll link to the application info page, which will draw

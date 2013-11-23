@@ -114,7 +114,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 if ((validator == null) || (validator.size() == 0))
                 {
                     // valid server
-                    List<String> insertData = new ArrayList<String>(
+                    List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
                                     dataCenter.getDatacenterName(),
@@ -247,7 +247,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                     throw new DatacenterManagementException("No datacenter was provided. Cannot continue.");
                 }
 
-                List<String> insertData = new ArrayList<String>(
+                List<String> insertData = new ArrayList<>(
                     Arrays.asList(
                         dataCenter.getDatacenterGuid(),
                         dataCenter.getDatacenterName(),
@@ -377,7 +377,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                 if ((serverData != null) && (serverData.size() != 0))
                 {
-                    List<DataCenter> datacenterList = new ArrayList<DataCenter>();
+                    List<DataCenter> datacenterList = new ArrayList<>();
 
                     for (String[] data : serverData)
                     {

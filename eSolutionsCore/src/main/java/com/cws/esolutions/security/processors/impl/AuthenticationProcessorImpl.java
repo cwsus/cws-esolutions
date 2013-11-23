@@ -682,7 +682,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (StringUtils.isNotEmpty(userSalt))
             {
-                final List<String> requestList = new ArrayList<String>(
+                final List<String> requestList = new ArrayList<>(
                         Arrays.asList(
                                 userAccount.getGuid(),
                                 userAccount.getUsername(),
@@ -709,7 +709,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         try
                         {
-                            Map<String, Object> changeRequest = new HashMap<String, Object>();
+                            Map<String, Object> changeRequest = new HashMap<>();
                             changeRequest.put(authData.getOlrLocked(), "true");
 
                             if (DEBUG)

@@ -728,6 +728,7 @@ public final class AuthData implements Serializable
         return this.telephoneNumber;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = AuthData.CNAME + "#toString()";

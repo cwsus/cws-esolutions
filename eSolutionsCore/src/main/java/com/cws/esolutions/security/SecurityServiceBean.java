@@ -121,6 +121,7 @@ public class SecurityServiceBean implements Serializable
         return this.resourceBean;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = SecurityServiceBean.CNAME + "#toString()";

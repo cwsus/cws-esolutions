@@ -194,7 +194,7 @@ public class LDAPAuthenticator implements Authenticator
                             }
                         }
 
-                        userAccount = new ArrayList<Object>();
+                        userAccount = new ArrayList<>();
                         userAccount.add(entry.getAttributeValue(authData.getCommonName()));
                         userAccount.add(entry.getAttributeValue(authData.getUserId()));
                         userAccount.add(entry.getAttributeValue(authData.getGivenName()));
@@ -326,7 +326,7 @@ public class LDAPAuthenticator implements Authenticator
                             DEBUGGER.debug("SearchResultEntry: {}", entry);
                         }
 
-                        List<Modification> modifyList = new ArrayList<Modification>(
+                        List<Modification> modifyList = new ArrayList<>(
                                 Arrays.asList(
                                         new Modification(ModificationType.REPLACE, authData.getLockCount(), String.valueOf(currentCount + 1))));
 
@@ -450,7 +450,7 @@ public class LDAPAuthenticator implements Authenticator
 
                             // ensure the user exists in the requested application
                             // i think we shouldnt necessarily require it but whatever
-                            userSecurity = new ArrayList<String>();
+                            userSecurity = new ArrayList<>();
                             userSecurity.add(entry.getAttributeValue(authData.getSecQuestionOne()));
                             userSecurity.add(entry.getAttributeValue(authData.getSecQuestionTwo()));
                             userSecurity.add(entry.getAttributeValue(authData.getSecAnswerOne()));

@@ -150,7 +150,7 @@ public class ResourceController
                                 DEBUGGER.debug("LDAPConnection: {}", ldapConn);
                             }
 
-                            if ((ldapConn != null) && (ldapConn.isConnected()))
+                            if (ldapConn.isConnected())
                             {
                                 LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
 
@@ -206,7 +206,7 @@ public class ResourceController
                         Context initContext = new InitialContext();
                         Context envContext = (Context) initContext.lookup(ResourceController.DS_CONTEXT);
 
-                        resBean.setAuthDataSource((DataSource) envContext.lookup(authRepo.getRepositoryHost()));
+                        resBean.setAuthDataSource(envContext.lookup(authRepo.getRepositoryHost()));
                     }
                     catch (NamingException nx)
                     {
@@ -327,7 +327,7 @@ public class ResourceController
 
         if (dsMap == null)
         {
-            dsMap = new HashMap<String, DataSource>();
+            dsMap = new HashMap<>();
         }
 
         if (!(dsMap.containsKey(dsManager.getDsName())))

@@ -79,7 +79,7 @@ public class SearchProcessorImpl implements ISearchProcessor
 
             if ((articleList != null) && (articleList.size() != 0))
             {
-                List<SearchResult> responseList = new ArrayList<SearchResult>();
+                List<SearchResult> responseList = new ArrayList<>();
 
                 for (String[] data : articleList)
                 {
@@ -168,7 +168,7 @@ public class SearchProcessorImpl implements ISearchProcessor
 
             if ((messageList != null) && (messageList.size() != 0))
             {
-                List<SearchResult> responseList = new ArrayList<SearchResult>();
+                List<SearchResult> responseList = new ArrayList<>();
 
                 for (String[] data : messageList)
                 {
@@ -257,7 +257,7 @@ public class SearchProcessorImpl implements ISearchProcessor
 
             if ((serverList != null) && (serverList.size() != 0))
             {
-                List<SearchResult> responseList = new ArrayList<SearchResult>();
+                List<SearchResult> responseList = new ArrayList<>();
 
                 for (Object[] data : serverList)
                 {
@@ -346,7 +346,7 @@ public class SearchProcessorImpl implements ISearchProcessor
 
             if ((applicationList != null) && (applicationList.size() != 0))
             {
-                List<SearchResult> responseList = new ArrayList<SearchResult>();
+                List<SearchResult> responseList = new ArrayList<>();
 
                 for (String[] data : applicationList)
                 {
@@ -435,7 +435,7 @@ public class SearchProcessorImpl implements ISearchProcessor
 
             if ((projectList != null) && (projectList.size() != 0))
             {
-                List<SearchResult> responseList = new ArrayList<SearchResult>();
+                List<SearchResult> responseList = new ArrayList<>();
 
                 for (String[] data : projectList)
                 {

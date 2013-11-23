@@ -175,7 +175,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     String newPassword = PasswordUtils.encryptText(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()), newUserSalt,
                             secConfig.getAuthAlgorithm(), secConfig.getIterations());
 
-                    List<String> accountData = new ArrayList<String>(
+                    List<String> accountData = new ArrayList<>(
                         Arrays.asList(
                                 userAccount.getUsername(),
                                 newPassword,
@@ -1160,7 +1160,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     }
                     else
                     {
-                        List<UserAccount> userAccounts = new ArrayList<UserAccount>();
+                        List<UserAccount> userAccounts = new ArrayList<>();
 
                         for (String[] userData : userList)
                         {
@@ -1188,7 +1188,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             DEBUGGER.debug("userAccounts: {}", userAccounts);
                         }
 
-                        if ((userAccounts == null) || (userAccounts.size() == 0))
+                        if (userAccounts.size() == 0)
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
                             response.setResponse("No accounts were found with the provided data");

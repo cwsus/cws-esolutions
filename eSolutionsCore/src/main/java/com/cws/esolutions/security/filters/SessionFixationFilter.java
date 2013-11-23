@@ -146,7 +146,7 @@ public class SessionFixationFilter implements Filter
                     DEBUGGER.debug("sessionValue: {}", sessionValue);
                 }
 
-                currentSession = new HashMap<String, Object>();
+                currentSession = new HashMap<>();
                 currentSession.put(sessionElement, sessionValue);
 
                 if (DEBUG)
@@ -165,29 +165,32 @@ public class SessionFixationFilter implements Filter
                 DEBUGGER.debug("HttpSession.getId(): {}", nSession.getId());
             }
 
-            for (String key : currentSession.keySet())
+            if (currentSession != null)
             {
-                if (DEBUG)
+                for (String key : currentSession.keySet())
                 {
-                    DEBUGGER.debug("Key: {}", key);
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Key: {}", key);
+                    }
+
+                    nSession.setAttribute(key, currentSession.get(key));
                 }
 
-                nSession.setAttribute(key, currentSession.get(key));
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("HttpSession: {}", nSession);
-
-                DEBUGGER.debug("Dumping session content:");
-                Enumeration<String> sessionEnumeration = nSession.getAttributeNames();
-
-                while (sessionEnumeration.hasMoreElements())
+                if (DEBUG)
                 {
-                    String newSesionElement = sessionEnumeration.nextElement();
-                    Object newSessionValue = nSession.getAttribute(newSesionElement);
+                    DEBUGGER.debug("HttpSession: {}", nSession);
 
-                    DEBUGGER.debug("Attribute: " + newSesionElement + "; Value: " + newSessionValue);
+                    DEBUGGER.debug("Dumping session content:");
+                    Enumeration<String> sessionEnumeration = nSession.getAttributeNames();
+
+                    while (sessionEnumeration.hasMoreElements())
+                    {
+                        String newSesionElement = sessionEnumeration.nextElement();
+                        Object newSessionValue = nSession.getAttribute(newSesionElement);
+    
+                        DEBUGGER.debug("Attribute: " + newSesionElement + "; Value: " + newSessionValue);
+                    }
                 }
             }
         }

@@ -93,7 +93,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                List<Object> messageList = new ArrayList<Object>(
+                List<Object> messageList = new ArrayList<>(
                         Arrays.asList(
                                 RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength()),
                                 message.getMessageTitle(),
@@ -218,7 +218,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
-                List<Object> messageList = new ArrayList<Object>(
+                List<Object> messageList = new ArrayList<>(
                         Arrays.asList(
                                 message.getMessageTitle(),
                                 message.getMessageText(),
@@ -349,7 +349,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
             else
             {
-                List<ServiceMessage> svcMessages = new ArrayList<ServiceMessage>();
+                List<ServiceMessage> svcMessages = new ArrayList<>();
                 SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
 
                 if (DEBUG)
@@ -475,44 +475,36 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
             else
             {
-                if ((responseList != null) && (responseList.size() != 0))
+                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                if (DEBUG)
                 {
-                    SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                    }
-
-                    ServiceMessage message = new ServiceMessage();
-                    message.setMessageId((String) responseList.get(0)); // svc_message_id
-                    message.setMessageTitle((String) responseList.get(1)); // svc_message_title
-                    message.setMessageText((String) responseList.get(2)); // svc_message_txt
-                    message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
-                    message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
-                    message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
-                    message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
-                    message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
-                    message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceMessage: {}", message);
-                    }
-
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully retrieved message");
-                    response.setServiceMessage(message);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("MessageResponse: {}", response);
-                    }
+                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
                 }
-                else
+
+                ServiceMessage message = new ServiceMessage();
+                message.setMessageId((String) responseList.get(0)); // svc_message_id
+                message.setMessageTitle((String) responseList.get(1)); // svc_message_title
+                message.setMessageText((String) responseList.get(2)); // svc_message_txt
+                message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
+                message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
+                message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
+                message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
+                message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
+                message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
+
+                if (DEBUG)
                 {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("No messages were located.");
+                    DEBUGGER.debug("ServiceMessage: {}", message);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setResponse("Successfully retrieved message");
+                response.setServiceMessage(message);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("MessageResponse: {}", response);
                 }
             }
 

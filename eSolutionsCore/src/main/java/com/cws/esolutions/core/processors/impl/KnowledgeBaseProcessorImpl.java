@@ -91,7 +91,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                List<String> insertList = new ArrayList<String>(
+                List<String> insertList = new ArrayList<>(
                         Arrays.asList(
                                 article.getArticleId(),
                                 userAccount.getUsername(),
@@ -227,7 +227,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 // user authorized, figure out what to do here
-                List<String> dataList = new ArrayList<String>(
+                List<String> dataList = new ArrayList<>(
                         Arrays.asList(
                                 article.getArticleId(),
                                 article.getKeywords(),
@@ -591,7 +591,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 if ((responseList != null) && (!(responseList.isEmpty())))
                 {
                     // build it here
-                    List<Article> articleList = new ArrayList<Article>();
+                    List<Article> articleList = new ArrayList<>();
                     SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
 
                     if (DEBUG)

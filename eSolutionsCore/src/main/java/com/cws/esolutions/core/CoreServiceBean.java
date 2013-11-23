@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
@@ -220,6 +219,7 @@ public class CoreServiceBean
         return this.hostName;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = CoreServiceBean.CNAME + "#toString()";
