@@ -30,26 +30,8 @@
 
 <div id="nav">
     <ul>
-        <c:if test="${empty fn:trim(sessionScope.userAccount)}">
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
-                    <spring:message code='theme.navbar.login' /></a>
-            </li>
-        </c:if>
         <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
             <c:if test="${sessionScope.userAccount.status == 'SUCCESS'}">
-	            <li>
-	                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-	                    <spring:message code='theme.navbar.home' /></a>
-	            </li>
-	            <li>
-	                <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
-	                    <spring:message code='theme.navbar.logoff' /></a>
-	            </li>
-	            <li>
-	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-	                    <spring:message code='theme.navbar.help' /></a>
-	            </li>
 	            <c:if test="${sessionScope.userAccount.role ne 'USERADMIN'}">
 	                <li>
 	                    <a href="${pageContext.request.contextPath}/ui/application-management/default" title="<spring:message code='theme.navbar.application-mgmt' />">
@@ -78,10 +60,6 @@
 	                        <spring:message code='theme.navbar.useradmin' /></a>
 	                </li>
 	            </c:if>
-	            <li>
-	                <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-	                    <spring:message code="theme.navbar.myaccount" /></a>
-	            </li>
 	        </c:if>
         </c:if>
     </ul>

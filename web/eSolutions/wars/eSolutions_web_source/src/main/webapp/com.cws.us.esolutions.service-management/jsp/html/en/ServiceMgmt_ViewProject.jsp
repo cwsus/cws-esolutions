@@ -98,6 +98,10 @@
     <div id="content-left">
         <ul>
             <li>
+                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                    <spring:message code='theme.navbar.home' /></a>
+            </li>
+            <li>
                 <a href="${pageContext.request.contextPath}/ui/service-management/modify-service/project/${project.projectGuid}"
                     title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a>
             </li>

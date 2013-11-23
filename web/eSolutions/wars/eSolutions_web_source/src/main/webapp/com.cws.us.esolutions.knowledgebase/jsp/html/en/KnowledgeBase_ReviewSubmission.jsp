@@ -156,6 +156,10 @@
 
     <div id="content-left">
         <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                    <spring:message code='theme.navbar.home' /></a>
+            </li>
             <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"

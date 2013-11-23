@@ -36,4 +36,13 @@
         <br />
         <spring:message code="theme.system.service.unavailable" />
     </div>
+
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                    <spring:message code='theme.navbar.home' /></a>
+            </li>
+        </ul>
+    </div>
 </div>
