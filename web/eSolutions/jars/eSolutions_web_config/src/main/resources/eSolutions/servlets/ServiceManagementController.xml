@@ -14,7 +14,6 @@
         <property name="messagePlatformNameRequired" value="svc.mgmt.platform.name.required" />
         <property name="messagePlatformAppServersRequired" value="svc.mgmt.platform.appservers.required" />
         <property name="messagePlatformWebServersRequired" value="svc.mgmt.platform.webservers.required" />
-        <property name="messageDeploymentManagerRequired" value="svc.mgmt.platform.dmgr.required" />
     </bean>
 
     <bean id="datactrValidator" class="com.cws.us.esolutions.validators.DatacenterValidator">
