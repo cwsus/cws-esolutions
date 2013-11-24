@@ -101,7 +101,7 @@ public class ServiceMessagingProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana21*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("esolutions");
@@ -172,6 +172,7 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
+            msx.printStackTrace();
             Assert.fail(msx.getMessage());
         }
     }

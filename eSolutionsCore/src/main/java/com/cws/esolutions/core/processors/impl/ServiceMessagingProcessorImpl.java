@@ -93,9 +93,16 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             if (isServiceAuthorized)
             {
+                String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("messageId: {}", messageId);
+                }
+
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
-                                RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength()),
+                                messageId,
                                 message.getMessageTitle(),
                                 message.getMessageText(),
                                 userAccount.getUsername(),
@@ -120,7 +127,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setMessageId(message.getMessageId());
+                    response.setMessageId(messageId);
                     response.setResponse("Successfully inserted contact message into datastore.");
                 }
             }
