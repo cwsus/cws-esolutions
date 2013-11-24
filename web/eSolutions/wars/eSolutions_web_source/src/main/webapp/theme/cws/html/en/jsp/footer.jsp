@@ -43,13 +43,17 @@
                     <spring:message code='theme.navbar.login' /></a> | 
             </c:otherwise>
         </c:choose>
-        <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-            <spring:message code='theme.navbar.home' /></a> |
+        <c:if test="${not fn:endsWith(pageContext.request.requestURI, '/login')
+            or not fn:endsWith(pageContext.request.requestURI, '/logout')
+            or not fn:endsWith(pageContext.request.requestURI, '/common/default')}">
+            <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
+                <spring:message code='theme.navbar.home' /></a> |
+        </c:if>
         <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
             <spring:message code='theme.navbar.help' /></a> |
         <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
             title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a><br />
-        &copy; <spring:message code="theme.footer.copyright" /><br />
+        &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
         <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
             title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a><br />
     </p>

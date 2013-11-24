@@ -207,7 +207,8 @@
 	                            </form:select>
 	                        </c:when>
 	                        <c:otherwise>
-	                            <td><form:input path="owningDmgr" /></td>
+	                            <a href="${pageContext.request.contextPath}/ui/systems/add-server"
+                                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
 	                        </c:otherwise>
 	                    </c:choose>
 	                </td>

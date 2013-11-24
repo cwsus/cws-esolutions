@@ -699,6 +699,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
                         while (resultSet.next())
                         {
+							System.out.println(resultSet.getString(1));
                             Object[] serverData = new Object[]
                             {
                                     resultSet.getString(1), // SYSTEM_GUID
