@@ -167,6 +167,10 @@
                         title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
                 </li>
             </c:if>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
+                    title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a>
+            </li>
         </ul>
     </div>
 </div>

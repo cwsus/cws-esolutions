@@ -75,6 +75,10 @@
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/edit-article/${article.articleId}" title="<spring:message code="kbase.edit.article" />"><spring:message code="kbase.edit.article" />&nbsp; ${article.articleId}</a>
             <li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
+                    title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a>
+            </li>
         </ul>
     </div>
 </div>

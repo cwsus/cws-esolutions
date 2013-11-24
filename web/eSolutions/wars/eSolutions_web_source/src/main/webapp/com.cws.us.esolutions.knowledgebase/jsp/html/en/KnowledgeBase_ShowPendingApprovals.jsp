@@ -66,6 +66,10 @@
 		        <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
 		            title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
 		    </li>
+		    <li>
+                <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
+                    title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a>
+            </li>
         </ul>
     </div>
 </div>
