@@ -43,8 +43,7 @@
                     <spring:message code='theme.navbar.login' /></a> | 
             </c:otherwise>
         </c:choose>
-        <c:if test="${not fn:contains(pageContext.request.requestURI, '/login')
-            or not fn:endsWith(pageContext.request.requestURI, '/logout')
+        <c:if test="${not fn:contains(pageContext.request.requestURI, 'login')
             or not fn:endsWith(pageContext.request.requestURI, '/common/default')}">
             <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
                 <spring:message code='theme.navbar.home' /></a> |
