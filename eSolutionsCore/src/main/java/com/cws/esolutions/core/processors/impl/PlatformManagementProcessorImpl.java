@@ -504,9 +504,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                 server.setServerComments((String) serverData.get(24)); // COMMENTS
                                 server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                 if (DEBUG)
                                 {
@@ -569,9 +569,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {
@@ -642,9 +642,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {
@@ -833,9 +833,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                 server.setServerComments((String) serverData.get(24)); // COMMENTS
                                 server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                 if (DEBUG)
                                 {
@@ -898,9 +898,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {
@@ -971,9 +971,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {
@@ -1158,9 +1158,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                 server.setServerComments((String) serverData.get(24)); // COMMENTS
                                 server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                 if (DEBUG)
                                 {
@@ -1223,9 +1223,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {
@@ -1296,9 +1296,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                     server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                     server.setServerComments((String) serverData.get(24)); // COMMENTS
                                     server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                                    server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                                    server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                                    server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                                     if (DEBUG)
                                     {

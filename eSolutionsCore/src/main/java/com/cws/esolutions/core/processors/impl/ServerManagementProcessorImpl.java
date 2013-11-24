@@ -594,9 +594,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         server.setNatAddress((String) data[23]); // NAT_ADDR
                         server.setServerComments((String) data[24]); // COMMENTS
                         server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
-                        server.setDmgrPort((Integer) data[28]); // DMGR_PORT
-                        server.setOwningDmgr((String) data[29]); // OWNING_DMGR
-                        server.setMgrUrl((String) data[30]); // MGR_ENTRY
+                        server.setDmgrPort((Integer) data[26]); // DMGR_PORT
+                        server.setOwningDmgr((String) data[27]); // OWNING_DMGR
+                        server.setMgrUrl((String) data[28]); // MGR_ENTRY
 
                         if (DEBUG)
                         {
@@ -757,9 +757,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             server.setNatAddress((String) data[23]); // NAT_ADDR
                             server.setServerComments((String) data[24]); // COMMENTS
                             server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
-                            server.setDmgrPort((Integer) data[28]); // DMGR_PORT
-                            server.setOwningDmgr((String) data[29]); // OWNING_DMGR
-                            server.setMgrUrl((String) data[30]); // MGR_ENTRY
+                            server.setDmgrPort((Integer) data[26]); // DMGR_PORT
+                            server.setOwningDmgr((String) data[27]); // OWNING_DMGR
+                            server.setMgrUrl((String) data[28]); // MGR_ENTRY
 
                             if (DEBUG)
                             {
@@ -907,9 +907,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                         server.setServerComments((String) serverData.get(24)); // COMMENTS
                         server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
-                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                        server.setOwningDmgr((String) serverData.get(29)); // OWNING_DMGR
-                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+                        server.setDmgrPort((Integer) serverData.get(26)); // DMGR_PORT
+                        server.setOwningDmgr((String) serverData.get(27)); // OWNING_DMGR
+                        server.setMgrUrl((String) serverData.get(28)); // MGR_ENTRY
 
                         if (DEBUG)
                         {
