@@ -229,10 +229,18 @@ public class PlatformValidator implements Validator
 
         try
         {
+            Server dmgrServer = new Server();
+            dmgrServer.setServerGuid(platform.getPlatformDmgr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Server: {}", dmgrServer);
+            }
+
             ServerManagementRequest dmgrRequest = new ServerManagementRequest();
             dmgrRequest.setRequestInfo(hostInfo);
             dmgrRequest.setServiceId(this.serviceId);
-            dmgrRequest.setTargetServer(platform.getPlatformDmgr());
+            dmgrRequest.setTargetServer(dmgrServer);
             dmgrRequest.setUserAccount(userAccount);
             dmgrRequest.setApplicationId(appConfig.getApplicationId());
             dmgrRequest.setApplicationName(appConfig.getApplicationName());
@@ -254,17 +262,25 @@ public class PlatformValidator implements Validator
                 errors.reject(this.messageDeploymentManagerRequired);
             }
 
-            for (Server appServer : platform.getAppServers())
+            for (String appServer : platform.getAppServers())
             {
                 if (DEBUG)
                 {
                     DEBUGGER.debug("Server: {}", appServer);
                 }
 
+                Server server = new Server();
+                server.setServerGuid(appServer);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
                 ServerManagementRequest serverReq = new ServerManagementRequest();
                 serverReq.setRequestInfo(hostInfo);
                 serverReq.setServiceId(this.serviceId);
-                serverReq.setTargetServer(appServer);
+                serverReq.setTargetServer(server);
                 serverReq.setUserAccount(userAccount);
                 serverReq.setApplicationId(appConfig.getApplicationId());
                 serverReq.setApplicationName(appConfig.getApplicationName());
@@ -287,17 +303,25 @@ public class PlatformValidator implements Validator
                 }
             }
 
-            for (Server webServer : platform.getWebServers())
+            for (String webServer : platform.getWebServers())
             {
                 if (DEBUG)
                 {
                     DEBUGGER.debug("Server: {}", webServer);
                 }
 
+                Server server = new Server();
+                server.setServerGuid(webServer);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", server);
+                }
+
                 ServerManagementRequest serverReq = new ServerManagementRequest();
                 serverReq.setRequestInfo(hostInfo);
                 serverReq.setServiceId(this.serviceId);
-                serverReq.setTargetServer(webServer);
+                serverReq.setTargetServer(server);
                 serverReq.setUserAccount(userAccount);
                 serverReq.setApplicationId(appConfig.getApplicationId());
                 serverReq.setApplicationName(appConfig.getApplicationName());

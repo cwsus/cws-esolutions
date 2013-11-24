@@ -107,6 +107,7 @@ public enum AuditType
     TELNET,
     REMOTEDATE,
     NETSTAT,
+    PROCESSLIST,
     STOP,
     START,
     RESTART,

@@ -998,11 +998,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         ServerManagementResponse response = new ServerManagementResponse();
 
+        final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("Server: {}", sourceServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -1019,14 +1021,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 DEBUGGER.debug("SystemManagerRequest: {}", request);
             }
 
-            Server sourceServer = request.getSourceServer();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Server: {}", sourceServer);
-            }
-
             AgentRequest agentRequest = new AgentRequest();
+            agentRequest.setHostname(sourceServer.getOperHostName());
             agentRequest.setAppName(appConfig.getAppName());
             agentRequest.setRequestPayload(systemReq);
 
@@ -1133,14 +1129,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer();
-        final Server targetServer = request.getTargetServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
             DEBUGGER.debug("Server: {}", sourceServer);
-            DEBUGGER.debug("Server: {}", targetServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -1156,94 +1150,72 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if (isServiceAuthorized)
             {
-                if (sourceServer != null)
+                SystemManagerRequest systemReq = new SystemManagerRequest();
+                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                systemReq.setRequestType(SystemCheckType.TELNET);
+                systemReq.setPortNumber(request.getPortNumber());
+                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
+
+                if (DEBUG)
                 {
-                    List<Object> serverData = serverDAO.getInstalledServer(sourceServer.getServerGuid());
+                    DEBUGGER.debug("SystemManagerRequest: {}", request);
+                }
+
+                AgentRequest agentRequest = new AgentRequest();
+                agentRequest.setHostname(sourceServer.getOperHostName());
+                agentRequest.setAppName(appConfig.getAppName());
+                agentRequest.setRequestPayload(systemReq);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                }
+
+                // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                String correlator = MQUtils.sendMqMessage(agentRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
+
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("serverData: {}", serverData);
+                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
                     }
 
-                    if ((serverData != null) && (serverData.size() != 0))
+                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
                     {
-                        SystemManagerRequest systemReq = new SystemManagerRequest();
-                        systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
-                        systemReq.setRequestType(SystemCheckType.TELNET);
-                        systemReq.setPortNumber(request.getPortNumber());
-                        systemReq.setTargetServer(request.getTargetServer().getOperHostName());
+                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SystemManagerRequest: {}", request);
+                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
                         }
 
-                        AgentRequest agentRequest = new AgentRequest();
-                        agentRequest.setAppName(appConfig.getAppName());
-                        agentRequest.setRequestPayload(systemReq);
-                        agentRequest.setHostname(sourceServer.getOperHostName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                        }
-
-                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("correlator: {}", correlator);
-                        }
-
-                        if (StringUtils.isNotEmpty(correlator))
-                        {
-                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                            }
-
-                            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                            {
-                                SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
-                                }
-
-                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                response.setResponse(systemRes.getResponse());
-                                response.setResponseObject(systemRes.getResponseData());
-                            }
-                            else
-                            {
-                                response.setResponse(agentResponse.getResponse());
-                                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                            }
-                        }
-                        else
-                        {
-                            response.setResponse("Failed to send message to configured request queue for action");
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        }
+                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                        response.setResponse(systemRes.getResponse());
+                        response.setResponseObject(systemRes.getResponseData());
                     }
                     else
                     {
-                        response.setResponse("Failed to locate a source server with the given information.");
+                        response.setResponse(agentResponse.getResponse());
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    throw new ServerManagementException("No source server was provided. Cannot continue.");
+                    response.setResponse("Failed to send message to configured request queue for action");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("The requesting user was not authorized to perform the operation. Cannot continue.");
+                response.setResponse("Requesting user was not authorized to perform the operation.");
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
@@ -1258,12 +1230,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
             throw new ServerManagementException(ucsx.getMessage(), ucsx);
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new ServerManagementException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -1314,75 +1280,95 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         ServerManagementResponse response = new ServerManagementResponse();
 
+        final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("Server: {}", sourceServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
         {
-            SystemManagerRequest systemReq = new SystemManagerRequest();
-            systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
-            systemReq.setRequestType(SystemCheckType.REMOTEDATE);
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("SystemManagerRequest: {}", request);
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
             }
 
-            AgentRequest agentRequest = new AgentRequest();
-            agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
-
-            if (DEBUG)
+            if (isServiceAuthorized)
             {
-                DEBUGGER.debug("AgentRequest: {}", agentRequest);
-            }
-
-            // always make the tcp conn to the oper hostname - thats where the agent should be listening
-            String correlator = MQUtils.sendMqMessage(agentRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("correlator: {}", correlator);
-            }
-
-            if (StringUtils.isNotEmpty(correlator))
-            {
-                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                SystemManagerRequest systemReq = new SystemManagerRequest();
+                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                systemReq.setRequestType(SystemCheckType.REMOTEDATE);
+                systemReq.setPortNumber(request.getPortNumber());
+                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                    DEBUGGER.debug("SystemManagerRequest: {}", request);
                 }
 
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                AgentRequest agentRequest = new AgentRequest();
+                agentRequest.setAppName(appConfig.getAppName());
+                agentRequest.setRequestPayload(systemReq);
+                agentRequest.setHostname(sourceServer.getOperHostName());
+
+                if (DEBUG)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                }
+
+                // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                String correlator = MQUtils.sendMqMessage(agentRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
+
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
                     }
 
-                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse(systemRes.getResponse());
-                    response.setResponseObject(systemRes.getResponseData());
+                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                    {
+                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        }
+
+                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                        response.setResponse(systemRes.getResponse());
+                        response.setResponseObject(systemRes.getResponseData());
+                    }
+                    else
+                    {
+                        response.setResponse(agentResponse.getResponse());
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    }
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
+                    response.setResponse("Failed to send message to configured request queue for action");
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("Requesting user was not authorized to perform the operation.");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)
@@ -1390,6 +1376,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
             throw new ServerManagementException(ux.getMessage(), ux);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ServerManagementException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -1402,7 +1394,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
-
 
                 if (DEBUG)
                 {
@@ -1441,83 +1432,94 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         ServerManagementResponse response = new ServerManagementResponse();
 
+        final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("Server: {}", sourceServer);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
         {
-            SystemManagerRequest systemReq = new SystemManagerRequest();
-            systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
-            systemReq.setRequestType(SystemCheckType.PROCESSLIST);
-            systemReq.setProcessName(request.getProcessName());
+            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("SystemManagerRequest: {}", request);
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
             }
 
-            Server sourceServer = request.getSourceServer();
-
-            if (DEBUG)
+            if (isServiceAuthorized)
             {
-                DEBUGGER.debug("Server: {}", sourceServer);
-            }
-
-            AgentRequest agentRequest = new AgentRequest();
-            agentRequest.setAppName(appConfig.getAppName());
-            agentRequest.setRequestPayload(systemReq);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("AgentRequest: {}", agentRequest);
-            }
-
-            // always make the tcp conn to the oper hostname - thats where the agent should be listening
-            String correlator = MQUtils.sendMqMessage(agentRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("correlator: {}", correlator);
-            }
-
-            if (StringUtils.isNotEmpty(correlator))
-            {
-                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                SystemManagerRequest systemReq = new SystemManagerRequest();
+                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                systemReq.setRequestType(SystemCheckType.PROCESSLIST);
+                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                    DEBUGGER.debug("SystemManagerRequest: {}", request);
                 }
 
-                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                AgentRequest agentRequest = new AgentRequest();
+                agentRequest.setAppName(appConfig.getAppName());
+                agentRequest.setRequestPayload(systemReq);
+                agentRequest.setHostname(sourceServer.getOperHostName());
+
+                if (DEBUG)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                }
+
+                // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                String correlator = MQUtils.sendMqMessage(agentRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
+
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
                     }
 
-                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponse(systemRes.getResponse());
-                    response.setResponseObject(systemRes.getResponseData());
+                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                    {
+                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        }
+
+                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                        response.setResponse(systemRes.getResponse());
+                        response.setResponseObject(systemRes.getResponseData());
+                    }
+                    else
+                    {
+                        response.setResponse(agentResponse.getResponse());
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    }
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
+                    response.setResponse("Failed to send message to configured request queue for action");
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("Requesting user was not authorized to perform the operation.");
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
         catch (UtilityException ux)
@@ -1526,6 +1528,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(ux.getMessage(), ux);
         }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+        }
         finally
         {
             // audit
@@ -1533,7 +1541,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             {
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.NETSTAT);
+                auditEntry.setAuditType(AuditType.PROCESSLIST);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

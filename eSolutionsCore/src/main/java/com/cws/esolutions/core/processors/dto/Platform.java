@@ -46,10 +46,10 @@ public class Platform implements Serializable
     private String description = null;
     private String platformGuid = null;
     private String platformName = null;
-    private Server platformDmgr = null;
+    private String platformDmgr = null;
     private ServiceStatus status = null;
-    private List<Server> appServers = null;
-    private List<Server> webServers = null;
+    private List<String> appServers = null;
+    private List<String> webServers = null;
     private ServiceRegion platformRegion = null;
 
     private static final String CNAME = Platform.class.getName();
@@ -111,9 +111,9 @@ public class Platform implements Serializable
         this.status = value;
     }
 
-    public final void setPlatformDmgr(final Server value)
+    public final void setPlatformDmgr(final String value)
     {
-        final String methodName = Platform.CNAME + "#setPlatformDmgr(final Server value)";
+        final String methodName = Platform.CNAME + "#setPlatformDmgr(final String value)";
 
         if (DEBUG)
         {
@@ -124,9 +124,9 @@ public class Platform implements Serializable
         this.platformDmgr = value;
     }
 
-    public final void setAppServers(final List<Server> value)
+    public final void setAppServers(final List<String> value)
     {
-        final String methodName = Platform.CNAME + "#setAppServers(final List<Server> value)";
+        final String methodName = Platform.CNAME + "#setAppServers(final List<String> value)";
 
         if (DEBUG)
         {
@@ -137,9 +137,9 @@ public class Platform implements Serializable
         this.appServers = value;
     }
 
-    public final void setWebServers(final List<Server> value)
+    public final void setWebServers(final List<String> value)
     {
-        final String methodName = Platform.CNAME + "#setWebServers(final List<Server> value)";
+        final String methodName = Platform.CNAME + "#setWebServers(final List<String> value)";
 
         if (DEBUG)
         {
@@ -215,7 +215,7 @@ public class Platform implements Serializable
         return this.status;
     }
 
-    public final Server getPlatformDmgr()
+    public final String getPlatformDmgr()
     {
         final String methodName = Platform.CNAME + "#getPlatformDmgr()";
 
@@ -228,7 +228,7 @@ public class Platform implements Serializable
         return this.platformDmgr;
     }
 
-    public final List<Server> getAppServers()
+    public final List<String> getAppServers()
     {
         final String methodName = Platform.CNAME + "#getAppServers()";
 
@@ -241,7 +241,7 @@ public class Platform implements Serializable
         return this.appServers;
     }
 
-    public final List<Server> getWebServers()
+    public final List<String> getWebServers()
     {
         final String methodName = Platform.CNAME + "#getWebServers()";
 

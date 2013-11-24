@@ -1438,8 +1438,8 @@ public class ApplicationManagementController
 
                     if (resPlatform != null)
                     {
-                        List<Server> webServerList = resPlatform.getWebServers();
-                        List<Server> appServerList = resPlatform.getAppServers();
+                        List<String> webServerList = resPlatform.getWebServers();
+                        List<String> appServerList = resPlatform.getAppServers();
 
                         if (DEBUG)
                         {

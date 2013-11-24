@@ -2548,7 +2548,7 @@ public class ServiceManagementController
                     }
 
                     Platform platform = new Platform();
-                    platform.setPlatformDmgr(targetDmgr);
+                    platform.setPlatformDmgr(targetDmgr.getServerGuid());
 
                     if (DEBUG)
                     {
@@ -2780,10 +2780,18 @@ public class ServiceManagementController
                     return mView;
                 }
 
+                Server dmgrServer = new Server();
+                dmgrServer.setServerGuid(request.getPlatformDmgr());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Server: {}", dmgrServer);
+                }
+
                 ServerManagementRequest dmgrRequest = new ServerManagementRequest();
                 dmgrRequest.setRequestInfo(reqInfo);
                 dmgrRequest.setServiceId(this.systemMgmt);
-                dmgrRequest.setTargetServer(request.getPlatformDmgr());
+                dmgrRequest.setTargetServer(dmgrServer);
                 dmgrRequest.setUserAccount(userAccount);
                 dmgrRequest.setApplicationId(appConfig.getApplicationId());
                 dmgrRequest.setApplicationName(appConfig.getApplicationName());
