@@ -74,7 +74,7 @@
 	            </tr>
 	            <tr>
 	                <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-	                <td>${command.platformDmgrName}</td>
+	                <td>${command.platformDmgr.operHostName}</td>
 	            </tr>
 	            <tr>
 	                <c:choose>
@@ -83,7 +83,7 @@
                             <td>
                                 <form:select path="appServers" multiple="true">
                                     <c:forEach var="appserver" items="${appServerList}">
-                                        <form:option value="${appserver}" label="${appserver.operHostName}" />
+                                        <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
                                     </c:forEach>
                                 </form:select>
                             </td>
@@ -103,7 +103,7 @@
                             <td>
                                 <form:select path="webServers" multiple="true">
                                     <c:forEach var="webserver" items="${webServerList}">
-                                        <form:option value="${webserver}" label="${webserver.operHostName}" />
+                                        <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
                                     </c:forEach>
                                 </form:select>
                             </td>

@@ -196,27 +196,25 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrUserSalt(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, saltType);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrUserSalt(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, saltType);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-                        saltValue = resultSet.getString(1);
-                    }
+                    resultSet.first();
+                    saltValue = resultSet.getString(1);
                 }
             }
         }
