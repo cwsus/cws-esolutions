@@ -17,20 +17,20 @@ package com.cws.esolutions.core.processors.impl;
 
 import java.util.UUID;
 import org.junit.Test;
+import java.util.List;
 import org.junit.After;
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.ArrayList;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
@@ -105,7 +105,7 @@ public class ApplicationManagementProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana18*");
+                        userSecurity.setPassword("Ariana21*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("esolutions");
@@ -154,40 +154,52 @@ public class ApplicationManagementProcessorImplTest
     public final void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("f85bcf1c-63e4-46ec-8903-0f74bb49de00");
+        project.setProjectGuid("a8bcb1d5-6088-4264-ade9-8cb878eb4f57");
 
-        Platform platform = new Platform();
-        platform.setPlatformGuid("b372bc09-dc19-4a57-a1b6-7fbcfbcbf42a");
+        String[] platforms = { "160bb3a3-d283-4978-942e-f417dc227713", "ae1f7955-d7e1-4b96-a343-db91bdce9664", "0c5bead0-5024-4917-ac3e-456e7ff20bd6" };
 
-        Application app = new Application();
-        app.setApplicationGuid(UUID.randomUUID().toString());
-        app.setApplicationName("eSolutions");
-        app.setApplicationPlatforms(new ArrayList<Platform>(Arrays.asList(platform)));
-        app.setApplicationVersion("1.0");
-        app.setApplicationCluster("eSolutions");
-        app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applogs");
-        app.setApplicationProject(project);
-        app.setApplicationInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
-        app.setPidDirectory("/appvol/ATS70/eSolutions/syslog/");
-        app.setScmPath("scm:git:git@github.com:cws-us/cws-esolutions.git");
-        app.setJvmName("eSolutions");
-        app.setBasePath("/appvol/ATS70/eSolutions");
-
-        ApplicationManagementRequest request = new ApplicationManagementRequest();
-        request.setApplication(app);
-        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-
-        try
+        for (int x = 0; x < 3; x++)
         {
-            ApplicationManagementResponse response = appProcess.addNewApplication(request);
+            List<Platform> platformList = new ArrayList<>();
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ApplicationManagementException amx)
-        {
-            Assert.fail(amx.getMessage());
+            for (String str : platforms)
+            {
+                Platform platform = new Platform();
+                platform.setPlatformGuid(str);
+
+                platformList.add(platform);
+            }
+
+            Application app = new Application();
+            app.setApplicationGuid(UUID.randomUUID().toString());
+            app.setApplicationName("eSolutions");
+            app.setApplicationPlatforms(platformList);
+            app.setApplicationVersion("1.0");
+            app.setApplicationCluster("eSolutions");
+            app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applogs");
+            app.setApplicationProject(project);
+            app.setApplicationInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
+            app.setPidDirectory("/appvol/ATS70/eSolutions/syslog/");
+            app.setScmPath("scm:git:git@github.com:cws-us/cws-esolutions.git");
+            app.setJvmName("eSolutions");
+            app.setBasePath("/appvol/ATS70/eSolutions");
+
+            ApplicationManagementRequest request = new ApplicationManagementRequest();
+            request.setApplication(app);
+            request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+
+            try
+            {
+                ApplicationManagementResponse response = appProcess.addNewApplication(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (ApplicationManagementException amx)
+            {
+                Assert.fail(amx.getMessage());
+            }
         }
     }
 

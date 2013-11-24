@@ -65,7 +65,7 @@ public class DatacenterDataDAOImplTest
     @Test
     public final void testAddNewDatacenter()
     {
-        List<String> data = new ArrayList<String>(
+        List<String> data = new ArrayList<>(
                 Arrays.asList(
                         UUID.randomUUID().toString(),
                         "Test Datacenter",

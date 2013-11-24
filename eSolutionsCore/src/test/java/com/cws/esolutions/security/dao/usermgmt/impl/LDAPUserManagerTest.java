@@ -72,7 +72,7 @@ public class LDAPUserManagerTest
     @Test
     public final void testAddAccountNoGroup()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
             Arrays.asList(
                 "testuser",
                 RandomStringUtils.randomAlphanumeric(64),
@@ -95,7 +95,7 @@ public class LDAPUserManagerTest
 
     public final void testAddAccountWithGroup()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
                 Arrays.asList(
                     "testuser",
                     RandomStringUtils.randomAlphanumeric(64),
@@ -170,7 +170,7 @@ public class LDAPUserManagerTest
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 45);
 
-        Map<String, Object> change = new HashMap<String, Object>();
+        Map<String, Object> change = new HashMap<>();
         change.put("userPassword", "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ==");
         // change.put("cwsexpirydate", cal.getTimeInMillis());
 

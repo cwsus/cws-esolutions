@@ -69,7 +69,7 @@ public class SQLUserManagerTest
     @Test
     public final void testAddAccountNoGroup()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
             Arrays.asList(
                 "testuser",
                 RandomStringUtils.randomAlphanumeric(64),
@@ -92,7 +92,7 @@ public class SQLUserManagerTest
 
     public final void testAddAccountWithGroup()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
                 Arrays.asList(
                     "testuser",
                     RandomStringUtils.randomAlphanumeric(64),

@@ -72,7 +72,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc</datasource>
+            <datasource>jdbc:mysql://data.caspersbox.corp/esolutionssvc</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>

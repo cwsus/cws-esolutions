@@ -160,7 +160,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(strings[x]);
@@ -199,7 +199,7 @@ public class ServerManagementProcessorImplTest
             server.setInstalledMemory(4096);
             server.setMgrUrl("https://dmgr.myserver.org:18003/console");
             server.setDmgrPort(18003);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
             server.setNetworkPartition(NetworkPartition.DMZ);
 
             ServerManagementRequest request = new ServerManagementRequest();
@@ -224,12 +224,15 @@ public class ServerManagementProcessorImplTest
     @Test
     public final void addServerAsDevAppServer()
     {
+        Server dmgrServer = new Server();
+        dmgrServer.setServerGuid("bc55f443-202b-4f7c-9118-47dd80500ffb");
+
         for (int x = 0; x < 4; x++)
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -253,9 +256,9 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
-            server.setOwningDmgr("bc55f443-202b-4f7c-9118-47dd80500ffb");
+            server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -284,7 +287,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -309,7 +312,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -333,12 +336,15 @@ public class ServerManagementProcessorImplTest
     @Test
     public final void addServerAsQaAppServer()
     {
+        Server dmgrServer = new Server();
+        dmgrServer.setServerGuid("dac2e765-109e-4385-8563-aab66d6713f9");
+
         for (int x = 0; x < 4; x++)
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -362,9 +368,9 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
-            server.setOwningDmgr("dac2e765-109e-4385-8563-aab66d6713f9");
+            server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -393,7 +399,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -418,7 +424,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -442,12 +448,15 @@ public class ServerManagementProcessorImplTest
     @Test
     public final void addServerAsPrdAppServer()
     {
+        Server dmgrServer = new Server();
+        dmgrServer.setServerGuid("fde6d6e9-8bac-4a82-99c6-ef225945d846");
+
         for (int x = 0; x < 4; x++)
         {
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -471,9 +480,9 @@ public class ServerManagementProcessorImplTest
             server.setServerModel("Virtual Server");
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
-            server.setOwningDmgr("fde6d6e9-8bac-4a82-99c6-ef225945d846");
+            server.setOwningDmgr(dmgrServer);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -502,7 +511,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -527,7 +536,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -554,7 +563,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+        dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -579,7 +588,7 @@ public class ServerManagementProcessorImplTest
         server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+        server.setDatacenter(dataCenter);
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -607,7 +616,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+            dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -632,7 +641,7 @@ public class ServerManagementProcessorImplTest
             server.setSerialNumber("1YU391");
             server.setInstalledMemory(4096);
             server.setNetworkPartition(NetworkPartition.DMZ);
-            server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+            server.setDatacenter(dataCenter);
 
             ServerManagementRequest request = new ServerManagementRequest();
             request.setRequestInfo(hostInfo);
@@ -659,7 +668,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+        dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -684,7 +693,7 @@ public class ServerManagementProcessorImplTest
         server.setSerialNumber("1YU391");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+        server.setDatacenter(dataCenter);
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -708,7 +717,7 @@ public class ServerManagementProcessorImplTest
     public final void addNewServerAsVmgr()
     {
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("89c15991-cc05-40f8-8d3e-304d7893713f");
+        dataCenter.setDatacenterGuid("a2e217ed-5c7f-4717-bfbe-4ab9f6ec8db9");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -734,7 +743,7 @@ public class ServerManagementProcessorImplTest
         server.setMgrUrl("https://192.168.10.250:10981/index.html");
         server.setInstalledMemory(4096);
         server.setNetworkPartition(NetworkPartition.DMZ);
-        server.setDatacenter("89c15991-cc05-40f8-8d3e-304d7893713f");
+        server.setDatacenter(dataCenter);
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);

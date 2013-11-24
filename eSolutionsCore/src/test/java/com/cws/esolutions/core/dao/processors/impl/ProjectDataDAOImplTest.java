@@ -69,7 +69,7 @@ public class ProjectDataDAOImplTest
     @Test
     public final void addNewProject()
     {
-        List<String> projectDetail = new ArrayList<String>(
+        List<String> projectDetail = new ArrayList<>(
                 Arrays.asList(
                         UUID.randomUUID().toString(),
                         "MyProject",

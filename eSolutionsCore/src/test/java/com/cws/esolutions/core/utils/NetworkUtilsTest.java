@@ -64,7 +64,7 @@ public class NetworkUtilsTest
     {
         try
         {
-            NetworkUtils.executeSCPTransfer(new ArrayList<File>(Arrays.asList(new File("C:/temp/followup.txt"))), "/var/tmp/followup.txt", "gbl01026.systems.uk.hsbc", true);
+            NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(new File("C:/temp/followup.txt"))), "/var/tmp/followup.txt", "gbl01026.systems.uk.hsbc", true);
         }
         catch (UtilityException ux)
         {
@@ -75,7 +75,7 @@ public class NetworkUtilsTest
     @Test
     public final void testExecuteSshConnection()
     {
-        List<String> commandList = new ArrayList<String>(
+        List<String> commandList = new ArrayList<>(
                 Arrays.asList(
                         "cd /var/tmp",
                         "ls -ltra"));

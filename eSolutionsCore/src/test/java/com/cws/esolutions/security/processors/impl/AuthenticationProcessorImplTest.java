@@ -112,7 +112,7 @@ public class AuthenticationProcessorImplTest
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setPassword("Ariana16*");
+        userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");
@@ -173,7 +173,7 @@ public class AuthenticationProcessorImplTest
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setPassword("Ariana18*");
+        userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

@@ -70,10 +70,10 @@ public class EmailUtilsTest
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
         message.setMessageSubject("Test Message");
-        message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageBCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageTo(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setEmailAddr(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageBody("This is a test message");
 
         try
@@ -103,10 +103,10 @@ public class EmailUtilsTest
             EmailMessage message = new EmailMessage();
             message.setIsAlert(false);
             message.setMessageSubject("Test Message");
-            message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setMessageTo(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-            message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setMessageBCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setMessageCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setMessageTo(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+            message.setEmailAddr(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
             message.setMessageBody("This is a test message");
             message.setMessageAttachments(attachments);
 
@@ -128,10 +128,10 @@ public class EmailUtilsTest
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
         message.setMessageSubject("Test Message");
-        message.setMessageBCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageCC(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
-        message.setMessageTo(new ArrayList<String>(Arrays.asList("7163415669@vmobl.com")));
-        message.setEmailAddr(new ArrayList<String>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageBCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageCC(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
+        message.setMessageTo(new ArrayList<>(Arrays.asList("7163415669@vmobl.com")));
+        message.setEmailAddr(new ArrayList<>(Arrays.asList("kmhuntly@gmail.com")));
         message.setMessageBody("This is a test message");
 
         try

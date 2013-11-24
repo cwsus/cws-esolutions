@@ -67,7 +67,7 @@ public class ApplicationDataDAOImplTest
     @Test
     public final void testAddNewApplication()
     {
-        List<String> appData = new ArrayList<String>(
+        List<String> appData = new ArrayList<>(
                 Arrays.asList(
                         UUID.randomUUID().toString(),
                         "eSolutions",

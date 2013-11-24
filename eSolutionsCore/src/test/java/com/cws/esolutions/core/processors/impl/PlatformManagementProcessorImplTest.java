@@ -19,17 +19,16 @@ import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
-import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.ArrayList;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -106,7 +105,7 @@ public class PlatformManagementProcessorImplTest
                     if (authUser.getStatus() == LoginStatus.SUCCESS)
                     {
                         UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana16*");
+                        userSecurity.setPassword("Ariana21*");
 
                         AuthenticationRequest passRequest = new AuthenticationRequest();
                         passRequest.setApplicationName("esolutions");
@@ -154,72 +153,125 @@ public class PlatformManagementProcessorImplTest
     @Test
     public final void testAddNewPlatform()
     {
-        Server dmgrServer = new Server();
-        dmgrServer.setServerGuid("aaf948c7-c3ed-49ad-a9e9-7a0e43d9a820");
-
-        Server appServer1 = new Server();
-        appServer1.setServerGuid("f6bd1ef7-38b1-4d9a-8f99-2a4ca42b02ba");
-
-        Server appServer2 = new Server();
-        appServer2.setServerGuid("0dae13de-c9ec-4070-94cd-00a7ee51dee7");
-
-        Server appServer3 = new Server();
-        appServer3.setServerGuid("60cc480f-55d5-4018-98ad-b87e7b13a921");
-
-        Server appServer4 = new Server();
-        appServer4.setServerGuid("eb88ae10-8d05-4647-b946-432192d23c31");
-
-        Server webServer1 = new Server();
-        webServer1.setServerGuid("1ed8cdd7-8bd8-40bc-8cc3-c79c2a0a8d5b");
-
-        Server webServer2 = new Server();
-        webServer2.setServerGuid("2776640f-1a8c-446c-b501-0548418196d6");
-
-        Server webServer3 = new Server();
-        webServer3.setServerGuid("ddff73f7-5606-4a26-9adb-c3e3b4113ba5");
-
-        Server webServer4 = new Server();
-        webServer4.setServerGuid("93936f7a-1c29-463c-8972-68e2b8812776");
-
-        List<Server> appServerList = new ArrayList<Server>(
-                Arrays.asList(
-                        appServer1,
-                        appServer2,
-                        appServer3,
-                        appServer4));
-
-        List<Server> webServerList = new ArrayList<Server>(
-                Arrays.asList(
-                        webServer1,
-                        webServer2,
-                        webServer3,
-                        webServer4));
-
+        List<Server> webServers = null;
+        List<Server> appServers = null;
         Platform platform = new Platform();
-        platform.setPlatformGuid(UUID.randomUUID().toString());
-        platform.setPlatformName(RandomStringUtils.randomAlphabetic(8));
-        platform.setStatus(ServiceStatus.ACTIVE);
-        platform.setPlatformRegion(ServiceRegion.PRD);
-        platform.setDescription("Test Platform");
-        platform.setPlatformDmgr(dmgrServer);
-        platform.setAppServers(appServerList);
-        platform.setWebServers(webServerList);
 
-        PlatformManagementRequest request = new PlatformManagementRequest();
-        request.setPlatform(platform);
-        request.setRequestInfo(hostInfo);
-        request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
-        request.setUserAccount(userAccount);
+        String[] dmgrServers = { "5afecbc1-903e-4cdf-a3a3-b5bfa177d8c5", "a1924d39-c70b-4834-a66c-bd66ea649a60", "e2dfb58c-feeb-41e2-855c-090480e666b4" };
 
-        try
+        String[] devWebs = { "1e412acd-c898-40f1-82a5-c1f025d67756", "10c175b5-d6c5-44bf-8d39-255c54484baa", "721a9d5e-6a7e-4732-9e71-e82a44c7a634", "628ba426-fa82-4759-ae6e-07e1e2da6d33" };
+        String[] devApps = { "ee73fc6b-522a-4b62-8f63-7e097d13f72d", "4ce4b839-478f-4e28-8aaa-11356d31b15f", "f173e122-dedd-483a-8cbc-b5747bd1fd08", "761034e0-19e6-4bca-baf7-637d774479be" };
+
+        String[] qaWebs = { "431cfb3e-84bf-4daa-9fa8-7093a21fc852", "2f6a5fd0-6e5c-4565-a48b-311d82011b43", "525e4c60-de08-46b9-92d8-7f04643aec20", "5247ab05-70d2-4f05-b482-0317cc2b6784" };
+        String[] qaApps = { "a04501f4-a654-4f78-9459-ad64f014e468", "99e10ec6-d6a5-4464-9cc6-5108b438d1a2", "fad84667-24dc-4667-96de-c371d8fe1b14", "db895688-dec2-46d3-9a69-678436488f4c" };
+
+        String[] prdWebs = { "d8714e68-3c0b-464b-b6bd-77eee99061e9", "5e0c9c18-8d3b-49e6-8a25-9647ef9d692b", "ef7d7553-5c8c-4651-8b79-5f0b2e1065f4", "841c3387-736c-47e1-a4ff-e382e174c137" };
+        String[] prdApps = { "00abd443-1192-4d40-823f-91e1eca820b5", "e8da9ad2-9183-45d6-ac6a-419953e0e067", "80dac53d-1877-4f3c-bb94-4f4f4c54398b", "0e855ebe-ae76-4068-a976-9f6231e9a06f" };
+
+        for (int x = 0; x < 3; x++)
         {
-            PlatformManagementResponse response = processor.addNewPlatform(request);
+            platform.setPlatformGuid(UUID.randomUUID().toString());
+            platform.setPlatformName(RandomStringUtils.randomAlphabetic(8));
+            platform.setStatus(ServiceStatus.ACTIVE);
+            platform.setDescription("Test Platform");
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (PlatformManagementException pmx)
-        {
-            Assert.fail(pmx.getMessage());
+            Server dmgrServer = new Server();
+            dmgrServer.setServerGuid(dmgrServers[x]);
+
+            platform.setPlatformDmgr(dmgrServer);
+
+            if (x == 0)
+            {
+                platform.setPlatformRegion(ServiceRegion.DEV);
+
+                webServers = new ArrayList<>();
+
+                for (String str : devWebs)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+
+                appServers = new ArrayList<>();
+
+                for (String str : devApps)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+            }
+            else if (x == 1)
+            {
+                platform.setPlatformRegion(ServiceRegion.QA);
+
+                webServers = new ArrayList<>();
+
+                for (String str : qaWebs)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+
+                appServers = new ArrayList<>();
+
+                for (String str : qaApps)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+            }
+            else if (x == 2)
+            {
+                platform.setPlatformRegion(ServiceRegion.PRD);
+
+                webServers = new ArrayList<>();
+
+                for (String str : prdWebs)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+
+                appServers = new ArrayList<>();
+
+                for (String str : prdApps)
+                {
+                    Server server = new Server();
+                    server.setServerGuid(str);
+
+                    webServers.add(server);
+                }
+            }
+
+            platform.setAppServers(appServers);
+            platform.setWebServers(webServers);
+
+            PlatformManagementRequest request = new PlatformManagementRequest();
+            request.setPlatform(platform);
+            request.setRequestInfo(hostInfo);
+            request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+            request.setUserAccount(userAccount);
+
+            try
+            {
+                PlatformManagementResponse response = processor.addNewPlatform(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (PlatformManagementException pmx)
+            {
+                Assert.fail(pmx.getMessage());
+            }
         }
     }
 

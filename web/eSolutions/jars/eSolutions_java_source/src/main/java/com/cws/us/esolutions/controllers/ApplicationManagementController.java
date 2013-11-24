@@ -14,6 +14,7 @@ package com.cws.us.esolutions.controllers;
 import java.io.File;
 import java.util.Map;
 import java.util.List;
+import java.util.UUID;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.us.esolutions.dto.ApplicationRequest;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
@@ -905,14 +907,34 @@ public class ApplicationManagementController
 
                 if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Project> projectListing = projectResponse.getProjectList();
+                    List<Project> projects = projectResponse.getProjectList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("projectListing: {}", projectListing);
+                        DEBUGGER.debug("projects: {}", projects);
                     }
 
-                    mView.addObject("projectListing", projectListing);
+                    if ((projects != null) && (projects.size() != 0))
+                    {
+                        Map<String, String> projectListing = new HashMap<>();
+
+                        for (Project project : projects)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Project: {}", project);
+                            }
+
+                            projectListing.put(project.getProjectGuid(), project.getProjectCode());
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("projectListing: {}", projectListing);
+                        }
+
+                        mView.addObject("projectListing", projectListing);
+                    }
                 }
                 else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -966,7 +988,27 @@ public class ApplicationManagementController
                         DEBUGGER.debug("platformList: {}", platformList);
                     }
 
-                    mView.addObject("platformList", platformList);
+                    if ((platformList != null) && (platformList.size() != 0))
+                    {
+                        Map<String, String> platformListing = new HashMap<>();
+
+                        for (Platform platform : platformList)
+                        {
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Platform: {}", platform);
+                            }
+
+                            platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("platformListing: {}", platformListing);
+                        }
+
+                        mView.addObject("platformListing", platformListing);
+                    }
                 }
                 else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -990,7 +1032,7 @@ public class ApplicationManagementController
                 return mView;
             }
 
-            mView.addObject("command", new Application());
+            mView.addObject("command", new ApplicationRequest());
             mView.setViewName(this.addAppPage);
         }
         else
@@ -1438,8 +1480,8 @@ public class ApplicationManagementController
 
                     if (resPlatform != null)
                     {
-                        List<String> webServerList = resPlatform.getWebServers();
-                        List<String> appServerList = resPlatform.getAppServers();
+                        List<Server> webServerList = resPlatform.getWebServers();
+                        List<Server> appServerList = resPlatform.getAppServers();
 
                         if (DEBUG)
                         {
@@ -2253,7 +2295,7 @@ public class ApplicationManagementController
                             if (app != null)
                             {
                                 // add the server listing to the page
-                                mView.addObject("command", new Application());
+                                mView.addObject("command", new ApplicationRequest());
                                 mView.addObject("application", app);
                                 mView.addObject("platform", resPlatform);
                                 mView.setViewName(this.deployAppPage);
@@ -2317,9 +2359,9 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/add-application", method = RequestMethod.POST)
-    public final ModelAndView doAddApplication(@ModelAttribute("request") final Application request, final BindingResult bindResult)
+    public final ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final Application request, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#doAddApplication(@ModelAttribute(\"request\") final ApplicationRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -2382,6 +2424,20 @@ public class ApplicationManagementController
 
         if (appConfig.getServices().get(this.serviceName))
         {
+            applicationValidator.validate(request, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                // validation failed
+                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+                mView.addObject("command", new ApplicationRequest());
+                mView.setViewName(this.addAppPage);
+
+                return mView;
+            }
+
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -2394,33 +2450,43 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                List<Object> validateList = new ArrayList<Object>(
-                        Arrays.asList(
-                                request,
-                                reqInfo,
-                                userAccount));
+                Platform newPlatform = new Platform();
+                newPlatform.setPlatformGuid(request.getPlatform());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Object>: {}", validateList);
+                    DEBUGGER.debug("Platform: {}", newPlatform);
                 }
 
-                applicationValidator.validate(validateList, bindResult);
+                Project newProject = new Project();
+                newProject.setProjectGuid(request.getProject());
 
-                if (bindResult.hasErrors())
+                if (DEBUG)
                 {
-                    // validation failed
-                    ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+                    DEBUGGER.debug("Project: {}", newProject);
+                }
 
-                    mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
-                    mView.addObject("command", new Application());
-                    mView.setViewName(this.addAppPage);
+                Application newApp = new Application();
+                newApp.setApplicationGuid(UUID.randomUUID().toString());
+                newApp.setApplicationName(request.getApplicationName());
+                newApp.setApplicationPlatforms(new ArrayList<>(Arrays.asList(newPlatform)));
+                newApp.setApplicationVersion(request.getVersion());
+                newApp.setApplicationCluster(request.getClusterName());
+                newApp.setApplicationLogsPath(request.getLogsPath());
+                newApp.setApplicationProject(newProject);
+                newApp.setApplicationInstallPath(request.getInstallPath());
+                newApp.setPidDirectory(request.getPidDirectory());
+                newApp.setScmPath(request.getScmPath());
+                newApp.setJvmName(request.getJvmName());
+                newApp.setBasePath(request.getBasePath());
 
-                    return mView;
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Application: {}", newApp);
                 }
 
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
-                appRequest.setApplication(request);
+                appRequest.setApplication(newApp);
                 appRequest.setServiceId(this.applMgmt);
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
@@ -2557,7 +2623,7 @@ public class ApplicationManagementController
                     }
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
-                    mView.addObject("command", new Application());
+                    mView.addObject("command", new ApplicationRequest());
                     mView.setViewName(this.addAppPage);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -2604,9 +2670,9 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/deploy-application", method = RequestMethod.POST)
-    public final ModelAndView doDeployApplication(@ModelAttribute("request") final Application request, final BindingResult bindResult)
+    public final ModelAndView doDeployApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#doDeployApplication(@ModelAttribute(\"request\") final Application request, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#doDeployApplication(@ModelAttribute(\"request\") final ApplicationRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -2737,7 +2803,7 @@ public class ApplicationManagementController
 
                     // have the application, get the platform
                     Platform reqPlatform = new Platform();
-                    reqPlatform.setPlatformGuid(request.getApplicationPlatforms().get(0).getPlatformGuid());
+                    reqPlatform.setPlatformGuid(request.getPlatform());
 
                     if (DEBUG)
                     {
@@ -2779,8 +2845,7 @@ public class ApplicationManagementController
                             if (StringUtils.isNotEmpty(resApplication.getScmPath()))
                             {
                                 // this is an scm build. make sure the version number was populated
-                                if ((StringUtils.isNotEmpty(request.getApplicationVersion())) && (!(StringUtils.equals(resApplication.getApplicationVersion(),
-                                        request.getApplicationVersion()))) && (!(StringUtils.equals(request.getApplicationVersion(), "0.0"))))
+                                if ((StringUtils.isNotEmpty(request.getVersion())) && (!(StringUtils.equals(resApplication.getApplicationVersion(), request.getVersion()))) && (!(StringUtils.equals(request.getVersion(), "0.0"))))
                                 {
                                     // good. at this point we're going to download the files and then
                                     // well, do something.. not really sure how this is gonna work out
@@ -2793,7 +2858,7 @@ public class ApplicationManagementController
                                 {
                                     // whoops.
                                     mView.addObject(Constants.ERROR_MESSAGE, this.messageNoAppVersionProvided);
-                                    mView.addObject("command", new Application());
+                                    mView.addObject("command", new ApplicationRequest());
                                     mView.addObject("application", resApplication);
                                     mView.addObject("platform", resPlatform);
                                     mView.setViewName(this.deployAppPage);
@@ -2805,7 +2870,7 @@ public class ApplicationManagementController
                                 if (request.getApplicationBinary() != null)
                                 {
                                     // excellent
-                                    MultipartFile binary = (MultipartFile) request.getApplicationBinary();
+                                    MultipartFile binary = request.getApplicationBinary();
                                     File repository = FileUtils.getFile(appConfig.getUploadDirectory());
 
                                     if (DEBUG)
@@ -2827,7 +2892,7 @@ public class ApplicationManagementController
                                         // no files
                                         // add the server listing to the page
                                         mView.addObject(Constants.ERROR_MESSAGE, this.messageNoBinaryProvided);
-                                        mView.addObject("command", new Application());
+                                        mView.addObject("command", new ApplicationRequest());
                                         mView.addObject("application", resApplication);
                                         mView.addObject("platform", resPlatform);
                                         mView.setViewName(this.deployAppPage);
@@ -2836,7 +2901,7 @@ public class ApplicationManagementController
                                 else
                                 {
                                     mView.addObject(Constants.ERROR_MESSAGE, this.messageNoBinaryProvided);
-                                    mView.addObject("command", new Application());
+                                    mView.addObject("command", new ApplicationRequest());
                                     mView.addObject("application", resApplication);
                                     mView.addObject("platform", resPlatform);
                                     mView.setViewName(this.deployAppPage);

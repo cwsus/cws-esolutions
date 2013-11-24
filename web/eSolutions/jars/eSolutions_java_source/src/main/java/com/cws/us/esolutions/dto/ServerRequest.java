@@ -1,48 +1,45 @@
 /**
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.esolutions.core.processors.dto;
+package com.cws.us.esolutions.dto;
 
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 /**
- * eSolutionsCore
- * com.cws.esolutions.core.dto
- * Server.java
+ * eSolutions_java_source
+ * com.cws.us.pws.processors.dto
+ * LoginRequest.java
  *
  * $Id: $
  * $Author: $
  * $Date: $
  * $Revision: $
- * @author kmhuntly@gmail.com
+ * @author khuntly
  * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Dec 31, 2012 8:03:43 AM
+ * khuntly @ Apr 28, 2013 3:02:35 PM
  *     Created.
  */
-public class Server implements Serializable
+public class ServerRequest implements Serializable
 {
     private int cpuCount = 1; // has to be at least 1
     private int dmgrPort = 0; // only used when the servertype is dmgr
@@ -51,12 +48,12 @@ public class Server implements Serializable
     private String cpuType = null;
     private int installedMemory = 0; // in MB! 1GB = 1024 MB
     private String virtualId = null;
-    private String serverGuid = null;
     private String natAddress = null;
     private String bkHostName = null;
     private String serverRack = null;
     private String domainName = null;
-    private Server owningDmgr = null;
+    private String owningDmgr = null;
+    private String datacenter = null;
     private String serverModel = null;
     private String nasHostName = null;
     private String bkIpAddress = null;
@@ -67,37 +64,22 @@ public class Server implements Serializable
     private String nasIpAddress = null;
     private String operIpAddress = null;
     private String mgmtIpAddress = null;
-    private DataCenter datacenter = null;
     private String serverComments = null;
     private ServerType serverType = null;
-    private String assignedEngineer = null;
     private ServerStatus serverStatus = null;
     private ServiceRegion serverRegion = null;
     private NetworkPartition networkPartition = null;
 
     private static final String CNAME = Server.class.getName();
-    private static final long serialVersionUID = 9028945840047154190L;
+    private static final long serialVersionUID = -6997903779656691703L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setServerGuid(final String value)
-    {
-        final String methodName = Server.CNAME + "#setServerGuid(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serverGuid = value;
-    }
-
     public final void setVirtualId(final String value)
     {
-        final String methodName = Server.CNAME + "#setVirtualId(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setVirtualId(final String value)";
 
         if (DEBUG)
         {
@@ -110,7 +92,7 @@ public class Server implements Serializable
 
     public final void setOsName(final String value)
     {
-        final String methodName = Server.CNAME + "#setOsName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setOsName(final String value)";
 
         if (DEBUG)
         {
@@ -123,7 +105,7 @@ public class Server implements Serializable
 
     public final void setDomainName(final String value)
     {
-        final String methodName = Server.CNAME + "#setDomainName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setDomainName(final String value)";
 
         if (DEBUG)
         {
@@ -136,7 +118,7 @@ public class Server implements Serializable
 
     public final void setOperIpAddress(final String value)
     {
-        final String methodName = Server.CNAME + "#setOperIpAddress(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setOperIpAddress(final String value)";
 
         if (DEBUG)
         {
@@ -149,7 +131,7 @@ public class Server implements Serializable
 
     public final void setOperHostName(final String value)
     {
-        final String methodName = Server.CNAME + "#setOperHostName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setOperHostName(final String value)";
 
         if (DEBUG)
         {
@@ -162,7 +144,7 @@ public class Server implements Serializable
 
     public final void setMgmtIpAddress(final String value)
     {
-        final String methodName = Server.CNAME + "#setMgmtIpAddress(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setMgmtIpAddress(final String value)";
 
         if (DEBUG)
         {
@@ -175,7 +157,7 @@ public class Server implements Serializable
 
     public final void setMgmtHostName(final String value)
     {
-        final String methodName = Server.CNAME + "#setMgmtHostName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setMgmtHostName(final String value)";
 
         if (DEBUG)
         {
@@ -188,7 +170,7 @@ public class Server implements Serializable
 
     public final void setBkIpAddress(final String value)
     {
-        final String methodName = Server.CNAME + "#setBkIpAddress(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setBkIpAddress(final String value)";
 
         if (DEBUG)
         {
@@ -201,7 +183,7 @@ public class Server implements Serializable
 
     public final void setBkHostName(final String value)
     {
-        final String methodName = Server.CNAME + "#setBkHostName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setBkHostName(final String value)";
 
         if (DEBUG)
         {
@@ -214,7 +196,7 @@ public class Server implements Serializable
 
     public final void setNasIpAddress(final String value)
     {
-        final String methodName = Server.CNAME + "#setNasIpAddress(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setNasIpAddress(final String value)";
 
         if (DEBUG)
         {
@@ -227,7 +209,7 @@ public class Server implements Serializable
 
     public final void setNasHostName(final String value)
     {
-        final String methodName = Server.CNAME + "#setNasHostName(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setNasHostName(final String value)";
 
         if (DEBUG)
         {
@@ -240,7 +222,7 @@ public class Server implements Serializable
 
     public final void setNatAddress(final String value)
     {
-        final String methodName = Server.CNAME + "#setNatAddress(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setNatAddress(final String value)";
 
         if (DEBUG)
         {
@@ -253,7 +235,7 @@ public class Server implements Serializable
 
     public final void setServerRegion(final ServiceRegion value)
     {
-        final String methodName = Server.CNAME + "#setServerRegion(final ServiceRegion value)";
+        final String methodName = ServerRequest.CNAME + "#setServerRegion(final ServiceRegion value)";
 
         if (DEBUG)
         {
@@ -266,7 +248,7 @@ public class Server implements Serializable
 
     public final void setServerStatus(final ServerStatus value)
     {
-        final String methodName = Server.CNAME + "#setServerStatus(final Status value)";
+        final String methodName = ServerRequest.CNAME + "#setServerStatus(final Status value)";
 
         if (DEBUG)
         {
@@ -279,7 +261,7 @@ public class Server implements Serializable
 
     public final void setServerType(final ServerType value)
     {
-        final String methodName = Server.CNAME + "#setServerType(final ServerType value)";
+        final String methodName = ServerRequest.CNAME + "#setServerType(final ServerType value)";
 
         if (DEBUG)
         {
@@ -292,7 +274,7 @@ public class Server implements Serializable
 
     public final void setServerComments(final String value)
     {
-        final String methodName = Server.CNAME + "#setServerComments(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setServerComments(final String value)";
 
         if (DEBUG)
         {
@@ -303,22 +285,9 @@ public class Server implements Serializable
         this.serverComments = value;
     }
 
-    public final void setAssignedEngineer(final String value)
-    {
-        final String methodName = Server.CNAME + "#setAssignedEngineer(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.assignedEngineer = value;
-    }
-
     public final void setDmgrPort(final int value)
     {
-        final String methodName = Server.CNAME + "#setAssignedEngineer(final int value)";
+        final String methodName = ServerRequest.CNAME + "#setAssignedEngineer(final int value)";
 
         if (DEBUG)
         {
@@ -331,7 +300,7 @@ public class Server implements Serializable
 
     public final void setMgrUrl(final String value)
     {
-        final String methodName = Server.CNAME + "#setMgrUrl(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setMgrUrl(final String value)";
 
         if (DEBUG)
         {
@@ -342,9 +311,9 @@ public class Server implements Serializable
         this.mgrUrl = value;
     }
 
-    public final void setOwningDmgr(final Server value)
+    public final void setOwningDmgr(final String value)
     {
-        final String methodName = Server.CNAME + "#setOwningDmgr(final Server value)";
+        final String methodName = ServerRequest.CNAME + "#setOwningDmgr(final String value)";
 
         if (DEBUG)
         {
@@ -357,7 +326,7 @@ public class Server implements Serializable
 
     public final void setCpuType(final String value)
     {
-        final String methodName = Server.CNAME + "#setCpuType(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setCpuType(final String value)";
 
         if (DEBUG)
         {
@@ -370,7 +339,7 @@ public class Server implements Serializable
 
     public final void setCpuCount(final int value)
     {
-        final String methodName = Server.CNAME + "#setCpuCount(final int value)";
+        final String methodName = ServerRequest.CNAME + "#setCpuCount(final int value)";
 
         if (DEBUG)
         {
@@ -383,7 +352,7 @@ public class Server implements Serializable
 
     public final void setServerRack(final String value)
     {
-        final String methodName = Server.CNAME + "#setServerRack(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setServerRack(final String value)";
 
         if (DEBUG)
         {
@@ -396,7 +365,7 @@ public class Server implements Serializable
 
     public final void setServerModel(final String value)
     {
-        final String methodName = Server.CNAME + "#setServerModel(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setServerModel(final String value)";
 
         if (DEBUG)
         {
@@ -409,7 +378,7 @@ public class Server implements Serializable
 
     public final void setRackPosition(final String value)
     {
-        final String methodName = Server.CNAME + "#setRackPosition(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setRackPosition(final String value)";
 
         if (DEBUG)
         {
@@ -422,7 +391,7 @@ public class Server implements Serializable
 
     public final void setSerialNumber(final String value)
     {
-        final String methodName = Server.CNAME + "#setSerialNumber(final String value)";
+        final String methodName = ServerRequest.CNAME + "#setSerialNumber(final String value)";
 
         if (DEBUG)
         {
@@ -435,7 +404,7 @@ public class Server implements Serializable
 
     public final void setInstalledMemory(final int value)
     {
-        final String methodName = Server.CNAME + "#setInstalledMemory(final int value)";
+        final String methodName = ServerRequest.CNAME + "#setInstalledMemory(final int value)";
 
         if (DEBUG)
         {
@@ -448,7 +417,7 @@ public class Server implements Serializable
 
     public final void setNetworkPartition(final NetworkPartition value)
     {
-        final String methodName = Server.CNAME + "#setInstalledMemory(final NetworkPartition value)";
+        final String methodName = ServerRequest.CNAME + "#setInstalledMemory(final NetworkPartition value)";
 
         if (DEBUG)
         {
@@ -459,9 +428,9 @@ public class Server implements Serializable
         this.networkPartition = value;
     }
 
-    public final void setDatacenter(final DataCenter value)
+    public final void setDatacenter(final String value)
     {
-        final String methodName = Server.CNAME + "#setDatacenter(final DataCenter value)";
+        final String methodName = ServerRequest.CNAME + "#setDatacenter(final String value)";
 
         if (DEBUG)
         {
@@ -472,22 +441,9 @@ public class Server implements Serializable
         this.datacenter = value;
     }
 
-    public final String getServerGuid()
-    {
-        final String methodName = Server.CNAME + "#getServerGuid()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serverGuid);
-        }
-
-        return this.serverGuid;
-    }
-
     public final String getVirtualId()
     {
-        final String methodName = Server.CNAME + "#getVirtualId()";
+        final String methodName = ServerRequest.CNAME + "#getVirtualId()";
 
         if (DEBUG)
         {
@@ -500,7 +456,7 @@ public class Server implements Serializable
 
     public final String getOsName()
     {
-        final String methodName = Server.CNAME + "#getOsName()";
+        final String methodName = ServerRequest.CNAME + "#getOsName()";
 
         if (DEBUG)
         {
@@ -513,7 +469,7 @@ public class Server implements Serializable
 
     public final String getDomainName()
     {
-        final String methodName = Server.CNAME + "#getDomainName()";
+        final String methodName = ServerRequest.CNAME + "#getDomainName()";
 
         if (DEBUG)
         {
@@ -526,7 +482,7 @@ public class Server implements Serializable
 
     public final String getOperIpAddress()
     {
-        final String methodName = Server.CNAME + "#getOperIpAddress()";
+        final String methodName = ServerRequest.CNAME + "#getOperIpAddress()";
 
         if (DEBUG)
         {
@@ -539,7 +495,7 @@ public class Server implements Serializable
 
     public final String getOperHostName()
     {
-        final String methodName = Server.CNAME + "#getOperHostName()";
+        final String methodName = ServerRequest.CNAME + "#getOperHostName()";
 
         if (DEBUG)
         {
@@ -552,7 +508,7 @@ public class Server implements Serializable
 
     public final String getMgmtIpAddress()
     {
-        final String methodName = Server.CNAME + "#getMgmtIpAddress()";
+        final String methodName = ServerRequest.CNAME + "#getMgmtIpAddress()";
 
         if (DEBUG)
         {
@@ -565,7 +521,7 @@ public class Server implements Serializable
 
     public final String getMgmtHostName()
     {
-        final String methodName = Server.CNAME + "#getMgmtHostName()";
+        final String methodName = ServerRequest.CNAME + "#getMgmtHostName()";
 
         if (DEBUG)
         {
@@ -578,7 +534,7 @@ public class Server implements Serializable
 
     public final String getBkIpAddress()
     {
-        final String methodName = Server.CNAME + "#getBkIpAddress()";
+        final String methodName = ServerRequest.CNAME + "#getBkIpAddress()";
 
         if (DEBUG)
         {
@@ -591,7 +547,7 @@ public class Server implements Serializable
 
     public final String getBkHostName()
     {
-        final String methodName = Server.CNAME + "#getBkHostName()";
+        final String methodName = ServerRequest.CNAME + "#getBkHostName()";
 
         if (DEBUG)
         {
@@ -604,7 +560,7 @@ public class Server implements Serializable
 
     public final String getNasIpAddress()
     {
-        final String methodName = Server.CNAME + "#getNasIpAddress()";
+        final String methodName = ServerRequest.CNAME + "#getNasIpAddress()";
 
         if (DEBUG)
         {
@@ -617,7 +573,7 @@ public class Server implements Serializable
 
     public final String getNasHostName()
     {
-        final String methodName = Server.CNAME + "#getNasHostName()";
+        final String methodName = ServerRequest.CNAME + "#getNasHostName()";
 
         if (DEBUG)
         {
@@ -630,7 +586,7 @@ public class Server implements Serializable
 
     public final String getNatAddress()
     {
-        final String methodName = Server.CNAME + "#getNatAddress()";
+        final String methodName = ServerRequest.CNAME + "#getNatAddress()";
 
         if (DEBUG)
         {
@@ -643,7 +599,7 @@ public class Server implements Serializable
 
     public final ServiceRegion getServerRegion()
     {
-        final String methodName = Server.CNAME + "#getServerRegion()";
+        final String methodName = ServerRequest.CNAME + "#getServerRegion()";
 
         if (DEBUG)
         {
@@ -656,7 +612,7 @@ public class Server implements Serializable
 
     public final ServerStatus getServerStatus()
     {
-        final String methodName = Server.CNAME + "#getServerStatus()";
+        final String methodName = ServerRequest.CNAME + "#getServerStatus()";
 
         if (DEBUG)
         {
@@ -669,7 +625,7 @@ public class Server implements Serializable
 
     public final ServerType getServerType()
     {
-        final String methodName = Server.CNAME + "#getServerType()";
+        final String methodName = ServerRequest.CNAME + "#getServerType()";
 
         if (DEBUG)
         {
@@ -682,7 +638,7 @@ public class Server implements Serializable
 
     public final String getServerComments()
     {
-        final String methodName = Server.CNAME + "#getServerComments()";
+        final String methodName = ServerRequest.CNAME + "#getServerComments()";
 
         if (DEBUG)
         {
@@ -693,22 +649,9 @@ public class Server implements Serializable
         return this.serverComments;
     }
 
-    public final String getAssignedEngineer()
-    {
-        final String methodName = Server.CNAME + "#getAssignedEngineer()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.assignedEngineer);
-        }
-
-        return this.assignedEngineer;
-    }
-
     public final int getDmgrPort()
     {
-        final String methodName = Server.CNAME + "#getAssignedEngineer()";
+        final String methodName = ServerRequest.CNAME + "#getAssignedEngineer()";
 
         if (DEBUG)
         {
@@ -721,7 +664,7 @@ public class Server implements Serializable
 
     public final String getMgrUrl()
     {
-        final String methodName = Server.CNAME + "#getMgrUrl()";
+        final String methodName = ServerRequest.CNAME + "#getMgrUrl()";
 
         if (DEBUG)
         {
@@ -734,7 +677,7 @@ public class Server implements Serializable
 
     public final String getCpuType()
     {
-        final String methodName = Server.CNAME + "#getCpuType()";
+        final String methodName = ServerRequest.CNAME + "#getCpuType()";
 
         if (DEBUG)
         {
@@ -747,7 +690,7 @@ public class Server implements Serializable
 
     public final int getCpuCount()
     {
-        final String methodName = Server.CNAME + "#getCpuCount()";
+        final String methodName = ServerRequest.CNAME + "#getCpuCount()";
 
         if (DEBUG)
         {
@@ -760,7 +703,7 @@ public class Server implements Serializable
 
     public final String getServerRack()
     {
-        final String methodName = Server.CNAME + "#getServerRack()";
+        final String methodName = ServerRequest.CNAME + "#getServerRack()";
 
         if (DEBUG)
         {
@@ -773,7 +716,7 @@ public class Server implements Serializable
 
     public final String getServerModel()
     {
-        final String methodName = Server.CNAME + "#getServerModel()";
+        final String methodName = ServerRequest.CNAME + "#getServerModel()";
 
         if (DEBUG)
         {
@@ -786,7 +729,7 @@ public class Server implements Serializable
 
     public final String getRackPosition()
     {
-        final String methodName = Server.CNAME + "#getRackPosition()";
+        final String methodName = ServerRequest.CNAME + "#getRackPosition()";
 
         if (DEBUG)
         {
@@ -799,7 +742,7 @@ public class Server implements Serializable
 
     public final String getSerialNumber()
     {
-        final String methodName = Server.CNAME + "#getSerialNumber()";
+        final String methodName = ServerRequest.CNAME + "#getSerialNumber()";
 
         if (DEBUG)
         {
@@ -810,9 +753,9 @@ public class Server implements Serializable
         return this.serialNumber;
     }
 
-    public final Server getOwningDmgr()
+    public final String getOwningDmgr()
     {
-        final String methodName = Server.CNAME + "#getOwningDmgr()";
+        final String methodName = ServerRequest.CNAME + "#getOwningDmgr()";
 
         if (DEBUG)
         {
@@ -825,7 +768,7 @@ public class Server implements Serializable
 
     public final int getInstalledMemory()
     {
-        final String methodName = Server.CNAME + "#getInstalledMemory()";
+        final String methodName = ServerRequest.CNAME + "#getInstalledMemory()";
 
         if (DEBUG)
         {
@@ -838,7 +781,7 @@ public class Server implements Serializable
 
     public final NetworkPartition getNetworkPartition()
     {
-        final String methodName = Server.CNAME + "#getNetworkPartition()";
+        final String methodName = ServerRequest.CNAME + "#getNetworkPartition()";
 
         if (DEBUG)
         {
@@ -849,9 +792,9 @@ public class Server implements Serializable
         return this.networkPartition;
     }
 
-    public final DataCenter getDatacenter()
+    public final String getDatacenter()
     {
-        final String methodName = Server.CNAME + "#getDatacenter()";
+        final String methodName = ServerRequest.CNAME + "#getDatacenter()";
 
         if (DEBUG)
         {
@@ -865,7 +808,7 @@ public class Server implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = Server.CNAME + "#toString()";
+        final String methodName = ServerRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {

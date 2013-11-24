@@ -90,7 +90,7 @@ public class SQLAuthenticatorTest
     @Test
     public final void testVerifySecurityQuestions()
     {
-        List<String> authList = new ArrayList<String>(
+        List<String> authList = new ArrayList<>(
                 Arrays.asList(
                         "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
                         "khuntly",

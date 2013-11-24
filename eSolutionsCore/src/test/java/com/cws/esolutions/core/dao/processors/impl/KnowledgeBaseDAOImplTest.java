@@ -68,7 +68,7 @@ public class KnowledgeBaseDAOImplTest
     @Test
     public final void testDoCreateArticle()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
                 Arrays.asList(
                         "KB" + RandomStringUtils.randomNumeric(8),
                         "khuntly",
@@ -131,7 +131,7 @@ public class KnowledgeBaseDAOImplTest
     @Test
     public final void testDoUpdateArticle()
     {
-        List<String> list = new ArrayList<String>(
+        List<String> list = new ArrayList<>(
                 Arrays.asList(
                         "KB22208793",
                         "test testy testerson updated",

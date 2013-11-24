@@ -68,17 +68,17 @@ public class PlatformDataDAOImplTest
     @Test
     public final void testAddNewPlatform()
     {
-        List<String> appServers = new ArrayList<String>(
+        List<String> appServers = new ArrayList<>(
                 Arrays.asList(
                         "eb98ef5a-5fc0-44b3-a01b-4bdb382aa716",
                         "2a515fa2-d1a8-4817-91b0-6a0547fea48b"));
 
-        List<String> webServers = new ArrayList<String>(
+        List<String> webServers = new ArrayList<>(
                 Arrays.asList(
                         "250892d5-03fb-436c-8125-3d9d30de8f68",
                         "40d4ba5e-ed50-4a83-a6a3-fd7d32631a26"));
 
-        List<String> platformData = new ArrayList<String>(
+        List<String> platformData = new ArrayList<>(
                 Arrays.asList(
                         UUID.randomUUID().toString(), // guid
                         "VH_I", // name

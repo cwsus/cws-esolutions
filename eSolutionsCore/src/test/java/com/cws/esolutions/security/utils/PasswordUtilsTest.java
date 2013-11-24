@@ -25,7 +25,6 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * eSolutionsCore
@@ -64,7 +63,7 @@ public class PasswordUtilsTest
     }
 
     @Test
-    public final void testCreateHash() throws SecurityServiceException
+    public final void testCreateHash()
     {
         final String salt = RandomStringUtils.randomAlphanumeric(32);
         final String pass = "Ariana21*";
