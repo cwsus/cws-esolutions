@@ -26,6 +26,17 @@
                     <config-property-setting name="Password">appuser10</config-property-setting>
                     <config-property-setting name="UserName">appuser</config-property-setting>
                     <config-property-setting name="ServerName">data.caspersbox.corp</config-property-setting>
+                    <config-property-setting name="PortNumber">3306</config-property-setting>
+                    <config-property-setting name="CacheCallableStmts">true</config-property-setting>
+                    <config-property-setting name="ConnectTimeout">10000</config-property-setting>
+                    <config-property-setting name="SocketTimeout">10000</config-property-setting>
+                    <config-property-setting name="ZeroDateTimeBehavior">convertToNull</config-property-setting>
+                    <config-property-setting name="InitialTimeout">10000</config-property-setting>
+                    <config-property-setting name="CacheCallableStatements">true</config-property-setting>
+                    <config-property-setting name="AutoReconnectForPools">true</config-property-setting>
+                    <config-property-setting name="MaxReconnects">3</config-property-setting>
+                    <config-property-setting name="Encoding">UTF-8</config-property-setting>
+                    <config-property-setting name="LoginTimeout">10000</config-property-setting>
                     <connectionmanager>
                         <local-transaction/>
                         <single-pool>

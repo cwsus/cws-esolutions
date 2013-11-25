@@ -9,6 +9,18 @@
         </moduleId>
     </environment>
 
+    <!--
+    <module>
+        <connector>tranql-connector-mysql-local-1.6.rar</connector>
+        <alt-dd>cwssec.xml</alt-dd>
+    </module>
+
+    <module>
+        <connector>tranql-connector-mysql-local-1.6.rar</connector>
+        <alt-dd>esolutionssvc.xml</alt-dd>
+    </module>
+    -->
+
     <module>
         <web>@module@</web>
         <alt-dd>@module@/WEB-INF/geronimo-web.xml</alt-dd>
