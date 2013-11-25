@@ -285,6 +285,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                 resultSet.getString(24), // NAT_ADDR
                                 resultSet.getString(25), // COMMENTS
                                 resultSet.getString(26), // ASSIGNED_ENGINEER
+                                resultSet.getTimestamp(27), // ADD_DATE
+                                resultSet.getTimestamp(28), // DELETE_DATE
                                 resultSet.getInt(29), // DMGR_PORT
                                 resultSet.getString(30), // OWNING_DMGR
                                 resultSet.getString(31) // MGR_ENTRY
@@ -421,6 +423,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                         resultSet.getString(24), // NAT_ADDR
                                         resultSet.getString(25), // COMMENTS
                                         resultSet.getString(26), // ASSIGNED_ENGINEER
+                                        resultSet.getTimestamp(27), // ADD_DATE
+                                        resultSet.getTimestamp(28), // DELETE_DATE
                                         resultSet.getInt(29), // DMGR_PORT
                                         resultSet.getString(30), // OWNING_DMGR
                                         resultSet.getString(31))); // MGR_ENTRY
@@ -723,6 +727,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                     resultSet.getString(24), // NAT_ADDR
                                     resultSet.getString(25), // COMMENTS
                                     resultSet.getString(26), // ASSIGNED_ENGINEER
+                                    resultSet.getTimestamp(27), // ADD_DATE
+                                    resultSet.getTimestamp(28), // DELETE_DATE
                                     resultSet.getInt(29), // DMGR_PORT
                                     resultSet.getString(30), // OWNING_DMGR
                                     resultSet.getString(31) // MGR_ENTRY
@@ -962,6 +968,8 @@ public class ServerDataDAOImpl implements IServerDataDAO
                                     resultSet.getString(24), // NAT_ADDR
                                     resultSet.getString(25), // COMMENTS
                                     resultSet.getString(26), // ASSIGNED_ENGINEER
+                                    resultSet.getTimestamp(27), // ADD_DATE
+                                    resultSet.getTimestamp(28), // DELETE_DATE
                                     resultSet.getInt(29), // DMGR_PORT
                                     resultSet.getString(30), // OWNING_DMGR
                                     resultSet.getString(31) // MGR_ENTRY

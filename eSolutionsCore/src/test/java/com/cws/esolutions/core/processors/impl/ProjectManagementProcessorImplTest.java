@@ -234,7 +234,7 @@ public class ProjectManagementProcessorImplTest
     public final void testGetProjectData()
     {
         Project project = new Project();
-        project.setProjectGuid("f85bcf1c-63e4-46ec-8903-0f74bb49de00");
+        project.setProjectGuid("a8bcb1d5-6088-4264-ade9-8cb878eb4f57");
 
         ProjectManagementRequest request = new ProjectManagementRequest();
         request.setUserAccount(userAccount);
