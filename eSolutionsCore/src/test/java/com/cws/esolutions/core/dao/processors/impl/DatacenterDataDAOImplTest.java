@@ -48,7 +48,7 @@ public class DatacenterDataDAOImplTest
     private static final IDatacenterDataDAO dao = new DatacenterDataDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -63,7 +63,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public final void testAddNewDatacenter()
+    public static final void testAddNewDatacenter()
     {
         List<String> data = new ArrayList<>(
                 Arrays.asList(
@@ -74,7 +74,7 @@ public class DatacenterDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewDatacenter(data));
+            Assert.assertTrue(DatacenterDataDAOImplTest.dao.addNewDatacenter(data));
         }
         catch (SQLException sqx)
         {
@@ -83,11 +83,11 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public final void testRemoveExistingDatacenter()
+    public static final void testRemoveExistingDatacenter()
     {
         try
         {
-            Assert.assertTrue(dao.removeExistingDatacenter("guid"));
+            Assert.assertTrue(DatacenterDataDAOImplTest.dao.removeExistingDatacenter("guid"));
         }
         catch (SQLException sqx)
         {
@@ -96,11 +96,11 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public final void testGetAvailableDataCenters()
+    public static final void testGetAvailableDataCenters()
     {
         try
         {
-            Assert.assertNotNull(dao.getAvailableDataCenters(0));
+            Assert.assertNotNull(DatacenterDataDAOImplTest.dao.getAvailableDataCenters(0));
         }
         catch (SQLException sqx)
         {
@@ -109,11 +109,11 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public final void testGetDataCenterByAttribute()
+    public static final void testGetDataCenterByAttribute()
     {
         try
         {
-            Assert.assertNotNull(dao.getDataCenterByAttribute("attribute", 0));
+            Assert.assertNotNull(DatacenterDataDAOImplTest.dao.getDataCenterByAttribute("attribute", 0));
         }
         catch (SQLException sqx)
         {
@@ -122,11 +122,11 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public final void testGetDatacenter()
+    public static final void testGetDatacenter()
     {
         try
         {
-            Assert.assertNotNull(dao.getDatacenter("attribute"));
+            Assert.assertNotNull(DatacenterDataDAOImplTest.dao.getDatacenter("attribute"));
         }
         catch (SQLException sqx)
         {

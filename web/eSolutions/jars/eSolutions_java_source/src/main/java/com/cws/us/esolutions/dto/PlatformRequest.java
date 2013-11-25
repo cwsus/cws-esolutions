@@ -12,12 +12,16 @@
 package com.cws.us.esolutions.dto;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
  * eSolutions_java_source
@@ -45,6 +49,8 @@ public class PlatformRequest implements Serializable
     private String platformDmgrName = null;
     private List<String> appServers = null;
     private List<String> webServers = null;
+    private List<Server> availableApps = null;
+    private List<Server> availableWebs = null;
 
     private static final long serialVersionUID = 6181577121963540025L;
     private static final String CNAME = PlatformRequest.class.getName();
@@ -103,6 +109,32 @@ public class PlatformRequest implements Serializable
         }
 
         this.platformDmgrName = value;
+    }
+
+    public final void setAvailableApps(final List<Server> value)
+    {
+        final String methodName = PlatformRequest.CNAME + "#setAvailableApps(final List<Server> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.availableApps = value;
+    }
+
+    public final void setAvailableWebs(final List<Server> value)
+    {
+        final String methodName = PlatformRequest.CNAME + "#setAvailableWebs(final List<Server> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.availableWebs = value;
     }
 
     public final void setAppServers(final List<String> value)
@@ -194,6 +226,32 @@ public class PlatformRequest implements Serializable
         }
 
         return this.platformDmgrName;
+    }
+
+    public final List<Server> getAvailableApps()
+    {
+        final String methodName = PlatformRequest.CNAME + "#getAvailableApps()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.availableApps);
+        }
+
+        return this.availableApps;
+    }
+
+    public final List<Server> getAvailableWebs()
+    {
+        final String methodName = PlatformRequest.CNAME + "#getAvailableWebs()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.availableWebs);
+        }
+
+        return this.availableWebs;
     }
 
     public final List<String> getAppServers()

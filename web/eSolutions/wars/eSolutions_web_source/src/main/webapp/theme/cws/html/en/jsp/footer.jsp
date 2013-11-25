@@ -43,11 +43,12 @@
                     <spring:message code='theme.navbar.login' /></a> | 
             </c:otherwise>
         </c:choose>
-        <c:if test="${not fn:contains(pageContext.request.requestURI, 'login')
-            or not fn:endsWith(pageContext.request.requestURI, '/common/default')}">
-            <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                <spring:message code='theme.navbar.home' /></a> |
-        </c:if>
+        <script>
+            if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
+            {
+                document.write('<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a> |');
+            }
+        </script>
         <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
             <spring:message code='theme.navbar.help' /></a><br />
         &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />

@@ -47,24 +47,24 @@ public class CoreServiceException extends Exception
     {
         super(message);
 
-        this.sendExceptionLetter(message);
+        CoreServiceException.sendExceptionLetter(message);
     }
 
     public CoreServiceException(final Throwable throwable)
     {
         super(throwable);
 
-        this.sendExceptionLetter(throwable.getMessage());
+        CoreServiceException.sendExceptionLetter(throwable.getMessage());
     }
 
     public CoreServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);
 
-        this.sendExceptionLetter(message);
+        CoreServiceException.sendExceptionLetter(message);
     }
 
-    private void sendExceptionLetter(final String message)
+    private static void sendExceptionLetter(final String message)
     {
         final CoreServiceBean bean = CoreServiceBean.getInstance();
         final ExceptionConfig config = bean.getConfigData().getExceptionConfig();

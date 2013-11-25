@@ -268,7 +268,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -279,7 +279,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -290,7 +290,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -336,7 +336,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -347,7 +347,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -358,7 +358,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -405,7 +405,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -416,7 +416,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -427,7 +427,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -462,8 +462,8 @@ public class OnlineResetController
             AccountResetRequest resetReq = new AccountResetRequest();
             resetReq.setHostInfo(reqInfo);
             resetReq.setUserSecurity(userSecurity);
-            resetReq.setApplicationId(appConfig.getApplicationId());
-            resetReq.setApplicationName(appConfig.getApplicationName());
+            resetReq.setApplicationId(this.appConfig.getApplicationId());
+            resetReq.setApplicationName(this.appConfig.getApplicationName());
 
             IAccountResetProcessor resetProcessor = new AccountResetProcessorImpl();
             AccountResetResponse resetRes = resetProcessor.verifyResetRequest(resetReq);
@@ -487,8 +487,8 @@ public class OnlineResetController
                     // this account is suspended, we cant work on it
                     hSession.invalidate();
 
-                    mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageUserNotLoggedIn());
-                    mView.setViewName(appConfig.getLogonRedirect());
+                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageUserNotLoggedIn());
+                    mView.setViewName(this.appConfig.getLogonRedirect());
                 }
                 else
                 {
@@ -496,7 +496,7 @@ public class OnlineResetController
                     hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                     mView.addObject(OnlineResetController.RESET_KEY_ID, resetId);
-                    mView.setViewName(appConfig.getExpiredRedirect());
+                    mView.setViewName(this.appConfig.getExpiredRedirect());
                 }
             }
             else
@@ -504,14 +504,14 @@ public class OnlineResetController
                 // user not logged in, redirect
                 hSession.invalidate();
 
-                mView.setViewName(appConfig.getLogonRedirect());
+                mView.setViewName(this.appConfig.getLogonRedirect());
             }
         }
         catch (AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -546,7 +546,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -557,7 +557,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -568,7 +568,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -582,8 +582,8 @@ public class OnlineResetController
         hSession.invalidate(); // clear the http session
 
         mView = new ModelAndView(new RedirectView());
-        mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageRequestCanceled());
-        mView.setViewName(appConfig.getLogonRedirect());
+        mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageRequestCanceled());
+        mView.setViewName(this.appConfig.getLogonRedirect());
 
         if (DEBUG)
         {
@@ -620,7 +620,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -631,7 +631,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -642,7 +642,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -654,13 +654,13 @@ public class OnlineResetController
         }
 
         // validate
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (bindResult.hasErrors())
         {
             ERROR_RECORDER.error("Failed to validate request");
 
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
@@ -695,8 +695,8 @@ public class OnlineResetController
             controlReq.setModType(ModificationType.NONE);
             controlReq.setUserAccount(reqAccount);
             controlReq.setSearchType(SearchRequestType.FORGOTUID);
-            controlReq.setApplicationId(appConfig.getApplicationId());
-            controlReq.setApplicationName(appConfig.getApplicationName());
+            controlReq.setApplicationId(this.appConfig.getApplicationId());
+            controlReq.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -748,10 +748,10 @@ public class OnlineResetController
                 emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                 emailMessage.setMessageBody(emailBody);
                 emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
+                emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
                         this.passwordResetSubject, this.getClass().getClassLoader()));
                 emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-                emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
 
                 if (DEBUG)
                 {
@@ -761,7 +761,7 @@ public class OnlineResetController
                 EmailUtils.sendEmailMessage(emailMessage);
 
                 mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                mView.setViewName(appConfig.getLogonRedirect());
+                mView.setViewName(this.appConfig.getLogonRedirect());
             }
             else
             {
@@ -774,25 +774,25 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (CoreServiceException csx)
         {
             ERROR_RECORDER.error(csx.getMessage(), csx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -830,7 +830,7 @@ public class OnlineResetController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -841,7 +841,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -852,7 +852,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -863,13 +863,13 @@ public class OnlineResetController
             }
         }
 
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (bindResult.hasErrors())
         {
             ERROR_RECORDER.error("Request failed validation");
 
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", new UserChangeRequest());
             mView.setViewName(this.submitUsernamePage);
 
@@ -902,8 +902,8 @@ public class OnlineResetController
             secRequest.setLoginType(LoginType.SECCONFIG);
             secRequest.setHostInfo(reqInfo);
             secRequest.setUserAccount(reqAccount);
-            secRequest.setApplicationId(appConfig.getApplicationId());
-            secRequest.setApplicationName(appConfig.getApplicationName());
+            secRequest.setApplicationId(this.appConfig.getApplicationId());
+            secRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -924,7 +924,7 @@ public class OnlineResetController
                 if ((resAccount.isSuspended()) || (resAccount.isOlrLocked()))
                 {
                     mView = new ModelAndView(new RedirectView());
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                     return mView;
                 }
@@ -962,7 +962,7 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -992,7 +992,7 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final SecurityConfig secConfig = appConfig.getSecurityConfig();
+        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
@@ -1006,7 +1006,7 @@ public class OnlineResetController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1017,7 +1017,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1028,7 +1028,7 @@ public class OnlineResetController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1039,13 +1039,13 @@ public class OnlineResetController
             }
         }
 
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (bindResult.hasErrors())
         {
             ERROR_RECORDER.error("Request validation failed");
 
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", request);
             mView.setViewName(this.submitAnswersPage);
 
@@ -1080,9 +1080,9 @@ public class OnlineResetController
             authRequest.setUserSecurity(userSecurity);
             authRequest.setAuthType(AuthenticationType.RESET);
             authRequest.setLoginType(LoginType.SECCONFIG);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
+            authRequest.setApplicationId(this.appConfig.getApplicationId());
+            authRequest.setApplicationName(this.appConfig.getApplicationName());
             authRequest.setCount(request.getCount());
 
             if (DEBUG)
@@ -1105,8 +1105,8 @@ public class OnlineResetController
                 resetReq.setHostInfo(reqInfo);
                 resetReq.setRequestor(userAccount);
                 resetReq.setUserAccount(userAccount);
-                resetReq.setApplicationId(appConfig.getApplicationId());
-                resetReq.setApplicationName(appConfig.getApplicationName());
+                resetReq.setApplicationId(this.appConfig.getApplicationId());
+                resetReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1168,9 +1168,9 @@ public class OnlineResetController
                     emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                     emailMessage.setMessageBody(emailBody);
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
+                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
                             this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                     emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -1186,7 +1186,7 @@ public class OnlineResetController
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
                     if (secConfig.getSmsResetEnabled())
@@ -1196,7 +1196,7 @@ public class OnlineResetController
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetRes.getSmsCode());
                         emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
 
                         if (DEBUG)
                         {
@@ -1211,7 +1211,7 @@ public class OnlineResetController
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
                     }
                 }
@@ -1221,7 +1221,7 @@ public class OnlineResetController
                     ERROR_RECORDER.error(resetRes.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             else
@@ -1246,25 +1246,25 @@ public class OnlineResetController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (IOException iox)
         {
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (CoreServiceException csx)
         {
             ERROR_RECORDER.error(csx.getMessage(), csx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         catch (AccountResetException arx)
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
         finally
         {
@@ -1278,7 +1278,7 @@ public class OnlineResetController
                 hRequest.getSession().invalidate();
 
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.messageOlrComplete);
-                mView.setViewName(appConfig.getLogonRedirect());
+                mView.setViewName(this.appConfig.getLogonRedirect());
             }
         }
 

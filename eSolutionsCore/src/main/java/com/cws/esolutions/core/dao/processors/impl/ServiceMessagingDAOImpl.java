@@ -154,11 +154,11 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
                     svcMessage.add(resultSet.getString(3)); // svc_message_txt
                     svcMessage.add(resultSet.getString(4)); // svc_message_author
                     svcMessage.add(resultSet.getString(5)); // svc_message_email
-                    svcMessage.add(resultSet.getLong(6)); // svc_message_submitdate
+                    svcMessage.add(resultSet.getTimestamp(6)); // svc_message_submitdate
                     svcMessage.add(resultSet.getBoolean(7)); // svc_message_active
                     svcMessage.add(resultSet.getBoolean(8)); // svc_message_expires
-                    svcMessage.add(resultSet.getLong(9)); // svc_message_expirydate
-                    svcMessage.add(resultSet.getLong(10)); // svc_message_modifiedon
+                    svcMessage.add(resultSet.getTimestamp(9)); // svc_message_expirydate
+                    svcMessage.add(resultSet.getTimestamp(10)); // svc_message_modifiedon
                     svcMessage.add(resultSet.getString(11)); // svc_message_modifiedby
 
                     if (DEBUG)
@@ -218,54 +218,52 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+            
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrServiceMessages()}");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrServiceMessages()}");
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    response = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        response = new ArrayList<Object[]>();
-
-                        while (resultSet.next())
+                        Object[] data = new Object[]
                         {
-                            Object[] data = new Object[]
-                            {
                                 resultSet.getString(1), // svc_message_id
                                 resultSet.getString(2), // svc_message_title
                                 resultSet.getString(3), // svc_message_txt
                                 resultSet.getString(4), // svc_message_author
                                 resultSet.getString(5), // svc_message_email
-                                resultSet.getLong(6), // svc_message_submitdate
+                                resultSet.getTimestamp(6), // svc_message_submitdate
                                 resultSet.getBoolean(7), // svc_message_active
                                 resultSet.getBoolean(8), // svc_message_expires
-                                resultSet.getLong(9), // svc_message_expirydate
+                                resultSet.getTimestamp(9), // svc_message_expirydate
                                 resultSet.getLong(10), // svc_message_modifiedon
-                                resultSet.getString(11) // svc_message_modifiedby
-                            };
+                                resultSet.getTimestamp(11) // svc_message_modifiedby
+                        };
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("data: {}", data);
-                            }
-
-                            response.add(data);
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("data: {}", data);
                         }
+
+                        response.add(data);
                     }
                 }
             }
@@ -321,29 +319,27 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, messageId); // messageId
+            stmt.setString(2, (String) messageList.get(0)); // messageTitle
+            stmt.setString(3, (String) messageList.get(1)); // messageText
+            stmt.setBoolean(4, (Boolean) messageList.get(2)); // active
+            stmt.setBoolean(5, (Boolean) messageList.get(3)); // expiry
+            stmt.setLong(6, (messageList.get(4) == null) ? 0 : (Long) messageList.get(4)); // expiry date
+            stmt.setString(7, (String) messageList.get(5)); // modifyAuthor
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL updateServiceMessage(?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, messageId); // messageId
-                stmt.setString(2, (String) messageList.get(0)); // messageTitle
-                stmt.setString(3, (String) messageList.get(1)); // messageText
-                stmt.setBoolean(4, (Boolean) messageList.get(2)); // active
-                stmt.setBoolean(5, (Boolean) messageList.get(3)); // expiry
-                stmt.setLong(6, (messageList.get(4) == null) ? 0 : (Long) messageList.get(4)); // expiry date
-                stmt.setString(7, (String) messageList.get(5)); // modifyAuthor
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -391,23 +387,21 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeSvcMessage(?)}");
+            stmt.setString(1, messageId);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL removeSvcMessage(?)}");
-                stmt.setString(1, messageId);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -433,7 +427,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
     }
 
     @Override
-    public synchronized List<String[]> getMessagesByAttribute(final String value) throws SQLException
+    public synchronized List<Object[]> getMessagesByAttribute(final String value) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
 
@@ -445,7 +439,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> responseData = null;
+        List<Object[]> responseData = null;
 
         try
         {
@@ -455,68 +449,66 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getMessagesByAttribute(?)}");
-                stmt.setString(1, value);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getMessagesByAttribute(?)}");
+            stmt.setString(1, value);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseData = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        Object[] messageData = new Object[]
                         {
-                            String[] messageData = new String[]
-                            {
                                 resultSet.getString(1), // svc_message_id
                                 resultSet.getString(2), // svc_message_title
                                 resultSet.getString(3), // svc_message_txt
                                 resultSet.getString(4), // svc_message_author
                                 resultSet.getString(5), // svc_message_email
-                                String.valueOf(resultSet.getLong(6)), // svc_message_submitdate
-                                String.valueOf(resultSet.getBoolean(7)), // svc_message_active
-                                String.valueOf(resultSet.getBoolean(8)), // svc_message_expires
-                                String.valueOf(resultSet.getLong(9)), // svc_message_expirydate
-                                String.valueOf(resultSet.getLong(10)), // svc_message_modifiedon
+                                resultSet.getTimestamp(6), // svc_message_submitdate
+                                resultSet.getBoolean(7), // svc_message_active
+                                resultSet.getBoolean(8), // svc_message_expires
+                                resultSet.getTimestamp(9), // svc_message_expirydate
+                                resultSet.getTimestamp(10), // svc_message_modifiedon
                                 resultSet.getString(11), // svc_message_modifiedby
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : messageData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            responseData.add(messageData);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            for (String[] str : responseData)
+                            for (Object obj : messageData)
                             {
-                                for (String str1 : str)
-                                {
-                                    DEBUGGER.debug(str1);
-                                }
+                                DEBUGGER.debug("Value: {}", obj);
+                            }
+                        }
+
+                        responseData.add(messageData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (Object[] str : responseData)
+                        {
+                            for (Object obj : str)
+                            {
+                                DEBUGGER.debug("Value: {}", obj);
                             }
                         }
                     }

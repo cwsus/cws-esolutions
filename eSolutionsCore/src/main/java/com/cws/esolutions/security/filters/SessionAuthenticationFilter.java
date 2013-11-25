@@ -100,7 +100,7 @@ public class SessionAuthenticationFilter implements Filter
             {
                 if (this.ignoreURIs != null)
                 {
-                    for (String str : ignoreURIs)
+                    for (String str : this.ignoreURIs)
                     {
                         DEBUGGER.debug(str);
                     }

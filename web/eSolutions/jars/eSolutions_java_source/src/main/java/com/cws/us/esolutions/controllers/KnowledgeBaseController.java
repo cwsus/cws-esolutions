@@ -419,7 +419,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -430,7 +430,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -441,7 +441,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -452,7 +452,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             mView.addObject("isHelpSearch", true);
             mView.addObject("command", new SearchRequest());
@@ -460,7 +460,7 @@ public class KnowledgeBaseController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -501,7 +501,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -512,7 +512,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -523,7 +523,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -534,7 +534,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             if (StringUtils.isNotEmpty(articleId))
             {
@@ -563,8 +563,8 @@ public class KnowledgeBaseController
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(this.appConfig.getApplicationId());
+                    request.setApplicationName(this.appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -602,13 +602,13 @@ public class KnowledgeBaseController
                 {
                     ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -645,7 +645,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -656,7 +656,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -667,7 +667,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -678,7 +678,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             Article article = new Article();
             article.setAuthor(userAccount.getDisplayName());
@@ -692,12 +692,12 @@ public class KnowledgeBaseController
             }
 
             mView.addObject("command", article);
-            mView.addObject("dateFormat", appConfig.getDateFormat());
+            mView.addObject("dateFormat", this.appConfig.getDateFormat());
             mView.setViewName(this.createArticlePage);
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -736,7 +736,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -747,7 +747,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -758,7 +758,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -769,7 +769,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             if (StringUtils.isNotEmpty(articleId))
             {
@@ -798,8 +798,8 @@ public class KnowledgeBaseController
                     request.setRequestInfo(reqInfo);
                     request.setUserAccount(userAccount);
                     request.setServiceId(this.serviceId);
-                    request.setApplicationId(appConfig.getApplicationId());
-                    request.setApplicationName(appConfig.getApplicationName());
+                    request.setApplicationId(this.appConfig.getApplicationId());
+                    request.setApplicationName(this.appConfig.getApplicationName());
 
                     if (DEBUG)
                     {
@@ -827,7 +827,7 @@ public class KnowledgeBaseController
                     }
                     else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                     {
-                        mView.setViewName(appConfig.getUnauthorizedPage());
+                        mView.setViewName(this.appConfig.getUnauthorizedPage());
                     }
                     else
                     {
@@ -841,13 +841,13 @@ public class KnowledgeBaseController
                 {
                     ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -885,7 +885,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -896,7 +896,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -907,7 +907,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -918,7 +918,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -936,8 +936,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -975,7 +975,7 @@ public class KnowledgeBaseController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -989,12 +989,12 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1033,7 +1033,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1044,7 +1044,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1055,7 +1055,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1066,7 +1066,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1094,8 +1094,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1133,7 +1133,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.deleteArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                     emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -1144,30 +1144,30 @@ public class KnowledgeBaseController
                     EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleDeleted);
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     // failure
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
             }
             catch (KnowledgeBaseException kbx)
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1175,7 +1175,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1183,14 +1183,14 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1229,7 +1229,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1240,7 +1240,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1251,7 +1251,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1262,7 +1262,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1290,8 +1290,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1329,7 +1329,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.approveArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                     emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -1340,30 +1340,30 @@ public class KnowledgeBaseController
                     EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleApproved);
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     // failure
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
             }
             catch (KnowledgeBaseException kbx)
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1371,7 +1371,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1379,14 +1379,14 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1425,7 +1425,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1436,7 +1436,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1447,7 +1447,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1458,7 +1458,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1486,8 +1486,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1525,7 +1525,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.rejectArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                     emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -1536,30 +1536,30 @@ public class KnowledgeBaseController
                     EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleRejected);
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     // failure
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getSearchRequestPage());
+                    mView.setViewName(this.appConfig.getSearchRequestPage());
                 }
             }
             catch (KnowledgeBaseException kbx)
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1567,7 +1567,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -1575,14 +1575,14 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1621,7 +1621,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1632,7 +1632,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1643,7 +1643,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1654,14 +1654,14 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
-            validator.validate(article, bindResult);
+            this.validator.validate(article, bindResult);
 
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -1680,7 +1680,7 @@ public class KnowledgeBaseController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1720,7 +1720,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1731,7 +1731,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1742,7 +1742,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1753,14 +1753,14 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
-            validator.validate(article, bindResult);
+            this.validator.validate(article, bindResult);
 
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -1783,8 +1783,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1834,7 +1834,7 @@ public class KnowledgeBaseController
                         emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                         emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                                 this.createArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                         emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                         if (DEBUG)
@@ -1848,19 +1848,19 @@ public class KnowledgeBaseController
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
                     catch (IOException iox)
                     {
                         ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
                     catch (CoreServiceException csx)
                     {
                         ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
                     Article newArticle = new Article();
@@ -1880,7 +1880,7 @@ public class KnowledgeBaseController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1905,12 +1905,12 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1950,7 +1950,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1961,7 +1961,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1972,7 +1972,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1983,14 +1983,14 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
-            validator.validate(article, bindResult);
+            this.validator.validate(article, bindResult);
 
             if (bindResult.hasErrors())
             {
                 // validation failed
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.addObject("command", new Article());
 
                 return mView;
@@ -2013,8 +2013,8 @@ public class KnowledgeBaseController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -2062,7 +2062,7 @@ public class KnowledgeBaseController
                     emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
                     emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
                             this.updateArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                     emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
 
                     if (DEBUG)
@@ -2078,7 +2078,7 @@ public class KnowledgeBaseController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2092,13 +2092,13 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2106,7 +2106,7 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
@@ -2114,14 +2114,14 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 mView.addObject("command", new Article());
                 mView.setViewName(this.createArticlePage);
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -2133,14 +2133,14 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
+    public final ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest searchRequest, final BindingResult bindResult)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#submitArticleSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchReq, final BindingResult bindResult)";
+        final String methodName = KnowledgeBaseController.CNAME + "#submitArticleSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchRequest, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", request);
+            DEBUGGER.debug("SearchRequest: {}", searchRequest);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -2161,7 +2161,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2172,7 +2172,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2183,7 +2183,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2194,7 +2194,7 @@ public class KnowledgeBaseController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -2208,15 +2208,7 @@ public class KnowledgeBaseController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SearchRequest: {}", request);
-                }
-
-                SearchResponse searchRes = searchProcessor.doArticleSearch(request);
+                SearchResponse searchRes = searchProcessor.doArticleSearch(searchRequest);
 
                 if (DEBUG)
                 {
@@ -2232,7 +2224,7 @@ public class KnowledgeBaseController
                 }
                 else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2246,12 +2238,12 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(srx.getMessage(), srx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)

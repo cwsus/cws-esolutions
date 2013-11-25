@@ -42,9 +42,12 @@ import com.cws.esolutions.agent.jmx.exception.JMXConnectorException;
  */
 public class WebSphereJMXConnector implements JMXConnection
 {
+    private static final String CNAME = WebSphereJMXConnector.class.getName();
+
+    @Override
     public JMXConnectorObject getJMXConnector(final String mbeanName) throws JMXConnectorException
     {
-        final String methodName = JMXConnection.CNAME + "#getJMXConnector(final String mbeanName) throws JMXConnectorException";
+        final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final String mbeanName) throws JMXConnectorException";
 
         if (DEBUG)
         {
@@ -117,9 +120,10 @@ public class WebSphereJMXConnector implements JMXConnection
         return jmxObject;
     }
 
+    @Override
     public JMXConnectorObject getDeploymentConnector() throws JMXConnectorException
     {
-        final String methodName = JMXConnection.CNAME + "#getDeploymentConnector() throws JMXConnectorException";
+        final String methodName = WebSphereJMXConnector.CNAME + "#getDeploymentConnector() throws JMXConnectorException";
 
         if (DEBUG)
         {

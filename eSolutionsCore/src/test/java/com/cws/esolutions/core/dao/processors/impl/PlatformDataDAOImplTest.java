@@ -18,7 +18,6 @@ package com.cws.esolutions.core.dao.processors.impl;
 import java.util.UUID;
 import java.util.List;
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.Arrays;
@@ -48,10 +47,10 @@ import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
  */
 public class PlatformDataDAOImplTest
 {
-    private IPlatformDataDAO dao = new PlatformDataDAOImpl();
+    private static final IPlatformDataDAO dao = new PlatformDataDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -66,7 +65,7 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public final void testAddNewPlatform()
+    public static final void testAddNewPlatform()
     {
         List<String> appServers = new ArrayList<>(
                 Arrays.asList(
@@ -91,7 +90,7 @@ public class PlatformDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewPlatform(platformData));
+            Assert.assertTrue(PlatformDataDAOImplTest.dao.addNewPlatform(platformData));
         }
         catch (SQLException sqx)
         {
@@ -100,17 +99,17 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public final void testDeletePlatform()
+    public static final void testDeletePlatform()
     {
 
     }
 
     @Test
-    public final void testGetPlatformData()
+    public static final void testGetPlatformData()
     {
         try
         {
-            List<String> platformList = dao.getPlatformData("c0b20624-0a0c-4cf6-a8dc-62efc5a46e18");
+            List<String> platformList = PlatformDataDAOImplTest.dao.getPlatformData("c0b20624-0a0c-4cf6-a8dc-62efc5a46e18");
 
             Assert.assertNotNull(platformList);
         }
@@ -121,13 +120,8 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public final void testListAvailablePlatforms()
+    public static final void testListAvailablePlatforms()
     {
 
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
     }
 }

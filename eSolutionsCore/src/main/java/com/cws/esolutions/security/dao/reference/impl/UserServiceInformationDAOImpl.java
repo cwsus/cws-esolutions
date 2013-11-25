@@ -66,24 +66,22 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL addProjectToUser(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, projectGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL addProjectToUser(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, projectGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -137,24 +135,22 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeProjectFromUser(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, projectGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL removeProjectFromUser(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, projectGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -208,24 +204,22 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL isUserAuthorizedForProject(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, projectGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL isUserAuthorizedForProject(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, projectGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = stmt.execute();
 
-                isComplete = stmt.execute();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -279,40 +273,38 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrieveAuthorizedProjectsForUser(?)}");
+            stmt.setString(1, commonName);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrieveAuthorizedProjectsForUser(?)}");
-                stmt.setString(1, commonName);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    projectList = new ArrayList<>();
+
+                    while (resultSet.next())
+                    {
+                        projectList.add(resultSet.getString(1));
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        projectList = new ArrayList<String>();
-
-                        while (resultSet.next())
-                        {
-                            projectList.add(resultSet.getString(1));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", projectList);
-                        }
+                        DEBUGGER.debug("List<String>: {}", projectList);
                     }
                 }
             }
@@ -373,24 +365,22 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL addServiceToUser(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, serviceGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL addServiceToUser(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, serviceGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -444,24 +434,22 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeServiceFromUser(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, serviceGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL removeServiceFromUser(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, serviceGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -516,37 +504,35 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL verifySvcForUser(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, serviceGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL verifySvcForUser(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, serviceGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    isComplete = resultSet.getBoolean(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        isComplete = resultSet.getBoolean(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
+                        DEBUGGER.debug("isComplete: {}", isComplete);
                     }
                 }
             }
@@ -607,40 +593,38 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL listServicesForUser(?)}");
+            stmt.setString(1, commonName);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL listServicesForUser(?)}");
-                stmt.setString(1, commonName);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    serviceList = new ArrayList<>();
+
+                    while (resultSet.next())
+                    {
+                        serviceList.add(resultSet.getString(1));
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        serviceList = new ArrayList<String>();
-
-                        while (resultSet.next())
-                        {
-                            serviceList.add(resultSet.getString(1));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", serviceList);
-                        }
+                        DEBUGGER.debug("List<String>: {}", serviceList);
                     }
                 }
             }

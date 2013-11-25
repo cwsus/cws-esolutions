@@ -30,6 +30,18 @@
 
 <script type="text/javascript">
     <!--
+    function showNatData(box)
+    {
+        if (box.checked)
+        {
+            document.getElementById('natAddr').style.display = 'block';
+        }
+        else
+        {
+            document.getElementById('natAddr').style.display = 'none';
+        }
+    }
+
     function showOptions(obj)
     {
         if ((obj.value == 'DMGRSERVER') || (obj.value == 'VIRTUALHOST'))
@@ -112,6 +124,7 @@
 	                <td><form:input path="osName" /></td>
 	                <td><form:errors path="osName" cssClass="validationError" /></td>
 	                <%-- domain name --%>
+	                <td><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
 	                <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
 	                <td>
 	                    <form:select path="domainName">
@@ -154,9 +167,6 @@
 	                    </form:select>
 	                </td>
 	                <td><form:errors path="serverRegion" cssClass="validationError" /></td>
-	                <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label></td>
-	                <td><form:input path="serialNumber" /></td>
-	                <td><form:errors path="serialNumber" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
 	                <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
@@ -170,7 +180,6 @@
 	                    </form:select>
                     </td>
                     <td><form:errors path="datacenter" cssClass="validationError" /></td>
-	                <td><form:errors path="serverRegion" cssClass="validationError" /></td>
 	                <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
 	                <td>
 	                    <form:select path="networkPartition">
@@ -179,7 +188,7 @@
 	                        <form:options items="${networkPartitions}" />
 	                    </form:select>
 	                </td>
-	                <td><form:errors path="serialNumber" cssClass="validationError" /></td>
+	                <td><form:errors path="networkPartition" cssClass="validationError" /></td>
 	            </tr>
 	        </table>
 	        <table id="applicationDetail" style="display: none">
@@ -217,6 +226,14 @@
 	        </table>
 	        <table id="hardwareDetail">
 	            <tr>
+                    <td><label id="txtServerModel"><spring:message code="system.mgmt.server.model" /></label></td>
+                    <td><form:input path="serverModel" /></td>
+                    <td><form:errors path="serverModel" cssClass="validationError" /></td>
+                    <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label></td>
+                    <td><form:input path="serialNumber" /></td>
+                    <td><form:errors path="serialNumber" cssClass="validationError" /></td>
+                </tr>
+                <tr>
 	                <td><label id="txtCpuType"><spring:message code="system.mgmt.cpu.type" /></label></td>
 	                <td><form:input path="cpuType" /></td>
 	                <td><form:errors path="cpuType" cssClass="validationError" /></td>
@@ -228,9 +245,6 @@
 	                <td><label id="txtInstalledMemory"><spring:message code="system.mgmt.installed.memory" /></label></td>
 	                <td><form:input path="installedMemory" /></td>
 	                <td><form:errors path="installedMemory" cssClass="validationError" /></td>
-	                <td><label id="txtServerModel"><spring:message code="system.mgmt.server.model" /></label></td>
-	                <td><form:input path="serverModel" /></td>
-	                <td><form:errors path="serverModel" cssClass="validationError" /></td>
 	            </tr>
 	            <tr>
 	                <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label></td>
@@ -243,13 +257,21 @@
 	        </table>
 	        <table id="networkDetail">
 	            <tr>
+	                <td><label id="txtOperInfo"><spring:message code="system.mgmt.oper.title" /></label></td>
+	            </tr>
+	            <tr>
 	                <td><label id="txtOperHostname"><spring:message code="system.mgmt.oper.name" /></label></td>
 	                <td><form:input path="operHostName" /></td>
 	                <td><form:errors path="operHostName" cssClass="validationError" /></td>
 	                <td><label id="txtOperAddress"><spring:message code="system.mgmt.oper.address" /></label></td>
 	                <td><form:input path="operIpAddress" /></td>
 	                <td><form:errors path="operIpAddress" cssClass="validationError" /></td>
+                    <td><label id="txtIsScmEnabled"><spring:message code="system.mgmt.nat.enabled" /></label></td>
+                    <td><input onclick="showNatData(this);" type="checkbox" value="false"></td>
 	            </tr>
+                <tr>
+                    <td><label id="txtMgmtInfo"><spring:message code="system.mgmt.mgmt.title" /></label></td>
+                </tr>
 	            <tr>
 	                <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label></td>
 	                <td><form:input path="mgmtHostName" /></td>
@@ -258,6 +280,9 @@
 	                <td><form:input path="mgmtIpAddress" /></td>
 	                <td><form:errors path="mgmtIpAddress" cssClass="validationError" /></td>
 	            </tr>
+                <tr>
+                    <td><label id="txtBkup"><spring:message code="system.mgmt.backup.title" /></label></td>
+                </tr>
 	            <tr>
 	                <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label></td>
 	                <td><form:input path="bkHostName" /></td>
@@ -266,6 +291,9 @@
 	                <td><form:input path="bkIpAddress" /></td>
 	                <td><form:errors path="bkIpAddress" cssClass="validationError" /></td>
 	            </tr>
+                <tr>
+                    <td><label id="txtNasInfo"><spring:message code="system.mgmt.nas.title" /></label></td>
+                </tr>
 	            <tr>
 	                <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label></td>
 	                <td><form:input path="nasHostName" /></td>
@@ -274,12 +302,14 @@
 	                <td><form:input path="nasIpAddress" /></td>
 	                <td><form:errors path="nasIpAddress" cssClass="validationError" /></td>
 	            </tr>
-	            <tr>
-	                <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
-	                <td><form:input path="natAddress" /></td>
-	                <td><form:errors path="natAddress" cssClass="validationError" /></td>
-	            </tr>
 	        </table>
+            <table id="natAddr" style="display: none;">
+                <tr>
+                    <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
+                    <td><form:input path="natAddress" /></td>
+                    <td><form:errors path="natAddress" cssClass="validationError" /></td>
+                </tr>
+            </table>
 	        <table id="comments">
 	            <tr>
 	                <td><label id="txtServerComments"><spring:message code="system.mgmt.server.comments" /></label></td>

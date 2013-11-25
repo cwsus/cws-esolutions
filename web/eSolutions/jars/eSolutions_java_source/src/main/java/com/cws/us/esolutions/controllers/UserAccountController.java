@@ -305,7 +305,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -316,7 +316,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -327,7 +327,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -375,7 +375,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -386,7 +386,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -397,7 +397,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -415,7 +415,7 @@ public class UserAccountController
                 changeReq.setIsReset(true);
             }
 
-            mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessagePasswordExpired());
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessagePasswordExpired());
         }
 
         if (DEBUG)
@@ -460,7 +460,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -471,7 +471,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -482,7 +482,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -509,8 +509,8 @@ public class UserAccountController
             request.setHostInfo(reqInfo);
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -533,7 +533,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -545,7 +545,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(arx.getMessage(), arx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -582,7 +582,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -593,7 +593,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -604,7 +604,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -652,7 +652,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -663,7 +663,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -674,7 +674,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -722,7 +722,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -733,7 +733,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -744,7 +744,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -759,7 +759,7 @@ public class UserAccountController
         hSession.invalidate();
 
         mView = new ModelAndView(new RedirectView());
-        mView.setViewName(appConfig.getLogonRedirect());
+        mView.setViewName(this.appConfig.getLogonRedirect());
 
         if (DEBUG)
         {
@@ -796,7 +796,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -807,7 +807,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -818,7 +818,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -843,8 +843,8 @@ public class UserAccountController
 
             // reset keys !
             AccountChangeRequest req = new AccountChangeRequest();
-            req.setApplicationId(appConfig.getApplicationId());
-            req.setApplicationName(appConfig.getApplicationName());
+            req.setApplicationId(this.appConfig.getApplicationId());
+            req.setApplicationName(this.appConfig.getApplicationName());
             req.setHostInfo(reqInfo);
             req.setUserAccount(userAccount);
             req.setRequestor(userAccount);
@@ -870,7 +870,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                 return mView;
             }
@@ -885,7 +885,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -926,7 +926,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -937,7 +937,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -948,7 +948,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -960,7 +960,7 @@ public class UserAccountController
         }
 
         // validate our new password here
-        passwordValidator.validate(changeReq, bindResult);
+        this.passwordValidator.validate(changeReq, bindResult);
 
         if (bindResult.hasErrors())
         {
@@ -968,7 +968,7 @@ public class UserAccountController
             changeReq.setIsReset(changeReq.isReset());
 
             mView.addObject("command", command);
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.setViewName(this.changePasswordPage);
         }
 
@@ -1010,8 +1010,8 @@ public class UserAccountController
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
             request.setIsReset(changeReq.isReset());
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1041,7 +1041,7 @@ public class UserAccountController
                     // redirect to logon page
                     mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.changePasswordComplete);
-                    mView.setViewName(appConfig.getLogonRedirect());
+                    mView.setViewName(this.appConfig.getLogonRedirect());
 
                     if (DEBUG)
                     {
@@ -1066,7 +1066,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1079,7 +1079,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1119,7 +1119,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1130,7 +1130,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1141,7 +1141,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1153,12 +1153,12 @@ public class UserAccountController
         }
 
         // validate our new password here
-        securityValidator.validate(changeReq, bindResult);
+        this.securityValidator.validate(changeReq, bindResult);
 
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.setViewName(this.changeSecurityPage);
 
             return mView;
@@ -1195,8 +1195,8 @@ public class UserAccountController
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1217,7 +1217,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1229,7 +1229,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1257,7 +1257,7 @@ public class UserAccountController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final EmailAddressValidator emailValidator = appConfig.getEmailValidator();
+        final EmailAddressValidator emailValidator = this.appConfig.getEmailValidator();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
@@ -1270,7 +1270,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1281,7 +1281,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1292,7 +1292,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1308,7 +1308,7 @@ public class UserAccountController
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.setViewName(this.changeEmailPage);
 
             return mView;
@@ -1349,8 +1349,8 @@ public class UserAccountController
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1375,7 +1375,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1387,7 +1387,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -1427,7 +1427,7 @@ public class UserAccountController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1438,7 +1438,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1449,7 +1449,7 @@ public class UserAccountController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1461,12 +1461,12 @@ public class UserAccountController
         }
 
         // validate our new password here
-        telValidator.validate(changeReq, bindResult);
+        this.telValidator.validate(changeReq, bindResult);
 
         if (bindResult.hasErrors())
         {
             mView.addObject("command", new UserChangeRequest());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.setViewName(this.changeContactPage);
 
             return mView;
@@ -1508,8 +1508,8 @@ public class UserAccountController
             request.setRequestor(userAccount);
             request.setUserAccount(userAccount);
             request.setUserSecurity(userSecurity);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1534,7 +1534,7 @@ public class UserAccountController
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -1546,7 +1546,7 @@ public class UserAccountController
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
             
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

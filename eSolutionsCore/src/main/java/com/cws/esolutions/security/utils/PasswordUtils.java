@@ -50,9 +50,9 @@ public final class PasswordUtils
 {
     private static final String CNAME = PasswordUtils.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public static final String encryptText(final String plainText, final String salt) throws SecurityException
     {

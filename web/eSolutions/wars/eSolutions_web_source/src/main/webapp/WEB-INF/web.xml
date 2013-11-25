@@ -1,261 +1,254 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
-    version="3.0" id="eSolutions_web_source">
-
-    <display-name>eSolutions_web_source</display-name>
-    <description>eSolutions_web_source</description>
-    <distributable />
-
-    <context-param>
-        <param-name>webmaster</param-name>
-        <param-value>admins@caspersbox.com</param-value>
-    </context-param>
-    <context-param>
-        <param-name>applicationName</param-name>
-        <param-value>esolutions</param-value>
-    </context-param>
-    <context-param>
-        <param-name>eSolutionsCoreConfig</param-name>
-        <param-value>eSolutionsCore/config/ServiceConfig.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>eSolutionsCoreLogger</param-name>
-        <param-value>eSolutionsCore/config/logging.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>SecurityServiceConfig</param-name>
-        <param-value>SecurityService/config/ServiceConfig.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>SecurityServiceLogger</param-name>
-        <param-value>SecurityService/config/logging.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/eSolutions/eSolutions-app.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:config-file</param-name>
-        <param-value>quartz/quartz.properties</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:shutdown-on-unload</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:wait-on-shutdown</param-name>
-        <param-value>false</param-value>
-    </context-param>
-    <context-param>
-        <param-name>quartz:start-scheduler-on-load</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>defaultHtmlEscape</param-name>
-        <param-value>true</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
-        <param-value>en</param-value>
-    </context-param>
-    <context-param>
-        <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
-        <param-value>en</param-value>
-    </context-param>
-
-    <listener>
-        <listener-class>com.cws.esolutions.security.listeners.SecurityServiceListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>com.cws.esolutions.core.listeners.CoreServiceListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
-    <listener>
-        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
-    </listener>
-    <!-- This can be un-commented in an EE environment - like Websphere, WebLogic, etc -->
-    <!--
-    <listener>
-        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
-    </listener>
-    -->
-
-    <filter id="SSLEnforcementFilter">
-        <description>Security Service SSL Enforcement</description>
-        <display-name>SSLEnforcementFilter</display-name>
-        <filter-name>SSLEnforcementFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/SSLEnforcementFilter</param-value>
-        </init-param>
-    </filter>
-    <filter id="SessionFixationFilter">
-        <description>Session Fixation Filter</description>
-        <display-name>SessionFixationFilter</display-name>
-        <filter-name>SessionFixationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
-    </filter>
-    <filter id="SessionAuthenticationFilter">
-        <description>Session Authorization Filter</description>
-        <display-name>SessionAuthenticationFilter</display-name>
-        <filter-name>SessionAuthenticationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SessionAuthenticationFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/SessionAuthenticationFilter</param-value>
-        </init-param>
-    </filter>
-    <filter id="RequestAuthorizationFilter">
-        <description>Request Authorization Filter</description>
-        <display-name>RequestAuthorizationFilter</display-name>
-        <filter-name>RequestAuthorizationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.RequestAuthorizationFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/RequestAuthorizationFilter</param-value>
-        </init-param>
-    </filter>
-    <filter id="SpringEncodingFilter">
-        <description>Spring Encoding Filter</description>
-        <display-name>SpringEncodingFilter</display-name>
-        <filter-name>encoding-filter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
-
-    <filter-mapping id="SSLEnforcementFilter_mapping">
-        <filter-name>SSLEnforcementFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SessionFixationFilter_mapping">
-        <filter-name>SessionFixationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SessionAuthenticationFilter_mapping">
-        <filter-name>SessionAuthenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="RequestAuthorizationFilter_mapping">
-        <filter-name>RequestAuthorizationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SpringEncodingFilter_mapping">
-        <filter-name>encoding-filter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <servlet id="eSolutions">
-        <display-name>eSolutions</display-name>
-        <servlet-name>eSolutions</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:/eSolutions/controller_config.xml</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>QuartzInitializer</servlet-name>
-        <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
-        <init-param>
-            <param-name>shutdown-on-unload</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <load-on-startup>3</load-on-startup>
-    </servlet>
-
-    <servlet-mapping id="eSolutions_mapping">
-        <servlet-name>eSolutions</servlet-name>
-        <url-pattern>/ui/*</url-pattern>
-    </servlet-mapping>
-
-    <resource-ref id="esolutionssvc">
-        <description>Application Datasource</description>
-        <res-ref-name>jdbc/esolutionssvc</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Unshareable</res-sharing-scope>
-    </resource-ref>
-    <resource-ref id="cwssec">
-        <description>Application Datasource</description>
-        <res-ref-name>jdbc/cwssec</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Unshareable</res-sharing-scope>
-    </resource-ref>
-    <resource-ref id="mail">
-        <description>Mail Service</description>
-        <res-ref-name>mail/MailSession</res-ref-name>
-        <res-type>javax.mail.Session</res-type>
-        <res-auth>Container</res-auth>
-        <res-sharing-scope>Unshareable</res-sharing-scope>
-    </resource-ref>
-
-    <error-page>
-        <error-code>400</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>401</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>403</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>405</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <error-code>500</error-code>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.lang.Throwable</exception-type>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-    <error-page>
-        <exception-type>java.lang.Exception</exception-type>
-        <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
-    </error-page>
-
-    <welcome-file-list>
-        <welcome-file>default.htm</welcome-file>
-    </welcome-file-list>
-
-    <jsp-config>
-        <jsp-property-group>
-            <description>jsp-group</description>
-            <display-name>jsp-group</display-name>
-            <url-pattern>/*</url-pattern>
-            <page-encoding>UTF-8</page-encoding>
-            <include-prelude>/theme/cws/html/en/jsp/includes.jsp</include-prelude>
-        </jsp-property-group>
-    </jsp-config>
-
-    <session-config>
-        <session-timeout>15</session-timeout>
-        <cookie-config>
-            <name>ESOLUTIONS_ID</name>
-            <path>/</path>
-            <http-only>true</http-only>
-            <secure>true</secure>
-        </cookie-config>
-    </session-config>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:jsp="http://java.sun.com/xml/ns/javaee/jsp" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="eSolutions_web_source" version="3.0">
+  <display-name>eSolutions_web_source</display-name>
+  <description>eSolutions_web_source</description>
+  <distributable/>
+  <context-param>
+    <param-name>webmaster</param-name>
+    <param-value>admins@caspersbox.com</param-value>
+  </context-param>
+  <context-param>
+    <param-name>applicationName</param-name>
+    <param-value>esolutions</param-value>
+  </context-param>
+  <context-param>
+    <param-name>eSolutionsCoreConfig</param-name>
+    <param-value>eSolutionsCore/config/ServiceConfig.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>eSolutionsCoreLogger</param-name>
+    <param-value>eSolutionsCore/config/logging.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>SecurityServiceConfig</param-name>
+    <param-value>SecurityService/config/ServiceConfig.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>SecurityServiceLogger</param-name>
+    <param-value>SecurityService/config/logging.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:/eSolutions/eSolutions-app.xml</param-value>
+  </context-param>
+  <context-param>
+    <param-name>quartz:config-file</param-name>
+    <param-value>quartz/quartz.properties</param-value>
+  </context-param>
+  <context-param>
+    <param-name>quartz:shutdown-on-unload</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>quartz:wait-on-shutdown</param-name>
+    <param-value>false</param-value>
+  </context-param>
+  <context-param>
+    <param-name>quartz:start-scheduler-on-load</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>defaultHtmlEscape</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.locale</param-name>
+    <param-value>en</param-value>
+  </context-param>
+  <context-param>
+    <param-name>javax.servlet.jsp.jstl.fmt.fallbackLocale</param-name>
+    <param-value>en</param-value>
+  </context-param>
+  <listener>
+    <listener-class>com.cws.esolutions.security.listeners.SecurityServiceListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>com.cws.esolutions.core.listeners.CoreServiceListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+  </listener>
+  <listener>
+    <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+  </listener>
+  <filter id="SSLEnforcementFilter">
+    <description>Security Service SSL Enforcement</description>
+    <display-name>SSLEnforcementFilter</display-name>
+    <filter-name>SSLEnforcementFilter</filter-name>
+    <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
+    <init-param>
+      <param-name>filter-config</param-name>
+      <param-value>SecurityService/config/SSLEnforcementFilter</param-value>
+    </init-param>
+  </filter>
+  <filter id="SessionFixationFilter">
+    <description>Session Fixation Filter</description>
+    <display-name>SessionFixationFilter</display-name>
+    <filter-name>SessionFixationFilter</filter-name>
+    <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
+  </filter>
+  <filter id="SessionAuthenticationFilter">
+    <description>Session Authorization Filter</description>
+    <display-name>SessionAuthenticationFilter</display-name>
+    <filter-name>SessionAuthenticationFilter</filter-name>
+    <filter-class>com.cws.esolutions.security.filters.SessionAuthenticationFilter</filter-class>
+    <init-param>
+      <param-name>filter-config</param-name>
+      <param-value>SecurityService/config/SessionAuthenticationFilter</param-value>
+    </init-param>
+  </filter>
+  <filter id="RequestAuthorizationFilter">
+    <description>Request Authorization Filter</description>
+    <display-name>RequestAuthorizationFilter</display-name>
+    <filter-name>RequestAuthorizationFilter</filter-name>
+    <filter-class>com.cws.esolutions.security.filters.RequestAuthorizationFilter</filter-class>
+    <init-param>
+      <param-name>filter-config</param-name>
+      <param-value>SecurityService/config/RequestAuthorizationFilter</param-value>
+    </init-param>
+  </filter>
+  <filter id="SpringEncodingFilter">
+    <description>Spring Encoding Filter</description>
+    <display-name>SpringEncodingFilter</display-name>
+    <filter-name>encoding-filter</filter-name>
+    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping id="SSLEnforcementFilter_mapping">
+    <filter-name>SSLEnforcementFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping id="SessionFixationFilter_mapping">
+    <filter-name>SessionFixationFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping id="SessionAuthenticationFilter_mapping">
+    <filter-name>SessionAuthenticationFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping id="RequestAuthorizationFilter_mapping">
+    <filter-name>RequestAuthorizationFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping id="SpringEncodingFilter_mapping">
+    <filter-name>encoding-filter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <servlet id="eSolutions">
+    <display-name>eSolutions</display-name>
+    <servlet-name>eSolutions</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+      <param-name>contextConfigLocation</param-name>
+      <param-value>classpath:/eSolutions/controller_config.xml</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet>
+    <servlet-name>QuartzInitializer</servlet-name>
+    <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+    <init-param>
+      <param-name>shutdown-on-unload</param-name>
+      <param-value>true</param-value>
+    </init-param>
+    <load-on-startup>3</load-on-startup>
+  </servlet>
+  <servlet-mapping id="eSolutions_mapping">
+    <servlet-name>eSolutions</servlet-name>
+    <url-pattern>/ui/*</url-pattern>
+  </servlet-mapping>
+  <resource-ref id="esolutionssvc">
+    <description>Application Datasource</description>
+    <res-ref-name>jdbc/esolutionssvc</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  <resource-ref id="cwssec">
+    <description>Application Datasource</description>
+    <res-ref-name>jdbc/cwssec</res-ref-name>
+    <res-type>javax.sql.DataSource</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  <resource-ref id="mail">
+    <description>Mail Service</description>
+    <res-ref-name>mail/MailSession</res-ref-name>
+    <res-type>javax.mail.Session</res-type>
+    <res-auth>Container</res-auth>
+    <res-sharing-scope>Unshareable</res-sharing-scope>
+  </resource-ref>
+  <error-page>
+    <error-code>400</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>401</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>403</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>404</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>405</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <error-code>500</error-code>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Throwable</exception-type>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <error-page>
+    <exception-type>java.lang.Exception</exception-type>
+    <location>/theme/cws/html/en/jsp/errHandler.jsp</location>
+  </error-page>
+  <welcome-file-list>
+    <welcome-file>default.htm</welcome-file>
+  </welcome-file-list>
+  <jsp-config>
+    <jsp-property-group>
+      <description>jsp-group</description>
+      <display-name>jsp-group</display-name>
+      <url-pattern>/*</url-pattern>
+      <page-encoding>UTF-8</page-encoding>
+      <include-prelude>/theme/cws/html/en/jsp/includes.jsp</include-prelude>
+    </jsp-property-group>
+  </jsp-config>
+  <session-config>
+    <session-timeout>15</session-timeout>
+    <cookie-config>
+      <name>ESOLUTIONS_ID</name>
+      <path>/</path>
+      <http-only>true</http-only>
+      <secure>true</secure>
+    </cookie-config>
+  </session-config>
+  <servlet>
+    <description>Apache CXF Endpoint</description>
+    <display-name>cxf</display-name>
+    <servlet-name>cxf</servlet-name>
+    <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>cxf</servlet-name>
+    <url-pattern>/services/*</url-pattern>
+  </servlet-mapping>
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>
 </web-app>

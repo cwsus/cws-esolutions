@@ -50,7 +50,7 @@ public class AuditDAOImplTest
     private static final IAuditDAO auditDAO = new AuditDAOImpl();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -65,7 +65,7 @@ public class AuditDAOImplTest
     }
 
     @Test
-    public void testAuditRequestedOperation()
+    public static void testAuditRequestedOperation()
     {
         for (int x = 0; x < 50; x++)
         {
@@ -94,7 +94,7 @@ public class AuditDAOImplTest
     }
 
     @Test
-    public void testGetAuditInterval()
+    public static void testGetAuditInterval()
     {
         try
         {
@@ -107,7 +107,7 @@ public class AuditDAOImplTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

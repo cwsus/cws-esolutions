@@ -44,16 +44,16 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
  */
 public class UserSecurityInformationDAOImplTest
 {
-    private String resetId = null;
-    private String smsCode = null;
-    private String resetSalt = null;
-    private String logonSalt = null;
+    private static String resetId = null;
+    private static String smsCode = null;
+    private static String resetSalt = null;
+    private static String logonSalt = null;
 
     private static final String GUID = "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95";
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
     @Before
-    public void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -72,7 +72,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testAddUserLogonSalt()
+    public static final void testAddUserLogonSalt()
     {
         try
         {
@@ -85,7 +85,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testAddUserResetSalt()
+    public static final void testAddUserResetSalt()
     {
         try
         {
@@ -98,7 +98,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testUpdateUserLoginSalt()
+    public static final void testUpdateUserLoginSalt()
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
 
@@ -113,7 +113,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testUpdateUserResetSalt()
+    public static final void testUpdateUserResetSalt()
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
 
@@ -128,7 +128,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testGetUserLoginSalt()
+    public static final void testGetUserLoginSalt()
     {
         try
         {
@@ -141,7 +141,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testGetUserResetSalt()
+    public static final void testGetUserResetSalt()
     {
         try
         {
@@ -154,7 +154,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testRemoveUserData()
+    public static final void testRemoveUserData()
     {
         try
         {
@@ -167,7 +167,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testInsertResetData()
+    public static final void testInsertResetData()
     {
         try
         {
@@ -180,7 +180,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testInsertResetDataWithSms()
+    public static final void testInsertResetDataWithSms()
     {
         try
         {
@@ -193,7 +193,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testGetResetData()
+    public static final void testGetResetData()
     {
         try
         {
@@ -206,7 +206,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testRemoveResetData()
+    public static final void testRemoveResetData()
     {
         try
         {
@@ -219,7 +219,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public final void testVerifySmsForReset()
+    public static final void testVerifySmsForReset()
     {
         try
         {
@@ -232,7 +232,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @After
-    public void tearDown() throws Exception
+    public static void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

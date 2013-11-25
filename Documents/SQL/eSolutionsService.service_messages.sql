@@ -17,11 +17,11 @@ CREATE TABLE `esolutionssvc`.`service_messages` (
     `svc_message_txt` TEXT NOT NULL,
     `svc_message_author` VARCHAR(45) NOT NULL,
     `svc_message_email` VARCHAR(45) NOT NULL,
-    `svc_message_submitdate` BIGINT NOT NULL,
+    `svc_message_submitdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `svc_message_active` BOOLEAN NOT NULL DEFAULT TRUE,
     `svc_message_expires` BOOLEAN NOT NULL DEFAULT FALSE,
-    `svc_message_expirydate` BIGINT,
-    `svc_message_modifiedon` BIGINT,
+    `svc_message_expirydate` TIMESTAMP,
+    `svc_message_modifiedon` TIMESTAMP,
     `svc_message_modifiedby` VARCHAR(45),
     PRIMARY KEY (`svc_message_id`, `svc_message_title`), -- prevent the same message from being submitted twice (we hope)
     FULLTEXT KEY `FTK_svcMessages` (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
@@ -91,8 +91,8 @@ BEGIN
     )
     VALUES
     (
-        messageId, messageTitle, messageText, messageAuthor, authorEmail,
-        UNIX_TIMESTAMP(NOW()), active, expiry, expiryDate
+        messageId, messageTitle, messageText, messageAuthor,
+        authorEmail, NOW(), active, expiry, expiryDate
     );
 
     COMMIT;
@@ -125,7 +125,7 @@ BEGIN
         svc_message_active = active,
         svc_message_expires = expiry,
         svc_message_expirydate = expiryDate,
-        svc_message_modifiedon = UNIX_TIMESTAMP(),
+        svc_message_modifiedon = NOW(),
         svc_message_modifiedby = modifyAuthor
     WHERE svc_message_id = messageId;
 
@@ -189,7 +189,7 @@ BEGIN
         svc_message_modifiedby
     FROM `esolutionssvc`.`service_messages`
     WHERE svc_message_active = TRUE
-    AND svc_message_expires >= UNIX_TIMESTAMP(NOW())
+    AND svc_message_expires >= NOW()
     OR svc_message_expires = FALSE
     ORDER BY svc_message_id DESC;
 END $$

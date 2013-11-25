@@ -26,6 +26,7 @@ import javax.jms.MessageProducer;
 import javax.jms.MessageConsumer;
 import javax.jms.ExceptionListener;
 import javax.jms.ConnectionFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
@@ -68,9 +69,10 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     private static final IAgentRequestProcessor processor = new AgentRequestProcessorImpl();
     private static final ServerConfig serverConfig = agentBean.getConfigData().getServerConfig();
 
+    @Override
     public void run()
     {
-        final String methodName = MQServer.CNAME + "#run()";
+        final String methodName = AgentServer.CNAME + "#run()";
 
         if (DEBUG)
         {
@@ -80,55 +82,55 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
         try
         {
             // always a tcp conn, i have yet to find an mq implementation that uses udp
-            connFactory = new ActiveMQConnectionFactory("tcp://" + serverConfig.getListenAddress() + ":" + serverConfig.getPortNumber());
+            this.connFactory = new ActiveMQConnectionFactory("tcp://" + serverConfig.getListenAddress() + ":" + serverConfig.getPortNumber());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ConnectionFactory: {}", connFactory);
+                DEBUGGER.debug("ConnectionFactory: {}", this.connFactory);
             }
 
-            conn = connFactory.createConnection();
-            conn.start();
+            this.conn = this.connFactory.createConnection();
+            this.conn.start();
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Connection: {}", conn);
+                DEBUGGER.debug("Connection: {}", this.conn);
             }
 
-            session = conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            this.session = this.conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Session: {}", session);
+                DEBUGGER.debug("Session: {}", this.session);
             }
 
-            request = session.createQueue(serverConfig.getRequestQueue());
+            this.request = this.session.createQueue(serverConfig.getRequestQueue());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Destination: {}", request);
+                DEBUGGER.debug("Destination: {}", this.request);
             }
 
-            response = session.createQueue(serverConfig.getResponseQueue());
+            this.response = this.session.createQueue(serverConfig.getResponseQueue());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Destination: {}", response);
+                DEBUGGER.debug("Destination: {}", this.response);
             }
 
-            consumer = session.createConsumer(request);
-            consumer.setMessageListener(this);
+            this.consumer = this.session.createConsumer(this.request);
+            this.consumer.setMessageListener(this);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessageConsumer: {}", consumer);
+                DEBUGGER.debug("MessageConsumer: {}", this.consumer);
             }
 
-            producer = session.createProducer(response);
+            this.producer = this.session.createProducer(this.response);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("MessageProducer: {}", producer);
+                DEBUGGER.debug("MessageProducer: {}", this.producer);
             }
         }
         catch (JMSException jx)
@@ -140,7 +142,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     @Override
     public void onException(final JMSException exception)
     {
-        final String methodName = MQServer.CNAME + "#onException(final JMSException exception)";
+        final String methodName = AgentServer.CNAME + "#onException(final JMSException exception)";
         
         if (DEBUG)
         {
@@ -152,7 +154,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     @Override
     public void onMessage(final Message message)
     {
-        final String methodName = MQServer.CNAME + "#onMessage(final Message message)";
+        final String methodName = AgentServer.CNAME + "#onMessage(final Message message)";
 
         if (DEBUG)
         {
@@ -190,7 +192,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                     DEBUGGER.debug("AgentResponse: ", agentResponse);
                 }
 
-                ObjectMessage oMessage = session.createObjectMessage(true);
+                ObjectMessage oMessage = this.session.createObjectMessage(true);
                 oMessage.setObject(agentResponse);
                 oMessage.setJMSCorrelationID(message.getJMSCorrelationID());
 
@@ -199,7 +201,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                     DEBUGGER.debug("ObjectMessage: {}", oMessage);
                 }
 
-                producer.send(response, oMessage);
+                this.producer.send(this.response, oMessage);
             }
         }
         catch (JMSException jx)

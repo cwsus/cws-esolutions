@@ -50,11 +50,13 @@ import com.cws.esolutions.agent.jmx.exception.JMXConnectorException;
  */
 public class WebLogicJMXConnector implements JMXConnection
 {
+    private static final String CNAME = WebLogicJMXConnector.class.getName();
     private static final String PROTOCOL_PACKAGES = "weblogic.management.remote";
 
+    @Override
     public JMXConnectorObject getJMXConnector(final String mbeanName) throws JMXConnectorException
     {
-        final String methodName = JMXConnection.CNAME + "#getJMXConnector(final String mbeanName) throws JMXConnectorException";
+        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName) throws JMXConnectorException";
 
         if (DEBUG)
         {
@@ -65,7 +67,7 @@ public class WebLogicJMXConnector implements JMXConnection
         JMXServiceURL jmxServiceURL = null;
         UsernameAndPassword authInfo = null;
         JMXConnectorObject jmxObject = new JMXConnectorObject();
-        Hashtable<String, Object> jmxTable = new Hashtable<String, Object>();
+        Hashtable<String, Object> jmxTable = new Hashtable<>();
 
         try
         {
@@ -135,9 +137,10 @@ public class WebLogicJMXConnector implements JMXConnection
         return jmxObject;
     }
 
+    @Override
     public JMXConnectorObject getDeploymentConnector() throws JMXConnectorException
     {
-        final String methodName = JMXConnection.CNAME + "#getJMXConnector() throws JMXConnectorException";
+        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector() throws JMXConnectorException";
 
         if (DEBUG)
         {

@@ -58,7 +58,7 @@ public class ApplicationManagerProcessorImpl implements IApplicationManagerProce
     @Override
     public ApplicationManagerResponse manageServerState(final ApplicationManagerRequest request) throws ApplicationManagerException
     {
-        final String methodName = ApplicationManagerProcessorImpl.CNAME + "#manageServerState(final ApplicationManagerRequest request) throws ApplicationManagerException";
+        final String methodName = IApplicationManagerProcessor.CNAME + "#manageServerState(final ApplicationManagerRequest request) throws ApplicationManagerException";
         
         if (DEBUG)
         {
@@ -85,7 +85,7 @@ public class ApplicationManagerProcessorImpl implements IApplicationManagerProce
                 // this is unix-y and should probably be cross-platform...
                 // windows would be taskkill /pid /f <pid>
                 ExecuteCommandRequest cmdRequest = new ExecuteCommandRequest();
-                cmdRequest.setCommand(new ArrayList<String>(Arrays.asList("kill", "-9", request.getProcessId())));
+                cmdRequest.setCommand(new ArrayList<>(Arrays.asList("kill", "-9", request.getProcessId())));
                 cmdRequest.setPrintOutput(true);
                 cmdRequest.setPrintError(true);
                 cmdRequest.setTimeout(5000);
@@ -168,7 +168,7 @@ public class ApplicationManagerProcessorImpl implements IApplicationManagerProce
     @Override
     public ApplicationManagerResponse manageApplicationDeployment(final ApplicationManagerRequest request) throws ApplicationManagerException
     {
-        final String methodName = ApplicationManagerProcessorImpl.CNAME + "#manageApplicationDeployment(final ApplicationManagerRequest request) throws ApplicationManagerException";
+        final String methodName = IApplicationManagerProcessor.CNAME + "#manageApplicationDeployment(final ApplicationManagerRequest request) throws ApplicationManagerException";
         
         if (DEBUG)
         {
@@ -248,7 +248,7 @@ public class ApplicationManagerProcessorImpl implements IApplicationManagerProce
     @Override
     public ApplicationManagerResponse manageApplicationState(final ApplicationManagerRequest request) throws ApplicationManagerException
     {
-        final String methodName = ApplicationManagerProcessorImpl.CNAME + "#manageApplicationState(final ApplicationManagerRequest request) throws ApplicationManagerException";
+        final String methodName = IApplicationManagerProcessor.CNAME + "#manageApplicationState(final ApplicationManagerRequest request) throws ApplicationManagerException";
         
         if (DEBUG)
         {
@@ -275,7 +275,7 @@ public class ApplicationManagerProcessorImpl implements IApplicationManagerProce
             ExecuteCommandResponse cmdResponse = new ExecuteCommandResponse();
             IExecuteRequestCommand execCommand = new ExecuteRequestCommandImpl();
 
-            cmdRequest.setCommand(new ArrayList<String>(
+            cmdRequest.setCommand(new ArrayList<>(
                     Arrays.asList(
                             "netstat",
                             "-an")));

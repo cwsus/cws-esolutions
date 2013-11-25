@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -377,10 +378,10 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                     message.setMessageText((String) object[2]); // svc_message_txt
                     message.setMessageAuthor((String) object[3]); // svc_message_author
                     message.setAuthorEmail((String) object[4]); // svc_message_email
-                    message.setSubmitDate((Long) object[5]); // svc_message_submitdate
+                    message.setSubmitDate((Date) object[5]); // svc_message_submitdate
                     message.setIsActive((Boolean) object[6]); // svc_message_active
                     message.setDoesExpire((Boolean) object[7]); //svc_message_expires
-                    message.setExpiryDate((Long) object[8]); // svc_message_expirydate
+                    message.setExpiryDate((Date) object[8]); // svc_message_expirydate
 
                     if (DEBUG)
                     {
@@ -495,10 +496,10 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 message.setMessageText((String) responseList.get(2)); // svc_message_txt
                 message.setMessageAuthor((String) responseList.get(3)); // svc_message_author
                 message.setAuthorEmail((String) responseList.get(4)); // svc_message_email
-                message.setSubmitDate((Long) responseList.get(5)); // svc_message_submitdate
+                message.setSubmitDate((Date) responseList.get(5)); // svc_message_submitdate
                 message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
                 message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
-                message.setExpiryDate((Long) responseList.get(8)); // svc_message_expirydate
+                message.setExpiryDate((Date) responseList.get(8)); // svc_message_expirydate
 
                 if (DEBUG)
                 {

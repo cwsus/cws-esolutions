@@ -16,7 +16,9 @@
 package com.cws.esolutions.agent.executors.impl;
 
 import org.slf4j.Logger;
+
 import java.io.IOException;
+
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
 
@@ -103,6 +105,7 @@ public class Worker extends Thread
         return this.errorStream;
     }
 
+    @Override
     public void run()
     {
         final String methodName = Worker.CNAME + "#run()";
@@ -120,7 +123,7 @@ public class Worker extends Thread
 
         try
         {
-            process = pBuilder.start();
+            process = this.pBuilder.start();
 
             if (DEBUG)
             {
@@ -137,9 +140,9 @@ public class Worker extends Thread
                 eBuffer.append((char) y);
             }
 
-            exitValue = process.waitFor();
+            this.exitValue = process.waitFor();
 
-            if (exitValue != null)
+            if (this.exitValue != null)
             {
                 this.outputStream = oBuffer;
                 this.errorStream = eBuffer;

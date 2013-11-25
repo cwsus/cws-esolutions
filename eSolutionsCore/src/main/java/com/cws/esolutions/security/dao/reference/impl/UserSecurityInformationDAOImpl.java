@@ -69,19 +69,17 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL addUserSalt(?, ?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, saltValue);
+            stmt.setString(3, saltType);
+
+            if (!(stmt.execute()))
             {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{CALL addUserSalt(?, ?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, saltValue);
-                stmt.setString(3, saltType);
-
-                if (!(stmt.execute()))
-                {
-                    isComplete = true;
-                }
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -130,19 +128,17 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL updateUserSalt(?, ?, ?) }");
+            stmt.setString(1, commonName);
+            stmt.setString(2, saltValue);
+            stmt.setString(3, saltType);
+
+            if (!(stmt.execute()))
             {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{ CALL updateUserSalt(?, ?, ?) }");
-                stmt.setString(1, commonName);
-                stmt.setString(2, saltValue);
-                stmt.setString(3, saltType);
-
-                if (!(stmt.execute()))
-                {
-                    isComplete = true;
-                }
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -274,26 +270,20 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrUserData(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, dataType);
+
+            if (stmt.execute())
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrUserData(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, dataType);
+                resultSet = stmt.getResultSet();
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-                        response = resultSet.getObject(1);
-                    }
-                }
-                else
-                {
-                    throw new SQLException("Failed to retrieve authentication data object");
+                    resultSet.first();
+                    response = resultSet.getObject(1);
                 }
             }
         }
@@ -352,23 +342,21 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeUserData(?)}");
+            stmt.setString(1, commonName);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL removeUserData(?)}");
-                stmt.setString(1, commonName);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -419,21 +407,19 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL insertResetData(?, ?, ?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, resetId);
+            stmt.setLong(3, System.currentTimeMillis());
+            stmt.setString(4, smsCode);
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL insertResetData(?, ?, ?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, resetId);
-                stmt.setLong(3, System.currentTimeMillis());
-                stmt.setString(4, smsCode);
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -482,38 +468,36 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
                 DEBUGGER.debug("sqlConn: {}", sqlConn);
             }
 
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            if (sqlConn.isClosed())
             {
-                sqlConn.setAutoCommit(true);
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
 
-                stmt = sqlConn.prepareStatement("{CALL listActiveResetRequests()");
+            sqlConn.setAutoCommit(true);
 
-                if (DEBUG)
+            stmt = sqlConn.prepareStatement("{CALL listActiveResetRequests()");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
-                }
+                    resultSet.beforeFirst();
+                    response = new ArrayList<>();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
-
-                    if (resultSet.next())
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-                        response = new ArrayList<String[]>();
+                        String[] data = new String[] { resultSet.getString(1), resultSet.getString(2), String.valueOf(resultSet.getLong(3)) };
 
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[] { resultSet.getString(1), resultSet.getString(2), String.valueOf(resultSet.getLong(3)) };
-
-                            response.add(data);
-                        }
+                        response.add(data);
                     }
                 }
-            }
-            else
-            {
-                throw new SQLException("Unable to obtain a datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -571,29 +555,23 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getResetData(?)}");
+            stmt.setString(1, resetId);
+
+            if (stmt.execute())
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getResetData(?)}");
-                stmt.setString(1, resetId);
+                resultSet = stmt.getResultSet();
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
 
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        resetData = new ArrayList<String>(
-                                Arrays.asList(
-                                        resultSet.getString(1),
-                                        String.valueOf(resultSet.getLong(2))));
-                    }
-                    else
-                    {
-                        throw new SQLException("No results were found for the given information");
-                    }
+                    resetData = new ArrayList<>(
+                            Arrays.asList(
+                                    resultSet.getString(1),
+                                    String.valueOf(resultSet.getLong(2))));
                 }
             }
         }
@@ -652,19 +630,17 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeResetData(?, ?)}");
+            stmt.setString(1, commonName);
+            stmt.setString(2, resetId);
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL removeResetData(?, ?)}");
-                stmt.setString(1, commonName);
-                stmt.setString(2, resetId);
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -717,20 +693,18 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getCommonNameForReset(?, ?, ?)}");
+            stmt.setString(1, userGuid);
+            stmt.setString(2, resetId);
+            stmt.setString(3, smsCode);
+
+            isVerified = stmt.execute(); // this will return true if theres a resultset, which we expect
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getCommonNameForReset(?, ?, ?)}");
-                stmt.setString(1, userGuid);
-                stmt.setString(2, resetId);
-                stmt.setString(3, smsCode);
-
-                isVerified = stmt.execute(); // this will return true if theres a resultset, which we expect
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isVerified: {}", isVerified);
-                }
+                DEBUGGER.debug("isVerified: {}", isVerified);
             }
         }
         catch (SQLException sqx)

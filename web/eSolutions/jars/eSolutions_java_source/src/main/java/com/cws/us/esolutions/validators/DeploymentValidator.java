@@ -205,7 +205,7 @@ public class DeploymentValidator implements Validator
             switch (request.getDeploymentType())
             {
                 case APP:
-                    for (String allowed : appConfig.getAllowedAppFileExtensions())
+                    for (String allowed : this.appConfig.getAllowedAppFileExtensions())
                     {
                         if (!(StringUtils.equals(fileExt, allowed)))
                         {
@@ -217,7 +217,7 @@ public class DeploymentValidator implements Validator
 
                     break;
                 case WEB:
-                    for (String allowed : appConfig.getAllowedWebFileExtensions())
+                    for (String allowed : this.appConfig.getAllowedWebFileExtensions())
                     {
                         if (!(StringUtils.equals(fileExt, allowed)))
                         {

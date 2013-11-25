@@ -68,10 +68,12 @@ import com.cws.esolutions.agent.jmx.mbeans.exception.ServiceMBeanException;
  */
 public class WebLogicServiceMBeanImpl implements ServiceMBean
 {
+    private static final String CNAME = WebLogicServiceMBeanImpl.class.getName();
+
     @Override
     public MBeanResponse performServerOperation(final MBeanRequest request) throws ServiceMBeanException
     {
-        final String methodName = ServiceMBean.CNAME + "#performServerOperation(final MBeanRequest request) throws ServiceMBeanException";
+        final String methodName = WebLogicServiceMBeanImpl.CNAME + "#performServerOperation(final MBeanRequest request) throws ServiceMBeanException";
 
         if (DEBUG)
         {
@@ -359,7 +361,7 @@ public class WebLogicServiceMBeanImpl implements ServiceMBean
     @Override
     public MBeanResponse performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException
     {
-        final String methodName = ServiceMBean.CNAME + "#performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException";
+        final String methodName = WebLogicServiceMBeanImpl.CNAME + "#performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException";
 
         if (DEBUG)
         {
@@ -611,7 +613,7 @@ public class WebLogicServiceMBeanImpl implements ServiceMBean
     @Override
     public synchronized MBeanResponse performApplicationOperation(final MBeanRequest request) throws ServiceMBeanException
     {
-        final String methodName = ServiceMBean.CNAME + "#performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException";
+        final String methodName = WebLogicServiceMBeanImpl.CNAME + "#performDataSourceOperation(final MBeanRequest request) throws ServiceMBeanException";
 
         if (DEBUG)
         {

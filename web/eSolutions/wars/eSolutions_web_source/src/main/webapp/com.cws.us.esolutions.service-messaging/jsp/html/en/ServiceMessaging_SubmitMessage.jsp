@@ -63,7 +63,7 @@
         <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post" autocomplete="off">
             <c:if test="${empty fn:trim(command.authorEmail)}">
                 <form:hidden path="isNewMessage" value="true" />
-            </c:when>
+            </c:if>
 
             <table id="contactTable">
                 <tr>

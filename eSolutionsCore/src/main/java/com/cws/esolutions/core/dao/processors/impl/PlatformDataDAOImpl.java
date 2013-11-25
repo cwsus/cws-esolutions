@@ -71,31 +71,29 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL addNewPlatform(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, platformData.get(0)); // platform guid
+            stmt.setString(2, platformData.get(1)); // platform name
+            stmt.setString(3, platformData.get(2)); // platform region
+            stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
+            stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
+            stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
+            stmt.setString(7, platformData.get(6)); // status
+            stmt.setString(8, platformData.get(7)); // platform description
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL addNewPlatform(?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, platformData.get(0)); // platform guid
-                stmt.setString(2, platformData.get(1)); // platform name
-                stmt.setString(3, platformData.get(2)); // platform region
-                stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
-                stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
-                stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
-                stmt.setString(7, platformData.get(6)); // status
-                stmt.setString(8, platformData.get(7)); // platform description
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -143,24 +141,22 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL removePlatformData(?)}");
+            stmt.setString(1, platformGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL removePlatformData(?)}");
-                stmt.setString(1, platformGuid);
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -212,31 +208,29 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL updatePlatformDetail(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, platformData.get(0)); // platform guid
+            stmt.setString(2, platformData.get(1)); // platform name
+            stmt.setString(3, platformData.get(2)); // platform region
+            stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
+            stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
+            stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
+            stmt.setString(7, platformData.get(6)); // status
+            stmt.setString(8, platformData.get(7)); // platform description
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL updatePlatformDetail(?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, platformData.get(0)); // platform guid
-                stmt.setString(2, platformData.get(1)); // platform name
-                stmt.setString(3, platformData.get(2)); // platform region
-                stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
-                stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
-                stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
-                stmt.setString(7, platformData.get(6)); // status
-                stmt.setString(8, platformData.get(7)); // platform description
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -285,44 +279,42 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("SQL Connection is not an instance of Connection or is null");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getPlatformData(?)}");
+            stmt.setString(1, platformGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getPlatformData(?)}");
-                stmt.setString(1, platformGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    responseData = new ArrayList<>(
+                            Arrays.asList(
+                                    resultSet.getString(1), // guid
+                                    resultSet.getString(2), // name
+                                    resultSet.getString(3), // region
+                                    resultSet.getString(4), // dmgr
+                                    resultSet.getString(5), // appserver list
+                                    resultSet.getString(6), // webserver list
+                                    resultSet.getString(7))); // description
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        responseData = new ArrayList<String>(
-                                Arrays.asList(
-                                        resultSet.getString(1), // guid
-                                        resultSet.getString(2), // name
-                                        resultSet.getString(3), // region
-                                        resultSet.getString(4), // dmgr
-                                        resultSet.getString(5), // appserver list
-                                        resultSet.getString(6), // webserver list
-                                        resultSet.getString(7))); // description
-
-                        if (DEBUG)
+                        for (String str : responseData)
                         {
-                            for (String str : responseData)
-                            {
-                                DEBUGGER.debug(str);
-                            }
+                            DEBUGGER.debug(str);
                         }
                     }
                 }
@@ -378,35 +370,33 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{ CALL getPlatformCount() }");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{ CALL getPlatformCount() }");
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        count = resultSet.getInt(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("count: {}", count);
-                        }
+                        DEBUGGER.debug("count: {}", count);
                     }
                 }
             }
@@ -469,59 +459,57 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listPlatforms(?)}");
-                stmt.setInt(1, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL listPlatforms(?)}");
+            stmt.setInt(1, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    platformList = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        platformList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[] {
-                                    resultSet.getString(1), // guid
-                                    resultSet.getString(2), // name
-                                    resultSet.getString(3), // region
-                                    resultSet.getString(4), // dmgr
-                                    resultSet.getString(5), // appserver list
-                                    resultSet.getString(6), // webserver list
-                                    resultSet.getString(7) // description
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
-                            platformList.add(data);
-                        }
+                        String[] data = new String[] {
+                                resultSet.getString(1), // guid
+                                resultSet.getString(2), // name
+                                resultSet.getString(3), // region
+                                resultSet.getString(4), // dmgr
+                                resultSet.getString(5), // appserver list
+                                resultSet.getString(6), // webserver list
+                                resultSet.getString(7) // description
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("platformList: {}", platformList);
+                            for (String str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
                         }
+
+                        platformList.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("platformList: {}", platformList);
                     }
                 }
             }
@@ -578,36 +566,35 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?, ?)}");
-                stmt.setString(1, value);
-                stmt.setInt(2, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?, ?)}");
+            stmt.setString(1, value);
+            stmt.setInt(2, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    platformList = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        platformList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[] {
+                        String[] data = new String[] {
                                 resultSet.getString(1), // guid
                                 resultSet.getString(2), // name
                                 resultSet.getString(3), // region
@@ -615,23 +602,22 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                                 resultSet.getString(5), // appserver list
                                 resultSet.getString(6), // webserver list
                                 resultSet.getString(7) // description
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
-                            platformList.add(data);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("platformList: {}", platformList);
+                            for (String str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
                         }
+
+                        platformList.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("platformList: {}", platformList);
                     }
                 }
             }

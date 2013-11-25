@@ -69,7 +69,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
                     if ((fileList != null) && (fileList.length != 0))
                     {
-                        List<String> fileData = new ArrayList<String>();
+                        List<String> fileData = new ArrayList<>();
 
                         for (File file : fileList)
                         {
@@ -153,7 +153,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
     @Override
     public FileManagerResponse deployFile(final FileManagerRequest request) throws FileManagerException
     {
-        final String methodName = FileManagerProcessorImpl.CNAME + "#deployFile(final FileManagerRequest request) throws FileManagerException";
+        final String methodName = IFileManagerProcessor.CNAME + "#deployFile(final FileManagerRequest request) throws FileManagerException";
 
         if (DEBUG)
         {
@@ -178,7 +178,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
             if ((isSourceList) && (isTargetList))
             {
-                List<String> failedFiles = new ArrayList<String>();
+                List<String> failedFiles = new ArrayList<>();
 
                 for (int x = 0; x < request.getSourceFiles().size(); x++)
                 {
@@ -220,7 +220,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                     }
                 }
 
-                if ((failedFiles != null) && (failedFiles.size() != 0))
+                if (failedFiles.size() != 0)
                 {
                     response.setRequestStatus(AgentStatus.FAILURE);
                     response.setResponse("The following files failed to deploy properly: " + failedFiles.toString() + ".");
@@ -290,7 +290,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
     @Override
     public FileManagerResponse deleteFile(final FileManagerRequest request) throws FileManagerException
     {
-        final String methodName = FileManagerProcessorImpl.CNAME + "#deleteFile(final FileManagerRequest request) throws FileManagerException";
+        final String methodName = IFileManagerProcessor.CNAME + "#deleteFile(final FileManagerRequest request) throws FileManagerException";
 
         if (DEBUG)
         {
@@ -309,7 +309,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
         if ((request.getTargetFiles() != null) && (request.getTargetFiles().size() != 0))
         {
-            List<String> failedFiles = new ArrayList<String>();
+            List<String> failedFiles = new ArrayList<>();
 
             for (String target : request.getTargetFiles())
             {
@@ -352,7 +352,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                 DEBUGGER.debug("failedFiles: {}", failedFiles);
             }
 
-            if ((failedFiles != null) && (failedFiles.size() != 0))
+            if (failedFiles.size() != 0)
             {
                 response.setRequestStatus(AgentStatus.FAILURE);
                 response.setResponse("Failed to delete the following files: " + failedFiles.toString());

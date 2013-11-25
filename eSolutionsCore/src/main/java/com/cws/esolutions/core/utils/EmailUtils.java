@@ -81,9 +81,9 @@ public final class EmailUtils
     private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     /**
      * eSolutionsCore

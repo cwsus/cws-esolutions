@@ -91,7 +91,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         sourceFile.setExecutable(true);
                     }
 
-                    commandList = new ArrayList<String>();
+                    commandList = new ArrayList<>();
                     commandList.add(sourceFile.toString());
 
                     if (request.getPortNumber() != 0)
@@ -218,7 +218,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         sourceFile.setExecutable(true);
                     }
 
-                    commandList = new ArrayList<String>();
+                    commandList = new ArrayList<>();
                     commandList.add(sourceFile.toString());
 
                     if (request.getPortNumber() != 0)

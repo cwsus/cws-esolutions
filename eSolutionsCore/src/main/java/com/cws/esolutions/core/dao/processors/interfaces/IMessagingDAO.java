@@ -97,7 +97,7 @@ public interface IMessagingDAO
 
     List<Object[]> retrieveMessages() throws SQLException;
 
-    List<String[]> getMessagesByAttribute(final String value) throws SQLException;
+    List<Object[]> getMessagesByAttribute(final String value) throws SQLException;
 
     boolean updateMessage(final String messageId, final List<Object> messageList) throws SQLException;
 

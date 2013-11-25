@@ -166,8 +166,8 @@ public class PasswordValidator implements Validator
         final UserChangeRequest changeReq = (UserChangeRequest) target;
         final String newPassword = changeReq.getNewPassword();
         final String existingPassword = changeReq.getCurrentPassword();
-        final int minLength = (secConfig.getPasswordMinLength() >= 8) ? secConfig.getPasswordMinLength() : 8;
-        final int maxLength = (secConfig.getPasswordMaxLength() <= 128) ? secConfig.getPasswordMaxLength() : 128;
+        final int minLength = (this.secConfig.getPasswordMinLength() >= 8) ? this.secConfig.getPasswordMinLength() : 8;
+        final int maxLength = (this.secConfig.getPasswordMaxLength() <= 128) ? this.secConfig.getPasswordMaxLength() : 128;
         final Pattern pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#\\$%\\^\\&\\*()\\_\\-\\+\\=\\{\\}\\[\\]\\/|'\";:.,<>?]).{" + minLength + "," + maxLength + "})");
 
         if (DEBUG)

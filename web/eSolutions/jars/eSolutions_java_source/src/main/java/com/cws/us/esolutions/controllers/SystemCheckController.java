@@ -240,7 +240,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -251,7 +251,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -262,7 +262,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -273,7 +273,7 @@ public class SystemCheckController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -300,8 +300,8 @@ public class SystemCheckController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
                 request.setTargetServer(server);
 
                 if (DEBUG)
@@ -331,24 +331,24 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
             {
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -387,7 +387,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -398,7 +398,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -409,7 +409,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -420,7 +420,7 @@ public class SystemCheckController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -447,8 +447,8 @@ public class SystemCheckController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
                 request.setTargetServer(server);
 
                 if (DEBUG)
@@ -478,24 +478,24 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
             {
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -534,7 +534,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -545,7 +545,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -556,7 +556,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -567,7 +567,7 @@ public class SystemCheckController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -594,8 +594,8 @@ public class SystemCheckController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
                 request.setTargetServer(server);
 
                 if (DEBUG)
@@ -625,24 +625,24 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
             {
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -681,7 +681,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -692,7 +692,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -703,7 +703,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -714,7 +714,7 @@ public class SystemCheckController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -741,8 +741,8 @@ public class SystemCheckController
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
                 request.setTargetServer(server);
 
                 if (DEBUG)
@@ -772,24 +772,24 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ServerManagementException smx)
             {
                 ERROR_RECORDER.error(smx.getMessage(), smx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -829,7 +829,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -840,7 +840,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -851,7 +851,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -862,7 +862,7 @@ public class SystemCheckController
             }
         }
 
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (DEBUG)
         {
@@ -871,7 +871,7 @@ public class SystemCheckController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", new SystemCheckRequest());
             mView.addObject("server", request.getSourceServer());
 
@@ -879,7 +879,7 @@ public class SystemCheckController
             return mView;
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -917,8 +917,8 @@ public class SystemCheckController
                 serverReq.setPortNumber(request.getTargetPort());
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
-                serverReq.setApplicationId(appConfig.getApplicationId());
-                serverReq.setApplicationName(appConfig.getApplicationName());
+                serverReq.setApplicationId(this.appConfig.getApplicationId());
+                serverReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -939,7 +939,7 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                     return mView;
                 }
@@ -965,7 +965,7 @@ public class SystemCheckController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1005,7 +1005,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1016,7 +1016,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1027,7 +1027,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1038,7 +1038,7 @@ public class SystemCheckController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -1066,8 +1066,8 @@ public class SystemCheckController
                 serverReq.setRequestType(ServiceCheckType.REMOTEDATE);
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
-                serverReq.setApplicationId(appConfig.getApplicationId());
-                serverReq.setApplicationName(appConfig.getApplicationName());
+                serverReq.setApplicationId(this.appConfig.getApplicationId());
+                serverReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1110,7 +1110,7 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                     return mView;
                 }
@@ -1144,7 +1144,7 @@ public class SystemCheckController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1184,7 +1184,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1195,7 +1195,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1206,7 +1206,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1217,7 +1217,7 @@ public class SystemCheckController
             }
         }
 
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (DEBUG)
         {
@@ -1226,7 +1226,7 @@ public class SystemCheckController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", new SystemCheckRequest());
             mView.addObject("server", request.getSourceServer());
 
@@ -1234,7 +1234,7 @@ public class SystemCheckController
             return mView;
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -1263,8 +1263,8 @@ public class SystemCheckController
                 serverReq.setPortNumber(request.getTargetPort());
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
-                serverReq.setApplicationId(appConfig.getApplicationId());
-                serverReq.setApplicationName(appConfig.getApplicationName());
+                serverReq.setApplicationId(this.appConfig.getApplicationId());
+                serverReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1285,7 +1285,7 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                     return mView;
                 }
@@ -1311,7 +1311,7 @@ public class SystemCheckController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1351,7 +1351,7 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1362,7 +1362,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1373,7 +1373,7 @@ public class SystemCheckController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1384,7 +1384,7 @@ public class SystemCheckController
             }
         }
 
-        validator.validate(request, bindResult);
+        this.validator.validate(request, bindResult);
 
         if (DEBUG)
         {
@@ -1393,7 +1393,7 @@ public class SystemCheckController
 
         if (bindResult.hasErrors())
         {
-            mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageValidationFailed());
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageValidationFailed());
             mView.addObject("command", new SystemCheckRequest());
             mView.addObject("server", request.getSourceServer());
 
@@ -1401,7 +1401,7 @@ public class SystemCheckController
             return mView;
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             RequestHostInfo reqInfo = new RequestHostInfo();
             reqInfo.setHostName(hRequest.getRemoteHost());
@@ -1430,8 +1430,8 @@ public class SystemCheckController
                 serverReq.setPortNumber(request.getTargetPort());
                 serverReq.setRequestInfo(reqInfo);
                 serverReq.setUserAccount(userAccount);
-                serverReq.setApplicationId(appConfig.getApplicationId());
-                serverReq.setApplicationName(appConfig.getApplicationName());
+                serverReq.setApplicationId(this.appConfig.getApplicationId());
+                serverReq.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1452,7 +1452,7 @@ public class SystemCheckController
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                     return mView;
                 }
@@ -1478,7 +1478,7 @@ public class SystemCheckController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)

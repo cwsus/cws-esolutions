@@ -59,7 +59,7 @@ public class ServerDataDAOImplTest
     private static final IServerDataDAO dao = new ServerDataDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -74,7 +74,7 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public final void testAddNewServer()
+    public static final void testAddNewServer()
     {
         List<Object> data = new ArrayList<Object>
         (
@@ -112,7 +112,7 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewServer(data));
+            Assert.assertTrue(ServerDataDAOImplTest.dao.addNewServer(data));
         }
         catch (SQLException sqx)
         {
@@ -121,31 +121,31 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public final void testRemoveExistingServer()
+    public static final void testRemoveExistingServer()
     {
 
     }
 
     @Test
-    public final void testGetInstalledServers()
+    public static final void testGetInstalledServers()
     {
 
     }
 
     @Test
-    public final void testGetInstalledServer()
+    public static final void testGetInstalledServer()
     {
 
     }
 
     @Test
-    public final void testGetServersByAttribute()
+    public static final void testGetServersByAttribute()
     {
 
     }
 
     @Test
-    public final void testModifyServerData()
+    public static final void testModifyServerData()
     {
 
     }

@@ -68,25 +68,23 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL updateArticleStatus(?, ?, ?)}");
+            stmt.setString(1, articleId);
+            stmt.setString(2, modifiedBy);
+            stmt.setString(3, status);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL updateArticleStatus(?, ?, ?)}");
-                stmt.setString(1, articleId);
-                stmt.setString(2, modifiedBy);
-                stmt.setString(3, status);
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("stmt: {}", stmt);
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -135,30 +133,28 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL addNewArticle(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, articleDetail.get(0)); // article id
+            stmt.setString(2, articleDetail.get(1)); // author
+            stmt.setString(3, articleDetail.get(2)); // author email
+            stmt.setString(4, articleDetail.get(3)); // keywords
+            stmt.setString(5, articleDetail.get(4)); // title
+            stmt.setString(6, articleDetail.get(5)); // symptoms
+            stmt.setString(7, articleDetail.get(6)); // cause
+            stmt.setString(8, articleDetail.get(7)); // resolutions
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL addNewArticle(?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, articleDetail.get(0)); // article id
-                stmt.setString(2, articleDetail.get(1)); // author
-                stmt.setString(3, articleDetail.get(2)); // author email
-                stmt.setString(4, articleDetail.get(3)); // keywords
-                stmt.setString(5, articleDetail.get(4)); // title
-                stmt.setString(6, articleDetail.get(5)); // symptoms
-                stmt.setString(7, articleDetail.get(6)); // cause
-                stmt.setString(8, articleDetail.get(7)); // resolutions
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
+            isComplete = (!(stmt.execute()));
 
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -207,30 +203,28 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
+
+            sqlConn.setAutoCommit(true);
  
-                stmt = sqlConn.prepareCall("{CALL updateArticle(?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, articleDetail.get(0)); // article id
-                stmt.setString(2, articleDetail.get(1)); // keywords
-                stmt.setString(3, articleDetail.get(2)); // title
-                stmt.setString(4, articleDetail.get(3)); // symptoms
-                stmt.setString(5, articleDetail.get(4)); // cause
-                stmt.setString(6, articleDetail.get(5)); // resolution
-                stmt.setString(7, articleDetail.get(6)); // modified by
+            stmt = sqlConn.prepareCall("{CALL updateArticle(?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, articleDetail.get(0)); // article id
+            stmt.setString(2, articleDetail.get(1)); // keywords
+            stmt.setString(3, articleDetail.get(2)); // title
+            stmt.setString(4, articleDetail.get(3)); // symptoms
+            stmt.setString(5, articleDetail.get(4)); // cause
+            stmt.setString(6, articleDetail.get(5)); // resolution
+            stmt.setString(7, articleDetail.get(6)); // modified by
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Statement: {}", stmt);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Statement: {}", stmt);
+            }
 
-                isComplete = (!(stmt.execute()));
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -280,50 +274,48 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL retrArticle(?, ?)}");
+            stmt.setString(1, articleId);
+            stmt.setBoolean(2, isApproval);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL retrArticle(?, ?)}");
-                stmt.setString(1, articleId);
-                stmt.setBoolean(2, isApproval);
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
-                if (DEBUG)
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
+                    resultSet.first();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
+                    articleData = new ArrayList<>(
+                            Arrays.asList(
+                                    resultSet.getString(1),
+                                    resultSet.getString(2),
+                                    String.valueOf(resultSet.getString(3)),
+                                    resultSet.getString(4),
+                                    resultSet.getString(5),
+                                    resultSet.getString(6),
+                                    resultSet.getString(7),
+                                    resultSet.getString(8),
+                                    resultSet.getString(9),
+                                    resultSet.getString(10),
+                                    resultSet.getString(11),
+                                    String.valueOf(resultSet.getString(12)),
+                                    String.valueOf(resultSet.getString(13)),
+                                    resultSet.getString(14),
+                                    resultSet.getString(15),
+                                    resultSet.getString(15)));
 
-                    if (resultSet.next())
+                    if (DEBUG)
                     {
-                        resultSet.first();
-
-                        articleData = new ArrayList<String>(
-                                Arrays.asList(
-                                        resultSet.getString(1),
-                                        resultSet.getString(2),
-                                        String.valueOf(resultSet.getString(3)),
-                                        resultSet.getString(4),
-                                        resultSet.getString(5),
-                                        resultSet.getString(6),
-                                        resultSet.getString(7),
-                                        resultSet.getString(8),
-                                        resultSet.getString(9),
-                                        resultSet.getString(10),
-                                        resultSet.getString(11),
-                                        String.valueOf(resultSet.getString(12)),
-                                        String.valueOf(resultSet.getString(13)),
-                                        resultSet.getString(14),
-                                        resultSet.getString(15),
-                                        resultSet.getString(15)));
-                    
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Article data: {}", articleData);
-                        }
+                        DEBUGGER.debug("Article data: {}", articleData);
                     }
                 }
             }
@@ -379,60 +371,58 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL retrPendingArticles(?)}");
+            stmt.setString(1, author);
+
+            if (stmt.execute())
             {
-                sqlConn.setAutoCommit(true);
+                resultSet = stmt.getResultSet();
 
-                stmt = sqlConn.prepareCall("{CALL retrPendingArticles(?)}");
-                stmt.setString(1, author);
-
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
 
-                    if (resultSet.next())
+                    articleData = new ArrayList<>();
+
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-
-                        articleData = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] data = new String[]
                         {
-                            String[] data = new String[]
-                            {
-                                    resultSet.getString(1),
-                                    resultSet.getString(2),
-                                    String.valueOf(resultSet.getString(3)),
-                                    resultSet.getString(4),
-                                    resultSet.getString(5),
-                                    resultSet.getString(6),
-                                    resultSet.getString(7),
-                                    resultSet.getString(8),
-                                    resultSet.getString(9),
-                                    resultSet.getString(10),
-                                    resultSet.getString(11),
-                                    String.valueOf(resultSet.getString(12)),
-                                    String.valueOf(resultSet.getString(13)),
-                                    resultSet.getString(14),
-                                    resultSet.getString(15),
-                                    resultSet.getString(15)
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
-                            articleData.add(data);
-                        }
+                                resultSet.getString(1),
+                                resultSet.getString(2),
+                                String.valueOf(resultSet.getString(3)),
+                                resultSet.getString(4),
+                                resultSet.getString(5),
+                                resultSet.getString(6),
+                                resultSet.getString(7),
+                                resultSet.getString(8),
+                                resultSet.getString(9),
+                                resultSet.getString(10),
+                                resultSet.getString(11),
+                                String.valueOf(resultSet.getString(12)),
+                                String.valueOf(resultSet.getString(13)),
+                                resultSet.getString(14),
+                                resultSet.getString(15),
+                                resultSet.getString(15)
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("articleData: {}", articleData);
+                            for (String str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
                         }
+
+                        articleData.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("articleData: {}", articleData);
                     }
                 }
             }
@@ -488,32 +478,31 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getArticleByAttribute(?)}");
+            stmt.setString(1, attribute);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL getArticleByAttribute(?)}");
-                stmt.setString(1, attribute);
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
-                if (DEBUG)
+                if (resultSet.next())
                 {
-                    DEBUGGER.debug(stmt.toString());
-                }
+                    resultSet.beforeFirst();
 
-                if (stmt.execute())
-                {
-                    resultSet = stmt.getResultSet();
+                    responseList = new ArrayList<>();
 
-                    if (resultSet.next())
+                    while (resultSet.next())
                     {
-                        resultSet.beforeFirst();
-
-                        responseList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] articleData = new String[]
                         {
-                            String[] articleData = new String[]
-                            {
                                 resultSet.getString(1), // kbase_page_hits
                                 resultSet.getString(2), // kbase_article_id
                                 resultSet.getString(3), // kbase_article_createdate
@@ -529,23 +518,22 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
                                 resultSet.getString(13), // kbase_article_modifieddate
                                 resultSet.getString(14), // kbase_article_modifiedby
                                 resultSet.getString(15), // kbase_article_author_email
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : articleData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            responseList.add(articleData);
-                        }
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Response: {}", responseList);
+                            for (String str : articleData)
+                            {
+                                DEBUGGER.debug(str);
+                            }
                         }
+
+                        responseList.add(articleData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Response: {}", responseList);
                     }
                 }
             }

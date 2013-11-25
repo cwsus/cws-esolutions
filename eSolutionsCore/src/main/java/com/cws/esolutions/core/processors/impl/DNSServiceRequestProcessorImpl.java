@@ -19,18 +19,29 @@ import java.io.File;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Vector;
+
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
+
 import java.util.ArrayList;
 import java.io.IOException;
+
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
+
 import java.sql.SQLException;
 import java.security.Security;
 import java.io.FileOutputStream;
+
 import org.xbill.DNS.SimpleResolver;
+
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
+
+import javax.jws.WebMethod;
+import javax.jws.WebParam;
+import javax.jws.WebService;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
@@ -80,6 +91,7 @@ import com.cws.esolutions.security.audit.exception.AuditServiceException;
  * kh05451 @ Dec 31, 2012 9:50:06 AM
  *     Moved http stuff into <code>NetworkUtils</code>
  */
+@WebService(targetNamespace = "http://impl.processors.core.esolutions.cws.com/", portName = "DNSServiceRequestProcessorImplPort", serviceName = "DNSServiceRequestProcessorImplService")
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
     /**
@@ -175,8 +187,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         }
     }
 
+    @WebMethod(operationName = "performLookup", action = "urn:PerformLookup")
     @Override
-    public DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse performLookup(final @WebParam(name = "arg0") DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
 

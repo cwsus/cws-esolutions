@@ -220,7 +220,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -231,7 +231,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -242,7 +242,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -253,7 +253,7 @@ public class LoginController
             }
         }
 
-        Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+        @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
         while (sessionEnumeration.hasMoreElements())
         {
@@ -291,12 +291,12 @@ public class LoginController
                 {
                     case SUCCESS:
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getHomeRedirect());
+                        mView.setViewName(this.appConfig.getHomeRedirect());
 
                         return mView;
                     case EXPIRED:
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getExpiredRedirect());
+                        mView.setViewName(this.appConfig.getExpiredRedirect());
 
                         return mView;
                     default:
@@ -307,7 +307,7 @@ public class LoginController
             }
         }
 
-        switch (appConfig.getLogonType())
+        switch (this.appConfig.getLogonType())
         {
             case COMBINED:
                 mView.setViewName(this.combinedLoginPage);
@@ -356,7 +356,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -367,7 +367,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -378,7 +378,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -392,7 +392,7 @@ public class LoginController
         hSession.removeAttribute(Constants.USER_ACCOUNT);
         hSession.invalidate();
 
-        switch (appConfig.getLogonType())
+        switch (this.appConfig.getLogonType())
         {
             case COMBINED:
                 mView.setViewName(this.combinedLoginPage);
@@ -444,7 +444,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -455,7 +455,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -466,7 +466,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -477,7 +477,7 @@ public class LoginController
             }
         }
 
-        validator.validate(loginRequest, bindResult);
+        this.validator.validate(loginRequest, bindResult);
 
         if (bindResult.hasErrors())
         {
@@ -521,11 +521,11 @@ public class LoginController
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.COMBINED);
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
             authRequest.setUserSecurity(reqSecurity);
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setApplicationId(this.appConfig.getApplicationId());
+            authRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -554,7 +554,7 @@ public class LoginController
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getHomeRedirect());
+                        mView.setViewName(this.appConfig.getHomeRedirect());
 
                         if (DEBUG)
                         {
@@ -567,7 +567,7 @@ public class LoginController
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getExpiredRedirect());
+                        mView.setViewName(this.appConfig.getExpiredRedirect());
 
                         if (DEBUG)
                         {
@@ -579,7 +579,7 @@ public class LoginController
                         // no dice (but its also an unspecified failure)
 						ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());
                         mView.setViewName(this.combinedLoginPage);
 
@@ -588,7 +588,7 @@ public class LoginController
             }
             else
             {
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                 mView.addObject("command", new LoginRequest());
                 mView.setViewName(this.combinedLoginPage);
             }
@@ -599,7 +599,7 @@ public class LoginController
 
             mView.addObject("command", new LoginRequest());
             mView.setViewName(this.combinedLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -639,7 +639,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -650,7 +650,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -661,7 +661,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -672,7 +672,7 @@ public class LoginController
             }
         }
 
-        validator.validate(user, bindResult);
+        this.validator.validate(user, bindResult);
 
         if (bindResult.hasErrors())
         {
@@ -708,10 +708,10 @@ public class LoginController
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount(reqUser);
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setApplicationId(this.appConfig.getApplicationId());
+            authRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -741,7 +741,7 @@ public class LoginController
                         // add auth
                         mView.addObject("command", new UserSecurity());
 
-                        switch (appConfig.getLogonType())
+                        switch (this.appConfig.getLogonType())
                         {
                             case OTP:
                                 // send to OTP page
@@ -758,7 +758,7 @@ public class LoginController
                         // no dice (but its also an unspecified failure)
                         mView.addObject("command", new UserAccount());
                         mView.setViewName(this.usernameLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         
                         break;
                 }
@@ -767,7 +767,7 @@ public class LoginController
             {
                 mView.addObject("command", new UserAccount());
                 mView.setViewName(this.usernameLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
             }
         }
         catch (AuthenticationException ax)
@@ -776,7 +776,7 @@ public class LoginController
 
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.usernameLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -816,7 +816,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -827,7 +827,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -838,7 +838,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -865,11 +865,11 @@ public class LoginController
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.PASSWORD);
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setApplicationId(this.appConfig.getApplicationId());
+            authRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -899,7 +899,7 @@ public class LoginController
                         // check logon type
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        mView.setViewName(appConfig.getHomeRedirect());
+                        mView.setViewName(this.appConfig.getHomeRedirect());
 
                         return mView;
                     case EXPIRED:
@@ -907,15 +907,15 @@ public class LoginController
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+                        mView.setViewName(this.appConfig.getExpiredRedirect());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
                         mView.addObject("command", new UserSecurity());
                         mView.setViewName(this.passwordLoginPage);
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         
                         break;
                 }
@@ -924,7 +924,7 @@ public class LoginController
             {
                 mView.addObject("command", new UserSecurity());
                 mView.setViewName(this.passwordLoginPage);
-                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
             }
         }
         catch (AuthenticationException ax)
@@ -933,7 +933,7 @@ public class LoginController
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.passwordLoginPage);
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)
@@ -973,7 +973,7 @@ public class LoginController
             DEBUGGER.debug("Session ID: {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -984,7 +984,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -995,7 +995,7 @@ public class LoginController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1022,11 +1022,11 @@ public class LoginController
             authRequest.setAuthType(AuthenticationType.LOGIN);
             authRequest.setLoginType(LoginType.USERNAME);
             authRequest.setHostInfo(reqInfo);
-            authRequest.setTimeoutValue(appConfig.getRequestTimeout());
+            authRequest.setTimeoutValue(this.appConfig.getRequestTimeout());
             authRequest.setUserAccount((UserAccount) hRequest.getSession().getAttribute(Constants.USER_ACCOUNT));
             authRequest.setUserSecurity(security);
-            authRequest.setApplicationId(appConfig.getApplicationId());
-            authRequest.setApplicationName(appConfig.getApplicationName());
+            authRequest.setApplicationId(this.appConfig.getApplicationId());
+            authRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -1056,7 +1056,7 @@ public class LoginController
                         // check logon type
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        mView.setViewName(appConfig.getHomeRedirect());
+                        mView.setViewName(this.appConfig.getHomeRedirect());
 
                         return mView;
                     case EXPIRED:
@@ -1064,8 +1064,8 @@ public class LoginController
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(appConfig.getExpiredRedirect());
-                        mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessagePasswordExpired());
+                        mView.setViewName(this.appConfig.getExpiredRedirect());
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessagePasswordExpired());
 
                         return mView;
                     default:
@@ -1089,7 +1089,7 @@ public class LoginController
 
             mView.addObject("command", new UserSecurity());
             mView.setViewName(this.otpLoginPage);
-            mView.addObject(Constants.ERROR_RESPONSE, appConfig.getMessageRequestProcessingFailure());
+            mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)

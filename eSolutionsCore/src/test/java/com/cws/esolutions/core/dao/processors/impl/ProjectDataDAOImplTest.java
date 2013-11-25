@@ -18,7 +18,6 @@ package com.cws.esolutions.core.dao.processors.impl;
 import java.util.UUID;
 import java.util.List;
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.Arrays;
@@ -49,10 +48,10 @@ import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
  */
 public class ProjectDataDAOImplTest
 {
-    private IProjectDataDAO dao = new ProjectDataDAOImpl();
+    private static final IProjectDataDAO dao = new ProjectDataDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -67,7 +66,7 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public final void addNewProject()
+    public static final void addNewProject()
     {
         List<String> projectDetail = new ArrayList<>(
                 Arrays.asList(
@@ -83,7 +82,7 @@ public class ProjectDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewProject(projectDetail));
+            Assert.assertTrue(ProjectDataDAOImplTest.dao.addNewProject(projectDetail));
         }
         catch (SQLException sqx)
         {
@@ -92,11 +91,11 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public final void deleteProjectData()
+    public static final void deleteProjectData()
     {
         try
         {
-            Assert.assertTrue(dao.deleteProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6"));
+            Assert.assertTrue(ProjectDataDAOImplTest.dao.deleteProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6"));
         }
         catch (SQLException sqx)
         {
@@ -105,11 +104,11 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public final void getProjectData()
+    public static final void getProjectData()
     {
         try
         {
-            List<String> projectList = dao.getProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6");
+            List<String> projectList = ProjectDataDAOImplTest.dao.getProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6");
 
             Assert.assertNotNull(projectList);
         }
@@ -120,11 +119,11 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public final void listAvailableProjects()
+    public static final void listAvailableProjects()
     {
         try
         {
-            List<String[]> responseMap = dao.listAvailableProjects(0);
+            List<String[]> responseMap = ProjectDataDAOImplTest.dao.listAvailableProjects(0);
 
             Assert.assertNotNull(responseMap);
         }
@@ -132,11 +131,5 @@ public class ProjectDataDAOImplTest
         {
             Assert.fail(sqx.getMessage());
         }
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
-
     }
 }

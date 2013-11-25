@@ -70,27 +70,25 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL addNewDatacenter(?, ?, ?, ?)}");
+            stmt.setString(1, data.get(0)); // datacenterGuid
+            stmt.setString(2, data.get(1)); // datacenterName
+            stmt.setString(3, data.get(2)); // datacenterStatus
+            stmt.setString(4, data.get(3)); // datacenterDesc
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL addNewDatacenter(?, ?, ?, ?)}");
-                stmt.setString(1, data.get(0)); // datacenterGuid
-                stmt.setString(2, data.get(1)); // datacenterName
-                stmt.setString(3, data.get(2)); // datacenterStatus
-                stmt.setString(4, data.get(3)); // datacenterDesc
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -142,27 +140,25 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL updateDatacenter(?, ?, ?, ?)}");
+            stmt.setString(1, data.get(0)); // datacenterGuid
+            stmt.setString(2, data.get(1)); // datacenterName
+            stmt.setString(3, data.get(2)); // datacenterStatus
+            stmt.setString(4, data.get(3)); // datacenterDesc
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL updateDatacenter(?, ?, ?, ?)}");
-                stmt.setString(1, data.get(0)); // datacenterGuid
-                stmt.setString(2, data.get(1)); // datacenterName
-                stmt.setString(3, data.get(2)); // datacenterStatus
-                stmt.setString(4, data.get(3)); // datacenterDesc
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -210,24 +206,22 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL removeDataCenter(?)}");
+            stmt.setString(1, datacenter);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL removeDataCenter(?)}");
-                stmt.setString(1, datacenter);
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -275,35 +269,33 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{ CALL getDatacenterCount() }");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{ CALL getDatacenterCount() }");
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        count = resultSet.getInt(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("count: {}", count);
-                        }
+                        DEBUGGER.debug("count: {}", count);
                     }
                 }
             }
@@ -366,49 +358,47 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listDataCenters(?)}");
-                stmt.setInt(1, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL listDataCenters(?)}");
+            stmt.setInt(1, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<>();
+
+                    while (resultSet.next())
+                    {
+                        String[] data = new String[]
+                        {
+                                resultSet.getString(1), // DATACENTER_GUID
+                                resultSet.getString(2), // DATACENTER_NAME
+                                resultSet.getString(3), // DATACENTER_STATUS
+                                resultSet.getString(4) // DATACENTER_DESC
+                        };
+
+                        responseData.add(data);
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseData = new ArrayList<String[]>();
-
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[]
-                            {
-                                    resultSet.getString(1), // DATACENTER_GUID
-                                    resultSet.getString(2), // DATACENTER_NAME
-                                    resultSet.getString(3), // DATACENTER_STATUS
-                                    resultSet.getString(4) // DATACENTER_DESC
-                            };
-
-                            responseData.add(data);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", responseData);
-                        }
+                        DEBUGGER.debug("List<String>: {}", responseData);
                     }
                 }
             }
@@ -464,50 +454,48 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getDataCenterByAttribute(?, ?)}");
-                stmt.setString(1, attribute);
-                stmt.setInt(2, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getDataCenterByAttribute(?, ?)}");
+            stmt.setString(1, attribute);
+            stmt.setInt(2, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<>();
+
+                    while (resultSet.next())
+                    {
+                        String[] data = new String[]
+                        {
+                                resultSet.getString(1), // DATACENTER_GUID
+                                resultSet.getString(2), // DATACENTER_NAME
+                                resultSet.getString(3), // DATACENTER_STATUS
+                                resultSet.getString(4) // DATACENTER_DESC
+                        };
+
+                        responseData.add(data);
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseData = new ArrayList<String[]>();
-
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[]
-                            {
-                                    resultSet.getString(1), // DATACENTER_GUID
-                                    resultSet.getString(2), // DATACENTER_NAME
-                                    resultSet.getString(3), // DATACENTER_STATUS
-                                    resultSet.getString(4) // DATACENTER_DESC
-                            };
-
-                            responseData.add(data);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", responseData);
-                        }
+                        DEBUGGER.debug("List<String>: {}", responseData);
                     }
                 }
             }
@@ -563,44 +551,42 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                // we dont know what we have here - it could be a guid or it could be a hostname
-                // most commonly it'll be a guid, but we're going to search anyway
-                stmt = sqlConn.prepareCall("{ CALL retrDataCenter(?) }");
-                stmt.setString(1, attribute);
+            sqlConn.setAutoCommit(true);
+
+            // we dont know what we have here - it could be a guid or it could be a hostname
+            // most commonly it'll be a guid, but we're going to search anyway
+            stmt = sqlConn.prepareCall("{ CALL retrDataCenter(?) }");
+            stmt.setString(1, attribute);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("stmt: {}", stmt);
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    responseData = new ArrayList<>(
+                            Arrays.asList(
+                                    resultSet.getString(1), // DATACENTER_GUID
+                                    resultSet.getString(2), // DATACENTER_NAME
+                                    resultSet.getString(3), // DATACENTER_STATUS
+                                    resultSet.getString(4))); // DATACENTER_DESC
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        responseData = new ArrayList<String>(
-                                Arrays.asList(
-                                        resultSet.getString(1), // DATACENTER_GUID
-                                        resultSet.getString(2), // DATACENTER_NAME
-                                        resultSet.getString(3), // DATACENTER_STATUS
-                                        resultSet.getString(4))); // DATACENTER_DESC
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("responseData: {}", responseData);
-                        }
+                        DEBUGGER.debug("responseData: {}", responseData);
                     }
                 }
             }

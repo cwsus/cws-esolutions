@@ -103,9 +103,9 @@ public final class NetworkUtils
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP

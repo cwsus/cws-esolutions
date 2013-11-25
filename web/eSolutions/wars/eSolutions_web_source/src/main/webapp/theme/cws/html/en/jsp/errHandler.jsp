@@ -124,7 +124,7 @@
                 </ul>
             </div>
 
-            <div id="InfoLine"><spring:message code="theme.error.system.fai2lure" /></div>
+            <div id="InfoLine"><spring:message code="theme.error.system.failure" /></div>
 
 			<div id="content">
 			    <div id="content-right">

@@ -63,9 +63,9 @@ public final class MQUtils
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     private static final MQConfig mqConfig = appBean.getConfigData().getMqConfig();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
-    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     public static final synchronized String sendMqMessage(final Serializable value) throws UtilityException
     {

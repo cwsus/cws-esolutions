@@ -159,7 +159,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IMessagingDAO dao = new ServiceMessagingDAOImpl();
-            List<String[]> messageList = dao.getMessagesByAttribute(request.getSearchTerms());
+            List<Object[]> messageList = dao.getMessagesByAttribute(request.getSearchTerms());
 
             if (DEBUG)
             {
@@ -170,15 +170,15 @@ public class SearchProcessorImpl implements ISearchProcessor
             {
                 List<SearchResult> responseList = new ArrayList<>();
 
-                for (String[] data : messageList)
+                for (Object[] data : messageList)
                 {
                     if (DEBUG)
                     {
                         if (data != null)
                         {
-                            for (String str : data)
+                            for (Object obj : data)
                             {
-                                DEBUGGER.debug("data: {}", str);
+                                DEBUGGER.debug("data: {}", obj);
                             }
                         }
                     }
@@ -186,8 +186,8 @@ public class SearchProcessorImpl implements ISearchProcessor
                     if ((data != null) && (data.length >= 2))
                     {
                         SearchResult searchResult = new SearchResult();
-                        searchResult.setPath(data[0]);
-                        searchResult.setTitle(data[1]);
+                        searchResult.setPath((String) data[0]);
+                        searchResult.setTitle((String) data[1]);
 
                         if (DEBUG)
                         {

@@ -48,7 +48,7 @@ public class LDAPAuthenticatorTest
     private static final Authenticator authenticator = new LDAPAuthenticator();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -62,7 +62,7 @@ public class LDAPAuthenticatorTest
     }
 
     @Test
-    public final void testPasswordLogon()
+    public static final void testPasswordLogon()
     {
         try
         {
@@ -75,7 +75,7 @@ public class LDAPAuthenticatorTest
     }
 
     @Test
-    public final void testVerifySecurityQuestions()
+    public static final void testVerifySecurityQuestions()
     {
         List<String> authList = new ArrayList<>(
                 Arrays.asList(
@@ -95,7 +95,7 @@ public class LDAPAuthenticatorTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

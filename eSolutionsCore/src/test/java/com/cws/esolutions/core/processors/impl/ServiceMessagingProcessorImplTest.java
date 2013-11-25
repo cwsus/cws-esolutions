@@ -17,29 +17,24 @@ package com.cws.esolutions.core.processors.impl;
 
 import org.junit.Test;
 import org.junit.After;
+import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
+import java.util.ArrayList;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
-import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
-import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
-import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.impl
@@ -59,84 +54,53 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  */
 public class ServiceMessagingProcessorImplTest
 {
-    private UserAccount userAccount = new UserAccount();
-    private RequestHostInfo hostInfo = new RequestHostInfo();
-
-    private static final IMessagingProcessor processor = new ServiceMessagingProcessorImpl();
+    private static UserAccount userAccount = new UserAccount();
+    private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     private static final String SERVICEID = "5C0B0A54-2456-45C9-A435-B485ED36FAC7";
+    private static final IMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
+            hostInfo.setHostAddress("junit");
+            hostInfo.setHostName("junit");
+
+            userAccount.setStatus(LoginStatus.SUCCESS);
+            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+            userAccount.setSurname("Huntly");
+            userAccount.setFailedCount(0);
+            userAccount.setOlrLocked(false);
+            userAccount.setOlrSetup(false);
+            userAccount.setSuspended(false);
+            userAccount.setTcAccepted(false);
+            userAccount.setRole(Role.SITEADMIN);
+            userAccount.setDisplayName("Kevin Huntly");
+            userAccount.setEmailAddr("kmhuntly@gmail.com");
+            userAccount.setGivenName("Kevin");
+            userAccount.setUsername("khuntly");
+            userAccount.setPagerNumber("716-341-5669");
+            userAccount.setTelephoneNumber("716-341-5669");
+            userAccount.setServiceList(new ArrayList<>(
+                Arrays.asList(
+                    "96E4E53E-FE87-446C-AF03-0F5BC6527B9D",
+                    "0C1C5F83-3EDD-4635-9F1E-6A9B5383747E",
+                    "B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD",
+                    "F7D1DAB8-DADB-4E7B-8596-89D1BE230E75",
+                    "4B081972-92C3-455B-9403-B81E68C538B6",
+                    "5C0B0A54-2456-45C9-A435-B485ED36FAC7",
+                    "D1B5D088-32B3-4AA1-9FCF-822CB476B649",
+                    "A0F3C71F-5FAF-45B4-AA34-9779F64D397E",
+                    "7CE2B9E8-9FCF-4096-9CAE-10961F50FA81",
+                    "45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E",
+                    "3F0D3FB5-56C9-4A90-B177-4E1593088DBF",
+                    "AEB46994-57B4-4E92-90AA-A4046F60B830")));
+
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
-
-            IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
-            hostInfo.setHostAddress("127.0.0.1");
-            hostInfo.setHostName("localhost");
-
-            UserAccount account = new UserAccount();
-            account.setUsername("khuntly");
-            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-
-            try
-            {
-                AuthenticationRequest userRequest = new AuthenticationRequest();
-                userRequest.setApplicationName("esolutions");
-                userRequest.setAuthType(AuthenticationType.LOGIN);
-                userRequest.setLoginType(LoginType.USERNAME);
-                userRequest.setUserAccount(account);
-                userRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
-
-                AuthenticationResponse userResponse = agentAuth.processAgentLogon(userRequest);
-
-                if (userResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    UserAccount authUser = userResponse.getUserAccount();
-
-                    if (authUser.getStatus() == LoginStatus.SUCCESS)
-                    {
-                        UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setPassword("Ariana21*");
-
-                        AuthenticationRequest passRequest = new AuthenticationRequest();
-                        passRequest.setApplicationName("esolutions");
-                        passRequest.setAuthType(AuthenticationType.LOGIN);
-                        passRequest.setLoginType(LoginType.PASSWORD);
-                        passRequest.setUserAccount(authUser);
-                        passRequest.setUserSecurity(userSecurity);
-                        passRequest.setApplicationId("B760E92F-827A-42E7-9E8D-64334657BA83");
-
-                        AuthenticationResponse passResponse = agentAuth.processAgentLogon(passRequest);
-
-                        if (passResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                        {
-                            userAccount = passResponse.getUserAccount();
-                            hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
-                        }
-                        else
-                        {
-                            Assert.fail("Account login failed");
-                        }
-                    }
-                    else
-                    {
-                        Assert.fail("Account login failed");
-                    }
-                }
-                else
-                {
-                    Assert.fail("Account login failed");
-                }
-            }
-            catch (Exception e)
-            {
-                Assert.fail(e.getMessage());
-            }
         }
         catch (Exception ex)
         {
@@ -147,7 +111,7 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @Test
-    public final void addNewMessage()
+    public static final void addNewMessage()
     {
         ServiceMessage message = new ServiceMessage();
         message.setMessageId(RandomStringUtils.randomAlphanumeric(16));
@@ -172,24 +136,23 @@ public class ServiceMessagingProcessorImplTest
         }
         catch (MessagingServiceException msx)
         {
-            msx.printStackTrace();
             Assert.fail(msx.getMessage());
         }
     }
 
     @Test
-    public final void deleteExistingMessage()
+    public static final void deleteExistingMessage()
     {
         Assert.fail("Not yet implemented");
     }
 
-    public final void updateExistingMessage()
+    public static final void updateExistingMessage()
     {
         Assert.fail("Not yet implemented");
     }
 
     @Test
-    public final void showMessages()
+    public static final void showMessages()
     {
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);
@@ -209,7 +172,7 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @Test
-    public final void showMessage()
+    public static final void showMessage()
     {
         ServiceMessage message = new ServiceMessage();
         message.setMessageId("muUlODU6k1kA0L3q");
@@ -233,7 +196,7 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

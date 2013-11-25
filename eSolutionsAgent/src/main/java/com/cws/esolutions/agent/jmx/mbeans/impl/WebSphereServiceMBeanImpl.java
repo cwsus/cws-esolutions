@@ -65,6 +65,8 @@ import com.cws.esolutions.agent.jmx.mbeans.exception.ServiceMBeanException;
  */
 public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationListener
 {
+    private static final String CNAME = WebSphereServiceMBeanImpl.class.getName();
+
     @Override
     public MBeanResponse performServerOperation(final MBeanRequest request) throws ServiceMBeanException
     {
@@ -609,7 +611,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
 
                         if (appMgmt != null)
                         {
-                            Hashtable<String, Object> appTable = new Hashtable<String, Object>();
+                            Hashtable<String, Object> appTable = new Hashtable<>();
                             appTable.put(AppConstants.ADMINCLIENT, adminClient);
                             appTable.put(AppConstants.APPDEPL_CELL, "wascell"); // TODO: fix
                             appTable.put(AppConstants.APPDEPL_CLUSTER, request.getClusterName());
@@ -754,6 +756,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
         return response;
     }
 
+    @Override
     public void handleNotification(final Notification notify, final Object object)
     {
         final String methodName = WebSphereServiceMBeanImpl.CNAME + "#handleNotification(final Notification notify, final Object object)";

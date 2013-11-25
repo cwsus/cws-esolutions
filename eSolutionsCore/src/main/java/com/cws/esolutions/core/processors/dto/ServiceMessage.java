@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.core.processors.dto;
 
+import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -40,8 +41,8 @@ import com.cws.esolutions.core.Constants;
  */
 public class ServiceMessage implements Serializable
 {
-    private Long expiryDate = null;
-    private Long submitDate = null;
+    private Date expiryDate = null;
+    private Date submitDate = null;
     private String messageId = null;
     private boolean isActive = false;
     private String messageText = null;
@@ -136,7 +137,7 @@ public class ServiceMessage implements Serializable
         this.authorEmail = value;
     }
 
-    public final void setSubmitDate(final Long value)
+    public final void setSubmitDate(final Date value)
     {
         final String methodName = ServiceMessage.CNAME + "#setSubmitDate(final Long value)";
 
@@ -175,7 +176,7 @@ public class ServiceMessage implements Serializable
         this.doesExpire = value;
     }
 
-    public final void setExpiryDate(final Long value)
+    public final void setExpiryDate(final Date value)
     {
         final String methodName = ServiceMessage.CNAME + "#setExpiryDate(final Long value)";
 
@@ -266,7 +267,7 @@ public class ServiceMessage implements Serializable
         return this.authorEmail;
     }
 
-    public final Long getSubmitDate()
+    public final Date getSubmitDate()
     {
         final String methodName = ServiceMessage.CNAME + "#getSubmitDate()";
 
@@ -305,7 +306,7 @@ public class ServiceMessage implements Serializable
         return this.doesExpire;
     }
 
-    public final Long getExpiryDate()
+    public final Date getExpiryDate()
     {
         final String methodName = ServiceMessage.CNAME + "#getExpiryDate()";
 

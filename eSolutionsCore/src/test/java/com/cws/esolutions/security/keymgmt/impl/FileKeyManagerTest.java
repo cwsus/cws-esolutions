@@ -56,13 +56,13 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  */
 public class FileKeyManagerTest
 {
-    private UserAccount userAccount = new UserAccount();
-    private RequestHostInfo hostInfo = new RequestHostInfo();
+    private static UserAccount userAccount = new UserAccount();
+    private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     private static final KeyManager keyManager = new SQLKeyManager();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -141,7 +141,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public final void testCreateKeys()
+    public static final void testCreateKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setKeyAlgorithm("RSA");
@@ -161,7 +161,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public final void testReturnKeys()
+    public static final void testReturnKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setKeyAlgorithm("RSA");
@@ -180,7 +180,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public final void testDeleteKeys()
+    public static final void testDeleteKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setGuid(userAccount.getGuid());
@@ -198,7 +198,7 @@ public class FileKeyManagerTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

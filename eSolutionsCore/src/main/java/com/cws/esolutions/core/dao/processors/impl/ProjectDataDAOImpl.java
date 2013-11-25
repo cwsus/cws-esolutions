@@ -71,32 +71,30 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, projectDetail.get(0)); // project guid
+            stmt.setString(2, projectDetail.get(1)); // project code
+            stmt.setString(3, projectDetail.get(2)); // project status
+            stmt.setString(4, projectDetail.get(3)); // primary owner
+            stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
+            stmt.setString(6, projectDetail.get(5)); // dev email
+            stmt.setString(7, projectDetail.get(6)); // prod email
+            stmt.setString(8, projectDetail.get(7)); // incident q
+            stmt.setString(9, projectDetail.get(8)); // change q
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL insertNewProject(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, projectDetail.get(0)); // project guid
-                stmt.setString(2, projectDetail.get(1)); // project code
-                stmt.setString(3, projectDetail.get(2)); // project status
-                stmt.setString(4, projectDetail.get(3)); // primary owner
-                stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
-                stmt.setString(6, projectDetail.get(5)); // dev email
-                stmt.setString(7, projectDetail.get(6)); // prod email
-                stmt.setString(8, projectDetail.get(7)); // incident q
-                stmt.setString(9, projectDetail.get(8)); // change q
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -144,24 +142,22 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL removeProjectData(?)}");
+            stmt.setString(1, projectName);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL removeProjectData(?)}");
-                stmt.setString(1, projectName);
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -185,6 +181,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
 
         return isComplete;
     }
+
 
     @Override
     public synchronized boolean updateProjectData(final List<String> projectDetail) throws SQLException
@@ -213,32 +210,30 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL updateProjectDetail(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, projectDetail.get(0)); // project guid
+            stmt.setString(2, projectDetail.get(1)); // project code
+            stmt.setString(3, projectDetail.get(2)); // project status
+            stmt.setString(4, projectDetail.get(3)); // primary owner
+            stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
+            stmt.setString(6, projectDetail.get(5)); // dev email
+            stmt.setString(7, projectDetail.get(6)); // prod email
+            stmt.setString(8, projectDetail.get(7)); // incident q
+            stmt.setString(9, projectDetail.get(8)); // change q
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
+                DEBUGGER.debug(stmt.toString());
+            }
 
-                stmt = sqlConn.prepareCall("{CALL updateProjectDetail(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, projectDetail.get(0)); // project guid
-                stmt.setString(2, projectDetail.get(1)); // project code
-                stmt.setString(3, projectDetail.get(2)); // project status
-                stmt.setString(4, projectDetail.get(3)); // primary owner
-                stmt.setString(5, projectDetail.get(4)); // secondary owner, could be null
-                stmt.setString(6, projectDetail.get(5)); // dev email
-                stmt.setString(7, projectDetail.get(6)); // prod email
-                stmt.setString(8, projectDetail.get(7)); // incident q
-                stmt.setString(9, projectDetail.get(8)); // change q
+            isComplete = (!(stmt.execute()));
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -262,6 +257,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
 
         return isComplete;
     }
+
 
     @Override
     public synchronized List<String> getProjectData(final String projectGuid) throws SQLException
@@ -287,30 +283,29 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("SQL Connection is not an instance of Connection or is null");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getProjectData(?)}");
+            stmt.setString(1, projectGuid);
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL getProjectData(?)}");
-                stmt.setString(1, projectGuid);
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        responseData = new ArrayList<String>(
-                                Arrays.asList(
+                    responseData = new ArrayList<>(
+                            Arrays.asList(
                                     resultSet.getString(1), // project guid
                                     resultSet.getString(2), // project code
                                     resultSet.getString(3), // project status
@@ -321,12 +316,11 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
                                     resultSet.getString(8), // incident q
                                     resultSet.getString(9))); // chg q
 
-                        if (DEBUG)
+                    if (DEBUG)
+                    {
+                        for (String str : responseData)
                         {
-                            for (String str : responseData)
-                            {
-                                DEBUGGER.debug(str);
-                            }
+                            DEBUGGER.debug(str);
                         }
                     }
                 }
@@ -359,6 +353,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return responseData;
     }
 
+
     @Override
     public synchronized int getProjectCount() throws SQLException
     {
@@ -382,36 +377,34 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getProjectCount()}");
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getProjectCount()}");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        count = resultSet.getInt(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("count: {}", count);
-                        }
+                        DEBUGGER.debug("count: {}", count);
                     }
                 }
             }
@@ -443,6 +436,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return count;
     }
 
+
     @Override
     public synchronized List<String[]> listAvailableProjects(final int startRow) throws SQLException
     {
@@ -467,61 +461,59 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL listProjects(?)}");
-                stmt.setInt(1, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL listProjects(?)}");
+            stmt.setInt(1, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    projectList = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        projectList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
-                        {
-                            String[] data = new String[] {
-                                    resultSet.getString(1), // project guid
-                                    resultSet.getString(2), // project code
-                                    resultSet.getString(3), // project status
-                                    resultSet.getString(4), // primary owner
-                                    resultSet.getString(5), // secondary owner
-                                    resultSet.getString(6), // dev email
-                                    resultSet.getString(7), // prod email
-                                    resultSet.getString(8), // incident q
-                                    resultSet.getString(9) // chg q
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
-                            projectList.add(data);
-                        }
+                        String[] data = new String[] {
+                                resultSet.getString(1), // project guid
+                                resultSet.getString(2), // project code
+                                resultSet.getString(3), // project status
+                                resultSet.getString(4), // primary owner
+                                resultSet.getString(5), // secondary owner
+                                resultSet.getString(6), // dev email
+                                resultSet.getString(7), // prod email
+                                resultSet.getString(8), // incident q
+                                resultSet.getString(9) // chg q
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("projectList: {}", projectList);
+                            for (String str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
                         }
+
+                        projectList.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("projectList: {}", projectList);
                     }
                 }
             }
@@ -553,6 +545,7 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return projectList;
     }
 
+
     @Override
     public synchronized List<String[]> getProjectsByAttribute(final String attribute, final int startRow) throws SQLException
     {
@@ -578,63 +571,61 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
 
-                stmt = sqlConn.prepareCall("{CALL getProjectByAttribute(?, ?)}");
-                stmt.setString(1, attribute);
-                stmt.setInt(2, startRow);
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getProjectByAttribute(?, ?)}");
+            stmt.setString(1, attribute);
+            stmt.setInt(2, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseList = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseList = new ArrayList<String[]>();
-
-                        while (resultSet.next())
+                        String[] data = new String[]
                         {
-                            String[] data = new String[]
-                            {
-                                    resultSet.getString(1), // project guid
-                                    resultSet.getString(2), // project code
-                                    resultSet.getString(3), // project status
-                                    resultSet.getString(4), // primary owner
-                                    resultSet.getString(5), // secondary owner
-                                    resultSet.getString(6), // dev email
-                                    resultSet.getString(7), // prod email
-                                    resultSet.getString(8), // incident q
-                                    resultSet.getString(9) // chg q
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug("data: {}", str);
-                                }
-                            }
-
-                            responseList.add(data);
-                        }
+                                resultSet.getString(1), // project guid
+                                resultSet.getString(2), // project code
+                                resultSet.getString(3), // project status
+                                resultSet.getString(4), // primary owner
+                                resultSet.getString(5), // secondary owner
+                                resultSet.getString(6), // dev email
+                                resultSet.getString(7), // prod email
+                                resultSet.getString(8), // incident q
+                                resultSet.getString(9) // chg q
+                        };
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("responseList: {}", responseList);
+                            for (String str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
                         }
+
+                        responseList.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseList: {}", responseList);
                     }
                 }
             }

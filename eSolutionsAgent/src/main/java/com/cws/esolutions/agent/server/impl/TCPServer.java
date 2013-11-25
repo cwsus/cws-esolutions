@@ -87,7 +87,7 @@ public class TCPServer extends Thread implements AgentServer
             {
                 synchronized (new Object())
                 {
-                    if (isSSLEnabled)
+                    if (this.isSSLEnabled)
                     {
                         String protocol = serverConfig.getSslProtocol();
                         String keyStoreFile = serverConfig.getSslKeyDatabase();
@@ -106,10 +106,10 @@ public class TCPServer extends Thread implements AgentServer
                         sslContext.init(keyManager, null, new SecureRandom());
 
                         SSLServerSocketFactory sslFactory = sslContext.getServerSocketFactory();
-                        sslSocket = (SSLServerSocket) sslFactory.createServerSocket();
-                        sslSocket.bind(new InetSocketAddress(serverConfig.getListenAddress(), serverConfig.getPortNumber()), serverConfig.getBacklogCount());
+                        this.sslSocket = (SSLServerSocket) sslFactory.createServerSocket();
+                        this.sslSocket.bind(new InetSocketAddress(serverConfig.getListenAddress(), serverConfig.getPortNumber()), serverConfig.getBacklogCount());
 
-                        if (!(sslSocket.isBound()))
+                        if (!(this.sslSocket.isBound()))
                         {
                             throw new IOException("Unable to bind against configured address/port. Please verify configuration and re-try.");
                         }
@@ -117,12 +117,12 @@ public class TCPServer extends Thread implements AgentServer
                         INFO_RECORDER.info("Server ready.");
                     }
 
-                    if (!(isTCPDisabled))
+                    if (!(this.isTCPDisabled))
                     {
-                        tcpSocket = new ServerSocket();
-                        tcpSocket.bind(new InetSocketAddress(serverConfig.getListenAddress(), serverConfig.getPortNumber()), serverConfig.getBacklogCount());
+                        this.tcpSocket = new ServerSocket();
+                        this.tcpSocket.bind(new InetSocketAddress(serverConfig.getListenAddress(), serverConfig.getPortNumber()), serverConfig.getBacklogCount());
 
-                        if (!(tcpSocket.isBound()))
+                        if (!(this.tcpSocket.isBound()))
                         {
                             throw new IOException("Unable to bind against configured address/port. Please verify configuration and re-try.");
                         }
@@ -174,6 +174,7 @@ public class TCPServer extends Thread implements AgentServer
         }
     }
 
+    @Override
     public void run()
     {
         Socket requestSocket = null;
@@ -189,22 +190,22 @@ public class TCPServer extends Thread implements AgentServer
             {
                 if (agentBean.getStopServer())
                 {
-                    if (isSSLEnabled)
+                    if (this.isSSLEnabled)
                     {
-                        sslSocket.close();
+                        this.sslSocket.close();
                     }
 
-                    if (!(isTCPDisabled))
+                    if (!(this.isTCPDisabled))
                     {
-                        tcpSocket.close();
+                        this.tcpSocket.close();
                     }
 
                     break;
                 }
 
-                if (isSSLEnabled)
+                if (this.isSSLEnabled)
                 {
-                    requestSocket = sslSocket.accept();
+                    requestSocket = this.sslSocket.accept();
 
                     if (requestSocket.isConnected())
                     {
@@ -248,9 +249,9 @@ public class TCPServer extends Thread implements AgentServer
                     }
                 }
 
-                if (!(isTCPDisabled))
+                if (!(this.isTCPDisabled))
                 {
-                    requestSocket = tcpSocket.accept();
+                    requestSocket = this.tcpSocket.accept();
 
                     if (requestSocket.isConnected())
                     {

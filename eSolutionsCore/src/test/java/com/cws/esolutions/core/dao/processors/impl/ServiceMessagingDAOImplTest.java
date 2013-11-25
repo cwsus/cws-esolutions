@@ -56,7 +56,7 @@ public class ServiceMessagingDAOImplTest
     private static final String MESSAGE_ID = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -71,11 +71,11 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public final void testDeleteMessage()
+    public static final void testDeleteMessage()
     {
         try
         {
-            dao.deleteMessage(ServiceMessagingDAOImplTest.MESSAGE_ID);
+            ServiceMessagingDAOImplTest.dao.deleteMessage(ServiceMessagingDAOImplTest.MESSAGE_ID);
         }
         catch (SQLException sqx)
         {
@@ -84,7 +84,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public final void testInsertMessage()
+    public static final void testInsertMessage()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
@@ -100,7 +100,7 @@ public class ServiceMessagingDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.insertMessage(data));
+            Assert.assertTrue(ServiceMessagingDAOImplTest.dao.insertMessage(data));
         }
         catch (SQLException sqx)
         {
@@ -109,7 +109,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public final void testUpdateMessage()
+    public static final void testUpdateMessage()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
@@ -125,7 +125,7 @@ public class ServiceMessagingDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.updateMessage(ServiceMessagingDAOImplTest.MESSAGE_ID, data));
+            Assert.assertTrue(ServiceMessagingDAOImplTest.dao.updateMessage(ServiceMessagingDAOImplTest.MESSAGE_ID, data));
         }
         catch (SQLException sqx)
         {
@@ -134,11 +134,11 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public final void testRetrieveMessage()
+    public static final void testRetrieveMessage()
     {
         try
         {
-            List<Object> data = dao.retrieveMessage(ServiceMessagingDAOImplTest.MESSAGE_ID);
+            List<Object> data = ServiceMessagingDAOImplTest.dao.retrieveMessage(ServiceMessagingDAOImplTest.MESSAGE_ID);
 
             Assert.assertNotNull(data);
         }
@@ -149,11 +149,11 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public final void testRetrieveMessages()
+    public static final void testRetrieveMessages()
     {
         try
         {
-            List<Object[]> data = dao.retrieveMessages();
+            List<Object[]> data = ServiceMessagingDAOImplTest.dao.retrieveMessages();
 
             Assert.assertNotNull(data);
         }

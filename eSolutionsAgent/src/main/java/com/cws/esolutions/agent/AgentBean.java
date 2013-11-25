@@ -218,6 +218,7 @@ public class AgentBean
         return this.stopServer;
     }
 
+    @Override
     public final String toString()
     {
         final String methodName = AgentBean.CNAME + "#toString()";

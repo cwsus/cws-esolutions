@@ -53,7 +53,7 @@ public class SQLUserManagerTest
     private static final UserManager userManager = new SQLUserManager();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -67,7 +67,7 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public final void testAddAccountNoGroup()
+    public static final void testAddAccountNoGroup()
     {
         List<String> list = new ArrayList<>(
             Arrays.asList(
@@ -90,7 +90,7 @@ public class SQLUserManagerTest
         }
     }
 
-    public final void testAddAccountWithGroup()
+    public static final void testAddAccountWithGroup()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -114,7 +114,7 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public final void testSearchUsers()
+    public static final void testSearchUsers()
     {
         try
         {
@@ -129,7 +129,7 @@ public class SQLUserManagerTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

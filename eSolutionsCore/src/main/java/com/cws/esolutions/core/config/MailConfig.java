@@ -129,8 +129,8 @@ public final class MailConfig implements Serializable
 
         try
         {
-            mailProps = new Properties();
-            mailProps.load(MailConfig.class.getClassLoader().getResourceAsStream(this.propertyFile));
+            this.mailProps = new Properties();
+            this.mailProps.load(MailConfig.class.getClassLoader().getResourceAsStream(this.propertyFile));
         }
         catch (IOException iox)
         {

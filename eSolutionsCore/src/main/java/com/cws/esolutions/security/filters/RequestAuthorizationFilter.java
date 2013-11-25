@@ -125,8 +125,8 @@ public class RequestAuthorizationFilter implements Filter
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Map<String, String>: {}", serviceMap);
-                DEBUGGER.debug("unauthorizedPage: {}", unauthorizedPage);
+                DEBUGGER.debug("Map<String, String>: {}", this.serviceMap);
+                DEBUGGER.debug("unauthorizedPage: {}", this.unauthorizedPage);
             }
 
         }
@@ -321,7 +321,7 @@ public class RequestAuthorizationFilter implements Filter
                         }
                     }
 
-                    for (String key : serviceMap.keySet())
+                    for (String key : this.serviceMap.keySet())
                     {
                         if (DEBUG)
                         {
@@ -332,7 +332,7 @@ public class RequestAuthorizationFilter implements Filter
                         {
                             // make sure the user is authorized for the service
                             IUserControlService userControl = new UserControlServiceImpl();
-                            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, serviceMap.get(key));
+                            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
 
                             if (DEBUG)
                             {

@@ -77,10 +77,8 @@
 	                                    title="Request for Comments: ${message.messageId}">${message.messageAuthor}</a></em>
 	                            </td>
 
-	                            <jsp:setProperty name="submissionDate" property="time" value="${message.submitDate}" />
-	                            <td align="center" valign="middle"><em><fmt:formatDate value="${submissionDate}" pattern="${dateFormat}" /></em></td>
-	                            <jsp:setProperty name="expirationDate" property="time" value="${message.expiryDate}" />
-	                            <td align="center" valign="middle"><em><fmt:formatDate value="${expirationDate}" pattern="${dateFormat}" /></em></td>
+	                            <td align="center" valign="middle"><em><fmt:formatDate value="${message.submitDate}" pattern="${dateFormat}" /></em></td>
+	                            <td align="center" valign="middle"><em><fmt:formatDate value="${message.expiryDate}" pattern="${dateFormat}" /></em></td>
 	                        </tr>
 	                    </table>
 	                </div>

@@ -56,11 +56,11 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  */
 public class SQLKeyManagerTest
 {
-    private UserAccount userAccount = new UserAccount();
-    private RequestHostInfo hostInfo = new RequestHostInfo();
+    private static UserAccount userAccount = new UserAccount();
+    private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -139,7 +139,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public final void testCreateKeys()
+    public static final void testCreateKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -161,7 +161,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public final void testReturnKeys()
+    public static final void testReturnKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -182,7 +182,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public final void testDeleteKeys()
+    public static final void testDeleteKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -202,7 +202,7 @@ public class SQLKeyManagerTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

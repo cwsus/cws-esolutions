@@ -211,7 +211,7 @@ public class DNSServiceController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -222,7 +222,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -233,7 +233,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -244,14 +244,14 @@ public class DNSServiceController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             mView = new ModelAndView();
             mView.setViewName(this.defaultPage);
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -288,7 +288,7 @@ public class DNSServiceController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -299,7 +299,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -310,7 +310,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -322,7 +322,7 @@ public class DNSServiceController
         }
 
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             mView.addObject("serviceTypes", this.serviceTypes);
             mView.addObject("command", new DNSRecord());
@@ -330,7 +330,7 @@ public class DNSServiceController
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -370,7 +370,7 @@ public class DNSServiceController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -381,7 +381,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -392,7 +392,7 @@ public class DNSServiceController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -404,7 +404,7 @@ public class DNSServiceController
         }
 
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -427,8 +427,8 @@ public class DNSServiceController
                 dnsRequest.setSearchURL(this.serviceHost);
                 dnsRequest.setSearchPath(this.searchSuffix);
                 dnsRequest.setRequestType(DNSRequestType.LOOKUP);
-                dnsRequest.setApplicationId(appConfig.getApplicationId());
-                dnsRequest.setApplicationName(appConfig.getApplicationName());
+                dnsRequest.setApplicationId(this.appConfig.getApplicationId());
+                dnsRequest.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -471,12 +471,12 @@ public class DNSServiceController
             {
                 ERROR_RECORDER.error(dsx.getMessage(), dsx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)

@@ -78,7 +78,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     @Override
     public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = AuthenticationProcessorImpl.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = IAuthenticationProcessor.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
 
         if (DEBUG)
         {
@@ -482,7 +482,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     @Override
     public AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = AuthenticationProcessorImpl.CNAME + "#obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = IAuthenticationProcessor.CNAME + "#obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException";
 
         if (DEBUG)
         {
@@ -656,7 +656,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
     @Override
     public AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
-        final String methodName = AuthenticationProcessorImpl.CNAME + "#verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException";
+        final String methodName = IAuthenticationProcessor.CNAME + "#verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException";
 
         if (DEBUG)
         {

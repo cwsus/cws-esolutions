@@ -91,6 +91,7 @@ public class AgentDaemon implements Daemon
         }
     }
 
+    @Override
     public void init(final DaemonContext dContext) throws DaemonInitException
     {
         final String methodName = AgentDaemon.CNAME + "#init(final DaemonContext dContext) throws DaemonInitException";
@@ -147,6 +148,7 @@ public class AgentDaemon implements Daemon
         }
     }
 
+    @Override
     public void start() throws Exception
     {
         final String methodName = AgentDaemon.CNAME + "#start() throws Exception";
@@ -158,8 +160,8 @@ public class AgentDaemon implements Daemon
 
         try
         {
-            thread = (Thread) AgentServerFactory.getAgentServer(agentBean.getConfigData().getServerConfig().getServerClass());
-            thread.start();
+            this.thread = (Thread) AgentServerFactory.getAgentServer(agentBean.getConfigData().getServerConfig().getServerClass());
+            this.thread.start();
         }
         catch (Exception ex)
         {
@@ -171,6 +173,7 @@ public class AgentDaemon implements Daemon
         }
     }
 
+    @Override
     public void stop()
     {
         final String methodName = AgentDaemon.CNAME + "#stop()";
@@ -184,7 +187,7 @@ public class AgentDaemon implements Daemon
         {
             agentBean.setStopServer(true);
 
-            thread.interrupt();
+            this.thread.interrupt();
 
             System.exit(0);
         }
@@ -198,6 +201,7 @@ public class AgentDaemon implements Daemon
         }
     }
 
+    @Override
     public void destroy()
     {
         final String methodName = AgentDaemon.CNAME + "#destroy()";

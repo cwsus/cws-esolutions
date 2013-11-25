@@ -61,55 +61,45 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrApprovedServers()}");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrApprovedServers()}");
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+
+                    securityList = new ArrayList<>();
+
+                    while (resultSet.next())
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug(resultSet.getString(1));
+                        }
+
+                        // check if column is null
+                        securityList.add(resultSet.getString(1));
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
+                        DEBUGGER.debug("securityList: {}", securityList);
                     }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-
-                        securityList = new ArrayList<String>();
-
-                        while (resultSet.next())
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug(resultSet.getString(1));
-                            }
-
-                            // check if column is null
-                            securityList.add(resultSet.getString(1));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("securityList: {}", securityList);
-                        }
-                    }
-                    else
-                    {
-                        throw new SQLException("No approved servers were found.");
-                    }
-                }
-                else
-                {
-                    throw new SQLException("Unable to obtain security role information.");
                 }
             }
         }
@@ -163,49 +153,45 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
-            {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrieve_user_questions()}");
 
-                if (DEBUG)
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrieve_user_questions()}");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+                resultSet.last();
+                int iRowCount = resultSet.getRow();
+
+                if (iRowCount == 0)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    throw new SQLException("No security questions are currently configured.");
                 }
 
-                if (stmt.execute())
+                resultSet.first();
+                ResultSetMetaData resultData = resultSet.getMetaData();
+
+                int iColumns = resultData.getColumnCount();
+
+                questionList = new ArrayList<>();
+
+                for (int x = 1; x < iColumns + 1; x++)
                 {
-                    resultSet = stmt.getResultSet();
-                    resultSet.last();
-                    int iRowCount = resultSet.getRow();
-
-                    if (iRowCount == 0)
+                    if (DEBUG)
                     {
-                        throw new SQLException("No security questions are currently configured.");
+                        DEBUGGER.debug("resultSet.getObject: {}", resultSet.getObject(resultData.getColumnName(x)));
                     }
-                    else
-                    {
-                        resultSet.first();
-                        ResultSetMetaData resultData = resultSet.getMetaData();
 
-                        int iColumns = resultData.getColumnCount();
+                    // check if column is null
+                    resultSet.getObject(resultData.getColumnName(x));
 
-                        questionList = new ArrayList<String>();
-
-                        for (int x = 1; x < iColumns + 1; x++)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("resultSet.getObject: {}", resultSet.getObject(resultData.getColumnName(x)));
-                            }
-
-                            // check if column is null
-                            resultSet.getObject(resultData.getColumnName(x));
-
-                            // if the column was null, insert n/a, otherwise, insert the column's contents
-                            questionList.add((String) (resultSet.wasNull() ? "N/A" : resultSet.getObject(resultData.getColumnName(x))));
-                        }
-                    }
+                    // if the column was null, insert n/a, otherwise, insert the column's contents
+                    questionList.add((String) (resultSet.wasNull() ? "N/A" : resultSet.getObject(resultData.getColumnName(x))));
                 }
             }
         }
@@ -259,39 +245,37 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
             {
                 throw new SQLException("Unable to obtain application datasource connection");
             }
-            else
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL retrAvailableServices()}");
+
+            if (DEBUG)
             {
-                sqlConn.setAutoCommit(true);
-                stmt = sqlConn.prepareCall("{CALL retrAvailableServices()}");
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    serviceMap = new HashMap<>();
+
+                    while (resultSet.next())
+                    {
+                        serviceMap.put(resultSet.getString(1), resultSet.getString(2));
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ResultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        serviceMap = new HashMap<String, String>();
-
-                        while (resultSet.next())
-                        {
-                            serviceMap.put(resultSet.getString(1), resultSet.getString(2));
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Map<String, String>: {}", serviceMap);
-                        }
+                        DEBUGGER.debug("Map<String, String>: {}", serviceMap);
                     }
                 }
             }

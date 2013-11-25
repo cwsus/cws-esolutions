@@ -191,7 +191,7 @@ public class ServiceMessagingController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -202,7 +202,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -213,7 +213,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -240,8 +240,8 @@ public class ServiceMessagingController
             request.setRequestInfo(reqInfo);
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -257,13 +257,13 @@ public class ServiceMessagingController
 
             if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
-                mView.addObject("dateFormat", appConfig.getDateFormat());
+                mView.addObject("dateFormat", this.appConfig.getDateFormat());
                 mView.addObject("messageList", response.getSvcMessages());
                 mView.setViewName(this.viewServiceMessagesPage);
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -277,7 +277,7 @@ public class ServiceMessagingController
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -314,7 +314,7 @@ public class ServiceMessagingController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -325,7 +325,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -336,7 +336,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -386,7 +386,7 @@ public class ServiceMessagingController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -397,7 +397,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -408,7 +408,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -444,8 +444,8 @@ public class ServiceMessagingController
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
             request.setSvcMessage(message);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -473,7 +473,7 @@ public class ServiceMessagingController
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             else
             {
@@ -487,7 +487,7 @@ public class ServiceMessagingController
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)
@@ -527,7 +527,7 @@ public class ServiceMessagingController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -538,7 +538,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -549,7 +549,7 @@ public class ServiceMessagingController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -578,8 +578,8 @@ public class ServiceMessagingController
             request.setServiceId(this.serviceId);
             request.setUserAccount(userAccount);
             request.setSvcMessage(message);
-            request.setApplicationId(appConfig.getApplicationId());
-            request.setApplicationName(appConfig.getApplicationName());
+            request.setApplicationId(this.appConfig.getApplicationId());
+            request.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -606,7 +606,7 @@ public class ServiceMessagingController
             }
             else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
             {
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
 
                 return mView;
             }
@@ -622,7 +622,7 @@ public class ServiceMessagingController
         {
             ERROR_RECORDER.error(msx.getMessage(), msx);
 
-            mView.setViewName(appConfig.getErrorResponsePage());
+            mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
         if (DEBUG)

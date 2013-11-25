@@ -41,8 +41,10 @@ import com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO;
  */
 public class DNSServiceDAOImplTest
 {
+    private static final IDNSServiceDAO dao = new DNSServiceDAOImpl();
+
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -57,13 +59,11 @@ public class DNSServiceDAOImplTest
     }
 
     @Test
-    public final void testGetServiceData()
+    public static final void testGetServiceData()
     {
-        IDNSServiceDAO dao = new DNSServiceDAOImpl();
-
         try
         {
-            Assert.assertNotNull(dao.getServiceData("caspersbox.com"));
+            Assert.assertNotNull(DNSServiceDAOImplTest.dao.getServiceData("caspersbox.com"));
         }
         catch (SQLException sqx)
         {
@@ -72,13 +72,13 @@ public class DNSServiceDAOImplTest
     }
 
     @Test
-    public final void testAddNewService()
+    public static final void testAddNewService()
     {
 
     }
 
     @Test
-    public final void testRemoveService()
+    public static final void testRemoveService()
     {
 
     }

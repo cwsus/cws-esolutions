@@ -52,12 +52,12 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  */
 public class AuthenticationProcessorImplTest
 {
-    private RequestHostInfo hostInfo = null;
+    private static RequestHostInfo hostInfo = null;
 
     private static final IAuthenticationProcessor agentAuth = new AuthenticationProcessorImpl();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -76,7 +76,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testUsernameAuthentication()
+    public static final void testUsernameAuthentication()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -104,7 +104,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testPasswordAuthentication()
+    public static final void testPasswordAuthentication()
     {
         UserAccount account = new UserAccount();
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
@@ -135,7 +135,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testCombinedAuthentication()
+    public static final void testCombinedAuthentication()
     {
         UserAccount account = new UserAccount();
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
@@ -166,7 +166,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testFailedResponse()
+    public static final void testFailedResponse()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -196,7 +196,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testObtainUserSecurityConfig()
+    public static final void testObtainUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -225,7 +225,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @Test
-    public void testVerifyUserSecurityConfig()
+    public static final void testVerifyUserSecurityConfig()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -258,7 +258,7 @@ public class AuthenticationProcessorImplTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

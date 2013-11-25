@@ -48,7 +48,7 @@ public class SQLAuthenticatorTest
     private static final Authenticator authenticator = new SQLAuthenticator();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -62,7 +62,7 @@ public class SQLAuthenticatorTest
     }
 
     @Test
-    public final void testPasswordLogon()
+    public static final void testPasswordLogon()
     {
         try
         {
@@ -75,7 +75,7 @@ public class SQLAuthenticatorTest
     }
 
     @Test
-    public final void testObtainSecurityQuestions()
+    public static final void testObtainSecurityQuestions()
     {
         try
         {
@@ -88,7 +88,7 @@ public class SQLAuthenticatorTest
     }
 
     @Test
-    public final void testVerifySecurityQuestions()
+    public static final void testVerifySecurityQuestions()
     {
         List<String> authList = new ArrayList<>(
                 Arrays.asList(
@@ -108,7 +108,7 @@ public class SQLAuthenticatorTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

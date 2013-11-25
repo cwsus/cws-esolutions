@@ -413,7 +413,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -424,7 +424,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -435,7 +435,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -446,14 +446,14 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.searchUsersPage);
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -491,7 +491,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -502,7 +502,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -513,7 +513,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -524,7 +524,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -542,8 +542,8 @@ public class UserManagementController
                 request.setUserAccount(userAccount);
                 request.setRequestInfo(reqInfo);
                 request.setServiceId(this.projectMgmt);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -573,24 +573,24 @@ public class UserManagementController
                 }
                 if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ProjectManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -629,7 +629,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -640,7 +640,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -651,7 +651,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -662,7 +662,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -688,11 +688,11 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setRequestor(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -722,7 +722,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -734,12 +734,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -773,7 +773,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -784,7 +784,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -795,7 +795,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -806,7 +806,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -831,11 +831,11 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setRequestor(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -860,7 +860,7 @@ public class UserManagementController
 
                     if ((auditEntries != null) && (auditEntries.size() != 0))
                     {
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                         mView.addObject("page", 1);
                         mView.addObject("auditEntries", auditEntries);
                         mView.addObject("userAccount", searchAccount);
@@ -874,7 +874,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -886,12 +886,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -926,7 +926,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -937,7 +937,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -948,7 +948,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -959,7 +959,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -984,12 +984,12 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setRequestor(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
-                request.setStartPage((page-1) * recordsPerPage);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setStartPage((page-1) * this.recordsPerPage);
 
                 if (DEBUG)
                 {
@@ -1014,7 +1014,7 @@ public class UserManagementController
 
                     if ((auditEntries != null) && (auditEntries.size() != 0))
                     {
-                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / recordsPerPage));
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                         mView.addObject("page", page);
                         mView.addObject("auditEntries", auditEntries);
                         mView.addObject("userAccount", searchAccount);
@@ -1028,7 +1028,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1040,12 +1040,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -1079,7 +1079,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1090,7 +1090,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1101,7 +1101,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1112,7 +1112,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1138,8 +1138,8 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(account);
-                request.setApplicationName(appConfig.getApplicationName());
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setControlType(ControlType.SUSPEND);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
@@ -1167,7 +1167,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1179,12 +1179,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -1218,7 +1218,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1229,7 +1229,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1240,7 +1240,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1251,7 +1251,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1277,8 +1277,8 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(account);
-                request.setApplicationName(appConfig.getApplicationName());
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setControlType(ControlType.SUSPEND);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
@@ -1306,7 +1306,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1318,12 +1318,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -1357,7 +1357,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1368,7 +1368,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1379,7 +1379,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1390,7 +1390,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1416,8 +1416,8 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(account);
-                request.setApplicationName(appConfig.getApplicationName());
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setControlType(ControlType.SUSPEND);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
@@ -1445,7 +1445,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1458,12 +1458,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -1497,7 +1497,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1508,7 +1508,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1519,7 +1519,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1530,7 +1530,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1556,8 +1556,8 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(account);
-                request.setApplicationName(appConfig.getApplicationName());
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setControlType(ControlType.SUSPEND);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
@@ -1585,7 +1585,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1597,12 +1597,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1629,7 +1629,7 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final SecurityConfig secConfig = appConfig.getSecurityConfig();
+        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
@@ -1643,7 +1643,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1654,7 +1654,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1665,7 +1665,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1676,7 +1676,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1702,11 +1702,11 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setRequestor(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -1732,8 +1732,8 @@ public class UserManagementController
                     AccountControlRequest resetReq = new AccountControlRequest();
                     resetReq.setHostInfo(reqInfo);
                     resetReq.setUserAccount(account);
-                    resetReq.setApplicationName(appConfig.getApplicationName());
-                    resetReq.setApplicationId(appConfig.getApplicationId());
+                    resetReq.setApplicationName(this.appConfig.getApplicationName());
+                    resetReq.setApplicationId(this.appConfig.getApplicationId());
                     resetReq.setRequestor(userAccount);
 
                     if (DEBUG)
@@ -1788,9 +1788,9 @@ public class UserManagementController
                         emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         emailMessage.setMessageBody(emailBody);
                         emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(appConfig.getThemeMessageSource(),
+                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
                                 this.passwordResetSubject, this.getClass().getClassLoader()));
-                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
                         emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getEmailAddr())));
 
                         if (DEBUG)
@@ -1806,7 +1806,7 @@ public class UserManagementController
                         {
                             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
 
                         if (secConfig.getSmsResetEnabled())
@@ -1816,7 +1816,7 @@ public class UserManagementController
                             smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                             smsMessage.setMessageBody(resetRes.getSmsCode());
                             emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getPagerNumber())));
-                            emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+                            emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
 
                             if (DEBUG)
                             {
@@ -1831,7 +1831,7 @@ public class UserManagementController
                             {
                                 ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                                mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageEmailSendFailed());
+                                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                             }
                         }
 
@@ -1842,7 +1842,7 @@ public class UserManagementController
                     }
                     else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                     {
-                        mView.setViewName(appConfig.getUnauthorizedPage());
+                        mView.setViewName(this.appConfig.getUnauthorizedPage());
                     }
                     else
                     {
@@ -1856,7 +1856,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -1864,31 +1864,31 @@ public class UserManagementController
                     ERROR_RECORDER.error(response.getResponse());
 
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(appConfig.getErrorResponsePage());
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (AccountControlException acx)
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (IOException iox)
             {
                 ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
             catch (CoreServiceException csx)
             {
                 ERROR_RECORDER.error(csx.getMessage(), csx);
 
-                mView.setViewName(appConfig.getUnauthorizedPage());
+                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -1928,7 +1928,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1939,7 +1939,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1950,7 +1950,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1961,7 +1961,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -1987,11 +1987,11 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(reqInfo);
                 request.setUserAccount(account);
-                request.setApplicationId(appConfig.getApplicationId());
+                request.setApplicationId(this.appConfig.getApplicationId());
                 request.setRequestor(userAccount);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
                 request.setModType(ModificationType.ROLE);
                 request.setControlType(ControlType.MODIFY);
 
@@ -2016,7 +2016,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2028,12 +2028,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -2067,7 +2067,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2078,7 +2078,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2089,7 +2089,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2100,7 +2100,7 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
             try
             {
@@ -2128,15 +2128,15 @@ public class UserManagementController
                 AccountControlRequest request = new AccountControlRequest();
                 request.setHostInfo(hostInfo);
                 request.setUserAccount(searchAccount);
-                request.setApplicationId(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationName());
                 request.setControlType(ControlType.LOOKUP);
                 request.setModType(ModificationType.NONE);
                 request.setSearchType(SearchRequestType.ALL);
                 request.setRequestor(userAccount);
                 request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -2174,7 +2174,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2186,14 +2186,14 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             
             mView.setViewName(this.searchUsersPage);
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)
@@ -2221,7 +2221,7 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final SecurityConfig secConfig = appConfig.getSecurityConfig();
+        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
@@ -2234,7 +2234,7 @@ public class UserManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2245,7 +2245,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2256,7 +2256,7 @@ public class UserManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2267,9 +2267,9 @@ public class UserManagementController
             }
         }
 
-        if (appConfig.getServices().get(this.serviceName))
+        if (this.appConfig.getServices().get(this.serviceName))
         {
-            validator.validate(user, bindResult);
+            this.validator.validate(user, bindResult);
 
             if (bindResult.hasErrors())
             {
@@ -2323,14 +2323,14 @@ public class UserManagementController
                 request.setHostInfo(hostInfo);
                 request.setUserAccount(newUser);
                 request.setUserSecurity(security);
-                request.setApplicationId(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationName());
                 request.setControlType(ControlType.CREATE);
                 request.setModType(ModificationType.NONE);
                 request.setRequestor(userAccount);
                 request.setIsLogonRequest(false);
                 request.setServiceId(this.serviceId);
-                request.setApplicationId(appConfig.getApplicationId());
-                request.setApplicationName(appConfig.getApplicationName());
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
@@ -2353,7 +2353,7 @@ public class UserManagementController
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
-                    mView.setViewName(appConfig.getUnauthorizedPage());
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
@@ -2366,12 +2366,12 @@ public class UserManagementController
             {
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
-                mView.setViewName(appConfig.getErrorResponsePage());
+                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
         else
         {
-            mView.setViewName(appConfig.getUnavailablePage());
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         if (DEBUG)

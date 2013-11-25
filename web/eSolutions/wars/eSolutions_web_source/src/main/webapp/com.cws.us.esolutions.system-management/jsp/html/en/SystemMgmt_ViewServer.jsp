@@ -47,7 +47,7 @@
     //-->
 </script>
 
-<div id="InfoLine"><spring:message code="system.mgmt.view.server" arguments="${server.osName}" /></div>
+<div id="InfoLine"><spring:message code="system.mgmt.view.server" arguments="${server.operHostName}" /></div>
 <div id="content">
     <div id="content-right">
 	    <c:if test="${not empty fn:trim(messageResponse)}">

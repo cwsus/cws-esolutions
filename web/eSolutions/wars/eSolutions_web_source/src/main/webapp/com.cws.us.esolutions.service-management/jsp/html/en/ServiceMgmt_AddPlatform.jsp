@@ -52,8 +52,10 @@
 
         <span id="validationError"></span>
 
-	    <form:form id="createNewPlatform" name="createNewPlatform" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
+	    <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
 	        <form:hidden path="platformDmgr" />
+	        <form:hidden path="availableApps" value="${command.availableApps}" />
+	        <form:hidden path="availableWebs" value="${command.availableWebs}" />
 
 	        <table id="applicationDetail">
 	            <tr>
@@ -74,7 +76,7 @@
 	            </tr>
 	            <tr>
 	                <td><label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label></td>
-	                <td>${command.platformDmgr.operHostName}</td>
+	                <td>${command.platformDmgrName}</td>
 	            </tr>
 	            <tr>
 	                <c:choose>

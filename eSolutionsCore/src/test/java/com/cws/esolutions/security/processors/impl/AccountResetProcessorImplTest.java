@@ -49,10 +49,10 @@ import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
  */
 public class AccountResetProcessorImplTest
 {
-    private RequestHostInfo hostInfo = null;
+    private static RequestHostInfo hostInfo = null;
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -70,7 +70,7 @@ public class AccountResetProcessorImplTest
     }
 
     @Test
-    public final void testResetUserPassword()
+    public static final void testResetUserPassword()
     {
         IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -106,7 +106,7 @@ public class AccountResetProcessorImplTest
     }
 
     @Test
-    public final void testVerifyResetRequest()
+    public static final void testVerifyResetRequest()
     {
         IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -131,7 +131,7 @@ public class AccountResetProcessorImplTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

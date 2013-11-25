@@ -140,7 +140,7 @@ public class CommonController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -151,7 +151,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -162,7 +162,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -190,8 +190,8 @@ public class CommonController
             mRequest.setRequestInfo(reqInfo);
             mRequest.setUserAccount(userAccount);
             mRequest.setServiceId(this.serviceId);
-            mRequest.setApplicationId(appConfig.getApplicationId());
-            mRequest.setApplicationName(appConfig.getApplicationName());
+            mRequest.setApplicationId(this.appConfig.getApplicationId());
+            mRequest.setApplicationName(this.appConfig.getApplicationName());
 
             if (DEBUG)
             {
@@ -207,6 +207,7 @@ public class CommonController
 
             if (mResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
             {
+                mView.addObject("dateFormat", this.appConfig.getDateFormat());
                 mView.addObject("messageList", mResponse.getSvcMessages());
             }
 
@@ -253,7 +254,7 @@ public class CommonController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -264,7 +265,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -275,7 +276,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -286,7 +287,7 @@ public class CommonController
             }
         }
 
-        mView.setViewName(appConfig.getUnauthorizedPage());
+        mView.setViewName(this.appConfig.getUnauthorizedPage());
 
         return mView;
     }
@@ -317,7 +318,7 @@ public class CommonController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -328,7 +329,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -339,7 +340,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -351,7 +352,7 @@ public class CommonController
         }
 
         mView.addObject("command", new EmailMessage());
-        mView.setViewName(appConfig.getContactAdminsPage());
+        mView.setViewName(this.appConfig.getContactAdminsPage());
 
         return mView;
     }
@@ -373,8 +374,8 @@ public class CommonController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final EmailMessageValidator messageValidator = appConfig.getMessageValidator();
-        final EmailAddressValidator addressValidator = appConfig.getEmailValidator();
+        final EmailMessageValidator messageValidator = this.appConfig.getMessageValidator();
+        final EmailAddressValidator addressValidator = this.appConfig.getEmailValidator();
         final String emailId = RandomStringUtils.randomAlphanumeric(16);
 
         if (DEBUG)
@@ -387,7 +388,7 @@ public class CommonController
             DEBUGGER.debug("emailId: {}", emailId);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -398,7 +399,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -409,7 +410,7 @@ public class CommonController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -426,7 +427,7 @@ public class CommonController
         {
             mView.addObject("errors", bindResult.getAllErrors());
             mView.addObject("command", message);
-            mView.setViewName(appConfig.getContactAdminsPage());
+            mView.setViewName(this.appConfig.getContactAdminsPage());
 
             return mView;
         }
@@ -437,7 +438,7 @@ public class CommonController
         {
             mView.addObject("errors", bindResult.getAllErrors());
             mView.addObject("command", message);
-            mView.setViewName(appConfig.getContactAdminsPage());
+            mView.setViewName(this.appConfig.getContactAdminsPage());
 
             return mView;
         }
@@ -449,7 +450,7 @@ public class CommonController
             emailMessage.setMessageBody(message.getMessageBody());
             emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
             emailMessage.setMessageSubject("[ " + emailId + " ] - " + message.getMessageSubject());
-            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(appConfig.getSecEmailAddr())));
+            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
             emailMessage.setEmailAddr(message.getEmailAddr());
 
             if (DEBUG)
@@ -460,16 +461,16 @@ public class CommonController
             EmailUtils.sendEmailMessage(emailMessage);
 
             mView.addObject("command", new EmailMessage());
-            mView.setViewName(appConfig.getContactAdminsPage());
-            mView.addObject(Constants.MESSAGE_RESPONSE, appConfig.getMessageEmailSentSuccess());
+            mView.setViewName(this.appConfig.getContactAdminsPage());
+            mView.addObject(Constants.MESSAGE_RESPONSE, this.appConfig.getMessageEmailSentSuccess());
         }
         catch (MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
             mView.addObject("command", new EmailMessage());
-            mView.setViewName(appConfig.getContactAdminsPage());
-            mView.addObject(Constants.ERROR_MESSAGE, appConfig.getMessageRequestProcessingFailure());
+            mView.setViewName(this.appConfig.getContactAdminsPage());
+            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
         if (DEBUG)

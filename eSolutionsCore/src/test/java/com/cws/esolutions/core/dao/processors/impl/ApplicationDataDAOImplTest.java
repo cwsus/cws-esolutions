@@ -28,7 +28,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.dao.processors.impl
+ * com.cws.esolutions.core.ApplicationDataDAOImplTest.dao.processors.impl
  * ApplicationDataDAOImplTest.java
  *
  *
@@ -50,7 +50,7 @@ public class ApplicationDataDAOImplTest
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -65,7 +65,7 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public final void testAddNewApplication()
+    public static final void testAddNewApplication()
     {
         List<String> appData = new ArrayList<>(
                 Arrays.asList(
@@ -81,7 +81,7 @@ public class ApplicationDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewApplication(appData));
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addNewApplication(appData));
         }
         catch (SQLException sqx)
         {
@@ -102,11 +102,11 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public final void testListInstalledApplications()
+    public static final void testListInstalledApplications()
     {
         try
         {
-            Assert.assertNotNull(dao.listInstalledApplications(0));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.listInstalledApplications(0));
         }
         catch (SQLException sqx)
         {
@@ -115,11 +115,11 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public final void testGetApplicationData()
+    public static final void testGetApplicationData()
     {
         try
         {
-            Assert.assertNotNull(dao.getApplicationData("6625fc8c-09ed-4579-a3d6-eb43d26b679f"));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData("6625fc8c-09ed-4579-a3d6-eb43d26b679f"));
         }
         catch (SQLException sqx)
         {
@@ -128,11 +128,11 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public final void testGetApplicationsByAttributeAppName()
+    public static final void testGetApplicationsByAttributeAppName()
     {
         try
         {
-            Assert.assertNotNull(dao.getApplicationsByAttribute("eSolutions", 0));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationsByAttribute("eSolutions", 0));
         }
         catch (SQLException sqx)
         {

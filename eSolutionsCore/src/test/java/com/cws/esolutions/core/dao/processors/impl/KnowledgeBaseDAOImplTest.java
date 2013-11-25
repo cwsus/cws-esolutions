@@ -29,7 +29,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.dao.processors.impl
+ * com.cws.esolutions.core.KnowledgeBaseDAOImplTest.dao.processors.impl
  * KnowledgeBaseDAOImplTest.java
  *
  *
@@ -51,7 +51,7 @@ public class KnowledgeBaseDAOImplTest
     private static final IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();
 
     @Before
-    public final void setUp() throws Exception
+    public static final void setUp()
     {
         try
         {
@@ -66,7 +66,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testDoCreateArticle()
+    public static final void testDoCreateArticle()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -81,7 +81,7 @@ public class KnowledgeBaseDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.doCreateArticle(list));
+            Assert.assertTrue(KnowledgeBaseDAOImplTest.dao.doCreateArticle(list));
         }
         catch (SQLException sqx)
         {
@@ -90,11 +90,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testUpdateArticleStatusAsRejected()
+    public static final void testUpdateArticleStatusAsRejected()
     {
         try
         {
-            Assert.assertTrue(dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.REJECTED.name()));
+            Assert.assertTrue(KnowledgeBaseDAOImplTest.dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.REJECTED.name()));
         }
         catch (SQLException sqx)
         {
@@ -103,11 +103,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testUpdateArticleStatusAsDeleted()
+    public static final void testUpdateArticleStatusAsDeleted()
     {
         try
         {
-            Assert.assertTrue(dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.DELETED.name()));
+            Assert.assertTrue(KnowledgeBaseDAOImplTest.dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.DELETED.name()));
         }
         catch (SQLException sqx)
         {
@@ -116,11 +116,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testUpdateArticleStatusAsApproved()
+    public static final void testUpdateArticleStatusAsApproved()
     {
         try
         {
-            Assert.assertTrue(dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.APPROVED.name()));
+            Assert.assertTrue(KnowledgeBaseDAOImplTest.dao.updateArticleStatus("KB22208793", "khuntly", ArticleStatus.APPROVED.name()));
         }
         catch (SQLException sqx)
         {
@@ -129,7 +129,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testDoUpdateArticle()
+    public static final void testDoUpdateArticle()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -143,7 +143,7 @@ public class KnowledgeBaseDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.doUpdateArticle(list));
+            Assert.assertTrue(KnowledgeBaseDAOImplTest.dao.doUpdateArticle(list));
         }
         catch (SQLException sqx)
         {
@@ -152,11 +152,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testRetrieveArticleAsNoPending()
+    public static final void testRetrieveArticleAsNoPending()
     {
         try
         {
-            List<String> article = dao.retrieveArticle("KB22208793", false);
+            List<String> article = KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", false);
 
             Assert.assertNotNull(article);
         }
@@ -167,11 +167,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testRetrieveArticleAsPending()
+    public static final void testRetrieveArticleAsPending()
     {
         try
         {
-            List<String> article = dao.retrieveArticle("KB22208793", true);
+            List<String> article = KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", true);
 
             Assert.assertNotNull(article);
         }
@@ -182,11 +182,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testSearchPendingArticles()
+    public static final void testSearchPendingArticles()
     {
         try
         {
-            List<String[]> data = dao.searchPendingArticles("khuntly");
+            List<String[]> data = KnowledgeBaseDAOImplTest.dao.searchPendingArticles("khuntly");
 
             Assert.assertNotNull(data);
         }
@@ -197,11 +197,11 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public final void testGetArticlesByAttribute()
+    public static final void testGetArticlesByAttribute()
     {
         try
         {
-            List<String[]> data = dao.getArticlesByAttribute("test");
+            List<String[]> data = KnowledgeBaseDAOImplTest.dao.getArticlesByAttribute("test");
 
             Assert.assertNotNull(data);
         }

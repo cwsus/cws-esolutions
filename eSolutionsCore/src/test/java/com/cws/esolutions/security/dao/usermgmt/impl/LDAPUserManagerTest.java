@@ -56,7 +56,7 @@ public class LDAPUserManagerTest
     private static final UserManager userManager = new LDAPUserManager();
 
     @Before
-    public final void setUp()
+    public static final void setUp()
     {
         try
         {
@@ -70,7 +70,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testAddAccountNoGroup()
+    public static final void testAddAccountNoGroup()
     {
         List<String> list = new ArrayList<>(
             Arrays.asList(
@@ -93,7 +93,7 @@ public class LDAPUserManagerTest
         }
     }
 
-    public final void testAddAccountWithGroup()
+    public static final void testAddAccountWithGroup()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -117,7 +117,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testSearchUsers()
+    public static final void testSearchUsers()
     {
         try
         {
@@ -132,7 +132,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testModifyUserSuspension()
+    public static final void testModifyUserSuspension()
     {
         try
         {
@@ -145,7 +145,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testModifyUserLockout()
+    public static final void testModifyUserLockout()
     {
         try
         {
@@ -165,7 +165,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testModifyUserPassword()
+    public static final void testModifyUserPassword()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 45);
@@ -185,7 +185,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testModifyUserAnswers()
+    public static final void testModifyUserAnswers()
     {
         try
         {
@@ -206,7 +206,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public final void testModifyUserContact()
+    public static final void testModifyUserContact()
     {
         try
         {
@@ -227,7 +227,7 @@ public class LDAPUserManagerTest
     }
 
     @After
-    public void tearDown()
+    public static final void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

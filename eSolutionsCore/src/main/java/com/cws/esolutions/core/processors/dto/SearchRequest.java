@@ -45,8 +45,6 @@ public class SearchRequest implements Serializable
     private int startPage = 0;
     private int searchLimit = 0;
     private String searchTerms = null;
-    private UserAccount userAccount = null;
-    private RequestHostInfo requestInfo = null;
 
     private static final long serialVersionUID = 3827869327665501686L;
     private static final String CNAME = SearchRequest.class.getName();
@@ -54,32 +52,6 @@ public class SearchRequest implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
-
-    public final void setUserAccount(final UserAccount value)
-    {
-        final String methodName = SearchRequest.CNAME + "#setUserAccount(final UserAccount value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userAccount = value;
-    }
-
-    public final void setRequestInfo(final RequestHostInfo value)
-    {
-        final String methodName = SearchRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.requestInfo = value;
-    }
 
     public final void setStartPage(final int value)
     {
@@ -118,32 +90,6 @@ public class SearchRequest implements Serializable
         }
 
         this.searchLimit = value;
-    }
-
-    public final UserAccount getUserAccount()
-    {
-        final String methodName = SearchRequest.CNAME + "#getUserAccount()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userAccount);
-        }
-
-        return this.userAccount;
-    }
-
-    public final RequestHostInfo getRequestInfo()
-    {
-        final String methodName = SearchRequest.CNAME + "#getRequestInfo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.requestInfo);
-        }
-
-        return this.requestInfo;
     }
 
     public final int getStartPage()

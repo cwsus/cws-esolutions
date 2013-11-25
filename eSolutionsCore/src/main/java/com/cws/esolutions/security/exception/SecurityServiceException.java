@@ -48,31 +48,31 @@ public class SecurityServiceException extends Exception
     {
         super(message);
 
-        this.sendExceptionLetter(message);
+        SecurityServiceException.sendExceptionLetter(message);
     }
 
     public SecurityServiceException(final Throwable throwable)
     {
         super(throwable);
 
-        this.sendExceptionLetter(throwable.getMessage());
+        SecurityServiceException.sendExceptionLetter(throwable.getMessage());
     }
 
     public SecurityServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);
 
-        this.sendExceptionLetter(message);
+        SecurityServiceException.sendExceptionLetter(message);
     }
 
     public SecurityServiceException(@SuppressWarnings("unused") final ResultCode code, final String message, final Throwable throwable)
     {
         super(message, throwable);
 
-        this.sendExceptionLetter(message);
+        SecurityServiceException.sendExceptionLetter(message);
     }
 
-    private void sendExceptionLetter(final String message)
+    private static void sendExceptionLetter(final String message)
     {
         final SecurityServiceBean bean = SecurityServiceBean.getInstance();
         final ExceptionConfig config = bean.getConfigData().getExceptionConfig();
