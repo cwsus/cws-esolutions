@@ -87,11 +87,6 @@
 
     <body>
         <div id="Container">
-            <div id="Top">
-                <h1><img src="/html/esolutions/img/logo.gif" alt="CaspersBox Web Services" width="59" height="50" class="logo" />&nbsp;</h1>
-                <h2>&nbsp;</h2>
-            </div>
-
             <div id="nav">
                 <ul>
                     <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
@@ -119,7 +114,7 @@
                                 </li>
                             </c:if>
                             <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                                <li>
+                                <li class="last">
                                     <a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
                                         <spring:message code='theme.navbar.useradmin' /></a>
                                 </li>
@@ -129,8 +124,7 @@
                 </ul>
             </div>
 
-            <div id="TopImage"><img src="/esolutions/html/img/top.jpg" alt="" width="800" height="174" /></div>
-            <div id="InfoLine"><spring:message code="theme.error.system.failure" /></div>
+            <div id="InfoLine"><spring:message code="theme.error.system.fai2lure" /></div>
 
 			<div id="content">
 			    <div id="content-right">

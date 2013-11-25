@@ -61,6 +61,10 @@
         <span id="validationError"></span>
 
         <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post" autocomplete="off">
+            <c:if test="${empty fn:trim(command.authorEmail)}">
+                <form:hidden path="isNewMessage" value="true" />
+            </c:when>
+
             <table id="contactTable">
                 <tr>
                     <td id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></td>

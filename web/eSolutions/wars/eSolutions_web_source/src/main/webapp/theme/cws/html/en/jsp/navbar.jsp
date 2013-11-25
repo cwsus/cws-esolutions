@@ -55,7 +55,7 @@
 	                </li>
 	            </c:if>
 	            <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-	                <li>
+	                <li class="last">
 	                    <a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.navbar.useradmin' />">
 	                        <spring:message code='theme.navbar.useradmin' /></a>
 	                </li>
