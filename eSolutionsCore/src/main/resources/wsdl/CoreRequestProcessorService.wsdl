@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CoreRequestProcessorService"
+    targetNamespace="http://esolutions.caspersbox.corp/s?q=esolutions"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:tns="http://esolutions.caspersbox.corp/s?q=esolutions"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema">
+            <import namespace="http://esolutions.caspersbox.corp/s?q=esolutions" schemaLocation="wsdl/CoreRequestProcessorService.xsd"></import>
+        </schema>
+    </wsdl:types>
+
+    <wsdl:message name="performSiteTransfer">
+        <wsdl:part name="parameters" element="tns:performSiteTransfer" />
+    </wsdl:message>
+    <wsdl:message name="doMessageSearch">
+        <wsdl:part name="parameters" element="tns:doMessageSearch" />
+    </wsdl:message>
+    <wsdl:message name="getPendingArticlesResponse">
+        <wsdl:part name="parameters" element="tns:getPendingArticlesResponse" />
+    </wsdl:message>
+    <wsdl:message name="doArticleSearch">
+        <wsdl:part name="parameters" element="tns:doArticleSearch" />
+    </wsdl:message>
+    <wsdl:message name="updateArticle">
+        <wsdl:part name="parameters" element="tns:updateArticle" />
+    </wsdl:message>
+    <wsdl:message name="performSiteTransferResponse">
+        <wsdl:part name="parameters" element="tns:performSiteTransferResponse" />
+    </wsdl:message>
+    <wsdl:message name="doMessageSearchResponse">
+        <wsdl:part name="parameters" element="tns:doMessageSearchResponse" />
+    </wsdl:message>
+    <wsdl:message name="doServerSearch">
+        <wsdl:part name="parameters" element="tns:doServerSearch" />
+    </wsdl:message>
+    <wsdl:message name="updateArticleStatus">
+        <wsdl:part name="parameters" element="tns:updateArticleStatus" />
+    </wsdl:message>
+    <wsdl:message name="updateArticleResponse">
+        <wsdl:part name="parameters" element="tns:updateArticleResponse" />
+    </wsdl:message>
+    <wsdl:message name="verifyUserSecurityConfig">
+        <wsdl:part name="parameters" element="tns:verifyUserSecurityConfig" />
+    </wsdl:message>
+    <wsdl:message name="performLookup">
+        <wsdl:part name="parameters" element="tns:performLookup" />
+    </wsdl:message>
+    <wsdl:message name="doApplicationSearch">
+        <wsdl:part name="parameters" element="tns:doApplicationSearch" />
+    </wsdl:message>
+    <wsdl:message name="pushNewService">
+        <wsdl:part name="parameters" element="tns:pushNewService" />
+    </wsdl:message>
+    <wsdl:message name="getArticleResponse">
+        <wsdl:part name="parameters" element="tns:getArticleResponse" />
+    </wsdl:message>
+    <wsdl:message name="getPendingArticles">
+        <wsdl:part name="parameters" element="tns:getPendingArticles" />
+    </wsdl:message>
+    <wsdl:message name="doServerSearchResponse">
+        <wsdl:part name="parameters" element="tns:doServerSearchResponse" />
+    </wsdl:message>
+    <wsdl:message name="doProjectSearch">
+        <wsdl:part name="parameters" element="tns:doProjectSearch" />
+    </wsdl:message>
+    <wsdl:message name="getArticle">
+        <wsdl:part name="parameters" element="tns:getArticle" />
+    </wsdl:message>
+    <wsdl:message name="getDataFromDatabaseResponse">
+        <wsdl:part name="parameters" element="tns:getDataFromDatabaseResponse" />
+    </wsdl:message>
+    <wsdl:message name="processAgentLogon">
+        <wsdl:part name="parameters" element="tns:processAgentLogon" />
+    </wsdl:message>
+    <wsdl:message name="doArticleSearchResponse">
+        <wsdl:part name="parameters" element="tns:doArticleSearchResponse" />
+    </wsdl:message>
+    <wsdl:message name="verifyUserSecurityConfigResponse">
+        <wsdl:part name="parameters" element="tns:verifyUserSecurityConfigResponse" />
+    </wsdl:message>
+    <wsdl:message name="performLookupResponse">
+        <wsdl:part name="parameters" element="tns:performLookupResponse" />
+    </wsdl:message>
+    <wsdl:message name="doApplicationSearchResponse">
+        <wsdl:part name="parameters" element="tns:doApplicationSearchResponse" />
+    </wsdl:message>
+    <wsdl:message name="AuthenticationException">
+        <wsdl:part name="AuthenticationException" element="tns:AuthenticationException" />
+    </wsdl:message>
+    <wsdl:message name="createNewServiceResponse">
+        <wsdl:part name="parameters" element="tns:createNewServiceResponse" />
+    </wsdl:message>
+    <wsdl:message name="createNewService">
+        <wsdl:part name="parameters" element="tns:createNewService" />
+    </wsdl:message>
+    <wsdl:message name="getDataFromDatabase">
+        <wsdl:part name="parameters" element="tns:getDataFromDatabase" />
+    </wsdl:message>
+    <wsdl:message name="obtainUserSecurityConfig">
+        <wsdl:part name="parameters" element="tns:obtainUserSecurityConfig" />
+    </wsdl:message>
+    <wsdl:message name="SearchRequestException">
+        <wsdl:part name="SearchRequestException" element="tns:SearchRequestException" />
+    </wsdl:message>
+    <wsdl:message name="doProjectSearchResponse">
+        <wsdl:part name="parameters" element="tns:doProjectSearchResponse" />
+    </wsdl:message>
+    <wsdl:message name="KnowledgeBaseException">
+        <wsdl:part name="KnowledgeBaseException" element="tns:KnowledgeBaseException" />
+    </wsdl:message>
+    <wsdl:message name="DNSServiceException">
+        <wsdl:part name="DNSServiceException" element="tns:DNSServiceException" />
+    </wsdl:message>
+    <wsdl:message name="addNewArticleResponse">
+        <wsdl:part name="parameters" element="tns:addNewArticleResponse" />
+    </wsdl:message>
+    <wsdl:message name="pushNewServiceResponse">
+        <wsdl:part name="parameters" element="tns:pushNewServiceResponse" />
+    </wsdl:message>
+    <wsdl:message name="obtainUserSecurityConfigResponse">
+        <wsdl:part name="parameters" element="tns:obtainUserSecurityConfigResponse" />
+    </wsdl:message>
+    <wsdl:message name="updateArticleStatusResponse">
+        <wsdl:part name="parameters" element="tns:updateArticleStatusResponse" />
+    </wsdl:message>
+    <wsdl:message name="processAgentLogonResponse">
+        <wsdl:part name="parameters" element="tns:processAgentLogonResponse" />
+    </wsdl:message>
+    <wsdl:message name="addNewArticle">
+        <wsdl:part name="parameters" element="tns:addNewArticle" />
+    </wsdl:message>
+
+    <wsdl:portType name="ICoreRequestProcessorService">
+        <wsdl:operation name="doMessageSearch">
+            <wsdl:input name="doMessageSearch" message="tns:doMessageSearch" />
+            <wsdl:output name="doMessageSearchResponse" message="tns:doMessageSearchResponse" />
+            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
+        </wsdl:operation>
+        <wsdl:operation name="doProjectSearch">
+            <wsdl:input name="doProjectSearch" message="tns:doProjectSearch" />
+            <wsdl:output name="doProjectSearchResponse" message="tns:doProjectSearchResponse" />
+            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
+        </wsdl:operation>
+        <wsdl:operation name="updateArticleStatus">
+            <wsdl:input name="updateArticleStatus" message="tns:updateArticleStatus" />
+            <wsdl:output name="updateArticleStatusResponse" message="tns:updateArticleStatusResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="performLookup">
+            <wsdl:input name="performLookup" message="tns:performLookup" />
+            <wsdl:output name="performLookupResponse" message="tns:performLookupResponse" />
+            <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
+        </wsdl:operation>
+        <wsdl:operation name="addNewArticle">
+            <wsdl:input name="addNewArticle" message="tns:addNewArticle" />
+            <wsdl:output name="addNewArticleResponse" message="tns:addNewArticleResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="pushNewService">
+            <wsdl:input name="pushNewService" message="tns:pushNewService" />
+            <wsdl:output name="pushNewServiceResponse" message="tns:pushNewServiceResponse" />
+            <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
+        </wsdl:operation>
+        <wsdl:operation name="doApplicationSearch">
+            <wsdl:input name="doApplicationSearch" message="tns:doApplicationSearch" />
+            <wsdl:output name="doApplicationSearchResponse" message="tns:doApplicationSearchResponse" />
+            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
+        </wsdl:operation>
+        <wsdl:operation name="getArticle">
+            <wsdl:input name="getArticle" message="tns:getArticle" />
+            <wsdl:output name="getArticleResponse" message="tns:getArticleResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="getDataFromDatabase">
+            <wsdl:input name="getDataFromDatabase" message="tns:getDataFromDatabase" />
+            <wsdl:output name="getDataFromDatabaseResponse" message="tns:getDataFromDatabaseResponse" />
+            <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
+        </wsdl:operation>
+        <wsdl:operation name="processAgentLogon">
+            <wsdl:input name="processAgentLogon" message="tns:processAgentLogon" />
+            <wsdl:output name="processAgentLogonResponse" message="tns:processAgentLogonResponse" />
+            <wsdl:fault name="AuthenticationException" message="tns:AuthenticationException" />
+        </wsdl:operation>
+        <wsdl:operation name="performSiteTransfer">
+            <wsdl:input name="performSiteTransfer" message="tns:performSiteTransfer" />
+            <wsdl:output name="performSiteTransferResponse" message="tns:performSiteTransferResponse" />
+            <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
+        </wsdl:operation>
+        <wsdl:operation name="verifyUserSecurityConfig">
+            <wsdl:input name="verifyUserSecurityConfig" message="tns:verifyUserSecurityConfig" />
+            <wsdl:output name="verifyUserSecurityConfigResponse" message="tns:verifyUserSecurityConfigResponse" />
+            <wsdl:fault name="AuthenticationException" message="tns:AuthenticationException" />
+        </wsdl:operation>
+        <wsdl:operation name="obtainUserSecurityConfig">
+            <wsdl:input name="obtainUserSecurityConfig" message="tns:obtainUserSecurityConfig" />
+            <wsdl:output name="obtainUserSecurityConfigResponse" message="tns:obtainUserSecurityConfigResponse" />
+            <wsdl:fault name="AuthenticationException" message="tns:AuthenticationException" />
+        </wsdl:operation>
+        <wsdl:operation name="updateArticle">
+            <wsdl:input name="updateArticle" message="tns:updateArticle" />
+            <wsdl:output name="updateArticleResponse" message="tns:updateArticleResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="doServerSearch">
+            <wsdl:input name="doServerSearch" message="tns:doServerSearch" />
+            <wsdl:output name="doServerSearchResponse" message="tns:doServerSearchResponse" />
+            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
+        </wsdl:operation>
+        <wsdl:operation name="doArticleSearch">
+            <wsdl:input name="doArticleSearch" message="tns:doArticleSearch" />
+            <wsdl:output name="doArticleSearchResponse" message="tns:doArticleSearchResponse" />
+            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
+        </wsdl:operation>
+        <wsdl:operation name="getPendingArticles">
+            <wsdl:input name="getPendingArticles" message="tns:getPendingArticles" />
+            <wsdl:output name="getPendingArticlesResponse" message="tns:getPendingArticlesResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="createNewService">
+            <wsdl:input name="createNewService" message="tns:createNewService" />
+            <wsdl:output name="createNewServiceResponse" message="tns:createNewServiceResponse" />
+            <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="CoreRequestProcessorServiceSoapBinding" type="tns:ICoreRequestProcessorService">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+        <wsdl:operation name="doMessageSearch">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="doMessageSearch">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="doMessageSearchResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="doProjectSearch">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="doProjectSearch">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="doProjectSearchResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="addNewArticle">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="addNewArticle">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="addNewArticleResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="performLookup">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="performLookup">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="performLookupResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateArticleStatus">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="updateArticleStatus">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="updateArticleStatusResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="pushNewService">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="pushNewService">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="pushNewServiceResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="doApplicationSearch">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="doApplicationSearch">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="doApplicationSearchResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getDataFromDatabase">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getDataFromDatabase">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getDataFromDatabaseResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getArticle">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getArticle">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getArticleResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="performSiteTransfer">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="performSiteTransfer">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="performSiteTransferResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="processAgentLogon">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="processAgentLogon">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="processAgentLogonResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="verifyUserSecurityConfig">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="verifyUserSecurityConfig">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="verifyUserSecurityConfigResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="obtainUserSecurityConfig">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtainUserSecurityConfig">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtainUserSecurityConfigResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="AuthenticationException">
+                <soap:fault name="AuthenticationException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="doServerSearch">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="doServerSearch">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="doServerSearchResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="updateArticle">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="updateArticle">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="updateArticleResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="doArticleSearch">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="doArticleSearch">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="doArticleSearchResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="SearchRequestException">
+                <soap:fault name="SearchRequestException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getPendingArticles">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getPendingArticles">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getPendingArticlesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="createNewService">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="createNewService">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="createNewServiceResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+            <wsdl:fault name="DNSServiceException">
+                <soap:fault name="DNSServiceException" use="literal"/>
+            </wsdl:fault>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="CoreRequestProcessorService">
+        <wsdl:port name="CoreRequestProcessorServicePort" binding="tns:CoreRequestProcessorServiceSoapBinding">
+            <soap:address location="http://localhost:9090/CoreRequestProcessorServicePort"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
