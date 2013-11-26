@@ -52,7 +52,7 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorServiceService",
-    wsdlLocation = "WEB-INF/wsdl/CoreRequestProcessorService.wsdl")
+    wsdlLocation = "wsdl/CoreRequestProcessorService.wsdl")
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
     /*
