@@ -19,29 +19,18 @@ import java.io.File;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Vector;
-
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
-
 import java.util.ArrayList;
 import java.io.IOException;
-
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
-
 import java.sql.SQLException;
 import java.security.Security;
 import java.io.FileOutputStream;
-
 import org.xbill.DNS.SimpleResolver;
-
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
-
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebService;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
@@ -52,8 +41,12 @@ import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.dto.DNSRecord;
+import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
@@ -62,14 +55,10 @@ import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /**
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -91,7 +80,6 @@ import com.cws.esolutions.security.audit.exception.AuditServiceException;
  * kh05451 @ Dec 31, 2012 9:50:06 AM
  *     Moved http stuff into <code>NetworkUtils</code>
  */
-@WebService(targetNamespace = "http://impl.processors.core.esolutions.cws.com/", portName = "DNSServiceRequestProcessorImplPort", serviceName = "DNSServiceRequestProcessorImplService")
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
     /**
@@ -187,9 +175,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         }
     }
 
-    @WebMethod(operationName = "performLookup", action = "urn:PerformLookup")
+    
     @Override
-    public DNSServiceResponse performLookup(final @WebParam(name = "arg0") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse performLookup(DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = IDNSServiceRequestProcessor.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
 
