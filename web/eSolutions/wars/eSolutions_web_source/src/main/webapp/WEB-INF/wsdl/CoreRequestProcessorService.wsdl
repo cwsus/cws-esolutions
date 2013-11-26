@@ -7,7 +7,7 @@
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     <wsdl:types>
         <schema xmlns="http://www.w3.org/2001/XMLSchema">
-            <import namespace="http://esolutions.caspersbox.corp/s?q=esolutions" schemaLocation="CoreRequestProcessorService.xsd"></import>
+            <import namespace="http://esolutions.caspersbox.corp/s?q=esolutions" schemaLocation="/WEB-INF/wsdl/CoreRequestProcessorService.xsd"></import>
         </schema>
     </wsdl:types>
 
