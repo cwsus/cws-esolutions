@@ -15,8 +15,6 @@
  */
 package com.cws.esolutions.core.ws.impl;
 
-import javax.jws.WebParam;
-import javax.jws.WebMethod;
 import javax.jws.WebService;
 
 import com.cws.esolutions.core.processors.dto.SearchRequest;
@@ -51,7 +49,7 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
  */
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
-    serviceName = "CoreRequestProcessorServiceService",
+    serviceName = "CoreRequestProcessorService",
     endpointInterface = "com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService",
     wsdlLocation = "/WEB-INF/wsdl/CoreRequestProcessorService.wsdl")
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
@@ -60,8 +58,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
      * Authentication Processing
      */
     @Override
-    @WebMethod(operationName = "processAgentLogon", action = "urn:ProcessAgentLogon")
-    public AuthenticationResponse processAgentLogon(final @WebParam(name = "request") AuthenticationRequest request) throws AuthenticationException
+    public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#processAgentLogon(final AuthenticationRequest request) throws AuthenticationException";
 
@@ -82,8 +79,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "obtainUserSecurityConfig", action = "urn:ObtainUserSecurityConfig")
-    public AuthenticationResponse obtainUserSecurityConfig(final @WebParam(name = "request") AuthenticationRequest request) throws AuthenticationException
+    public AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#obtainUserSecurityConfig(final AuthenticationRequest request)";
         
@@ -104,8 +100,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "verifyUserSecurityConfig", action = "urn:VerifyUserSecurityConfig")
-    public AuthenticationResponse verifyUserSecurityConfig(final @WebParam(name = "request") AuthenticationRequest request) throws AuthenticationException
+    public AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#verifyUserSecurityConfig(final AuthenticationRequest request)";
         
@@ -126,8 +121,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "performLookup", action = "urn:PerformLookup")
-    public DNSServiceResponse performLookup(final @WebParam(name = "request") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#performLookup(final DNSServiceRequest request) throws DNSServiceException";
 
@@ -148,8 +142,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "getDataFromDatabase", action = "urn:GetDataFromDatabase")
-    public DNSServiceResponse getDataFromDatabase(final @WebParam(name = "request") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#getDataFromDatabase(final DNSServiceRequest request)";
 
@@ -170,8 +163,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "createNewService", action = "urn:CreateNewService")
-    public DNSServiceResponse createNewService(final @WebParam(name = "request") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#createNewService(final DNSServiceRequest request) throws DNSServiceException";
 
@@ -192,8 +184,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "pushNewService", action = "urn:PushNewService")
-    public DNSServiceResponse pushNewService(final @WebParam(name = "request") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#pushNewService(final DNSServiceRequest request) throws DNSServiceException";
 
@@ -214,8 +205,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "performSiteTransfer", action = "urn:PerformSiteTransfer")
-    public DNSServiceResponse performSiteTransfer(final @WebParam(name = "request") DNSServiceRequest request) throws DNSServiceException
+    public DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException";
 
@@ -236,8 +226,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "addNewArticle", action = "urn:AddNewArticle")
-    public KnowledgeBaseResponse addNewArticle(final @WebParam(name = "request") KnowledgeBaseRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
@@ -258,8 +247,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "updateArticle", action = "urn:UpdateArticle")
-    public KnowledgeBaseResponse updateArticle(final @WebParam(name = "request") KnowledgeBaseRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
@@ -280,8 +268,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "updateArticleStatus", action = "urn:UpdateArticleStatus")
-    public KnowledgeBaseResponse updateArticleStatus(final @WebParam(name = "request") KnowledgeBaseRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
@@ -302,8 +289,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "getArticle", action = "urn:GetArticle")
-    public KnowledgeBaseResponse getArticle(final @WebParam(name = "request") KnowledgeBaseRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
@@ -324,8 +310,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "getPendingArticles", action = "urn:GetPendingArticles")
-    public KnowledgeBaseResponse getPendingArticles(final @WebParam(name = "request") KnowledgeBaseRequest request) throws KnowledgeBaseException
+    public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
 
@@ -345,8 +330,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doArticleSearch", action = "urn:DoArticleSearch")
-    public SearchResponse doArticleSearch(final @WebParam(name = "request") SearchRequest request) throws SearchRequestException
+    public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#doArticleSearch(final request request) throws SearchRequestException";
 
@@ -367,8 +351,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doServerSearch", action = "urn:DoServerSearch")
-    public SearchResponse doServerSearch(final @WebParam(name = "request") SearchRequest request) throws SearchRequestException
+    public SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#doServerSearch(final request request) throws SearchRequestException";
 
@@ -389,8 +372,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doMessageSearch", action = "urn:DoMessageSearch")
-    public SearchResponse doMessageSearch(final @WebParam(name = "request") SearchRequest request) throws SearchRequestException
+    public SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#doMessageSearch(final SearchRequest request) throws SearchRequestException";
 
@@ -411,8 +393,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doApplicationSearch", action = "urn:DoApplicationSearch")
-    public SearchResponse doApplicationSearch(final @WebParam(name = "request") SearchRequest request) throws SearchRequestException
+    public SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#doApplicationSearch(final SearchRequest request) throws SearchRequestException";
         
@@ -433,8 +414,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doProjectSearch", action = "urn:DoProjectSearch")
-    public SearchResponse doProjectSearch(final @WebParam(name = "request") SearchRequest request) throws SearchRequestException
+    public SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException
     {
         final String methodName = ICoreRequestProcessorService.CNAME + "#doProjectSearch(final SearchRequest request) throws SearchRequestException";
         
