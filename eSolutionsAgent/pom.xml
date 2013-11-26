@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.1</version>
+        <version>3.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,13 +13,24 @@
     <name>${project.artifactId}</name>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <activemq.version>5.8.0</activemq.version>
+        <jms-api.version>1.1-rev-1</jms-api.version>
+        <websphere.version>7.0</websphere.version>
+        <weblogic.version>12.1</weblogic.version>
+        <quartz.version>2.1.6</quartz.version>
+        <moxy.version>2.4.0</moxy.version>
+        <eclipselink.version>2.4.0</eclipselink.version>
+        <commons-daemon.version>1.0.10</commons-daemon.version>
+    </properties>
+
     <dependencies>
         <!-- Third-party jars -->
         <!-- activemq -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
-            <version>5.8.0</version>
+            <version>${activemq.version}</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
@@ -33,7 +44,7 @@
         <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>jms-api</artifactId>
-            <version>1.1-rev-1</version>
+            <version>${jms-api.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -41,7 +52,7 @@
         <dependency>
             <groupId>oracle</groupId>
             <artifactId>wlfullclient</artifactId>
-            <version>12.1</version>
+            <version>${weblogic.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -49,70 +60,70 @@
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>admin-core</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>admin-client</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>wsexception</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>runtime</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>ws-emf</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>ecore</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>emf-common</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>ffdc</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>jgssprovider</artifactId>
-            <version>7.0</version>
+            <version>${websphere.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -120,28 +131,28 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.1.6</version>
+            <version>${quartz.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>commons-daemon</groupId>
             <artifactId>commons-daemon</artifactId>
-            <version>1.0.10</version>
+            <version>${commons-daemon.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.4.0</version>
+            <version>${moxy.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>2.4.0</version>
+            <version>${eclipselink.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

@@ -185,7 +185,7 @@
     </servlet-mapping>
     <servlet-mapping id="cxf_mapping">
         <servlet-name>cxf</servlet-name>
-        <url-pattern>/services/*</url-pattern>
+        <url-pattern>/ws/*</url-pattern>
     </servlet-mapping>
 
     <resource-ref id="esolutionssvc">

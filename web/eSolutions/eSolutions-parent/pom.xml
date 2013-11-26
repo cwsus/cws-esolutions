@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.1</version>
+        <version>3.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -16,6 +16,15 @@
     <artifactId>eSolutions-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <properties>
+        <taglibs.version>1.1.2</taglibs.version>
+        <jstl.version>1.1.2</jstl.version>
+        <jsp-api.version>2.0</jsp-api.version>
+        <spring.version>3.2.4.RELEASE</spring.version>
+        <tiles.version>2.2.2</tiles.version>
+        <cxf.version>2.7.7</cxf.version>
+    </properties>
 
     <modules>
         <module>../jars/eSolutions_java_source</module>
@@ -87,21 +96,21 @@
             <dependency>
                 <groupId>taglibs</groupId>
                 <artifactId>standard</artifactId>
-                <version>1.1.2</version>
+                <version>${taglibs.version}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
-                <version>1.1.2</version>
+                <version>${jstl.version}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jsp-api</artifactId>
-                <version>2.0</version>
+                <version>${jsp-api.version}</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
@@ -109,7 +118,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>${spring.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
                 <exclusions>
@@ -122,7 +131,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>${spring.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
                 <exclusions>
@@ -135,7 +144,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>${spring.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
                 <exclusions>
@@ -157,7 +166,7 @@
             <dependency>
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-core</artifactId>
-                <version>2.2.2</version>
+                <version>${tiles.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
                 <exclusions>
@@ -182,52 +191,64 @@
             <dependency>
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-api</artifactId>
-                <version>2.2.2</version>
+                <version>${tiles.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-jsp</artifactId>
-                <version>2.2.2</version>
+                <version>${tiles.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
+                <version>${log4j.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
 	        <dependency>
 	            <groupId>commons-logging</groupId>
 	            <artifactId>commons-logging</artifactId>
-	            <version>1.1.1</version>
+	            <version>${commons-logging.version}</version>
 	            <type>jar</type>
 	            <scope>compile</scope>
 	        </dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>${commons-io.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
 	        <dependency>
 	            <groupId>org.slf4j</groupId>
 	            <artifactId>slf4j-api</artifactId>
-	            <version>1.7.2</version>
+	            <version>${slf4j.version}</version>
 	            <type>jar</type>
 	            <scope>compile</scope>
 	        </dependency>
 	        <dependency>
 	            <groupId>org.slf4j</groupId>
 	            <artifactId>slf4j-log4j12</artifactId>
-	            <version>1.7.2</version>
+	            <version>${slf4j.version}</version>
 	            <type>jar</type>
 	            <scope>compile</scope>
 	        </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http</artifactId>
+                <version>${cxf.version}</version>
+                <scope>compile</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>

@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.1</version>
+        <version>3.3</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -13,27 +13,38 @@
     <name>${project.artifactId}</name>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <activemq.version>5.8.0</activemq.version>
+        <jms-api.version>1.1-rev-1</jms-api.version>
+        <quartz.version>2.1.6</quartz.version>
+        <moxy.version>2.4.0</moxy.version>
+        <eclipselink.version>2.4.0</eclipselink.version>
+        <j2ssh.version>0.2.9</j2ssh.version>
+        <virtualbox.version>4.2.8</virtualbox.version>
+        <eSolutionsAgent.version>1.0-SNAPSHOT</eSolutionsAgent.version>
+    </properties>
+
     <dependencies>
         <!-- Third-party jars -->
         <!-- activemq -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-all</artifactId>
-            <version>5.8.0</version>
+            <version>${activemq.version}</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
-            	<exclusion>
-            		<artifactId>slf4j-api</artifactId>
-            		<groupId>org.slf4j</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!-- jms -->
         <dependency>
             <groupId>javax.jms</groupId>
             <artifactId>jms-api</artifactId>
-            <version>1.1-rev-1</version>
+            <version>${jms-api.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
@@ -41,41 +52,41 @@
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
-            <version>2.1.6</version>
+            <version>${quartz.version}</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>
-            	<exclusion>
-            		<artifactId>slf4j-api</artifactId>
-            		<groupId>org.slf4j</groupId>
-            	</exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>2.4.0</version>
+            <version>${moxy.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>
-            <version>2.4.0</version>
+            <version>${eclipselink.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>sshtools</groupId>
             <artifactId>j2ssh-core</artifactId>
-            <version>0.2.9</version>
+            <version>${j2ssh.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>sshtools</groupId>
             <artifactId>j2ssh-common</artifactId>
-            <version>0.2.9</version>
+            <version>${j2ssh.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -83,7 +94,7 @@
         <dependency>
             <groupId>org.virtualbox</groupId>
             <artifactId>vboxjws</artifactId>
-            <version>4.2.8</version>
+            <version>${virtualbox.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -91,7 +102,7 @@
         <dependency>
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsAgent</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${eSolutionsAgent.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
