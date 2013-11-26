@@ -16,6 +16,7 @@
 package com.cws.esolutions.core.ws.interfaces;
 
 import org.slf4j.Logger;
+import javax.jws.WebService;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -47,6 +48,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * kh05451 @ Jan 2, 2013 1:49:02 PM
  *     Created.
  */
+@WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions")
 public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, IKnowledgeBaseProcessor, ISearchProcessor, IAuthenticationProcessor
 {
     static final String CNAME = ICoreRequestProcessorService.class.getName();
