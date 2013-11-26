@@ -159,7 +159,7 @@
         </wsdl:operation>
     </wsdl:portType>
 
-    <wsdl:binding name="CoreRequestProcessorServiceSoapBinding" type="tns:DNSServiceRequestProcessorImplPortType">
+    <wsdl:binding name="CoreRequestProcessorServiceSoapBinding" type="tns:CoreRequestProcessorServicePortType">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
         <wsdl:operation name="processAgentLogon">
             <soap:operation soapAction="" style="document" />
@@ -179,18 +179,6 @@
                 <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="obtainUserSecurityConfigResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="AuthenticationException">
-                <soap:fault name="AuthenticationException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="verifyUserSecurityConfig">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="verifyUserSecurityConfig">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="verifyUserSecurityConfigResponse">
                 <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="AuthenticationException">
@@ -391,8 +379,8 @@
         </wsdl:operation>
     </wsdl:binding>
 
-    <wsdl:service name="CoreRequestProcessorServiceService">
-        <wsdl:port name="CoreRequestProcessorServicePort" binding="CoreRequestProcessorServiceSoapBinding">
+    <wsdl:service name="CoreRequestProcessorService">
+        <wsdl:port name="CoreRequestProcessorServicePort" binding="tns:CoreRequestProcessorServiceSoapBinding">
             <soap:address location="http://esolutions.caspersbox.corp/s?q=esolutions" />
         </wsdl:port>
     </wsdl:service>
