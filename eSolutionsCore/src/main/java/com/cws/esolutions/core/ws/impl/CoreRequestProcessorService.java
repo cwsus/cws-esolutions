@@ -51,7 +51,7 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorService",
     endpointInterface = "com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService",
-    wsdlLocation = "wsdl/CoreRequestProcessorService.wsdl")
+    wsdlLocation = "/wsdl/CoreRequestProcessorService.wsdl")
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
     /*
