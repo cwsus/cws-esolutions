@@ -187,7 +187,6 @@
     <service-ref>
         <service-ref-name>services/CoreRequestProcessorService</service-ref-name>
         <service-interface>javax.xml.ws.Service</service-interface>
-        <wsdl-file>/wsdl/CoreRequestProcessorService.wsdl</wsdl-file>
     </service-ref>
 
     <resource-ref id="esolutionssvc">
