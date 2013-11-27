@@ -16,14 +16,12 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.sql.SQLException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
@@ -117,8 +115,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         PasswordUtils.encryptText(
                                 reqSecurity.getPassword(),
                                 userSalt,
-                                svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                svcBean.getConfigData().getSecurityConfig().getIterations()),
+                                secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getIterations()),
                         request.getApplicationName());
 
                 Map<String, Object> requestMap = new HashMap<>();
@@ -257,8 +255,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         PasswordUtils.encryptText(
                                 reqSecurity.getPassword(),
                                 userSalt,
-                                svcBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                svcBean.getConfigData().getSecurityConfig().getIterations()),
+                                secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
+                                secBean.getConfigData().getSecurityConfig().getIterations()),
                         request.getApplicationName());
 
                 Map<String, Object> requestMap = new HashMap<>();
@@ -800,7 +798,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
         final UserAccount requestor = request.getRequestor();
-        final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
 
         if (DEBUG)
         {
@@ -808,7 +805,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserAccount: {}", requestor);
-            DEBUGGER.debug("KeyConfig: {}", keyConfig);
         }
 
         if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
@@ -872,16 +868,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                     if (retrResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                     {
-                        // all done
-                        UserAccount retAccount = userAccount;
-                        retAccount.setUserKeys(retrResponse.getKeyPair());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", retAccount);
-                        }
-
-                        response.setUserAccount(retAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully reloaded user keys");
                     }

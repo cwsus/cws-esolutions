@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.jobs;
+package com.cws.esolutions.core.quartz;
 
 import java.util.Map;
 import java.util.List;
@@ -36,7 +36,7 @@ import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.jobs
+ * com.cws.esolutions.core.quartz
  * CheckEmailMessagesJob.java
  *
  * $Id: $

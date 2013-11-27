@@ -863,9 +863,6 @@ public class UserAccountController
 
             if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
             {
-                hSession.removeAttribute(Constants.USER_ACCOUNT);
-                hSession.setAttribute(Constants.USER_ACCOUNT, response.getUserAccount());
-
                 mView.addObject(Constants.RESPONSE_MESSAGE, this.changeKeysComplete);
             }
             else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)

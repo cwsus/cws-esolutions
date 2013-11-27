@@ -22,14 +22,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
@@ -39,17 +37,12 @@ import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
@@ -238,75 +231,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         userAccount.setProjectList(authorizedProjects);
                     }
-
-					try
-					{
-                    	// get the user keypair
-                    	KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
-
-                    	if (DEBUG)
-                    	{
-                        	DEBUGGER.debug("KeyConfig: {}", keyConfig);
-                    	}
-
-                    	KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-                    	if (DEBUG)
-                    	{
-                        	DEBUGGER.debug("KeyManager: {}", keyManager);
-                    	}
-
-                    	KeyManagementRequest keyRequest = new KeyManagementRequest();
-                    	keyRequest.setGuid(userAccount.getGuid());
-                    	keyRequest.setKeySize(keyConfig.getKeySize());
-                        keyRequest.setPubKeyField(authData.getPublicKey());
-                        keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-                        keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
-
-                        KeyManagementResponse keyResponse = null;
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-                        }
-
-                        if (userData.get(16) == null)
-                        {
-                            // remove any existing keys first
-                            try
-                            {
-                                keyManager.removeKeys(keyRequest);
-                            }
-                            catch (KeyManagementException kmx)
-                            {
-                                ERROR_RECORDER.error(kmx.getMessage(), kmx);
-                            }
-
-                            keyResponse = keyManager.createKeys(keyRequest);
-                        }
-                        else
-                        {
-                            keyResponse = keyManager.returnKeys(keyRequest);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-                        }
-
-                        if (keyResponse.getRequestStatus() == SecurityRequestStatus.FAILURE)
-                        {
-                            ERROR_RECORDER.error("Unable to generate user keys - signing/encryption functions will not be available");
-                        }
-                        else
-                        {
-                            userAccount.setUserKeys(keyResponse.getKeyPair());
-                        }
-					}
-					catch (KeyManagementException kmx)
-					{
-						ERROR_RECORDER.error(kmx.getMessage(), kmx);
-					}
 
                     // have a user account, run with it
                     if (userAccount.isSuspended())

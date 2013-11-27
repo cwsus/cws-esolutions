@@ -61,16 +61,16 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAccountChangeProcessor
 {
     static final String CNAME = IAccountChangeProcessor.class.getName();
-    static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
-    static final AuthData authData = svcBean.getConfigData().getAuthData();
-    static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
+    static final AuthRepo authRepo = secBean.getConfigData().getAuthRepo();
+    static final AuthData authData = secBean.getConfigData().getAuthData();
+    static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
-    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());

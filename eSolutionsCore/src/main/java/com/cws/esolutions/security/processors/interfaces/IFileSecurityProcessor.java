@@ -18,12 +18,16 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.AuthData;
+import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.FileSecurityConfig;
+import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
+import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Project: eSolutionsCore
@@ -46,8 +50,11 @@ public interface IFileSecurityProcessor
 {
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IFileSecurityProcessor.class.getName();
+    static final AuthData authData = secBean.getConfigData().getAuthData();
+    static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityServiceConfiguration secConfig = secBean.getConfigData();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
+    static final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

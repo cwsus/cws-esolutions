@@ -16,18 +16,26 @@
 package com.cws.esolutions.security.processors.impl;
 
 import javax.crypto.Cipher;
+
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.Signature;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+
 import java.io.FileNotFoundException;
+
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
+
 import java.security.SignatureException;
 import java.security.InvalidKeyException;
+
 import javax.crypto.NoSuchPaddingException;
+
 import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -36,6 +44,11 @@ import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
+import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
+import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
+import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
@@ -77,7 +90,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
-        final KeyPair keys = request.getUserAccount().getUserKeys();
 
         if (DEBUG)
         {
@@ -87,34 +99,75 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
-            signature.initSign(keys.getPrivate());
-            signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
+            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Signature: {}", signature);
+                DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            byte[] sig = signature.sign();
+            KeyManagementRequest keyRequest = new KeyManagementRequest();
+            keyRequest.setGuid(userAccount.getGuid());
+            keyRequest.setKeySize(keyConfig.getKeySize());
+            keyRequest.setPubKeyField(authData.getPublicKey());
+            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Signature: {}", sig);
+                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
             }
 
-            IOUtils.write(sig, new FileOutputStream(request.getSignedFile()));
+            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
 
-            if ((request.getSignedFile().exists()) && (request.getSignedFile().length() != 0))
+            if (DEBUG)
             {
-                response.setSignedFile(request.getSignedFile());
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Signature successfully generated for provided file.");
+                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
+            }
+
+            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                KeyPair keys = keyResponse.getKeyPair();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyPair: {}", keys);
+                }
+
+                Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
+                signature.initSign(keys.getPrivate());
+                signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Signature: {}", signature);
+                }
+
+                byte[] sig = signature.sign();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Signature: {}", sig);
+                }
+
+                IOUtils.write(sig, new FileOutputStream(request.getSignedFile()));
+
+                if ((request.getSignedFile().exists()) && (request.getSignedFile().length() != 0))
+                {
+                    response.setSignedFile(request.getSignedFile());
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Signature successfully generated for provided file.");
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Failed to generate signature for provided file.");
+                }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to generate signature for provided file.");
+                response.setResponse("Unable to load user keys");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -146,6 +199,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
+        }
+        catch (KeyManagementException kmx)
+        {
+            ERROR_RECORDER.error(kmx.getMessage(), kmx);
+
+            throw new FileSecurityException(kmx.getMessage(), kmx);
         }
         finally
         {
@@ -198,7 +257,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
-        final KeyPair keys = request.getUserAccount().getUserKeys();
 
         if (DEBUG)
         {
@@ -208,25 +266,67 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            // read in the file signature
-            byte[] sigToVerify = IOUtils.toByteArray(new FileInputStream(request.getSignedFile()));
+            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("sigToVerify: {}", sigToVerify);
+                DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
-            signature.initVerify(keys.getPublic());
-            signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
+            KeyManagementRequest keyRequest = new KeyManagementRequest();
+            keyRequest.setGuid(userAccount.getGuid());
+            keyRequest.setKeySize(keyConfig.getKeySize());
+            keyRequest.setPubKeyField(authData.getPublicKey());
+            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Signature: {}", signature);
+                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
             }
 
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setIsSignatureValid(signature.verify(sigToVerify));
+            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
+            }
+
+            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                KeyPair keys = keyResponse.getKeyPair();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyPair: {}", keys);
+                }
+
+                // read in the file signature
+                byte[] sigToVerify = IOUtils.toByteArray(new FileInputStream(request.getSignedFile()));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("sigToVerify: {}", sigToVerify);
+                }
+
+                Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
+                signature.initVerify(keys.getPublic());
+                signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Signature: {}", signature);
+                }
+
+                response.setResponse("Successfully obtained file signature");
+                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                response.setIsSignatureValid(signature.verify(sigToVerify));
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setResponse("Unable to load user keys");
+            }
         }
         catch (NoSuchAlgorithmException nsax)
         {
@@ -257,6 +357,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             ERROR_RECORDER.error(iox.getMessage(), iox);
 
             throw new FileSecurityException(iox.getMessage(), iox);
+        }
+        catch (KeyManagementException kmx)
+        {
+            ERROR_RECORDER.error(kmx.getMessage(), kmx);
+
+            throw new FileSecurityException(kmx.getMessage(), kmx);
         }
         finally
         {
@@ -310,7 +416,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
-        final KeyPair keys = request.getUserAccount().getUserKeys();
 
         if (DEBUG)
         {
@@ -320,37 +425,78 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
-            cipher.init(Cipher.ENCRYPT_MODE, keys.getPrivate());
+            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Cipher: {}", cipher);
+                DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            CipherOutputStream cipherOut = new CipherOutputStream(new FileOutputStream(request.getEncryptedFile()), cipher);
+            KeyManagementRequest keyRequest = new KeyManagementRequest();
+            keyRequest.setGuid(userAccount.getGuid());
+            keyRequest.setKeySize(keyConfig.getKeySize());
+            keyRequest.setPubKeyField(authData.getPublicKey());
+            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("CipherOutputStream: {}", cipherOut);
+                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
             }
 
-            byte[] data = IOUtils.toByteArray(new FileInputStream(request.getDecryptedFile()));
-            IOUtils.write(data, cipherOut);
+            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
 
-            cipherOut.flush();
-            cipherOut.close();
-
-            if ((request.getEncryptedFile().exists()) && (request.getEncryptedFile().length() != 0))
+            if (DEBUG)
             {
-                response.setSignedFile(request.getEncryptedFile());
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Signature successfully generated for provided file.");
+                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
+            }
+
+            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                KeyPair keys = keyResponse.getKeyPair();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyPair: {}", keys);
+                }
+
+                Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
+                cipher.init(Cipher.ENCRYPT_MODE, keys.getPrivate());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Cipher: {}", cipher);
+                }
+
+                CipherOutputStream cipherOut = new CipherOutputStream(new FileOutputStream(request.getEncryptedFile()), cipher);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("CipherOutputStream: {}", cipherOut);
+                }
+
+                byte[] data = IOUtils.toByteArray(new FileInputStream(request.getDecryptedFile()));
+                IOUtils.write(data, cipherOut);
+
+                cipherOut.flush();
+                cipherOut.close();
+
+                if ((request.getEncryptedFile().exists()) && (request.getEncryptedFile().length() != 0))
+                {
+                    response.setSignedFile(request.getEncryptedFile());
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Signature successfully generated for provided file.");
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Failed to generate signature for provided file.");
+                }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to generate signature for provided file.");
+                response.setResponse("Failed to obtain user keys.");
             }
         }
         catch (IOException iox)
@@ -376,6 +522,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
+        }
+        catch (KeyManagementException kmx)
+        {
+            ERROR_RECORDER.error(kmx.getMessage(), kmx);
+
+            throw new FileSecurityException(kmx.getMessage(), kmx);
         }
         finally
         {
@@ -429,7 +581,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
-        final KeyPair keys = request.getUserAccount().getUserKeys();
 
         if (DEBUG)
         {
@@ -439,26 +590,67 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         try
         {
-            Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
-            cipher.init(Cipher.DECRYPT_MODE, keys.getPublic());
+            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Cipher: {}", cipher);
+                DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            IOUtils.write(IOUtils.toByteArray(new CipherInputStream(new FileInputStream(request.getEncryptedFile()), cipher)), new FileOutputStream(request.getDecryptedFile()));
+            KeyManagementRequest keyRequest = new KeyManagementRequest();
+            keyRequest.setGuid(userAccount.getGuid());
+            keyRequest.setKeySize(keyConfig.getKeySize());
+            keyRequest.setPubKeyField(authData.getPublicKey());
+            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
+            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
 
-            if ((request.getEncryptedFile().exists()) && (request.getEncryptedFile().length() != 0))
+            if (DEBUG)
             {
-                response.setSignedFile(request.getEncryptedFile());
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Signature successfully generated for provided file.");
+                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
+            }
+
+            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
+            }
+
+            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            {
+                KeyPair keys = keyResponse.getKeyPair();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KeyPair: {}", keys);
+                }
+
+                Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
+                cipher.init(Cipher.DECRYPT_MODE, keys.getPublic());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Cipher: {}", cipher);
+                }
+
+                IOUtils.write(IOUtils.toByteArray(new CipherInputStream(new FileInputStream(request.getEncryptedFile()), cipher)), new FileOutputStream(request.getDecryptedFile()));
+
+                if ((request.getEncryptedFile().exists()) && (request.getEncryptedFile().length() != 0))
+                {
+                    response.setSignedFile(request.getEncryptedFile());
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Signature successfully generated for provided file.");
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Failed to generate signature for provided file.");
+                }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to generate signature for provided file.");
+                response.setResponse("Failed to obtain user keys.");
             }
         }
         catch (IOException iox)
@@ -484,6 +676,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
             ERROR_RECORDER.error(ikx.getMessage(), ikx);
 
             throw new FileSecurityException(ikx.getMessage(), ikx);
+        }
+        catch (KeyManagementException kmx)
+        {
+            ERROR_RECORDER.error(kmx.getMessage(), kmx);
+
+            throw new FileSecurityException(kmx.getMessage(), kmx);
         }
         finally
         {

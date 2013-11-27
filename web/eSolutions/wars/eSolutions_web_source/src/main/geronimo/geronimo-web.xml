@@ -51,16 +51,9 @@
 
     <context-root>@contextRoot@</context-root>
 
-    <service-ref>
-        <service-ref-name>services/CoreRequestProcessorService</service-ref-name>
-        <port>
-            <port-name>CoreRequestProcessorServicePort</port-name>
-            <protocol>http</protocol>
-            <host>localhost</host>
-            <port>8080</port>
-            <uri>/eSolutions/ws/CoreRequestProcessor</uri>
-        </port>
-    </service-ref>
+    <nam:service-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
+        <nam:service-ref-name>services/CoreRequestProcessorService</nam:service-ref-name>
+    </nam:service-ref>
 
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>

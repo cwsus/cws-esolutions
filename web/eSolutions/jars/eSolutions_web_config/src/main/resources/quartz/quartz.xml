@@ -73,7 +73,7 @@
             <name>DeployerJob</name>
             <group>eSolutions</group>
             <description>Deploy application files</description>
-            <job-class>com.cws.esolutions.core.jobs.DeployerJob</job-class>
+            <job-class>com.cws.esolutions.core.quartz.DeployerJob</job-class>
             <durability>false</durability>
             <recover>true</recover>
         </job>
@@ -95,7 +95,7 @@
             <name>ResetReaperJob</name>
             <group>SecurityService</group>
             <description>Remove expired reset request identifiers</description>
-            <job-class>com.cws.esolutions.security.jobs.ResetRequestReaperJob</job-class>
+            <job-class>com.cws.esolutions.security.quartz.ResetRequestReaperJob</job-class>
             <durability>false</durability>
             <recover>true</recover>
         </job>
