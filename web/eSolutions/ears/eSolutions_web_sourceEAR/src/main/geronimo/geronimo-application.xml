@@ -24,5 +24,17 @@
     <module>
         <web>@module@</web>
         <alt-dd>@module@/WEB-INF/geronimo-web.xml</alt-dd>
+        <web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1">
+            <service-ref>
+                <service-ref-name>service/CoreRequestProcessorService</service-ref-name>
+                <port>
+                    <port-name>CoreRequestProcessorServicePort</port-name>
+                    <protocol>http</protocol>
+                    <host>localhost</host>
+                    <port>8080</port>
+                    <uri>/eSolutions/ws/CoreRequestProcessorService</uri>
+                </port>
+            </service-ref>
+        </web-app>
     </module>
 </application>
