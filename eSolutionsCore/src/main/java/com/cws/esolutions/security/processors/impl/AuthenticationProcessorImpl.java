@@ -289,18 +289,20 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 }
                 else
                 {
-                    throw new AuthenticatorException("Authentication request failed.");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuthenticationResponse: {}", response);
+					response.setRequestStatus(SecurityRequestStatus.FAILURE);
+					response.setResponse("Login failed. Please ensure your login information is correct.");
                 }
             }
             else
             {
-                throw new AuthenticatorException("Authentication request failed.");
+				response.setRequestStatus(SecurityRequestStatus.FAILURE);
+				response.setResponse("Login failed. Please ensure your login information is correct.");
             }
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug("AuthenticationResponse: {}", response);
+			}
         }
         catch (AuthenticatorException ax)
         {

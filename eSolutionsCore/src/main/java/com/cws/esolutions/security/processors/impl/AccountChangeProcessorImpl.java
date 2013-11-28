@@ -858,33 +858,19 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                 if (createResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    // get the new keypair
-                    KeyManagementResponse retrResponse = keyManager.returnKeys(keyRequest);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KeyManagementResponse: {}", retrResponse);
-                    }
-
-                    if (retrResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully reloaded user keys");
-                    }
-                    else
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("An error occurred while retrieving the new keypair. Keys may not have generated successfully.");
-                    }
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setResponse("Successfully reloaded user keys");
                 }
                 else
                 {
-                    throw new AccountChangeException("Failed to generate new keys for the provided user.");
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Failed to regenerate security keys");
                 }
             }
             else
             {
-                throw new AccountChangeException("Failed to remove existing keypair for the provided user.");
+				response.setRequestStatus(SecurityRequestStatus.FAILURE);
+				response.setResponse("Failed to remove existing keypair");
             }
         }
         catch (KeyManagementException kmx)

@@ -219,7 +219,7 @@ public class SessionAuthenticationFilter implements Filter
 
 		if (hRequest.isRequestedSessionIdFromURL())
         {
-			ERROR_RECORDER.error("Session contains no existing user account. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+			ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
 
 			// invalidate the session
             hRequest.getSession(false).invalidate();

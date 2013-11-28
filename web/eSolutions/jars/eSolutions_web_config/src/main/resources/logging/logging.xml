@@ -53,30 +53,6 @@
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
-    <appender name="axis2-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/axis2.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="jalopy-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/jalopy.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
-    <appender name="httpclient-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/httpclient.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
 
     <category name="AUDIT_RECORDER.com.cws.us.esolutions" additivity="false">
         <priority value="AUDIT" />
@@ -97,21 +73,5 @@
     <category name="org.springframework" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="spring-logger" />
-    </category>
-    <category name="org.apache.axis2.enterprise" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="axis2-logger" />
-    </category>
-    <category name="de.hunsicker.jalopy.io" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="jalopy-logger" />
-    </category>
-    <category name="httpclient.wire.header" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="httpclient-logger" />
-    </category>
-    <category name="org.apache.commons.httpclient" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="httpclient-logger" />
     </category>
 </log4j:configuration>
