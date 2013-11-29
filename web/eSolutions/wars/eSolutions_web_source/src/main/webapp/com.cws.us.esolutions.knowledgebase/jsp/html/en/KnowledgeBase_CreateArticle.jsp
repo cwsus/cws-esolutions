@@ -32,13 +32,16 @@
     <h1><spring:message code="kbase.header" /></h1>
     <ul>
         <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/default"
-            title="<spring:message code='kbase.default' />">
-            <spring:message code="kbase.default" /></a></li>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default"
+                title="<spring:message code='kbase.default' />">
+                <spring:message code="kbase.default" /></a>
+        </li>
         <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
             <li>
                 <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
-                    title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
+                    title="<spring:message code='kbase.list.pending.approvals' />">
+                    <spring:message code='kbase.list.pending.approvals' /></a>
             </li>
         </c:if>
     </ul>
@@ -68,7 +71,7 @@
     <h1><strong>Create Article - ${command.articleId}</strong></h1>
 
     <form:form id="submitNewArticle" name="submitNewArticle" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post">
-        <form:hidden path="articleId" value="${command.articleId" />
+        <form:hidden path="articleId" value="${articleId}" />
 
         <label id="txtArticleTitle"><spring:message code="kbase.article.title" /></label>
         <form:input path="title" />

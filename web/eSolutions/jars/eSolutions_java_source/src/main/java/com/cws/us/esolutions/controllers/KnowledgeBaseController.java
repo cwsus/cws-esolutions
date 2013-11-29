@@ -680,18 +680,8 @@ public class KnowledgeBaseController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            Article article = new Article();
-            article.setAuthor(userAccount.getDisplayName());
-            article.setAuthorEmail(userAccount.getEmailAddr());
-            article.setArticleStatus(ArticleStatus.NEW);
-            article.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Article: {}", article);
-            }
-
-            mView.addObject("command", article);
+            mView.addObject("articleId", prefix + RandomStringUtils.randomAlphanumeric(newIdentifierLength));
+            mView.addObject("command", new Article());
             mView.addObject("dateFormat", this.appConfig.getDateFormat());
             mView.setViewName(this.createArticlePage);
         }
@@ -1667,14 +1657,6 @@ public class KnowledgeBaseController
                 return mView;
             }
 
-            article.setAuthor(userAccount.getUsername());
-            article.setAuthorEmail(userAccount.getEmailAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Article: {}", article);
-            }
-
             mView.addObject("article", article);
             mView.setViewName(this.reviewArticlePage);
         }
@@ -1863,19 +1845,9 @@ public class KnowledgeBaseController
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
-                    Article newArticle = new Article();
-                    newArticle.setAuthor(userAccount.getDisplayName());
-                    newArticle.setAuthorEmail(userAccount.getEmailAddr());
-                    newArticle.setArticleStatus(ArticleStatus.NEW);
-                    newArticle.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", newArticle);
-                    }
-
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.addObject("command", newArticle);
+                    mView.addObject("articleId", prefix + RandomStringUtils.randomAlphanumeric(newIdentifierLength));
+                    mView.addObject("command", new Article());
                     mView.setViewName(this.createArticlePage);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -1885,18 +1857,9 @@ public class KnowledgeBaseController
                 else
                 {
                     // failure
-                    Article newArticle = new Article();
-                    newArticle.setAuthor(userAccount.getDisplayName());
-                    newArticle.setAuthorEmail(userAccount.getEmailAddr());
-                    newArticle.setArticleStatus(ArticleStatus.NEW);
-                    newArticle.setArticleId(this.prefix + RandomStringUtils.randomNumeric(this.newIdentifierLength));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Article: {}", newArticle);
-                    }
-
-                    mView.addObject("command", newArticle);
+                    // TODO: This should actuall re-send the tried submission back and it isnt
+                    mView.addObject("articleId", prefix + RandomStringUtils.randomAlphanumeric(newIdentifierLength));
+                    mView.addObject("command", new Article());
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.createArticlePage);
                 }
