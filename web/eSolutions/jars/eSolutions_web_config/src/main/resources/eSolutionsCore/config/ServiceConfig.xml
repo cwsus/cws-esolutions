@@ -10,7 +10,7 @@
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
         <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
-        <agentBundleSource />
+        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
     </application-config>
 
     <mq-config>
