@@ -59,7 +59,7 @@ public class ServerDataDAOImplTest
     private static final IServerDataDAO dao = new ServerDataDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -74,7 +74,7 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public static final void testAddNewServer()
+    public void testAddNewServer()
     {
         List<Object> data = new ArrayList<Object>
         (
@@ -121,31 +121,31 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public static final void testRemoveExistingServer()
+    public void testRemoveExistingServer()
     {
 
     }
 
     @Test
-    public static final void testGetInstalledServers()
+    public void testGetInstalledServers()
     {
 
     }
 
     @Test
-    public static final void testGetInstalledServer()
+    public void testGetInstalledServer()
     {
 
     }
 
     @Test
-    public static final void testGetServersByAttribute()
+    public void testGetServersByAttribute()
     {
 
     }
 
     @Test
-    public static final void testModifyServerData()
+    public void testModifyServerData()
     {
 
     }

@@ -46,7 +46,7 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 public class MQUtilsTest
 {
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -61,7 +61,7 @@ public class MQUtilsTest
     }
 
     @Test
-    public static final void testSendMqMessage()
+    public void testSendMqMessage()
     {
         SystemManagerRequest system = new SystemManagerRequest();
         system.setInstallAgent(false);
@@ -85,7 +85,7 @@ public class MQUtilsTest
     }
 
     @Test
-    public static final void testGetMqMessage()
+    public void testGetMqMessage()
     {
         try
         {

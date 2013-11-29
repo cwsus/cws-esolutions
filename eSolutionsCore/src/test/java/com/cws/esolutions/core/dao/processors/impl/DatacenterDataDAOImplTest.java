@@ -48,7 +48,7 @@ public class DatacenterDataDAOImplTest
     private static final IDatacenterDataDAO dao = new DatacenterDataDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -63,7 +63,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public static final void testAddNewDatacenter()
+    public void testAddNewDatacenter()
     {
         List<String> data = new ArrayList<>(
                 Arrays.asList(
@@ -83,7 +83,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public static final void testRemoveExistingDatacenter()
+    public void testRemoveExistingDatacenter()
     {
         try
         {
@@ -96,7 +96,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public static final void testGetAvailableDataCenters()
+    public void testGetAvailableDataCenters()
     {
         try
         {
@@ -109,7 +109,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public static final void testGetDataCenterByAttribute()
+    public void testGetDataCenterByAttribute()
     {
         try
         {
@@ -122,7 +122,7 @@ public class DatacenterDataDAOImplTest
     }
 
     @Test
-    public static final void testGetDatacenter()
+    public void testGetDatacenter()
     {
         try
         {

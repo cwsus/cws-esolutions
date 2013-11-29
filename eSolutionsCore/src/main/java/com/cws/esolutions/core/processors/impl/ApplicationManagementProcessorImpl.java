@@ -20,13 +20,21 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
@@ -1147,11 +1155,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("ApplicationManagementRequest: {}", request);
         }
 
+        UserAccount searchAccount = null;
+        AccountControlRequest searchRequest = null;
+        AccountControlResponse searchResponse = null;
         ApplicationManagementResponse response = new ApplicationManagementResponse();
 
         final Application application = request.getApplication();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1256,9 +1268,48 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
                                         dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
                                         dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
-                                        dmgrServer.setAssignedEngineer((String) dmgrData.get(25)); // ASSIGNED_ENGINEER
                                         dmgrServer.setDmgrPort((Integer) dmgrData.get(28)); // DMGR_PORT
                                         dmgrServer.setMgrUrl((String) dmgrData.get(30)); // MGR_ENTRY
+
+                                        searchAccount = new UserAccount();
+                                        searchAccount.setGuid((String) dmgrData.get(25));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                        }
+
+                                        searchRequest = new AccountControlRequest();
+                                        searchRequest.setHostInfo(request.getRequestInfo());
+                                        searchRequest.setUserAccount(searchAccount);
+                                        searchRequest.setApplicationName(request.getApplicationName());
+                                        searchRequest.setApplicationId(request.getApplicationId());
+                                        searchRequest.setSearchType(SearchRequestType.GUID);
+                                        searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                        }
+
+                                        try
+                                        {
+                                            searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                            }
+
+                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                            {
+                                                dmgrServer.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                            }
+                                        }
+                                        catch (AccountControlException acx)
+                                        {
+                                            ERROR_RECORDER.error(acx.getMessage(), acx);
+                                        }
 
                                         if (DEBUG)
                                         {
@@ -1318,10 +1369,49 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                                 server.setNasHostName((String) appServerData.get(22)); // NAS_HOSTNAME
                                                 server.setNatAddress((String) appServerData.get(23)); // NAT_ADDR
                                                 server.setServerComments((String) appServerData.get(24)); // COMMENTS
-                                                server.setAssignedEngineer((String) appServerData.get(25)); // ASSIGNED_ENGINEER
                                                 server.setDmgrPort((Integer) appServerData.get(28)); // DMGR_PORT
                                                 server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
                                                 server.setMgrUrl((String) appServerData.get(30)); // MGR_ENTRY
+
+                                                searchAccount = new UserAccount();
+                                                searchAccount.setGuid((String) appServerData.get(25));
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                                }
+
+                                                searchRequest = new AccountControlRequest();
+                                                searchRequest.setHostInfo(request.getRequestInfo());
+                                                searchRequest.setUserAccount(searchAccount);
+                                                searchRequest.setApplicationName(request.getApplicationName());
+                                                searchRequest.setApplicationId(request.getApplicationId());
+                                                searchRequest.setSearchType(SearchRequestType.GUID);
+                                                searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                                }
+
+                                                try
+                                                {
+                                                    searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                                    if (DEBUG)
+                                                    {
+                                                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                                    }
+
+                                                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                                    {
+                                                        server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                                    }
+                                                }
+                                                catch (AccountControlException acx)
+                                                {
+                                                    ERROR_RECORDER.error(acx.getMessage(), acx);
+                                                }
 
                                                 if (DEBUG)
                                                 {
@@ -1390,9 +1480,48 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                                 server.setNasHostName((String) webServerData.get(22)); // NAS_HOSTNAME
                                                 server.setNatAddress((String) webServerData.get(23)); // NAT_ADDR
                                                 server.setServerComments((String) webServerData.get(24)); // COMMENTS
-                                                server.setAssignedEngineer((String) webServerData.get(25)); // ASSIGNED_ENGINEER
                                                 server.setDmgrPort((Integer) webServerData.get(28)); // DMGR_PORT
                                                 server.setMgrUrl((String) webServerData.get(30)); // MGR_ENTRY
+
+                                                searchAccount = new UserAccount();
+                                                searchAccount.setGuid((String) webServerData.get(25));
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                                }
+
+                                                searchRequest = new AccountControlRequest();
+                                                searchRequest.setHostInfo(request.getRequestInfo());
+                                                searchRequest.setUserAccount(searchAccount);
+                                                searchRequest.setApplicationName(request.getApplicationName());
+                                                searchRequest.setApplicationId(request.getApplicationId());
+                                                searchRequest.setSearchType(SearchRequestType.GUID);
+                                                searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                                }
+
+                                                try
+                                                {
+                                                    searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                                    if (DEBUG)
+                                                    {
+                                                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                                    }
+
+                                                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                                    {
+                                                        server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                                    }
+                                                }
+                                                catch (AccountControlException acx)
+                                                {
+                                                    ERROR_RECORDER.error(acx.getMessage(), acx);
+                                                }
 
                                                 if (DEBUG)
                                                 {
@@ -1443,12 +1572,76 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 project.setProjectGuid(projectList.get(0));
                                 project.setProjectCode(projectList.get(1));
                                 project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                                project.setPrimaryContact(projectList.get(3));
-                                project.setSecondaryContact(projectList.get(4));
                                 project.setDevEmail(projectList.get(5));
                                 project.setProdEmail(projectList.get(6));
                                 project.setIncidentQueue(projectList.get(7));
                                 project.setChangeQueue(projectList.get(8));
+
+                                int x = 0;
+                                List<String> userList = new ArrayList<>(
+                                        Arrays.asList(
+                                                projectList.get(3),
+                                                projectList.get(4)));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("List<String>: {}", userList);
+                                }
+
+                                for (String guid : userList)
+                                {
+                                    searchAccount = new UserAccount();
+                                    searchAccount.setGuid(guid);
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                    }
+
+                                    searchRequest = new AccountControlRequest();
+                                    searchRequest.setHostInfo(request.getRequestInfo());
+                                    searchRequest.setUserAccount(searchAccount);
+                                    searchRequest.setApplicationName(request.getApplicationName());
+                                    searchRequest.setApplicationId(request.getApplicationId());
+                                    searchRequest.setSearchType(SearchRequestType.GUID);
+                                    searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                    }
+
+                                    try
+                                    {
+                                        searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                        }
+
+                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                        {
+                                            switch (x)
+                                            {
+                                                case 0:
+                                                    project.setPrimaryContact(searchResponse.getUserAccount());
+
+                                                    break;
+                                                case 1:
+                                                    project.setSecondaryContact(searchResponse.getUserAccount());
+
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    catch (AccountControlException acx)
+                                    {
+                                        ERROR_RECORDER.error(acx.getMessage(), acx);
+                                    }
+
+                                    x++;
+                                }
 
                                 if (DEBUG)
                                 {

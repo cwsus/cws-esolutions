@@ -59,7 +59,7 @@ public final class AccountChangeProcessorImplTest
      private static final IAccountChangeProcessor processor = new AccountChangeProcessorImpl();
 
      @Before
-     public static final void setUp()
+     public void setUp()
      {
          try
          {
@@ -109,7 +109,7 @@ public final class AccountChangeProcessorImplTest
      }
 
     @Test
-    public static final void testChangeUserEmail()
+    public void testChangeUserEmail()
     {
         UserAccount account = userAccount;
         account.setEmailAddr("test@test.com");
@@ -141,7 +141,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public static final void testChangeUserContactChangeTelephone()
+    public void testChangeUserContactChangeTelephone()
     {
         UserAccount account = userAccount;
         account.setTelephoneNumber("716-341-1697");
@@ -173,7 +173,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public static final void testChangeUserContactChangePager()
+    public void testChangeUserContactChangePager()
     {
         UserAccount account = userAccount;
         account.setPagerNumber("716-341-1697");
@@ -205,7 +205,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public static final void testChangeUserPassword()
+    public void testChangeUserPassword()
     {
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana21*");
@@ -235,7 +235,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public static final void testChangeUserSecurity()
+    public void testChangeUserSecurity()
     {
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana21*");
@@ -268,7 +268,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @Test
-    public static final void testChangeUserKeys()
+    public void testChangeUserKeys()
     {
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setPassword("Ariana21*");
@@ -297,7 +297,7 @@ public final class AccountChangeProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

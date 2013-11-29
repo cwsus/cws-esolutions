@@ -44,7 +44,7 @@ public class DNSServiceDAOImplTest
     private static final IDNSServiceDAO dao = new DNSServiceDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -59,7 +59,7 @@ public class DNSServiceDAOImplTest
     }
 
     @Test
-    public static final void testGetServiceData()
+    public void testGetServiceData()
     {
         try
         {
@@ -72,13 +72,13 @@ public class DNSServiceDAOImplTest
     }
 
     @Test
-    public static final void testAddNewService()
+    public void testAddNewService()
     {
 
     }
 
     @Test
-    public static final void testRemoveService()
+    public void testRemoveService()
     {
 
     }

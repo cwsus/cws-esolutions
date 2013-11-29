@@ -65,7 +65,7 @@ public class PlatformManagementProcessorImplTest
     private static final IPlatformManagementProcessor processor = new PlatformManagementProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -115,22 +115,22 @@ public class PlatformManagementProcessorImplTest
     }
 
     @Test
-    public static final void testAddNewPlatform()
+    public void testAddNewPlatform()
     {
         List<Server> webServers = null;
         List<Server> appServers = null;
         Platform platform = new Platform();
 
-        String[] dmgrServers = { "5afecbc1-903e-4cdf-a3a3-b5bfa177d8c5", "a1924d39-c70b-4834-a66c-bd66ea649a60", "e2dfb58c-feeb-41e2-855c-090480e666b4" };
+        String[] dmgrServers = { "a4a106a8-da49-42d7-af45-69c1dd16e06b", "d030d224-ff36-469a-9d15-4ea83f26f3a4", "06265367-f84d-4a75-83d6-a91db2c734c2" };
 
-        String[] devWebs = { "1e412acd-c898-40f1-82a5-c1f025d67756", "10c175b5-d6c5-44bf-8d39-255c54484baa", "721a9d5e-6a7e-4732-9e71-e82a44c7a634", "628ba426-fa82-4759-ae6e-07e1e2da6d33" };
-        String[] devApps = { "ee73fc6b-522a-4b62-8f63-7e097d13f72d", "4ce4b839-478f-4e28-8aaa-11356d31b15f", "f173e122-dedd-483a-8cbc-b5747bd1fd08", "761034e0-19e6-4bca-baf7-637d774479be" };
+        String[] devWebs = { "b998f386-777e-411e-8107-0abfcb074f44", "20471c5c-5def-4942-8ebc-b2f215cf9c0b", "349dee49-595d-49bf-8e94-9d6406fcf3bf", "3dc28661-fc58-46aa-99fa-2cfc273a3b53" };
+        String[] devApps = { "f333925a-be61-448f-9cfe-af523ae8635c", "5daec15d-a425-4335-80fb-5a81db83da1a", "a9e1c654-cf60-438e-adb9-d0170f5a1ec1", "7c58e384-aa14-474f-9d89-4792c4ffb693" };
 
-        String[] qaWebs = { "431cfb3e-84bf-4daa-9fa8-7093a21fc852", "2f6a5fd0-6e5c-4565-a48b-311d82011b43", "525e4c60-de08-46b9-92d8-7f04643aec20", "5247ab05-70d2-4f05-b482-0317cc2b6784" };
-        String[] qaApps = { "a04501f4-a654-4f78-9459-ad64f014e468", "99e10ec6-d6a5-4464-9cc6-5108b438d1a2", "fad84667-24dc-4667-96de-c371d8fe1b14", "db895688-dec2-46d3-9a69-678436488f4c" };
+        String[] qaWebs = { "64d5b777-e9ec-4f49-b92d-56ebe4ce4feb", "0e9fd7fd-f313-4e8b-88ec-4cd23677be7a", "9cd3d2e1-3c09-4c13-82de-e9aa581fc062" ,"4833b328-ab6b-4b20-a0e6-a0fd1eefcde3" };
+        String[] qaApps = { "a09d3842-c63a-438a-9784-a3327d0a01fa", "246b5540-1999-42c8-9651-64fc4e3f19a3", "a39e9201-a34c-44e0-9dda-1379ce39b5ad", "eb9a3b9a-b0e9-4579-938d-1aeb2ef95abe" };
 
-        String[] prdWebs = { "d8714e68-3c0b-464b-b6bd-77eee99061e9", "5e0c9c18-8d3b-49e6-8a25-9647ef9d692b", "ef7d7553-5c8c-4651-8b79-5f0b2e1065f4", "841c3387-736c-47e1-a4ff-e382e174c137" };
-        String[] prdApps = { "00abd443-1192-4d40-823f-91e1eca820b5", "e8da9ad2-9183-45d6-ac6a-419953e0e067", "80dac53d-1877-4f3c-bb94-4f4f4c54398b", "0e855ebe-ae76-4068-a976-9f6231e9a06f" };
+        String[] prdWebs = { "b13c0491-16c3-444a-9f4b-a2005d56438d", "32a9de94-230c-49bd-be50-c79f443bce06", "0e9da3c7-a617-44b2-a497-08751eab1870", "ce8f530a-dd53-47ac-94e9-bb922f99dd47" };
+        String[] prdApps = { "4eaecefc-1b8c-432c-8cb1-79008f0982c0", "45f7dece-9fab-4584-960f-b592e95d2845", "c8a2d5c9-6d5c-4ef9-9915-ee43e8bda2e", "0c39a609-8b00-4c4e-875d-1ab9a75fd2b1" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -240,13 +240,13 @@ public class PlatformManagementProcessorImplTest
     }
 
     @Test
-    public static final void testUpdatePlatformData()
+    public void testUpdatePlatformData()
     {
 
     }
 
     @Test
-    public static final void testListPlatforms()
+    public void testListPlatforms()
     {
         PlatformManagementRequest request = new PlatformManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -266,7 +266,7 @@ public class PlatformManagementProcessorImplTest
     }
 
     @Test
-    public static final void testListPlatformsByAttributeWithGuid()
+    public void testListPlatformsByAttributeWithGuid()
     {
         Platform platform = new Platform();
         platform.setPlatformName("PLATFORM_X");
@@ -290,7 +290,7 @@ public class PlatformManagementProcessorImplTest
     }
 
     @Test
-    public static final void testGetPlatformData()
+    public void testGetPlatformData()
     {
         Platform platform = new Platform();
         platform.setPlatformGuid("f9d0cd75-d751-4eca-84e6-abd14019e230");
@@ -314,7 +314,7 @@ public class PlatformManagementProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

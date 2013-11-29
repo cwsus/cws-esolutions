@@ -16,10 +16,14 @@
 package com.cws.esolutions.security;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 /*
@@ -34,6 +38,7 @@ import com.cws.esolutions.security.config.SecurityServiceConfiguration;
  */
 public class SecurityServiceBean implements Serializable
 {
+    private UserAccount serviceAccount = null;
     private ResourceControllerBean resourceBean = null;
     private SecurityServiceConfiguration configData = null;
 
@@ -69,6 +74,28 @@ public class SecurityServiceBean implements Serializable
         return SecurityServiceBean.instance;
     }
 
+    public final void setServiceAccount()
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#setServiceAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        UserAccount account = new UserAccount();
+        account.setUsername("service-account");
+        account.setGuid("a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0");
+        account.setRole(Role.SITEADMIN);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", account);
+        }
+
+        this.serviceAccount = account;
+    }
+
     public final void setConfigData(final SecurityServiceConfiguration value)
     {
         final String methodName = SecurityServiceBean.CNAME + "#setConfigData(final SecurityServiceConfiguration value)";
@@ -93,6 +120,19 @@ public class SecurityServiceBean implements Serializable
         }
 
         this.resourceBean = value;
+    }
+
+    public final UserAccount getServiceAccount()
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#getServiceAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceAccount);
+        }
+
+        return this.serviceAccount;
     }
 
     public final SecurityServiceConfiguration getConfigData()

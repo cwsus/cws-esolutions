@@ -31,6 +31,7 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
@@ -64,6 +65,7 @@ public interface IPlatformManagementProcessor
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final String CNAME = IPlatformManagementProcessor.class.getName();
     static final IUserControlService userControl = new UserControlServiceImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
 
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();

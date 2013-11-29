@@ -51,7 +51,7 @@ public class KnowledgeBaseDAOImplTest
     private static final IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -66,7 +66,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testDoCreateArticle()
+    public void testDoCreateArticle()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -90,7 +90,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testUpdateArticleStatusAsRejected()
+    public void testUpdateArticleStatusAsRejected()
     {
         try
         {
@@ -103,7 +103,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testUpdateArticleStatusAsDeleted()
+    public void testUpdateArticleStatusAsDeleted()
     {
         try
         {
@@ -116,7 +116,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testUpdateArticleStatusAsApproved()
+    public void testUpdateArticleStatusAsApproved()
     {
         try
         {
@@ -129,7 +129,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testDoUpdateArticle()
+    public void testDoUpdateArticle()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -152,7 +152,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testRetrieveArticleAsNoPending()
+    public void testRetrieveArticleAsNoPending()
     {
         try
         {
@@ -167,7 +167,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testRetrieveArticleAsPending()
+    public void testRetrieveArticleAsPending()
     {
         try
         {
@@ -182,7 +182,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testSearchPendingArticles()
+    public void testSearchPendingArticles()
     {
         try
         {
@@ -197,7 +197,7 @@ public class KnowledgeBaseDAOImplTest
     }
 
     @Test
-    public static final void testGetArticlesByAttribute()
+    public void testGetArticlesByAttribute()
     {
         try
         {

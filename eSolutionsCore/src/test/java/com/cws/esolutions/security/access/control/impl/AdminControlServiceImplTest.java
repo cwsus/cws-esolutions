@@ -56,7 +56,7 @@ public class AdminControlServiceImplTest
     private static final IAdminControlService service = new AdminControlServiceImpl();
     
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -106,7 +106,7 @@ public class AdminControlServiceImplTest
     }
 
     @Test
-    public static final void testAdminControlServiceUserAccount()
+    public void testAdminControlServiceUserAccount()
     {
         try
         {
@@ -119,7 +119,7 @@ public class AdminControlServiceImplTest
     }
 
     @Test
-    public static final void testAdminControlServiceServiceAdmin()
+    public void testAdminControlServiceServiceAdmin()
     {
         try
         {
@@ -132,7 +132,7 @@ public class AdminControlServiceImplTest
     }
 
     @Test
-    public static final void testAdminControlServiceUserAdmin()
+    public void testAdminControlServiceUserAdmin()
     {
         try
         {
@@ -145,7 +145,7 @@ public class AdminControlServiceImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

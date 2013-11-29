@@ -62,7 +62,7 @@ public class AccountControlProcessorImplTest
     private static final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -112,7 +112,7 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
-    public static final void testCreateNewUserNoApplication()
+    public void testCreateNewUserNoApplication()
     {
         UserAccount newUser = new UserAccount();
         newUser.setDisplayName("Test User");
@@ -147,7 +147,7 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
-    public static final void testCreateNewUserWithApplication()
+    public void testCreateNewUserWithApplication()
     {
         UserAccount newUser = new UserAccount();
         newUser.setDisplayName("Test User");
@@ -183,7 +183,7 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
-    public static final void testSearchAccounts()
+    public void testSearchAccounts()
     {
         UserAccount searchUser = new UserAccount();
         searchUser.setUsername("khuntly");
@@ -209,7 +209,7 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
-    public static final void testModifyUserSuspension()
+    public void testModifyUserSuspension()
     {
         UserAccount suspendAccount = new UserAccount();
         suspendAccount.setUsername("khuntly");
@@ -240,7 +240,7 @@ public class AccountControlProcessorImplTest
     }
 
     @Test
-    public static final void testModifyUserLockCount()
+    public void testModifyUserLockCount()
     {
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
@@ -271,7 +271,7 @@ public class AccountControlProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

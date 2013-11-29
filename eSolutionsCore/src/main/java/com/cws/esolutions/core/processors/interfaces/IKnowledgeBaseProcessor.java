@@ -26,6 +26,7 @@ import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
@@ -54,6 +55,7 @@ public interface IKnowledgeBaseProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IKnowledgeBaseDAO kbaseDAO = new KnowledgeBaseDAOImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
 

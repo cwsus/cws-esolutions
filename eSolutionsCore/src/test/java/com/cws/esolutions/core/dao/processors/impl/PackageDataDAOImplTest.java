@@ -42,7 +42,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 public class PackageDataDAOImplTest
 {
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -57,31 +57,31 @@ public class PackageDataDAOImplTest
     }
 
     @Test
-    public static final void testRetrievePackageData()
+    public void testRetrievePackageData()
     {
 
     }
 
     @Test
-    public static final void testAddNewPackage()
+    public void testAddNewPackage()
     {
 
     }
 
     @Test
-    public static final void testDeletePackageData()
+    public void testDeletePackageData()
     {
 
     }
 
     @Test
-    public static final void testGetPackageData()
+    public void testGetPackageData()
     {
 
     }
 
     @Test
-    public static final void testGetPackagesByAttribute()
+    public void testGetPackagesByAttribute()
     {
 
     }

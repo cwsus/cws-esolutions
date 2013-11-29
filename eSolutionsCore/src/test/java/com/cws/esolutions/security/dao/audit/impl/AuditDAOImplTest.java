@@ -50,7 +50,7 @@ public class AuditDAOImplTest
     private static final IAuditDAO auditDAO = new AuditDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -107,7 +107,7 @@ public class AuditDAOImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

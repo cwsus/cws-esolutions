@@ -52,7 +52,7 @@ public class AccountResetProcessorImplTest
     private static RequestHostInfo hostInfo = null;
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -70,7 +70,7 @@ public class AccountResetProcessorImplTest
     }
 
     @Test
-    public static final void testResetUserPassword()
+    public void testResetUserPassword()
     {
         IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -106,7 +106,7 @@ public class AccountResetProcessorImplTest
     }
 
     @Test
-    public static final void testVerifyResetRequest()
+    public void testVerifyResetRequest()
     {
         IAccountResetProcessor processor = new AccountResetProcessorImpl();
 
@@ -131,7 +131,7 @@ public class AccountResetProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

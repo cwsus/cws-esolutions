@@ -50,7 +50,7 @@ public class ApplicationDataDAOImplTest
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -65,7 +65,7 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public static final void testAddNewApplication()
+    public void testAddNewApplication()
     {
         List<String> appData = new ArrayList<>(
                 Arrays.asList(
@@ -102,7 +102,7 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public static final void testListInstalledApplications()
+    public void testListInstalledApplications()
     {
         try
         {
@@ -115,7 +115,7 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public static final void testGetApplicationData()
+    public void testGetApplicationData()
     {
         try
         {
@@ -128,7 +128,7 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public static final void testGetApplicationsByAttributeAppName()
+    public void testGetApplicationsByAttributeAppName()
     {
         try
         {

@@ -50,7 +50,7 @@ public class PlatformDataDAOImplTest
     private static final IPlatformDataDAO dao = new PlatformDataDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -65,7 +65,7 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public static final void testAddNewPlatform()
+    public void testAddNewPlatform()
     {
         List<String> appServers = new ArrayList<>(
                 Arrays.asList(
@@ -99,13 +99,13 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public static final void testDeletePlatform()
+    public void testDeletePlatform()
     {
 
     }
 
     @Test
-    public static final void testGetPlatformData()
+    public void testGetPlatformData()
     {
         try
         {
@@ -120,7 +120,7 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public static final void testListAvailablePlatforms()
+    public void testListAvailablePlatforms()
     {
 
     }

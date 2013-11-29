@@ -63,7 +63,7 @@ public class DatacenterManagementProcessorImplTest
     private static final IDatacenterManagementProcessor processor = new DatacenterManagementProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -113,7 +113,7 @@ public class DatacenterManagementProcessorImplTest
     }
 
     @Test
-    public static final void testAddNewDatacenter()
+    public void testAddNewDatacenter()
     {
         DataCenter dataCenter = new DataCenter();
         dataCenter.setDatacenterGuid(UUID.randomUUID().toString());
@@ -140,7 +140,7 @@ public class DatacenterManagementProcessorImplTest
     }
 
     @Test
-    public static final void testListDatacenters()
+    public void testListDatacenters()
     {
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -160,7 +160,7 @@ public class DatacenterManagementProcessorImplTest
     }
 
     @Test
-    public static final void testGetDatacenter()
+    public void testGetDatacenter()
     {
         DataCenter dataCenter = new DataCenter();
         dataCenter.setDatacenterGuid("dcee7e07-0452-4da2-a40c-e93a28344c87");
@@ -184,7 +184,7 @@ public class DatacenterManagementProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

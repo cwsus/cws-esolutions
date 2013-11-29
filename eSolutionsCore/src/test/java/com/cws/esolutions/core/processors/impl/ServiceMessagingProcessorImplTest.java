@@ -61,7 +61,7 @@ public class ServiceMessagingProcessorImplTest
     private static final IMessagingProcessor processor = new ServiceMessagingProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -111,14 +111,13 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @Test
-    public static final void addNewMessage()
+    public void addNewMessage()
     {
         ServiceMessage message = new ServiceMessage();
         message.setMessageId(RandomStringUtils.randomAlphanumeric(16));
         message.setMessageTitle("Test Message");
         message.setMessageText("This is a test");
-        message.setMessageAuthor(userAccount.getUsername());
-        message.setAuthorEmail(userAccount.getEmailAddr());
+        message.setMessageAuthor(userAccount);
         message.setDoesExpire(false);
         message.setIsActive(true);
 
@@ -141,18 +140,18 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @Test
-    public static final void deleteExistingMessage()
+    public void deleteExistingMessage()
     {
         Assert.fail("Not yet implemented");
     }
 
-    public static final void updateExistingMessage()
+    public void updateExistingMessage()
     {
         Assert.fail("Not yet implemented");
     }
 
     @Test
-    public static final void showMessages()
+    public void showMessages()
     {
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);
@@ -172,7 +171,7 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @Test
-    public static final void showMessage()
+    public void showMessage()
     {
         ServiceMessage message = new ServiceMessage();
         message.setMessageId("muUlODU6k1kA0L3q");
@@ -196,7 +195,7 @@ public class ServiceMessagingProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

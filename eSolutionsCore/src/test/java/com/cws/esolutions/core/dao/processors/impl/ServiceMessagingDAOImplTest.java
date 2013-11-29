@@ -56,7 +56,7 @@ public class ServiceMessagingDAOImplTest
     private static final String MESSAGE_ID = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -71,7 +71,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public static final void testDeleteMessage()
+    public void testDeleteMessage()
     {
         try
         {
@@ -84,7 +84,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public static final void testInsertMessage()
+    public void testInsertMessage()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
@@ -109,7 +109,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public static final void testUpdateMessage()
+    public void testUpdateMessage()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 30);
@@ -134,7 +134,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public static final void testRetrieveMessage()
+    public void testRetrieveMessage()
     {
         try
         {
@@ -149,7 +149,7 @@ public class ServiceMessagingDAOImplTest
     }
 
     @Test
-    public static final void testRetrieveMessages()
+    public void testRetrieveMessages()
     {
         try
         {

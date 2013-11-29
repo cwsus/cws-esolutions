@@ -53,7 +53,7 @@ public class UserSecurityInformationDAOImplTest
     private static final IUserSecurityInformationDAO dao = new UserSecurityInformationDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -72,7 +72,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testAddUserLogonSalt()
+    public void testAddUserLogonSalt()
     {
         try
         {
@@ -85,7 +85,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testAddUserResetSalt()
+    public void testAddUserResetSalt()
     {
         try
         {
@@ -98,7 +98,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testUpdateUserLoginSalt()
+    public void testUpdateUserLoginSalt()
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
 
@@ -113,7 +113,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testUpdateUserResetSalt()
+    public void testUpdateUserResetSalt()
     {
         String salt = RandomStringUtils.randomAlphanumeric(64);
 
@@ -128,7 +128,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testGetUserLoginSalt()
+    public void testGetUserLoginSalt()
     {
         try
         {
@@ -141,7 +141,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testGetUserResetSalt()
+    public void testGetUserResetSalt()
     {
         try
         {
@@ -154,7 +154,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testRemoveUserData()
+    public void testRemoveUserData()
     {
         try
         {
@@ -167,7 +167,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testInsertResetData()
+    public void testInsertResetData()
     {
         try
         {
@@ -180,7 +180,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testInsertResetDataWithSms()
+    public void testInsertResetDataWithSms()
     {
         try
         {
@@ -193,7 +193,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testGetResetData()
+    public void testGetResetData()
     {
         try
         {
@@ -206,7 +206,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testRemoveResetData()
+    public void testRemoveResetData()
     {
         try
         {
@@ -219,7 +219,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @Test
-    public static final void testVerifySmsForReset()
+    public void testVerifySmsForReset()
     {
         try
         {

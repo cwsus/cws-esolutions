@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
@@ -46,11 +47,10 @@ public class ServiceMessage implements Serializable
     private String messageId = null;
     private boolean isActive = false;
     private String messageText = null;
-    private String authorEmail = null;
     private boolean doesExpire = false;
     private String messageTitle = null;
-    private String messageAuthor = null;
     private boolean isNewMessage = false;
+    private UserAccount messageAuthor = null;
 
     private static final long serialVersionUID = 5693111856955648085L;
     private static final String CNAME = ServiceMessage.class.getName();
@@ -111,9 +111,9 @@ public class ServiceMessage implements Serializable
         this.messageText = value;
     }
 
-    public final void setMessageAuthor(final String value)
+    public final void setMessageAuthor(final UserAccount value)
     {
-        final String methodName = ServiceMessage.CNAME + "#setMessageAuthor(final String value)";
+        final String methodName = ServiceMessage.CNAME + "#setMessageAuthor(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -122,19 +122,6 @@ public class ServiceMessage implements Serializable
         }
 
         this.messageAuthor = value;
-    }
-
-    public final void setAuthorEmail(final String value)
-    {
-        final String methodName = ServiceMessage.CNAME + "#setAuthorEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.authorEmail = value;
     }
 
     public final void setSubmitDate(final Date value)
@@ -241,7 +228,7 @@ public class ServiceMessage implements Serializable
         return this.messageText;
     }
 
-    public final String getMessageAuthor()
+    public final UserAccount getMessageAuthor()
     {
         final String methodName = ServiceMessage.CNAME + "#getMessageAuthor()";
 
@@ -252,19 +239,6 @@ public class ServiceMessage implements Serializable
         }
 
         return this.messageAuthor;
-    }
-
-    public final String getAuthorEmail()
-    {
-        final String methodName = ServiceMessage.CNAME + "#getAuthorEmail()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.authorEmail);
-        }
-
-        return this.authorEmail;
     }
 
     public final Date getSubmitDate()

@@ -57,7 +57,7 @@ public class UserControlServiceImplTest
     private static final IUserControlService service = new UserControlServiceImpl();
     
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -107,7 +107,7 @@ public class UserControlServiceImplTest
     }
 
     @Test
-    public static final void testIsUserAuthorizedForService()
+    public void testIsUserAuthorizedForService()
     {
         try
         {
@@ -120,7 +120,7 @@ public class UserControlServiceImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

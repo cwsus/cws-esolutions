@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
@@ -27,7 +28,14 @@ import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
@@ -430,12 +438,16 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount searchAccount = null;
+        AccountControlRequest searchRequest = null;
+        AccountControlResponse searchResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer(); // dmgr
         final Server requestServer = request.getTargetServer(); // search server type
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -525,7 +537,46 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 server.setNasHostName((String) data[22]); // NAS_HOSTNAME
                                 server.setNatAddress((String) data[23]); // NAT_ADDR
                                 server.setServerComments((String) data[24]); // COMMENTS
-                                server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
+
+                                searchAccount = new UserAccount();
+                                searchAccount.setGuid((String) data[25]);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                }
+
+                                searchRequest = new AccountControlRequest();
+                                searchRequest.setHostInfo(request.getRequestInfo());
+                                searchRequest.setUserAccount(searchAccount);
+                                searchRequest.setApplicationName(request.getApplicationName());
+                                searchRequest.setApplicationId(request.getApplicationId());
+                                searchRequest.setSearchType(SearchRequestType.GUID);
+                                searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                }
+
+                                try
+                                {
+                                    searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                    }
+
+                                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                    {
+                                        server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                    }
+                                }
+                                catch (AccountControlException acx)
+                                {
+                                    ERROR_RECORDER.error(acx.getMessage(), acx);
+                                }
 
                                 switch (server.getServerType())
                                 {
@@ -566,9 +617,48 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                             dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
                                             dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
                                             dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
-                                            dmgrServer.setAssignedEngineer((String) dmgrData.get(25)); // ASSIGNED_ENGINEER
                                             dmgrServer.setDmgrPort((Integer) dmgrData.get(28)); // DMGR_PORT
                                             dmgrServer.setMgrUrl((String) dmgrData.get(30)); // MGR_ENTRY
+
+                                            searchAccount = new UserAccount();
+                                            searchAccount.setGuid((String) dmgrData.get(25));
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                            }
+
+                                            searchRequest = new AccountControlRequest();
+                                            searchRequest.setHostInfo(request.getRequestInfo());
+                                            searchRequest.setUserAccount(searchAccount);
+                                            searchRequest.setApplicationName(request.getApplicationName());
+                                            searchRequest.setApplicationId(request.getApplicationId());
+                                            searchRequest.setSearchType(SearchRequestType.GUID);
+                                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                            }
+
+                                            try
+                                            {
+                                                searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                                if (DEBUG)
+                                                {
+                                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                                }
+
+                                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                                {
+                                                    dmgrServer.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                                }
+                                            }
+                                            catch (AccountControlException acx)
+                                            {
+                                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                                            }
 
                                             if (DEBUG)
                                             {
@@ -684,11 +774,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount searchAccount = null;
+        AccountControlRequest searchRequest = null;
+        AccountControlResponse searchResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server requestServer = request.getTargetServer();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -775,7 +869,46 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             server.setNasHostName((String) data[22]); // NAS_HOSTNAME
                             server.setNatAddress((String) data[23]); // NAT_ADDR
                             server.setServerComments((String) data[24]); // COMMENTS
-                            server.setAssignedEngineer((String) data[25]); // ASSIGNED_ENGINEER
+
+                            searchAccount = new UserAccount();
+                            searchAccount.setGuid((String) data[25]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                            }
+
+                            searchRequest = new AccountControlRequest();
+                            searchRequest.setHostInfo(request.getRequestInfo());
+                            searchRequest.setUserAccount(searchAccount);
+                            searchRequest.setApplicationName(request.getApplicationName());
+                            searchRequest.setApplicationId(request.getApplicationId());
+                            searchRequest.setSearchType(SearchRequestType.GUID);
+                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                            }
+
+                            try
+                            {
+                                searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                }
+
+                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                {
+                                    server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                }
+                            }
+                            catch (AccountControlException acx)
+                            {
+                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                            }
 
                             switch (server.getServerType())
                             {
@@ -816,9 +949,48 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                         dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
                                         dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
                                         dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
-                                        dmgrServer.setAssignedEngineer((String) dmgrData.get(25)); // ASSIGNED_ENGINEER
                                         dmgrServer.setDmgrPort((Integer) dmgrData.get(28)); // DMGR_PORT
                                         dmgrServer.setMgrUrl((String) dmgrData.get(30)); // MGR_ENTRY
+
+                                        searchAccount = new UserAccount();
+                                        searchAccount.setGuid((String) dmgrData.get(25));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                        }
+
+                                        searchRequest = new AccountControlRequest();
+                                        searchRequest.setHostInfo(request.getRequestInfo());
+                                        searchRequest.setUserAccount(searchAccount);
+                                        searchRequest.setApplicationName(request.getApplicationName());
+                                        searchRequest.setApplicationId(request.getApplicationId());
+                                        searchRequest.setSearchType(SearchRequestType.GUID);
+                                        searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                        }
+
+                                        try
+                                        {
+                                            searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                            }
+
+                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                            {
+                                                dmgrServer.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                            }
+                                        }
+                                        catch (AccountControlException acx)
+                                        {
+                                            ERROR_RECORDER.error(acx.getMessage(), acx);
+                                        }
 
                                         if (DEBUG)
                                         {
@@ -931,11 +1103,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount searchAccount = null;
+        AccountControlRequest searchRequest = null;
+        AccountControlResponse searchResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server requestServer = request.getTargetServer();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1012,7 +1188,46 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
                             server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                             server.setServerComments((String) serverData.get(24)); // COMMENTS
-                            server.setAssignedEngineer((String) serverData.get(25)); // ASSIGNED_ENGINEER
+
+                            searchAccount = new UserAccount();
+                            searchAccount.setGuid((String) serverData.get(25));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                            }
+
+                            searchRequest = new AccountControlRequest();
+                            searchRequest.setHostInfo(request.getRequestInfo());
+                            searchRequest.setUserAccount(searchAccount);
+                            searchRequest.setApplicationName(request.getApplicationName());
+                            searchRequest.setApplicationId(request.getApplicationId());
+                            searchRequest.setSearchType(SearchRequestType.GUID);
+                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                            }
+
+                            try
+                            {
+                                searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                }
+
+                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                {
+                                    server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                }
+                            }
+                            catch (AccountControlException acx)
+                            {
+                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                            }
 
                             switch (server.getServerType())
                             {
@@ -1053,9 +1268,48 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                         dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
                                         dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
                                         dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
-                                        dmgrServer.setAssignedEngineer((String) dmgrData.get(25)); // ASSIGNED_ENGINEER
                                         dmgrServer.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
                                         dmgrServer.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
+
+                                        searchAccount = new UserAccount();
+                                        searchAccount.setGuid((String) dmgrData.get(25));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
+                                        }
+
+                                        searchRequest = new AccountControlRequest();
+                                        searchRequest.setHostInfo(request.getRequestInfo());
+                                        searchRequest.setUserAccount(searchAccount);
+                                        searchRequest.setApplicationName(request.getApplicationName());
+                                        searchRequest.setApplicationId(request.getApplicationId());
+                                        searchRequest.setSearchType(SearchRequestType.GUID);
+                                        searchRequest.setRequestor(secBean.getServiceAccount());
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                                        }
+
+                                        try
+                                        {
+                                            searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                            }
+
+                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                            {
+                                                dmgrServer.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
+                                            }
+                                        }
+                                        catch (AccountControlException acx)
+                                        {
+                                            ERROR_RECORDER.error(acx.getMessage(), acx);
+                                        }
 
                                         if (DEBUG)
                                         {

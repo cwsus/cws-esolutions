@@ -61,7 +61,7 @@ public class LDAPKeyManagerTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -140,7 +140,7 @@ public class LDAPKeyManagerTest
     }
 
     @Test
-    public static final void testCreateKeys()
+    public void testCreateKeys()
     {
         KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
         KeyManagementRequest request = new KeyManagementRequest();
@@ -161,7 +161,7 @@ public class LDAPKeyManagerTest
     }
 
     @Test
-    public static final void testReturnKeys()
+    public void testReturnKeys()
     {
         KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
         KeyManagementRequest request = new KeyManagementRequest();
@@ -181,7 +181,7 @@ public class LDAPKeyManagerTest
     }
 
     @Test
-    public static final void testDeleteKeys()
+    public void testDeleteKeys()
     {
         KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
         KeyManagementRequest request = new KeyManagementRequest();
@@ -200,7 +200,7 @@ public class LDAPKeyManagerTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

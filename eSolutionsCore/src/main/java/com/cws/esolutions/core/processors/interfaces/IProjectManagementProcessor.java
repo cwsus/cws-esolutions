@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.ApplicationConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
@@ -27,14 +28,14 @@ import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.interfaces
@@ -62,6 +63,7 @@ public interface IProjectManagementProcessor
     static final IApplicationDataDAO appDao = new ApplicationDataDAOImpl();
     static final ResourceControllerBean resBean = appBean.getResourceBean();
     static final IUserControlService userControl = new UserControlServiceImpl();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
 

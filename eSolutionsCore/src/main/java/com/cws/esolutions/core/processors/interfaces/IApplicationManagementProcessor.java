@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.ApplicationConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
@@ -30,14 +31,14 @@ import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 /**
  * eSolutionsCore
@@ -67,6 +68,7 @@ public interface IApplicationManagementProcessor
     static final IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
     static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
     static final ResourceControllerBean resBean = appBean.getResourceBean();
+    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IApplicationManagementProcessor.class.getName();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();

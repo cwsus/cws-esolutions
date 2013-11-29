@@ -50,7 +50,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 public class EmailUtilsTest
 {
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -65,7 +65,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public static final void testSendEmailMessage()
+    public void testSendEmailMessage()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);
@@ -87,7 +87,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public static final void testSendEmailMessageWithAttachment()
+    public void testSendEmailMessageWithAttachment()
     {
         try
         {
@@ -123,7 +123,7 @@ public class EmailUtilsTest
     }
 
     @Test
-    public static final void testSendSmsMessage()
+    public void testSendSmsMessage()
     {
         EmailMessage message = new EmailMessage();
         message.setIsAlert(false);

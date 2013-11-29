@@ -64,7 +64,7 @@ public class ApplicationManagementProcessorImplTest
     private static final IApplicationManagementProcessor appProcess = new ApplicationManagementProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -114,12 +114,12 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testAddNewApplication()
+    public void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("a8bcb1d5-6088-4264-ade9-8cb878eb4f57");
+        project.setProjectGuid("0fd1b62d-7361-4165-a7be-27235f6ab540");
 
-        String[] platforms = { "160bb3a3-d283-4978-942e-f417dc227713", "ae1f7955-d7e1-4b96-a343-db91bdce9664", "0c5bead0-5024-4917-ac3e-456e7ff20bd6" };
+        String[] platforms = { "4b6411c2-568d-49b6-91d7-0212a42ae873", "68c12b68-a990-454f-8b4e-52cd2ef25a0a", "84b7f9df-f1e8-45ab-aee5-35b577473ec3" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -167,13 +167,13 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testUpdateApplicationData()
+    public void testUpdateApplicationData()
     {
 
     }
 
     @Test
-    public static final void testDeleteApplicationData()
+    public void testDeleteApplicationData()
     {
         Application app = new Application();
         app.setApplicationGuid("6625fc8c-09ed-4579-a3d6-eb43d26b679f");
@@ -197,7 +197,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testListApplications()
+    public void testListApplications()
     {
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
@@ -217,7 +217,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testListApplicationsByProject()
+    public void testListApplicationsByProject()
     {
         Project project = new Project();
         project.setProjectGuid("7c2e3991-1b01-47db-9c78-bd9c453bd07c");
@@ -244,7 +244,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testGetApplicationData()
+    public void testGetApplicationData()
     {
         Application app = new Application();
         app.setApplicationGuid("d3da855d-8ce8-4b7d-b14a-0c472f196aff");
@@ -268,7 +268,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testApplicationFileRequest()
+    public void testApplicationFileRequest()
     {
         Application app = new Application();
         app.setApplicationGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
@@ -296,7 +296,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public static final void testApplicationFileRequestGetFile()
+    public void testApplicationFileRequestGetFile()
     {
         Application app = new Application();
         app.setApplicationGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
@@ -325,7 +325,7 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

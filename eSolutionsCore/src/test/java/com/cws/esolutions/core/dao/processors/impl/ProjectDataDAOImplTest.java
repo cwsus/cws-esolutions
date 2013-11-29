@@ -51,7 +51,7 @@ public class ProjectDataDAOImplTest
     private static final IProjectDataDAO dao = new ProjectDataDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -66,7 +66,7 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public static final void addNewProject()
+    public void addNewProject()
     {
         List<String> projectDetail = new ArrayList<>(
                 Arrays.asList(
@@ -91,7 +91,7 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public static final void deleteProjectData()
+    public void deleteProjectData()
     {
         try
         {
@@ -104,7 +104,7 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public static final void getProjectData()
+    public void getProjectData()
     {
         try
         {
@@ -119,7 +119,7 @@ public class ProjectDataDAOImplTest
     }
 
     @Test
-    public static final void listAvailableProjects()
+    public void listAvailableProjects()
     {
         try
         {

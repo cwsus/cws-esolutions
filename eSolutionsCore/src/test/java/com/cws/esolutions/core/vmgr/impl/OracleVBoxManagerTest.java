@@ -63,7 +63,7 @@ public class OracleVBoxManagerTest
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -116,7 +116,7 @@ public class OracleVBoxManagerTest
      * Test method for {@link com.cws.esolutions.core.vmgr.impl.OracleVBoxManager#getVBoxManager()}.
      */
     @Test
-    public static final void testListVirtualMachines()
+    public void testListVirtualMachines()
     {
         VirtualServiceManager virtManager = VirtualManagerFactory.createVirtualManager(appBean.getConfigData().getAppConfig().getVirtualManagerClass());
 

@@ -47,7 +47,7 @@ public class UserServiceInformationDAOImplTest
     private static final IUserServiceInformationDAO userSvcDAO = new UserServiceInformationDAOImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -61,7 +61,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testAddProjectIdForUser()
+    public void testAddProjectIdForUser()
     {
         try
         {
@@ -74,7 +74,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testVerifyProjectForUser()
+    public void testVerifyProjectForUser()
     {
         try
         {
@@ -87,7 +87,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testRemoveProjectIdForUser()
+    public void testRemoveProjectIdForUser()
     {
         try
         {
@@ -100,7 +100,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testReturnUserAuthorizedProjects()
+    public void testReturnUserAuthorizedProjects()
     {
         try
         {
@@ -113,7 +113,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testAddServiceToUser()
+    public void testAddServiceToUser()
     {
         try
         {
@@ -126,7 +126,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testVerifyServiceForUser()
+    public void testVerifyServiceForUser()
     {
         try
         {
@@ -139,7 +139,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testRemoveServiceFromUser()
+    public void testRemoveServiceFromUser()
     {
         try
         {
@@ -152,7 +152,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public static final void testListServicesForUser()
+    public void testListServicesForUser()
     {
         try
         {
@@ -165,7 +165,7 @@ public class UserServiceInformationDAOImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

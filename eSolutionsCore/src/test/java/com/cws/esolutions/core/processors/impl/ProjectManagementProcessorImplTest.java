@@ -62,7 +62,7 @@ public class ProjectManagementProcessorImplTest
     private static final IProjectManagementProcessor processor = new ProjectManagementProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -112,7 +112,7 @@ public class ProjectManagementProcessorImplTest
     }
 
     @Test
-    public static final void testAddNewProject()
+    public void testAddNewProject()
     {
         for (int x = 0; x < 3; x++)
         {
@@ -123,8 +123,8 @@ public class ProjectManagementProcessorImplTest
             project.setDevEmail("dev@email.com");
             project.setProdEmail("prod@email.com");
             project.setIncidentQueue("ticket-queue");
-            project.setPrimaryContact("primary@domain.com");
-            project.setSecondaryContact("secondary@domain.com");
+            project.setPrimaryContact(userAccount);
+            project.setSecondaryContact(userAccount);
             project.setProjectStatus(ServiceStatus.ACTIVE);
 
             ProjectManagementRequest request = new ProjectManagementRequest();
@@ -147,12 +147,12 @@ public class ProjectManagementProcessorImplTest
     }
 
     @Test
-    public static final void testUpdateProjectData()
+    public void testUpdateProjectData()
     {
     }
 
     @Test
-    public static final void testListProjects()
+    public void testListProjects()
     {
         ProjectManagementRequest request = new ProjectManagementRequest();
         request.setUserAccount(userAccount);
@@ -172,7 +172,7 @@ public class ProjectManagementProcessorImplTest
     }
 
     @Test
-    public static final void testListProjectsByAttribute()
+    public void testListProjectsByAttribute()
     {
         Project project = new Project();
         project.setProjectGuid("f85bcf1c-63e4-46ec-8903-0f74bb49de00");
@@ -196,7 +196,7 @@ public class ProjectManagementProcessorImplTest
     }
 
     @Test
-    public static final void testGetProjectData()
+    public void testGetProjectData()
     {
         Project project = new Project();
         project.setProjectGuid("a8bcb1d5-6088-4264-ade9-8cb878eb4f57");
@@ -220,7 +220,7 @@ public class ProjectManagementProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

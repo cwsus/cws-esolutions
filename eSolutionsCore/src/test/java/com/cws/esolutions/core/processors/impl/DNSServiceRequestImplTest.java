@@ -66,7 +66,7 @@ public class DNSServiceRequestImplTest
     private static final IDNSServiceRequestProcessor dnsService = new DNSServiceRequestProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -116,7 +116,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public static final void testForwardLookup()
+    public void testForwardLookup()
     {
         DNSRecord record = new DNSRecord();
         record.setRecordName("connect.us.hsbc");
@@ -142,7 +142,7 @@ public class DNSServiceRequestImplTest
     }
 
     @Test
-    public static final void testCreateService()
+    public void testCreateService()
     {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("YYYYMMdd00");
@@ -506,7 +506,7 @@ public class DNSServiceRequestImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

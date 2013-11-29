@@ -55,7 +55,7 @@ public class EmailControlServiceImplTest
     private static final IEmailControlService service = new EmailControlServiceImpl();
     
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -105,7 +105,7 @@ public class EmailControlServiceImplTest
     }
 
     @Test
-    public static final void testIsEmailAuthorized()
+    public void testIsEmailAuthorized()
     {
         try
         {
@@ -118,7 +118,7 @@ public class EmailControlServiceImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

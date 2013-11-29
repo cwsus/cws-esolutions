@@ -58,7 +58,7 @@ public class FileSecurityProcessorImplTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -108,7 +108,7 @@ public class FileSecurityProcessorImplTest
     }
 
     @Test
-    public static final void testSignFile()
+    public void testSignFile()
     {
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
@@ -131,7 +131,7 @@ public class FileSecurityProcessorImplTest
     }
 
     @Test
-    public static final void testVerifyFile()
+    public void testVerifyFile()
     {
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
@@ -154,7 +154,7 @@ public class FileSecurityProcessorImplTest
     }
 
     @Test
-    public static final void testEncryptFile()
+    public void testEncryptFile()
     {
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
@@ -177,7 +177,7 @@ public class FileSecurityProcessorImplTest
     }
 
     @Test
-    public static final void testDecryptFile()
+    public void testDecryptFile()
     {
         IFileSecurityProcessor processor = new FileSecurityProcessorImpl();
 
@@ -200,7 +200,7 @@ public class FileSecurityProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

@@ -60,7 +60,7 @@ public class SearchProcessorImplTest
     private static final ISearchProcessor processor = new SearchProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -110,7 +110,7 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public static final void doMessageSearch()
+    public void doMessageSearch()
     {
         SearchRequest request = new SearchRequest();
         request.setSearchTerms("test");
@@ -128,7 +128,7 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public static final void doArticleSearch()
+    public void doArticleSearch()
     {
         SearchRequest request = new SearchRequest();
         request.setSearchTerms("testy");
@@ -146,7 +146,7 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public static final void doServerSearch()
+    public void doServerSearch()
     {
         SearchRequest request = new SearchRequest();
         request.setSearchTerms("DMGR");
@@ -164,13 +164,13 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public static final void doFileSearch()
+    public void doFileSearch()
     {
         
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

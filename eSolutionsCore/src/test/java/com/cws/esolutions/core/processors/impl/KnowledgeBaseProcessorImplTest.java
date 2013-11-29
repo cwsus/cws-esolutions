@@ -61,7 +61,7 @@ public class KnowledgeBaseProcessorImplTest
     private static final IKnowledgeBaseProcessor kbase = new KnowledgeBaseProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -111,19 +111,12 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testListTopArticles()
-    {
-        
-    }
-
-    @Test
-    public static final void testAddNewArticle()
+    public void testAddNewArticle()
     {
         Article article = new Article();
         article.setArticleId("KB" + RandomStringUtils.randomNumeric(8));
         article.setArticleStatus(ArticleStatus.NEW);
-        article.setAuthor("kmhuntly");
-        article.setAuthorEmail("kmhuntly@caspersbox.com");
+        article.setAuthor(userAccount);
         article.setCause("Caused By a Test");
         article.setKeywords("keywords");
         article.setPageHits(1);
@@ -150,20 +143,19 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testUpdateArticle()
+    public void testUpdateArticle()
     {
         Article article = new Article();
         article.setArticleId("KB40975607");
         article.setArticleStatus(ArticleStatus.NEW);
-        article.setAuthor("kmhuntly");
-        article.setAuthorEmail("kmhuntly@caspersbox.com");
+        article.setAuthor(userAccount);
         article.setCause("This is another test");
         article.setKeywords("keywords");
         article.setPageHits(1);
         article.setResolution("untest");
         article.setSymptoms("test");
         article.setTitle("test article");
-        article.setModifiedBy("khuntly");
+        article.setModifiedBy(userAccount);
 
         KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setArticle(article);
@@ -184,7 +176,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testApproveArticle()
+    public void testApproveArticle()
     {
         Article article = new Article();
         article.setArticleId("KB40975607");
@@ -209,7 +201,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testRejectArticle()
+    public void testRejectArticle()
     {
         Article article = new Article();
         article.setArticleId("KB99991");
@@ -234,7 +226,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testDeleteArticle()
+    public void testDeleteArticle()
     {
         Article article = new Article();
         article.setArticleId("KB99991");
@@ -259,7 +251,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testGetArticle()
+    public void testGetArticle()
     {
         Article article = new Article();
         article.setArticleId("KB40975607");
@@ -283,7 +275,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @Test
-    public static final void testGetPendingArticles()
+    public void testGetPendingArticles()
     {
         KnowledgeBaseRequest request = new KnowledgeBaseRequest();
         request.setRequestInfo(hostInfo);
@@ -303,7 +295,7 @@ public class KnowledgeBaseProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

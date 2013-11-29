@@ -31,11 +31,18 @@ import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
+import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
@@ -120,8 +127,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                             Arrays.asList(
                                     (StringUtils.isNotEmpty(project.getProjectGuid())) ? project.getProjectGuid() : UUID.randomUUID().toString(),
                                     project.getProjectCode(),
-                                    project.getPrimaryContact(),
-                                    (StringUtils.isNotEmpty(project.getSecondaryContact())) ? project.getSecondaryContact() : Constants.NOT_SET,
+                                    project.getPrimaryContact().getGuid(),
+                                    (project.getSecondaryContact() != null) ? project.getSecondaryContact().getGuid() : Constants.NOT_SET,
                                     project.getDevEmail(),
                                     project.getProdEmail(),
                                     project.getIncidentQueue(),
@@ -253,8 +260,8 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         Arrays.asList(
                                 project.getProjectGuid(),
                                 project.getProjectCode(),
-                                project.getPrimaryContact(),
-                                (StringUtils.isNotEmpty(project.getSecondaryContact())) ? project.getSecondaryContact() : Constants.NOT_SET,
+                                project.getPrimaryContact().getGuid(),
+                                (project.getSecondaryContact() != null) ? project.getSecondaryContact().getGuid() : Constants.NOT_SET,
                                 project.getDevEmail(),
                                 project.getProdEmail(),
                                 project.getIncidentQueue(),
@@ -356,6 +363,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -398,12 +406,76 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         resProject.setProjectGuid(data[0]);
                         resProject.setProjectCode(data[1]);
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
-                        resProject.setPrimaryContact(data[3]);
-                        resProject.setSecondaryContact(data[4]);
                         resProject.setDevEmail(data[5]);
                         resProject.setProdEmail(data[6]);
                         resProject.setIncidentQueue(data[7]);
                         resProject.setChangeQueue(data[8]);
+
+                        int x = 0;
+                        List<String> userList = new ArrayList<>(
+                                Arrays.asList(
+                                        data[3],
+                                        data[4]));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", userList);
+                        }
+
+                        for (String guid : userList)
+                        {
+                            UserAccount searchAccount = new UserAccount();
+                            searchAccount.setGuid(guid);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                            }
+
+                            AccountControlRequest searchRequest = new AccountControlRequest();
+                            searchRequest.setHostInfo(request.getRequestInfo());
+                            searchRequest.setUserAccount(searchAccount);
+                            searchRequest.setApplicationName(request.getApplicationName());
+                            searchRequest.setApplicationId(request.getApplicationId());
+                            searchRequest.setSearchType(SearchRequestType.GUID);
+                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                            }
+
+                            try
+                            {
+                                AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                }
+
+                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                {
+                                    switch (x)
+                                    {
+                                        case 0:
+                                            resProject.setPrimaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                        case 1:
+                                            resProject.setSecondaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                    }
+                                }
+
+                                x++;
+                            }
+                            catch (AccountControlException acx)
+                            {
+                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                            }
+                        }
 
                         if (DEBUG)
                         {
@@ -499,6 +571,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         final Project project = request.getProject();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -535,12 +608,76 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         resProject.setProjectGuid(data[0]);
                         resProject.setProjectCode(data[1]);
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
-                        resProject.setPrimaryContact(data[3]);
-                        resProject.setSecondaryContact(data[4]);
                         resProject.setDevEmail(data[5]);
                         resProject.setProdEmail(data[6]);
                         resProject.setIncidentQueue(data[7]);
                         resProject.setChangeQueue(data[8]);
+
+                        int x = 0;
+                        List<String> userList = new ArrayList<>(
+                                Arrays.asList(
+                                        data[3],
+                                        data[4]));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", userList);
+                        }
+
+                        for (String guid : userList)
+                        {
+                            UserAccount searchAccount = new UserAccount();
+                            searchAccount.setGuid(guid);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                            }
+
+                            AccountControlRequest searchRequest = new AccountControlRequest();
+                            searchRequest.setHostInfo(request.getRequestInfo());
+                            searchRequest.setUserAccount(searchAccount);
+                            searchRequest.setApplicationName(request.getApplicationName());
+                            searchRequest.setApplicationId(request.getApplicationId());
+                            searchRequest.setSearchType(SearchRequestType.GUID);
+                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                            }
+
+                            try
+                            {
+                                AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                }
+
+                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                {
+                                    switch (x)
+                                    {
+                                        case 0:
+                                            resProject.setPrimaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                        case 1:
+                                            resProject.setSecondaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                    }
+                                }
+
+                                x++;
+                            }
+                            catch (AccountControlException acx)
+                            {
+                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                            }
+                        }
 
                         if (DEBUG)
                         {
@@ -634,6 +771,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         final Project project = request.getProject();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -667,12 +805,76 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         project.setProjectGuid(projectList.get(0));
                         project.setProjectCode(projectList.get(1));
                         project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                        project.setPrimaryContact(projectList.get(3));
-                        project.setSecondaryContact(projectList.get(4));
                         project.setDevEmail(projectList.get(5));
                         project.setProdEmail(projectList.get(6));
                         project.setIncidentQueue(projectList.get(7));
                         project.setChangeQueue(projectList.get(8));
+
+                        int x = 0;
+                        List<String> userList = new ArrayList<>(
+                                Arrays.asList(
+                                        projectList.get(3),
+                                        projectList.get(4)));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", userList);
+                        }
+
+                        for (String guid : userList)
+                        {
+                            UserAccount searchAccount = new UserAccount();
+                            searchAccount.setGuid(guid);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", searchAccount);
+                            }
+
+                            AccountControlRequest searchRequest = new AccountControlRequest();
+                            searchRequest.setHostInfo(request.getRequestInfo());
+                            searchRequest.setUserAccount(searchAccount);
+                            searchRequest.setApplicationName(request.getApplicationName());
+                            searchRequest.setApplicationId(request.getApplicationId());
+                            searchRequest.setSearchType(SearchRequestType.GUID);
+                            searchRequest.setRequestor(secBean.getServiceAccount());
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                            }
+
+                            try
+                            {
+                                AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                                }
+
+                                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                                {
+                                    switch (x)
+                                    {
+                                        case 0:
+                                            project.setPrimaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                        case 1:
+                                            project.setSecondaryContact(searchResponse.getUserAccount());
+
+                                            break;
+                                    }
+                                }
+
+                                x++;
+                            }
+                            catch (AccountControlException acx)
+                            {
+                                ERROR_RECORDER.error(acx.getMessage(), acx);
+                            }
+                        }
 
                         // get the list of applications associated with this project
                         List<String[]> appList = appDao.getApplicationsByAttribute(projectList.get(0), 0);

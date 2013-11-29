@@ -60,7 +60,7 @@ public class SQLKeyManagerTest
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -139,7 +139,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public static final void testCreateKeys()
+    public void testCreateKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -161,7 +161,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public static final void testReturnKeys()
+    public void testReturnKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -182,7 +182,7 @@ public class SQLKeyManagerTest
     }
 
     @Test
-    public static final void testDeleteKeys()
+    public void testDeleteKeys()
     {
         KeyManager keyManager = new SQLKeyManager();
 
@@ -202,7 +202,7 @@ public class SQLKeyManagerTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

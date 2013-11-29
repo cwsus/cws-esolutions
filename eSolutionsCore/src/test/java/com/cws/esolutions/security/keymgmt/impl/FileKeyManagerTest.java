@@ -62,7 +62,7 @@ public class FileKeyManagerTest
     private static final KeyManager keyManager = new SQLKeyManager();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -141,7 +141,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public static final void testCreateKeys()
+    public void testCreateKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setKeyAlgorithm("RSA");
@@ -161,7 +161,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public static final void testReturnKeys()
+    public void testReturnKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setKeyAlgorithm("RSA");
@@ -180,7 +180,7 @@ public class FileKeyManagerTest
     }
 
     @Test
-    public static final void testDeleteKeys()
+    public void testDeleteKeys()
     {
         KeyManagementRequest request = new KeyManagementRequest();
         request.setGuid(userAccount.getGuid());
@@ -198,7 +198,7 @@ public class FileKeyManagerTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

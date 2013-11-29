@@ -45,7 +45,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 public class NetworkUtilsTest
 {
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -60,7 +60,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public static final void testExecuteSCPTransfer()
+    public void testExecuteSCPTransfer()
     {
         try
         {
@@ -73,7 +73,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public static final void testExecuteSshConnection()
+    public void testExecuteSshConnection()
     {
         List<String> commandList = new ArrayList<>(
                 Arrays.asList(
@@ -91,7 +91,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public static final void testExecuteTelnetRequest()
+    public void testExecuteTelnetRequest()
     {
         try
         {
@@ -104,7 +104,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public static final void testExecuteHttpConnection()
+    public void testExecuteHttpConnection()
     {
         try
         {
@@ -117,7 +117,7 @@ public class NetworkUtilsTest
     }
 
     @Test
-    public static final void testIsHostValid()
+    public void testIsHostValid()
     {
         Assert.assertTrue(NetworkUtils.isHostValid("localhost"));
         Assert.assertFalse(NetworkUtils.isHostValid("notlocalhost"));

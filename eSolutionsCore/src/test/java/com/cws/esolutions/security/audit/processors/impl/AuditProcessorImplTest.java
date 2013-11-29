@@ -60,7 +60,7 @@ public class AuditProcessorImplTest
     private static final IAuditProcessor auditor = new AuditProcessorImpl();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -154,7 +154,7 @@ public class AuditProcessorImplTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

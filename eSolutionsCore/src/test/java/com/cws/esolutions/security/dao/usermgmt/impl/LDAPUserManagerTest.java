@@ -56,7 +56,7 @@ public class LDAPUserManagerTest
     private static final UserManager userManager = new LDAPUserManager();
 
     @Before
-    public static final void setUp()
+    public void setUp()
     {
         try
         {
@@ -70,7 +70,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testAddAccountNoGroup()
+    public void testAddAccountNoGroup()
     {
         List<String> list = new ArrayList<>(
             Arrays.asList(
@@ -93,7 +93,7 @@ public class LDAPUserManagerTest
         }
     }
 
-    public static final void testAddAccountWithGroup()
+    public void testAddAccountWithGroup()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -117,7 +117,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testSearchUsers()
+    public void testSearchUsers()
     {
         try
         {
@@ -132,7 +132,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testModifyUserSuspension()
+    public void testModifyUserSuspension()
     {
         try
         {
@@ -145,7 +145,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testModifyUserLockout()
+    public void testModifyUserLockout()
     {
         try
         {
@@ -165,7 +165,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testModifyUserPassword()
+    public void testModifyUserPassword()
     {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, 45);
@@ -185,7 +185,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testModifyUserAnswers()
+    public void testModifyUserAnswers()
     {
         try
         {
@@ -206,7 +206,7 @@ public class LDAPUserManagerTest
     }
 
     @Test
-    public static final void testModifyUserContact()
+    public void testModifyUserContact()
     {
         try
         {
@@ -227,7 +227,7 @@ public class LDAPUserManagerTest
     }
 
     @After
-    public static final void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }
