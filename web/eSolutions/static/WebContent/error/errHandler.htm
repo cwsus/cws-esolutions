@@ -34,24 +34,54 @@
     </head>
 
     <body onload="getStatusCode(document.referrer);">
-        <div id="Container">
-            <div id="InfoLine">Technical Error</div>
-            <div id="content">
-                <div id="content-right">
+        <div id="wrap">
+            <div id="header">
+                <form method="post" class="search" action="http://www.free-css.com/">
+                    <p>
+                        <input name="search_query" class="textbox" type="text" />
+                        <input name="search" class="button" value="Search" type="submit" />
+                    </p>
+                </form>
+                <h1 id="logo">citrus<span>island</span></h1>
+                <h2 id="slogan">put your website slogan here...</h2>
+            </div>
+
+            <div id="menu">
+                <ul>
+                    <li id="current"><a href="http://www.free-css.com/">Home</a></li>
+                    <li><a href="http://www.free-css.com/">News</a></li>
+                    <li><a href="http://www.free-css.com/">Downloads</a></li>
+                    <li><a href="http://www.free-css.com/">Services</a></li>
+                    <li><a href="http://www.free-css.com/">Support</a></li>
+                    <li><a href="http://www.free-css.com/">About</a></li>
+                </ul>
+            </div>
+
+            <div id="sidebar">&nbsp;</div>
+
+            <div id="main">
+                <h1>Technical Error</h1>
+                <p>
                     A technical error has occurred and the page you were viewing
                     cannot continue. If the issue persists, please contact your
                     support services group for further assistance.
                     <br />
                     Please provide support with the following error code: <span id="HttpStatusCode" class="error" />
-                </div>
-            </div>
-
-            <div id="Footer">
-                <p>
-				    <a href="/eSolutions/ui/common/default" title="Home">Home</a><br />
-                    &copy;2007 - 2013 <a href="http://www.caspersbox.com/cws/ui/home" title="CaspersBox Web Services">CaspersBox Web Services</a>. All rights reserved.<br />
-                    <b>More Info:</b> <a href="http://www.caspersbox.com/cws/ui/contact" title="Contact Us">Contact Us</a><br />
                 </p>
+            </div>
+        </div>
+
+        <div id="footer">
+            <div id="footer-content">
+                <div id="footer-right">
+                    <a href="http://www.free-css.com/">Home</a> | 
+                    <a href="http://www.free-css.com/">Site Map</a> | 
+                    <a href="http://www.free-css.com/">RSS Feed</a>
+                </div>
+                <div id="footer-left">
+                    &copy; Copyright 2006 <strong>Your Company</strong>&nbsp; Design by: <a href="http://www.styleshout.com/">styleshout</a> | 
+                    Valid <a href="http://validator.w3.org/check/referer">XHTML</a> | <a href="http://jigsaw.w3.org/css-validator/check/referer">CSS</a>
+                </div>
             </div>
         </div>
     </body>

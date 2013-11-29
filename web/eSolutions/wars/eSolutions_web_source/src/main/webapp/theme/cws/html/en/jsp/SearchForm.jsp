@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * theme/cws/html/en/jsp
- * UnderConstruction.jsp
+ * SearchForm.jsp
  *
  * $Id$
  * $Author$
@@ -28,12 +28,14 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="theme.service.unavailable" /></div>
-<div id="content">
-    <div id="content-right">
-        <h1></h1>
-        <img src="/html/esolutions/img/under-construction.gif" alt="Under Construction" />
-        <br />
-        <spring:message code="theme.system.service.unavailable" />
-    </div>
+<div id="header">
+    <c:if test="${not empty fn:trim(sessionScope.userAccount) and sessionScope.userAccount.status == 'SUCCESS'}">
+        <form method="post" class="search" action="http://www.free-css.com/">
+            <p>
+                <input name="search_query" class="textbox" type="text" />
+                <input name="search" class="button" value="Search" type="submit" />
+            </p>
+        </form>
+    </c:if>
+    <h1 id="logo"><img src="/html/eSolutions/img/logo.gif" alt="CaspersBox Web Services" /></h1>
 </div>

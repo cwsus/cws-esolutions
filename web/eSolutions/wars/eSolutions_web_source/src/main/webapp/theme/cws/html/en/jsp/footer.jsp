@@ -28,8 +28,9 @@
  */
 --%>
 
-<div id="Footer">
-    <p>
+<div id="footer">
+    <div id="footer-content">
+        <div id="footer-right">
         <c:choose>
             <c:when test="${not empty sessionScope.userAccount}">
                 <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
@@ -50,9 +51,12 @@
             }
         </script>
         <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-            <spring:message code='theme.navbar.help' /></a><br />
-        &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
+            <spring:message code='theme.navbar.help' /></a>
+        </div>
+        <div id="footer-left">
+        &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a> | 
         <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
-            title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a><br />
-    </p>
+            title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a>
+        </div>
+    </div>
 </div>

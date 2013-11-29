@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -70,9 +71,9 @@ public class Server implements Serializable
     private DataCenter datacenter = null;
     private String serverComments = null;
     private ServerType serverType = null;
-    private String assignedEngineer = null;
     private ServerStatus serverStatus = null;
     private ServiceRegion serverRegion = null;
+    private UserAccount assignedEngineer = null;
     private NetworkPartition networkPartition = null;
 
     private static final String CNAME = Server.class.getName();
@@ -303,9 +304,9 @@ public class Server implements Serializable
         this.serverComments = value;
     }
 
-    public final void setAssignedEngineer(final String value)
+    public final void setAssignedEngineer(final UserAccount value)
     {
-        final String methodName = Server.CNAME + "#setAssignedEngineer(final String value)";
+        final String methodName = Server.CNAME + "#setAssignedEngineer(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -693,7 +694,7 @@ public class Server implements Serializable
         return this.serverComments;
     }
 
-    public final String getAssignedEngineer()
+    public final UserAccount getAssignedEngineer()
     {
         final String methodName = Server.CNAME + "#getAssignedEngineer()";
 

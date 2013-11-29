@@ -28,7 +28,7 @@
  */
 --%>
 
-<div id="nav">
+<div id="menu">
     <ul>
         <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
             <c:if test="${sessionScope.userAccount.status == 'SUCCESS'}">

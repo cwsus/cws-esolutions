@@ -11,8 +11,8 @@
  * express written authorization of CaspersBox Web Services, N.A.
  *
  * eSolutions_web_source
- * com.cws.us.esolutions.service-management/jsp/html/en
- * ServiceMgmt_AddDatacenter.jsp
+ * com.cws.us.esolutions.application-management/jsp/html/en
+ * AppMgmt_ViewFile.jsp
  *
  * $Id$
  * $Author$
@@ -28,93 +28,72 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="svc.mgmt.add.datacenter" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="sidebar">
+    <h1><spring:message code="svc.mgmt.header" /></h1>
+    <ul>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
+                title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
+                title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
+                title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
+                title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a>
+        </li>
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
+                title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a>
+        </li>
+    </ul>
+</div>
 
-        <span id="validationError"></span>
+<div id="main">
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
 
-	    <form:form id="createNewDatacenter" name="createNewDatacenter" action="${pageContext.request.contextPath}/ui/service-management/submit-datacenter" method="post">
-	        <table id="detail">
-	            <tr>
-	                <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.service.name" /></label></td>
-	                <td><form:input path="datacenterName" /></td>
-	                <td><form:errors path="datacenterName" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
-	                <td>
-	                    <form:select path="datacenterStatus" multiple="false">
-	                        <option><spring:message code="theme.option.select" /></option>
-	                        <option><spring:message code="theme.option.spacer" /></option>
-	                        <form:options items="${statusList}" />
-	                    </form:select>
-	                </td>
-	                <td><form:errors path="datacenterStatus" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
-	                <td><form:textarea path="datacenterDesc" /></td>
-	                <td><form:errors path="datacenterDesc" cssClass="validationError" /></td>
-	            </tr>
-	        </table>
+    <span id="validationError"></span>
+    <h1><strong><spring:message code="svc.mgmt.add.datacenter" /></strong></h1>
 
-	        <table id="inputItems">
-	            <tr>
-	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-	                </td>
-	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	            </tr>
-	        </table>
-	    </form:form>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters"
-                    title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-management/list-projects"
-                    title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-management/add-project"
-                    title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms"
-                    title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-management/add-platform"
-                    title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a>
-            </li>
-        </ul>
-    </div>
+    <form:form id="submitNewArticle" name="submitNewArticle" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post">
+        <label id="txtDatacenterName"><spring:message code="svc.mgmt.service.name" /></label>
+        <form:input path="datacenterName" />
+        <form:errors path="datacenterName" cssClass="validationError" />
+        <label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label>
+        <form:select path="datacenterStatus" multiple="false">
+            <option><spring:message code="theme.option.select" /></option>
+            <option><spring:message code="theme.option.spacer" /></option>
+            <form:options items="${statusList}" />
+        </form:select>
+        <form:errors path="datacenterStatus" cssClass="validationError" />
+        <label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label>
+        <form:textarea path="datacenterDesc" />
+        <form:errors path="datacenterDesc" cssClass="validationError" />
+        <br />
+        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+    </form:form>
 </div>

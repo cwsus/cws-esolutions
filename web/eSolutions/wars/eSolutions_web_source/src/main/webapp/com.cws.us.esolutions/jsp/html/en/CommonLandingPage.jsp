@@ -11,8 +11,8 @@
  * express written authorization of CaspersBox Web Services, N.A.
  *
  * eSolutions_web_source
- * com.cws.us.esolutions/jsp/html/en
- * CommonLandingPage.jsp
+ * com.cws.us.esolutions.application-management/jsp/html/en
+ * AppMgmt_ViewFile.jsp
  *
  * $Id$
  * $Author$
@@ -28,60 +28,51 @@
  */
 --%>
 
-<div id="InfoLine"><spring:message code="theme.welcome.back" arguments="${sessionScope.userAccount.givenName}" /></div>
-<div id="content">
-    <div id="content-right">
-        <h1></h1>
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="sidebar">
+    <h1>Common</h1>
+    <ul class="sidemenu">
+        <li>
+            <a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}"
+                title="<spring:message code='app.mgmt.application.retrieve.files' />"><spring:message code="app.mgmt.application.retrieve.files" /></a>
+        </li>
+    </ul>
+</div>
 
-        <c:choose>
-            <c:when test="${not empty messageList}">
-                <spring:message code="svc.messaging.list" />
+<div id="main">
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
 
-                <c:forEach var="message" items="${messageList}">
-                    <div id="svcmessage">
-                        <h3>${message.messageTitle}</h3>
-                        <div class="feature">
-                            ${message.messageText}
-                        </div>
-    
-                        <div class="kbauth">
-                            <table id="svcMessageAuthor">
-                                <tr>
-                                    <td><spring:message code="svc.messaging.system.message.author" /></td>
-                                    <td><spring:message code="svc.messaging.system.message.submit.date" /></td>
-                                <tr>
-                                <tr>
-                                    <td>
-                                        <a href="mailto:${message.authorEmail}?subject=${message.messageId}" title="<spring:message code='svc.messaging.system.message.author' />">${message.messageAuthor}</a>
-                                    </td>
-                                    <td>${message.submitDate}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </c:forEach>
-            </c:when>
-            <c:otherwise>
-                <spring:message code="svc.messaging.no.system.messages" />
-            </c:otherwise>
-        </c:choose>
-    </div>
+    <c:choose>
+        <c:when test="${not empty messageList}">
+            <spring:message code="svc.messaging.list" />
+
+            <c:forEach var="message" items="${messageList}">
+                <h1>${message.messageTitle}</h1>
+                <div class="feature">${message.messageText}</div>
+                <p class="post-footer align-right">
+                    <a href="mailto:${message.authorEmail}?subject=${message.messageId}" title="<spring:message code='svc.messaging.system.message.author' />">${message.messageAuthor}</a>
+                    <span class="date">${message.submitDate}</span>
+                </p>
+            </c:forEach>
+        </c:when>
+        <c:otherwise>
+            <spring:message code="svc.messaging.no.system.messages" />
+        </c:otherwise>
+    </c:choose>
 </div>

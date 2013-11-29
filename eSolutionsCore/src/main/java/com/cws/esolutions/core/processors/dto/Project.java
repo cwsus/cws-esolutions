@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
  * eSolutionsCore
@@ -48,9 +49,9 @@ public class Project implements Serializable
     private String projectCode = null;
     private String changeQueue = null;
     private String incidentQueue = null;
-    private String primaryContact = null;
-    private String secondaryContact = null;
+    private UserAccount primaryContact = null;
     private ServiceStatus projectStatus = null;
+    private UserAccount secondaryContact = null;
     private List<Application> applicationList = null;
 
     private static final String CNAME = Project.class.getName();
@@ -138,9 +139,9 @@ public class Project implements Serializable
         this.incidentQueue = value;
     }
 
-    public final void setPrimaryContact(final String value)
+    public final void setPrimaryContact(final UserAccount value)
     {
-        final String methodName = Project.CNAME + "#setPrimaryContact(final String value)";
+        final String methodName = Project.CNAME + "#setPrimaryContact(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -151,9 +152,9 @@ public class Project implements Serializable
         this.primaryContact = value;
     }
 
-    public final void setSecondaryContact(final String value)
+    public final void setSecondaryContact(final UserAccount value)
     {
-        final String methodName = Project.CNAME + "#setSecondaryContact(final String value)";
+        final String methodName = Project.CNAME + "#setSecondaryContact(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -268,7 +269,7 @@ public class Project implements Serializable
         return this.incidentQueue;
     }
 
-    public final String getPrimaryContact()
+    public final UserAccount getPrimaryContact()
     {
         final String methodName = Project.CNAME + "#getPrimaryContact()";
 
@@ -281,7 +282,7 @@ public class Project implements Serializable
         return this.primaryContact;
     }
 
-    public final String getSecondaryContact()
+    public final UserAccount getSecondaryContact()
     {
         final String methodName = Project.CNAME + "#getSecondaryContact()";
 

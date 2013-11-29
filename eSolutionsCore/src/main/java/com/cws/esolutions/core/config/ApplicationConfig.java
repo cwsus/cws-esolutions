@@ -59,6 +59,7 @@ public final class ApplicationConfig implements Serializable
     private String nlsFileName = null;
     private String emailAliasId = null;
     private File fileRepositoryRoot = null;
+    private String agentBundleSource = null;
     private File serviceRootDirectory = null;
     private File archiveRootDirectory = null;
     private String virtualManagerClass = null;
@@ -213,6 +214,19 @@ public final class ApplicationConfig implements Serializable
         this.virtualManagerClass = value;
     }
 
+    public final void setAgentBundleSource(final String value)
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setAgentBundleSource(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.agentBundleSource = value;
+    }
+
     @XmlElement(name = "appName")
     public final String getAppName()
     {
@@ -365,6 +379,20 @@ public final class ApplicationConfig implements Serializable
         }
         
         return this.virtualManagerClass;
+    }
+
+    @XmlElement(name = "agentBundleSource")
+    public final String setAgentBundleSource()
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setAgentBundleSource()";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.agentBundleSource);
+        }
+        
+        return this.agentBundleSource;
     }
 
     @Override

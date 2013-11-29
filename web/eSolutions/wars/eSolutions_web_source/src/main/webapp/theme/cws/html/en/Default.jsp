@@ -28,7 +28,9 @@
     <tiles:insertAttribute name="head" />
 
     <body>
-        <div id="Container">
+        <div id="wrap">
+            <tiles:insertAttribute name="searchForm" />
+
             <tiles:insertAttribute name="navbar" />
 
             <tiles:insertAttribute name="body" />
@@ -36,5 +38,4 @@
             <tiles:insertAttribute name="footer" />
         </div>
     </body>
-
 </html>
