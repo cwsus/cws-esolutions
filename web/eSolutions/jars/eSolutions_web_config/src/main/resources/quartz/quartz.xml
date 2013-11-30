@@ -21,7 +21,7 @@
             <name>CheckEmailMessagesJob</name>
             <group>eSolutions</group>
             <description>Check email messages</description>
-            <job-class>com.cws.esolutions.core.jobs.CheckEmailMessagesJob</job-class>
+            <job-class>com.cws.esolutions.core.quartz.CheckEmailMessagesJob</job-class>
             <durability>false</durability>
             <recover>true</recover>
             <job-data-map>

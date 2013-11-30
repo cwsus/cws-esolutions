@@ -30,7 +30,7 @@
 
 <div id="footer">
     <div id="footer-content">
-        <div id="footer-right">
+        <div id="footer-left">
         <c:choose>
             <c:when test="${not empty sessionScope.userAccount}">
                 <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
@@ -53,7 +53,7 @@
         <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
             <spring:message code='theme.navbar.help' /></a>
         </div>
-        <div id="footer-left">
+        <div id="footer-right">
         &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a> | 
         <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
             title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a>
