@@ -49,6 +49,7 @@ public final class ConfigurationData implements Serializable
     private MQConfig mqConfig = null;
     private SSHConfig sshConfig = null;
     private DNSConfig dnsConfig = null;
+    private MailConfig mailConfig = null;
     private ProxyConfig proxyConfig = null;
     private ScriptConfig scriptConfig = null;
     private ApplicationConfig appConfig = null;
@@ -180,6 +181,19 @@ public final class ConfigurationData implements Serializable
         this.mqConfig = value;
     }
 
+    public final void setMailConfig(final MailConfig value)
+    {
+        final String methodName = ConfigurationData.CNAME + "#setMailConfig(final MailConfig value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.mailConfig = value;
+    }
+
     @XmlElement(name = "application-config")
     public final ApplicationConfig getAppConfig()
     {
@@ -304,6 +318,20 @@ public final class ConfigurationData implements Serializable
         }
 
         return this.mqConfig;
+    }
+
+    @XmlElement(name = "mail-config")
+    public final MailConfig getMailConfig()
+    {
+        final String methodName = ConfigurationData.CNAME + "#getMailConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.mailConfig);
+        }
+
+        return this.mailConfig;
     }
 
     @Override
