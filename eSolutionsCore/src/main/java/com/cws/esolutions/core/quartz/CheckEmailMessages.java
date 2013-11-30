@@ -51,17 +51,17 @@ import com.cws.esolutions.core.processors.dto.EmailMessage;
  * kh05451 @ Oct 29, 2012 9:44:46 AM
  *     Created.
  */
-public class CheckEmailMessagesJob implements Job
+public class CheckEmailMessages implements Job
 {
-    private static final String CNAME = CheckEmailMessagesJob.class.getName();
+    private static final String CNAME = CheckEmailMessages.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CheckEmailMessagesJob.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CheckEmailMessages.CNAME);
 
-    public CheckEmailMessagesJob()
+    public CheckEmailMessages()
     {
-        final String methodName = CheckEmailMessagesJob.CNAME + "#CheckEmailMessagesJob()#Constructor";
+        final String methodName = CheckEmailMessages.CNAME + "#CheckEmailMessagesJob()#Constructor";
 
         if (DEBUG)
         {
@@ -72,7 +72,7 @@ public class CheckEmailMessagesJob implements Job
     @Override
     public void execute(final JobExecutionContext jec) throws JobExecutionException
     {
-        final String methodName = CheckEmailMessagesJob.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
+        final String methodName = CheckEmailMessages.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
 
         if (DEBUG)
         {

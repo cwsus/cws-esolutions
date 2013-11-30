@@ -10,18 +10,16 @@
     </pre-processing-commands>
 
     <processing-directives>
-        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), overwrite them -->
-        <overwrite-existing-data>true</overwrite-existing-data>
-        <!-- if there are any jobs/trigger in scheduler of same name (as in this file), and over-write is false, ignore them rather then generating an error -->
-        <ignore-duplicates>false</ignore-duplicates>
+        <overwrite-existing-data>true</overwrite-existing-data> <!-- if there are any jobs/trigger in scheduler of same name (as in this file), overwrite them -->
+        <ignore-duplicates>false</ignore-duplicates> <!-- if there are any jobs/trigger in scheduler of same name (as in this file), and over-write is false, ignore them rather then generating an error -->
     </processing-directives>
 
     <schedule>
         <job>
-            <name>CheckEmailMessagesJob</name>
+            <name>CheckEmailMessages</name>
             <group>eSolutions</group>
             <description>Check email messages</description>
-            <job-class>com.cws.esolutions.core.quartz.CheckEmailMessagesJob</job-class>
+            <job-class>com.cws.esolutions.core.quartz.CheckEmailMessages</job-class>
             <durability>false</durability>
             <recover>true</recover>
             <job-data-map>
@@ -60,7 +58,7 @@
             <cron>
                 <name>CheckEmailMessagesTrigger</name>
                 <group>eSolutions</group>
-                <job-name>CheckEmailMessagesJob</job-name>
+                <job-name>CheckEmailMessages</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>
@@ -70,19 +68,19 @@
 
     <schedule>
         <job>
-            <name>DeployerJob</name>
+            <name>Deployer</name>
             <group>eSolutions</group>
             <description>Deploy application files</description>
-            <job-class>com.cws.esolutions.core.quartz.DeployerJob</job-class>
+            <job-class>com.cws.esolutions.core.quartz.Deployer</job-class>
             <durability>false</durability>
             <recover>true</recover>
         </job>
 
         <trigger>
             <cron>
-                <name>DeployerJobTrigger</name>
+                <name>DeployerTrigger</name>
                 <group>eSolutions</group>
-                <job-name>DeployerJob</job-name>
+                <job-name>Deployer</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>
@@ -92,10 +90,10 @@
 
     <schedule>
         <job>
-            <name>ResetReaperJob</name>
+            <name>ResetRequestReaper</name>
             <group>SecurityService</group>
             <description>Remove expired reset request identifiers</description>
-            <job-class>com.cws.esolutions.security.quartz.ResetRequestReaperJob</job-class>
+            <job-class>com.cws.esolutions.security.quartz.ResetRequestReaper</job-class>
             <durability>false</durability>
             <recover>true</recover>
         </job>
@@ -104,7 +102,7 @@
             <cron>
                 <name>ResetRequestReaperTrigger</name>
                 <group>SecurityService</group>
-                <job-name>ResetReaperJob</job-name>
+                <job-name>ResetRequestReaper</job-name>
                 <job-group>SecurityService</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>

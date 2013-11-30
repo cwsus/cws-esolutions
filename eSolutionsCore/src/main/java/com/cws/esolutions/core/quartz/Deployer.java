@@ -39,16 +39,16 @@ import com.cws.esolutions.core.Constants;
  * kh05451 @ Oct 29, 2012 9:44:46 AM
  *     Created.
  */
-public class DeployerJob implements Job
+public class Deployer implements Job
 {
-    private static final String CNAME = DeployerJob.class.getName();
+    private static final String CNAME = Deployer.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public DeployerJob()
+    public Deployer()
     {
-        final String methodName = DeployerJob.CNAME + "#DeployerJob()#Constructor()";
+        final String methodName = Deployer.CNAME + "#DeployerJob()#Constructor()";
 
         if (DEBUG)
         {
@@ -59,7 +59,7 @@ public class DeployerJob implements Job
     @Override
     public void execute(final JobExecutionContext jec) throws JobExecutionException
     {
-        final String methodName = DeployerJob.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
+        final String methodName = Deployer.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
 
         if (DEBUG)
         {
