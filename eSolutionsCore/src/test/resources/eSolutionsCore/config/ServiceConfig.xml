@@ -11,6 +11,7 @@
         <messageIdLength>16</messageIdLength>
         <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource />
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
     </application-config>
 
     <mq-config>
@@ -54,12 +55,6 @@
         <sshKeyFile>C:/home/35033355/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
         <sshKeyPassword /> <!-- password for key, if required -->
     </ssh-config>
-
-    <mail-config>
-        <dataSourceName>jndi/mail</dataSourceName>
-        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        <mailFrom>eSolutions@caspersbox.com</mailFrom>
-    </mail-config>
 
     <exception-config>
         <sendExceptionNotifications>true</sendExceptionNotifications>
