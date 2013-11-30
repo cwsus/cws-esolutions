@@ -74,6 +74,7 @@
             <job-class>com.cws.esolutions.core.quartz.Deployer</job-class>
             <durability>false</durability>
             <recover>true</recover>
+            <job-data-map />
         </job>
 
         <trigger>
@@ -96,6 +97,7 @@
             <job-class>com.cws.esolutions.security.quartz.ResetRequestReaper</job-class>
             <durability>false</durability>
             <recover>true</recover>
+            <job-data-map />
         </job>
 
         <trigger>
