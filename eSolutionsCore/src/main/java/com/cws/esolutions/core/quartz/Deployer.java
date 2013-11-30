@@ -19,7 +19,6 @@ import org.quartz.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.core.Constants;
 /**
@@ -57,7 +56,7 @@ public class Deployer implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext jec) throws JobExecutionException
+    public void execute(final JobExecutionContext jec)
     {
         final String methodName = Deployer.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
 

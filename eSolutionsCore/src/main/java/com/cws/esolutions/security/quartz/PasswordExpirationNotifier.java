@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.SecurityConstants;
@@ -71,7 +70,7 @@ public class PasswordExpirationNotifier implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException
+    public void execute(final JobExecutionContext context)
     {
         final String methodName = PasswordExpirationNotifier.CNAME + "#execute(final JobExecutionContext jobContext)";
 

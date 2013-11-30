@@ -147,11 +147,6 @@ public class ProjectManagementProcessorImplTest
     }
 
     @Test
-    public void testUpdateProjectData()
-    {
-    }
-
-    @Test
     public void testListProjects()
     {
         ProjectManagementRequest request = new ProjectManagementRequest();

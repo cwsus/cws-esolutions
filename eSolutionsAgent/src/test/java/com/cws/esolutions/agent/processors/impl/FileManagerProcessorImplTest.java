@@ -52,7 +52,7 @@ public class FileManagerProcessorImplTest
     private static final IFileManagerProcessor processor = new FileManagerProcessorImpl();
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         System.setProperty("LOG_ROOT", "C:/temp");
         System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");
@@ -125,13 +125,13 @@ public class FileManagerProcessorImplTest
     {
         try
         {
-            List<String> fileSet = new ArrayList<String>(
+            List<String> fileSet = new ArrayList<>(
                     Arrays.asList(
                             "C:\\var\\temp\\acct.sql",
                             "C:\\var\\temp\\cust.sql",
                             "C:\\var\\temp\\dns.sql"));
 
-            List<byte[]> dataSet = new ArrayList<byte[]>(
+            List<byte[]> dataSet = new ArrayList<>(
                     Arrays.asList(
                             FileUtils.readFileToByteArray(FileUtils.getFile("C:\\temp\\acct.sql")),
                             FileUtils.readFileToByteArray(FileUtils.getFile("C:\\temp\\cust.sql")),
@@ -159,7 +159,7 @@ public class FileManagerProcessorImplTest
     @Test
     public final void testDeleteFiles()
     {
-        List<String> fileSet = new ArrayList<String>(
+        List<String> fileSet = new ArrayList<>(
                 Arrays.asList(
                         "C:\\var\\temp\\acct.sql",
                         "C:\\var\\temp\\cust.sql",

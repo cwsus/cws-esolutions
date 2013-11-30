@@ -167,12 +167,6 @@ public class ApplicationManagementProcessorImplTest
     }
 
     @Test
-    public void testUpdateApplicationData()
-    {
-
-    }
-
-    @Test
     public void testDeleteApplicationData()
     {
         Application app = new Application();

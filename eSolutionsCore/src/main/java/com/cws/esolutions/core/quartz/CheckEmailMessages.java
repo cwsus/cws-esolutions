@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import java.io.LineNumberReader;
 import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
@@ -70,7 +69,7 @@ public class CheckEmailMessages implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext jec) throws JobExecutionException
+    public void execute(final JobExecutionContext jec)
     {
         final String methodName = CheckEmailMessages.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
 

@@ -260,7 +260,7 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
     }
 
     @Override
-    public synchronized boolean removeService(final String serviceName) throws SQLException
+    public synchronized boolean removeService(final String serviceName)
     {
         final String methodName = IDNSServiceDAO.CNAME + "#removeService(final String serviceName) throws SQLException";
 

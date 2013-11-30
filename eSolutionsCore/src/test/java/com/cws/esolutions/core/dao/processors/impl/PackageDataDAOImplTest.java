@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.core.dao.processors.impl;
 
-import org.junit.Test;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -54,35 +53,5 @@ public class PackageDataDAOImplTest
 
             System.exit(-1);
         }
-    }
-
-    @Test
-    public void testRetrievePackageData()
-    {
-
-    }
-
-    @Test
-    public void testAddNewPackage()
-    {
-
-    }
-
-    @Test
-    public void testDeletePackageData()
-    {
-
-    }
-
-    @Test
-    public void testGetPackageData()
-    {
-
-    }
-
-    @Test
-    public void testGetPackagesByAttribute()
-    {
-
     }
 }

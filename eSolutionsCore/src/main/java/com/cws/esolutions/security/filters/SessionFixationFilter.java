@@ -51,7 +51,7 @@ public class SessionFixationFilter implements Filter
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     @Override
-    public void init(final FilterConfig filterConfig) throws ServletException
+    public void init(final FilterConfig filterConfig)
     {
         final String methodName = SessionFixationFilter.CNAME + "#init(final FilterConfig filterConfig) throws ServletException";
 

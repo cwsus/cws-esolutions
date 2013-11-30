@@ -104,6 +104,7 @@ public class PasswordUtilsTest
         }
         catch (CoreServiceException csx)
         {
+            csx.printStackTrace();
         }
     }
 }

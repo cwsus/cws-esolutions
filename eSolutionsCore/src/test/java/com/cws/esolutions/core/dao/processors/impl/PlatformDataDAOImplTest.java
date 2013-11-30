@@ -99,12 +99,6 @@ public class PlatformDataDAOImplTest
     }
 
     @Test
-    public void testDeletePlatform()
-    {
-
-    }
-
-    @Test
     public void testGetPlatformData()
     {
         try
@@ -117,11 +111,5 @@ public class PlatformDataDAOImplTest
         {
             Assert.fail(sqx.getMessage());
         }
-    }
-
-    @Test
-    public void testListAvailablePlatforms()
-    {
-
     }
 }

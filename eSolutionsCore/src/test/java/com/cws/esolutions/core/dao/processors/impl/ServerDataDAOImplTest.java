@@ -119,34 +119,4 @@ public class ServerDataDAOImplTest
             Assert.fail(sqx.getMessage());
         }
     }
-
-    @Test
-    public void testRemoveExistingServer()
-    {
-
-    }
-
-    @Test
-    public void testGetInstalledServers()
-    {
-
-    }
-
-    @Test
-    public void testGetInstalledServer()
-    {
-
-    }
-
-    @Test
-    public void testGetServersByAttribute()
-    {
-
-    }
-
-    @Test
-    public void testModifyServerData()
-    {
-
-    }
 }

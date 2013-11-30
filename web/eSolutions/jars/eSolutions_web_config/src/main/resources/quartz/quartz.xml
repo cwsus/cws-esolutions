@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<job-scheduling-data xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
-    version="2.0">
+<job-scheduling-data xmlns="http://quartznet.sourceforge.net/JobSchedulingData"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
 
     <pre-processing-commands>
         <delete-jobs-in-group>*</delete-jobs-in-group>
@@ -59,10 +57,8 @@
                 <description>CheckEmailMessagesTrigger</description>
                 <job-name>CheckEmailMessages</job-name>
                 <job-group>eSolutions</job-group>
-                <priority>1</priority>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>
-                <time-zone>UTC</time-zone>
             </cron>
         </trigger>
     </schedule>
@@ -82,10 +78,8 @@
                 <description>DeployerTrigger</description>
                 <job-name>Deployer</job-name>
                 <job-group>eSolutions</job-group>
-                <priority>1</priority>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>
-                <time-zone>UTC</time-zone>
             </cron>
         </trigger>
     </schedule>
@@ -105,10 +99,8 @@
                 <description>ResetRequestReaperTrigger</description>
                 <job-name>ResetRequestReaper</job-name>
                 <job-group>eSolutions</job-group>
-                <priority>1</priority>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>0 0/15 * * * ?</cron-expression>
-                <time-zone>UTC</time-zone>
             </cron>
         </trigger>
     </schedule>

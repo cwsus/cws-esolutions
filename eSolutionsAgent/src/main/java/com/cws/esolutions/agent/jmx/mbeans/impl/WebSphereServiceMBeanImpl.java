@@ -106,7 +106,6 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                     DEBUGGER.debug("ObjectName: {}", nodeAgent);
                 }
 
-                @SuppressWarnings("unchecked")
                 Set<Object> objectSet = adminClient.queryNames(nodeAgent, null);
 
                 if (DEBUG)
@@ -133,7 +132,6 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                             DEBUGGER.debug("serverObject: {}", serverName);
                         }
 
-                        @SuppressWarnings("unchecked")
                         Set<Object> serverSet = adminClient.queryNames(serverName, null);
 
                         if (DEBUG)
@@ -582,7 +580,6 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                     DEBUGGER.debug("ObjectName: {}", appObject);
                 }
 
-                @SuppressWarnings("unchecked")
                 Set<Object> objectSet = adminClient.queryNames(appObject, null);
 
                 if (DEBUG)

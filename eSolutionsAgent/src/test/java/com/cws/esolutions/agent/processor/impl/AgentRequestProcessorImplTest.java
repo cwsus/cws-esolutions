@@ -55,7 +55,7 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 public class AgentRequestProcessorImplTest
 {
     @Test
-    public void setUp() throws Exception
+    public void setUp()
     {
         System.setProperty("LOG_ROOT", "C:/temp");
         System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");
@@ -110,7 +110,7 @@ public class AgentRequestProcessorImplTest
         }
     }
 
-    public static Object executeTcpRequest(final String hostName, final int portNumber, final int timeout, final Object object) throws Exception
+    public static Object executeTcpRequest(final String hostName, final int portNumber, final int timeout, final Object object)
     {
         Socket socket = null;
         Object resObject = null;
@@ -159,6 +159,7 @@ public class AgentRequestProcessorImplTest
         }
         catch (Exception ex)
         {
+            Assert.fail(ex.getMessage());
         }
         finally
         {
@@ -171,6 +172,7 @@ public class AgentRequestProcessorImplTest
             }
             catch (IOException iox)
             {
+                Assert.fail(iox.getMessage());
             }
         }
 

@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
@@ -64,7 +63,7 @@ public class ResetRequestReaper implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException
+    public void execute(final JobExecutionContext context)
     {
         final String methodName = ResetRequestReaper.CNAME + "#execute(final JobExecutionContext context)";
 

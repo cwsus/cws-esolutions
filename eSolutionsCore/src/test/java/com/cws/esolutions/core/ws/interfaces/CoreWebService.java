@@ -59,11 +59,11 @@ public class CoreWebService
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
 
-            serviceURL = "http://127.0.0.1:8080/eSolutions/eSolutionsService";
+            this.serviceURL = "http://127.0.0.1:8080/eSolutions/eSolutionsService";
 
             if (DEBUG)
             {
-                DEBUGGER.debug(serviceURL);
+                DEBUGGER.debug(this.serviceURL);
             }
         }
         catch (SecurityServiceException ssx)
@@ -89,7 +89,7 @@ public class CoreWebService
 
         try
         {
-            Endpoint endPoint = Endpoint.publish(serviceURL, new CoreRequestProcessorService());
+            Endpoint endPoint = Endpoint.publish(this.serviceURL, new CoreRequestProcessorService());
 
             if (DEBUG)
             {
@@ -97,7 +97,7 @@ public class CoreWebService
             }
 
             System.out.println("Web Service Published using JAX-WS EndPoint Server...");
-            System.out.println("WS-URL: " + serviceURL);
+            System.out.println("WS-URL: " + this.serviceURL);
 
             while (endPoint.isPublished())
             {

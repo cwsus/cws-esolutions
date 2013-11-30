@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import java.util.Calendar;
 import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -65,7 +64,7 @@ public class IdleAccountLocker implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext context) throws JobExecutionException
+    public void execute(final JobExecutionContext context)
     {
         final String methodName = IdleAccountLocker.CNAME + "#execute(final JobExecutionContext context)";
 

@@ -17,7 +17,6 @@ package com.cws.esolutions.core.ws.impl;
 
 import java.net.URL;
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import javax.xml.ws.Service;
@@ -60,14 +59,14 @@ public class CoreRequestProcessorServiceTest
     @Before
     public void setUp() throws Exception
     {
-        reqInfo.setHostAddress("junit.caspersbox.com");
-        reqInfo.setHostName("junit.caspersbox.com");
-        reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
+        this.reqInfo.setHostAddress("junit.caspersbox.com");
+        this.reqInfo.setHostName("junit.caspersbox.com");
+        this.reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         URL url = new URL("http://localhost:8181/eSolutions/eSolutionsService?wsdl");
         QName qName = new QName("http://agent.caspersbox.corp/s?q=esolutions", "AgentRequestProcessor");
         Service service = Service.create(url, qName);
-        webService = service.getPort(ICoreRequestProcessorService.class);
+        this.webService = service.getPort(ICoreRequestProcessorService.class);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class CoreRequestProcessorServiceTest
 
         try
         {
-            AuthenticationResponse response = webService.processAgentLogon(request);
+            AuthenticationResponse response = this.webService.processAgentLogon(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -117,12 +116,12 @@ public class CoreRequestProcessorServiceTest
         request.setLoginType(LoginType.PASSWORD);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
-        request.setHostInfo(reqInfo);
+        request.setHostInfo(this.reqInfo);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
 
         try
         {
-            AuthenticationResponse response = webService.processAgentLogon(request);
+            AuthenticationResponse response = this.webService.processAgentLogon(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -147,12 +146,12 @@ public class CoreRequestProcessorServiceTest
         request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
-        request.setHostInfo(reqInfo);
+        request.setHostInfo(this.reqInfo);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
 
         try
         {
-            AuthenticationResponse response = webService.processAgentLogon(request);
+            AuthenticationResponse response = this.webService.processAgentLogon(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -177,12 +176,12 @@ public class CoreRequestProcessorServiceTest
         request.setLoginType(LoginType.COMBINED);
         request.setUserAccount(account);
         request.setUserSecurity(userSecurity);
-        request.setHostInfo(reqInfo);
+        request.setHostInfo(this.reqInfo);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
 
         try
         {
-            AuthenticationResponse response = webService.processAgentLogon(request);
+            AuthenticationResponse response = this.webService.processAgentLogon(request);
 
             Assert.assertEquals(SecurityRequestStatus.FAILURE, response.getRequestStatus());
         }
@@ -206,11 +205,11 @@ public class CoreRequestProcessorServiceTest
         request.setUserAccount(account);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("esolutions");
-        request.setHostInfo(reqInfo);
+        request.setHostInfo(this.reqInfo);
 
         try
         {
-            AuthenticationResponse response = webService.obtainUserSecurityConfig(request);
+            AuthenticationResponse response = this.webService.obtainUserSecurityConfig(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -239,11 +238,11 @@ public class CoreRequestProcessorServiceTest
         request.setUserSecurity(userSecurity);
         request.setApplicationId("6236B840-88B0-4230-BCBC-8EC33EE837D9");
         request.setApplicationName("esolutions");
-        request.setHostInfo(reqInfo);
+        request.setHostInfo(this.reqInfo);
 
         try
         {
-            AuthenticationResponse response = webService.verifyUserSecurityConfig(request);
+            AuthenticationResponse response = this.webService.verifyUserSecurityConfig(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
@@ -353,10 +352,5 @@ public class CoreRequestProcessorServiceTest
     public final void testDoFileSearch()
     {
         Assert.fail("Not yet implemented");
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
     }
 }

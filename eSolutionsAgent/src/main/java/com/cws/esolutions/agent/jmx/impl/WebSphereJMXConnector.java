@@ -121,7 +121,7 @@ public class WebSphereJMXConnector implements JMXConnection
     }
 
     @Override
-    public JMXConnectorObject getDeploymentConnector() throws JMXConnectorException
+    public JMXConnectorObject getDeploymentConnector()
     {
         final String methodName = WebSphereJMXConnector.CNAME + "#getDeploymentConnector() throws JMXConnectorException";
 

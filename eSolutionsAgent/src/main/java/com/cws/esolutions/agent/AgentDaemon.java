@@ -149,7 +149,7 @@ public class AgentDaemon implements Daemon
     }
 
     @Override
-    public void start() throws Exception
+    public void start()
     {
         final String methodName = AgentDaemon.CNAME + "#start() throws Exception";
 

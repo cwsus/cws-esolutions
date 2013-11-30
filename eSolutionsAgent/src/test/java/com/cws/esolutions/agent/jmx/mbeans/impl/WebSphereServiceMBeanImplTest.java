@@ -17,7 +17,6 @@ package com.cws.esolutions.agent.jmx.mbeans.impl;
 
 import java.io.File;
 import org.junit.Test;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -52,7 +51,7 @@ public class WebSphereServiceMBeanImplTest
     private static final AgentBean agentBean = AgentBean.getInstance();
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         System.setProperty("LOG_ROOT", "C:/temp");
         System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");
@@ -168,10 +167,5 @@ public class WebSphereServiceMBeanImplTest
         {
             Assert.fail(smbx.getMessage());
         }
-    }
-
-    @After
-    public void tearDown() throws Exception
-    {
     }
 }

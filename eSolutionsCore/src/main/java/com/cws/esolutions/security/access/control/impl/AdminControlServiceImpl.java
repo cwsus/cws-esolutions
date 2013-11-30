@@ -21,7 +21,6 @@ import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
 /*
  * AdminControlServiceImpl
  * Determines if the provided user has the proper level of authority
@@ -39,7 +38,7 @@ import com.cws.esolutions.security.access.control.exception.AdminControlServiceE
 public class AdminControlServiceImpl implements IAdminControlService
 {
     @Override
-    public boolean adminControlService(final UserAccount userAccount) throws AdminControlServiceException
+    public boolean adminControlService(final UserAccount userAccount)
     {
         final String methodName = IAdminControlService.CNAME + "#adminControlService(final UserAccount userAccount) throws AdminControlServiceException";
 
@@ -63,7 +62,7 @@ public class AdminControlServiceImpl implements IAdminControlService
     }
 
     @Override
-    public boolean adminControlService(final UserAccount userAccount, final AdminControlType controlType) throws AdminControlServiceException
+    public boolean adminControlService(final UserAccount userAccount, final AdminControlType controlType)
     {
         final String methodName = IAdminControlService.CNAME + "#adminControlService(final UserAccount userAccount, final AdminControlType controlType) throws AdminControlServiceException";
 

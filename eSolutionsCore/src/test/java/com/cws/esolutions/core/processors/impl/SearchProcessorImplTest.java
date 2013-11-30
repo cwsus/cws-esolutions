@@ -163,12 +163,6 @@ public class SearchProcessorImplTest
         }
     }
 
-    @Test
-    public void doFileSearch()
-    {
-        
-    }
-
     @After
     public void tearDown()
     {

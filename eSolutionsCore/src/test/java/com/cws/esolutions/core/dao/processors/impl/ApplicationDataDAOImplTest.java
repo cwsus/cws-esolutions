@@ -90,18 +90,6 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public final void testUpdateApplication()
-    {
-
-    }
-
-    @Test
-    public final void testDeleteApplication()
-    {
-
-    }
-
-    @Test
     public void testListInstalledApplications()
     {
         try

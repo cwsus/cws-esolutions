@@ -48,7 +48,7 @@ public class WebSphereJMXConnectorTest
     private static final AgentBean agentBean = AgentBean.getInstance();
 
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         System.setProperty("LOG_ROOT", "C:/temp");
         System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");
@@ -67,7 +67,7 @@ public class WebSphereJMXConnectorTest
 
             AdminClient adminClient = (AdminClient) jmxObject.getConnector();
 
-            Assert.assertTrue(adminClient instanceof AdminClient);
+            Assert.assertTrue(adminClient != null);
         }
         catch (JMXConnectorException jcx)
         {

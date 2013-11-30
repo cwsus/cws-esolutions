@@ -585,7 +585,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                                     break;
                                 default:
                                     break;
-                            };
+                            }
                             
                         }
                     }
@@ -748,7 +748,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                                             break;
                                         default:
                                             break;
-                                    };
+                                    }
                                     
                                 }
                             }

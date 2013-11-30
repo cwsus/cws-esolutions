@@ -40,7 +40,7 @@ import com.cws.esolutions.agent.AgentDaemon;
 public class ApplicationManagerProcessorImplTest
 {
     @Before
-    public void setUp() throws Exception
+    public void setUp()
     {
         System.setProperty("LOG_ROOT", "C:/temp");
         System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");

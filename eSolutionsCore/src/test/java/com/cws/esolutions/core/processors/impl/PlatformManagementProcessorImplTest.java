@@ -240,12 +240,6 @@ public class PlatformManagementProcessorImplTest
     }
 
     @Test
-    public void testUpdatePlatformData()
-    {
-
-    }
-
-    @Test
     public void testListPlatforms()
     {
         PlatformManagementRequest request = new PlatformManagementRequest();
