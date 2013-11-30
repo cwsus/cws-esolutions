@@ -16,14 +16,10 @@
 package com.cws.esolutions.core.config;
 
 import java.io.File;
-
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -382,9 +378,9 @@ public final class ApplicationConfig implements Serializable
     }
 
     @XmlElement(name = "agentBundleSource")
-    public final String setAgentBundleSource()
+    public final String getAgentBundleSource()
     {
-        final String methodName = ApplicationConfig.CNAME + "#setAgentBundleSource()";
+        final String methodName = ApplicationConfig.CNAME + "#getAgentBundleSource()";
         
         if (DEBUG)
         {
