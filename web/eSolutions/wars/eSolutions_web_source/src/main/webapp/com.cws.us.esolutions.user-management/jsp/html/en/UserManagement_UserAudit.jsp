@@ -99,9 +99,6 @@
     </table>
 
     <c:if test="${pages gt 1}">
-        <br />
-        <hr />
-        <br />
         <table>
             <tr>
                 <c:forEach begin="1" end="${pages}" var="i">
@@ -120,4 +117,5 @@
                 </c:forEach>
             </tr>
         </table>
+    </c:if>
 </div>

@@ -17,6 +17,7 @@ package com.cws.esolutions.core.exception;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import javax.mail.MessagingException;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
@@ -91,7 +92,14 @@ public class CoreServiceException extends Exception
             email.setMessageBody(builder.toString());
 
             // modified "sendEmailMessage(), removing thrown exceptions
-            EmailUtils.sendExceptionLetter(email);
+            try
+            {
+                EmailUtils.sendEmailMessage(email);
+            }
+            catch (MessagingException mx)
+            {
+                // empty catch
+            }
         }
     }
 }

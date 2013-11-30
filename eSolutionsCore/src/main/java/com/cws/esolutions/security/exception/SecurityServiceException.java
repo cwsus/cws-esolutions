@@ -17,6 +17,7 @@ package com.cws.esolutions.security.exception;
 
 import java.util.Arrays;
 import java.util.ArrayList;
+import javax.mail.MessagingException;
 
 import com.unboundid.ldap.sdk.ResultCode;
 import com.cws.esolutions.core.utils.EmailUtils;
@@ -98,8 +99,14 @@ public class SecurityServiceException extends Exception
             email.setMessageTo(config.getNotificationAddress());
             email.setMessageBody(builder.toString());
 
-            // modified "sendEmailMessage(), removing thrown exceptions
-            EmailUtils.sendExceptionLetter(email);
+            try
+            {
+                EmailUtils.sendEmailMessage(email);
+            }
+            catch (MessagingException mx)
+            {
+                // empty catch
+            }
         }
     }
 }

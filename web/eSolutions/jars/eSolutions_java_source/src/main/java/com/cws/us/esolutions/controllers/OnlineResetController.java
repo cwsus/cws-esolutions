@@ -1180,7 +1180,7 @@ public class OnlineResetController
 
                     try
                     {
-                        EmailUtils.sendSmsMessage(emailMessage);
+                        EmailUtils.sendEmailMessage(emailMessage);
                     }
                     catch (MessagingException mx)
                     {
@@ -1205,7 +1205,7 @@ public class OnlineResetController
 
                         try
                         {
-                            EmailUtils.sendSmsMessage(smsMessage);
+                            EmailUtils.sendEmailMessage(smsMessage);
                         }
                         catch (MessagingException mx)
                         {

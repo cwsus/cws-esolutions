@@ -1800,7 +1800,7 @@ public class UserManagementController
 
                         try
                         {
-                            EmailUtils.sendSmsMessage(emailMessage);
+                            EmailUtils.sendEmailMessage(emailMessage);
                         }
                         catch (MessagingException mx)
                         {
@@ -1825,7 +1825,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendSmsMessage(smsMessage);
+                                EmailUtils.sendEmailMessage(smsMessage);
                             }
                             catch (MessagingException mx)
                             {

@@ -33,23 +33,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import javax.mail.BodyPart;
 import java.util.Properties;
-import javax.naming.Context;
-import javax.mail.Transport;
 import javax.mail.Multipart;
 import org.slf4j.LoggerFactory;
 import javax.mail.Authenticator;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
 import javax.mail.internet.InternetAddress;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.config.MailConfig;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.access.control.impl.EmailControlServiceImpl;
@@ -76,14 +71,27 @@ import com.cws.esolutions.security.access.control.exception.EmailControlServiceE
  */
 public final class EmailUtils
 {
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static JavaMailSender mailSender = null;
 
-    private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
+    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
+    public final void setMailSender(final JavaMailSender value)
+    {
+        final String methodName = EmailUtils.CNAME + "#setValidator(final JavaMailSender value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        EmailUtils.mailSender = value;
+    }
 
     /**
      * eSolutionsCore
@@ -152,57 +160,8 @@ public final class EmailUtils
             DEBUGGER.debug("emailMessage: {}", emailMessage);
         }
 
-        SMTPAuthenticator smtpAuth = null;
-
-        final MailConfig mailConfig = appBean.getConfigData().getMailConfig();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("MailConfig: {}", mailConfig);
-        }
-
         try
         {
-            if (StringUtils.isEmpty(mailConfig.getDataSourceName()))
-            {
-                if (StringUtils.equals((String) mailConfig.getMailProps().get("mail.smtp.auth"), "true"))
-                {
-                    smtpAuth = new SMTPAuthenticator();
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps(), smtpAuth);
-                }
-                else
-                {
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps());
-                }
-            }
-            else
-            {
-                Context initContext = new InitialContext();
-                Context envContext = (Context) initContext.lookup(EmailUtils.INIT_DS_CONTEXT);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("InitialContext: {}", initContext);
-                    DEBUGGER.debug("Context: {}", envContext);
-                }
-
-                if (envContext != null)
-                {
-                    mailSession = (Session) envContext.lookup(mailConfig.getDataSourceName());
-                }
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Session: {}", mailSession);
-            }
-
-            if (mailSession == null)
-            {
-                throw new MessagingException("Unable to configure email services");
-            }
-
-            mailSession.setDebug(DEBUG);
             MimeMessage mailMessage = new MimeMessage(mailSession);
 
             // Our emailList parameter should contain the following
@@ -219,8 +178,6 @@ public final class EmailUtils
             // handing it here.
             if (emailMessage.getMessageTo().size() != 0)
             {
-                String messageID = (StringUtils.isBlank(emailMessage.getMessageId())) ? emailMessage.getMessageId() : RandomStringUtils.randomAlphanumeric(16);
-
                 for (String to : emailMessage.getMessageTo())
                 {
                     if (DEBUG)
@@ -232,8 +189,8 @@ public final class EmailUtils
                 }
 
                 mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
-                mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
-                mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
+                mailMessage.setHeader("Generated-From", appBean.getConfigData().getAppConfig().getAppName()); // TODO!!
+                mailMessage.setSubject("[" + RandomStringUtils.randomAlphanumeric(16) + "] " + emailMessage.getMessageSubject());
                 mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
 
                 if (emailMessage.isAlert())
@@ -242,19 +199,7 @@ public final class EmailUtils
                     mailMessage.setHeader("Importance", "High");
                 }
 
-                Transport mailTransport = mailSession.getTransport("smtp");
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Transport: {}", mailTransport);
-                }
-
-                mailTransport.connect();
-
-                if (mailTransport.isConnected())
-                {
-                    Transport.send(mailMessage);
-                }
+                EmailUtils.mailSender.send(mailMessage);
             }
         }
         catch (MessagingException mex)
@@ -262,286 +207,6 @@ public final class EmailUtils
             ERROR_RECORDER.error(mex.getMessage(), mex);
 
             throw new MessagingException(mex.getMessage(), mex);
-        }
-        catch (NamingException nx)
-        {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
-            throw new MessagingException(nx.getMessage(), nx);
-        }
-    }
-
-    /**
-     * Processes and sends an email message as generated by the requesting
-     * application. This method is utilized with a JNDI datasource. This
-     * method does not throw any kind of exceptions and is used solely for
-     * exception email messages
-     *
-     * @param emailMessage - The email message
-     * @throws MessagingException
-     */
-    public static final synchronized void sendExceptionLetter(final EmailMessage emailMessage)
-    {
-        final String methodName = EmailUtils.CNAME + "#sendExceptionLetter(final EmailMessage emailMessage)";
-
-        Session mailSession = null;
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-        }
-
-        SMTPAuthenticator smtpAuth = null;
-
-        final MailConfig mailConfig = appBean.getConfigData().getMailConfig();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("MailConfig: {}", mailConfig);
-        }
-
-        try
-        {
-            if (StringUtils.isEmpty(mailConfig.getDataSourceName()))
-            {
-                if (StringUtils.equals((String) mailConfig.getMailProps().get("mail.smtp.auth"), "true"))
-                {
-                    smtpAuth = new SMTPAuthenticator();
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps(), smtpAuth);
-                }
-                else
-                {
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps());
-                }
-            }
-            else
-            {
-                Context initContext = new InitialContext();
-                Context envContext = (Context) initContext.lookup(EmailUtils.INIT_DS_CONTEXT);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("InitialContext: {}", initContext);
-                    DEBUGGER.debug("Context: {}", envContext);
-                }
-
-                if (envContext != null)
-                {
-                    mailSession = (Session) envContext.lookup(mailConfig.getDataSourceName());
-                }
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Session: {}", mailSession);
-            }
-
-            if (mailSession == null)
-            {
-                throw new MessagingException("Unable to configure email services");
-            }
-
-            mailSession.setDebug(DEBUG);
-            MimeMessage mailMessage = new MimeMessage(mailSession);
-
-            // Our emailList parameter should contain the following
-            // items (in this order):
-            // 0. Recipients
-            // 1. From Address
-            // 2. Generated-From (if blank, a default value is used)
-            // 3. The message subject
-            // 4. The message content
-            // 5. The message id (optional)
-            // We're only checking to ensure that the 'from' and 'to'
-            // values aren't null - the rest is really optional.. if
-            // the calling application sends a blank email, we aren't
-            // handing it here.
-            if (emailMessage.getMessageTo().size() != 0)
-            {
-                String messageID = (StringUtils.isBlank(emailMessage.getMessageId())) ? emailMessage.getMessageId() : RandomStringUtils.randomAlphanumeric(16);
-
-                for (String to : emailMessage.getMessageTo())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug(to);
-                    }
-
-                    mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-                }
-
-                mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
-                mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
-                mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
-                mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
-
-                if (emailMessage.isAlert())
-                {
-                    mailMessage.setHeader("X-Priority", "1");
-                    mailMessage.setHeader("Importance", "High");
-                }
-
-                Transport mailTransport = mailSession.getTransport("smtp");
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Transport: {}", mailTransport);
-                }
-
-                mailTransport.connect();
-
-                if (mailTransport.isConnected())
-                {
-                    Transport.send(mailMessage);
-                }
-            }
-        }
-        catch (MessagingException mex)
-        {
-            ERROR_RECORDER.error(mex.getMessage(), mex);
-        }
-        catch (NamingException nx)
-        {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-        }
-    }
-
-    /**
-     * Processes and sends an email message as generated by the requesting
-     * application. This method is utilized with a JNDI datasource.
-     *
-     * @param emailMessage - The email message
-     * @throws MessagingException
-     */
-    public static final synchronized void sendSmsMessage(final EmailMessage emailMessage) throws MessagingException
-    {
-        final String methodName = EmailUtils.CNAME + "#sendSmsMessage(final EmailMessage emailMessage) throws MessagingException";
-
-        Session mailSession = null;
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("emailMessage: {}", emailMessage);
-        }
-
-        SMTPAuthenticator smtpAuth = null;
-
-        final MailConfig mailConfig = appBean.getConfigData().getMailConfig();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("MailConfig: {}", mailConfig);
-        }
-
-        try
-        {
-            if (StringUtils.isEmpty(mailConfig.getDataSourceName()))
-            {
-                if (StringUtils.equals((String) mailConfig.getMailProps().get("mail.smtp.auth"), "true"))
-                {
-                    smtpAuth = new SMTPAuthenticator();
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps(), smtpAuth);
-                }
-                else
-                {
-                    mailSession = Session.getDefaultInstance(mailConfig.getMailProps());
-                }
-            }
-            else
-            {
-                Context initContext = new InitialContext();
-                Context envContext = (Context) initContext.lookup(EmailUtils.INIT_DS_CONTEXT);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("InitialContext: {}", initContext);
-                    DEBUGGER.debug("Context: {}", envContext);
-                }
-
-                if (envContext != null)
-                {
-                    mailSession = (Session) envContext.lookup(mailConfig.getDataSourceName());
-                }
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Session: {}", mailSession);
-            }
-
-            if (mailSession == null)
-            {
-                throw new MessagingException("Unable to configure email services");
-            }
-
-            mailSession.setDebug(DEBUG);
-            MimeMessage mailMessage = new MimeMessage(mailSession);
-
-            // Our emailList parameter should contain the following
-            // items (in this order):
-            // 0. Recipients
-            // 1. From Address
-            // 2. Generated-From (if blank, a default value is used)
-            // 3. The message subject
-            // 4. The message content
-            // 5. The message id (optional)
-            // We're only checking to ensure that the 'from' and 'to'
-            // values aren't null - the rest is really optional.. if
-            // the calling application sends a blank email, we aren't
-            // handing it here.
-            if (emailMessage.getMessageTo().size() != 0)
-            {
-                String messageID = (StringUtils.isBlank(emailMessage.getMessageId())) ? emailMessage.getMessageId() : RandomStringUtils.randomAlphanumeric(16);
-
-                for (String to : emailMessage.getMessageTo())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug(to);
-                    }
-
-                    mailMessage.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
-                }
-
-                mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
-                mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
-                mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
-                mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
-
-                if (emailMessage.isAlert())
-                {
-                    mailMessage.setHeader("X-Priority", "1");
-                    mailMessage.setHeader("Importance", "High");
-                }
-
-                Transport mailTransport = mailSession.getTransport("smtp");
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Transport: {}", mailTransport);
-                }
-
-                mailTransport.connect();
-
-                if (mailTransport.isConnected())
-                {
-                    Transport.send(mailMessage);
-                }
-            }
-        }
-        catch (MessagingException mex)
-        {
-            ERROR_RECORDER.error(mex.getMessage(), mex);
-
-            throw new MessagingException(mex.getMessage(), mex);
-        }
-        catch (NamingException nx)
-        {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
-            throw new MessagingException(nx.getMessage(), nx);
         }
     }
 

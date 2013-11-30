@@ -9,6 +9,7 @@
         <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
         <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
     </application-config>
@@ -54,12 +55,6 @@
         <sshKeyFile>C:/home/35033355/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
         <sshKeyPassword /> <!-- password for key, if required -->
     </ssh-config>
-
-    <mail-config>
-        <dataSourceName>mail/MailSession</dataSourceName>
-        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        <mailFrom>eSolutions@caspersbox.com</mailFrom>
-    </mail-config>
 
     <exception-config>
         <sendExceptionNotifications>true</sendExceptionNotifications>
