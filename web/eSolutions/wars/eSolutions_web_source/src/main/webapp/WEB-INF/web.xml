@@ -159,6 +159,12 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
+    <servlet id="MessageDispatcherServlet">
+        <display-name>MessageDispatcherServlet</display-name>
+        <servlet-name>MessageDispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
     <servlet id="QuartzInitializer">
         <servlet-name>QuartzInitializer</servlet-name>
         <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
@@ -168,13 +174,13 @@
         </init-param>
         <load-on-startup>3</load-on-startup>
     </servlet>
-
+    
     <servlet-mapping id="eSolutions_mapping">
         <servlet-name>eSolutions</servlet-name>
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping id="CoreRequestProcessorService_mapping">
-        <servlet-name>eSolutions</servlet-name>
+    <servlet-mapping id="MessageDispatcherServlet_mapping">
+        <servlet-name>MessageDispatcherServlet</servlet-name>
         <url-pattern>/ws/CoreRequestProcessorService</url-pattern>
     </servlet-mapping>
 

@@ -24,6 +24,7 @@
         <spring.version>3.2.4.RELEASE</spring.version>
         <tiles.version>2.2.2</tiles.version>
         <aopalliance.version>1.0</aopalliance.version>
+        <spring-ws-core.version>2.1.4-RELEASE</spring-ws-core.version>
     </properties>
 
     <modules>
@@ -147,6 +148,13 @@
                         <groupId>commons-logging</groupId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.ws</groupId>
+                <artifactId>spring-ws-core</artifactId>
+                <version>${spring-ws-core.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
