@@ -1,13 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ws="http://jax-ws.dev.java.net/spring/core"
-    xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
     xsi:schemaLocation="
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-        http://jax-ws.dev.java.net/spring/core http://jax-ws.java.net/spring/core.xsd
-        http://jax-ws.dev.java.net/spring/servlet http://jax-ws.java.net/spring/servlet.xsd">
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <wss:binding url="/ws/CoreRequestProcessorService" service="#coreRequestProcessorService" />
+    <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
+        <property name="baseAddress" value="https://192.168.10.51:10944/"/>
+    </bean>
 
-    <bean id="coreRequestProcessorService" class="com.cws.esolutions.core.ws.CoreRequestProcessorService" />
-</beans>    
+    <bean id="accountWebService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
+        <property name="serviceInterface" value="com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService"/>
+        <property name="wsdlDocumentUrl" value="https://192.168.10.51:10944/ws/CoreRequestProcessorService?wsdl" />
+        <property name="namespaceUri" value="http://esolutions.caspersbox.corp/s?q=esolutions" />
+        <property name="serviceName" value="CoreRequestProcessorService" />
+        <property name="portName" value="CoreRequestProcessorServicePort" />
+    </bean>
+</beans>
