@@ -23,7 +23,7 @@
         <jsp-api.version>2.0</jsp-api.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <tiles.version>2.2.2</tiles.version>
-        <jaxws-rt.version>2.2.3</jaxws-rt.version>
+        <spring-ws-core.version>2.1.4.RELEASE</spring-ws-core.version>
     </properties>
 
     <modules>
@@ -162,6 +162,13 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>org.jvnet.jax-ws-commons.spring</groupId>
+                <artifactId>jaxws-spring</artifactId>
+                <version>1.9</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
             <!-- tiles -->
             <dependency>
                 <groupId>org.apache.tiles</groupId>
@@ -199,13 +206,6 @@
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-jsp</artifactId>
                 <version>${tiles.version}</version>
-                <type>jar</type>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.ws</groupId>
-                <artifactId>jaxws-rt</artifactId>
-                <version>${jaxws-rt.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
