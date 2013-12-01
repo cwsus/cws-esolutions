@@ -1,28 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="@document.base@" workDir="@tomcat.work.dir@"
-    sessionCookieDomain="@cookie.domain.name@" sessionCookieName="ESOLUTIONS_ID"
-    sessionCookiePath="/" sessionCookiePathUsesTrailingSlash="true">
+<Context docBase="@document.base@" sessionCookieDomain="@cookie.domain.name@" sessionCookieName="ESOLUTIONS_ID">
 
-    <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource"
+    <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource" closeMethod="close"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
         url="jdbc:mysql://@database.host.name@/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
-        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-        validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
-        timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
-        maxWait="10000" initialSize="0" removeAbandonedTimeout="60"
-        removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false" validationQuery="SELECT 1 FROM DUAL"
+        validationInterval="30000" timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0" maxWait="10000"
+        initialSize="0" removeAbandonedTimeout="60" removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
         jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
             org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />
 
-    <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource"
+    <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource" closeMethod="close"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://@database.host.name/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
-        testWhileIdle="true" testOnBorrow="true" testOnReturn="false"
-        validationQuery="SELECT 1 FROM DUAL" validationInterval="30000"
-        timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0"
-        maxWait="10000" initialSize="0" removeAbandonedTimeout="60"
-        removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
+        url="jdbc:mysql://@database.host.name@/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
+        testWhileIdle="true" testOnBorrow="true" testOnReturn="false" validationQuery="SELECT 1 FROM DUAL"
+        validationInterval="30000" timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0" maxWait="10000"
+        initialSize="0" removeAbandonedTimeout="60" removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
         jdbcInterceptors="org.apache.tomcat.jdbc.pool.interceptor.ConnectionState;
             org.apache.tomcat.jdbc.pool.interceptor.StatementFinalizer;
             org.apache.tomcat.jdbc.pool.interceptor.SlowQueryReportJmx(threshold=10000)" />

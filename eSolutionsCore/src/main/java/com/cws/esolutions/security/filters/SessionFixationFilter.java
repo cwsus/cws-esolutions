@@ -196,6 +196,8 @@ public class SessionFixationFilter implements Filter
         }
 
         filterChain.doFilter(sRequest, sResponse);
+
+        return;
     }
 
     @Override

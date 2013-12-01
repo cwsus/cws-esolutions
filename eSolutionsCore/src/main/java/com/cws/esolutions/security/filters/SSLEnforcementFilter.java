@@ -15,13 +15,14 @@
  */
 package com.cws.esolutions.security.filters;
 
-import java.util.Collections;
+
 import java.util.Set;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import java.util.HashSet;
 import java.io.IOException;
 import javax.servlet.Filter;
+import java.util.Collections;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import java.util.ResourceBundle;
@@ -30,12 +31,12 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 import javax.servlet.UnavailableException;
 import java.util.MissingResourceException;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.cws.esolutions.security.SecurityConstants;
 /*
@@ -58,7 +59,6 @@ public class SSLEnforcementFilter implements Filter
     private static final String SECURE_URL_PREFIX = "https://";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
     private static final String IGNORE_HOST_LIST = "ignore.host.list";
-    private static final String HTTP_DECRYPTED_HEADER = "HTTP:DECRYPTED";
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
     private static final String CNAME = SSLEnforcementFilter.class.getName();
     private static final String FILTER_CONFIG_FILE_NAME = "config/FilterConfig";
@@ -145,10 +145,11 @@ public class SSLEnforcementFilter implements Filter
 
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
-        final HttpSession hSession = hRequest.getSession();
 
         if (DEBUG)
         {
+            final HttpSession hSession = hRequest.getSession();
+
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
@@ -187,111 +188,108 @@ public class SSLEnforcementFilter implements Filter
             }
         }
 
-        try
+        if (SSLEnforcementFilter.LOCALHOST.contains(sRequest.getServerName()))
         {
-            if (SSLEnforcementFilter.LOCALHOST.contains(sRequest.getServerName()))
+            filterChain.doFilter(sRequest, sResponse);
+
+            return;
+        }
+
+        if ((this.ignoreHosts != null) && (this.ignoreHosts.length != 0))
+        {
+            for (String host : this.ignoreHosts)
             {
-                filterChain.doFilter(sRequest, sResponse);
+                String requestHost = host.trim();
 
-                return;
-            }
-
-            if ((this.ignoreHosts != null) && (this.ignoreHosts.length != 0))
-            {
-                for (String host : this.ignoreHosts)
-                {
-                    String requestHost = host.trim();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug(host);
-                        DEBUGGER.debug(requestHost);
-                    }
-    
-                    if (StringUtils.equals(requestHost, sRequest.getServerName().trim()))
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Host found in ignore list. Not processing request!");
-                        }
-
-                        filterChain.doFilter(sRequest, sResponse);
-    
-                        return;
-                    }
-                }
-            }
-
-            if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
-            {
-                // no hosts in ignore list
-                for (String uri : this.ignoreURIs)
-                {
-                    String requestURI = uri.trim();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug(uri);
-                        DEBUGGER.debug(requestURI);
-                    }
-    
-                    if (StringUtils.equals(requestURI, hRequest.getRequestURI().trim()))
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("URI found in ignore list. Not processing request!");
-                        }
-
-                        filterChain.doFilter(sRequest, sResponse);
-
-                        return;
-                    }
-                }
-            }
-
-            if ((hRequest.isSecure()) || (StringUtils.equals(SecurityConstants.TRUE,
-                        hRequest.getHeader(SSLEnforcementFilter.HTTP_DECRYPTED_HEADER))))
-            {
-                // Request came in on a secure channel or
-                // the HTTP:DECRYPTED header is true
-                // do nothing
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Filter not applied to request - already secured. No action taken.");
+                    DEBUGGER.debug(host);
+                    DEBUGGER.debug(requestHost);
                 }
-    
-                filterChain.doFilter(sRequest, sResponse);
+
+                if (StringUtils.equals(requestHost, sRequest.getServerName().trim()))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Host found in ignore list. Not processing request!");
+                    }
+
+                    filterChain.doFilter(sRequest, sResponse);
+
+                    return;
+                }
             }
-            else
+        }
+
+        if ((this.ignoreURIs != null) && (this.ignoreURIs.length != 0))
+        {
+            // no hosts in ignore list
+            for (String uri : this.ignoreURIs)
             {
-                // secure it
-                StringBuilder redirectURL = new StringBuilder()
-                    .append(SSLEnforcementFilter.SECURE_URL_PREFIX)
-                    .append(sRequest.getServerName())
-                    .append((sRequest.getServerPort() != SSLEnforcementFilter.SECURE_URL_PORT) ? ":" + sRequest.getServerPort() : null)
-                    .append(hRequest.getRequestURI())
-                    .append(StringUtils.isNotBlank(hRequest.getQueryString()) ? "?" + hRequest.getQueryString() : null);
-    
+                if (StringUtils.equalsIgnoreCase(uri, "ALL"))
+                {
+                    filterChain.doFilter(sRequest, sResponse);
+
+                    return;
+                }
+
+                String requestURI = uri.trim();
+
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("redirectURL: {}", redirectURL);
+                    DEBUGGER.debug(uri);
+                    DEBUGGER.debug(requestURI);
                 }
-    
-                hResponse.sendRedirect(redirectURL.toString());
+
+                if (StringUtils.equals(requestURI, hRequest.getRequestURI().trim()))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("URI found in ignore list. Not processing request!");
+                    }
+
+                    filterChain.doFilter(sRequest, sResponse);
+
+                    return;
+                }
             }
         }
-        catch (ServletException sx)
+
+        if (hRequest.isSecure())
         {
-            ERROR_RECORDER.error(sx.getMessage(), sx);
+            // Request came in on a secure channel or
+            // the HTTP:DECRYPTED header is true
+            // do nothing
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Filter not applied to request - already secured. No action taken.");
+            }
 
             filterChain.doFilter(sRequest, sResponse);
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
 
-            filterChain.doFilter(sRequest, sResponse);
+            return;
         }
+
+        // secure it
+        StringBuilder redirectURL = new StringBuilder()
+            .append(SSLEnforcementFilter.SECURE_URL_PREFIX)
+            .append(sRequest.getServerName())
+            .append((sRequest.getServerPort() != SSLEnforcementFilter.SECURE_URL_PORT) ? ":" + sRequest.getServerPort() : null)
+            .append(hRequest.getRequestURI());
+
+        if (StringUtils.isNotBlank(hRequest.getQueryString()))
+        {
+            redirectURL.append("?" + hRequest.getQueryString());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("redirectURL: {}", redirectURL);
+        }
+
+        hResponse.sendRedirect(redirectURL.toString());
+
+        return;
     }
 
     @Override
