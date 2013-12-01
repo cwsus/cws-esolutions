@@ -17,6 +17,9 @@ package com.cws.esolutions.core.ws.impl;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
+import javax.jws.soap.SOAPBinding;
+import javax.jws.soap.SOAPBinding.Use;
+import javax.jws.soap.SOAPBinding.Style;
 
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
@@ -51,6 +54,7 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorService")
+@SOAPBinding(style=Style.RPC, use=Use.LITERAL)
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
     /*
