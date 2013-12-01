@@ -202,7 +202,6 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
-            <!-- jax -->
             <dependency>
                 <groupId>com.sun.xml.ws</groupId>
                 <artifactId>jaxws-rt</artifactId>
