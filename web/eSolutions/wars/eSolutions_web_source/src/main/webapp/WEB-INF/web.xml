@@ -80,11 +80,6 @@
     <listener>
         <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
     </listener>
-    <!--
-    <listener>
-        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
-    </listener>
-    -->
 
     <filter id="SSLEnforcementFilter">
         <description>Security Service SSL Enforcement</description>
@@ -170,20 +165,30 @@
         <servlet-class>com.cws.esolutions.core.ws.impl.CoreRequestProcessorService</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
+    <servlet id="WSSpringServlet">
+        <display-name>WSSpringServlet</display-name>
+        <servlet-name>WSSpringServlet</servlet-name>
+        <servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
+        <load-on-startup>3</load-on-startup>
+    </servlet>
+    <servlet id="QuartzInitializer">
+        <servlet-name>QuartzInitializer</servlet-name>
+        <servlet-class>org.quartz.ee.servlet.QuartzInitializerServlet</servlet-class>
+        <init-param>
+            <param-name>shutdown-on-unload</param-name>
+            <param-value>true</param-value>
+        </init-param>
+        <load-on-startup>4</load-on-startup>
+    </servlet>
 
     <servlet-mapping id="eSolutions_mapping">
         <servlet-name>eSolutions</servlet-name>
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
-    <servlet-mapping id="CoreRequestProcessorService_mapping">
-        <servlet-name>CoreRequestProcessorService</servlet-name>
+    <servlet-mapping id="WSSpringServlet_mapping">
+        <servlet-name>WSSpringServlet</servlet-name>
         <url-pattern>/ws/CoreRequestProcessorService</url-pattern>
     </servlet-mapping>
-
-    <service-ref>
-        <service-ref-name>services/CoreRequestProcessorService</service-ref-name>
-        <service-interface>javax.xml.ws.Service</service-interface>
-    </service-ref>
 
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>

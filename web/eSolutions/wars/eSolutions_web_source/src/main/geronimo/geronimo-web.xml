@@ -51,10 +51,6 @@
 
     <context-root>@contextRoot@</context-root>
 
-    <nam:service-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
-        <nam:service-ref-name>services/CoreRequestProcessorService</nam:service-ref-name>
-    </nam:service-ref>
-
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
         <nam:pattern>
