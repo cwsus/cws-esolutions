@@ -46,6 +46,12 @@
         <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
     </dns-config>
 
+    <mail-config>
+        <dataSourceName>mail/MailSession</dataSourceName>
+        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        <mailFrom>eSolutions@caspersbox.com</mailFrom>
+    </mail-config>
+
     <ssh-config>
         <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
         <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
