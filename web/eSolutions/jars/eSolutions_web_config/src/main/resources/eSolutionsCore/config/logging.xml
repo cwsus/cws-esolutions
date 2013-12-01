@@ -2,18 +2,6 @@
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <!-- eSolutionsCore loggers -->
-    <appender name="esolutionssvc-audit" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/esolutionssvc-audit.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="AUDIT" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
     <appender name="esolutionssvc-info" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/esolutionssvc-info.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -32,31 +20,20 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="ERROR" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="esolutionssvc-debug" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/esolutionssvc-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
         <filter class="org.apache.log4j.varia.LevelMatchFilter">
             <param name="LevelToMatch" value="DEBUG" />
-            <param name="AcceptOnMatch" value="true" />
-        </filter>
-        <filter class="org.apache.log4j.varia.DenyAllFilter" />
-    </appender>
-    <appender name="smtp-logger" class="org.apache.log4j.net.SMTPAppender">
-        <param name="BufferSize" value="512" />
-        <param name="SMTPHost" value="localhost" />
-        <param name="From" value="esolutionscore-alerts@caspersbox.com" />
-        <param name="To" value="oncall@caspersbox.com" />
-        <param name="Subject" value="eSolutionsCore Exception report" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-        <filter class="org.apache.log4j.varia.LevelMatchFilter">
-            <param name="LevelToMatch" value="FATAL" />
             <param name="AcceptOnMatch" value="true" />
         </filter>
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
@@ -113,10 +90,6 @@
         </layout>
     </appender>
 
-    <category name="AUDIT_RECORDER.com.cws.esolutions.core" additivity="false">
-        <priority value="AUDIT" />
-        <appender-ref ref="esolutionssvc-audit" />
-    </category>
     <category name="INFO_RECORDER.com.cws.esolutions.core" additivity="false">
         <priority value="INFO" />
         <appender-ref ref="esolutionssvc-info" />
@@ -124,10 +97,6 @@
     <category name="ERROR_RECORDER.com.cws.esolutions.core" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="esolutionssvc-error" />
-    </category>
-    <category name="FATAL_RECORDER.com.cws.esolutions.core" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="smtp-logger" />
     </category>
     <category name="CORE_DEBUGGER" additivity="false">
         <priority value="DEBUG" />

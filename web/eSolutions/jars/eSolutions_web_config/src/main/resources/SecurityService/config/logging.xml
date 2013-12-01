@@ -43,6 +43,11 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="ERROR" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="fatal-logger" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/SecurityService-fatal.log" />
@@ -71,7 +76,7 @@
     </appender>
 
     <category name="AUDIT_RECORDER.com.cws.esolutions.security" additivity="false">
-        <priority value="AUDIT" />
+        <priority value="INFO" />
         <appender-ref ref="audit-logger" />
     </category>
     <category name="WARNING_RECORDER.com.cws.esolutions.security" additivity="false">

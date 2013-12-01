@@ -31,11 +31,15 @@
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
+        <filter class="org.apache.log4j.varia.LevelMatchFilter">
+            <param name="LevelToMatch" value="ERROR" />
+            <param name="AcceptOnMatch" value="true" />
+        </filter>
+        <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="esolutions-debug" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/esolutions-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
@@ -48,7 +52,6 @@
     <appender name="spring-logger" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/spring-framework.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
-        <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
