@@ -9,11 +9,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
-        <property name="baseAddress" value="https://192.168.10.51:10944/"/>
+        <property name="baseAddress" value="https://192.168.10.51:10944/eSolutions/ws/" />
     </bean>
 
     <bean id="coreRequestProcessorService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
-        <property name="serviceInterface" value="com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService"/>
+        <property name="serviceInterface" value="com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService" />
         <property name="wsdlDocumentUrl" value="classpath:/eSolutionsCore/wsdl/CoreRequestProcessorService.wsdl" />
         <property name="namespaceUri" value="http://esolutions.caspersbox.corp/s?q=esolutions" />
         <property name="serviceName" value="CoreRequestProcessorService" />

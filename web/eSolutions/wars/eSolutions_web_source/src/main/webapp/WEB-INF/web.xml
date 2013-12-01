@@ -173,6 +173,10 @@
         <servlet-name>eSolutions</servlet-name>
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
+    <servlet-mapping id="CoreRequestProcessorService_mapping">
+        <servlet-name>eSolutions</servlet-name>
+        <url-pattern>/ws/CoreRequestProcessorService</url-pattern>
+    </servlet-mapping>
 
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>

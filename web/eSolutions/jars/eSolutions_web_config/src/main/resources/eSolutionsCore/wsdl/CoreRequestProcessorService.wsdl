@@ -240,214 +240,214 @@
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="doProjectSearch">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="doProjectSearch">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="doProjectSearchResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal"/>
+                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="addNewArticle">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="addNewArticle">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="addNewArticleResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal"/>
+                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="performLookup">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="performLookup">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="performLookupResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
-                <soap:fault name="DNSServiceException" use="literal"/>
+                <soap:fault name="DNSServiceException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="updateArticleStatus">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="updateArticleStatus">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="updateArticleStatusResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal"/>
+                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="pushNewService">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="pushNewService">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="pushNewServiceResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
-                <soap:fault name="DNSServiceException" use="literal"/>
+                <soap:fault name="DNSServiceException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="doApplicationSearch">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="doApplicationSearch">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="doApplicationSearchResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal"/>
+                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="getDataFromDatabase">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="getDataFromDatabase">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="getDataFromDatabaseResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
-                <soap:fault name="DNSServiceException" use="literal"/>
+                <soap:fault name="DNSServiceException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="getArticle">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="getArticle">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="getArticleResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal"/>
+                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="performSiteTransfer">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="performSiteTransfer">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="performSiteTransferResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
-                <soap:fault name="DNSServiceException" use="literal"/>
+                <soap:fault name="DNSServiceException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="processAgentLogon">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="processAgentLogon">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="processAgentLogonResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="AuthenticationException">
-                <soap:fault name="AuthenticationException" use="literal"/>
+                <soap:fault name="AuthenticationException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="verifyUserSecurityConfig">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="verifyUserSecurityConfig">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="verifyUserSecurityConfigResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="AuthenticationException">
-                <soap:fault name="AuthenticationException" use="literal"/>
+                <soap:fault name="AuthenticationException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="obtainUserSecurityConfig">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="obtainUserSecurityConfig">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="obtainUserSecurityConfigResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="AuthenticationException">
-                <soap:fault name="AuthenticationException" use="literal"/>
+                <soap:fault name="AuthenticationException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="doServerSearch">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="doServerSearch">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="doServerSearchResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal"/>
+                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="updateArticle">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="updateArticle">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="updateArticleResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal"/>
+                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="doArticleSearch">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="doArticleSearch">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="doArticleSearchResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal"/>
+                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="getPendingArticles">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="getPendingArticles">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="getPendingArticlesResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal"/>
+                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="createNewService">
-            <soap:operation soapAction="" style="document"/>
+            <soap:operation soapAction="" style="document" />
             <wsdl:input name="createNewService">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="createNewServiceResponse">
-                <soap:body use="literal"/>
+                <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
-                <soap:fault name="DNSServiceException" use="literal"/>
+                <soap:fault name="DNSServiceException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
     </wsdl:binding>
 
     <wsdl:service name="CoreRequestProcessorService">
         <wsdl:port name="CoreRequestProcessorServicePort" binding="tns:CoreRequestProcessorServiceSoapBinding">
-            <soap:address location="http://localhost:9090/CoreRequestProcessorServicePort"/>
+            <soap:address location="https://esolutions.caspersbox.corp:10944/eSolutions/ws/CoreRequestProcessorService" />
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
