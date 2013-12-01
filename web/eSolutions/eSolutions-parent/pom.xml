@@ -23,7 +23,7 @@
         <jsp-api.version>2.0</jsp-api.version>
         <spring.version>3.2.4.RELEASE</spring.version>
         <tiles.version>2.2.2</tiles.version>
-        <spring-ws-core.version>2.1.4.RELEASE</spring-ws-core.version>
+        <aopalliance.version>1.0</aopalliance.version>
     </properties>
 
     <modules>
@@ -134,12 +134,6 @@
                 <version>${spring.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
-                <exclusions>
-                    <exclusion>
-                        <artifactId>aopalliance</artifactId>
-                        <groupId>aopalliance</groupId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -152,20 +146,19 @@
                         <artifactId>commons-logging</artifactId>
                         <groupId>commons-logging</groupId>
                     </exclusion>
-	                <exclusion>
-	                    <artifactId>aopalliance</artifactId>
-	                    <groupId>aopalliance</groupId>
-	                </exclusion>
-	                <exclusion>
-	                    <artifactId>spring-aop</artifactId>
-	                    <groupId>org.springframework</groupId>
-                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>org.jvnet.jax-ws-commons.spring</groupId>
-                <artifactId>jaxws-spring</artifactId>
-                <version>1.9</version>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>${spring.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>aopalliance</groupId>
+                <artifactId>aopalliance</artifactId>
+                <version>${aopalliance.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
