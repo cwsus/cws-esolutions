@@ -11,8 +11,8 @@
  * express written authorization of CaspersBox Web Services, N.A.
  *
  * eSolutions_web_source
- * com.cws.us.esolutions.user-management/jsp/html/en
- * UserManagement_ViewUser.jsp
+ * com.cws.us.esolutions.system-management/jsp/html/en
+ * SystemManagement_RemoteDate.jsp
  *
  * $Id$
  * $Author$
@@ -28,78 +28,78 @@
  */
 --%>
 
-<div id="sidebar">
-    <h1><spring:message code="svc.mgmt.header" /></h1>
-    <ul>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-        </li>
-        <li> 
-            <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
-                title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a>
-        </li>
-        <li> 
-            <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
-                title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a>
-        </li>
-        <li> 
-            <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
-                title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
-                title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a>
-        </li>
-    </ul>
-</div>
+<div id="InfoLine"><spring:message code="system.check.remote.date" arguments="${server.operHostName}" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
-<div id="main">
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+        <span id="validationError"></span>
 
-    <h1><spring:message code="system.check.remote.date" arguments="${server.operHostName}" /></h1>
-    <span id="validationError"></span>
+        <form:form id="submitRemoteDate" name="submitRemoteDate" action="${pageContext.request.contextPath}/ui/system-check/remote-date" method="post">
+            <form:hidden path="sourceServer" value="${server}" />
 
-    <form:form id="submitNetstatRequest" name="submitNetstatRequest" action="${pageContext.request.contextPath}/ui/system-check/remote-date" method="post">
-        <form:hidden path="sourceServer" value="${server.serverGuid}" />
+            <table id="remoteDate">
+                <tr>
+                    <td><label id="txtTargetHostName"><spring:message code="remotedate.request.provide.hostname" /></label></td>
+                    <td>${server.operHostName}</td>
+                </tr>
+            </table>
 
-        <table id="netstatRequest">
-            <tr>
-                <td><label id="txtTargetPort"><spring:message code="telnet.request.provide.port" /></label></td>
-                <td><form:input path="targetPort" /></td>
-                <td><form:errors path="targetPort" cssClass="validationError" /></td>
-            </tr>
-        </table>
+            <table>
+                <tr>
+                    <td>
+                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    </td>
+                    <td>
+                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                    </td>
+                    <td>
+                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                    </td>
+                </tr>
+            </table>
+        </form:form>
+    </div>
 
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
+                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
+            </li>
+            <li> 
+                <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
+                    title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a>
+            </li>
+            <li> 
+                <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
+                    title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a>
+            </li>
+            <li> 
+                <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
+                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
+                    title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a>
+            </li>
+        </ul>
+    </div>
 </div>

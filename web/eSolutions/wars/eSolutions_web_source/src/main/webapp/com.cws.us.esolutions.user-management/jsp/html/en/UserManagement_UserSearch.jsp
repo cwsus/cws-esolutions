@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.user-management/jsp/html/en
- * UserManagement_ViewUser.jsp
+ * UserManagement_UserSearch.jsp
  *
  * $Id$
  * $Author$
@@ -28,133 +28,126 @@
  */
 --%>
 
-<div id="sidebar">
-    <h1><spring:message code="svc.mgmt.header" /></h1>
-    <ul>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-management/service-consoles"
-                title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
-                title="<spring:message code='system.check.date' />"><spring:message code="system.check.date" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
-                title="<spring:message code='system.check.telnet' />"><spring:message code="system.check.telnet" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-check/netstat/server/${server.serverGuid}"
-                title="<spring:message code='system.check.netstat' />"><spring:message code="system.check.netstat" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/system-check/list-processes/server/${server.serverGuid}"
-                title="<spring:message code='system.check.processlist' />"><spring:message code="system.check.processlist" /></a>
-        </li>
-    </ul>
-</div>
+<div id="InfoLine"><spring:message code="user.mgmt.search.header" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
-<div id="main">
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+	    <c:choose>
+	        <c:when test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+                <span id="validationError"></span>
+	
+	            <form:form id="searchUserAccounts" name="searchUserAccounts" action="${pageContext.request.contextPath}/ui/user-management/search" method="post">
+	                <table id="searchAccounts">
+	                    <tr>
+	                        <td>
+	                            <label id="txtUserName"><spring:message code="user.mgmt.user.name" /><br /></label>
+	                        </td>
+	                        <td>
+	                            <form:input path="username" id="username" />
+	                            <form:errors path="username" cssClass="validationError" />
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>
+	                            <label id="txtUserGuid"><spring:message code="user.mgmt.user.guid" /><br /></label>
+	                        </td>
+	                        <td>
+	                            <form:input path="guid" id="guid" />
+	                            <form:errors path="guid" cssClass="validationError" />
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>
+	                            <label id="txtEmailAddress"><spring:message code="user.mgmt.user.email" /><br /></label>
+	                        </td>
+	                        <td>
+	                            <form:input path="emailAddr" id="emailAddress" />
+	                            <form:errors path="emailAddr" cssClass="validationError" />
+	                        </td>
+	                    </tr>
+	                    <tr>
+	                        <td>
+	                            <label id="txtDisplayName"><spring:message code="user.mgmt.display.name" /><br /></label>
+	                        </td>
+	                        <td>
+	                            <form:input path="displayName" id="displayName" />
+	                            <form:errors path="displayName" cssClass="validationError" />
+	                        </td>
+	                    </tr>
+	                </table>
 
-    <h1><spring:message code="user.mgmt.search.header" /></h1>
-    <span id="validationError"></span>
+	                <table id="inputItems">
+	                    <tr>
+	                        <td>
+	                            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                        </td>
+	                        <td>
+	                            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                        </td>
+	                        <td>
+	                            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                        </td>
+	                    </tr>
+	                </table>
+	            </form:form>
+	
+	            <c:if test="${not empty fn:trim(requestScope.searchResults)}">
+	                <p id="splitter" />
+	
+	                <strong><spring:message code="theme.search.results" /></strong>
+	                <br />
+	                <table id="userSearchResults">
+	                    <tr>
+	                        <td><spring:message code="user.mgmt.user.name" /></td>
+	                        <td><spring:message code="user.mgmt.display.name" /></td>
+	                    </tr>
+	                    <c:forEach var="userResult" items="${requestScope.searchResults}">
+	                        <tr>
+	                            <td>
+	                                <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
+	                                    title="${userResult.username}">${userResult.username}</a>
+	                            </td>
+	                            <td>${userResult.displayName}</td>
+	                        </tr>
+	                    </c:forEach>
+	                </table>
+	            </c:if>
+	        </c:when>
+	        <c:otherwise>
+	            <spring:message code="theme.system.request.unauthorized" />
+	            <c:if test="${requestScope.isUserLoggedIn ne 'true'}">
+	                <p>Click <a href="${pageContext.request.contextPath}/ui/common/default" title="Home">here</a> to continue.</p>
+	            </c:if>
+	        </c:otherwise>
+	    </c:choose>
+    </div>
 
-    <form:form id="searchUserAccounts" name="searchUserAccounts" action="${pageContext.request.contextPath}/ui/user-management/search" method="post">
-        <table id="searchAccounts">
-            <tr>
-                <td>
-                    <label id="txtUserName"><spring:message code="user.mgmt.user.name" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="username" id="username" />
-                    <form:errors path="username" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label id="txtUserGuid"><spring:message code="user.mgmt.user.guid" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="guid" id="guid" />
-                    <form:errors path="guid" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label id="txtEmailAddress"><spring:message code="user.mgmt.user.email" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="emailAddr" id="emailAddress" />
-                    <form:errors path="emailAddr" cssClass="validationError" />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label id="txtDisplayName"><spring:message code="user.mgmt.display.name" /><br /></label>
-                </td>
-                <td>
-                    <form:input path="displayName" id="displayName" />
-                    <form:errors path="displayName" cssClass="validationError" />
-                </td>
-            </tr>
-        </table>
-
-        <table id="inputItems">
-            <tr>
-                <td>
-                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-                <td>
-                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                </td>
-                <td>
-                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                </td>
-            </tr>
-        </table>
-    </form:form>
-
-    <c:if test="${not empty fn:trim(requestScope.searchResults)}">
-        <p id="splitter" />
-
-        <strong><spring:message code="theme.search.results" /></strong>
-        <br />
-        <table id="userSearchResults">
-            <tr>
-                <td><spring:message code="user.mgmt.user.name" /></td>
-                <td><spring:message code="user.mgmt.display.name" /></td>
-            </tr>
-            <c:forEach var="userResult" items="${requestScope.searchResults}">
-                <tr>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${userResult.guid}"
-                            title="${userResult.username}">${userResult.username}</a>
-                    </td>
-                    <td>${userResult.displayName}</td>
-                </tr>
-            </c:forEach>
-        </table>
+    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+        <div id="content-left">
+            <ul>
+                <li>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/add-user"
+                        title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a>
+	            </li>
+            </ul>
+        </div>
     </c:if>
 </div>

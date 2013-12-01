@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.application-management/jsp/html/en
- * AppMgmt_ViewFile.jsp
+ * AppMgmt_DefaultHandler.jsp
  *
  * $Id$
  * $Author$
@@ -28,37 +28,39 @@
  */
 --%>
 
-<div id="sidebar">
-    <h1><spring:message code="app.mgmt.header" /></h1>
-    <ul class="sidemenu">
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
-                title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
-                title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
-        </li>
-    </ul>
-</div>
+<div id="InfoLine"><spring:message code="app.mgmt.header" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
+    </div>
 
-<div id="main">
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+    <div id="content-left">
+        <ul>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
+                    title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a>
+            </li>
+            <li>
+                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
+                    title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
+            </li>
+        </ul>
+    </div>
 </div>

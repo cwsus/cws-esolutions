@@ -11,8 +11,8 @@
  * express written authorization of CaspersBox Web Services, N.A.
  *
  * eSolutions_web_source
- * com.cws.us.esolutions.application-management/jsp/html/en
- * AppMgmt_ViewFile.jsp
+ * com.cws.us.esolutions.login/jsp/html/en
+ * LoginOTP.jsp
  *
  * $Id$
  * $Author$
@@ -28,50 +28,66 @@
  */
 --%>
 
-<div id="sidebar">&nbsp;</div>
+<div id="InfoLine"><spring:message code="login.user.otp.message" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
-<div id="main">
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+        <span id="validationError"></span>
 
-    <span id="validationError"></span>
-    <h1><spring:message code="login.user.otp.message" /></h1>
+	    <form:form name="submitOTP" method="post" action="${pageContext.request.contextPath}/ui/login/otp">
+	        <table id="userauth">
+	            <tr>
+	                <td><label id="txtPassword"><spring:message code="login.user.pwd" /></label></td>
+	                <td>
+	                    <form:password path="password" />
+	                    <form:errors path="password" cssClass="validationError" />
+	                </td>
+	                <td>
+                        <c:if test="${allowUserReset eq 'true'}">
+                            <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
+                                <spring:message code="login.user.forgot_pwd" />
+                            </a>
+                        </c:if>
+	                </td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtOtpValue"><spring:message code="login.user.otp" /></label></td>
+	                <td><form:password path="otpValue" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
+	                <td><form:errors path="otpValue" cssClass="validationErrors" /></td>
+	            </tr>
+	        </table>
 
-    <form:form id="submitOTP" name="submitOTP" action="${pageContext.request.contextPath}/ui/login/otp" method="post">
-        <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
-        <form:input path="password" />
-        <form:errors path="password" cssClass="validationError" />
-        <label id="txtOtpValue"><spring:message code="login.user.otp" /></label>
-        <form:password path="otpValue" />
-        <form:errors path="otpValue" cssClass="validationError" />
-        <br />
-        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-    </form:form>
-</div>
-
-<div id="rightbar">
-    <h1><spring:message code="login.user.forgot.info" /></h1>
-    <p>
-        <a href="${pageContext.request.contextPath}/ui/app/help/forgot-email"
-            title="<spring:message code="olr.user.forgot.email" />">
-            <spring:message code="olr.user.forgot.email" /></a>
-    </p>
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
 </div>

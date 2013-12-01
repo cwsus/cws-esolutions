@@ -11,8 +11,8 @@
  * express written authorization of CaspersBox Web Services, N.A.
  *
  * eSolutions_web_source
- * com.cws.us.esolutions.application-management/jsp/html/en
- * AppMgmt_ViewFile.jsp
+ * com.cws.us.esolutions/jsp/html/en
+ * System_ContactAdmins.jsp
  *
  * $Id$
  * $Author$
@@ -28,57 +28,62 @@
  */
 --%>
 
-<div id="sidebar">
-    <h1>Application Management</h1>
-    <ul class="sidemenu">
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}"
-                title="<spring:message code='app.mgmt.application.retrieve.files' />"><spring:message code="app.mgmt.application.retrieve.files" /></a>
-        </li>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}"
-                title="<spring:message code='app.mgmt.application.deploy' />"><spring:message code="app.mgmt.application.deploy" /></a>
-        </li>
-    </ul>
-</div>
+<div id="InfoLine"><spring:message code="theme.messaging.send.email.message" /></div>
+<div id="content">
+    <div id="content-right">
+	    <c:if test="${not empty fn:trim(messageResponse)}">
+	        <p id="info">${messageResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorResponse)}">
+	        <p id="error">${errorResponse}</p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(responseMessage)}">
+	        <p id="info"><spring:message code="${responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(errorMessage)}">
+	        <p id="error"><spring:message code="${errorMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.responseMessage)}">
+	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+	    </c:if>
+	    <c:if test="${not empty fn:trim(param.errorMessage)}">
+	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+	    </c:if>
 
-<div id="main">
-    <c:if test="${not empty fn:trim(messageResponse)}">
-        <p id="info">${messageResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorResponse)}">
-        <p id="error">${errorResponse}</p>
-    </c:if>
-    <c:if test="${not empty fn:trim(responseMessage)}">
-        <p id="info"><spring:message code="${responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(errorMessage)}">
-        <p id="error"><spring:message code="${errorMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.responseMessage)}">
-        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-    </c:if>
-    <c:if test="${not empty fn:trim(param.errorMessage)}">
-        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-    </c:if>
+        <span id="validationError"></span>
 
-    <span id="validationError"></span>
+	    <form:form name="submitContactForm" method="post" action="${pageContext.request.contextPath}/ui/common/submit-contact">
+	        <table>
+	            <tr>
+	                <td><label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label></td>
+	                <td><form:errors path="messageSubject" cssClass="validationError" /></td>
+	                <td><form:input path="messageSubject" /></td>
+	            </tr>
+	            <tr>
+	                <td><label id="txtMessageBody"><spring:message code="theme.add.contact.request.body" /></label></td>
+	                <td><form:errors path="messageBody" cssClass="validationError" /></td>
+	                <td><form:textarea path="messageBody" /></td>
+	            </tr>
+                <tr>
+                    <td><label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label></td>
+                    <td><form:errors path="emailAddr" cssClass="validationError" /></td>
+                    <td><form:input path="emailAddr" /></td>
+                </tr>
+	        </table>
 
-    <form:form name="submitContactForm" method="post" action="${pageContext.request.contextPath}/ui/common/submit-contact">
-        <p>
-            <label id="txtRequestorEmail"><spring:message code="theme.add.contact.source.email" /></label>
-            <form:input path="emailAddr" />
-            <form:errors path="emailAddr" cssClass="validationError" />
-            <label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label>
-            <form:input path="messageSubject" />
-            <form:errors path="messageSubject" cssClass="validationError" />
-            <label id="txtMessageBody"><spring:message code="theme.add.contact.message.body" /></label>
-            <form:textarea path="messageBody" />
-            <form:errors path="messageBody" cssClass="validationError" />
-            <br />
-            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-        </p>
-    </form:form>
+	        <table id="inputItems">
+	            <tr>
+	                <td>
+	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	                <td>
+	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+	                </td>
+	                <td>
+	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+	                </td>
+	            </tr>
+	        </table>
+	    </form:form>
+    </div>
 </div>
