@@ -28,12 +28,18 @@
     </condition>
 
     <target name="buildTomcat" if="isTomcat">
-        <property name="tomcat.temp.directory" value="${tomcat.install.root}/temp" />
-        <property name="tomcat.work.directory" value="${tomcat.install.root}/work" />
-
         <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" />
 
-        <chmod file="${contextFile}" perm="640" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@document.base@" value="${documentBase}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@cookie.domain.name@" value="${cookieDomain}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.user.name@" value="${dsUser}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.user.password@" value="${dsPass}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.host.name@" value="${dsHost}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@amq.host.name@" value="${amqHostName}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@amq.host.port@" value="${amqHostPort}" />
+        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@sysLogDirectory@" value="${sysLogDirectory}" />
+
+        <chmod file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" perm="640" />
     </target>
 
     <target name="buildWebLogic" if="isWebLogic">

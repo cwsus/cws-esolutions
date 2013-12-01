@@ -159,17 +159,11 @@
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
-    <servlet id="CoreRequestProcessorService">
-        <display-name>CoreRequestProcessorService</display-name>
-        <servlet-name>CoreRequestProcessorService</servlet-name>
-        <servlet-class>com.cws.esolutions.core.ws.impl.CoreRequestProcessorService</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
     <servlet id="WSSpringServlet">
         <display-name>WSSpringServlet</display-name>
         <servlet-name>WSSpringServlet</servlet-name>
         <servlet-class>com.sun.xml.ws.transport.http.servlet.WSSpringServlet</servlet-class>
-        <load-on-startup>3</load-on-startup>
+        <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet id="QuartzInitializer">
         <servlet-name>QuartzInitializer</servlet-name>
@@ -178,7 +172,7 @@
             <param-name>shutdown-on-unload</param-name>
             <param-value>true</param-value>
         </init-param>
-        <load-on-startup>4</load-on-startup>
+        <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet-mapping id="eSolutions_mapping">
