@@ -163,6 +163,10 @@
         <display-name>MessageDispatcherServlet</display-name>
         <servlet-name>MessageDispatcherServlet</servlet-name>
         <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:/eSolutions/webservice_config.xml</param-value>
+        </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>
     <servlet id="QuartzInitializer">

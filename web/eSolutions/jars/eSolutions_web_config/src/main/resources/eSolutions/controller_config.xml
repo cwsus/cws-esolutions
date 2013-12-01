@@ -49,5 +49,4 @@
     <import resource="classpath:/eSolutions/servlets/SystemManagementController.xml" />
     <import resource="classpath:/eSolutions/servlets/UserAccountController.xml" />
     <import resource="classpath:/eSolutions/servlets/UserManagementController.xml" />
-    <import resource="classpath:/eSolutions/servlets/CoreRequestProcessorService.xml" />
 </beans>
