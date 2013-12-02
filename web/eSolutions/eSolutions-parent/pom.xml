@@ -25,6 +25,7 @@
         <tiles.version>2.2.2</tiles.version>
         <aopalliance.version>1.0</aopalliance.version>
         <spring-ws-core.version>2.1.4.RELEASE</spring-ws-core.version>
+        <stax.version>1.2.0</stax.version>
     </properties>
 
     <modules>
@@ -167,6 +168,13 @@
                 <groupId>aopalliance</groupId>
                 <artifactId>aopalliance</artifactId>
                 <version>${aopalliance.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>stax</groupId>
+                <artifactId>stax</artifactId>
+                <version>${stax.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>

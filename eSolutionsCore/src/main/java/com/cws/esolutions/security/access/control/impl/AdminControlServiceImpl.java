@@ -48,17 +48,15 @@ public class AdminControlServiceImpl implements IAdminControlService
             DEBUGGER.debug("UserAccount", userAccount);
         }
 
-        boolean isAuthorized = false;
-
         if (StringUtils.isNotEmpty(userAccount.getGuid()))
         {
             if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SITEADMIN))
             {
-                isAuthorized = true;
+                return true;
             }
         }
 
-        return isAuthorized;
+        return false;
     }
 
     @Override
@@ -73,40 +71,30 @@ public class AdminControlServiceImpl implements IAdminControlService
             DEBUGGER.debug("AdminControlType", controlType);
         }
 
-        boolean isAuthorized = false;
-
         if (userAccount.getRole() == Role.SITEADMIN)
         {
-            isAuthorized = true;
+            return true;
         }
-        else
+
+        switch (controlType)
         {
-            switch (controlType)
-            {
-                case SERVICE_ADMIN:
-                    if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SERVICEADMIN))
-                    {
-                        isAuthorized = true;
-                    }
-
-                    break;
-                case SERVICE_REQUEST:
-                    if (userAccount.getRole() == Role.ADMIN)
-                    {
-                        isAuthorized = true;
-                    }
-
-                    break;
-                case USER_ADMIN:
-                    if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.USERADMIN))
-                    {
-                        isAuthorized = true;
-                    }
-
-                    break;
-            }
+            case SERVICE_ADMIN:
+                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SERVICEADMIN))
+                {
+                    return true;
+                }
+            case SERVICE_REQUEST:
+                if (userAccount.getRole() == Role.ADMIN)
+                {
+                    return true;
+                }
+            case USER_ADMIN:
+                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.USERADMIN))
+                {
+                    return true;
+                }
         }
 
-        return isAuthorized;
+        return false;
     }
 }
