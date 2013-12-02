@@ -2360,6 +2360,126 @@ public class ApplicationManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public final ModelAndView submitApplicationSearch(@ModelAttribute("request") final SearchRequest searchRequest, final BindingResult bindResult)
+    {
+        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchRequest, final BindingResult bindResult)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("SearchRequest: {}", searchRequest);
+            DEBUGGER.debug("BindingResult: {}", bindResult);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (this.appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                SearchResponse searchRes = searchProcessor.doApplicationSearch(searchRequest);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SearchResponse: {}", searchRes);
+                }
+
+                if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultHandler);
+                }
+                else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultHandler);
+                }
+            }
+            catch (SearchRequestException srx)
+            {
+                ERROR_RECORDER.error(srx.getMessage(), srx);
+
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(this.appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/add-application", method = RequestMethod.POST)
     public final ModelAndView doAddApplication(@ModelAttribute("request") final ApplicationRequest request, final BindingResult bindResult)
     {

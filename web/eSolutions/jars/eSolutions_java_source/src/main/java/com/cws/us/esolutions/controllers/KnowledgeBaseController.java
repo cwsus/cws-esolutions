@@ -2175,7 +2175,7 @@ public class KnowledgeBaseController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("VirtualServiceResponse: {}", searchRes);
+                    DEBUGGER.debug("SearchResponse: {}", searchRes);
                 }
 
                 if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
