@@ -196,13 +196,11 @@ public final class EmailUtils
                 }
 
                 mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
-                mailMessage.setHeader("Generated-From", appBean.getConfigData().getAppConfig().getAppName()); // TODO!!
                 mailMessage.setSubject("[" + RandomStringUtils.randomAlphanumeric(16) + "] " + emailMessage.getMessageSubject());
                 mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
 
                 if (emailMessage.isAlert())
                 {
-                    mailMessage.setHeader("X-Priority", "1");
                     mailMessage.setHeader("Importance", "High");
                 }
 
@@ -317,13 +315,11 @@ public final class EmailUtils
                 }
 
                 mailMessage.setFrom(new InternetAddress(emailMessage.getEmailAddr().get(0)));
-                mailMessage.setHeader("Generated-From", mailConfig.getMailFrom());
                 mailMessage.setSubject("[" + messageID + "] " + emailMessage.getMessageSubject());
                 mailMessage.setContent(emailMessage.getMessageBody(), "text/html");
 
                 if (emailMessage.isAlert())
                 {
-                    mailMessage.setHeader("X-Priority", "1");
                     mailMessage.setHeader("Importance", "High");
                 }
 
