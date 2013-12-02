@@ -61,13 +61,6 @@
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
-    <appender name="yubico" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/yubico.log" />
-        <param name="DatePattern" value="'.'yy-MM-dd" />
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
-        </layout>
-    </appender>
     <appender name="expectj" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="${LOG_ROOT}/expectj.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
@@ -106,45 +99,40 @@
     <!-- third-party loggers -->
     <!-- apache commons -->
     <category name="org.apache.commons.httpclient" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="apache-commons" />
     </category>
     <category name="org.apache.commons.lang" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="apache-commons" />
     </category>
     <category name="org.apache.commons.daemon" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="apache-commons" />
     </category>
     <!-- quartz -->
     <category name="org.quartz" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="quartz" />
     </category>
     <!-- virtualbox -->
     <category name="org.virtualbox" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="virtualbox" />
-    </category>
-    <!-- yubico -->
-    <category name="com.yubico" additivity="false">
-        <priority value="ERROR" />
-        <appender-ref ref="yubico" />
     </category>
     <!-- expectj -->
     <category name="net.sourceforge.expectj" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="expectj" />
     </category>
     <!-- j2ssh -->
     <category name="com.sshtools.j2ssh" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="j2ssh" />
     </category>
     <!-- xbill -->
     <category name="org.xbill" additivity="false">
-        <priority value="ERROR" />
+        <priority value="DEBUG" />
         <appender-ref ref="xbill" />
     </category>
 </log4j:configuration>
