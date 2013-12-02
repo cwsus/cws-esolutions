@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.core.processors.interfaces;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,8 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
+import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.interfaces
@@ -58,6 +59,7 @@ public interface IMessagingProcessor
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IMessagingProcessor.class.getName();

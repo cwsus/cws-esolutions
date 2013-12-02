@@ -47,7 +47,8 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getArticleByAttribute`(
-    IN searchTerms VARCHAR(100)
+    IN searchTerms VARCHAR(100),
+    IN startRow INT
 )
 BEGIN
     SELECT
@@ -71,7 +72,8 @@ BEGIN
     FROM `esolutionssvc`.`articles`
     WHERE MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution, kbase_article_author_email)
     AGAINST (+searchTerms IN BOOLEAN MODE)
-    AND kbase_article_status = 'APPROVED';
+    AND kbase_article_status = 'APPROVED'
+    LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

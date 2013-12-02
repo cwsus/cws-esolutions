@@ -29,13 +29,15 @@
 --%>
 
 <div id="header">
+    <%--
     <c:if test="${not empty fn:trim(sessionScope.userAccount) and sessionScope.userAccount.status == 'SUCCESS'}">
-        <form method="post" class="search" action="http://www.free-css.com/">
+        <form:form id="searchRequest" name="searchRequest" class="search" action="${pageContext.request.contextPath}/eSolutions/ui/common/search" method="post">
             <p>
-                <input name="search_query" class="textbox" type="text" />
-                <input name="search" class="button" value="Search" type="submit" />
+                <form:input path="searchTerms" class="textbox" type="text" />
+                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             </p>
-        </form>
+        </form:form>
     </c:if>
+    --%>
     <h1 id="logo"><img src="/html/eSolutions/img/logo.gif" alt="CaspersBox Web Services" /></h1>
 </div>

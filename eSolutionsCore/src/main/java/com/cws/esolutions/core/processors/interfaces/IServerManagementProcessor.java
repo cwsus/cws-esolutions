@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.core.processors.interfaces;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,6 +62,7 @@ public interface IServerManagementProcessor
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
+    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();

@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.core.processors.interfaces;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,6 +67,7 @@ public interface IProjectManagementProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final String CNAME = IProjectManagementProcessor.class.getName();
 

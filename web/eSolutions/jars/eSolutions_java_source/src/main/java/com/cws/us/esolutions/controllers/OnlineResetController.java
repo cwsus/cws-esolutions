@@ -12,24 +12,17 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.Date;
-
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.text.MessageFormat;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
-
 import org.apache.commons.io.IOUtils;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.validation.BindingResult;
@@ -45,10 +38,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.us.esolutions.dto.UserChangeRequest;
-import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
+import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
@@ -98,6 +91,7 @@ public class OnlineResetController
 {
     private String resetURL = null;
     private String userResetEmail = null;
+    private boolean allowUserReset = true;
     private String submitAnswersPage = null;
     private String messageOlrComplete = null;
     private String submitUsernamePage = null;
@@ -244,6 +238,19 @@ public class OnlineResetController
         this.forgotUsernameEmail = value;
     }
 
+    public final void setAllowUserReset(final boolean value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setAllowUserReset(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.allowUserReset = value;
+    }
+
     @RequestMapping(value = "/forgot-username", method = RequestMethod.GET)
     public final ModelAndView showForgotUsername()
     {
@@ -323,6 +330,7 @@ public class OnlineResetController
         }
 
         ModelAndView mView = new ModelAndView();
+        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();

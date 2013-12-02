@@ -27,44 +27,50 @@
  *     Created.
  */
 --%>
-
-<div id="InfoLine"><spring:message code="system.mgmt.admin.consoles" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
-
-	    <table id="consoles">
-	        <tr>
-	            <c:forEach var="dmgr" items="${serverList}">
-	                <td><a href="${dmgr.mgrUrl}" title="${dmgr.operHostName}">${dmgr.operHostName}</a></td>
-	            </c:forEach>
-	        </tr>
-	    </table>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-            </li>
-        </ul>
-    </div>
+<div id="sidebar">
+    <h1><spring:message code="system.mgmt.header" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='system.mgmt.server.search' />"><spring:message code='system.mgmt.server.search' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/netstat/server/${server.serverGuid}" title="<spring:message code='system.check.netstat' />"><spring:message code='system.check.netstat' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}" title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}" title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/install-software" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/server-control" title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a></li>
+    </ul>
 </div>
+
+<div id="main">
+    <h1><spring:message code="system.mgmt.admin.consoles" /></h1>
+
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
+
+    <p>
+        <table id="consoles">
+            <tr>
+                <c:forEach var="dmgr" items="${serverList}">
+                    <td><a href="${dmgr.mgrUrl}" title="${dmgr.operHostName}">${dmgr.operHostName}</a></td>
+                </c:forEach>
+            </tr>
+        </table>
+    </p>
+</div>
+
+<div id="rightbar">&nbsp;</div>

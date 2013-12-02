@@ -27,39 +27,49 @@
  *     Created.
  */
 --%>
+<div id="sidebar">
+    <h1><spring:message code="user.account.select.options" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/email" title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/contact" title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/password" title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/security" title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys" title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a></li>
+    </ul>
+</div>
 
-<div id="InfoLine"><spring:message code="user.account.view.profile" arguments="${sessionScope.userAccount.displayName}" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="main">
+    <h1><spring:message code="user.account.view.profile" arguments="${sessionScope.userAccount.displayName}" /></h1>
 
-	    <table id="viewUserAccount">
-	        <tr>
-	            <td><spring:message code="user.account.username" /></td>
-	            <td>${sessionScope.userAccount.username}</td>
-	        <tr>
-	        <tr>
-	            <td><spring:message code="user.account.name" /></td>
-	            <td>${sessionScope.userAccount.displayName}</td>
-	        </tr>
-	        
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
+
+    <p>
+        <table id="viewUserAccount">
+            <tr>
+                <td><spring:message code="user.account.username" /></td>
+                <td>${sessionScope.userAccount.username}</td>
+            </tr>
+            <tr>
+                <td><spring:message code="user.account.name" /></td>
+                <td>${sessionScope.userAccount.displayName}</td>
+            </tr>
             <tr>
                 <td><spring:message code="user.account.givenname" /></td>
                 <td>${sessionScope.userAccount.givenName}</td>
@@ -76,39 +86,16 @@
                 <td><spring:message code="user.account.pager" /></td>
                 <td>${sessionScope.userAccount.pagerNumber}</td>
             </tr>
-	        <tr>
-	            <td><spring:message code="user.account.email.addr" /></td>
-	            <td>${sessionScope.userAccount.emailAddr}</td>
-	        </tr>
+            <tr>
+                <td><spring:message code="user.account.email.addr" /></td>
+                <td>${sessionScope.userAccount.emailAddr}</td>
+            </tr>
             <tr>
                 <td><spring:message code="user.account.role" /></td>
                 <td>${sessionScope.userAccount.role}</td>
             </tr>
-	    </table>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-				<a href="${pageContext.request.contextPath}/ui/user-account/email"
-				    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
-                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/password"
-                    title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/security"
-                    title="<spring:message code='user.account.change.security.questions' />"><spring:message code="user.account.change.security.questions" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys"
-                    title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a>
-            </li>
-        </ul>
-    </div>
+        </table>
+    </p>
 </div>
+
+<div id="rightbar">&nbsp;</div>

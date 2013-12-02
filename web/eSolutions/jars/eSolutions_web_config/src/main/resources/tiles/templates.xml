@@ -8,7 +8,7 @@
         <put-attribute name="pageTitle"     value="eSolutions" cascade="true" />
         <!-- jsp files -->
         <put-attribute name="head"          value="/theme/cws/html/en/jsp/head.jsp" cascade="true" />
-        <put-attribute name="header"        value="/theme/cws/html/en/jsp/SearchForm.jsp" cascade="true" />
+        <put-attribute name="search"        value="/theme/cws/html/en/jsp/SearchForm.jsp" cascade="true" />
         <put-attribute name="navbar"        value="/theme/cws/html/en/jsp/navbar.jsp" cascade="true" />
         <put-attribute name="footer"        value="/theme/cws/html/en/jsp/footer.jsp" cascade="true" />
     </definition>
@@ -88,10 +88,6 @@
     </definition>
 
     <!-- DNSService -->
-    <definition name="DNSService_DefaultHandler" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - DNS Services" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_DefaultHandler.jsp" cascade="true" />
-    </definition>
     <definition name="DNSService_ServiceLookup" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - DNS Services - Service Lookup" cascade="true" />
         <put-attribute name="body"          value="/com.cws.us.esolutions.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />

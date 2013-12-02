@@ -18,6 +18,11 @@
         <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
         <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
         <passwordManager>com.cws.esolutions.security.dao.passwordmgmt.impl.LDAPPasswordManager</passwordManager>
+        <serviceAccount>
+            <accountInformation>service-account</accountInformation>
+            <accountInformation>a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0</accountInformation>
+            <accountInformation>SITEADMIN</accountInformation>
+        </serviceAccount>
     </security-config>
 
     <auth-data>

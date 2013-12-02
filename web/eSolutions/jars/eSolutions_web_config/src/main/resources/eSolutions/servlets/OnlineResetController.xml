@@ -22,6 +22,7 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
         <property name="messageOlrComplete" value="olr.request.complete" />
         <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />

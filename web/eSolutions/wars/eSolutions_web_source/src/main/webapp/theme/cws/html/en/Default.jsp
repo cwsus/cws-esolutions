@@ -28,13 +28,15 @@
     <tiles:insertAttribute name="head" />
 
     <body>
-        <div id="Container">
+        <div id="wrap">
+            <tiles:insertAttribute name="search" />
             <tiles:insertAttribute name="navbar" />
 
-            <tiles:insertAttribute name="body" />
+            <%-- <div id="sidebar" /> --%>
+            <tiles:insertAttribute name="body" /> <%-- <div id="main" /> --%>
+            <%-- <div id="rightbar" /> --%>
 
             <tiles:insertAttribute name="footer" />
         </div>
     </body>
-
 </html>

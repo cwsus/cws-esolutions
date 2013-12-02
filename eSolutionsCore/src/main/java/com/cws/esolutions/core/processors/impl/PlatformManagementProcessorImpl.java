@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
@@ -427,6 +428,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -547,13 +549,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                         DEBUGGER.debug("UserAccount: {}", searchAccount);
                                     }
 
+                                    svcAccount = new UserAccount();
+                                    svcAccount.setUsername(serviceAccount.get(0));
+                                    svcAccount.setGuid(serviceAccount.get(1));
+                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                    }
+
                                     searchRequest = new AccountControlRequest();
                                     searchRequest.setHostInfo(request.getRequestInfo());
                                     searchRequest.setUserAccount(searchAccount);
                                     searchRequest.setApplicationName(request.getApplicationName());
                                     searchRequest.setApplicationId(request.getApplicationId());
                                     searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(secBean.getServiceAccount());
+                                    searchRequest.setRequestor(svcAccount);
 
                                     if (DEBUG)
                                     {
@@ -676,13 +688,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -812,13 +834,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -955,6 +987,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -1070,13 +1103,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                         DEBUGGER.debug("UserAccount: {}", searchAccount);
                                     }
 
+                                    svcAccount = new UserAccount();
+                                    svcAccount.setUsername(serviceAccount.get(0));
+                                    svcAccount.setGuid(serviceAccount.get(1));
+                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                    }
+
                                     searchRequest = new AccountControlRequest();
                                     searchRequest.setHostInfo(request.getRequestInfo());
                                     searchRequest.setUserAccount(searchAccount);
                                     searchRequest.setApplicationName(request.getApplicationName());
                                     searchRequest.setApplicationId(request.getApplicationId());
                                     searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(secBean.getServiceAccount());
+                                    searchRequest.setRequestor(svcAccount);
 
                                     if (DEBUG)
                                     {
@@ -1199,13 +1242,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -1335,13 +1388,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -1476,6 +1539,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -1589,13 +1653,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                         DEBUGGER.debug("UserAccount: {}", searchAccount);
                                     }
 
+                                    svcAccount = new UserAccount();
+                                    svcAccount.setUsername(serviceAccount.get(0));
+                                    svcAccount.setGuid(serviceAccount.get(1));
+                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                    }
+
                                     searchRequest = new AccountControlRequest();
                                     searchRequest.setHostInfo(request.getRequestInfo());
                                     searchRequest.setUserAccount(searchAccount);
                                     searchRequest.setApplicationName(request.getApplicationName());
                                     searchRequest.setApplicationId(request.getApplicationId());
                                     searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(secBean.getServiceAccount());
+                                    searchRequest.setRequestor(svcAccount);
 
                                     if (DEBUG)
                                     {
@@ -1718,13 +1792,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -1854,13 +1938,23 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {

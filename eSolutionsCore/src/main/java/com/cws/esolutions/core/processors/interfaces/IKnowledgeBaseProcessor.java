@@ -15,24 +15,25 @@
  */
 package com.cws.esolutions.core.processors.interfaces;
 
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
-import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.interfaces
@@ -58,6 +59,7 @@ public interface IKnowledgeBaseProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final String CNAME = IKnowledgeBaseProcessor.class.getName();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();

@@ -1,93 +1,62 @@
-<%--
-/**
- * Copyright 2008 - 2009 CaspersBox Web Services
- * All rights reserved.
- */
---%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<%--
-/**
- * eSolutions_web_source
- * theme/cws/html/en/jsp
- * errHandler.jsp
- *
- * $Id$
- * $Author$
- * $Date$
- * $Revision$
- * @author kh05451
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 16, 2013 11:53:26 AM
- *     Created.
- */
---%>
-<%@page contentType="text/html" pageEncoding="UTF-8" isThreadSafe="true" isErrorPage="true" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>eSolutions - System Error</title>
+        <link rel="stylesheet" type="text/css" media="all" href="/html/eSolutions/css/esolutions.css" />
+        <link rel="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Content-Language" content="en-US" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta http-equiv="expires" content="-1" />
+        <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
+        <meta http-equiv="max-age" content="0" />
+        <meta http-equiv="refresh" content="900; ${pageContext.request.contextPath}/ui/login/logout" />
+        <meta name="robots" content="index,follow,noarchive" />
+        <meta name="GoogleBot" content="noarchive" />
+        <meta name="Author" content="eSolutions" />
+        <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
+        <meta name="description" content="eSolutionsService" />
+        <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
+        <script type="text/javascript" src="/html/eSolutions/js/Scripts.js"></script>
+        <script type="text/javascript" src="/html/eSolutions/js/FormHandler.js"></script>
+        <script type="text/javascript">
+            <!--
+                if (top != self)
+                {
+                    top.location = self.location;
+                }
+            //-->
+        </script>
+        <script type="text/javascript">
+            <!--
+                var timeout = ${pageContext.session.maxInactiveInterval} * 1000;
+                var documentURI = window.location.pathname + window.location.search;
+                var ignoreURIs = new Array("/ui/login", "/ui/online-reset", "/ui/knowledgebase", "/ui/common/submit-contact");
 
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>
-<%@taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
-<%@taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
-
-<spring:htmlEscape defaultHtmlEscape="true" />
-
-<html xml:lang="en" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.w3.org/1999/xhtml http://www.w3.org/MarkUp/SCHEMA/xhtml2.xsd">
-
-	<head>
-	    <title>eSolutions - System Error</title>
-        <link rel="stylesheet" type="text/css" media="all" href="/html/esolutions/css/esolutions.css" />
-	    <link rel="image/x-icon" href="/favicon.ico" />
-	    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-	    <meta http-equiv="Content-Script-Type" content="text/javascript" />
-	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	    <meta http-equiv="Content-Language" content="en-US" />
-	    <meta http-equiv="pragma" content="no-cache" />
-	    <meta http-equiv="expires" content="-1" />
-	    <meta http-equiv="cache-control" content="no-store, no-cache, must-revalidate" />
-	    <meta http-equiv="max-age" content="0" />
-	    <meta http-equiv="refresh" content="${pageContext.session.maxInactiveInterval}; url=${pageContext.request.contextPath}/ui/login/logout" />
-	    <meta name="robots" content="index,follow,noarchive" />
-	    <meta name="GoogleBot" content="noarchive" />
-	    <meta name="Author" content="eSolutions" />
-	    <meta name="copyright" content="<spring:message code="theme.footer.copyright" />" />
-	    <meta name="description" content="eSolutionsService" />
-	    <meta name="keywords" content="incident, change management, incident management, infinix, caspersbox, caspersbox web services" />
-	    <script type="text/javascript">
-	        <!--
-	        if (top != self)
-	        {
-	            top.location = self.location;
-	        }
-	        //-->
-	    </script>
-	    <script type="text/javascript">
-	        <!--
-	            var enable = false;
-	
-	            if (enable)
-	            {
-	                var documentURI = window.location.pathname + window.location.search;
-	
-	                if (documentURI != '${pageContext.request.contextPath}/ui/login/warn')
-	                {
-	                    var popupURI = "${pageContext.request.contextPath}/ui/login/warn";
-	
-	                    setInterval("popup(popupURI, 'Timeout', '280', '170', '0', '0', '0', '0')", ${pageContext.session.maxInactiveInterval} - 90);
-	                }
-	            }
-	        //-->
-	    </script>
-	</head>
+                for (var x = 0; x < ignoreURIs.length; x++)
+                {
+                    if (documentURI == ignoreURIs[x])
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, timeout);
+                    }
+                }
+            //-->
+        </script>
+    </head>
 
     <body>
-        <div id="Container">
-            <div id="nav">
+        <div id="wrap">
+            <div id="header">
+                <h1 id="logo"><img src="/html/eSolutions/img/logo.gif" alt="CaspersBox Web Services" /></h1>
+            </div>
+
+            <div id="menu">
                 <ul>
                     <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
                         <c:if test="${sessionScope.userAccount.status == 'SUCCESS'}">
@@ -123,17 +92,27 @@
                     </c:if>
                 </ul>
             </div>
+  
+            <div id="sidebar" >&nbsp;</div>
 
-            <div id="InfoLine"><spring:message code="theme.error.system.failure" /></div>
-
-			<div id="content">
-			    <div id="content-right">
-                    <spring:message code="theme.system.service.failure" />
-			    </div>
-			</div>
-
-            <div id="Footer">
+            <div id="main">
+                <h1><spring:message code="theme.error.system.failure" /></h1>
                 <p>
+                    <spring:message code="theme.system.service.failure" />
+                </p>
+            </div>
+
+            <div id="rightbar">&nbsp;</div>
+        </div>
+
+        <div id="footer">
+            <div id="footer-content">
+                <div id="footer-right">
+                    &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
+                    <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
+                        title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
+                </div>
+                <div id="footer-left">
                     <c:choose>
                         <c:when test="${not empty sessionScope.userAccount}">
                             <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
@@ -144,21 +123,19 @@
                         </c:when>
                         <c:otherwise>
                             <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
-                                <spring:message code='theme.navbar.login' /></a> |
+                                <spring:message code='theme.navbar.login' /></a> | 
                         </c:otherwise>
                     </c:choose>
-                    <a href="${pageContext.request.contextPath}/ui/common/default" title="<spring:message code='theme.navbar.home' />">
-                        <spring:message code='theme.navbar.home' /></a> |
                     <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-                        <spring:message code='theme.navbar.help' /></a> |
-                    <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
-                        title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a><br />
-                    &copy; <spring:message code="theme.footer.copyright" /><br />
-                    <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
-                        title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a><br />
-                </p>
+                        <spring:message code='theme.navbar.help' /></a> | 
+                    <script>
+                        if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
+                        {
+                            document.write('<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a> |');
+                        }
+                    </script>
+                </div>
             </div>
         </div>
     </body>
 </html>
-

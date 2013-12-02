@@ -20,22 +20,15 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.core.utils.MQUtils;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
@@ -46,6 +39,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
@@ -55,9 +49,15 @@ import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
+import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutionsCore
@@ -438,6 +438,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -546,13 +547,23 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                     DEBUGGER.debug("UserAccount: {}", searchAccount);
                                 }
 
+                                svcAccount = new UserAccount();
+                                svcAccount.setUsername(serviceAccount.get(0));
+                                svcAccount.setGuid(serviceAccount.get(1));
+                                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                }
+
                                 searchRequest = new AccountControlRequest();
                                 searchRequest.setHostInfo(request.getRequestInfo());
                                 searchRequest.setUserAccount(searchAccount);
                                 searchRequest.setApplicationName(request.getApplicationName());
                                 searchRequest.setApplicationId(request.getApplicationId());
                                 searchRequest.setSearchType(SearchRequestType.GUID);
-                                searchRequest.setRequestor(secBean.getServiceAccount());
+                                searchRequest.setRequestor(svcAccount);
 
                                 if (DEBUG)
                                 {
@@ -628,13 +639,23 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                                 DEBUGGER.debug("UserAccount: {}", searchAccount);
                                             }
 
+                                            svcAccount = new UserAccount();
+                                            svcAccount.setUsername(serviceAccount.get(0));
+                                            svcAccount.setGuid(serviceAccount.get(1));
+                                            svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                            if (DEBUG)
+                                            {
+                                                DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                            }
+
                                             searchRequest = new AccountControlRequest();
                                             searchRequest.setHostInfo(request.getRequestInfo());
                                             searchRequest.setUserAccount(searchAccount);
                                             searchRequest.setApplicationName(request.getApplicationName());
                                             searchRequest.setApplicationId(request.getApplicationId());
                                             searchRequest.setSearchType(SearchRequestType.GUID);
-                                            searchRequest.setRequestor(secBean.getServiceAccount());
+                                            searchRequest.setRequestor(svcAccount);
 
                                             if (DEBUG)
                                             {
@@ -774,6 +795,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -878,13 +900,23 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 DEBUGGER.debug("UserAccount: {}", searchAccount);
                             }
 
+                            svcAccount = new UserAccount();
+                            svcAccount.setUsername(serviceAccount.get(0));
+                            svcAccount.setGuid(serviceAccount.get(1));
+                            svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", svcAccount);
+                            }
+
                             searchRequest = new AccountControlRequest();
                             searchRequest.setHostInfo(request.getRequestInfo());
                             searchRequest.setUserAccount(searchAccount);
                             searchRequest.setApplicationName(request.getApplicationName());
                             searchRequest.setApplicationId(request.getApplicationId());
                             searchRequest.setSearchType(SearchRequestType.GUID);
-                            searchRequest.setRequestor(secBean.getServiceAccount());
+                            searchRequest.setRequestor(svcAccount);
 
                             if (DEBUG)
                             {
@@ -966,7 +998,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {
@@ -1103,6 +1135,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: {}", request);
         }
 
+        UserAccount svcAccount = null;
         UserAccount searchAccount = null;
         AccountControlRequest searchRequest = null;
         AccountControlResponse searchResponse = null;
@@ -1197,13 +1230,23 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 DEBUGGER.debug("UserAccount: {}", searchAccount);
                             }
 
+                            svcAccount = new UserAccount();
+                            svcAccount.setUsername(serviceAccount.get(0));
+                            svcAccount.setGuid(serviceAccount.get(1));
+                            svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", svcAccount);
+                            }
+
                             searchRequest = new AccountControlRequest();
                             searchRequest.setHostInfo(request.getRequestInfo());
                             searchRequest.setUserAccount(searchAccount);
                             searchRequest.setApplicationName(request.getApplicationName());
                             searchRequest.setApplicationId(request.getApplicationId());
                             searchRequest.setSearchType(SearchRequestType.GUID);
-                            searchRequest.setRequestor(secBean.getServiceAccount());
+                            searchRequest.setRequestor(svcAccount);
 
                             if (DEBUG)
                             {
@@ -1279,13 +1322,23 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                             DEBUGGER.debug("UserAccount: {}", searchAccount);
                                         }
 
+                                        svcAccount = new UserAccount();
+                                        svcAccount.setUsername(serviceAccount.get(0));
+                                        svcAccount.setGuid(serviceAccount.get(1));
+                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                                        }
+
                                         searchRequest = new AccountControlRequest();
                                         searchRequest.setHostInfo(request.getRequestInfo());
                                         searchRequest.setUserAccount(searchAccount);
                                         searchRequest.setApplicationName(request.getApplicationName());
                                         searchRequest.setApplicationId(request.getApplicationId());
                                         searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(secBean.getServiceAccount());
+                                        searchRequest.setRequestor(svcAccount);
 
                                         if (DEBUG)
                                         {

@@ -27,110 +27,72 @@
  *     Created.
  */
 --%>
-
-<div id="InfoLine"><spring:message code="user.account.update.security" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
-
-        <span id="validationError"></span>
-
-	    <form:form name="submitSecurityInformationChange" id="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post" autocomplete="off">
-	        <table id="userauth">
-	            <tr>
-	                <td><label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label></td>
-	                <td>
-	                    <form:select path="secQuestionOne">
-	                        <option><spring:message code="theme.option.select" /></option>
-	                        <option><spring:message code="theme.option.spacer" /></option>
-	                        <form:options items="${questionList}" />
-	                    </form:select>
-	                </td>
-	                <td><form:errors path="secQuestionOne" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label></td>
-	                <td><form:password path="secAnswerOne" /></td>
-	                <td><form:errors path="secAnswerOne" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></td>
-	                <td>
-	                    <form:select path="secQuestionTwo">
-	                        <option><spring:message code="theme.option.select" /></option>
-	                        <option><spring:message code="theme.option.spacer" /></option>
-	                        <form:options items="${questionList}" />
-	                    </form:select>
-	                </td>
-	                <td><form:errors path="secQuestionTwo" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label></td>
-	                <td><form:password path="secAnswerTwo" /></td>
-	                <td><form:errors path="secAnswerTwo" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtPassword"><spring:message code="user.account.update.password.current" /></label></td>
-	                <td><form:password path="currentPassword" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" /></td>
-	                <td><form:errors path="currentPassword" cssClass="validationError" /></td>
-	            </tr>
-	        </table>
-
-	        <table id="inputItems">
-	            <tr>
-	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-	                </td>
-	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	            </tr>
-	        </table>
-	    </form:form>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/default"
-                    title="<spring:message code='user.account.view' />"><spring:message code="user.account.view" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/email"
-                    title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/contact"
-                    title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/password"
-                    title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys"
-                    title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a>
-            </li>
-        </ul>
-    </div>
+<div id="sidebar">
+    <h1><spring:message code="user.account.update.security" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/email" title="<spring:message code='user.account.change.email' />"><spring:message code="user.account.change.email" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/contact" title="<spring:message code='user.account.change.contact' />"><spring:message code="user.account.change.contact" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/password" title="<spring:message code='user.account.change.password' />"><spring:message code="user.account.change.password" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/user-account/regenerate-keys" title="<spring:message code='user.account.change.keys' />"><spring:message code="user.account.change.keys" /></a></li>
+    </ul>
 </div>
+
+<div id="main">
+    <div id="error"></div>
+
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
+
+    <h1><spring:message code="user.account.update.security" /></h1>
+    <p>
+        <form:form name="submitSecurityInformationChange" id="submitSecurityInformationChange" action="${pageContext.request.contextPath}/ui/user-account/security" method="post" autocomplete="off">
+            <p>
+                <label id="txtQuestionOne"><spring:message code="user.account.update.security.question" /></label>
+                <form:select path="secQuestionOne">
+                    <option><spring:message code="theme.option.select" /></option>
+                    <option><spring:message code="theme.option.spacer" /></option>
+                    <form:options items="${questionList}" />
+                </form:select>
+                <form:errors path="secQuestionOne" cssClass="error" />
+                <label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label>
+                <form:password path="secAnswerOne" />
+                <form:errors path="secAnswerOne" cssClass="error" />
+                <label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label>
+                <form:select path="secQuestionTwo">
+                    <option><spring:message code="theme.option.select" /></option>
+                    <option><spring:message code="theme.option.spacer" /></option>
+                    <form:options items="${questionList}" />
+                </form:select>
+                <form:errors path="secQuestionTwo" cssClass="error" />            
+                <label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label>
+                <form:password path="secAnswerTwo" />
+                <form:errors path="secAnswerTwo" cssClass="error" />
+                <label id="txtPassword"><spring:message code="user.account.update.password.current" /></label>
+                <form:password path="currentPassword" />
+                <form:errors path="currentPassword" cssClass="error" />
+                <br /><br />
+                <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+                <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+                <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); window.location.href = '${pageContext.request.contextPath}/ui/online-reset/cancel';" />
+            </p>
+        </form:form>
+    </p>
+</div>
+
+<div id="rightbar">&nbsp;</div>

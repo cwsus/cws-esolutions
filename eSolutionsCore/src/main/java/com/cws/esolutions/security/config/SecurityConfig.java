@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security.config;
 
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -23,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.security.SecurityConstants;
 /**
@@ -62,6 +64,7 @@ public final class SecurityConfig implements Serializable
     private String passwordManager = null;
     private boolean allowUserReset = false;
     private boolean smsResetEnabled = false;
+    private List<String> serviceAccount = null;
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -279,6 +282,19 @@ public final class SecurityConfig implements Serializable
         }
 
         this.resetTimeout = value;
+    }
+
+    public final void setServiceAccount(final List<String> value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setServiceAccount(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceAccount = value;
     }
 
     @XmlElement(name = "maxAttempts")
@@ -503,6 +519,21 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.resetTimeout;
+    }
+
+    @XmlElement(name = "accountInformation")
+    @XmlElementWrapper(name = "serviceAccount")
+    public final List<String> getServiceAccount()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getServiceAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceAccount);
+        }
+
+        return this.serviceAccount;
     }
 
     @Override

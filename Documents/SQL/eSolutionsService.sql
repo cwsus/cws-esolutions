@@ -16,15 +16,16 @@
 CREATE DATABASE IF NOT EXISTS esolutionssvc;
 COMMIT;
 
-SOURCE ./eSolutionsService.kbase.sql;
-SOURCE ./eSolutionsService.messaging.sql;
-SOURCE ./eSolutionsService.search.sql;
-SOURCE ./eSolutionsService.service_projects.sql;
-SOURCE ./eSolutionsService.service_messages.sql;
+SOURCE ./eSolutionsService.articles.sql;
+SOURCE ./eSolutionsService.dns_service.sql;
 SOURCE ./eSolutionsService.installed_applications.sql;
 SOURCE ./eSolutionsService.installed_systems.sql;
-SOURCE ./eSolutionsService.service_requests.sql;
+SOURCE ./eSolutionsService.installed_webapps.sql;
 SOURCE ./eSolutionsService.service_datacenters.sql;
+SOURCE ./eSolutionsService.service_messages.sql;
+SOURCE ./eSolutionsService.service_platforms.sql;
+SOURCE ./eSolutionsService.service_projects.sql;
+SOURCE ./eSolutionsService.service_requests.sql;
 
 COMMIT;
 

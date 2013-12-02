@@ -21,30 +21,30 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
+import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /**
  * eSolutionsCore
@@ -398,13 +398,23 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                         DEBUGGER.debug("UserAccount: {}", searchAccount);
                     }
 
+                    UserAccount svcAccount = new UserAccount();
+                    svcAccount.setUsername(serviceAccount.get(0));
+                    svcAccount.setGuid(serviceAccount.get(1));
+                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", svcAccount);
+                    }
+
                     AccountControlRequest searchRequest = new AccountControlRequest();
                     searchRequest.setHostInfo(request.getRequestInfo());
                     searchRequest.setUserAccount(searchAccount);
                     searchRequest.setApplicationName(request.getApplicationName());
                     searchRequest.setApplicationId(request.getApplicationId());
                     searchRequest.setSearchType(SearchRequestType.GUID);
-                    searchRequest.setRequestor(secBean.getServiceAccount());
+                    searchRequest.setRequestor(svcAccount);
 
                     if (DEBUG)
                     {
@@ -560,13 +570,23 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                     DEBUGGER.debug("UserAccount: {}", searchAccount);
                 }
 
+                UserAccount svcAccount = new UserAccount();
+                svcAccount.setUsername(serviceAccount.get(0));
+                svcAccount.setGuid(serviceAccount.get(1));
+                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", svcAccount);
+                }
+
                 AccountControlRequest searchRequest = new AccountControlRequest();
                 searchRequest.setHostInfo(request.getRequestInfo());
                 searchRequest.setUserAccount(searchAccount);
                 searchRequest.setApplicationName(request.getApplicationName());
                 searchRequest.setApplicationId(request.getApplicationId());
                 searchRequest.setSearchType(SearchRequestType.GUID);
-                searchRequest.setRequestor(secBean.getServiceAccount());
+                searchRequest.setRequestor(svcAccount);
 
                 if (DEBUG)
                 {

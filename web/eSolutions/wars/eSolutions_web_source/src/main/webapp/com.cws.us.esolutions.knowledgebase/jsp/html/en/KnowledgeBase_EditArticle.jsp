@@ -27,101 +27,70 @@
  *     Created.
  */
 --%>
+<div id="sidebar">
+    <h1><spring:message code="kbase.header" /></h1>
+    <ul>
+        <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article" title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a></li>
+        <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
+            <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals" title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a></li>
+        </c:if>
+        <li><a href="${pageContext.request.contextPath}/ui/common/submit-contact" title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a></li>
+    </ul>
+</div>
 
-<div id="InfoLine"><spring:message code="kbase.article.update.data" arguments="${article.articleId}" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="main">
+    <h1><spring:message code="kbase.article.update.data" arguments="${article.articleId}" /></h1>
 
-	    <span id="validationError"></span>
+    <div id="error"></div>
 
-	    <form:form id="submitArticleUpdates" name="submitArticleUpdates" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post" commandName="article">
-	       <form:hidden path="articleId" />
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
 
-	       <table id="ShowArticle">
-	           <tr>
-	               <td id="txtArticleId"><strong><em><spring:message code="kbase.article.id" /></em></strong></td>
-	               <td>${article.articleId}</td>
-	           </tr>
-	           <tr>
-	               <td id="txtArticleTitle"><strong><em><spring:message code="kbase.article.title" /></em></strong></td>
-	               <td><form:input path="title" id="title" name="title" value="${article.title}" /></td>
-	               <td><form:errors path="title" cssClass="validationError" /></td>
-	           </tr>
-	           <tr>
-	               <td id="txtArticleSymptoms"><strong><em><spring:message code="kbase.article.symptoms" /></em></strong></td>
-	               <td><form:input path="symptoms" type="text" id="symptoms" name="symptoms" value="${article.symptoms}" /></td>
-	               <td><form:errors path="symptoms" cssClass="validationError" /></td>
-	           </tr>
-	           <tr>
-	               <td id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></em></strong></td>
-	               <td><form:input path="cause" type="text" id="cause" name="cause" value="${article.cause}" /></td>
-	               <td><form:errors path="cause" cssClass="validationError" /></td>
-	           </tr>
-	           <tr>
-	               <td id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.keywords" /></em></strong></td>
-	               <td><form:input path="keywords" type="text" id="keywords" name="keywords" value="${article.keywords}" /></td>
-	               <td><form:errors path="keywords" cssClass="validationError" /></td>
-	           </tr>
-	       </table>
-            <br />
-	        <label id="txtArticleResolution"><strong><spring:message code="kbase.article.resolution" /></strong></label>
-	        <br />
-	        <c:if test="${requestScope.isHTMLEnabled eq 'true'}">
-	            <spring:message code="kbase.edit.article.html.enabled" />
-	        </c:if>
-	        <br />
-	        <textarea id="resolution" name="resolution" cols="90" rows="10">${article.resolution}</textarea>
+    <p>
+        <form:form id="submitArticleUpdates" name="submitArticleUpdates" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post" commandName="article">
+            <form:hidden path="articleId" />
 
-	        <table id="inputItems">
-	           <tr>
-	               <td>
-	                   <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	               </td>
-	               <td>
-	                   <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-	               </td>
-	               <td>
-	                   <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	               </td>
-	           </tr>
-	        </table>
-	    </form:form>
-    </div>
+            <label id="txtArticleTitle"><spring:message code="kbase.article.title" /></label>
+            <form:input path="title" value="${article.title}" />
+            <form:errors path="title" cssClass="error" />
+            <label id="txtArticleSymptoms"><spring:message code="kbase.article.symptoms" /></label>
+            <form:input path="symptoms" value="${article.symptoms}" />
+            <form:errors path="symptoms" cssClass="error" />
+            <label id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></label>
+            <form:input path="cause" value="${article.cause}" />
+            <form:errors path="cause" cssClass="error" />
+            <label id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.keywords" /></label>
+            <form:input path="keywords" value="${article.keywords}" />
+            <form:errors path="keywords" cssClass="error" />
+            <label id="txtArticleResolution"><spring:message code="kbase.article.resolution" /></label>
+            <textarea id="resolution" name="resolution" cols="90" rows="10">${article.resolution}</textarea>
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+        </form:form>
+    </p>
+</div>
 
-    <div id="content-left">
-        <ul>
-            <li>
-		        <a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article"
-		            title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a>
-		    </li>
-		    <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-		        <li>
-	                <a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals"
-	                    title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a>
-	            </li>
-	        </c:if>
-	        <li>
-                <a href="${pageContext.request.contextPath}/ui/common/submit-contact"
-                    title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a>
-            </li>
-        </ul>
-    </div>
+<div id="rightbar">
+    <c:if test="${requestScope.isHTMLEnabled eq 'true'}">
+        <spring:message code="kbase.edit.article.html.enabled" />
+    </c:if>
 </div>

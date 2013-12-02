@@ -48,6 +48,7 @@ import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.us.esolutions.validators.DeploymentValidator;
 import com.cws.us.esolutions.validators.ApplicationValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -506,6 +507,7 @@ public class ApplicationManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            mView.addObject("command", new SearchRequest());
             mView.setViewName(this.defaultPage);
         }
         else

@@ -27,91 +27,61 @@
  *     Created.
  */
 --%>
+<div id="sidebar">
+    <h1><spring:message code="system.mgmt.header" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/service-consoles" title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/netstat/server/${server.serverGuid}" title="<spring:message code='system.check.netstat' />"><spring:message code='system.check.netstat' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}" title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}" title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/install-software" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
+    </ul>
+</div>
 
-<div id="InfoLine"><spring:message code="system.mgmt.add.server" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="main">
+    <h1><spring:message code="system.mgmt.server.control.header" /></h1>
 
-        <span id="validationError"></span>
+    <div id="error"></div>
 
-	    <form:form id="controlServer" name="controlServer" action="${pageContext.request.contextPath}/ui/system-management/server-control" method="post">
-	        <table id="serverDetail">
-	            <tr>
-	                <td><label id="txtTargetServer"><spring:message code="system.mgmt.server.status" /></label>
-	                <td>
-	                    <form:select path="targetServer">
-	                        <form:options items="${serverList}" />
-	                    </form:select>
-	                </td>
-	                <td><form:errors path="targetServer" cssClass="validationError" /></td>
-	            </tr>
-	            <tr>
-	                <td><label id="txtOperationType"><spring:message code="system.mgmt.server.region" /></label>
-	                <td>
-	                    <form:select path="operationType">
-	                        <form:options items="${operationTypes}" />
-	                    </form:select>
-	                </td>
-	                <td><form:errors path="operationType" cssClass="validationError" /></td>
-	            </tr>
-	        </table>
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
 
-	        <table id="inputItems">
-	            <tr>
-	                <td>
-	                    <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	                <td>
-	                    <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-	                </td>
-	                <td>
-	                    <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-	                </td>
-	            </tr>
-	        </table>
-	    </form:form>
-    </div>
+    <p>
+        <form:form id="controlServer" name="controlServer" action="${pageContext.request.contextPath}/ui/system-management/server-control" method="post">
+            <form:hidden path="serverGuid" value="${server.serverGuid}" />
 
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-management/add-server"
-                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}"
-                    title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}"
-                    title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-management/install-software"
-                    title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/system-management/server-control"
-                    title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a>
-            </li>
-        </ul>
-    </div>
+            <label id="txtOperationType"><spring:message code="system.mgmt.server.region" /></label>
+            <form:select path="operationType">
+                <form:options items="${operationTypes}" />
+            </form:select>
+            <form:errors path="operationType" cssClass="error" />
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+        </form:form>
+    </p>
+</div>
+
+<div id="rightbar">
+    <c:if test="${not empty fn:trim(response)}">
+        ${response}
+    </c:if>
 </div>

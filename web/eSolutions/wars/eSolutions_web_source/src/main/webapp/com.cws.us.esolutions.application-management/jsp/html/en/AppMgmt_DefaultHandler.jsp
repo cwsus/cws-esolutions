@@ -27,40 +27,49 @@
  *     Created.
  */
 --%>
-
-<div id="InfoLine"><spring:message code="app.mgmt.header" /></div>
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/application-management/list-applications"
-                    title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a>
-            </li>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/application-management/add-application"
-                    title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a>
-            </li>
-        </ul>
-    </div>
+<div id="sidebar">
+    <h1><spring:message code="app.mgmt.header" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
+    </ul>
 </div>
+
+<div id="main">
+    <h1><spring:message code="app.mgmt.search.applications" /></h1>
+
+    <div id="error"></div>
+
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
+
+    <p>
+        <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/application-management/search" method="post">
+            <label id="txtAppName"><spring:message code="app.mgmt.application.name" /></label>
+            <form:input path="searchTerms" />
+            <form:errors path="searchTerms" cssClass="error" />
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+        </form:form>
+    </p>
+</div>
+
+<div id="rightbar">&nbsp;</div>

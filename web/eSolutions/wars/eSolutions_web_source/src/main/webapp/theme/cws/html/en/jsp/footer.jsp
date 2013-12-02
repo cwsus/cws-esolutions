@@ -28,31 +28,35 @@
  */
 --%>
 
-<div id="Footer">
-    <p>
-        <c:choose>
-            <c:when test="${not empty sessionScope.userAccount}">
-                <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
-                <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
-                    <spring:message code='theme.navbar.logoff' /></a> |
-                <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
-                    <spring:message code="theme.navbar.myaccount" /></a> |
-            </c:when>
-            <c:otherwise>
-                <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
-                    <spring:message code='theme.navbar.login' /></a> | 
-            </c:otherwise>
-        </c:choose>
-        <script>
-            if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
-            {
-                document.write('<a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a> |');
-            }
-        </script>
-        <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-            <spring:message code='theme.navbar.help' /></a><br />
-        &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
-        <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
-            title="<spring:message code="theme.contact.us" />"><spring:message code="theme.contact.us" /></a><br />
-    </p>
+<div id="footer">
+    <div id="footer-content">
+        <div id="footer-right">
+            &copy; <a href="http://www.caspersbox.com/"><spring:message code="theme.footer.copyright" /></a><br />
+            <strong><spring:message code="theme.footer.more.info" /></strong><a href="http://www.caspersbox.com/cws/ui/contact/default"
+                title="<spring:message code="theme.contact.us" />" target="_blank"><spring:message code="theme.contact.us" /></a><br />
+        </div>
+        <div id="footer-left">
+            <c:choose>
+                <c:when test="${not empty sessionScope.userAccount}">
+                    <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
+                    <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
+                        <spring:message code='theme.navbar.logoff' /></a> |
+                    <a href="${pageContext.request.contextPath}/ui/user-account/default" title="<spring:message code='theme.navbar.myaccount' />">
+                        <spring:message code="theme.navbar.myaccount" /></a> |
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/ui/login/default" title="<spring:message code='theme.navbar.login' />">
+                        <spring:message code='theme.navbar.login' /></a> | 
+                </c:otherwise>
+            </c:choose>
+            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
+                <spring:message code='theme.navbar.help' /></a>
+            <script>
+                if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
+                {
+                    document.write(' | <a href="${pageContext.request.contextPath}/ui/common/default"><spring:message code="theme.navbar.home" /></a>');
+                }
+            </script>
+        </div>
+    </div>
 </div>

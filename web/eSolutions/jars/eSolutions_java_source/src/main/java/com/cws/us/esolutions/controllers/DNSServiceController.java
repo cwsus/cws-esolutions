@@ -62,7 +62,6 @@ public class DNSServiceController
     private String serviceId = null;
     private String lookupPage = null;
     private String serviceName = null;
-    private String defaultPage = null;
     private String serviceHost = null;
     private String[] searchSuffix = null;
     private List<String> serviceTypes = null;
@@ -98,19 +97,6 @@ public class DNSServiceController
         }
 
         this.serviceName = value;
-    }
-
-    public final void setDefaultPage(final String value)
-    {
-        final String methodName = DNSServiceController.CNAME + "#setDefaultPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.defaultPage = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -246,8 +232,9 @@ public class DNSServiceController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView = new ModelAndView();
-            mView.setViewName(this.defaultPage);
+            mView.addObject("serviceTypes", this.serviceTypes);
+            mView.addObject("command", new DNSRecord());
+            mView.setViewName(this.lookupPage);
         }
         else
         {

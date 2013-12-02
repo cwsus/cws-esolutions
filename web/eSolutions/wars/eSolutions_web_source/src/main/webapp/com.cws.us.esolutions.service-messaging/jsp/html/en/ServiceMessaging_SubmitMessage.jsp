@@ -28,86 +28,66 @@
  */
 --%>
 
-<c:choose>
-    <c:when test="${not empty fn:trim(command.authorEmail)}">
-        <div id="InfoLine"><spring:message code="svc.messaging.system.message.edit.banner" arguments="${message.messageId}" /></div>
-    </c:when>
-    <c:otherwise>
-        <div id="InfoLine"><spring:message code="svc.messaging.create.banner" /></div>
-    </c:otherwise>
-</c:choose>
+<div id="sidebar">
+    <h1><spring:message code="svc.messaging.list.messages" /></h1>
+    <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/service-messaging/default" title="spring:message code='svc.messaging.list' />"><spring:message code="svc.messaging.list" /></a></li>
+    </ul>
+</div>
 
-<div id="content">
-    <div id="content-right">
-	    <c:if test="${not empty fn:trim(messageResponse)}">
-	        <p id="info">${messageResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorResponse)}">
-	        <p id="error">${errorResponse}</p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(responseMessage)}">
-	        <p id="info"><spring:message code="${responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(errorMessage)}">
-	        <p id="error"><spring:message code="${errorMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.responseMessage)}">
-	        <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	    </c:if>
-	    <c:if test="${not empty fn:trim(param.errorMessage)}">
-	        <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	    </c:if>
+<div id="main">
+    <c:choose>
+        <c:when test="${not empty fn:trim(command.messageAuthor)}">
+            <h1><spring:message code="svc.messaging.system.message.edit.banner" arguments="${message.messageId}" /></h1>
+        </c:when>
+        <c:otherwise>
+            <h1><spring:message code="svc.messaging.create.system.message" /></h1>
+        </c:otherwise>
+    </c:choose>
 
-        <span id="validationError"></span>
+    <div id="error"></div>
 
+    <c:if test="${not empty fn:trim(messageResponse)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="error"><spring:message code="${param.errorMessage}" /></p>
+    </c:if>
+
+    <p>
         <form:form id="submitSystemMessage" name="submitSystemMessage" action="${pageContext.request.contextPath}/ui/service-messaging/submit-message" method="post" autocomplete="off">
-            <c:if test="${empty fn:trim(command.authorEmail)}">
+            <c:if test="${empty fn:trim(command.messageAuthor)}">
                 <form:hidden path="isNewMessage" value="true" />
             </c:if>
 
-            <table id="contactTable">
-                <tr>
-                    <td id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></td>
-                    <td><form:input path="messageTitle" /></td>
-                    <td><form:errors path="messageTitle" cssClass="validationError" /></td>
-                </tr>
-                <tr>
-                    <td id="txtSysMessageBody"><spring:message code="svc.messaging.system.message.body" /></td>
-                    <td><form:textarea path="messageText" /></td>
-                    <td><form:errors path="messageText" cssClass="validationError" /></td>
-                </tr>
-                <tr>
-                    <td><label id="txtIsMessageActive"><spring:message code="svc.messaging.system.message.activate" /></label></td>
-                    <td>
-                        <form:radiobutton path="isActive" value="true" /><spring:message code="svc.messaging.system.message.active" />
-                        <form:radiobutton path="isActive" value="false" /><spring:message code="svc.messaging.system.message.inactive" />
-                        <form:errors path="isActive" cssClass="validationError" />
-                    </td>
-                </tr>
-            </table>
-
-            <table id="inputItems">
-                <tr>
-                    <td>
-                        <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                    </td>
-                    <td>
-                        <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
-                    </td>
-                    <td>
-                        <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
-                    </td>
-                </tr>
-            </table>
+            <label id="txtSysMessageSubject"><spring:message code="svc.messaging.system.message.subject" /></label>
+            <form:input path="messageTitle" />
+            <form:errors path="messageTitle" cssClass="error" />
+            <label id="txtSysMessageBody"><spring:message code="svc.messaging.system.message.body" /></label>
+            <form:textarea path="messageText" />
+            <form:errors path="messageText" cssClass="error" />
+            <label id="txtIsMessageActive"><spring:message code="svc.messaging.system.message.activate" /></label>
+            <form:radiobutton path="isActive" value="true" /><spring:message code="svc.messaging.system.message.active" />
+            <form:radiobutton path="isActive" value="false" /><spring:message code="svc.messaging.system.message.inactive" />
+            <form:errors path="isActive" cssClass="error" />
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
         </form:form>
-    </div>
-
-    <div id="content-left">
-        <ul>
-            <li>
-                <a href="${pageContext.request.contextPath}/ui/service-messaging/default"
-                    title="<spring:message code='svc.messaging.list.messages' />"><spring:message code='svc.messaging.list.messages' /></a>
-            </li>
-        </ul>
-    </div>
+    </p>
 </div>
+
+<div id="rightbar">&nbsp;</div>

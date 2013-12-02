@@ -51,10 +51,10 @@
     <script type="text/javascript" src="/html/eSolutions/js/FormHandler.js"></script>
     <script type="text/javascript">
         <!--
-        if (top != self)
-        {
-            top.location = self.location;
-        }
+            if (top != self)
+            {
+                top.location = self.location;
+            }
         //-->
     </script>
     <script type="text/javascript">

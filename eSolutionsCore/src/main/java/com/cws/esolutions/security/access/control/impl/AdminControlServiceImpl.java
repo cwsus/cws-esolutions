@@ -71,6 +71,8 @@ public class AdminControlServiceImpl implements IAdminControlService
             DEBUGGER.debug("AdminControlType", controlType);
         }
 
+        boolean isAuthorized = false;
+
         if (userAccount.getRole() == Role.SITEADMIN)
         {
             return true;
@@ -81,20 +83,26 @@ public class AdminControlServiceImpl implements IAdminControlService
             case SERVICE_ADMIN:
                 if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SERVICEADMIN))
                 {
-                    return true;
+                    isAuthorized = true;
                 }
+
+                break;
             case SERVICE_REQUEST:
                 if (userAccount.getRole() == Role.ADMIN)
                 {
-                    return true;
+                    isAuthorized = true;
                 }
+
+                break;
             case USER_ADMIN:
                 if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.USERADMIN))
                 {
-                    return true;
+                    isAuthorized = true;
                 }
+
+                break;
         }
 
-        return false;
+        return isAuthorized;
     }
 }
