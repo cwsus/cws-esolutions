@@ -66,9 +66,16 @@
 
     <p>
         <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/service-management/search" method="post">
-            <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
+            <label id="txtSearchTerms"><spring:message code="theme.search.terms" /></label>
             <form:input path="searchTerms" />
             <form:errors path="searchTerms" cssClass="error" />
+            <label id="txtSearchType"><spring:message code="theme.search.type" /></label>
+            <form:select path="searchType" multiple="false">
+                <option><spring:message code="theme.option.select" /></option>
+                <option><spring:message code="theme.option.spacer" /></option>
+                <form:options items="${searchTypes}" />
+            </form:select>
+            <form:errors path="searchType" cssClass="error" />
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

@@ -48,6 +48,7 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
+import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
@@ -581,6 +582,7 @@ public class ServiceManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            mView.addObject("searchTypes", SearchRequestType.values());
             mView.addObject("command", new SearchRequest());
             mView.setViewName(this.defaultPage);
         }
@@ -2249,6 +2251,7 @@ public class ServiceManagementController
                 ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
 
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+                mView.addObject("searchTypes", SearchRequestType.values());
                 mView.addObject("command", new SearchRequest());
                 mView.setViewName(this.defaultPage);
 
@@ -2277,6 +2280,7 @@ public class ServiceManagementController
                 if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
+                    mView.addObject("searchTypes", SearchRequestType.values());
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }
@@ -2287,6 +2291,7 @@ public class ServiceManagementController
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject("searchTypes", SearchRequestType.values());
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }

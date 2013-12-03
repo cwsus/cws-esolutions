@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.processors.enums.SearchRequestType;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
@@ -43,6 +44,7 @@ public class SearchRequest implements Serializable
     private int startPage = 0;
     private int searchLimit = 0;
     private String searchTerms = null;
+    private SearchRequestType searchType = null;
 
     private static final long serialVersionUID = 3827869327665501686L;
     private static final String CNAME = SearchRequest.class.getName();
@@ -71,10 +73,23 @@ public class SearchRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.searchTerms = value;
+    }
+
+    public final void setSearchType(final SearchRequestType value)
+    {
+        final String methodName = SearchRequest.CNAME + "#setSearchTerms(final SearchRequestType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchType = value;
     }
 
     public final void setSearchLimit(final int value)
@@ -110,10 +125,23 @@ public class SearchRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.searchTerms);
+            DEBUGGER.debug("Value: {}", this.searchTerms);
         }
 
         return this.searchTerms;
+    }
+
+    public final SearchRequestType getSearchType()
+    {
+        final String methodName = SearchRequest.CNAME + "#getSearchType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.searchType);
+        }
+
+        return this.searchType;
     }
 
     public final int getSearchLimit()
