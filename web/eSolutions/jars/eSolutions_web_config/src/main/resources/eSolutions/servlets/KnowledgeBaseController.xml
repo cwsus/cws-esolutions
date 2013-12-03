@@ -17,7 +17,11 @@
 		<property name="messageArticleResolutionRequired" value="kbase.article.resolution.required" />        
     </bean>
 
-    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator" />
+    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+    </bean>
 
     <bean id="knowledgeBaseController" class="com.cws.us.esolutions.controllers.KnowledgeBaseController">
         <property name="validator">

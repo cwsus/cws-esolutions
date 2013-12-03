@@ -20,13 +20,12 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
- * EmailMessageValidator.java
- *
- * TODO: Add class description
+ * SearchRequestValidator.java
  *
  * $Id: $
  * $Author: $
@@ -42,10 +41,25 @@ import com.cws.esolutions.core.processors.dto.SearchRequest;
  */
 public class SearchRequestValidator implements Validator
 {
-    private static final String CNAME = EmailMessageValidator.class.getName();
+    private ApplicationServiceBean appConfig = null;
+
+    private static final String CNAME = SearchRequestValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+
+    public final void setAppConfig(final ApplicationServiceBean value)
+    {
+        final String methodName = SearchRequestValidator.CNAME + "#setAppConfig(final CoreServiceBean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.appConfig = value;
+    }
 
     @Override
     public final boolean supports(final Class<?> target)
@@ -88,7 +102,7 @@ public class SearchRequestValidator implements Validator
             DEBUGGER.debug("Pattern: {}", pattern);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "searchTerms");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "searchTerms", appConfig.getMessageValidationFailed());
 
         if (!(pattern.matcher(value.getSearchTerms()).matches()))
         {

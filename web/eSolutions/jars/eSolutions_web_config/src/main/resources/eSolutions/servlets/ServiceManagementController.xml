@@ -22,7 +22,11 @@
         <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.datacenter.description.required" />
     </bean>
 
-    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator" />
+    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+    </bean>
 
     <bean id="serviceManagementController" class="com.cws.us.esolutions.controllers.ServiceManagementController">
         <property name="appConfig">
