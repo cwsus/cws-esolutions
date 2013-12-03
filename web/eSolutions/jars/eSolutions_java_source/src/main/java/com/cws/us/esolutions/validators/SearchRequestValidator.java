@@ -80,7 +80,7 @@ public class SearchRequestValidator implements Validator
         }
 
         final SearchRequest value = (SearchRequest) target;
-		final Pattern pattern = Pattern.compile("^[A-Za-z0-9]+(?:[\s-][A-Za-z0-9]+)*$");
+        final Pattern pattern = Pattern.compile("^[A-Za-z0-9]+(?:[\\s-][A-Za-z0-9]+)*$");
 
         if (DEBUG)
         {
