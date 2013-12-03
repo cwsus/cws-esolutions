@@ -83,9 +83,9 @@ public class KnowledgeBaseController
     private String serviceId = null;
     private String serviceName = null;
     private String articleList = null;
+    private String defaultPage = null;
     private String messageSource = null;
     private int newIdentifierLength = 8; // default of 8
-    private String defaultHandler = null;
     private String editArticlePage = null;
     private String showArticlePage = null;
     private String createArticlePage = null;
@@ -174,9 +174,9 @@ public class KnowledgeBaseController
         this.articleList = value;
     }
 
-    public final void setDefaultHandler(final String value)
+    public final void setDefaultPage(final String value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setDefaultHandler(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setDefaultPage(final String value)";
 
         if (DEBUG)
         {
@@ -184,7 +184,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.defaultHandler = value;
+        this.defaultPage = value;
     }
 
     public final void setShowArticlePage(final String value)
@@ -434,7 +434,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -445,7 +445,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -456,7 +456,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -471,7 +471,7 @@ public class KnowledgeBaseController
         {
             mView.addObject("isHelpSearch", true);
             mView.addObject("command", new SearchRequest());
-            mView.setViewName(this.defaultHandler);
+            mView.setViewName(this.defaultPage);
         }
         else
         {
@@ -516,7 +516,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -527,7 +527,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -538,7 +538,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -610,7 +610,7 @@ public class KnowledgeBaseController
                         mView.addObject("isHelpSearch", true);
                         mView.addObject("command", new SearchRequest());
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.defaultHandler);
+                        mView.setViewName(this.defaultPage);
                     }
                 }
                 catch (KnowledgeBaseException kbx)
@@ -660,7 +660,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -671,7 +671,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -682,7 +682,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -741,7 +741,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -752,7 +752,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -763,7 +763,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -839,7 +839,7 @@ public class KnowledgeBaseController
                         mView.addObject("command", new SearchRequest());
                         mView.addObject("isHelpSearch", true);
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                        mView.setViewName(this.defaultHandler);
+                        mView.setViewName(this.defaultPage);
                     }
                 }
                 catch (KnowledgeBaseException kbx)
@@ -890,7 +890,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -901,7 +901,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -912,7 +912,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -975,7 +975,7 @@ public class KnowledgeBaseController
                         mView.addObject("command", new SearchRequest());
                         mView.addObject("isHelpSearch", true);
                         mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                        mView.setViewName(this.defaultHandler);
+                        mView.setViewName(this.defaultPage);
                     }
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -987,7 +987,7 @@ public class KnowledgeBaseController
                     mView.addObject("isHelpSearch", true);
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.addObject("command", new SearchRequest());
-                    mView.setViewName(this.defaultHandler);
+                    mView.setViewName(this.defaultPage);
                 }
             }
             catch (KnowledgeBaseException kbx)
@@ -1038,7 +1038,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1049,7 +1049,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1060,7 +1060,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1234,7 +1234,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1245,7 +1245,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1256,7 +1256,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1430,7 +1430,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1441,7 +1441,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1452,7 +1452,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1626,7 +1626,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1637,7 +1637,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1648,7 +1648,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1717,7 +1717,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1728,7 +1728,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1739,7 +1739,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1928,7 +1928,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1939,7 +1939,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1950,7 +1950,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2111,14 +2111,14 @@ public class KnowledgeBaseController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest searchRequest, final BindingResult bindResult)
+    public final ModelAndView submitArticleSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#submitArticleSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchRequest, final BindingResult bindResult)";
+        final String methodName = KnowledgeBaseController.CNAME + "#submitArticleSearch(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", searchRequest);
+            DEBUGGER.debug("SearchRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -2139,7 +2139,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2150,7 +2150,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2161,7 +2161,7 @@ public class KnowledgeBaseController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2174,6 +2174,20 @@ public class KnowledgeBaseController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            this.searchValidator.validate(request, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                // validation failed
+                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+                mView.addObject("command", new SearchRequest());
+                mView.setViewName(this.defaultPage);
+
+                return mView;
+            }
+
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -2186,7 +2200,7 @@ public class KnowledgeBaseController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchResponse searchRes = searchProcessor.doArticleSearch(searchRequest);
+                SearchResponse searchRes = searchProcessor.doArticleSearch(request);
 
                 if (DEBUG)
                 {
@@ -2198,7 +2212,7 @@ public class KnowledgeBaseController
                     mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
                     mView.addObject("command", new SearchRequest());
                     mView.addObject("isHelpSearch", true);
-                    mView.setViewName(this.defaultHandler);
+                    mView.setViewName(this.defaultPage);
                 }
                 else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -2209,7 +2223,7 @@ public class KnowledgeBaseController
                     mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
                     mView.addObject("command", new SearchRequest());
                     mView.addObject("isHelpSearch", true);
-                    mView.setViewName(this.defaultHandler);
+                    mView.setViewName(this.defaultPage);
                 }
             }
             catch (SearchRequestException srx)

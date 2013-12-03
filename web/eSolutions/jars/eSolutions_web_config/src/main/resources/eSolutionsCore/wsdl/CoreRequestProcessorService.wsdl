@@ -62,8 +62,8 @@
     <wsdl:message name="doServerSearchResponse">
         <wsdl:part name="parameters" element="tns:doServerSearchResponse" />
     </wsdl:message>
-    <wsdl:message name="doProjectSearch">
-        <wsdl:part name="parameters" element="tns:doProjectSearch" />
+    <wsdl:message name="doServiceSearch">
+        <wsdl:part name="parameters" element="tns:doServiceSearch" />
     </wsdl:message>
     <wsdl:message name="getArticle">
         <wsdl:part name="parameters" element="tns:getArticle" />
@@ -104,8 +104,8 @@
     <wsdl:message name="SearchRequestException">
         <wsdl:part name="SearchRequestException" element="tns:SearchRequestException" />
     </wsdl:message>
-    <wsdl:message name="doProjectSearchResponse">
-        <wsdl:part name="parameters" element="tns:doProjectSearchResponse" />
+    <wsdl:message name="doServiceSearchResponse">
+        <wsdl:part name="parameters" element="tns:doServiceSearchResponse" />
     </wsdl:message>
     <wsdl:message name="KnowledgeBaseException">
         <wsdl:part name="KnowledgeBaseException" element="tns:KnowledgeBaseException" />
@@ -138,9 +138,9 @@
             <wsdl:output name="doMessageSearchResponse" message="tns:doMessageSearchResponse" />
             <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
         </wsdl:operation>
-        <wsdl:operation name="doProjectSearch">
-            <wsdl:input name="doProjectSearch" message="tns:doProjectSearch" />
-            <wsdl:output name="doProjectSearchResponse" message="tns:doProjectSearchResponse" />
+        <wsdl:operation name="doServiceSearch">
+            <wsdl:input name="doServiceSearch" message="tns:doServiceSearch" />
+            <wsdl:output name="doServiceSearchResponse" message="tns:doServiceSearchResponse" />
             <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
         </wsdl:operation>
         <wsdl:operation name="updateArticleStatus">
@@ -239,12 +239,12 @@
                 <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="doProjectSearch">
+        <wsdl:operation name="doServiceSearch">
             <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doProjectSearch">
+            <wsdl:input name="doServiceSearch">
                 <soap:body use="literal" />
             </wsdl:input>
-            <wsdl:output name="doProjectSearchResponse">
+            <wsdl:output name="doServiceSearchResponse">
                 <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">

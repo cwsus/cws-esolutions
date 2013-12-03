@@ -72,8 +72,9 @@
             </p>
         </form:form>
     </p>
-    <hr />
+
     <c:if test="${not empty dnsEntry or not empty dnsEntries}">
+        <hr />
         <h1><spring:message code="dns.lookup.results" /></h1>
         <br /><br />
         <c:choose>
@@ -95,6 +96,6 @@
 </div>
 
 <div id="rightbar">
-    <p id="info"><spring:message code="theme.important.information" /></p>
+    <h1><spring:message code="theme.important.information" /></h1>
     <spring:message code="dns.svc.lookup.disclaimer" />
 </div>

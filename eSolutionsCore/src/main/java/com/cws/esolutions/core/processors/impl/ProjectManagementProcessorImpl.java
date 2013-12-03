@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.security.enums.Role;
@@ -126,7 +125,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                 {
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
-                                    (StringUtils.isNotEmpty(project.getProjectGuid())) ? project.getProjectGuid() : UUID.randomUUID().toString(),
+                                    UUID.randomUUID().toString(),
                                     project.getProjectCode(),
                                     project.getPrimaryContact().getGuid(),
                                     (project.getSecondaryContact() != null) ? project.getSecondaryContact().getGuid() : Constants.NOT_SET,
@@ -177,7 +176,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
+sqx.printStackTrace();
             throw new ProjectManagementException(sqx.getMessage(), sqx);
         }
         catch (UserControlServiceException ucsx)

@@ -87,10 +87,26 @@
                 </tr>
                 <tr>
                     <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
-                    <td><form:input path="primaryContact" /></td>
+                    <td>
+                        <form:select path="primaryContact">
+                            <option><spring:message code="theme.option.select" /></option>
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <c:forEach var="userAccount" items="${userList}">
+                                <form:option value="${userAccount.guid}" label="${userAccount.displayName}" />
+                            </c:forEach>
+                        </form:select>
+                    </td>
                     <td><form:errors path="primaryContact" cssClass="error" /></td>
                     <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label></td>
-                    <td><form:input path="secondaryContact" /></td>
+                    <td>
+                        <form:select path="secondaryContact">
+                            <option><spring:message code="theme.option.select" /></option>
+                            <option><spring:message code="theme.option.spacer" /></option>
+                            <c:forEach var="userAccount" items="${userList}">
+                                <form:option value="${userAccount.guid}" label="${userAccount.displayName}" />
+                            </c:forEach>
+                        </form:select>
+                    </td>
                     <td><form:errors path="secondaryContact" cssClass="error" /></td>
                 </tr>
                 <tr>

@@ -11,7 +11,7 @@ body
     padding: 0;
 	font: 70%/1.5em  Arial, Helvetica, sans-serif;
 	color: #333;
-	background: #FFF url("/htm/esolutions/img/bg.gif") repeat-x;
+	background: #FFF url("/htm/eSolutions/img/bg.gif") repeat-x;
 	text-align: center;
 }
 
@@ -80,7 +80,7 @@ img.float-left
 
 ul, ol
 {
-	margin: 10px 20px;
+	margin: 5px 5px;
 	padding: 0 20px;
 }
 
@@ -108,7 +108,7 @@ blockquote
 {
 	margin: 10px;
  	padding: 0 0 0 32px;
-  	background: #FAFAFA url("/html/esolutions/img/quote.gif") no-repeat 5px 10px !important;
+  	background: #FAFAFA url("/html/eSolutions/img/quote.gif") no-repeat 5px 10px !important;
 	background-position: 8px 10px;
 	border: 1px solid #f2f2f2;
 	border-left: 4px solid #FF9966;
@@ -245,7 +245,7 @@ form.search input.button
 #menu
 {
 	clear: both;
-	background: #FF9966 url("/html/esolutions/img/menubg.gif") repeat-x;
+	background: #FF9966 url("/html/eSolutions/img/menubg.gif") repeat-x;
 	height: 30px;
 	margin: 0;
 	font: bolder 1.2em/30px;
@@ -275,20 +275,20 @@ form.search input.button
 #menu ul li a:hover
 {
   	color: #333;
-	background: url("/html/esolutions/img/menu-hover-bg.gif") repeat-x;
+	background: url("/html/eSolutions/img/menu-hover-bg.gif") repeat-x;
 }
 
 #menu ul li#current a
 {
 	color: #333;
-	background: url("/html/esolutions/img/menu-current-bg.gif") repeat-x;
+	background: url("/html/eSolutions/img/menu-current-bg.gif") repeat-x;
 }
 
 /* sidebar */
 #sidebar
 {
 	float: left;
-	width: 21%;
+	width: 18%;
 	margin: 0;
     padding: 0;
 	display: inline;
@@ -306,7 +306,7 @@ form.search input.button
 #sidebar ul.sidemenu li
 {
 	border-bottom: 1px solid #EFF0F1;
-	background: url("/html/esolutions/img/arrow.gif") no-repeat 3px 6px;
+	background: url("/html/eSolutions/img/arrow.gif") no-repeat 3px 6px;
 	padding: 2px 5px 2px 20px;
 }
 
@@ -325,7 +325,7 @@ form.search input.button
 #rightbar
 {
 	float: right;
-	width: 21%;
+	width: 20%;
 	padding: 0;
 	margin: 0;
 }
@@ -336,7 +336,7 @@ form.search input.button
 	float: left;
 	margin: 0 0 0 15px;
 	padding: 0;
-	width: 54%;
+	width: 60%;
 }
 
 .post-footer
@@ -350,21 +350,21 @@ form.search input.button
 
 .post-footer .date
 {
-	background: url("/html/esolutions/img/clock.gif") no-repeat left center;
+	background: url("/html/eSolutions/img/clock.gif") no-repeat left center;
 	padding-left: 20px;
     margin: 0 10px 0 5px;
 }
 
 .post-footer .comments
 {
-	background: url("/html/esolutions/img/comment.gif") no-repeat left center;
+	background: url("/html/eSolutions/img/comment.gif") no-repeat left center;
 	padding-left: 20px;
     margin: 0 10px 0 5px;
 }
 
 .post-footer .readmore
 {
-	background: url("/html/esolutions/img/page.gif") no-repeat left center;
+	background: url("/html/eSolutions/img/page.gif") no-repeat left center;
 	padding-left: 20px;
     margin: 0 10px 0 5px;
 }
@@ -375,7 +375,7 @@ form.search input.button
 	clear: both;
 	color: #666666;
 	padding: 0;
-	background: #FFF url("/html/esolutions/img/footerbg.gif") repeat-x;
+	background: #FFF url("/html/eSolutions/img/footerbg.gif") repeat-x;
 	height: 60px
 }
 

@@ -40,6 +40,7 @@ import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
@@ -1556,6 +1557,159 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWAUDIT);
+                auditEntry.setUserAccount(requestor);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    @Override
+    public AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException
+    {
+        final String methodName = IAccountControlProcessor.CNAME + "#listUserAccounts(final AccountControlRequest request) throws AccountControlException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("AccountControlRequest: {}", request);
+        }
+
+        AccountControlResponse response = new AccountControlResponse();
+
+        final UserAccount requestor = request.getRequestor();
+        final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount searchUser = request.getUserAccount();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", requestor);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+            DEBUGGER.debug("UserAccount: {}", searchUser);
+        }
+
+        try
+        {
+            boolean isUserAuthorized = false;
+
+            if (request.getControlType() != ControlType.SERVICES)
+            {
+                isUserAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                }
+            }
+            else
+            {
+                isUserAuthorized = true;
+            }
+
+            if (isUserAuthorized)
+            {
+                List<String[]> userList = userManager.listUserAccounts();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("userList: {}", userList);
+                }
+
+                if ((userList != null) && (userList.size() != 0))
+                {
+                    List<UserAccount> userAccounts = new ArrayList<>();
+
+                    for (String[] userData : userList)
+                    {
+                        if (!(StringUtils.equals(requestor.getGuid(), userData[0])))
+                        {
+                            UserAccount userInfo = new UserAccount();
+                            userInfo.setGuid(userData[0]);
+                            userInfo.setUsername(userData[1]);
+                            userInfo.setGivenName(userData[2]);
+                            userInfo.setSurname(userData[3]);
+                            userInfo.setEmailAddr(userData[5]);
+                            userInfo.setDisplayName(userData[4]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", userInfo);
+                            }
+
+                            userAccounts.add(userInfo);
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("userAccounts: {}", userAccounts);
+                    }
+
+                    if (userAccounts.size() == 0)
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("No accounts were found with the provided data");
+                    }
+                    else
+                    {
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Successfully loaded matching accounts");
+                        response.setUserList(userAccounts);
+                    }
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("No accounts were found with the provided data");
+                }
+            }
+            else
+            {
+                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
+                response.setResponse("Requesting user account was NOT authorized to perform the operation");
+            }
+        }
+        catch (UserManagementException umx)
+        {
+            ERROR_RECORDER.error(umx.getMessage(), umx);
+
+            throw new AccountControlException(umx.getMessage(), umx);
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new AccountControlException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
                 auditEntry.setUserAccount(requestor);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

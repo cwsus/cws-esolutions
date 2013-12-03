@@ -38,7 +38,7 @@
         <property name="serviceId" value="4B081972-92C3-455B-9403-B81E68C538B6" />
         <property name="newIdentifierLength" value="9" />
         <property name="articleList" value="articleList" />
-        <property name="defaultHandler" value="KnowledgeBase_DefaultHandler" />
+        <property name="defaultPage" value="KnowledgeBase_DefaultHandler" />
         <property name="editArticlePage" value="KnowledgeBase_EditArticle" />
         <property name="showArticlePage" value="KnowledgeBase_ShowArticle" />
         <property name="createArticlePage" value="KnowledgeBase_CreateArticle" />

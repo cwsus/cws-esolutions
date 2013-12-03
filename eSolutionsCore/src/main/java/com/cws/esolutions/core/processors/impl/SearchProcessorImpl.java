@@ -22,19 +22,22 @@ import java.sql.SQLException;
 import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
-import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
+import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
+import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
+import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
+import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 /**
  * eSolutionsCore
@@ -430,21 +433,26 @@ public class SearchProcessorImpl implements ISearchProcessor
             switch (request.getSearchType())
             {
                 case PROJECT:
-					IProjectDataDAO projectDao = new ProjectDataDAOImpl();
-					resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
+                    IProjectDataDAO projectDao = new ProjectDataDAOImpl();
+                    resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
 
-                   break;
+                    break;
                 case PLATFORM:
-					IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
-					resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartPage());
+                    IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
+                    resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartPage());
 
-					break;
+                    break;
                 case DATACENTER:
-					IDatacenterDataDAO datacenterDao = new DatacenterDataDAOImpl();
-					resultsList = datacenterDao.getDataCenterByAttribute(request.getSearchTerms(), request.getStartPage());
+                    IDatacenterDataDAO datacenterDao = new DatacenterDataDAOImpl();
+                    resultsList = datacenterDao.getDataCenterByAttribute(request.getSearchTerms(), request.getStartPage());
 
-					break;
-			}
+                    break;
+                default:
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                    response.setResponse("An invalid search request type was specified. Cannot continue.");
+
+                    return response;
+            }
 
 			if (DEBUG)
 			{
@@ -481,15 +489,6 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                         responseList.add(searchResult);
                     }
-                    else
-                    {
-                        throw new SearchRequestException("No results were located for the provided data");
-                    }
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("responseList: {}", responseList);
                 }
 
                 response.setResults(responseList);

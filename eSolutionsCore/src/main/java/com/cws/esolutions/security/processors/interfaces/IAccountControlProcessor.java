@@ -103,4 +103,6 @@ public interface IAccountControlProcessor
     AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException;
+
+    AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException;
 }

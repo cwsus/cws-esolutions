@@ -32,9 +32,7 @@
             <tiles:insertAttribute name="search" />
             <tiles:insertAttribute name="navbar" />
 
-            <%-- <div id="sidebar" /> --%>
-            <tiles:insertAttribute name="body" /> <%-- <div id="main" /> --%>
-            <%-- <div id="rightbar" /> --%>
+            <tiles:insertAttribute name="body" />
 
             <tiles:insertAttribute name="footer" />
         </div>

@@ -434,10 +434,10 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
-    @WebMethod(operationName = "doProjectSearch")
-    public SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException
+    @WebMethod(operationName = "doServiceSearch")
+    public SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doProjectSearch(final SearchRequest request) throws SearchRequestException";
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doServiceSearch(final SearchRequest request) throws SearchRequestException";
         
         if (DEBUG)
         {
@@ -445,7 +445,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
             DEBUGGER.debug("SearchRequest: ", request);
         }
 
-        SearchResponse response = searchSvc.doProjectSearch(request);
+        SearchResponse response = searchSvc.doServiceSearch(request);
 
         if (DEBUG)
         {

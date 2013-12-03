@@ -5,7 +5,7 @@
 
     <groupId>com.cws</groupId>
     <artifactId>cws</artifactId>
-    <version>3.3</version>
+    <version>3.4</version>
     <packaging>pom</packaging>
     <name>CaspersBox Web Services</name>
 
@@ -35,6 +35,8 @@
         <mysql.version>5.1.18</mysql.version>
         <dnsjava.version>2.1.1</dnsjava.version>
         <unboundid-ldapsdk.version>2.3.1</unboundid-ldapsdk.version>
+        <ant-contrib.version>1.0b3</ant-contrib.version>
+        <ant-nodeps.version>1.8.1</ant-nodeps.version>
     </properties>
 
     <licenses>
@@ -236,6 +238,27 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>${mysql.version}</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <!-- ant -->
+        <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>${ant-contrib.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ant</groupId>
+                    <artifactId>ant</artifactId>
+                </exclusion>
+            </exclusions>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>${ant-nodeps.version}</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

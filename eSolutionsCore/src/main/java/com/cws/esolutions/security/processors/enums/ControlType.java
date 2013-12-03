@@ -34,6 +34,7 @@ package com.cws.esolutions.security.processors.enums;
 public enum ControlType
 {
     LOOKUP,
+    SERVICES,
     CREATE,
     MODIFY,
     DELETE,

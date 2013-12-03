@@ -117,7 +117,6 @@ public class ProjectManagementProcessorImplTest
         for (int x = 0; x < 3; x++)
         {
             Project project = new Project();
-            project.setProjectGuid(java.util.UUID.randomUUID().toString());
             project.setProjectCode(RandomStringUtils.randomAlphabetic(8));
             project.setChangeQueue("change-queue");
             project.setDevEmail("dev@email.com");

@@ -51,6 +51,7 @@
             if (obj.value == 'DMGRSERVER')
             {
                 document.getElementById("domainName").style.display = 'block';
+                document.getElementById("domainNameSelect").style.display = 'block';
                 document.getElementById("locationDetail").style.display = 'block';
                 document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'block';
@@ -60,6 +61,7 @@
             else if (obj.value == 'VIRTUALHOST')
             {
                 document.getElementById("domainName").style.display = 'block';
+                document.getElementById("domainNameSelect").style.display = 'block';
                 document.getElementById("locationDetail").style.display = 'block';
                 document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'none';
@@ -97,10 +99,7 @@
     <ul>
         <li><a href="${pageContext.request.contextPath}/ui/system-management/default" title="<spring:message code='system.mgmt.server.search' />"><spring:message code='system.mgmt.server.search' /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/system-management/service-consoles" title="<spring:message code='system.mgmt.service.consoles' />"><spring:message code='system.mgmt.service.consoles' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/system-check/netstat/server/${server.serverGuid}" title="<spring:message code='system.check.netstat' />"><spring:message code='system.check.netstat' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/system-check/remote-date/server/${server.serverGuid}" title="<spring:message code='system.check.date' />"><spring:message code='system.check.date' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/system-check/telnet/server/${server.serverGuid}" title="<spring:message code='system.check.telnet' />"><spring:message code='system.check.telnet' /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/system-management/install-software" title="<spring:message code='system.mgmt.add.server' />"><spring:message code="system.mgmt.add.server" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/system-management/install-software" title="<spring:message code='system.mgmt.install.software.header' />"><spring:message code="system.mgmt.install.software.header" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/system-management/server-control" title="<spring:message code='system.mgmt.server.control.header' />"><spring:message code='system.mgmt.server.control.header' /></a></li>
     </ul>
 </div>
@@ -138,16 +137,22 @@
                     <td><form:input path="osName" /></td>
                     <td><form:errors path="osName" cssClass="error" /></td>
                     <%-- domain name --%>
-                    <td><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
-                    <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
-                    <td>
-                        <form:select path="domainName">
-                            <option><spring:message code="theme.option.select" /></option>
-                            <option><spring:message code="theme.option.spacer" /></option>
-                            <form:options items="${domainList}" />
-                        </form:select>
-                    </td>
-                    <td><form:errors path="domainName" cssClass="error" /></td>
+                    <c:choose>
+                        <c:when test="${fn:length(domainList) gt 1}">
+	                        <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
+	                        <td id="domainNameSelect" style="display: none;">
+	                            <form:select path="domainName">
+	                                <option><spring:message code="theme.option.select" /></option>
+	                                <option><spring:message code="theme.option.spacer" /></option>
+	                                <form:options items="${domainList}" />
+	                            </form:select>
+	                        </td>
+	                        <td><form:errors path="domainName" cssClass="error" /></td>
+                        </c:when>
+                        <c:otherwise>
+                            <form:hidden path="domainName" value="${domainList[0]}" />
+                        </c:otherwise>
+                    </c:choose>
                 </tr>
                 <tr>
                     <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label></td>
@@ -280,8 +285,6 @@
                     <td><label id="txtOperAddress"><spring:message code="system.mgmt.oper.address" /></label></td>
                     <td><form:input path="operIpAddress" /></td>
                     <td><form:errors path="operIpAddress" cssClass="error" /></td>
-                    <td><label id="txtIsScmEnabled"><spring:message code="system.mgmt.nat.enabled" /></label></td>
-                    <td><input onclick="showNatData(this);" type="checkbox" value="false"></td>
                 </tr>
                 <tr>
                     <td><label id="txtMgmtInfo"><spring:message code="system.mgmt.mgmt.title" /></label></td>
@@ -315,6 +318,12 @@
                     <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label></td>
                     <td><form:input path="nasIpAddress" /></td>
                     <td><form:errors path="nasIpAddress" cssClass="error" /></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td><label id="txtIsScmEnabled"><spring:message code="system.mgmt.nat.enabled" /></label></td>
+                    <td><input onclick="showNatData(this);" type="checkbox" value="false"></td>
                 </tr>
             </table>
             <table id="natAddr" style="display: none;">

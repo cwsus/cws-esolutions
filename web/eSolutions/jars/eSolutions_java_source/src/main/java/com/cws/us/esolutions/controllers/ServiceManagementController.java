@@ -32,6 +32,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.us.esolutions.dto.ProjectRequest;
 import com.cws.us.esolutions.dto.PlatformRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
@@ -40,7 +41,7 @@ import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.us.esolutions.validators.PlatformValidator;
-import com.cws.esolutions.core.processors.dto.SearchResult;
+import com.cws.us.esolutions.validators.ProjectValidator;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.us.esolutions.validators.DatacenterValidator;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
@@ -48,6 +49,8 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -57,6 +60,8 @@ import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
+import com.cws.esolutions.security.processors.dto.AccountControlRequest;
+import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
@@ -64,12 +69,15 @@ import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
+import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
+import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
@@ -118,6 +126,7 @@ public class ServiceManagementController
     private String messageNoDatacenters = null;
     private String addDatacenterRedirect = null;
     private ApplicationServiceBean appConfig = null;
+    private ProjectValidator projectValidator = null;
     private PlatformValidator platformValidator = null;
     private SearchRequestValidator searchValidator = null;
     private String messageProjectSuccessfullyAdded = null;
@@ -155,6 +164,19 @@ public class ServiceManagementController
         }
 
         this.platformValidator = value;
+    }
+
+    public final void setProjectValidator(final ProjectValidator value)
+    {
+        final String methodName = ServiceManagementController.CNAME + "#setProjectValidator(final ProjectValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.projectValidator = value;
     }
 
     public final void setDatacenterValidator(final DatacenterValidator value)
@@ -547,7 +569,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -558,7 +580,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -569,7 +591,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -626,7 +648,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -637,7 +659,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -648,7 +670,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -764,7 +786,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -775,7 +797,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -786,7 +808,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -902,7 +924,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -913,7 +935,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -924,7 +946,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1041,7 +1063,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1052,7 +1074,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1063,7 +1085,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1179,7 +1201,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1190,7 +1212,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1201,7 +1223,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1327,7 +1349,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1338,7 +1360,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1349,7 +1371,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1466,7 +1488,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1477,7 +1499,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1488,7 +1510,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1612,7 +1634,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1623,7 +1645,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1634,7 +1656,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1758,7 +1780,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1769,7 +1791,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1780,7 +1802,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1902,7 +1924,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1913,7 +1935,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1924,7 +1946,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1937,9 +1959,78 @@ public class ServiceManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("statusList", ServiceStatus.values());
-            mView.addObject("command", new Project());
-            mView.setViewName(this.addProjectPage);
+            try
+            {
+                RequestHostInfo hostInfo = new RequestHostInfo();
+                hostInfo.setHostAddress(hRequest.getRemoteAddr());
+                hostInfo.setHostName(hRequest.getRemoteHost());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                }
+
+                // search accounts
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(hostInfo);
+                request.setApplicationId(this.appConfig.getApplicationName());
+                request.setControlType(ControlType.SERVICES);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                IAccountControlProcessor processor = new AccountControlProcessorImpl();
+                AccountControlResponse response = processor.listUserAccounts(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                    {
+                        List<UserAccount> userList = response.getUserList();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<UserAccount> {}", userList);
+                        }
+
+                        mView.addObject("userList", userList);
+                        mView.addObject("statusList", ServiceStatus.values());
+                        mView.addObject("command", new ProjectRequest());
+                        mView.setViewName(this.addProjectPage);
+                    }
+                    else
+                    {
+                        mView.addObject("command", new UserAccount());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    }
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject("command", new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+    
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
         }
         else
         {
@@ -1980,7 +2071,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1991,7 +2082,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2002,7 +2093,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2059,7 +2150,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2070,7 +2161,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2081,7 +2172,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2208,7 +2299,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2219,7 +2310,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2230,7 +2321,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2345,7 +2436,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2356,7 +2447,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2367,7 +2458,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2584,7 +2675,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2595,7 +2686,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2606,7 +2697,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -3057,7 +3148,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -3068,7 +3159,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -3079,7 +3170,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -3171,14 +3262,14 @@ public class ServiceManagementController
     }
 
     @RequestMapping(value = "/add-project", method = RequestMethod.POST)
-    public final ModelAndView doAddProject(@ModelAttribute("request") final Project request, final BindingResult bindResult)
+    public final ModelAndView doAddProject(@ModelAttribute("request") final ProjectRequest request, final BindingResult bindResult)
     {
-        final String methodName = ServiceManagementController.CNAME + "#doAddProject(@ModelAttribute(\"request\") final Project request, final BindingResult bindResult)";
+        final String methodName = ServiceManagementController.CNAME + "#doAddProject(@ModelAttribute(\"request\") final ProjectRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Project: {}", request);
+            DEBUGGER.debug("ProjectRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -3199,7 +3290,7 @@ public class ServiceManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -3210,7 +3301,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -3221,7 +3312,7 @@ public class ServiceManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -3234,6 +3325,85 @@ public class ServiceManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            this.projectValidator.validate(request, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                try
+                {
+                    RequestHostInfo hostInfo = new RequestHostInfo();
+                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
+                    hostInfo.setHostName(hRequest.getRemoteHost());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                    }
+
+                    // search accounts
+                    AccountControlRequest accRequest = new AccountControlRequest();
+                    accRequest.setHostInfo(hostInfo);
+                    accRequest.setApplicationId(this.appConfig.getApplicationName());
+                    accRequest.setControlType(ControlType.SERVICES);
+                    accRequest.setRequestor(userAccount);
+                    accRequest.setIsLogonRequest(false);
+                    accRequest.setApplicationId(this.appConfig.getApplicationId());
+                    accRequest.setApplicationName(this.appConfig.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", request);
+                    }
+
+                    IAccountControlProcessor processor = new AccountControlProcessorImpl();
+                    AccountControlResponse response = processor.searchAccounts(accRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", response);
+                    }
+
+                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                        {
+                            List<UserAccount> userList = response.getUserList();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("List<UserAccount> {}", userList);
+                            }
+
+                            mView.addObject("userList", userList);
+                            mView.addObject("statusList", ServiceStatus.values());
+                            mView.addObject("command", new ProjectRequest());
+                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+                            mView.setViewName(this.addProjectPage);
+                        }
+                        else
+                        {
+                            mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                            mView.setViewName(this.defaultPage);
+                        }
+                    }
+                    else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                    {
+                        mView.setViewName(this.appConfig.getUnauthorizedPage());
+                    }
+                    else
+                    {
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.setViewName(this.defaultPage);
+                    }
+                }
+                catch (AccountControlException acx)
+                {
+                    ERROR_RECORDER.error(acx.getMessage(), acx);
+        
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
+                }
+            }
+
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -3246,11 +3416,42 @@ public class ServiceManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
+                UserAccount primaryContact = new UserAccount();
+                primaryContact.setGuid(request.getPrimaryContact());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", primaryContact);
+                }
+
+                UserAccount secondaryContact = new UserAccount();
+                secondaryContact.setGuid(request.getPrimaryContact());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", secondaryContact);
+                }
+
+                Project reqProject = new Project();
+                reqProject.setProjectCode(request.getProjectCode());
+                reqProject.setChangeQueue(request.getChangeQueue());
+                reqProject.setDevEmail(request.getDevEmail());
+                reqProject.setProdEmail(request.getProdEmail());
+                reqProject.setIncidentQueue(request.getIncidentQueue());
+                reqProject.setPrimaryContact(primaryContact);
+                reqProject.setSecondaryContact(secondaryContact);
+                reqProject.setProjectStatus(request.getProjectStatus());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Project: {}", reqProject);
+                }
+
                 ProjectManagementRequest projectRequest = new ProjectManagementRequest();
                 projectRequest.setRequestInfo(reqInfo);
                 projectRequest.setUserAccount(userAccount);
                 projectRequest.setServiceId(this.projectMgmt);
-                projectRequest.setProject(request);
+                projectRequest.setProject(reqProject);
                 projectRequest.setApplicationId(this.appConfig.getApplicationId());
                 projectRequest.setApplicationName(this.appConfig.getApplicationName());
 
