@@ -29,8 +29,6 @@ import com.cws.esolutions.core.processors.exception.SearchRequestException;
  * com.cws.esolutions.core.processors.interfaces
  * ISearchProcessor.java
  *
- *
- *
  * $Id: ISearchProcessor.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
  * $Author: $
  * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
@@ -56,7 +54,7 @@ public interface ISearchProcessor
 
     SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException;
 
-    SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException;
+    SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException;
 
     SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException;
 

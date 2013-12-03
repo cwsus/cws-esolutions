@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
+import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
@@ -411,9 +412,9 @@ public class SearchProcessorImpl implements ISearchProcessor
     }
 
     @Override
-    public SearchResponse doProjectSearch(final SearchRequest request) throws SearchRequestException
+    public SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException
     {
-        final String methodName = ISearchProcessor.CNAME + "#doProjectSearch(final SearchRequest request) throws SearchRequestException";
+        final String methodName = ISearchProcessor.CNAME + "#doServiceSearch(final SearchRequest request) throws SearchRequestException";
 
         if (DEBUG)
         {
@@ -421,23 +422,40 @@ public class SearchProcessorImpl implements ISearchProcessor
             DEBUGGER.debug("SearchRequest: {}", request);
         }
 
+        List<String[]> resultsList = null;
         SearchResponse response = new SearchResponse();
 
         try
         {
-            IProjectDataDAO projectDao = new ProjectDataDAOImpl();
-            List<String[]> projectList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
-
-            if (DEBUG)
+            switch (request.getSearchType())
             {
-                DEBUGGER.debug("projectList: {}", projectList);
-            }
+                case PROJECT:
+					IProjectDataDAO projectDao = new ProjectDataDAOImpl();
+					resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
 
-            if ((projectList != null) && (projectList.size() != 0))
+                   break;
+                case PLATFORM:
+					IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
+					resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartPage());
+
+					break;
+                case DATACENTER:
+					IDatacenterDataDAO datacenterDao = new DatacenterDataDAOImpl();
+					resultsList = datacenterDao.getDataCenterByAttribute(request.getSearchTerms(), request.getStartPage());
+
+					break;
+			}
+
+			if (DEBUG)
+			{
+				DEBUGGER.debug("resultsList: {}", resultsList);
+			}
+
+            if ((resultsList != null) && (resultsList.size() != 0))
             {
                 List<SearchResult> responseList = new ArrayList<>();
 
-                for (String[] data : projectList)
+                for (String[] data : resultsList)
                 {
                     if (DEBUG)
                     {
