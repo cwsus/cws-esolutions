@@ -49,6 +49,8 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
+import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
@@ -57,6 +59,7 @@ import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
+import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
@@ -168,7 +171,7 @@ public class ServiceManagementController
 
     public final void setSearchValidator(final SearchRequestValidator value)
     {
-        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+        final String methodName = ServiceManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
 
         if (DEBUG)
         {
@@ -2175,14 +2178,14 @@ public class ServiceManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitServiceSearch(@ModelAttribute("request") final SearchRequest searchRequest, final BindingResult bindResult)
+    public final ModelAndView submitServiceSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
     {
-        final String methodName = ServiceManagementController.CNAME + "#submitServiceSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchRequest, final BindingResult bindResult)";
+        final String methodName = ServiceManagementController.CNAME + "#submitServiceSearch(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", searchRequest);
+            DEBUGGER.debug("SearchRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -2264,7 +2267,7 @@ public class ServiceManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchResponse searchRes = searchProcessor.doApplicationSearch(searchRequest);
+                SearchResponse searchRes = searchProcessor.doApplicationSearch(request);
 
                 if (DEBUG)
                 {

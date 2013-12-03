@@ -48,8 +48,10 @@ import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.us.esolutions.validators.DeploymentValidator;
+import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.us.esolutions.validators.ApplicationValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
@@ -59,6 +61,7 @@ import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
+import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
@@ -151,7 +154,7 @@ public class ApplicationManagementController
 
     public final void setSearchValidator(final SearchRequestValidator value)
     {
-        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+        final String methodName = ApplicationManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
 
         if (DEBUG)
         {
@@ -2376,14 +2379,14 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitApplicationSearch(@ModelAttribute("request") final SearchRequest searchRequest, final BindingResult bindResult)
+    public final ModelAndView submitApplicationSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"searchReq\") final SearchRequest searchRequest, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", searchRequest);
+            DEBUGGER.debug("SearchRequest: {}", request);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -2465,7 +2468,7 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchResponse searchRes = searchProcessor.doApplicationSearch(searchRequest);
+                SearchResponse searchRes = searchProcessor.doApplicationSearch(request);
 
                 if (DEBUG)
                 {

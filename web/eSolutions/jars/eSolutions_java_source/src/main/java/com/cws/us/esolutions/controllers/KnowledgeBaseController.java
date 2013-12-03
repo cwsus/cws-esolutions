@@ -137,7 +137,7 @@ public class KnowledgeBaseController
 
     public final void setSearchValidator(final SearchRequestValidator value)
     {
-        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setSearchValidator(final ServerValidator value)";
 
         if (DEBUG)
         {
