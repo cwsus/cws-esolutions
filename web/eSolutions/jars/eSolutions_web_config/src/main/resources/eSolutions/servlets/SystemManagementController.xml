@@ -34,12 +34,17 @@
         <property name="messageNetworkPartitionRequired" value="system.server.network.partition.required" />
     </bean>
 
+    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator" />
+
     <bean id="systemManagementController" class="com.cws.us.esolutions.controllers.SystemManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
         <property name="serverValidator">
             <ref bean="serverValidator" />
+        </property>
+        <property name="searchValidator">
+            <ref bean="searchRequestValidator" />
         </property>
         <property name="availableDomains">
             <list>

@@ -41,24 +41,41 @@
 </div>
 
 <div id="main">
+    <h1><spring:message code="theme.search.header" /></h1>
+
+    <div id="error"></div>
+
     <c:if test="${not empty fn:trim(messageResponse)}">
-	    <p id="info">${messageResponse}</p>
-	</c:if>
-	<c:if test="${not empty fn:trim(errorResponse)}">
-	    <p id="error">${errorResponse}</p>
-	</c:if>
-	<c:if test="${not empty fn:trim(responseMessage)}">
-	    <p id="info"><spring:message code="${responseMessage}" /></p>
-	</c:if>
-	<c:if test="${not empty fn:trim(errorMessage)}">
-	    <p id="error"><spring:message code="${errorMessage}" /></p>
-	</c:if>
-	<c:if test="${not empty fn:trim(param.responseMessage)}">
-	    <p id="info"><spring:message code="${param.responseMessage}" /></p>
-	</c:if>
-	<c:if test="${not empty fn:trim(param.errorMessage)}">
+        <p id="info">${messageResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorResponse)}">
+        <p id="error">${errorResponse}</p>
+    </c:if>
+    <c:if test="${not empty fn:trim(responseMessage)}">
+        <p id="info"><spring:message code="${responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(errorMessage)}">
+        <p id="error"><spring:message code="${errorMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.responseMessage)}">
+        <p id="info"><spring:message code="${param.responseMessage}" /></p>
+    </c:if>
+    <c:if test="${not empty fn:trim(param.errorMessage)}">
         <p id="error"><spring:message code="${param.errorMessage}" /></p>
-	</c:if>
+    </c:if>
+
+    <p>
+        <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/service-management/search" method="post">
+            <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
+            <form:input path="searchTerms" />
+            <form:errors path="searchTerms" cssClass="error" />
+            <br /><br />
+            <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+            <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
+            <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
+        </form:form>
+    </p>
 </div>
 
 <div id="rightbar">&nbsp;</div>
+

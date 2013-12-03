@@ -15,9 +15,9 @@
     </wls:container-descriptor>
     <wls:jsp-descriptor>
         <wls:keepgenerated>true</wls:keepgenerated>
-        <wls:page-check-seconds>600</wls:page-check-seconds>
+        <wls:page-check-seconds>-1</wls:page-check-seconds>
         <wls:precompile>true</wls:precompile>
-        <wls:debug>true</wls:debug>
+        <wls:debug>false</wls:debug>
         <wls:compress-html-template>true</wls:compress-html-template>
     </wls:jsp-descriptor>
     <wls:resource-description>

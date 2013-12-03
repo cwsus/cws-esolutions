@@ -36,7 +36,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="app.mgmt.search.applications" /></h1>
+    <h1><spring:message code="theme.search.header" /></h1>
 
     <div id="error"></div>
 
@@ -61,7 +61,7 @@
 
     <p>
         <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/application-management/search" method="post">
-            <label id="txtAppName"><spring:message code="app.mgmt.application.name" /></label>
+            <label id="txtAppName"><spring:message code="theme.search.terms" /></label>
             <form:input path="searchTerms" />
             <form:errors path="searchTerms" cssClass="error" />
             <br /><br />

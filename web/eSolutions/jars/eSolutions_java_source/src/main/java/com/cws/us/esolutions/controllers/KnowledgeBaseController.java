@@ -48,6 +48,7 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
+import com.cws.us.esolutions.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -100,6 +101,7 @@ public class KnowledgeBaseController
     private String messageArticleApproved = null;
     private String messageArticleRejected = null;
     private ApplicationServiceBean appConfig = null;
+    private SearchRequestValidator searchValidator = null;
 
     private static final String CNAME = KnowledgeBaseController.class.getName();
 
@@ -131,6 +133,19 @@ public class KnowledgeBaseController
         }
 
         this.validator = value;
+    }
+
+    public final void setSearchValidator(final SearchRequestValidator value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchValidator = value;
     }
 
     public final void setServiceName(final String value)

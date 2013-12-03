@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.us.esolutions.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -94,6 +95,7 @@ public class SystemManagementController
     private List<String> availableDomains = null;
     private ServerValidator serverValidator = null;
     private ApplicationServiceBean appConfig = null;
+    private SearchRequestValidator searchValidator = null;
 
     private static final String CNAME = SystemManagementController.class.getName();
 
@@ -255,6 +257,19 @@ public class SystemManagementController
         }
 
         this.serverValidator = value;
+    }
+
+    public final void setSearchValidator(final SearchRequestValidator value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchValidator = value;
     }
 
     public final void setAvailableDomains(final List<String> value)

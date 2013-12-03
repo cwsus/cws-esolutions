@@ -52,6 +52,7 @@ import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.us.esolutions.validators.DeploymentValidator;
 import com.cws.us.esolutions.validators.ApplicationValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.us.esolutions.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
@@ -112,6 +113,7 @@ public class ApplicationManagementController
     private String messageApplicationRetired = null;
     private String messageNoApplicationsFound = null;
     private String messageNoAppVersionProvided = null;
+    private SearchRequestValidator searchValidator = null;
     private DeploymentValidator deploymentValidator = null;
     private ApplicationValidator applicationValidator = null;
 
@@ -145,6 +147,19 @@ public class ApplicationManagementController
         }
 
         this.deploymentValidator = value;
+    }
+
+    public final void setSearchValidator(final SearchRequestValidator value)
+    {
+        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.searchValidator = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -2424,6 +2439,20 @@ public class ApplicationManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            this.searchValidator.validate(request, bindResult);
+
+            if (bindResult.hasErrors())
+            {
+                // validation failed
+                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
+
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
+                mView.addObject("command", new SearchRequest());
+                mView.setViewName(this.defaultPage);
+
+                return mView;
+            }
+
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -2447,7 +2476,7 @@ public class ApplicationManagementController
                 {
                     mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
                     mView.addObject("command", new SearchRequest());
-                    mView.setViewName(this.defaultHandler);
+                    mView.setViewName(this.defaultPage);
                 }
                 else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -2457,7 +2486,7 @@ public class ApplicationManagementController
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
                     mView.addObject("command", new SearchRequest());
-                    mView.setViewName(this.defaultHandler);
+                    mView.setViewName(this.defaultPage);
                 }
             }
             catch (SearchRequestException srx)
