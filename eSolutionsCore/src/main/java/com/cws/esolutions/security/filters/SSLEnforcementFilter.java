@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.cws.esolutions.security.SecurityConstants;
-/*
+/**
  * SSLEnforcementFilter
  * Provides consistent SSL enforcement within the application
  * where required.

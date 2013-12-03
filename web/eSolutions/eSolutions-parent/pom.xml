@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.4</version>
+        <version>3.5</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -171,6 +171,7 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
+            <!--
             <dependency>
                 <groupId>stax</groupId>
                 <artifactId>stax</artifactId>
@@ -178,6 +179,7 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
+            -->
             <!-- tiles -->
             <dependency>
                 <groupId>org.apache.tiles</groupId>

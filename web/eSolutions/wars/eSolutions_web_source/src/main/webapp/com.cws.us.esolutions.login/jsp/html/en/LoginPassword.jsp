@@ -56,6 +56,8 @@
 
     <p>
         <form:form name="submitPassword" action="${pageContext.request.contextPath}/ui/login/password" method="post">
+            <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
+
             <p>
                 <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
                 <form:password path="password" />

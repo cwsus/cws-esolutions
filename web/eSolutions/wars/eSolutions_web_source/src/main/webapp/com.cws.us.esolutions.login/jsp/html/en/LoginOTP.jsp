@@ -55,6 +55,8 @@
 
     <p>
         <form:form name="submitOTP" action="${pageContext.request.contextPath}/ui/login/otp" method="post" autocomplete="off">
+            <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
+
             <p>
                 <label id="txtPassword"><spring:message code="login.user.pwd" /></label>
                 <form:password path="password" />

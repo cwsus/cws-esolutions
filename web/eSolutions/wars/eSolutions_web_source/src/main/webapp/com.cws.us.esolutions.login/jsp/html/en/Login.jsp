@@ -56,6 +56,8 @@
 
     <p>
         <form:form id="submitCombinedLogin" name="submitCombinedLogin" action="${pageContext.request.contextPath}/ui/login/submit" method="post">
+            <input type="hidden" name="vpath" id="vpath" value="${param.vpath}" />
+
             <p>
                 <label id="txtUsername"><spring:message code="login.user.name" /></label>
                 <form:input path="loginUser" />

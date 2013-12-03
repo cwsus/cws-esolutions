@@ -11,11 +11,16 @@
  */
 package com.cws.us.esolutions.controllers;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -322,6 +327,11 @@ public class LoginController
                 break;
         }
 
+        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+        {
+            mView.addObject("redirectPath", hRequest.getParameter("vpath"));
+        }
+
         if (DEBUG)
         {
             DEBUGGER.debug("ModelAndView: {}", mView);
@@ -554,7 +564,15 @@ public class LoginController
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
                         mView = new ModelAndView(new RedirectView());
-                        mView.setViewName(this.appConfig.getHomeRedirect());
+
+                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+                        {
+                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                        }
+                        else
+                        {
+                            mView.setViewName(this.appConfig.getHomeRedirect());
+                        }
 
                         if (DEBUG)
                         {
@@ -612,9 +630,9 @@ public class LoginController
 
     // username logon
     @RequestMapping(value = "/username", method = RequestMethod.POST)
-    public final ModelAndView doUsernameLogin(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView submitUsernameLogin(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#doUsernameLogin(@ModelAttribute(\"user\") final UserAccount, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitUsernameLogin(@ModelAttribute(\"user\") final UserAccount, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -789,9 +807,9 @@ public class LoginController
 
     // password logon
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView doUsernameLogin(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
+    public final ModelAndView submitPasswordLogin(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#doUsernameLogin(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitPasswordLogin(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -899,7 +917,14 @@ public class LoginController
                         // check logon type
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        mView.setViewName(this.appConfig.getHomeRedirect());
+                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+                        {
+                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                        }
+                        else
+                        {
+                            mView.setViewName(this.appConfig.getHomeRedirect());
+                        }
 
                         return mView;
                     case EXPIRED:
@@ -946,9 +971,9 @@ public class LoginController
 
     // otp logon
     @RequestMapping(value = "/otp", method = RequestMethod.POST)
-    public final ModelAndView doOtpLogon(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
+    public final ModelAndView submitOtpLogin(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#doOtpLogon(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
 
         if (DEBUG)
         {
@@ -1056,7 +1081,14 @@ public class LoginController
                         // check logon type
                         hSession.setAttribute(Constants.USER_ACCOUNT, userAccount);
 
-                        mView.setViewName(this.appConfig.getHomeRedirect());
+                        if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
+                        {
+                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                        }
+                        else
+                        {
+                            mView.setViewName(this.appConfig.getHomeRedirect());
+                        }
 
                         return mView;
                     case EXPIRED:
