@@ -54,14 +54,6 @@
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
         </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>stax</groupId>
-            <artifactId>stax</artifactId>
-        </dependency>
         <!-- tiles -->
         <dependency>
             <groupId>org.apache.tiles</groupId>
@@ -70,6 +62,10 @@
         <dependency>
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-jsp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.stream</groupId>
+            <artifactId>sjsxp</artifactId>
         </dependency>
         <!-- override log4j because of geronimo bitchiness -->
         <dependency>
