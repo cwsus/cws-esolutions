@@ -134,7 +134,7 @@ public class SessionAuthenticationFilter implements Filter
 		final String passwdPage = hRequest.getContextPath() + this.passwordURI;
         final StringBuilder redirectPath = new StringBuilder()
             .append(hRequest.getContextPath() + this.loginURI)
-            .append("?vpath=" + hRequest.getRequestURI());
+            .append("?vpath=" + requestURI);
 
         if (DEBUG)
         {
@@ -324,7 +324,7 @@ public class SessionAuthenticationFilter implements Filter
             redirectPath.append("?" + hRequest.getQueryString());
         }
 
-        hResponse.sendRedirect(hRequest.getContextPath() + redirectPath);
+        hResponse.sendRedirect(redirectPath);
 
         return;
     }
