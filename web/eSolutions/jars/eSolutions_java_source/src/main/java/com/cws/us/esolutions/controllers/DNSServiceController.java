@@ -453,7 +453,7 @@ public class DNSServiceController
 
                 mView.addObject("serviceTypes", this.serviceTypes);
                 mView.addObject("command", new DNSRecord());
-                mView.setViewName(DNServiceController.LOOKUP_REDIRECT);
+                mView.setViewName(DNSServiceController.LOOKUP_REDIRECT);
             }
             catch (DNSServiceException dsx)
             {
