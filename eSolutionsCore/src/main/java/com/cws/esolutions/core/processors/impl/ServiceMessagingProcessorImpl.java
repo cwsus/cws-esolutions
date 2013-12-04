@@ -384,10 +384,10 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                     message.setMessageId((String) object[0]); // svc_message_id
                     message.setMessageTitle((String) object[1]); // svc_message_title
                     message.setMessageText((String) object[2]); // svc_message_txt
-                    message.setSubmitDate((Date) object[5]); // svc_message_submitdate
-                    message.setIsActive((Boolean) object[6]); // svc_message_active
-                    message.setDoesExpire((Boolean) object[7]); //svc_message_expires
-                    message.setExpiryDate((Date) object[8]); // svc_message_expirydate
+                    message.setSubmitDate((Date) object[4]); // svc_message_submitdate
+                    message.setIsActive((Boolean) object[5]); // svc_message_active
+                    message.setDoesExpire((Boolean) object[6]); //svc_message_expires
+                    message.setExpiryDate((Date) object[7]); // svc_message_expirydate
 
                     UserAccount searchAccount = new UserAccount();
                     searchAccount.setGuid((String) object[3]);
@@ -556,10 +556,10 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 message.setMessageId((String) responseList.get(0)); // svc_message_id
                 message.setMessageTitle((String) responseList.get(1)); // svc_message_title
                 message.setMessageText((String) responseList.get(2)); // svc_message_txt
-                message.setSubmitDate((Date) responseList.get(5)); // svc_message_submitdate
-                message.setIsActive((Boolean) responseList.get(6)); // svc_message_active
-                message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
-                message.setExpiryDate((Date) responseList.get(8)); // svc_message_expirydate
+                message.setSubmitDate((Date) responseList.get(4)); // svc_message_submitdate
+                message.setIsActive((Boolean) responseList.get(5)); // svc_message_active
+                message.setDoesExpire((Boolean) responseList.get(6)); //svc_message_expires
+                message.setExpiryDate((Date) responseList.get(7)); // svc_message_expirydate
 
                 UserAccount searchAccount = new UserAccount();
                 searchAccount.setGuid((String) responseList.get(3));

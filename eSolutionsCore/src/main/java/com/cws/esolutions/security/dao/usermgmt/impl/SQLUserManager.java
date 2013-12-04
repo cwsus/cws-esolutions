@@ -528,8 +528,7 @@ public class SQLUserManager implements UserManager
                                 resultSet.getString(authData.getIsSuspended()),
                                 resultSet.getString(authData.getOlrSetupReq()),
                                 resultSet.getString(authData.getOlrLocked()),
-                                resultSet.getString(authData.getTcAccepted()),
-                                resultSet.getString(authData.getPublicKey()),
+                                resultSet.getString(authData.getTcAccepted())
                         };
 
                         if (DEBUG)
@@ -646,8 +645,7 @@ public class SQLUserManager implements UserManager
                                 resultSet.getString(authData.getIsSuspended()),
                                 resultSet.getString(authData.getOlrSetupReq()),
                                 resultSet.getString(authData.getOlrLocked()),
-                                resultSet.getString(authData.getTcAccepted()),
-                                resultSet.getString(authData.getPublicKey()),
+                                resultSet.getString(authData.getTcAccepted())
                         };
 
                         if (DEBUG)
@@ -780,7 +778,6 @@ public class SQLUserManager implements UserManager
                     userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
                     userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
-                    userAccount.add(resultSet.getBytes(authData.getPublicKey()));
 
                     if (DEBUG)
                     {

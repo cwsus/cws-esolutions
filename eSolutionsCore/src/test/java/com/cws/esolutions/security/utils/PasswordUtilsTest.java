@@ -66,11 +66,10 @@ public class PasswordUtilsTest
     public void testCreateHash()
     {
         final String salt = RandomStringUtils.randomAlphanumeric(32);
-        final String pass = "Ariana21*";
+        final String pass = "TUX_t3st";
 
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText(pass, "c11QMzm4myXM3WgmdUTJvzh0A6qeELb0mLnCNcaLPqDyKQvLaaT5Kc19IqpME8wP",
-                bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
+        System.out.println(PasswordUtils.encryptText(pass, salt));
     }
 
     @Test
@@ -91,8 +90,8 @@ public class PasswordUtilsTest
     @Test
     public void testDecryptText()
     {
-        Assert.assertEquals("TestTwoWayHash", PasswordUtils.decryptText("bXUNMHkQsn0XYqKYQIqb5/rBcjqgP+iI9oaRqsFwZg6ksO6VXygs7Z1Dw08BaaecTteff8Knx8gnR+l6YoE41l2jLG4ZkFL4y4M6/pqP7fU=",
-                bean.getConfigData().getSecurityConfig().getSaltLength()));
+        Assert.assertEquals("TUX_t3st", PasswordUtils.decryptText("ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6",
+                "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD".length()));
     }
 
     @After

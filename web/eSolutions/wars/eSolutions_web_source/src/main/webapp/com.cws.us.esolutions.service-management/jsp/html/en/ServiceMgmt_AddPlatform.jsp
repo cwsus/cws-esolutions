@@ -65,8 +65,6 @@
     <p>
         <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
             <form:hidden path="platformDmgr" />
-            <form:hidden path="availableApps" value="${command.availableApps}" />
-            <form:hidden path="availableWebs" value="${command.availableWebs}" />
 
             <label id="txtPlatformName"><spring:message code="svc.mgmt.service.name" /></label>
             <form:input path="platformName" />

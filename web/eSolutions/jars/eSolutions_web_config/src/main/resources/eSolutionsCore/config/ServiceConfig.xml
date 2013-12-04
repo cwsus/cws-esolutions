@@ -9,7 +9,6 @@
         <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
-        <mailFrom>eSolutions@caspersbox.com</mailFrom>
         <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
     </application-config>
@@ -48,8 +47,10 @@
 
     <mail-config>
         <dataSourceName>mail/MailSession</dataSourceName>
+        <!-- use this if you aren't in a container environment -->
+        <!--
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        <mailFrom>eSolutions@caspersbox.com</mailFrom>
+        -->
     </mail-config>
 
     <ssh-config>
@@ -63,12 +64,14 @@
     </ssh-config>
 
     <exception-config>
-        <sendExceptionNotifications>true</sendExceptionNotifications>
-        <emailFrom>esolutionscore-alert@caspersbox.com</emailFrom>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <!-- use these properties if you wish to send notifications for exceptions -->
+        <!--
+        <emailFrom />
         <notificationAddresses>
-            <emailAddress>oncalls@caspersbox.com</emailAddress>
-            <emailAddress>kmhuntly@gmail.com</emailAddress>
+            <emailAddress />
         </notificationAddresses>
+        -->
     </exception-config>
 
     <resource-config>

@@ -31,7 +31,7 @@
         <commons-codec.version>1.8</commons-codec.version>
         <log4j.version>1.2.17</log4j.version>
         <slf4j.version>1.7.5</slf4j.version>
-        <mail.version>1.4</mail.version>
+        <mail.version>1.4.7</mail.version>
         <mysql.version>5.1.27</mysql.version>
         <dnsjava.version>2.1.1</dnsjava.version>
         <unboundid-ldapsdk.version>2.3.4</unboundid-ldapsdk.version>

@@ -53,8 +53,8 @@ import com.cws.esolutions.security.SecurityConstants;
 public final class ExceptionConfig implements Serializable
 {
     private String emailFrom = null;
-    private boolean sendNotifications = true;
     private List<String> notificationAddress = null;
+    private boolean sendExceptionNotifications = true;
 
     private static final long serialVersionUID = 5834154758068491231L;
     private static final String CNAME = ExceptionConfig.class.getName();
@@ -63,9 +63,9 @@ public final class ExceptionConfig implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
-    public final void setSendNotifications(final boolean value)
+    public final void setSendExceptionNotifications(final boolean value)
     {
-        final String methodName = ExceptionConfig.CNAME + "#setSendNotifications(final boolean value)";
+        final String methodName = ExceptionConfig.CNAME + "#setSendExceptionNotifications(final boolean value)";
 
         if (DEBUG)
         {
@@ -73,7 +73,7 @@ public final class ExceptionConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sendNotifications = value;
+        this.sendExceptionNotifications = value;
     }
 
     public final void setEmailFrom(final String value)
@@ -110,10 +110,10 @@ public final class ExceptionConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sendNotifications);
+            DEBUGGER.debug("Value: {}", this.sendExceptionNotifications);
         }
 
-        return this.sendNotifications;
+        return this.sendExceptionNotifications;
     }
 
     @XmlElement(name = "emailFrom")

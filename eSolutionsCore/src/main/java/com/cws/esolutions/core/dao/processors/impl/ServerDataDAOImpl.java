@@ -339,6 +339,141 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     @Override
+    public synchronized List<Object[]> getServersForDmgr(final String dmgr) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#getServersForDmgr(final String dmgr) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", dmgr);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<Object[]> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL retrServersForDmgr(?)}");
+            stmt.setString(1, dmgr);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<Object[]>();
+
+                    while (resultSet.next())
+                    {
+                        Object[] serverData = new Object[]
+                        {
+                                resultSet.getString(1), // SYSTEM_GUID
+                                resultSet.getString(2), // SYSTEM_OSTYPE
+                                resultSet.getString(3), // SYSTEM_STATUS
+                                resultSet.getString(4), // SYSTEM_REGION
+                                resultSet.getString(5), // NETWORK_PARTITION
+                                resultSet.getString(6), // DATACENTER_GUID
+                                resultSet.getString(7), // SYSTEM_TYPE
+                                resultSet.getString(8), // DOMAIN_NAME
+                                resultSet.getString(9), // CPU_TYPE
+                                resultSet.getInt(10), // CPU_COUNT
+                                resultSet.getString(11), // SERVER_RACK
+                                resultSet.getString(12), // RACK_POSITION
+                                resultSet.getString(13), // SERVER_MODEL
+                                resultSet.getString(14), // SERIAL_NUMBER
+                                resultSet.getInt(15), // INSTALLED_MEMORY
+                                resultSet.getString(16), // OPER_IP
+                                resultSet.getString(17), // OPER_HOSTNAME
+                                resultSet.getString(18), // MGMT_IP
+                                resultSet.getString(19), // MGMT_HOSTNAME
+                                resultSet.getString(20), // BKUP_IP
+                                resultSet.getString(21), // BKUP_HOSTNAME
+                                resultSet.getString(22), // NAS_IP
+                                resultSet.getString(23), // NAS_HOSTNAME
+                                resultSet.getString(24), // NAT_ADDR
+                                resultSet.getString(25), // COMMENTS
+                                resultSet.getString(26), // ASSIGNED_ENGINEER
+                                resultSet.getTimestamp(27), // ADD_DATE
+                                resultSet.getTimestamp(28), // DELETE_DATE
+                                resultSet.getString(29), // OWNING_DMGR
+                        };
+
+                        if (DEBUG)
+                        {
+                            for (Object obj : serverData)
+                            {
+                                DEBUGGER.debug("Value: {}", obj);
+                            }
+                        }
+
+                        responseData.add(serverData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (Object[] objArr : responseData)
+                        {
+                            for (Object obj : objArr)
+                            {
+                                DEBUGGER.debug("Value: {}", obj);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
+    }
+
+    @Override
     public synchronized List<Object> getInstalledServer(final String attribute) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getInstalledServer(final String attribute) throws SQLException";

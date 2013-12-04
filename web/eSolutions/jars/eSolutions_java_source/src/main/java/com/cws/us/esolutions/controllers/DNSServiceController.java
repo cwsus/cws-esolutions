@@ -69,7 +69,6 @@ public class DNSServiceController
     private ApplicationServiceBean appConfig = null;
 
     private static final String CNAME = DNSServiceController.class.getName();
-    private static final String LOOKUP_REDIRECT = "redirect:/ui/dns-service/service-lookup";
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -342,7 +341,7 @@ public class DNSServiceController
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
-        ModelAndView mView = new ModelAndView(new RedirectView());
+        ModelAndView mView = new ModelAndView();
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -454,7 +453,7 @@ public class DNSServiceController
 
                 mView.addObject("serviceTypes", this.serviceTypes);
                 mView.addObject("command", new DNSRecord());
-                mView.setViewName(DNSServiceController.LOOKUP_REDIRECT);
+                mView.setViewName(this.lookupPage);
             }
             catch (DNSServiceException dsx)
             {

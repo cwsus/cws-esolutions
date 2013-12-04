@@ -81,103 +81,101 @@
         <p id="error"><spring:message code="${param.errorMessage}" /></p>
     </c:if>
 
-    <p>
-        <table id="viewUser">
-            <tr>
-                <td><spring:message code="user.mgmt.user.name" /></td>
-                <td>${userAccount.username}</td>
-                <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/user-management/reset/account/${userAccount.guid}"
-                            title="<spring:message code='user.account.change.password' />"><spring:message code='user.account.change.password' /></a>
-                    </td>
-                </c:if>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.user.role" /></td>
-                <td id="userRoleInput" style="display: block;">${userAccount.role}</td>
-                <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
-                    <td id="userRoleModify" style="display: none;">
-                        <select name="selectRole" id="selectRole">
-                            <option value="${userAccount.role}" selected="selected">${userAccount.role}</option>
-                            <option><spring:message code="theme.option.select" /></option>
-                            <option><spring:message code="theme.option.spacer" /></option>
-                            <c:forEach var="role" items="${userRoles}">
-                                <option value="${role}">${role}</option>
-                            </c:forEach>
-                        </select>
-                    </td>
-                    <td>
-                        <a id="selectRoleChange" href="#" onclick="changeView();"
-                            title="<spring:message code='user.mgmt.change.role' />" style="display: block;"><spring:message code='user.mgmt.change.role' /></a>
-                        <a id="submitRoleChange" href="#" onclick="submitRoleChange(document.getElementById('selectRole'));"
-                            title="<spring:message code='user.mgmt.change.role' />" style="display: none;"><spring:message code='user.mgmt.change.role' /></a>
-                    </td>
-                </c:if>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.user.givenname" /></td>
-                <td>${userAccount.givenName}</td>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.user.surname" /></td>
-                <td>${userAccount.surname}</td>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.user.email" /></td>
+    <table id="viewUser">
+        <tr>
+            <td><spring:message code="user.mgmt.user.name" /></td>
+            <td>${userAccount.username}</td>
+            <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
                 <td>
-                    <a href="mailto:${userAccount.emailAddr}" title="">${userAccount.emailAddr}</a>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/reset/account/${userAccount.guid}"
+                        title="<spring:message code='user.account.change.password' />"><spring:message code='user.account.change.password' /></a>
                 </td>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.user.locked" /></td>
+            </c:if>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.user.role" /></td>
+            <td id="userRoleInput" style="display: block;">${userAccount.role}</td>
+            <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
+                <td id="userRoleModify" style="display: none;">
+                    <select name="selectRole" id="selectRole">
+                        <option value="${userAccount.role}" selected="selected">${userAccount.role}</option>
+                        <option><spring:message code="theme.option.select" /></option>
+                        <option><spring:message code="theme.option.spacer" /></option>
+                        <c:forEach var="role" items="${userRoles}">
+                            <option value="${role}">${role}</option>
+                        </c:forEach>
+                    </select>
+                </td>
+                <td>
+                    <a id="selectRoleChange" href="#" onclick="changeView();"
+                        title="<spring:message code='user.mgmt.change.role' />" style="display: block;"><spring:message code='user.mgmt.change.role' /></a>
+                    <a id="submitRoleChange" href="#" onclick="submitRoleChange(document.getElementById('selectRole'));"
+                        title="<spring:message code='user.mgmt.change.role' />" style="display: none;"><spring:message code='user.mgmt.change.role' /></a>
+                </td>
+            </c:if>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.user.givenname" /></td>
+            <td>${userAccount.givenName}</td>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.user.surname" /></td>
+            <td>${userAccount.surname}</td>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.user.email" /></td>
+            <td>
+                <a href="mailto:${userAccount.emailAddr}" title="">${userAccount.emailAddr}</a>
+            </td>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.user.locked" /></td>
+            <c:choose>
+                <c:when test="${userAccount.failedCount ge 3}">
+                    <td><spring:message code="theme.true" /></td>
+                    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
+                        <td>
+                            <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
+                                title="<spring:message code='user.mgmt.unlock.account' />"><spring:message code='user.mgmt.unlock.account' /></a>
+                        </td>
+                    </c:if>
+                </c:when>
+                <c:otherwise>
+                    <td><spring:message code="theme.false" /></td>
+                    <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
+                        <td>
+                            <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
+                                title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a>
+                        </td>
+                    </c:if>
+                </c:otherwise>
+            </c:choose>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.last.logon" /></td>
+            <td>${userAccount.lastLogin}</td>
+        </tr>
+        <tr>
+            <td><spring:message code="user.mgmt.suspend.account" /></td>
+            <td>${userAccount.suspended}</td>
+            <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
                 <c:choose>
-                    <c:when test="${userAccount.failedCount ge 3}">
-                        <td><spring:message code="theme.true" /></td>
-                        <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/unlock/account/${userAccount.guid}"
-                                    title="<spring:message code='user.mgmt.unlock.account' />"><spring:message code='user.mgmt.unlock.account' /></a>
-                            </td>
-                        </c:if>
+                    <c:when test="${userAccount.suspended eq 'true'}">
+                        <td>
+                            <a href="${pageContext.request.contextPath}/ui/user-management/unsuspend/account/${userAccount.guid}"
+                                  title="<spring:message code='user.mgmt.unsuspend.account' />"><spring:message code='user.mgmt.unsuspend.account' /></a>
+                        </td>
                     </c:when>
                     <c:otherwise>
-                        <td><spring:message code="theme.false" /></td>
-                        <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/lock/account/${userAccount.guid}"
-                                    title="<spring:message code='user.mgmt.lock.account' />"><spring:message code='user.mgmt.lock.account' /></a>
-                            </td>
-                        </c:if>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/ui/user-management/suspend/account/${userAccount.guid}"
+                                  title="<spring:message code='user.mgmt.suspend.account' />"><spring:message code='user.mgmt.suspend.account' /></a>
+                        </td>
                     </c:otherwise>
                 </c:choose>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.last.logon" /></td>
-                <td>${userAccount.lastLogin}</td>
-            </tr>
-            <tr>
-                <td><spring:message code="user.mgmt.suspend.account" /></td>
-                <td>${userAccount.suspended}</td>
-                <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
-                    <c:choose>
-                        <c:when test="${userAccount.suspended eq 'true'}">
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/unsuspend/account/${userAccount.guid}"
-                                      title="<spring:message code='user.mgmt.unsuspend.account' />"><spring:message code='user.mgmt.unsuspend.account' /></a>
-                            </td>
-                        </c:when>
-                        <c:otherwise>
-                            <td>
-                                <a href="${pageContext.request.contextPath}/ui/user-management/suspend/account/${userAccount.guid}"
-                                      title="<spring:message code='user.mgmt.suspend.account' />"><spring:message code='user.mgmt.suspend.account' /></a>
-                            </td>
-                        </c:otherwise>
-                    </c:choose>
-                </c:if>
-            </tr>
-        </table>
-    </p>
+            </c:if>
+        </tr>
+    </table>
 </div>
 
 <div id="rightbar">&nbsp;</div>

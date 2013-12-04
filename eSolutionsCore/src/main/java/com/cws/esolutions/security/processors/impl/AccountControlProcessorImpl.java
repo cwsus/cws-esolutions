@@ -85,8 +85,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
         final UserSecurity userSecurity = request.getUserSecurity();
         final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
@@ -96,7 +96,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Requestor: {}", requestor);
+            DEBUGGER.debug("Requestor: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserSecurity: {}", userSecurity);
@@ -105,7 +105,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -240,7 +240,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                 {
                                     ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                                    response.setResponse("Successfully added the new user account, but failed to provision services. Please review application logs.");
+                                    response.setResponse("Successfully added the new user, but failed to provision services. Please review application logs.");
                                 }
                             }
                         }
@@ -250,19 +250,19 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             userManager.removeUserAccount(userAccount.getUsername(), userGuid);
                             userSec.removeUserData(userGuid);
 
-                            throw new AccountControlException("Failed to provision new user account: failed to generate keys for the provided user");
+                            throw new AccountControlException("Failed to provision new user: failed to generate keys for the provided user");
                         }
                     }
                     else
                     {
                         // failed to add the user to the repository
-                        throw new AccountControlException("Failed to add user to the account repository");
+                        throw new AccountControlException("Failed to add user to the userAccount repository");
                     }
                 }
                 else
                 {
                     // failed to insert salt
-                    throw new AccountControlException("Failed to provision new user account: failed to insert the generated salt value");
+                    throw new AccountControlException("Failed to provision new user: failed to insert the generated salt value");
                 }
             }
             else
@@ -309,7 +309,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.CREATEUSER);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -350,20 +350,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
-        final UserAccount account = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount reqUser: {}", requestor);
-            DEBUGGER.debug("UserAccount account: {}", account);
+            DEBUGGER.debug("UserAccount reqUser: {}", reqAccount);
+            DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -373,8 +373,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             if (isAuthorized)
             {
                 
-                // delete account
-                boolean isComplete = userManager.removeUserAccount(account.getUsername(), account.getGuid());
+                // delete userAccount
+                boolean isComplete = userManager.removeUserAccount(userAccount.getUsername(), userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -384,12 +384,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 if (isComplete)
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("User account was successfully deleted");
+                    response.setResponse("User userAccount was successfully deleted");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to delete user account");
+                    response.setResponse("Failed to delete user");
                 }
             }
         }
@@ -413,7 +413,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.DELETEUSER);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -454,20 +454,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
-        final UserAccount account = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount reqUser: {}", requestor);
-            DEBUGGER.debug("UserAccount account: {}", account);
+            DEBUGGER.debug("UserAccount reqUser: {}", reqAccount);
+            DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -476,8 +476,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isAuthorized)
             {
-                // we will only have a guid here - so we need to load the user account
-                List<Object> userData = userManager.loadUserAccount(account.getGuid());
+                // we will only have a guid here - so we need to load the user
+                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -486,7 +486,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), (String) userData.get(0), account.isSuspended());
+                    boolean isComplete = userManager.modifyUserSuspension((String) userData.get(1), (String) userData.get(0), userAccount.isSuspended());
 
                     if (DEBUG)
                     {
@@ -495,7 +495,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     if (isComplete)
                     {
-                        response.setUserAccount(account);
+                        response.setUserAccount(userAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         response.setResponse("Successfully performed suspension modification.");
                     }
@@ -507,7 +507,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user account for given GUID");
+                    throw new AccountControlException("Failed to locate user for given GUID");
                 }
             }
             else
@@ -536,7 +536,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -578,20 +578,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
-        final UserAccount account = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount reqUser: {}", requestor);
-            DEBUGGER.debug("UserAccount account: {}", account);
+            DEBUGGER.debug("UserAccount reqUser: {}", reqAccount);
+            DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -600,8 +600,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isAuthorized)
             {
-                // we will only have a guid here - so we need to load the user account
-                List<Object> userData = userManager.loadUserAccount(account.getGuid());
+                // we will only have a guid here - so we need to load the user
+                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -615,7 +615,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         private static final long serialVersionUID = -4501815670500496164L;
 
                         {
-                            put(authData.getLockCount(), account.getFailedCount());
+                            put(authData.getLockCount(), userAccount.getFailedCount());
                         }
                     };
 
@@ -644,7 +644,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user account for given GUID");
+                    throw new AccountControlException("Failed to locate user for given GUID");
                 }
             }
             else
@@ -673,7 +673,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -715,20 +715,20 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
-        final UserAccount account = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getHostInfo();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount reqUser: {}", requestor);
-            DEBUGGER.debug("UserAccount account: {}", account);
+            DEBUGGER.debug("UserAccount reqUser: {}", reqAccount);
+            DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -737,8 +737,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isAuthorized)
             {
-                // we will only have a guid here - so we need to load the user account
-                List<Object> userData = userManager.loadUserAccount(account.getGuid());
+                // we will only have a guid here - so we need to load the user
+                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -752,7 +752,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         private static final long serialVersionUID = -4501815670500496164L;
 
                         {
-                            put(authData.getUserRole(), account.getRole());
+                            put(authData.getUserRole(), userAccount.getRole());
                         }
                     };
 
@@ -806,9 +806,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         }
                         else
                         {
-                            // if we have an issue re-loading the account
+                            // if we have an issue re-loading the userAccount
                             // just put the existing one in. its something.
-                            response.setUserAccount(account);
+                            response.setUserAccount(userAccount);
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
@@ -822,7 +822,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user account for given GUID");
+                    throw new AccountControlException("Failed to locate user for given GUID");
                 }
             }
             else
@@ -851,7 +851,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.MODIFYUSER);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1010,7 +1010,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.RESETPASS);
-                auditEntry.setUserAccount(userAccount);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1051,16 +1051,16 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount searchUser = request.getUserAccount();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
         final SearchRequestType searchType = request.getSearchType();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount: {}", requestor);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", searchUser);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("SearchRequestType: {}", searchType);
         }
 
@@ -1070,7 +1070,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1089,14 +1089,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 switch (searchType)
                 {
                     case FORGOTUID:
-                        userList = userManager.searchUsers(SearchRequestType.EMAILADDR, searchUser.getEmailAddr());
+                        userList = userManager.searchUsers(SearchRequestType.EMAILADDR, userAccount.getEmailAddr());
 
                         break;
                     default:
                         String searchData = null;
                         SearchRequestType requestType = null;
 
-                        for (Field field : searchUser.getClass().getDeclaredFields())
+                        for (Field field : userAccount.getClass().getDeclaredFields())
                         {
                             field.setAccessible(true); // private fields, make them accessible
 
@@ -1114,14 +1114,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             {
                                 try
                                 {
-                                    if (field.get(searchUser) != null)
+                                    if (field.get(userAccount) != null)
                                     {
                                         if (DEBUG)
                                         {
-                                            DEBUGGER.debug("Value: {}", field.get(searchUser));
+                                            DEBUGGER.debug("Value: {}", field.get(userAccount));
                                         }
 
-                                        searchData = (String) field.get(searchUser);
+                                        searchData = (String) field.get(userAccount);
                                         requestType = SearchRequestType.valueOf(field.getName().toUpperCase());
 
                                         if (DEBUG)
@@ -1163,7 +1163,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                         for (String[] userData : userList)
                         {
-                            if (!(StringUtils.equals(requestor.getGuid(), userData[0])))
+                            if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
                             {
                                 UserAccount userInfo = new UserAccount();
                                 userInfo.setGuid(userData[0]);
@@ -1209,7 +1209,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user account was NOT authorized to perform the operation");
+                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
         }
         catch (UserManagementException umx)
@@ -1234,7 +1234,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                    auditEntry.setUserAccount(requestor);
+                    auditEntry.setUserAccount(reqAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1276,16 +1276,16 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount searchUser = request.getUserAccount();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
         final SearchRequestType searchType = request.getSearchType();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount: {}", requestor);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", searchUser);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("SearchRequestType: {}", searchType);
         }
 
@@ -1295,7 +1295,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1309,7 +1309,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                List<Object> userData = userManager.loadUserAccount(searchUser.getGuid());
+                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -1318,32 +1318,32 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (!(userData.isEmpty())))
                 {
-                    UserAccount userAccount = new UserAccount();
-                    userAccount.setGuid((String) userData.get(0));
-                    userAccount.setUsername((String) userData.get(1));
-                    userAccount.setGivenName((String) userData.get(2));
-                    userAccount.setSurname((String) userData.get(3));
-                    userAccount.setDisplayName((String) userData.get(4));
-                    userAccount.setEmailAddr((String) userData.get(5));
-                    userAccount.setPagerNumber((userData.get(6) == null) ? SecurityConstants.NOT_SET : (String) userData.get(6));
-                    userAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityConstants.NOT_SET : (String) userData.get(7));
-                    userAccount.setRole(Role.valueOf((String) userData.get(8)));
-                    userAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                    userAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
-                    userAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
-                    userAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                    userAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-                    userAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
-                    userAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
+                    UserAccount loadAccount = new UserAccount();
+                    loadAccount.setGuid((String) userData.get(0));
+                    loadAccount.setUsername((String) userData.get(1));
+                    loadAccount.setGivenName((String) userData.get(2));
+                    loadAccount.setSurname((String) userData.get(3));
+                    loadAccount.setDisplayName((String) userData.get(4));
+                    loadAccount.setEmailAddr((String) userData.get(5));
+                    loadAccount.setPagerNumber((userData.get(6) == null) ? SecurityConstants.NOT_SET : (String) userData.get(6));
+                    loadAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityConstants.NOT_SET : (String) userData.get(7));
+                    loadAccount.setRole(Role.valueOf((String) userData.get(8)));
+                    loadAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
+                    loadAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
+                    loadAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
+                    loadAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                    loadAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+                    loadAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
+                    loadAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                        DEBUGGER.debug("UserAccount: {}", loadAccount);
                     }
 
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully loaded user account");
-                    response.setUserAccount(userAccount);
+                    response.setResponse("Successfully loaded user");
+                    response.setUserAccount(loadAccount);
                 }
                 else
                 {
@@ -1354,7 +1354,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user account was NOT authorized to perform the operation");
+                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -1384,7 +1384,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     AuditEntry auditEntry = new AuditEntry();
                     auditEntry.setHostInfo(reqInfo);
                     auditEntry.setAuditType(AuditType.LOADACCOUNT);
-                    auditEntry.setUserAccount(requestor);
+                    auditEntry.setUserAccount(reqAccount);
                     auditEntry.setApplicationId(request.getApplicationId());
                     auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1426,22 +1426,22 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount searchUser = request.getUserAccount();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
         final SearchRequestType searchType = request.getSearchType();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount: {}", requestor);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", searchUser);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("SearchRequestType: {}", searchType);
         }
 
         try
         {
-            boolean isUserAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -1451,8 +1451,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             if (isUserAuthorized)
             {
                 // get the user info
-                UserAccount userAccount = null;
-                List<Object> userData = userManager.loadUserAccount(searchUser.getGuid());
+                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
 
                 if (DEBUG)
                 {
@@ -1461,69 +1460,74 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (!(userData.isEmpty())))
                 {
-                    userAccount = new UserAccount();
-                    userAccount.setGuid((String) userData.get(0));
-                    userAccount.setUsername((String) userData.get(1));
+                    UserAccount loadAccount = new UserAccount();
+                    loadAccount.setGuid((String) userData.get(0));
+                    loadAccount.setUsername((String) userData.get(1));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                        DEBUGGER.debug("UserAccount: {}", loadAccount);
                     }
-                }
 
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setUserAccount(searchUser);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-                auditRequest.setStartRow(request.getStartPage());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                AuditResponse auditResponse = auditor.getAuditEntries(auditRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditResponse: {}", auditResponse);
-                }
-
-                if (auditResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    List<AuditEntry> auditEntries = auditResponse.getAuditList();
+                    AuditEntry auditEntry = new AuditEntry();
+                    auditEntry.setUserAccount(loadAccount);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
+                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
                     }
 
-                    if ((auditEntries != null) && (auditEntries.size() != 0))
+                    AuditRequest auditRequest = new AuditRequest();
+                    auditRequest.setAuditEntry(auditEntry);
+                    auditRequest.setStartRow(request.getStartPage());
+
+                    if (DEBUG)
                     {
-                        // add to the response
-                        response.setUserAccount(userAccount);
-                        response.setEntryCount(auditResponse.getEntryCount());
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded audit trail");
-                        response.setAuditEntries(auditEntries);
+                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
                     }
-                    else
+
+                    AuditResponse auditResponse = auditor.getAuditEntries(auditRequest);
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("No audit history was located for the provided user.");
+                        DEBUGGER.debug("AuditResponse: {}", auditResponse);
                     }
+
+                    if (auditResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        List<AuditEntry> auditEntries = auditResponse.getAuditList();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<AuditEntry>: {}", auditEntries);
+                        }
+
+                        if ((auditEntries != null) && (auditEntries.size() != 0))
+                        {
+                            // add to the response
+                            response.setUserAccount(loadAccount);
+                            response.setEntryCount(auditResponse.getEntryCount());
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                            response.setResponse("Successfully loaded audit trail");
+                            response.setAuditEntries(auditEntries);
+                        }
+                        else
+                        {
+                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                            response.setResponse("No audit history was located for the provided user.");
+                        }
+                    }
+                }
+                else
+                {
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    response.setResponse("Unable to load user account with the provided information.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user account was NOT authorized to perform the operation");
+                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -1557,7 +1561,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SHOWAUDIT);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 
@@ -1598,15 +1602,15 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         AccountControlResponse response = new AccountControlResponse();
 
-        final UserAccount requestor = request.getRequestor();
         final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount searchUser = request.getUserAccount();
+        final UserAccount reqAccount = request.getRequestor();
+        final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("UserAccount: {}", requestor);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", searchUser);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
         }
 
         try
@@ -1615,7 +1619,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (request.getControlType() != ControlType.SERVICES)
             {
-                isUserAuthorized = adminControl.adminControlService(requestor, AdminControlType.USER_ADMIN);
+                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1642,15 +1646,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     for (String[] userData : userList)
                     {
-                        if (!(StringUtils.equals(requestor.getGuid(), userData[0])))
+                        if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
                         {
                             UserAccount userInfo = new UserAccount();
                             userInfo.setGuid(userData[0]);
                             userInfo.setUsername(userData[1]);
-                            userInfo.setGivenName(userData[2]);
-                            userInfo.setSurname(userData[3]);
-                            userInfo.setEmailAddr(userData[5]);
-                            userInfo.setDisplayName(userData[4]);
+                            userInfo.setDisplayName(userData[2]);
 
                             if (DEBUG)
                             {
@@ -1687,7 +1688,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user account was NOT authorized to perform the operation");
+                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
         }
         catch (UserManagementException umx)
@@ -1710,7 +1711,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SEARCHACCOUNTS);
-                auditEntry.setUserAccount(requestor);
+                auditEntry.setUserAccount(reqAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

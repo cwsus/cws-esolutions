@@ -119,7 +119,6 @@ public class SQLAuthenticator implements Authenticator
                     userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
                     userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
-                    userAccount.add(resultSet.getBytes(authData.getPublicKey()));
 
                     if (DEBUG)
                     {

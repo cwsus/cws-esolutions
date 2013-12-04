@@ -915,11 +915,11 @@ public class LoginController
 
                         if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
                         {
-                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                            mView = new ModelAndView(new RedirectView("redirect:" + hRequest.getParameter("vpath"), false));
                         }
                         else
                         {
-                            mView.setViewName(this.appConfig.getHomeRedirect());
+                            mView = new ModelAndView(new RedirectView(this.appConfig.getHomeRedirect(), true));
                         }
 
                         return mView;
@@ -1079,11 +1079,11 @@ public class LoginController
 
                         if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
                         {
-                            mView.setViewName("redirect:" + hRequest.getParameter("vpath"));
+                            mView = new ModelAndView(new RedirectView("redirect:" + hRequest.getParameter("vpath"), false));
                         }
                         else
                         {
-                            mView.setViewName(this.appConfig.getHomeRedirect());
+                            mView = new ModelAndView(new RedirectView(this.appConfig.getHomeRedirect(), true));
                         }
 
                         return mView;

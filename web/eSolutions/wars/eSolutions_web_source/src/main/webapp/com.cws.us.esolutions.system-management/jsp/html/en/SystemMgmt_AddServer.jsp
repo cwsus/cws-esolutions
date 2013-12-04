@@ -51,22 +51,30 @@
             if (obj.value == 'DMGRSERVER')
             {
                 document.getElementById("domainName").style.display = 'block';
-                document.getElementById("domainNameSelect").style.display = 'block';
                 document.getElementById("locationDetail").style.display = 'block';
                 document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'block';
                 document.getElementById("owningDmgr").style.display = 'none';
                 document.getElementById("managerUrl").style.display = 'block';
+
+                if (document.getElementById("domainNameSelect"))
+                {
+                    document.getElementById("domainNameSelect").style.display = 'block';
+                }
             }
             else if (obj.value == 'VIRTUALHOST')
             {
                 document.getElementById("domainName").style.display = 'block';
-                document.getElementById("domainNameSelect").style.display = 'block';
                 document.getElementById("locationDetail").style.display = 'block';
                 document.getElementById("applicationDetail").style.display = 'block';
                 document.getElementById("dmgrPort").style.display = 'none';
                 document.getElementById("owningDmgr").style.display = 'none';
                 document.getElementById("managerUrl").style.display = 'block';
+
+                if (document.getElementById("domainNameSelect"))
+                {
+                    document.getElementById("domainNameSelect").style.display = 'block';
+                }
             }
         }
         else

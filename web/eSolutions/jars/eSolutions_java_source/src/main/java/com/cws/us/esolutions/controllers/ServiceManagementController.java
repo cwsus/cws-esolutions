@@ -2535,7 +2535,7 @@ public class ServiceManagementController
                     }
 
                     // get the list of appservers associated with this dmgr
-                    ServerManagementResponse appServerResponse = processor.listServersByType(appServerRequest);
+                    ServerManagementResponse appServerResponse = processor.listServersByDmgr(appServerRequest);
 
                     if (DEBUG)
                     {
@@ -2803,7 +2803,7 @@ public class ServiceManagementController
                                 DEBUGGER.debug("List<Server>: {}", appServerList);
                             }
 
-                            platformRequest.setAvailableApps(appServerList);
+                            mView.addObject("appServerList", appServerList);
                         }
                         else if (appServerResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                         {
@@ -2853,7 +2853,7 @@ public class ServiceManagementController
                                 DEBUGGER.debug("List<Server>: {}", webServerList);
                             }
 
-                            platformRequest.setAvailableWebs(webServerList);
+                            mView.addObject("webServerList", webServerList);
                         }
                         else if (webResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                         {
@@ -3032,65 +3032,7 @@ public class ServiceManagementController
                     mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                 }
 
-                Server reqServer = new Server();
-                reqServer.setServerType(ServerType.DMGRSERVER);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", dmgrServer);
-                }
-
-                ServerManagementRequest serverReq = new ServerManagementRequest();
-                serverReq.setRequestInfo(reqInfo);
-                serverReq.setServiceId(this.systemMgmt);
-                serverReq.setTargetServer(reqServer);
-                serverReq.setUserAccount(userAccount);
-                serverReq.setApplicationId(this.appConfig.getApplicationId());
-                serverReq.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServerManagementRequest: {}", serverReq);
-                }
-
-                ServerManagementResponse serverRes = serverMgr.listServersByType(serverReq);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServerManagementResponse: {}", serverRes);
-                }
-
-                if (serverRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Server> listing = serverRes.getServerList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("listing: {}", listing);
-                    }
-
-                    Map<String, String> dmgrList = new HashMap<>();
-
-                    for (Server server : listing)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", server);
-                        }
-
-                        dmgrList.put(server.getServerGuid(), server.getOperHostName());
-                    }
-
-                    mView.addObject("dmgrList", dmgrList);
-                }
-                else if (serverRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-
-                mView.addObject("command", new Server());
+                mView = new ModelAndView(new RedirectView())
                 mView.setViewName(this.selectDmgrPage);
             }
             catch (ServerManagementException smx)

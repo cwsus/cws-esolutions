@@ -49,20 +49,15 @@
     <ssh-config>
         <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
         <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
-        <sshUserAccount>kh05451</sshUserAccount> <!-- username to use for authentication -->
+        <sshUserAccount /> <!-- username to use for authentication -->
         <sshUserSalt />
         <sshUserPassword />
-        <sshKeyFile>C:/home/35033355/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
+        <sshKeyFile /> <!-- path to the ssh private key -->
         <sshKeyPassword /> <!-- password for key, if required -->
     </ssh-config>
 
     <exception-config>
-        <sendExceptionNotifications>true</sendExceptionNotifications>
-        <emailFrom>esolutionscore-alert@caspersbox.com</emailFrom>
-        <notificationAddress>
-            <emailAddress>oncalls@caspersbox.com</emailAddress>
-            <emailAddress>kmhuntly@gmail.com</emailAddress>
-        </notificationAddress>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
     </exception-config>
 
     <resource-config>

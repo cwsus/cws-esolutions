@@ -48,7 +48,6 @@ import com.cws.esolutions.core.Constants;
 public final class ApplicationConfig implements Serializable
 {
     private String appName = null;
-    private String mailFrom = null;
     private int connectTimeout = 0;
     private int messageIdLength = 0;
     private String dateFormat = null;
@@ -224,19 +223,6 @@ public final class ApplicationConfig implements Serializable
         this.agentBundleSource = value;
     }
 
-    public final void setMailFrom(final String value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setMailFrom(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.mailFrom = value;
-    }
-
     @XmlElement(name = "appName")
     public final String getAppName()
     {
@@ -403,20 +389,6 @@ public final class ApplicationConfig implements Serializable
         }
         
         return this.agentBundleSource;
-    }
-
-    @XmlElement(name = "mailFrom")
-    public final String getMailFrom()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getMailFrom()";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.mailFrom);
-        }
-        
-        return this.mailFrom;
     }
 
     @Override

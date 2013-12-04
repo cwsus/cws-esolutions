@@ -75,18 +75,36 @@ public class NetworkUtilsTest
     @Test
     public void testExecuteSshConnection()
     {
-        List<String> commandList = new ArrayList<>(
+        List<String> serverList = new ArrayList<>(
                 Arrays.asList(
-                        "cd /var/tmp",
-                        "ls -ltra"));
+                        "gbs01150", "gbs01151", "gbs01152", "gbs01153", "gbs01154", "gbs01155", "gbs01156", "gbs01157"));
 
-        try
+        List<String> idList = new ArrayList<>(
+                Arrays.asList(
+                        "gppnapra", "gppnaprb", "gppnaprc", "gppnaprd", "gppnapre", "gppnaprf", "gppnaprg", "gppnaprh", "gppnapri", "gppnaprj",
+                        "gppnaprk", "gppnaprl", "gppnaprm", "gppnaprn", "gppnapro", "gppnaprp", "gppnaprq", "gppnaprr", "gppnaprs", "gppnaprt",
+                        "gppnapsa", "gppnapsb", "gppnapsc", "gppnapsd", "gppnapse", "gppnapsf", "gppnapsg", "gppnapsh", "gppnapsi", "gppnapsj",
+                        "gppnapsk", "gppnapsl", "gppnapsm", "gppnapsn", "gppnapso", "gppnapsp", "gppnapsq", "gppnapsr", "gppnapss", "gppnapst"));
+
+        for (String box : serverList)
         {
-            Assert.assertNotNull(NetworkUtils.executeSshConnection("gbl01026.systems.uk.hsbc", commandList));
-        }
-        catch (UtilityException ux)
-        {
-            Assert.fail(ux.getMessage());
+            for (String user : idList)
+            {
+                try
+                {
+                    StringBuilder response = NetworkUtils.executeSshConnection(box + ".systems.uk.hsbc",
+                            new ArrayList<String>(Arrays.asList(user, "ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6", "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD")),
+                            new ArrayList<String>(Arrays.asList("/usr/local/bin/sudo -l")));
+
+                    System.out.println("User account: " + user + " on host " + box + ": SUCCESS");
+                }
+                catch (UtilityException ux)
+                {
+                    System.out.println("User account: " + user + " on host " + box + " failed to authenticate: " + ux.getMessage());
+
+                    continue;
+                }
+            }
         }
     }
 

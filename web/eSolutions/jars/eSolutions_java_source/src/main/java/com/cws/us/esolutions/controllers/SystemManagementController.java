@@ -98,6 +98,7 @@ public class SystemManagementController
     private SearchRequestValidator searchValidator = null;
 
     private static final String CNAME = SystemManagementController.class.getName();
+    private static final String ADD_SERVER_REDIRECT = "redirect:/ui/system-management/add-server";
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -1012,7 +1013,7 @@ public class SystemManagementController
             DEBUGGER.debug("BindingResult: {}", binding);
         }
 
-        ModelAndView mView = new ModelAndView();
+        ModelAndView mView = new ModelAndView(new RedirectView());
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -1072,7 +1073,7 @@ public class SystemManagementController
                 ERROR_RECORDER.error("Request failed validation: {}", binding.getAllErrors());
 
                 // send back to page
-                mView.addObject("command", new ServerRequest());
+                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.setViewName(this.addServerPage);
             }
 
@@ -1234,7 +1235,6 @@ public class SystemManagementController
                                 else
                                 {
                                     // redirect to add datacenter
-                                    mView = new ModelAndView(new RedirectView());
                                     mView.setViewName(this.addDatacenterRedirect);
 
                                     return mView;
@@ -1245,7 +1245,6 @@ public class SystemManagementController
                                 ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
                                 // redirect to add datacenter
-                                mView = new ModelAndView(new RedirectView());
                                 mView.setViewName(this.addDatacenterRedirect);
 
                                 return mView;
@@ -1253,13 +1252,7 @@ public class SystemManagementController
 
                             // no dmgr information found for the request
                             mView.addObject(Constants.ERROR_RESPONSE, dmgrResponse.getResponse());
-                            mView.addObject("domainList", this.availableDomains);
-                            mView.addObject("serverTypes", ServerType.values());
-                            mView.addObject("serverStatuses", ServerStatus.values());
-                            mView.addObject("serverRegions", ServiceRegion.values());
-                            mView.addObject("networkPartitions", NetworkPartition.values());
-                            mView.addObject("command", request);
-                            mView.setViewName(this.addServerPage);
+                            mView.setViewName(SystemManagementController.ADD_SERVER_REDIRECT);
 
                             return mView;
                         }
@@ -1358,13 +1351,8 @@ public class SystemManagementController
 
                     serverMgr.installSoftwarePackage(installRequest);*/ // we are NOT waiting for a response here
 
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageServerAdded);
-                    mView.addObject("domainList", this.availableDomains);
-                    mView.addObject("serverTypes", ServerType.values());
-                    mView.addObject("serverStatuses", ServerStatus.values());
-                    mView.addObject("serverRegions", ServiceRegion.values());
-                    mView.addObject("networkPartitions", NetworkPartition.values());
-                    mView.addObject("command", new ServerRequest());
+                    mView.addObject(Constants.RESPONSE_MESSAGE, response.getResponse());
+                    mView.setViewName(SystemManagementController.ADD_SERVER_REDIRECT);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -1376,8 +1364,6 @@ public class SystemManagementController
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.addObject("command", request);
                 }
-
-                mView.setViewName(this.addServerPage);
             }
             catch (ServerManagementException smx)
             {

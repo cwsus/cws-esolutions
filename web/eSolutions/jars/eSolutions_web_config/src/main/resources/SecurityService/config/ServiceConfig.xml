@@ -83,12 +83,13 @@
     </file-security-config>
 
     <exception-config>
-        <sendExceptionNotifications>true</sendExceptionNotifications>
-        <emailFrom>esolutionssec-alert@caspersbox.com</emailFrom>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+        <!--
+        <emailFrom />
         <notificationAddresses>
-            <emailAddress>oncalls@caspersbox.com</emailAddress>
-            <emailAddress>kmhuntly@gmail.com</emailAddress>
+            <emailAddress />
         </notificationAddresses>
+        -->
     </exception-config>
 
     <resource-config>

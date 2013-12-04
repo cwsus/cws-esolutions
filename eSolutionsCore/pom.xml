@@ -23,6 +23,8 @@
         <virtualbox.version>4.2.8</virtualbox.version>
         <eSolutionsAgent.version>1.0-SNAPSHOT</eSolutionsAgent.version>
         <spring.version>3.2.4.RELEASE</spring.version>
+        <jsch.version>0.1.50</jsch.version>
+        <expectj.version>2.0.7</expectj.version>
     </properties>
 
     <dependencies>
@@ -91,6 +93,13 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <!-- virtualbox -->
         <dependency>
             <groupId>org.virtualbox</groupId>
@@ -126,6 +135,14 @@
                     <groupId>commons-logging</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!-- expect -->
+        <dependency>
+            <groupId>net.sourceforge.expectj</groupId>
+            <artifactId>expectj</artifactId>
+            <version>${expectj.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

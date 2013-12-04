@@ -72,10 +72,10 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             stmt.setString(1, (String) messageList.get(0)); // message id
             stmt.setString(2, (String) messageList.get(1)); // message title
             stmt.setString(3, (String) messageList.get(2)); // message text
-            stmt.setString(5, (String) messageList.get(3)); // author email
-            stmt.setBoolean(6, (Boolean) messageList.get(4)); // is active
-            stmt.setBoolean(7, (Boolean) messageList.get(5)); // does expire
-            stmt.setLong(8, (messageList.get(6) == null) ? 0 : (Long) messageList.get(6)); // expiry date
+            stmt.setString(4, (String) messageList.get(3)); // author email
+            stmt.setBoolean(5, (Boolean) messageList.get(4)); // is active
+            stmt.setBoolean(6, (Boolean) messageList.get(5)); // does expire
+            stmt.setLong(7, (messageList.get(6) == null) ? 0 : (Long) messageList.get(6)); // expiry date
 
             isComplete = (!(stmt.execute()));
 

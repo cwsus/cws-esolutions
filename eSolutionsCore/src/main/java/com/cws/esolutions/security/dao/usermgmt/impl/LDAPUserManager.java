@@ -373,7 +373,6 @@ public class LDAPUserManager implements UserManager
                             authData.getLockCount(),
                             authData.getOlrLocked(),
                             authData.getOlrSetupReq(),
-                            authData.getPublicKey(),
                             authData.getSurname(),
                             authData.getTcAccepted(),
                             authData.getUserRole(),
@@ -918,7 +917,7 @@ public class LDAPUserManager implements UserManager
                             authRepo.getRepositoryBaseDN(),
                             SearchScope.SUB,
                             searchFilter,
-                            authData.getPublicKey());
+                            authData.getCommonName());
 
                     if (DEBUG)
                     {
@@ -1105,8 +1104,7 @@ public class LDAPUserManager implements UserManager
                         authData.getIsSuspended(),
                         authData.getOlrSetupReq(),
                         authData.getOlrLocked(),
-                        authData.getTcAccepted(),
-                        authData.getPublicKey());
+                        authData.getTcAccepted());
 
                     if (DEBUG)
                     {
@@ -1142,8 +1140,7 @@ public class LDAPUserManager implements UserManager
                                     entry.getAttributeValue(authData.getIsSuspended()),
                                     entry.getAttributeValue(authData.getOlrSetupReq()),
                                     entry.getAttributeValue(authData.getOlrLocked()),
-                                    entry.getAttributeValue(authData.getTcAccepted()),
-                                    entry.getAttributeValue(authData.getPublicKey()),
+                                    entry.getAttributeValue(authData.getTcAccepted())
                             };
 
                             if (DEBUG)
@@ -1257,8 +1254,7 @@ public class LDAPUserManager implements UserManager
                             authData.getIsSuspended(),
                             authData.getOlrSetupReq(),
                             authData.getOlrLocked(),
-                            authData.getTcAccepted(),
-                            authData.getPublicKey());
+                            authData.getTcAccepted());
 
                     if (DEBUG)
                     {
@@ -1301,7 +1297,6 @@ public class LDAPUserManager implements UserManager
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
-                            userAccount.add(entry.getAttributeValueBytes(authData.getPublicKey()));
 
                             if (DEBUG)
                             {
@@ -1402,19 +1397,7 @@ public class LDAPUserManager implements UserManager
                         searchFilter,
                         authData.getCommonName(),
                         authData.getUserId(),
-                        authData.getGivenName(),
-                        authData.getSurname(),
-                        authData.getDisplayName(),
-                        authData.getEmailAddr(),
-                        authData.getUserRole(),
-                        authData.getLockCount(),
-                        authData.getLastLogin(),
-                        authData.getExpiryDate(),
-                        authData.getIsSuspended(),
-                        authData.getOlrSetupReq(),
-                        authData.getOlrLocked(),
-                        authData.getTcAccepted(),
-                        authData.getPublicKey());
+                        authData.getDisplayName());
 
                     if (DEBUG)
                     {
@@ -1437,19 +1420,7 @@ public class LDAPUserManager implements UserManager
                             String[] userData = new String[] {
                                     entry.getAttributeValue(authData.getCommonName()),
                                     entry.getAttributeValue(authData.getUserId()),
-                                    entry.getAttributeValue(authData.getGivenName()),
-                                    entry.getAttributeValue(authData.getSurname()),
                                     entry.getAttributeValue(authData.getDisplayName()),
-                                    entry.getAttributeValue(authData.getEmailAddr()),
-                                    entry.getAttributeValue(authData.getUserRole()).toUpperCase(),
-                                    entry.getAttributeValue(authData.getLockCount()),
-                                    entry.getAttributeValue(authData.getLastLogin()),
-                                    entry.getAttributeValue(authData.getExpiryDate()),
-                                    entry.getAttributeValue(authData.getIsSuspended()),
-                                    entry.getAttributeValue(authData.getOlrSetupReq()),
-                                    entry.getAttributeValue(authData.getOlrLocked()),
-                                    entry.getAttributeValue(authData.getTcAccepted()),
-                                    entry.getAttributeValue(authData.getPublicKey()),
                             };
 
                             if (DEBUG)

@@ -495,9 +495,7 @@ BEGIN
         ASSIGNED_ENGINEER,
         ADD_DATE,
         DELETE_DATE,
-        DMGR_PORT,
-        OWNING_DMGR,
-        MGR_ENTRY
+        OWNING_DMGR
     FROM `esolutionssvc`.`installed_systems`
     WHERE OWNING_DMGR = serverGuid
     AND DELETE_DATE = '0000-00-00 00:00:00';
