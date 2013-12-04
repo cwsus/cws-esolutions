@@ -24,8 +24,12 @@
 
     <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
 
+    <bean id="mailSession" class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="mail/MailSession" />
+    </bean>
+
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="session" value="mail/MailSession" />
+        <property name="session" ref="mailSession" />
     </bean>
 
     <bean id="mailer" class="com.cws.esolutions.core.utils.EmailUtils">
