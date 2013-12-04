@@ -324,7 +324,7 @@ public class SessionAuthenticationFilter implements Filter
             redirectPath.append("?" + hRequest.getQueryString());
         }
 
-        hResponse.sendRedirect(redirectPath);
+        hResponse.sendRedirect(redirectPath.toString());
 
         return;
     }
