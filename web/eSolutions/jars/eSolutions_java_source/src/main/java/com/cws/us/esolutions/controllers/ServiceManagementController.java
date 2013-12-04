@@ -3032,7 +3032,7 @@ public class ServiceManagementController
                     mView.addObject(Constants.ERROR_MESSAGE, this.messageNoDmgrFound);
                 }
 
-                mView = new ModelAndView(new RedirectView())
+                mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.selectDmgrPage);
             }
             catch (ServerManagementException smx)
