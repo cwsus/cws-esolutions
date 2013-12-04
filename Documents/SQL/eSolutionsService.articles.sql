@@ -27,9 +27,8 @@ CREATE TABLE `esolutionssvc`.`articles` (
     `kbase_article_revieweddate` BIGINT,
     `kbase_article_modifieddate` BIGINT,
     `kbase_article_modifiedby` VARCHAR(45),
-    `kbase_article_author_email` VARCHAR(100) NOT NULL DEFAULT '',
     PRIMARY KEY  (`kbase_article_id`),
-    FULLTEXT KEY `articles` (`kbase_article_id`, `kbase_article_keywords`, `kbase_article_title`, `kbase_article_symptoms`, `kbase_article_cause`, `kbase_article_resolution`, `kbase_article_author_email`)
+    FULLTEXT KEY `articles` (`kbase_article_id`, `kbase_article_keywords`, `kbase_article_title`, `kbase_article_symptoms`, `kbase_article_cause`, `kbase_article_resolution`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -66,11 +65,10 @@ BEGIN
         kbase_article_revieweddate,
         kbase_article_modifieddate,
         kbase_article_modifiedby,
-        kbase_article_author_email,
-    MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution, kbase_article_author_email)
+    MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`articles`
-    WHERE MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution, kbase_article_author_email)
+    WHERE MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND kbase_article_status = 'APPROVED'
     LIMIT startRow, 20;
@@ -103,8 +101,7 @@ BEGIN
         kbase_article_reviewedby,
         kbase_article_revieweddate,
         kbase_article_modifieddate,
-        kbase_article_modifiedby,
-        kbase_article_author_email
+        kbase_article_modifiedby
     FROM `articles`
     WHERE kbase_page_hits >= 10
     AND kbase_article_status = 'APPROVED'
@@ -142,8 +139,7 @@ BEGIN
             kbase_article_reviewedby,
             kbase_article_revieweddate,
             kbase_article_modifieddate,
-            kbase_article_modifiedby,
-            kbase_article_author_email
+            kbase_article_modifiedby
         FROM `articles`
         WHERE kbase_article_id = articleId
         AND kbase_article_status IN ('NEW', 'REVIEW');
@@ -168,8 +164,7 @@ BEGIN
             kbase_article_reviewedby,
             kbase_article_revieweddate,
             kbase_article_modifieddate,
-            kbase_article_modifiedby,
-            kbase_article_author_email
+            kbase_article_modifiedby
         FROM `articles`
         WHERE kbase_article_id = articleId
         AND kbase_article_status = 'APPROVED';
@@ -189,7 +184,6 @@ DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewArticle`$$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`addNewArticle`(
     IN articleId VARCHAR(45),
     IN author VARCHAR(45),
-    IN authorEmail VARCHAR(100),
     IN keywords VARCHAR(100),
     IN title VARCHAR(100),
     IN symptoms VARCHAR(100),
@@ -201,12 +195,12 @@ BEGIN
     (
         kbase_page_hits, kbase_article_id, kbase_article_createdate, kbase_article_author,
         kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause,
-        kbase_article_resolution, kbase_article_status, kbase_article_author_email
+        kbase_article_resolution, kbase_article_status
     )
     VALUES
     (
         0, articleId, UNIX_TIMESTAMP(), author, keywords, title,
-        symptoms, cause, resolution, 'NEW', authorEmail
+        symptoms, cause, resolution, 'NEW'
     );
 
 	COMMIT;
@@ -323,8 +317,7 @@ BEGIN
         kbase_article_reviewedby,
         kbase_article_revieweddate,
         kbase_article_modifieddate,
-        kbase_article_modifiedby,
-        kbase_article_author_email
+        kbase_article_modifiedby
     FROM `esolutionssvc`.`articles`
     WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
     AND kbase_article_author != requestorId

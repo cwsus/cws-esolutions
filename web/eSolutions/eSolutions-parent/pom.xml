@@ -171,15 +171,18 @@
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>
-            <!--
             <dependency>
                 <groupId>stax</groupId>
                 <artifactId>stax</artifactId>
                 <version>${stax.version}</version>
-                <type>jar</type>
                 <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <artifactId>xmlbeans-jsr173-api</artifactId>
+                        <groupId>xmlbeans</groupId>
+                    </exclusion>
+                </exclusions>  
             </dependency>
-            -->
             <!-- tiles -->
             <dependency>
                 <groupId>org.apache.tiles</groupId>

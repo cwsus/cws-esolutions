@@ -114,8 +114,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 messageId,
                                 message.getMessageTitle(),
                                 message.getMessageText(),
-                                userAccount.getUsername(),
-                                userAccount.getEmailAddr(),
+                                userAccount.getGuid(),
                                 message.getIsActive(),
                                 message.getDoesExpire(),
                                 message.getExpiryDate()));

@@ -16,7 +16,6 @@ CREATE TABLE `esolutionssvc`.`service_messages` (
     `svc_message_title` VARCHAR(100) NOT NULL,
     `svc_message_txt` TEXT NOT NULL,
     `svc_message_author` VARCHAR(45) NOT NULL,
-    `svc_message_email` VARCHAR(45) NOT NULL,
     `svc_message_submitdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `svc_message_active` BOOLEAN NOT NULL DEFAULT TRUE,
     `svc_message_expires` BOOLEAN NOT NULL DEFAULT FALSE,
@@ -49,7 +48,6 @@ BEGIN
         svc_message_title,
         svc_message_txt,
         svc_message_author,
-        svc_message_email,
         svc_message_submitdate,
         svc_message_active,
         svc_message_expires,
@@ -78,7 +76,6 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`submitSvcMessage
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
     IN messageAuthor VARCHAR(45),
-    IN authorEmail VARCHAR(45),
     IN active BOOLEAN,
     IN expiry BOOLEAN,
     IN expiryDate BIGINT
@@ -86,13 +83,11 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`submitSvcMessage
 BEGIN
     INSERT INTO `esolutionssvc`.`service_messages`
     (
-        svc_message_id, svc_message_title, svc_message_txt, svc_message_author, svc_message_email,
-        svc_message_submitdate, svc_message_active,  svc_message_expires, svc_message_expirydate
+        svc_message_id, svc_message_title, svc_message_txt, svc_message_author, svc_message_submitdate, svc_message_active,  svc_message_expires, svc_message_expirydate
     )
     VALUES
     (
-        messageId, messageTitle, messageText, messageAuthor,
-        authorEmail, NOW(), active, expiry, expiryDate
+        messageId, messageTitle, messageText, messageAuthor, NOW(), active, expiry, expiryDate
     );
 
     COMMIT;
@@ -151,7 +146,6 @@ BEGIN
         svc_message_title,
         svc_message_txt,
         svc_message_author,
-        svc_message_email,
         svc_message_submitdate,
         svc_message_active,
         svc_message_expires,
@@ -180,7 +174,6 @@ BEGIN
         svc_message_title,
         svc_message_txt,
         svc_message_author,
-        svc_message_email,
         svc_message_submitdate,
         svc_message_active,
         svc_message_expires,

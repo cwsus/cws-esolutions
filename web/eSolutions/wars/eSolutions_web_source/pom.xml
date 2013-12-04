@@ -54,12 +54,10 @@
             <groupId>aopalliance</groupId>
             <artifactId>aopalliance</artifactId>
         </dependency>
-        <!--
         <dependency>
             <groupId>stax</groupId>
             <artifactId>stax</artifactId>
         </dependency>
-        -->
         <!-- tiles -->
         <dependency>
             <groupId>org.apache.tiles</groupId>
