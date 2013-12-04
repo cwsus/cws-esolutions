@@ -25,14 +25,7 @@
     <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
 
     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="host" value="localhost" />
-        <property name="port" value="25" />
-        <property name="javaMailProperties">
-            <props>
-                <prop key="mail.debug">true</prop>
-                <prop key="mail.transport.protocol">smtp</prop>
-            </props>
-        </property>
+        <property name="session" value="mail/MailSession" />
     </bean>
 
     <bean id="mailer" class="com.cws.esolutions.core.utils.EmailUtils">
