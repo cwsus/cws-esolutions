@@ -22,8 +22,6 @@
         </property>
     </bean>
 
-    <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
-
     <bean id="mailSession" class="org.springframework.jndi.JndiObjectFactoryBean">
         <property name="jndiName" value="java:comp/env/mail/MailSession" />
     </bean>
@@ -45,6 +43,8 @@
     <bean id="addressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator">
         <property name="messageEmailAddressRequired" value="email.source.addr.required" />
     </bean>
+
+    <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
 
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
