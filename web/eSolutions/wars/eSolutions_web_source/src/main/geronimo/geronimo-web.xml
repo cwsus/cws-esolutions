@@ -15,14 +15,12 @@
                 <dep:version>3.0.1</dep:version>
                 <dep:type>car</dep:type>
             </dep:dependency>
-            <!--
             <dep:dependency>
                 <groupId>org.apache.geronimo.configs</groupId>
                 <artifactId>javamail</artifactId>
                 <version>3.0.1</version>
                 <type>car</type>
             </dep:dependency>
-            -->
             <dep:dependency>
                 <dep:groupId>console.jms</dep:groupId>
                 <dep:artifactId>cws</dep:artifactId>
