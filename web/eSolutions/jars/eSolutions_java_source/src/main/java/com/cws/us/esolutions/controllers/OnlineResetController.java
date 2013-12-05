@@ -15,16 +15,14 @@ import java.util.Date;
 import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
-import java.io.IOException;
 import java.util.Enumeration;
-import java.text.MessageFormat;
 import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
-import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -45,8 +43,6 @@ import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
-import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
@@ -90,16 +86,15 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
 public class OnlineResetController
 {
     private String resetURL = null;
-    private String userResetEmail = null;
     private boolean allowUserReset = true;
     private String submitAnswersPage = null;
     private String messageOlrComplete = null;
     private String submitUsernamePage = null;
     private String submitEmailAddrPage = null;
-    private String forgotUsernameEmail = null;
-    private String passwordResetSubject = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
+    private SimpleMailMessage forgotUsernameEmail = null;
+    private SimpleMailMessage forgotPasswordEmail = null;
 
     private static final String RESET_KEY_ID = "resetKey";
     private static final String CNAME = OnlineResetController.class.getName();
@@ -199,45 +194,6 @@ public class OnlineResetController
         this.validator = value;
     }
 
-    public final void setUserResetEmail(final String value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setUserResetEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userResetEmail = value;
-    }
-
-    public final void setPasswordResetSubject(final String value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setPasswordResetSubject(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.passwordResetSubject = value;
-    }
-
-    public final void setForgotUsernameEmail(final String value)
-    {
-        final String methodName = OnlineResetController.CNAME + "#setForgotUsernameEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.forgotUsernameEmail = value;
-    }
-
     public final void setAllowUserReset(final boolean value)
     {
         final String methodName = OnlineResetController.CNAME + "#setAllowUserReset(final boolean value)";
@@ -249,6 +205,32 @@ public class OnlineResetController
         }
 
         this.allowUserReset = value;
+    }
+
+    public final void setForgotUsernameEmail(final SimpleMailMessage value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setForgotUsernameEmail(final SimpleMailMessage value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.forgotUsernameEmail = value;
+    }
+
+    public final void setForgotPasswordEmail(final SimpleMailMessage value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setForgotPasswordEmail(final SimpleMailMessage value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.forgotPasswordEmail = value;
     }
 
     @RequestMapping(value = "/forgot-username", method = RequestMethod.GET)
@@ -728,45 +710,30 @@ public class OnlineResetController
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                // send an email with the username in it
-                // good, send email
-                String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                if (DEBUG)
+                try
                 {
-                    DEBUGGER.debug("Message ID: {}", emailId);
+                    SimpleMailMessage message = new SimpleMailMessage(this.forgotUsernameEmail);
+                    message.setTo(String.format(this.forgotUsernameEmail.getTo()[0], userAccount.getEmailAddr()));
+                    message.setSubject(String.format(this.forgotUsernameEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
+                    message.setText(String.format(this.forgotUsernameEmail.getText(),
+                            userAccount.getGivenName(),
+                            new Date(System.currentTimeMillis()),
+                            reqInfo.getHostName(),
+                            userAccount.getUsername()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SimpleMailMessage: {}", message);
+                    }
+
+                    EmailUtils.sendEmailMessage(message);
                 }
-
-                String emailBody = MessageFormat.format(IOUtils.toString(
-                        this.getClass().getClassLoader().getResourceAsStream(this.forgotUsernameEmail)), new Object[]
+                catch (MessagingException mx)
                 {
-                    userAccount.getGivenName(),
-                    new Date(System.currentTimeMillis()),
-                    reqInfo.getHostName(),
-                    userAccount.getUsername()
-                });
+                    ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Email body: {}", emailBody);
+                    mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 }
-
-                // good, now generate an email with the information
-                EmailMessage emailMessage = new EmailMessage();
-                emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                emailMessage.setMessageBody(emailBody);
-                emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
-                        this.passwordResetSubject, this.getClass().getClassLoader()));
-                emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-                emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                }
-
-                EmailUtils.sendEmailMessage(emailMessage);
 
                 mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                 mView.setViewName(this.appConfig.getLogonRedirect());
@@ -781,24 +748,6 @@ public class OnlineResetController
         catch (AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
-            
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-        catch (MessagingException mx)
-        {
-            ERROR_RECORDER.error(mx.getMessage(), mx);
-            
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-        catch (CoreServiceException csx)
-        {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
-            
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
             
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
@@ -1155,40 +1104,25 @@ public class OnlineResetController
                         DEBUGGER.debug("targetURL: {}", targetURL);
                     }
                         
-                    String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
-                    {
-                        responseAccount.getGivenName(),
-                        new Date(System.currentTimeMillis()),
-                        reqInfo.getHostName(),
-                        targetURL.toString(),
-                        secConfig.getPasswordMinLength(),
-                        secConfig.getPasswordMaxLength()
-                    });
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Email body: {}", emailBody);
-                    }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
-                            this.passwordResetSubject, this.getClass().getClassLoader()));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
-
                     try
                     {
-                        EmailUtils.sendEmailMessage(emailMessage);
+                        SimpleMailMessage message = new SimpleMailMessage(this.forgotPasswordEmail);
+                        message.setTo(String.format(this.forgotPasswordEmail.getTo()[0], userAccount.getEmailAddr()));
+                        message.setSubject(String.format(this.forgotPasswordEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
+                        message.setText(String.format(this.forgotPasswordEmail.getText(),
+                            responseAccount.getGivenName(),
+                            new Date(System.currentTimeMillis()),
+                            reqInfo.getHostName(),
+                            targetURL.toString(),
+                            secConfig.getPasswordMinLength(),
+                            secConfig.getPasswordMaxLength()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                        }
+
+                        EmailUtils.sendEmailMessage(message);
                     }
                     catch (MessagingException mx)
                     {
@@ -1203,8 +1137,8 @@ public class OnlineResetController
                         EmailMessage smsMessage = new EmailMessage();
                         smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                         smsMessage.setMessageBody(resetRes.getSmsCode());
-                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
-                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
+                        smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
+                        smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
 
                         if (DEBUG)
                         {
@@ -1253,18 +1187,6 @@ public class OnlineResetController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            mView.setViewName(this.appConfig.getErrorResponsePage());
-        }
-        catch (CoreServiceException csx)
-        {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
 
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }

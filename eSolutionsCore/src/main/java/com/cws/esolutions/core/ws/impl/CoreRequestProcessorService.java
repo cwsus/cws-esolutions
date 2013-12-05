@@ -346,6 +346,27 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     @Override
+    @WebMethod(operationName = "getTopArticles")
+    public KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
+    {
+        final String methodName = ICoreRequestProcessorService.CNAME + "#getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        KnowledgeBaseResponse response = kbase.getTopArticles(request);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
+        }
+
+        return response;
+    }
+
+    @Override
     @WebMethod(operationName = "doArticleSearch")
     public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
     {

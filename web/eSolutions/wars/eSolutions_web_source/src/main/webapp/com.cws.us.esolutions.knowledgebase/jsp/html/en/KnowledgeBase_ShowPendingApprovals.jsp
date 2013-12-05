@@ -30,6 +30,7 @@
 <div id="sidebar">
     <h1><spring:message code="kbase.header" /></h1>
     <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='kbase.header' />"><spring:message code="kbase.header" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article" title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/common/submit-contact" title="<spring:message code="theme.submit.support.request" />"><spring:message code="theme.submit.support.request" /></a></li>
     </ul>
@@ -58,14 +59,38 @@
     </c:if>
 
     <p>
-        <table id="siteSearch">
-            <c:forEach var="entry" items="${articleList}">
-                <tr>
-                    <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.articleId}">${entry.articleId}</a></td>
-                    <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.title}">${entry.title}</a></td>
-                </tr>
-            </c:forEach>
-        </table>
+        <c:if test="${not empty articleList}">
+            <table id="siteSearch">
+                <c:forEach var="entry" items="${articleList}">
+                    <tr>
+                        <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.articleId}">${entry.articleId}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.title}">${entry.title}</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
+
+            <c:if test="${pages gt 1}">
+                <br />
+                <hr />
+                <br />
+                <table>
+                    <tr>
+                        <c:forEach begin="1" end="${pages}" var="i">
+                            <c:choose>
+                                <c:when test="${page eq i}">
+                                    <td>${i}</td>
+                                </c:when>
+                                <c:otherwise>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/show-approvals/page/${i}" title="${i}">${i}</a>
+                                    </td>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </tr>
+                </table>
+            </c:if>
+        </c:if>
     </p>
 </div>
 

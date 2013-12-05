@@ -9,6 +9,8 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <import resource="classpath:/eSolutions/mailTemplates/OnlineReset.xml" />
+
     <bean id="onlineResetValidator" class="com.cws.us.esolutions.validators.OnlineResetValidator">
         <property name="messageAnswerRequired" value="error.answer.empty" />
         <property name="messageEmailAddressRequired" value="error.email.required" />
@@ -28,8 +30,7 @@
         <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />
         <property name="submitUsernamePage" value="OnlineReset_SubmitUsername" />
         <property name="submitEmailAddrPage" value="OnlineReset_ForgotUsername" />
-        <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" /> <!-- classpath location to reset password notification message -->
-        <property name="forgotUsernameEmail" value="nls/emailTemplates/forgot_userid.email" /> <!-- classpath location to forgot username notification message -->
-        <property name="passwordResetSubject" value="message.forgotuserid.subject" />
+        <property name="forgotUsernameEmail" ref="forgotUsernameEmail" />
+        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
     </bean>
 </beans>

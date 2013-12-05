@@ -20,6 +20,9 @@
     <wsdl:message name="getPendingArticlesResponse">
         <wsdl:part name="parameters" element="tns:getPendingArticlesResponse" />
     </wsdl:message>
+    <wsdl:message name="getTopArticlesResponse">
+        <wsdl:part name="parameters" element="tns:getTopArticlesResponse" />
+    </wsdl:message>
     <wsdl:message name="doArticleSearch">
         <wsdl:part name="parameters" element="tns:doArticleSearch" />
     </wsdl:message>
@@ -58,6 +61,9 @@
     </wsdl:message>
     <wsdl:message name="getPendingArticles">
         <wsdl:part name="parameters" element="tns:getPendingArticles" />
+    </wsdl:message>
+    <wsdl:message name="getTopArticles">
+        <wsdl:part name="parameters" element="tns:getTopArticles" />
     </wsdl:message>
     <wsdl:message name="doServerSearchResponse">
         <wsdl:part name="parameters" element="tns:doServerSearchResponse" />
@@ -216,6 +222,11 @@
         <wsdl:operation name="getPendingArticles">
             <wsdl:input name="getPendingArticles" message="tns:getPendingArticles" />
             <wsdl:output name="getPendingArticlesResponse" message="tns:getPendingArticlesResponse" />
+            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
+        </wsdl:operation>
+        <wsdl:operation name="getTopArticles">
+            <wsdl:input name="getTopArticles" message="tns:getTopArticles" />
+            <wsdl:output name="getTopArticlesResponse" message="tns:getTopArticlesResponse" />
             <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
         </wsdl:operation>
         <wsdl:operation name="createNewService">
@@ -425,6 +436,18 @@
                 <soap:body use="literal" />
             </wsdl:input>
             <wsdl:output name="getPendingArticlesResponse">
+                <soap:body use="literal" />
+            </wsdl:output>
+            <wsdl:fault name="KnowledgeBaseException">
+                <soap:fault name="KnowledgeBaseException" use="literal" />
+            </wsdl:fault>
+        </wsdl:operation>
+        <wsdl:operation name="getTopArticles">
+            <soap:operation soapAction="" style="document" />
+            <wsdl:input name="getTopArticles">
+                <soap:body use="literal" />
+            </wsdl:input>
+            <wsdl:output name="getTopArticlesResponse">
                 <soap:body use="literal" />
             </wsdl:output>
             <wsdl:fault name="KnowledgeBaseException">

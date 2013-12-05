@@ -156,9 +156,7 @@ public class KnowledgeBaseDAOImplTest
     {
         try
         {
-            List<String> article = KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", false);
-
-            Assert.assertNotNull(article);
+            Assert.assertNotNull(KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", false));
         }
         catch (SQLException sqx)
         {
@@ -171,9 +169,7 @@ public class KnowledgeBaseDAOImplTest
     {
         try
         {
-            List<String> article = KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", true);
-
-            Assert.assertNotNull(article);
+            Assert.assertNotNull(KnowledgeBaseDAOImplTest.dao.retrieveArticle("KB22208793", true));
         }
         catch (SQLException sqx)
         {
@@ -186,9 +182,7 @@ public class KnowledgeBaseDAOImplTest
     {
         try
         {
-            List<String[]> data = KnowledgeBaseDAOImplTest.dao.searchPendingArticles("khuntly");
-
-            Assert.assertNotNull(data);
+            Assert.assertNotNull(KnowledgeBaseDAOImplTest.dao.searchPendingArticles("khuntly", 0));
         }
         catch (SQLException sqx)
         {
@@ -201,9 +195,7 @@ public class KnowledgeBaseDAOImplTest
     {
         try
         {
-            List<String[]> data = KnowledgeBaseDAOImplTest.dao.getArticlesByAttribute("test");
-
-            Assert.assertNotNull(data);
+            Assert.assertNotNull(KnowledgeBaseDAOImplTest.dao.getArticlesByAttribute("test", 0));
         }
         catch (SQLException sqx)
         {

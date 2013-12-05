@@ -37,7 +37,7 @@
         </div>
         <div id="footer-left">
             <c:choose>
-                <c:when test="${not empty sessionScope.userAccount}">
+                <c:when test="${not empty fn:trim(sessionScope.userAccount)}">
                     <spring:message code="theme.welcome.message" arguments="${sessionScope.userAccount.username}, ${sessionScope.userAccount.lastLogin}" /><br />
                     <a href="${pageContext.request.contextPath}/ui/login/logout" title="<spring:message code='theme.navbar.logoff' />">
                         <spring:message code='theme.navbar.logoff' /></a> |

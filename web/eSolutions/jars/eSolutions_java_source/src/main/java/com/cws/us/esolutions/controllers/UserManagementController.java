@@ -15,18 +15,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
 import org.slf4j.Logger;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
-import java.text.MessageFormat;
-import org.apache.commons.io.IOUtils;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Controller;
+import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +46,6 @@ import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.UserAccountValidator;
-import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -93,20 +89,21 @@ public class UserManagementController
     private String projectMgmt = null;
     private String viewUserPage = null;
     private String viewAuditPage = null;
-    private String userResetEmail = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
     private String messageNoUsersFound = null;
     private String messageAccountLocked = null;
     private String messageResetComplete = null;
-    private String passwordResetSubject = null;
     private String messageAccountCreated = null;
     private String messageAccountUnlocked = null;
     private String messageAccountSuspended = null;
     private UserAccountValidator validator = null;
+    private Object messageProjectLoadFailed = null;
     private String messageAccountUnsuspended = null;
     private ApplicationServiceBean appConfig = null;
     private String messageRoleChangedSuccessfully = null;
+    private SimpleMailMessage accountCreatedEmail = null;
+    private SimpleMailMessage forgotPasswordEmail = null;
 
     private static final String CNAME = UserManagementController.class.getName();
 
@@ -335,6 +332,19 @@ public class UserManagementController
         this.messageRoleChangedSuccessfully = value;
     }
 
+    public final void setMessageProjectLoadFailed(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageProjectLoadFailed(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageProjectLoadFailed = value;
+    }
+
     public final void setAppConfig(final ApplicationServiceBean value)
     {
         final String methodName = UserManagementController.CNAME + "#setAppConfig(final CoreServiceBean value)";
@@ -361,9 +371,9 @@ public class UserManagementController
         this.resetURL = value;
     }
 
-    public final void setUserResetEmail(final String value)
+    public final void setAccountCreatedEmail(final SimpleMailMessage value)
     {
-        final String methodName = UserManagementController.CNAME + "#setUserResetEmail(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setAccountCreatedEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -371,12 +381,12 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.userResetEmail = value;
+        this.accountCreatedEmail = value;
     }
 
-    public final void setPasswordResetSubject(final String value)
+    public final void setForgotPasswordEmail(final SimpleMailMessage value)
     {
-        final String methodName = UserManagementController.CNAME + "#setPasswordResetSubject(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setForgotPasswordEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -384,7 +394,7 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.passwordResetSubject = value;
+        this.forgotPasswordEmail = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -567,9 +577,6 @@ public class UserManagementController
                     }
 
                     mView.addObject("projectList", projectList);
-                    mView.addObject("roles", Role.values());
-                    mView.addObject("command", new UserAccount());
-                    mView.setViewName(this.createUserPage);
                 }
                 if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -578,15 +585,18 @@ public class UserManagementController
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (ProjectManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
-                mView.setViewName(this.appConfig.getErrorResponsePage());
+                mView.addObject(Constants.ERROR_RESPONSE, this.messageProjectLoadFailed);
             }
+
+            mView.addObject("roles", Role.values());
+            mView.addObject("command", new UserAccount());
+            mView.setViewName(this.createUserPage);
         }
         else
         {
@@ -1751,13 +1761,6 @@ public class UserManagementController
 
                     if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                     {
-                        String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Message ID: {}", emailId);
-                        }
-
                         StringBuilder targetURL = new StringBuilder()
                             .append(hRequest.getScheme() + "://" + hRequest.getServerName())
                             .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
@@ -1767,41 +1770,26 @@ public class UserManagementController
                         {
                             DEBUGGER.debug("targetURL: {}", targetURL);
                         }
-                            
-                        String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.userResetEmail)), new Object[]
-                        {
-                            account.getGivenName(),
-                            new Date(System.currentTimeMillis()),
-                            reqInfo.getHostName(),
-                            targetURL.toString(),
-                            secConfig.getPasswordMinLength(),
-                            secConfig.getPasswordMaxLength()
-                        });
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Email body: {}", emailBody);
-                        }
-
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(true); // set this to alert so it shows as high priority
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.appConfig.getThemeMessageSource(),
-                                this.passwordResetSubject, this.getClass().getClassLoader()));
-                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
 
                         try
                         {
-                            EmailUtils.sendEmailMessage(emailMessage);
+                            SimpleMailMessage message = new SimpleMailMessage(this.forgotPasswordEmail);
+                            message.setTo(String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()));
+                            message.setSubject(String.format(this.forgotPasswordEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
+                            message.setText(String.format(this.forgotPasswordEmail.getText(),
+                                    account.getGivenName(),
+                                    new Date(System.currentTimeMillis()),
+                                    reqInfo.getHostName(),
+                                    targetURL.toString(),
+                                    secConfig.getPasswordMinLength(),
+                                    secConfig.getPasswordMaxLength()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            }
+
+                            EmailUtils.sendEmailMessage(message);
                         }
                         catch (MessagingException mx)
                         {
@@ -1816,8 +1804,8 @@ public class UserManagementController
                             EmailMessage smsMessage = new EmailMessage();
                             smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
                             smsMessage.setMessageBody(resetRes.getSmsCode());
-                            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getPagerNumber())));
-                            emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
+                            smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(account.getPagerNumber())));
+                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
 
                             if (DEBUG)
                             {
@@ -1873,18 +1861,6 @@ public class UserManagementController
                 ERROR_RECORDER.error(acx.getMessage(), acx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.setViewName(this.appConfig.getUnauthorizedPage());
             }
         }
         else
@@ -2105,13 +2081,14 @@ public class UserManagementController
         {
             try
             {
-                RequestHostInfo hostInfo = new RequestHostInfo();
-                hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                hostInfo.setHostName(hRequest.getRemoteHost());
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
                 UserAccount searchAccount = new UserAccount();
@@ -2127,7 +2104,7 @@ public class UserManagementController
 
                 // search accounts
                 AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(hostInfo);
+                request.setHostInfo(reqInfo);
                 request.setUserAccount(searchAccount);
                 request.setApplicationId(this.appConfig.getApplicationName());
                 request.setControlType(ControlType.LOOKUP);
@@ -2281,13 +2258,14 @@ public class UserManagementController
 
             try
             {
-                RequestHostInfo hostInfo = new RequestHostInfo();
-                hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                hostInfo.setHostName(hRequest.getRemoteHost());
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
                 UserAccount newUser = new UserAccount();
@@ -2321,7 +2299,7 @@ public class UserManagementController
 
                 // search accounts
                 AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(hostInfo);
+                request.setHostInfo(reqInfo);
                 request.setUserAccount(newUser);
                 request.setUserSecurity(security);
                 request.setApplicationId(this.appConfig.getApplicationName());
@@ -2348,6 +2326,117 @@ public class UserManagementController
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
                     // account created
+                    AccountControlRequest resetReq = new AccountControlRequest();
+                    resetReq.setHostInfo(reqInfo);
+                    resetReq.setUserAccount(newUser);
+                    resetReq.setUserSecurity(security);
+                    resetReq.setApplicationId(this.appConfig.getApplicationName());
+                    resetReq.setControlType(ControlType.RESETPASS);
+                    resetReq.setModType(ModificationType.PASSWORD);
+                    resetReq.setRequestor(userAccount);
+                    resetReq.setIsLogonRequest(false);
+                    resetReq.setServiceId(this.serviceId);
+                    resetReq.setApplicationId(this.appConfig.getApplicationId());
+                    resetReq.setApplicationName(this.appConfig.getApplicationName());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlRequest: {}", resetReq);
+                    }
+
+                    AccountControlResponse resetRes = processor.modifyUserPassword(resetReq);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", resetRes);
+                    }
+
+                    if (resetRes.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        // good, send email
+                        UserAccount responseAccount = resetRes.getUserAccount();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", responseAccount);
+                        }
+
+                        String emailId = RandomStringUtils.randomAlphanumeric(16);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Message ID: {}", emailId);
+                        }
+
+                        StringBuilder targetURL = new StringBuilder()
+                            .append(hRequest.getScheme() + "://" + hRequest.getServerName())
+                            .append((hRequest.getServerPort() == 443) ? null : ":" + hRequest.getServerPort())
+                            .append(hRequest.getContextPath() + this.resetURL + resetRes.getResetId());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("targetURL: {}", targetURL);
+                        }
+                            
+                        try
+                        {
+                            SimpleMailMessage message = new SimpleMailMessage(this.accountCreatedEmail);
+                            message.setTo(String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()));
+                            message.setSubject(String.format(this.accountCreatedEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
+                            message.setText(String.format(this.accountCreatedEmail.getText(),
+                                this.appConfig.getApplicationName(),
+                                responseAccount.getUsername(),
+                                targetURL.toString()));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            }
+
+                            EmailUtils.sendEmailMessage(message);
+                        }
+                        catch (MessagingException mx)
+                        {
+                            ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                        }
+
+                        if (secConfig.getSmsResetEnabled())
+                        {
+                            // send an sms code
+                            EmailMessage smsMessage = new EmailMessage();
+                            smsMessage.setIsAlert(true); // set this to alert so it shows as high priority
+                            smsMessage.setMessageBody(resetRes.getSmsCode());
+                            smsMessage.setMessageTo(new ArrayList<>(Arrays.asList(responseAccount.getPagerNumber())));
+                            smsMessage.setEmailAddr(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("EmailMessage: {}", smsMessage);
+                            }
+
+                            try
+                            {
+                                EmailUtils.sendEmailMessage(smsMessage);
+                            }
+                            catch (MessagingException mx)
+                            {
+                                ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // some failure occurred
+                        ERROR_RECORDER.error(resetRes.getResponse());
+
+                        mView.addObject(Constants.ERROR_RESPONSE, resetRes.getResponse());
+                        mView.setViewName(this.appConfig.getErrorResponsePage());
+                    }
+
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountCreated);
                     mView.addObject("command", new UserAccount());
                     mView.setViewName(this.createUserPage);

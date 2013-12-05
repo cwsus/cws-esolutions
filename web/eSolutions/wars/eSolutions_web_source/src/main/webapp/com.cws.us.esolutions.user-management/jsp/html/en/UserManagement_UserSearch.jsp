@@ -36,7 +36,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="user.mgmt.search.header" /></h1>
+    <h1><spring:message code="theme.search.header" /></h1>
 
     <div id="error"></div>
 

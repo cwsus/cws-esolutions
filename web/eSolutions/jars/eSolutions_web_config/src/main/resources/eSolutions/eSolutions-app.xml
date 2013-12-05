@@ -64,7 +64,8 @@
         <property name="requestTimeout" value="10" /> <!-- timeout value (primarily for connections) -->
         <property name="dateFormat" value="MM/dd/yyyy hh:mm" /> <!-- date format (displayed on jsp's) -->
         <property name="uploadDirectory" value="/opt/cws/eSolutions/deployments" /> <!-- where should we put uploads ? -->
-        <property name="secEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
+        <property name="secEmailAddr" value="secadm@caspersbox.com" /> <!-- whats the email address we expose? -->
+        <property name="svcEmailAddr" value="esolutionsadm@caspersbox.com" /> <!-- whats the email address we expose? -->
         <!-- enable/disable services. true for on, false for off -->
         <property name="services">
             <map>

@@ -42,6 +42,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class KnowledgeBaseResponse implements Serializable
 {
+    private int entryCount = 0;
     private Article article = null;
     private String response = null;
     private List<Article> articleList = null;
@@ -106,6 +107,19 @@ public class KnowledgeBaseResponse implements Serializable
         this.articleList = value;
     }
 
+    public final void setEntryCount(final int value)
+    {
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setEntryCount(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.entryCount = value;
+    }
+
     public final CoreServicesStatus getRequestStatus()
     {
         final String methodName = KnowledgeBaseResponse.CNAME + "#getRequestStatus()";
@@ -156,6 +170,19 @@ public class KnowledgeBaseResponse implements Serializable
         }
 
         return this.articleList;
+    }
+
+    public final int getEntryCount()
+    {
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getEntryCount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.entryCount);
+        }
+
+        return this.entryCount;
     }
 
     @Override

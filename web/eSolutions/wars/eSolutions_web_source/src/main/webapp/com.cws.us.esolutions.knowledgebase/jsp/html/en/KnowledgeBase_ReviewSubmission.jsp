@@ -66,6 +66,7 @@
     <h1><spring:message code="kbase.header" /></h1>
     <ul>
         <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='kbase.header' />"><spring:message code="kbase.header" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article" title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a></li>
         <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
             <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals" title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a></li>
@@ -125,8 +126,6 @@
     </p>
 
     <form:form id="reviewArticleData" name="reviewArticleData" action="${pageContext.request.contextPath}/ui/knowledgebase/submit-article" method="post" commandName="article">
-        <form:hidden path="author" value="${article.author}" />
-        <form:hidden path="authorEmail" value="${article.authorEmail}" />
         <form:hidden path="articleId" value="${article.articleId}" />
         <form:hidden path="title" value="${article.title}" />
         <form:hidden path="symptoms" value="${article.symptoms}" />

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="forgotUsernameEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Your Username Request" />
+        <property name="text">
+            <value>
+                <![CDATA[
+				Dear %s,
+
+				A username reminder was requested on your behalf (or perhaps by you) on
+				%s from host %s. If you did not request a reminder, either through your
+				administration team or via the user interface, please notify your security
+				team immediately.
+
+				As requested, your username is:
+
+				%s
+
+				Please do not respond to this email as it is sent from an unmonitored mailbox.
+
+				Thanks,
+
+				Your Administration Team
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean id="forgotPasswordEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Your Password Request" />
+        <property name="text">
+            <value>
+                <![CDATA[
+                    Dear %s,
+
+                    A password reset was requested on your behalf (or perhaps by you) on
+                    %s from host %s. If you did not request a reset, either through your
+                    administration team or via the user interface, please notify your security
+                    team immediately.
+
+                    Please click on the following link to reset your password:
+
+                    %s
+
+                    Please note that your new password must be at least {4} characters long, and
+                    not more than {5} characters, and must be a mix of both upper- and lower-case
+                    letters with at least one special character (e.g. *).
+
+                    Please do not respond to this email as it is sent from an unmonitored mailbox.
+
+                    Thanks,
+
+                    Your Administration Team
+                ]]>
+            </value>
+        </property>
+    </bean>
+</beans>
+

@@ -497,6 +497,18 @@
             <xsd:element minOccurs="0" name="return" />
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:element name="getTopArticles" type="getTopArticles" />
+    <xsd:complexType name="getTopArticles">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="request" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="getTopArticlesResponse" type="getTopArticlesResponse" />
+    <xsd:complexType name="getTopArticlesResponse">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="return" />
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:element name="doArticleSearch" type="doArticleSearch" />
     <xsd:complexType name="doArticleSearch">
         <xsd:sequence>

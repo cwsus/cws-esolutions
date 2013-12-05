@@ -42,6 +42,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
  */
 public class KnowledgeBaseRequest implements Serializable
 {
+    private int startRow = 0;
     private Article article = null;
     private String serviceId = null;
     private boolean isReview = false;
@@ -148,6 +149,19 @@ public class KnowledgeBaseRequest implements Serializable
         this.article = value;
     }
 
+    public final void setStartRow(final int value)
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#setStartRow(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.startRow = value;
+    }
+
     public final UserAccount getUserAccount()
     {
         final String methodName = KnowledgeBaseRequest.CNAME + "#getUserAccount()";
@@ -237,6 +251,19 @@ public class KnowledgeBaseRequest implements Serializable
         }
 
         return this.isReview;
+    }
+
+    public final int getStartRow()
+    {
+        final String methodName = KnowledgeBaseRequest.CNAME + "#getStartRow()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.startRow);
+        }
+
+        return this.startRow;
     }
 
     @Override

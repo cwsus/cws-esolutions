@@ -16,9 +16,13 @@
 package com.cws.esolutions.core.dao.processors.interfaces;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -73,6 +77,10 @@ public interface IKnowledgeBaseDAO
 
     boolean updateArticleStatus(final String articleId, final String modifiedBy, final String status) throws SQLException;
 
+    int getArticleCount(final String type) throws SQLException;
+
+    List<Object[]> listTopArticles() throws SQLException;
+
     /**
     *
     * @param articleId
@@ -80,7 +88,7 @@ public interface IKnowledgeBaseDAO
     * @return List<String>
     * @throws SQLException
     */
-   List<String> retrieveArticle(final String articleId, final boolean isApproval) throws SQLException;
+   List<Object> retrieveArticle(final String articleId, final boolean isApproval) throws SQLException;
 
     /**
      *
@@ -88,7 +96,7 @@ public interface IKnowledgeBaseDAO
      * @return List<String>
      * @throws SQLException
      */
-    List<String[]> searchPendingArticles(final String author) throws SQLException;
+    List<Object[]> searchPendingArticles(final String author, final int startRow) throws SQLException;
 
-    List<String[]> getArticlesByAttribute(final String attribute) throws SQLException;
+    List<Object[]> getArticlesByAttribute(final String attribute, final int startRow) throws SQLException;
 }

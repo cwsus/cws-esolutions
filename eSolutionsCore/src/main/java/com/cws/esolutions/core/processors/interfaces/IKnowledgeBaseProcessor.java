@@ -99,6 +99,16 @@ public interface IKnowledgeBaseProcessor
     KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
 
     /**
+     * Obtains a list of the top 15 articles as viewed by application users
+     * and returns the list back for processing
+     *
+     * @param request - The request information
+     * @return <code>KnowledgeBaseResponse</code> containing the list information
+     * @throws KnowledgeBaseException if an exception occurs during processing
+     */
+    KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException;
+
+    /**
      * @param request
      * @return KnowledgeBaseResponse
      * @throws KnowledgeBaseException

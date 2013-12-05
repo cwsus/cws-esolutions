@@ -15,14 +15,22 @@
  */
 package com.cws.esolutions.security.dao.usermgmt.impl;
 
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.After;
+
 import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Assert;
+
 import java.util.ArrayList;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -33,8 +41,6 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  * eSolutionsCore
  * com.cws.esolutions.security.dao.usermgmt.impl
  * SQLUserManagerTest.java
- *
- *
  *
  * $Id: $
  * $Author: $
@@ -121,6 +127,101 @@ public class SQLUserManagerTest
             List<String[]> searchList = userManager.searchUsers(SearchRequestType.GUID, "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
 
             Assert.assertNotNull(searchList);
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void testModifyUserSuspension()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserSuspension("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", false));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void testModifyUserLockout()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("test", "99504de2-ac12-486a-b835-12c8c164d8bc", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("cwsfailedpwdcount", 5);
+                        }
+                    }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void testModifyUserPassword()
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, 45);
+
+        Map<String, Object> change = new HashMap<>();
+        change.put("userPassword", "6TPeXOxpCKce2wPZMM3nIGtbN2BRk31guOO7utNwfvtjmGxqvLhBi/Atd0ZzxDlR2/5l0cKJgqiMTHCoXPjhwQ==");
+        // change.put("cwsexpirydate", cal.getTimeInMillis());
+
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", change));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void testModifyUserAnswers()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("cwssecans1", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYBjTeRsiJBppeHlyuofEJw+");
+                            put("cwssecans2", "VxqLnzg918cdevQdl+aut3+o2UW40O3ozfz2iUWkOYCiHy4/Zkct4Dsf1KnqTbZE");
+                        }
+                    }));
+        }
+        catch (UserManagementException umx)
+        {
+            Assert.fail(umx.getMessage());
+        }
+    }
+
+    @Test
+    public void testModifyUserContact()
+    {
+        try
+        {
+            Assert.assertTrue(userManager.modifyUserInformation("khuntly", "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", new HashMap<String, Object>()
+                    {
+                        private static final long serialVersionUID = 602188777075148683L;
+
+                        {
+                            put("pager", "716-341-5669");
+                            put("telephoneNumber", "716-341-5669");
+                        }
+                    }));
         }
         catch (UserManagementException umx)
         {

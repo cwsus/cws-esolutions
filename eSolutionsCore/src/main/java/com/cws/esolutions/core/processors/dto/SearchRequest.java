@@ -41,7 +41,7 @@ import com.cws.esolutions.core.processors.enums.SearchRequestType;
  */
 public class SearchRequest implements Serializable
 {
-    private int startPage = 0;
+    private int startRow = 0;
     private int searchLimit = 0;
     private String searchTerms = null;
     private SearchRequestType searchType = null;
@@ -53,9 +53,9 @@ public class SearchRequest implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setStartPage(final int value)
+    public final void setStartRow(final int value)
     {
-        final String methodName = SearchRequest.CNAME + "#setStartPage(final int value)";
+        final String methodName = SearchRequest.CNAME + "#setStartRow(final int value)";
 
         if (DEBUG)
         {
@@ -63,7 +63,7 @@ public class SearchRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.startPage = value;
+        this.startRow = value;
     }
 
     public final void setSearchTerms(final String value)
@@ -105,17 +105,17 @@ public class SearchRequest implements Serializable
         this.searchLimit = value;
     }
 
-    public final int getStartPage()
+    public final int getStartRow()
     {
-        final String methodName = SearchRequest.CNAME + "#getStartPage()";
+        final String methodName = SearchRequest.CNAME + "#getStartRow()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.startPage);
+            DEBUGGER.debug("Value: {}", this.startRow);
         }
 
-        return this.startPage;
+        return this.startRow;
     }
 
     public final String getSearchTerms()

@@ -138,9 +138,7 @@ public class ServiceMessagingDAOImplTest
     {
         try
         {
-            List<Object> data = ServiceMessagingDAOImplTest.dao.retrieveMessage(ServiceMessagingDAOImplTest.MESSAGE_ID);
-
-            Assert.assertNotNull(data);
+            Assert.assertNotNull(ServiceMessagingDAOImplTest.dao.retrieveMessage(ServiceMessagingDAOImplTest.MESSAGE_ID));
         }
         catch (SQLException sqx)
         {
@@ -153,9 +151,7 @@ public class ServiceMessagingDAOImplTest
     {
         try
         {
-            List<Object[]> data = ServiceMessagingDAOImplTest.dao.retrieveMessages();
-
-            Assert.assertNotNull(data);
+            Assert.assertNotNull(ServiceMessagingDAOImplTest.dao.retrieveMessages());
         }
         catch (SQLException sqx)
         {

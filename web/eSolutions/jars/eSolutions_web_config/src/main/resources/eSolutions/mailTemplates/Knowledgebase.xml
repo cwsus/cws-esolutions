@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="approveArticleEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Article approved: %s" />
+        <property name="text">
+            <value>
+                <![CDATA[
+					The article below has been approved and is now available for general consumption.
+					
+					Article ID: %s
+					
+					Please review this article and notify the administration team if there are any anomalies.
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean id="createArticleEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Article created: %s" />
+        <property name="text">
+            <value>
+                <![CDATA[
+					A new knowledgebase article has been added and is pending review. Please find the detail below:
+					
+					Article ID: %s
+					Article Author: %s
+					Article Title: %s
+					Article Symptoms: %s
+					Article Cause: %s
+					Article Keywords: %s
+					
+					Article Resolution -
+					%s
+					
+					Please review this new article when possible and approve/reject as necessary.
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean id="deleteArticleEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Article deleted: %s" />
+        <property name="text">
+            <value>
+                <![CDATA[
+					The article below has been deleted and is no longer available for general consumption.
+					
+					Article ID: %s
+					
+					Please review this article and notify the administration team if there are any anomalies.
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean id="rejectArticleEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Article rejected %s" />
+        <property name="text">
+            <value>
+                <![CDATA[
+					The article below has been rejected.
+					
+					Article ID: %s
+					
+					Please review this article and notify the administration team if there are any anomalies.
+                ]]>
+            </value>
+        </property>
+    </bean>
+
+    <bean id="updateArticleEmail" class="org.springframework.mail.SimpleMailMessage">
+        <property name="from">
+            <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
+        </property>
+        <property name="to" value="%s" />
+        <property name="subject" value="[ %s ] Article updated: %s" />
+        <property name="text">
+            <value>
+                <![CDATA[
+					A knowledgebase article has been updated and is pending review. Please find the detail below:
+					
+					Article ID: %s
+					Article Title: %s
+					Article Symptoms: %s
+					Article Cause: %s
+					Article Keywords: %s
+					
+					Article Resolution -
+					%s
+					
+					This article was modified by %s.
+					
+					Please review this new article when possible and approve/reject as necessary.
+                ]]>
+            </value>
+        </property>
+    </bean>
+</beans>
+

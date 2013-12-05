@@ -74,7 +74,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IKnowledgeBaseDAO articleDao = new KnowledgeBaseDAOImpl();
-            List<String[]> articleList = articleDao.getArticlesByAttribute(request.getSearchTerms());
+            List<Object[]> articleList = articleDao.getArticlesByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -85,13 +85,13 @@ public class SearchProcessorImpl implements ISearchProcessor
             {
                 List<SearchResult> responseList = new ArrayList<>();
 
-                for (String[] data : articleList)
+                for (Object[] data : articleList)
                 {
                     if (DEBUG)
                     {
                         if (data != null)
                         {
-                            for (String str : data)
+                            for (Object str : data)
                             {
                                 DEBUGGER.debug("data: {}", str);
                             }
@@ -101,8 +101,8 @@ public class SearchProcessorImpl implements ISearchProcessor
                     if ((data != null) && (data.length >= 2))
                     {
                         SearchResult searchResult = new SearchResult();
-                        searchResult.setPath(data[1]);
-                        searchResult.setTitle(data[5]);
+                        searchResult.setPath((String) data[1]);
+                        searchResult.setTitle((String) data[5]);
 
                         if (DEBUG)
                         {
@@ -252,7 +252,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IServerDataDAO serverDao = new ServerDataDAOImpl();
-            List<Object[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartPage());
+            List<Object[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -341,7 +341,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IApplicationDataDAO appDao = new ApplicationDataDAOImpl();
-            List<String[]> applicationList = appDao.getApplicationsByAttribute(request.getSearchTerms(), request.getStartPage());
+            List<String[]> applicationList = appDao.getApplicationsByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -434,17 +434,17 @@ public class SearchProcessorImpl implements ISearchProcessor
             {
                 case PROJECT:
                     IProjectDataDAO projectDao = new ProjectDataDAOImpl();
-                    resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartPage());
+                    resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartRow());
 
                     break;
                 case PLATFORM:
                     IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
-                    resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartPage());
+                    resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartRow());
 
                     break;
                 case DATACENTER:
                     IDatacenterDataDAO datacenterDao = new DatacenterDataDAOImpl();
-                    resultsList = datacenterDao.getDataCenterByAttribute(request.getSearchTerms(), request.getStartPage());
+                    resultsList = datacenterDao.getDataCenterByAttribute(request.getSearchTerms(), request.getStartRow());
 
                     break;
                 default:

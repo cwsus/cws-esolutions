@@ -89,7 +89,6 @@ public class SystemManagementController
     private String viewServerPage = null;
     private String adminConsolePage = null;
     private String addServerRedirect = null;
-    private String messageServerAdded = null;
     private String messageNoDmgrsFound = null;
     private String addDatacenterRedirect = null;
     private List<String> availableDomains = null;
@@ -297,19 +296,6 @@ public class SystemManagementController
         }
 
         this.addDatacenterRedirect = value;
-    }
-
-    public final void setMessageServerAdded(final String value)
-    {
-        final String methodName = SystemManagementController.CNAME + "#setMessageServerAdded(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageServerAdded = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)

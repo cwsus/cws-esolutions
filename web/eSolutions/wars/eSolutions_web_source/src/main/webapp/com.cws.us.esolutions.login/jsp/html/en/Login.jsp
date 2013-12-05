@@ -79,11 +79,11 @@
         <ul>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-username" title="<spring:message code='login.user.forgot_uid' />">
-                    <spring:message code="login.user.forgot_uid" />
+                    <spring:message code="login.user.forgot_uid" /></a>
             </li>
             <li>
                 <a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />">
-                    <spring:message code="login.user.forgot_pwd" />
+                    <spring:message code="login.user.forgot_pwd" /></a>
             </li>
         </ul>
     </c:if>

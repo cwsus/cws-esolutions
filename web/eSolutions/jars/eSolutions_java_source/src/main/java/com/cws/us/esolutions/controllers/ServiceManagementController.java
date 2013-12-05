@@ -11,10 +11,8 @@
  */
 package com.cws.us.esolutions.controllers;
 
-import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -1961,18 +1959,19 @@ public class ServiceManagementController
         {
             try
             {
-                RequestHostInfo hostInfo = new RequestHostInfo();
-                hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                hostInfo.setHostName(hRequest.getRemoteHost());
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
                 // search accounts
                 AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(hostInfo);
+                request.setHostInfo(reqInfo);
                 request.setApplicationId(this.appConfig.getApplicationName());
                 request.setControlType(ControlType.SERVICES);
                 request.setRequestor(userAccount);
@@ -3273,18 +3272,18 @@ public class ServiceManagementController
             {
                 try
                 {
-                    RequestHostInfo hostInfo = new RequestHostInfo();
-                    hostInfo.setHostAddress(hRequest.getRemoteAddr());
-                    hostInfo.setHostName(hRequest.getRemoteHost());
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                    reqInfo.setHostName(hRequest.getRemoteHost());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
                     // search accounts
                     AccountControlRequest accRequest = new AccountControlRequest();
-                    accRequest.setHostInfo(hostInfo);
+                    accRequest.setHostInfo(reqInfo);
                     accRequest.setApplicationId(this.appConfig.getApplicationName());
                     accRequest.setControlType(ControlType.SERVICES);
                     accRequest.setRequestor(userAccount);

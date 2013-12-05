@@ -13,19 +13,15 @@ package com.cws.us.esolutions.controllers;
 
 import java.util.List;
 import org.slf4j.Logger;
-import java.util.Arrays;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.text.MessageFormat;
 import org.slf4j.LoggerFactory;
 import javax.mail.MessagingException;
-import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,12 +37,9 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.us.esolutions.validators.ArticleValidator;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
-import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
@@ -80,27 +73,26 @@ import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
 public class KnowledgeBaseController
 {
     private String prefix = null;
+    private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
     private String serviceName = null;
-    private String articleList = null;
     private String defaultPage = null;
-    private String messageSource = null;
     private int newIdentifierLength = 8; // default of 8
     private String editArticlePage = null;
     private String showArticlePage = null;
     private String createArticlePage = null;
     private String reviewArticlePage = null;
-    private String deleteArticleEmail = null;
-    private String updateArticleEmail = null;
-    private String createArticleEmail = null;
-    private String rejectArticleEmail = null;
     private String pendingArticlesPage = null;
     private ArticleValidator validator = null;
-    private String approveArticleEmail = null;
     private String messageArticleDeleted = null;
     private String messageArticleApproved = null;
     private String messageArticleRejected = null;
     private ApplicationServiceBean appConfig = null;
+    private SimpleMailMessage updateArticleEmail = null;
+    private SimpleMailMessage rejectArticleEmail = null;
+    private SimpleMailMessage deleteArticleEmail = null;
+    private SimpleMailMessage createArticleEmail = null;
+    private SimpleMailMessage approveArticleEmail = null;
     private SearchRequestValidator searchValidator = null;
 
     private static final String CNAME = KnowledgeBaseController.class.getName();
@@ -161,9 +153,9 @@ public class KnowledgeBaseController
         this.serviceName = value;
     }
 
-    public final void setArticleList(final String value)
+    public final void setRecordsPerPage(final int value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setArticleList(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setRecordsPerPage(final int value)";
 
         if (DEBUG)
         {
@@ -171,7 +163,7 @@ public class KnowledgeBaseController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.articleList = value;
+        this.recordsPerPage = value;
     }
 
     public final void setDefaultPage(final String value)
@@ -265,19 +257,6 @@ public class KnowledgeBaseController
         this.newIdentifierLength = value;
     }
 
-    public final void setCreateArticleEmail(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setCreateArticleEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.createArticleEmail = value;
-    }
-
     public final void setPendingArticlesPage(final String value)
     {
         final String methodName = KnowledgeBaseController.CNAME + "#setPendingArticlesPage(final String value)";
@@ -302,19 +281,6 @@ public class KnowledgeBaseController
         }
 
         this.reviewArticlePage = value;
-    }
-
-    public final void setMessageSource(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setMessageSource(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageSource = value;
     }
 
     public final void setMessageArticleApproved(final String value)
@@ -356,22 +322,9 @@ public class KnowledgeBaseController
         this.messageArticleDeleted = value;
     }
 
-    public final void setApproveArticleEmail(final String value)
+    public final void setUpdateArticleEmail(final SimpleMailMessage value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setApproveArticleEmail(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.approveArticleEmail = value;
-    }
-
-    public final void setUpdateArticleEmail(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setUpdateArticleEmail(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setUpdateArticleEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -382,9 +335,22 @@ public class KnowledgeBaseController
         this.updateArticleEmail = value;
     }
 
-    public final void setDeleteArticleEmail(final String value)
+    public final void setRejectArticleEmail(final SimpleMailMessage value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setDeleteArticleEmail(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setRejectArticleEmail(final SimpleMailMessage value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.rejectArticleEmail = value;
+    }
+
+    public final void setDeleteArticleEmail(final SimpleMailMessage value)
+    {
+        final String methodName = KnowledgeBaseController.CNAME + "#setDeleteArticleEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -395,9 +361,9 @@ public class KnowledgeBaseController
         this.deleteArticleEmail = value;
     }
 
-    public final void setRejectArticleEmail(final String value)
+    public final void setCreateArticleEmail(final SimpleMailMessage value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setRejectArticleEmail(final String value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setCreateArticleEmail(final SimpleMailMessage value)";
 
         if (DEBUG)
         {
@@ -405,7 +371,20 @@ public class KnowledgeBaseController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.rejectArticleEmail = value;
+        this.createArticleEmail = value;
+    }
+
+    public final void setApproveArticleEmail(final SimpleMailMessage value)
+    {
+        final String methodName = KnowledgeBaseController.CNAME + "#setApproveArticleEmail(final SimpleMailMessage value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.approveArticleEmail = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -424,6 +403,7 @@ public class KnowledgeBaseController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IKnowledgeBaseProcessor kbase = new KnowledgeBaseProcessorImpl();
 
         if (DEBUG)
         {
@@ -469,6 +449,54 @@ public class KnowledgeBaseController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.getTopArticles(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Article> articleList = response.getArticleList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Article>: {}", articleList);
+                    }
+
+                    mView.addObject("articleList", articleList);
+                }
+            }
+            catch (KnowledgeBaseException kbx)
+            {
+                ERROR_RECORDER.error(kbx.getMessage(), kbx);
+            }
+            
             mView.addObject("isHelpSearch", true);
             mView.addObject("command", new SearchRequest());
             mView.setViewName(this.defaultPage);
@@ -967,7 +995,9 @@ public class KnowledgeBaseController
 
                     if ((pendingArticles != null) && (pendingArticles.size() != 0))
                     {
-                        mView.addObject(this.articleList, pendingArticles);
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                        mView.addObject("page", 1);
+                        mView.addObject("articleList", pendingArticles);
                         mView.setViewName(this.pendingArticlesPage);
                     }
                     else
@@ -1005,6 +1035,151 @@ public class KnowledgeBaseController
         if (DEBUG)
         {
             DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
+    @RequestMapping(value = "/show-approvals/page/{page}", method = RequestMethod.GET)
+    public final ModelAndView showPendingApprovals(@PathVariable("page") final int page)
+    {
+        final String methodName = KnowledgeBaseController.CNAME + "#showPendingApprovals(@PathVariable(\"page\") final int page)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", page);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IKnowledgeBaseProcessor kbase = new KnowledgeBaseProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (this.appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+                request.setRequestInfo(reqInfo);
+                request.setUserAccount(userAccount);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
+                }
+
+                KnowledgeBaseResponse response = kbase.getPendingArticles(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    List<Article> pendingArticles = response.getArticleList();
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("pendingArticles: {}", pendingArticles);
+                    }
+
+                    if ((pendingArticles != null) && (pendingArticles.size() != 0))
+                    {
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                        mView.addObject("page", page);
+                        mView.addObject("articleList", pendingArticles);
+                        mView.setViewName(this.pendingArticlesPage);
+                    }
+                    else
+                    {
+                        mView.addObject("command", new SearchRequest());
+                        mView.addObject("isHelpSearch", true);
+                        mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
+                        mView.setViewName(this.defaultPage);
+                    }
+                }
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject("isHelpSearch", true);
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (KnowledgeBaseException kbx)
+            {
+                ERROR_RECORDER.error(kbx.getMessage(), kbx);
+
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(this.appConfig.getUnavailablePage());
         }
 
         return mView;
@@ -1116,37 +1291,26 @@ public class KnowledgeBaseController
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("emailId: {}", emailId);
+                        SimpleMailMessage message = new SimpleMailMessage(this.deleteArticleEmail);
+                        message.setTo(String.format(this.deleteArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
+                        message.setSubject(String.format(this.deleteArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
+                        message.setText(String.format(this.deleteArticleEmail.getText(), reqArticle.getArticleId()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                        }
+
+                        EmailUtils.sendEmailMessage(message);
                     }
-
-                    final String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.deleteArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                    if (DEBUG)
+                    catch (MessagingException mx)
                     {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.deleteArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
-
-                    EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleDeleted);
                     mView.setViewName(this.appConfig.getSearchRequestPage());
@@ -1167,30 +1331,6 @@ public class KnowledgeBaseController
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
             }
         }
         else
@@ -1312,37 +1452,26 @@ public class KnowledgeBaseController
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("emailId: {}", emailId);
+                        SimpleMailMessage message = new SimpleMailMessage(this.approveArticleEmail);
+                        message.setTo(String.format(this.approveArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
+                        message.setSubject(String.format(this.approveArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
+                        message.setText(String.format(this.approveArticleEmail.getText(), reqArticle.getArticleId()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                        }
+
+                        EmailUtils.sendEmailMessage(message);
                     }
-
-                    final String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.approveArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                    if (DEBUG)
+                    catch (MessagingException mx)
                     {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.approveArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
-
-                    EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleApproved);
                     mView.setViewName(this.appConfig.getSearchRequestPage());
@@ -1363,30 +1492,6 @@ public class KnowledgeBaseController
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
             }
         }
         else
@@ -1508,37 +1613,26 @@ public class KnowledgeBaseController
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("emailId: {}", emailId);
+                        SimpleMailMessage message = new SimpleMailMessage(this.rejectArticleEmail);
+                        message.setTo(String.format(this.rejectArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
+                        message.setSubject(String.format(this.rejectArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
+                        message.setText(String.format(this.rejectArticleEmail.getText(), reqArticle.getArticleId()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                        }
+
+                        EmailUtils.sendEmailMessage(message);
                     }
-
-                    final String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.rejectArticleEmail)), new Object[] { reqArticle.getArticleId() });
-
-                    if (DEBUG)
+                    catch (MessagingException mx)
                     {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
+
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.rejectArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
-
-                    EmailUtils.sendEmailMessage(emailMessage);
 
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageArticleRejected);
                     mView.setViewName(this.appConfig.getSearchRequestPage());
@@ -1559,30 +1653,6 @@ public class KnowledgeBaseController
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
             }
         }
         else
@@ -1760,6 +1830,7 @@ public class KnowledgeBaseController
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.addObject("command", new Article());
 
+                mView.setViewName(this.createArticlePage);
                 return mView;
             }
 
@@ -1800,62 +1871,28 @@ public class KnowledgeBaseController
                     // article created
                     try
                     {
-                        final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("emailId: {}", emailId);
-                        }
-
-                        final String emailBody = MessageFormat.format(IOUtils.toString(
-                                this.getClass().getClassLoader().getResourceAsStream(this.createArticleEmail)), new Object[]
-                            {
+                        SimpleMailMessage message = new SimpleMailMessage(this.createArticleEmail);
+                        message.setTo(String.format(this.createArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
+                        message.setSubject(String.format(this.createArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), article.getArticleId()));
+                        message.setText(String.format(this.createArticleEmail.getText(),
                                 article.getArticleId(),
                                 userAccount.getDisplayName(),
                                 article.getTitle(),
                                 article.getSymptoms(),
                                 article.getCause(),
                                 article.getKeywords(),
-                                article.getResolution()
-                            });
+                                article.getResolution()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Email body: {}", emailBody);
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
                         }
 
-                        // good, now generate an email with the information
-                        EmailMessage emailMessage = new EmailMessage();
-                        emailMessage.setIsAlert(false);
-                        emailMessage.setMessageBody(emailBody);
-                        emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                        emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                                this.createArticleEmail, this.getClass().getClassLoader()));
-                        emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                        emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                        }
-
-                        EmailUtils.sendEmailMessage(emailMessage);
+                        EmailUtils.sendEmailMessage(message);
                     }
                     catch (MessagingException mx)
                     {
                         ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                    }
-                    catch (IOException iox)
-                    {
-                        ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                    }
-                    catch (CoreServiceException csx)
-                    {
-                        ERROR_RECORDER.error(csx.getMessage(), csx);
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
@@ -1872,9 +1909,7 @@ public class KnowledgeBaseController
                 else
                 {
                     // failure
-                    // TODO: This should actuall re-send the tried submission back and it isnt
-                    mView.addObject("articleId", this.prefix + RandomStringUtils.randomAlphanumeric(this.newIdentifierLength));
-                    mView.addObject("command", new Article());
+                    mView.addObject("command", article);
                     mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     mView.setViewName(this.createArticlePage);
                 }
@@ -2009,46 +2044,33 @@ public class KnowledgeBaseController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // article created
-                    final String emailId = RandomStringUtils.randomAlphanumeric(16);
-
-                    if (DEBUG)
+                    try
                     {
-                        DEBUGGER.debug("emailId: {}", emailId);
-                    }
+                        SimpleMailMessage message = new SimpleMailMessage(this.updateArticleEmail);
+                        message.setTo(String.format(this.updateArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
+                        message.setSubject(String.format(this.updateArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), article.getArticleId()));
+                        message.setText(String.format(this.updateArticleEmail.getText(),
+                                article.getArticleId(),
+                                userAccount.getDisplayName(),
+                                article.getTitle(),
+                                article.getSymptoms(),
+                                article.getCause(),
+                                article.getKeywords(),
+                                article.getResolution()));
 
-                    final String emailBody = MessageFormat.format(IOUtils.toString(
-                            this.getClass().getClassLoader().getResourceAsStream(this.updateArticleEmail)), new Object[]
+                        if (DEBUG)
                         {
-                            article.getArticleId(),
-                            userAccount.getDisplayName(),
-                            article.getTitle(),
-                            article.getSymptoms(),
-                            article.getCause(),
-                            article.getKeywords(),
-                            article.getResolution()
-                        });
+                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                        }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Email body: {}", emailBody);
+                        EmailUtils.sendEmailMessage(message);
                     }
-
-                    // good, now generate an email with the information
-                    EmailMessage emailMessage = new EmailMessage();
-                    emailMessage.setIsAlert(false);
-                    emailMessage.setMessageBody(emailBody);
-                    emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-                    emailMessage.setMessageSubject("[ " + emailId + " ] - " + ResourceController.returnSystemPropertyValue(this.messageSource,
-                            this.updateArticleEmail, this.getClass().getClassLoader()));
-                    emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
-                    emailMessage.setEmailAddr(new ArrayList<>(Arrays.asList(userAccount.getEmailAddr())));
-
-                    if (DEBUG)
+                    catch (MessagingException mx)
                     {
-                        DEBUGGER.debug("EmailMessage: {}", emailMessage);
-                    }
+                        ERROR_RECORDER.error(mx.getMessage(), mx);
 
-                    EmailUtils.sendEmailMessage(emailMessage);
+                        mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
+                    }
 
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                     mView.addObject("command", new Article());
@@ -2071,30 +2093,6 @@ public class KnowledgeBaseController
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (MessagingException mx)
-            {
-                ERROR_RECORDER.error(mx.getMessage(), mx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
-            }
-            catch (CoreServiceException csx)
-            {
-                ERROR_RECORDER.error(csx.getMessage(), csx);
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
-                mView.addObject("command", new Article());
-                mView.setViewName(this.createArticlePage);
             }
         }
         else

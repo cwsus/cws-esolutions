@@ -30,6 +30,7 @@
 <div id="sidebar">
     <h1><spring:message code="kbase.header" /></h1>
     <ul>
+        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='kbase.header' />"><spring:message code="kbase.header" /></a></li>
         <c:if test="${not empty fn:trim(sessionScope.userAccount)}">
             <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
                 <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals" title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a></li>
@@ -65,9 +66,6 @@
 
     <p>
         <form:form id="submitNewArticle" name="submitNewArticle" action="${pageContext.request.contextPath}/ui/knowledgebase/validate-article" method="post">
-            <form:hidden path="author" value="${sessionScope.userAccount.username}" />
-            <form:hidden path="authorEmail" value="${sessionScope.userAccount.emailAddr}" />
-
             <label id="txtArticleTitle"><spring:message code="kbase.article.title" /></label>
             <td><form:input path="title" /></td>
             <td><form:errors path="title" cssClass="error" /></td>

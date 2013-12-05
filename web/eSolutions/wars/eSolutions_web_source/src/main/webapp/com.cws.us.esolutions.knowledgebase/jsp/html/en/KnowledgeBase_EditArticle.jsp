@@ -31,6 +31,7 @@
     <h1><spring:message code="kbase.header" /></h1>
     <ul>
         <li><a href="javascript:history.go(-1)" title="Back"><spring:message code="theme.previous.page" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='kbase.header' />"><spring:message code="kbase.header" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/create-article" title="<spring:message code='kbase.create.article' />"><spring:message code="kbase.create.article" /></a></li>
         <c:if test="${sessionScope.userAccount.role eq 'ADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
             <li><a href="${pageContext.request.contextPath}/ui/knowledgebase/show-approvals" title="<spring:message code='kbase.list.pending.approvals' />"><spring:message code='kbase.list.pending.approvals' /></a></li>
@@ -73,10 +74,10 @@
             <label id="txtArticleSymptoms"><spring:message code="kbase.article.symptoms" /></label>
             <form:input path="symptoms" value="${article.symptoms}" />
             <form:errors path="symptoms" cssClass="error" />
-            <label id="txtArticleCause"><strong><em><spring:message code="kbase.article.cause" /></label>
+            <label id="txtArticleCause"><spring:message code="kbase.article.cause" /></label>
             <form:input path="cause" value="${article.cause}" />
             <form:errors path="cause" cssClass="error" />
-            <label id="txtArticleKeywords"><strong><em><spring:message code="kbase.create-article.keywords" /></label>
+            <label id="txtArticleKeywords"><spring:message code="kbase.create-article.keywords" /></label>
             <form:input path="keywords" value="${article.keywords}" />
             <form:errors path="keywords" cssClass="error" />
             <label id="txtArticleResolution"><spring:message code="kbase.article.resolution" /></label>

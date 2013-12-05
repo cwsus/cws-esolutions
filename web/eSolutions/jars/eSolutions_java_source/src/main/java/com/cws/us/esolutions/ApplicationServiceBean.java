@@ -42,6 +42,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String fileEncoding = null;
     @Autowired private String homeRedirect = null;
     @Autowired private String secEmailAddr = null;
+    @Autowired private String svcEmailAddr = null;
     @Autowired private LogonType logonType = null;
     @Autowired private String logonRedirect = null;
     @Autowired private int timeoutWarning = 840000;
@@ -271,6 +272,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.secEmailAddr = value;
+    }
+
+    public final void setSvcEmailAddr(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setSvcEmailAddr(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.svcEmailAddr = value;
     }
 
     public final void setTimeoutWarning(final int value)
@@ -622,6 +636,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.secEmailAddr;
+    }
+
+    public final String getSvcEmailAddr()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getSvcEmailAddr()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.svcEmailAddr);
+        }
+
+        return this.svcEmailAddr;
     }
 
     public final long getTimeoutWarning()

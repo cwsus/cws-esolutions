@@ -78,8 +78,6 @@
 <div id="rightbar">
     <h1><spring:message code="login.user.forgot.info" /></h1>
     <ul>
-        <li>
-            <a href="${pageContext.request.contextPath}/ui/app/help/forgot-questions" title="<spring:message code='olr.forgot.questions' />"><spring:message code="olr.forgot.questions" />
-        </li>
+        <li><a href="${pageContext.request.contextPath}/ui/app/help/forgot-questions" title="<spring:message code='olr.forgot.questions' />"><spring:message code="olr.forgot.questions" /></a></li>
     </ul>
 </div>

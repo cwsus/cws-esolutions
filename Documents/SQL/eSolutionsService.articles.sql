@@ -274,17 +274,18 @@ DELIMITER ;
 COMMIT;
 
 --
--- Definition of procedure `getPendingArticleCount`
+-- Definition of procedure `getArticleCount`
 --
 DELIMITER $$
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPendingArticleCount`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPendingArticleCount`(
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getArticleCount`(
+    IN reqType VARCHAR(45)
 )
 BEGIN
     SELECT COUNT(*)
     FROM `esolutionssvc`.`articles`
-    WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
+    WHERE kbase_article_status = reqType
     AND kbase_article_author != requestorId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

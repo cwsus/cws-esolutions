@@ -15,7 +15,6 @@
  */
 package com.cws.esolutions.security.dao.reference.impl;
 
-import java.util.List;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -64,12 +63,7 @@ public class SecurityReferenceDAOImplTest
     {
         try
         {
-            List<String> responseList = secRef.obtainApprovedServers();
-
-            if (responseList.size() == 0)
-            {
-                Assert.fail("No data was returned");
-            }
+            Assert.assertNotNull(secRef.obtainApprovedServers());
         }
         catch (SQLException sqx)
         {
@@ -82,12 +76,7 @@ public class SecurityReferenceDAOImplTest
     {
         try
         {
-            List<String> responseList = secRef.obtainSecurityQuestionList();
-
-            if (responseList.size() == 0)
-            {
-                Assert.fail("No data was returned");
-            }
+            Assert.assertNotNull(secRef.obtainSecurityQuestionList());
         }
         catch (SQLException sqx)
         {

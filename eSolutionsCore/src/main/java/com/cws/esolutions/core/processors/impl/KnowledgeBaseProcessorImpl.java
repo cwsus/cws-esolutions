@@ -101,8 +101,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 List<String> insertList = new ArrayList<>(
                         Arrays.asList(
                                 article.getArticleId(),
-                                userAccount.getUsername(),
-                                userAccount.getEmailAddr(),
+                                userAccount.getGuid(),
                                 article.getKeywords(),
                                 article.getTitle(),
                                 article.getSymptoms(),
@@ -495,7 +494,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 DEBUGGER.debug("Article: {}", article);
             }
 
-            List<String> responseList = kbaseDAO.retrieveArticle(article.getArticleId(), request.isReview());
+            List<Object> responseList = kbaseDAO.retrieveArticle(article.getArticleId(), request.isReview());
 
             if (DEBUG)
             {
@@ -512,24 +511,24 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 article = new Article();
-                article.setPageHits(Integer.valueOf(responseList.get(0)));
-                article.setArticleId(responseList.get(1));
-                article.setCreateDate(sdf.format(new Date(Long.valueOf(responseList.get(2)))));
-                article.setKeywords(responseList.get(4));
-                article.setTitle(responseList.get(5));
-                article.setSymptoms(responseList.get(6));
-                article.setCause(responseList.get(7));
-                article.setResolution(responseList.get(8));
-                article.setArticleStatus(ArticleStatus.valueOf(responseList.get(9)));
-                article.setReviewedOn((responseList.get(11) != null) ? sdf.format(new Date(Long.valueOf(responseList.get(11)))) : null);
-                article.setModifiedOn((responseList.get(12) != null) ? sdf.format(new Date(Long.valueOf(responseList.get(12)))) : null);
+                article.setPageHits((Integer) responseList.get(0));
+                article.setArticleId((String) responseList.get(1));
+                article.setCreateDate(sdf.format(new Date((Long) (responseList.get(2)))));
+                article.setKeywords((String) responseList.get(4));
+                article.setTitle((String) responseList.get(5));
+                article.setSymptoms((String) responseList.get(6));
+                article.setCause((String) responseList.get(7));
+                article.setResolution((String) responseList.get(8));
+                article.setArticleStatus(ArticleStatus.valueOf((String) responseList.get(9)));
+                article.setReviewedOn((responseList.get(11) != null) ? sdf.format(new Date((Long) responseList.get(11))) : null);
+                article.setModifiedOn((responseList.get(12) != null) ? sdf.format(new Date((Long) responseList.get(12))) : null);
 
                 int x = 0;
                 List<String> accountList = new ArrayList<>(
                         Arrays.asList(
-                                responseList.get(3),
-                                responseList.get(10),
-                                responseList.get(13)));
+                                (String) responseList.get(3),
+                                (String) responseList.get(10),
+                                (String) responseList.get(13)));
 
                 if (DEBUG)
                 {
@@ -671,7 +670,14 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                List<String[]> responseList = kbaseDAO.searchPendingArticles(userAccount.getUsername());
+                int count = kbaseDAO.getArticleCount(ArticleStatus.REVIEW.name());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("count: {}", count);
+                }
+
+                List<Object[]> responseList = kbaseDAO.searchPendingArticles(userAccount.getUsername(), request.getStartRow());
 
                 if (DEBUG)
                 {
@@ -689,24 +695,24 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                         DEBUGGER.debug("SimpleDateFormat: {}", sdf);
                     }
 
-                    for (String[] data : responseList)
+                    for (Object[] data : responseList)
                     {
                         Article article = new Article();
-                        article.setPageHits(Integer.valueOf(data[0]));
-                        article.setArticleId(data[1]);
-                        article.setCreateDate(sdf.format(new Date(Long.valueOf(data[2]))));
-                        article.setKeywords(data[4]);
-                        article.setTitle(data[5]);
-                        article.setSymptoms(data[6]);
-                        article.setCause(data[7]);
-                        article.setResolution(data[8]);
-                        article.setArticleStatus(ArticleStatus.valueOf(data[9]));
+                        article.setPageHits((Integer) data[0]);
+                        article.setArticleId((String) data[1]);
+                        article.setCreateDate(sdf.format(new Date((Long) data[2])));
+                        article.setKeywords((String) data[4]);
+                        article.setTitle((String) data[5]);
+                        article.setSymptoms((String) data[6]);
+                        article.setCause((String) data[7]);
+                        article.setResolution((String) data[8]);
+                        article.setArticleStatus(ArticleStatus.valueOf((String) data[9]));
 
                         int x = 0;
                         List<String> accountList = new ArrayList<>(
                                 Arrays.asList(
-                                        data[3],
-                                        data[12]));
+                                        (String) data[3],
+                                        (String) data[12]));
 
                         if (DEBUG)
                         {
@@ -794,6 +800,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                         DEBUGGER.debug("articleList: {}", articleList);
                     }
 
+                    response.setEntryCount(count);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("Successfully loaded pending articles");
                     response.setArticleList(articleList);
@@ -858,6 +865,165 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             {
                 ERROR_RECORDER.error(asx.getMessage(), asx);
             }
+        }
+
+        return response;
+    }
+
+    @Override
+    public KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
+    {
+        final String methodName = IKnowledgeBaseProcessor.CNAME + "#getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
+
+        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
+
+        try
+        {
+            List<Object[]> responseList = kbaseDAO.listTopArticles();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("responseList: {}", responseList);
+            }
+
+            if ((responseList != null) && (!(responseList.isEmpty())))
+            {
+                // build it here
+                List<Article> articleList = new ArrayList<>();
+                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                }
+
+                for (Object[] data : responseList)
+                {
+                    Article article = new Article();
+                    article.setPageHits((Integer) data[0]);
+                    article.setArticleId((String) data[1]);
+                    article.setCreateDate(sdf.format(new Date((Long) data[2])));
+                    article.setKeywords((String) data[4]);
+                    article.setTitle((String) data[5]);
+                    article.setSymptoms((String) data[6]);
+                    article.setCause((String) data[7]);
+                    article.setResolution((String) data[8]);
+                    article.setArticleStatus(ArticleStatus.valueOf((String) data[9]));
+
+                    int x = 0;
+                    List<String> accountList = new ArrayList<>(
+                            Arrays.asList(
+                                    (String) data[3],
+                                    (String) data[12]));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountList: {}", accountList);
+                    }
+
+                    for (String guid : accountList)
+                    {
+                        UserAccount searchAccount = new UserAccount();
+                        searchAccount.setGuid(guid);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", searchAccount);
+                        }
+
+                        UserAccount svcAccount = new UserAccount();
+                        svcAccount.setUsername(serviceAccount.get(0));
+                        svcAccount.setGuid(serviceAccount.get(1));
+                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                        }
+
+                        AccountControlRequest searchRequest = new AccountControlRequest();
+                        searchRequest.setHostInfo(request.getRequestInfo());
+                        searchRequest.setUserAccount(searchAccount);
+                        searchRequest.setApplicationName(request.getApplicationName());
+                        searchRequest.setApplicationId(request.getApplicationId());
+                        searchRequest.setSearchType(SearchRequestType.GUID);
+                        searchRequest.setRequestor(svcAccount);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                        }
+
+                        try
+                        {
+                            AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                            }
+
+                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                            {
+                                switch (x)
+                                {
+                                    case 0:
+                                        article.setAuthor(searchResponse.getUserAccount());
+
+                                        break;
+                                    case 1:
+                                        article.setModifiedBy(searchResponse.getUserAccount());
+
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                
+                            }
+                        }
+                        catch (AccountControlException acx)
+                        {
+                            ERROR_RECORDER.error(acx.getMessage(), acx);
+                        }
+
+                        x++;
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Article: {}", article);
+                    }
+
+                    articleList.add(article);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("articleList: {}", articleList);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setResponse("Successfully loaded pending articles");
+                response.setArticleList(articleList);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
 
         return response;

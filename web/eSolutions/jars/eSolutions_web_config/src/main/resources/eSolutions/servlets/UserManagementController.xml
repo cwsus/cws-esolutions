@@ -9,6 +9,8 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <import resource="classpath:/eSolutions/mailTemplates/UserManagement.xml" />
+
     <bean id="accountValidator" class="com.cws.us.esolutions.validators.UserAccountValidator">
         <property name="messageUsernameRequired" value="user.mgmt.user.name.required" />
 		<property name="messageEmailAddrRequired" value="user.mgmt.user.email.required" />
@@ -36,13 +38,14 @@
 	    <property name="searchUsersPage" value="UserManagement_UserSearch" />
 	    <property name="messageResetComplete" value="user.mgmt.reset.user.success" />
 	    <property name="messageNoUsersFound" value="no.users.found.for.criteria" />
-	    <property name="userResetEmail" value="nls/emailTemplates/reset_password.email" />
 	    <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
-	    <property name="passwordResetSubject" value="message.forgotpassword.subject" />
 	    <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
 	    <property name="messageAccountLocked" value="user.mgmt.account.locked" />
 	    <property name="messageAccountUnlocked" value="user.mgmt.account.unlocked" />
 	    <property name="messageAccountUnsuspended" value="user.mgmt.account.unsuspended" />
 	    <property name="messageAccountSuspended" value="user.mgmt.account.suspended" />
+	    <property name="messageProjectLoadFailed" value="user.mgmt.project.load.failed" />
+	    <property name="accountCreatedEmail" ref="accountCreatedEmail" />
+	    <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
 	</bean>
 </beans>

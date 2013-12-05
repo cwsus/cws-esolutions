@@ -108,9 +108,7 @@ public class ProjectDataDAOImplTest
     {
         try
         {
-            List<String> projectList = ProjectDataDAOImplTest.dao.getProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6");
-
-            Assert.assertNotNull(projectList);
+            Assert.assertNotNull(ProjectDataDAOImplTest.dao.getProjectData("1d8e1bae-90f2-4e39-9a30-c17bf76a79c6"));
         }
         catch (SQLException sqx)
         {
@@ -123,9 +121,7 @@ public class ProjectDataDAOImplTest
     {
         try
         {
-            List<String[]> responseMap = ProjectDataDAOImplTest.dao.listAvailableProjects(0);
-
-            Assert.assertNotNull(responseMap);
+            Assert.assertNotNull(ProjectDataDAOImplTest.dao.listAvailableProjects(0));
         }
         catch (SQLException sqx)
         {

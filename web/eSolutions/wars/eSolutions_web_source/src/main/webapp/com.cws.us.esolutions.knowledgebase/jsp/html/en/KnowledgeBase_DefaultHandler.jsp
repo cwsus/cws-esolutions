@@ -86,6 +86,19 @@
                 </c:forEach>
             </table>
         </c:if>
+
+        <c:if test="${not empty topArticles}">
+            <h1><spring:message code="kbase.top.articles" /></h1>
+            <br /><br />
+            <table id="topArticles">
+                <c:forEach var="entry" items="${topArticles}">
+                    <tr>
+                        <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.articleId}">${entry.articleId}</a></td>
+                        <td><a href="${pageContext.request.contextPath}/ui/knowledgebase/article/${entry.articleId}" title="${entry.title}">${entry.title}</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
     </p>
 </div>
 

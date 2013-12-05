@@ -92,7 +92,7 @@ public class NetworkUtilsTest
             {
                 try
                 {
-                    StringBuilder response = NetworkUtils.executeSshConnection(box + ".systems.uk.hsbc",
+                    NetworkUtils.executeSshConnection(box + ".systems.uk.hsbc",
                             new ArrayList<String>(Arrays.asList(user, "ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6", "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD")),
                             new ArrayList<String>(Arrays.asList("/usr/local/bin/sudo -l")));
 

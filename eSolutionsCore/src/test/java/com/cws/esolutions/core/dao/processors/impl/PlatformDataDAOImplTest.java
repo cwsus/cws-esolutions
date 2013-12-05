@@ -103,9 +103,7 @@ public class PlatformDataDAOImplTest
     {
         try
         {
-            List<String> platformList = PlatformDataDAOImplTest.dao.getPlatformData("c0b20624-0a0c-4cf6-a8dc-62efc5a46e18");
-
-            Assert.assertNotNull(platformList);
+            Assert.assertNotNull(PlatformDataDAOImplTest.dao.getPlatformData("c0b20624-0a0c-4cf6-a8dc-62efc5a46e18"));
         }
         catch (SQLException sqx)
         {

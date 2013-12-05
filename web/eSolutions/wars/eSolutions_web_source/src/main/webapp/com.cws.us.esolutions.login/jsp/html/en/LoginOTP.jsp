@@ -76,8 +76,8 @@
     <c:if test="${not empty fn:trim(allowUserReset) and allowUserReset eq 'true'}">
         <h1><spring:message code="login.user.forgot.info" /></h1>
         <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />"> <spring:message code="login.user.forgot_pwd" /></li>
-            <li><a href="${pageContext.request.contextPath}/ui/common/submit-contact" title="<spring:message code='login.user.lostotp' />"> <spring:message code="login.user.lostotp" /></li>
+            <li><a href="${pageContext.request.contextPath}/ui/online-reset/forgot-password" title="<spring:message code='login.user.forgot_pwd' />"> <spring:message code="login.user.forgot_pwd" /></a></li>
+            <li><a href="${pageContext.request.contextPath}/ui/common/submit-contact" title="<spring:message code='login.user.lostotp' />"> <spring:message code="login.user.lostotp" /></a></li>
         </ul>
     </c:if>
 </div>
