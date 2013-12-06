@@ -49,7 +49,7 @@
         <dep:inverse-classloading />
     </dep:environment>
 
-    <dep:context-root>@contextRoot@</dep:context-root>
+    <context-root>@contextRoot@</context-root>
 
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
