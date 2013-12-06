@@ -49,7 +49,7 @@
         <dep:inverse-classloading />
     </dep:environment>
 
-    <context-root>@contextRoot@</context-root>
+    <dep:context-root>@contextRoot@</dep:context-root>
 
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>jdbc/esolutionssvc</nam:ref-name>
@@ -71,11 +71,6 @@
     </nam:resource-ref>
     <nam:resource-ref xmlns:nam="http://geronimo.apache.org/xml/ns/naming-1.2">
         <nam:ref-name>mail/MailSession</nam:ref-name>
-        <nam:pattern>
-            <nam:groupId>org.apache.geronimo.configs</nam:groupId>
-            <nam:artifactId>javamail</nam:artifactId>
-            <nam:version>3.0.1</nam:version>
-            <nam:name>mail/MailSession</nam:name>
-        </nam:pattern>
+        <nam:resource-link>mail/MailSession</nam:resource-link>
     </nam:resource-ref>
 </web-app>
