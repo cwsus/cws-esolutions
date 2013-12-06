@@ -474,6 +474,192 @@ public class UserManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/search/terms/{terms}/type/{type}/page/{page}", method = RequestMethod.GET)
+    public final ModelAndView showSearchPage(@PathVariable("terms") final String terms, @PathVariable("type") final String type, @PathVariable("page") final int page)
+    {
+        final String methodName = UserManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"type\") final String type, @PathVariable(\"page\") final int page)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", terms);
+            DEBUGGER.debug("Value: {}", type);
+            DEBUGGER.debug("Value: {}", page);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (this.appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                UserAccount searchAccount = new UserAccount();
+
+                if (StringUtils.equalsIgnoreCase(type, "guid"))
+                {
+                    searchAccount.setGuid(terms);
+                }
+
+                if (StringUtils.equalsIgnoreCase(type, "displayName"))
+                {
+                    searchAccount.setDisplayName(terms);
+                }
+
+                if (StringUtils.equalsIgnoreCase(type, "emailAddr"))
+                {
+                    searchAccount.setEmailAddr(terms);
+                }
+
+                if (StringUtils.equalsIgnoreCase(type, "username"))
+                {
+                    searchAccount.setUsername(terms);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
+
+                // search accounts
+                AccountControlRequest request = new AccountControlRequest();
+                request.setHostInfo(reqInfo);
+                request.setUserAccount(searchAccount);
+                request.setApplicationId(this.appConfig.getApplicationName());
+                request.setControlType(ControlType.LOOKUP);
+                request.setModType(ModificationType.NONE);
+                request.setSearchType(SearchRequestType.ALL);
+                request.setRequestor(userAccount);
+                request.setIsLogonRequest(false);
+                request.setServiceId(this.serviceId);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                }
+
+                IAccountControlProcessor processor = new AccountControlProcessorImpl();
+                AccountControlResponse response = processor.searchAccounts(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                {
+                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
+                    {
+                        List<UserAccount> userList = response.getUserList();
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<UserAccount> {}", userList);
+                        }
+
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                        mView.addObject("page", page);
+                        mView.addObject("command", new UserAccount());
+                        mView.addObject("searchAccount", searchAccount);
+                        mView.addObject("searchResults", userList);
+                        mView.setViewName(this.searchUsersPage);
+                    }
+                    else
+                    {
+                        mView.addObject("command", new UserAccount());
+                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    }
+                }
+                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject("command", new UserAccount());
+                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
+            
+            mView.setViewName(this.searchUsersPage);
+        }
+        else
+        {
+            mView.setViewName(this.appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/add-user", method = RequestMethod.GET)
     public final ModelAndView showAddUser()
     {
@@ -2017,14 +2203,14 @@ public class UserManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView doSearchUsers(@ModelAttribute("user") final UserAccount user, final BindingResult bindResult)
+    public final ModelAndView doSearchUsers(@ModelAttribute("request") final UserAccount request, final BindingResult bindResult)
     {
-        final String methodName = UserManagementController.CNAME + "#doSearchUsers(@ModelAttribute(\"user\") final UserAccount user, final BindingResult bindResult)";
+        final String methodName = UserManagementController.CNAME + "#doSearchUsers(@ModelAttribute(\"request\") final UserAccount request, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", user);
+            DEBUGGER.debug("Value: {}", request);
             DEBUGGER.debug("Value: {}", bindResult);
         }
 
@@ -2091,38 +2277,61 @@ public class UserManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
+                String searchType = null;
+
                 UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid((StringUtils.isNotEmpty(user.getGuid())) ? user.getGuid() : null);
-                searchAccount.setDisplayName((StringUtils.isNotEmpty(user.getDisplayName())) ? user.getDisplayName() : null);
-                searchAccount.setEmailAddr((StringUtils.isNotEmpty(user.getEmailAddr())) ? user.getEmailAddr() : null);
-                searchAccount.setUsername((StringUtils.isNotEmpty(user.getUsername())) ? user.getUsername() : null);
+
+                if (StringUtils.isNotEmpty(request.getGuid()))
+                {
+                    searchType = "guid";
+                    searchAccount.setGuid(request.getGuid());
+                }
+
+                if (StringUtils.isNotEmpty(request.getDisplayName()))
+                {
+                    searchType = "displayName";
+                    searchAccount.setDisplayName(request.getDisplayName());
+                }
+
+                if (StringUtils.isNotEmpty(request.getEmailAddr()))
+                {
+                    searchType = "emailAddr";
+                    searchAccount.setEmailAddr(request.getEmailAddr());
+                }
+
+                if (StringUtils.isNotEmpty(request.getUsername()))
+                {
+                    searchType = "username";
+                    searchAccount.setUsername(request.getUsername());
+                }
 
                 if (DEBUG)
                 {
+                    DEBUGGER.debug("searchType: {}", searchType);
                     DEBUGGER.debug("UserAccount: {}", searchAccount);
                 }
 
                 // search accounts
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationName());
-                request.setControlType(ControlType.LOOKUP);
-                request.setModType(ModificationType.NONE);
-                request.setSearchType(SearchRequestType.ALL);
-                request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
+                AccountControlRequest searchRequest = new AccountControlRequest();
+                searchRequest.setHostInfo(reqInfo);
+                searchRequest.setUserAccount(searchAccount);
+                searchRequest.setApplicationId(this.appConfig.getApplicationName());
+                searchRequest.setControlType(ControlType.LOOKUP);
+                searchRequest.setModType(ModificationType.NONE);
+                searchRequest.setSearchType(SearchRequestType.ALL);
+                searchRequest.setRequestor(userAccount);
+                searchRequest.setIsLogonRequest(false);
+                searchRequest.setServiceId(this.serviceId);
+                searchRequest.setApplicationId(this.appConfig.getApplicationId());
+                searchRequest.setApplicationName(this.appConfig.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
                 }
 
                 IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                AccountControlResponse response = processor.searchAccounts(request);
+                AccountControlResponse response = processor.searchAccounts(searchRequest);
 
                 if (DEBUG)
                 {
@@ -2140,6 +2349,10 @@ public class UserManagementController
                             DEBUGGER.debug("List<UserAccount> {}", userList);
                         }
 
+                        mView.addObject("searchAccount", searchAccount);
+                        mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
+                        mView.addObject("page", 1);
+                        mView.addObject("searchType", searchType);
                         mView.addObject("command", new UserAccount());
                         mView.addObject("searchResults", userList);
                         mView.setViewName(this.searchUsersPage);

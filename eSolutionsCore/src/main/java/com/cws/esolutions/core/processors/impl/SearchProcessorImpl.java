@@ -23,12 +23,14 @@ import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.dao.processors.impl.SiteSearchDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
@@ -73,8 +75,8 @@ public class SearchProcessorImpl implements ISearchProcessor
 
         try
         {
-            IKnowledgeBaseDAO articleDao = new KnowledgeBaseDAOImpl();
-            List<Object[]> articleList = articleDao.getArticlesByAttribute(request.getSearchTerms(), request.getStartRow());
+            IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();
+            List<Object[]> articleList = dao.getArticlesByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -251,8 +253,8 @@ public class SearchProcessorImpl implements ISearchProcessor
 
         try
         {
-            IServerDataDAO serverDao = new ServerDataDAOImpl();
-            List<Object[]> serverList = serverDao.getServersByAttribute(request.getSearchTerms(), request.getStartRow());
+            IServerDataDAO dao = new ServerDataDAOImpl();
+            List<Object[]> serverList = dao.getServersByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -340,8 +342,8 @@ public class SearchProcessorImpl implements ISearchProcessor
 
         try
         {
-            IApplicationDataDAO appDao = new ApplicationDataDAOImpl();
-            List<String[]> applicationList = appDao.getApplicationsByAttribute(request.getSearchTerms(), request.getStartRow());
+            IApplicationDataDAO dao = new ApplicationDataDAOImpl();
+            List<String[]> applicationList = dao.getApplicationsByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {
@@ -489,6 +491,95 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                         responseList.add(searchResult);
                     }
+                }
+
+                response.setResults(responseList);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setResponse("Search completed successfully.");
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No results were located with the provided search terms.");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchResponse: {}", response);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SearchRequestException(sqx.getMessage(), sqx);
+        }
+
+        return response;
+    }
+
+    @Override
+    public SearchResponse doSiteSearch(final SearchRequest request) throws SearchRequestException
+    {
+        final String methodName = ISearchProcessor.CNAME + "#doSiteSearch(final SearchRequest request) throws SearchRequestException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("SearchRequest: {}", request);
+        }
+
+        SearchResponse response = new SearchResponse();
+
+        try
+        {
+            ISiteSearchDAO dao = new SiteSearchDAOImpl();
+            List<Object[]> responseData = dao.getPagesByAttribute(request.getSearchTerms(), request.getStartRow());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("responseData: {}", responseData);
+            }
+
+            if ((responseData != null) && (responseData.size() != 0))
+            {
+                List<SearchResult> responseList = new ArrayList<>();
+
+                for (Object[] data : responseData)
+                {
+                    if (DEBUG)
+                    {
+                        if (data != null)
+                        {
+                            for (Object str : data)
+                            {
+                                DEBUGGER.debug("data: {}", str);
+                            }
+                        }
+                    }
+
+                    if ((data != null) && (data.length >= 2))
+                    {
+                        SearchResult searchResult = new SearchResult();
+                        searchResult.setPath((String) data[1]);
+                        searchResult.setTitle((String) data[5]);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("SearchResult: {}", searchResult);
+                        }
+
+                        responseList.add(searchResult);
+                    }
+                    else
+                    {
+                        throw new SearchRequestException("No results were located for the provided data");
+                    }
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("responseList: {}", responseList);
                 }
 
                 response.setResults(responseList);

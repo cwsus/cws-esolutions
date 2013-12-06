@@ -289,15 +289,16 @@
                     <version>3.1</version>
                     <configuration>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                        <compilerArgs>
-                            <arg>-g</arg>
-                            <arg>-Xlint:all</arg>
-                        </compilerArgs>
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <source>1.7</source>
                         <target>1.7</target>
+                        <compilerArgs>
+                            <arg>-g</arg>
+                            <arg>-Xlint:all</arg>
+                            <arg>-deprecation</arg>
+                        </compilerArgs>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -421,7 +422,7 @@
                     <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
                     <tarLongFileFormat>gnu</tarLongFileFormat>
                     <descriptors>
-                        <descriptor>src/assemble/assembly.xml</descriptor>
+                        <descriptor>src/main/assembly/assembly.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
@@ -487,6 +488,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <generateProjectInfo>true</generateProjectInfo>
+                    <generateReports>true</generateReports>
+                    <generateSitemap>true</generateSitemap>
+                    <inputEncoding>${project.build.sourceEncoding}</inputEncoding>
+                    <outputEncoding>${project.build.sourceEncoding}</outputEncoding>
+                    <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                    <siteDirectory>src/main/site</siteDirectory>
+                    <validate>true</validate>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>

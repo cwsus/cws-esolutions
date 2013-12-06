@@ -38,5 +38,6 @@ public enum SearchRequestType
     DATACENTER,
     SERVER,
     ARTICLE,
-    APPLICATION;
+    APPLICATION,
+    SITE;
 }

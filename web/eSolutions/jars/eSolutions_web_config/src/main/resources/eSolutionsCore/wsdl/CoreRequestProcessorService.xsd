@@ -569,4 +569,16 @@
             <xsd:element minOccurs="0" name="return" />
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:element name="doSiteSearch" type="doSiteSearch" />
+    <xsd:complexType name="doSiteSearch">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="request" />
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:element name="doSiteSearchResponse" type="doSiteSearchResponse" />
+    <xsd:complexType name="doSiteSearchResponse">
+        <xsd:sequence>
+            <xsd:element minOccurs="0" name="return" />
+        </xsd:sequence>
+    </xsd:complexType>
 </xsd:schema>

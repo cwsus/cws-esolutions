@@ -70,6 +70,40 @@
             <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
         </form:form>
     </p>
+
+    <c:if test="${not empty searchResults}">
+        <h1><spring:message code="theme.search.results" /></h1>
+        <br /><br />
+        <table id="searchResults">
+            <c:forEach var="result" items="${searchResults}">
+                <tr>
+                    <td><a href="${pageContext.request.contextPath}/ui/application-management/application/${result.path}" title="${result.title}">${result.title}</a></td>
+                </tr>
+            </c:forEach>
+        </table>
+
+        <c:if test="${pages gt 1}">
+            <br />
+            <hr />
+            <br />
+            <table>
+                <tr>
+                    <c:forEach begin="1" end="${pages}" var="i">
+                        <c:choose>
+                            <c:when test="${page eq i}">
+                                <td>${i}</td>
+                            </c:when>
+                            <c:otherwise>
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/application-management/search/terms/${searchTerms}/page/${i}" title="{i}">${i}</a>
+                                </td>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>
+                </tr>
+            </table>
+        </c:if>
+    </c:if>
 </div>
 
 <div id="rightbar">&nbsp;</div>

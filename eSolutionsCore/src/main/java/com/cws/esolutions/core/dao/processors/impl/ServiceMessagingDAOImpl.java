@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
-import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.dao.impl
@@ -426,7 +425,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
     @Override
     public synchronized List<Object[]> getMessagesByAttribute(final String value) throws SQLException
     {
-        final String methodName = IServerDataDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
+        final String methodName = IMessagingDAO.CNAME + "#getMessagesByAttribute(final String value) throws SQLException";
 
         if (DEBUG)
         {

@@ -99,6 +99,28 @@
                     </tr>
                 </c:forEach>
             </table>
+
+            <c:if test="${pages gt 1}">
+                <br />
+                <hr />
+                <br />
+                <table>
+                    <tr>
+                        <c:forEach begin="1" end="${pages}" var="i">
+                            <c:choose>
+                                <c:when test="${page eq i}">
+                                    <td>${i}</td>
+                                </c:when>
+                                <c:otherwise>
+                                    <td>
+                                        <a href="${pageContext.request.contextPath}/user-management/search/terms/${searchTerms}/type/${searchType}/page/${i}" title="{i}">${i}</a>
+                                    </td>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </tr>
+                </table>
+            </c:if>
         </c:if>
     </p>
 </div>

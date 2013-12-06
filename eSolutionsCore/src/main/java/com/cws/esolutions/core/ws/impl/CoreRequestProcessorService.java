@@ -475,4 +475,26 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
 
         return response;
     }
+
+    @Override
+    @WebMethod(operationName = "doSiteSearch")
+    public SearchResponse doSiteSearch(final SearchRequest request) throws SearchRequestException
+    {
+        final String methodName = ICoreRequestProcessorService.CNAME + "#doSiteSearch(final SearchRequest request) throws SearchRequestException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("SearchRequest: ", request);
+        }
+
+        SearchResponse response = searchSvc.doSiteSearch(request);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("SearchResponse: ", response);
+        }
+
+        return response;
+    }
 }

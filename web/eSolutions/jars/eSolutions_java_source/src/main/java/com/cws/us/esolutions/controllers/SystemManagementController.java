@@ -375,6 +375,138 @@ public class SystemManagementController
         return mView;
     }
 
+    @RequestMapping(value = "/search/terms/{terms}/page/{page}", method = RequestMethod.GET)
+    public final ModelAndView showSearchPage(@PathVariable("terms") final String terms, @PathVariable("page") final int page)
+    {
+        final String methodName = SystemManagementController.CNAME + "#showSearchPage(@PathVariable(\"terms\") final String terms, @PathVariable(\"page\") final int page)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", terms);
+            DEBUGGER.debug("Value: {}", page);
+        }
+
+        ModelAndView mView = new ModelAndView();
+
+        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        final HttpServletRequest hRequest = requestAttributes.getRequest();
+        final HttpSession hSession = hRequest.getSession();
+        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
+            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
+            DEBUGGER.debug("HttpSession: {}", hSession);
+            DEBUGGER.debug("Session ID: {}", hSession.getId());
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+
+            DEBUGGER.debug("Dumping session content:");
+            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+
+            while (sessionEnumeration.hasMoreElements())
+            {
+                String sessionElement = sessionEnumeration.nextElement();
+                Object sessionValue = hSession.getAttribute(sessionElement);
+
+                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+            }
+
+            DEBUGGER.debug("Dumping request content:");
+            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+
+            while (requestEnumeration.hasMoreElements())
+            {
+                String requestElement = requestEnumeration.nextElement();
+                Object requestValue = hRequest.getAttribute(requestElement);
+
+                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+            }
+
+            DEBUGGER.debug("Dumping request parameters:");
+            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+
+            while (paramsEnumeration.hasMoreElements())
+            {
+                String requestElement = paramsEnumeration.nextElement();
+                Object requestValue = hRequest.getParameter(requestElement);
+
+                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+            }
+        }
+
+        if (this.appConfig.getServices().get(this.serviceName))
+        {
+            try
+            {
+                RequestHostInfo reqInfo = new RequestHostInfo();
+                reqInfo.setHostName(hRequest.getRemoteHost());
+                reqInfo.setHostAddress(hRequest.getRemoteAddr());
+                reqInfo.setSessionId(hSession.getId());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                SearchRequest request = new SearchRequest();
+                request.setSearchTerms(terms);
+                request.setStartRow(page);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SearchRequest: {}", request);
+                }
+
+                SearchResponse searchRes = searchProcessor.doServerSearch(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SearchResponse: {}", searchRes);
+                }
+
+                if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    mView.addObject("pages", (int) Math.ceil(searchRes.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("page", page);
+                    mView.addObject("searchTerms", terms);
+                    mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultPage);
+                }
+                else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                {
+                    mView.setViewName(this.appConfig.getUnauthorizedPage());
+                }
+                else
+                {
+                    mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject("command", new SearchRequest());
+                    mView.setViewName(this.defaultPage);
+                }
+            }
+            catch (SearchRequestException srx)
+            {
+                ERROR_RECORDER.error(srx.getMessage(), srx);
+
+                mView.setViewName(this.appConfig.getErrorResponsePage());
+            }
+        }
+        else
+        {
+            mView.setViewName(this.appConfig.getUnavailablePage());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ModelAndView: {}", mView);
+        }
+
+        return mView;
+    }
+
     @RequestMapping(value = "/service-consoles", method = RequestMethod.GET)
     public final ModelAndView showAdminConsoles()
     {
@@ -1561,6 +1693,7 @@ public class SystemManagementController
 
                     mView.addObject("pages", (int) Math.ceil(res.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", 1);
+                    mView.addObject("searchTerms", request.getSearchTerms());
                     mView.addObject(Constants.SEARCH_RESULTS, serverList);
                 }
                 else if (res.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
