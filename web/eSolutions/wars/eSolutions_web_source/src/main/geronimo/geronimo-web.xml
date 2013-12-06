@@ -44,6 +44,8 @@
         <dep:hidden-classes>
             <dep:filter>org.apache.log4j</dep:filter>
             <dep:filter>log4j</dep:filter>
+            <dep:filter>javax.mail</dep:filter>
+            <dep:filter>activation</dep:filter>
         </dep:hidden-classes>
 
         <dep:inverse-classloading />
