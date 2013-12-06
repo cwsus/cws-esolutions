@@ -454,10 +454,10 @@ public class SearchProcessorImpl implements ISearchProcessor
                     return response;
             }
 
-			if (DEBUG)
-			{
-				DEBUGGER.debug("resultsList: {}", resultsList);
-			}
+            if (DEBUG)
+            {
+                DEBUGGER.debug("resultsList: {}", resultsList);
+            }
 
             if ((resultsList != null) && (resultsList.size() != 0))
             {

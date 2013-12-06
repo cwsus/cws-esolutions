@@ -760,7 +760,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Notification: {}", notify);
             DEBUGGER.debug("Object: {}", object);
         }

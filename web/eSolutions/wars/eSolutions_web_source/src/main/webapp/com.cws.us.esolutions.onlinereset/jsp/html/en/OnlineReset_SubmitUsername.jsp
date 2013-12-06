@@ -55,9 +55,11 @@
 
     <p>
         <form:form id="submitUsernameForSearch" name="submitUsernameForSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-password" method="post" autocomplete="off">
+            <form:hidden path="resetType" value="${resetType}" />
+
             <p>
                 <label id="txtEmailAddr"><spring:message code="olr.username" /></label>
-                <form:password path="username" />
+                <form:input path="username" />
                 <form:errors path="username" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />

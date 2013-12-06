@@ -831,7 +831,7 @@ public class SQLUserManager implements UserManager
 
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", userGuid);
             DEBUGGER.debug("Value: {}", isSuspended);
@@ -909,7 +909,7 @@ public class SQLUserManager implements UserManager
 
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userId);
             DEBUGGER.debug("Value: {}", userGuid);
         }

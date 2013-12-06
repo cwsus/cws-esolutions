@@ -130,7 +130,7 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`insertAuditEntry`(
     IN applname VARCHAR(128),
     IN useraction VARCHAR(45),
     IN srcaddr VARCHAR(45),
-	IN srchost VARCHAR(128)
+    IN srchost VARCHAR(128)
 )
 BEGIN
     INSERT INTO usr_audit (usr_audit_sessionid, usr_audit_userid, usr_audit_userguid, usr_audit_role, usr_audit_applid, usr_audit_applname, usr_audit_timestamp, usr_audit_action, usr_audit_srcaddr, usr_audit_srchost)

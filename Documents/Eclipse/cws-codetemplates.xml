@@ -64,7 +64,7 @@ throw new ${exception_type}(dsx.getMessage(), dsx);</template><template autoinse
 
 if (DEBUG)
 {
-	DEBUGGER.debug(this.methodName);
+    DEBUGGER.debug(this.methodName);
     DEBUGGER.debug("request: ", request);
 }
 
@@ -72,14 +72,14 @@ ${body_statement}</template><template autoinsert="false" context="constructorbod
 
 if (DEBUG)
 {
-	DEBUGGER.debug(this.methodName);
+    DEBUGGER.debug(this.methodName);
 }
 
 ${body_statement}</template><template autoinsert="false" context="getterbody_context" deleted="false" description="Code in created getters" enabled="true" id="org.eclipse.jdt.ui.text.codetemplates.getterbody" name="getterbody">this.methodName = ${enclosing_type}.CNAME + "#${enclosing_method})";&#13;
 &#13;
 if (DEBUG)&#13;
 {&#13;
-	DEBUGGER.debug(this.methodName);&#13;
+    DEBUGGER.debug(this.methodName);&#13;
     DEBUGGER.debug("Value: ", this.${field});&#13;
 }&#13;
 &#13;
@@ -87,7 +87,7 @@ return ${field};</template><template autoinsert="false" context="setterbody_cont
 &#13;
 if (DEBUG)&#13;
 {&#13;
-	DEBUGGER.debug(this.methodName);&#13;
+    DEBUGGER.debug(this.methodName);&#13;
     DEBUGGER.debug("Value: ", ${field});&#13;
 }&#13;
 &#13;

@@ -751,11 +751,30 @@ public class UserAccountController
             }
         }
 
-        hSession.removeAttribute(Constants.USER_ACCOUNT);
-        hSession.invalidate();
+        switch (userAccount.getStatus())
+        {
+            case EXPIRED:
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.invalidate();
 
-        mView = new ModelAndView(new RedirectView());
-        mView.setViewName(this.appConfig.getLogonRedirect());
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(this.appConfig.getLogonRedirect());
+
+                return mView;
+            case RESET:
+                hSession.removeAttribute(Constants.USER_ACCOUNT);
+                hSession.invalidate();
+
+                mView = new ModelAndView(new RedirectView());
+                mView.setViewName(this.appConfig.getLogonRedirect());
+
+                return mView;
+            default:
+                break;
+        }
+
+        mView.addObject(Constants.RESPONSE_MESSAGE, appConfig.getMessageRequestCanceled());
+        mView.setViewName(this.myAccountPage);
 
         if (DEBUG)
         {

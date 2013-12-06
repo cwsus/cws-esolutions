@@ -72,12 +72,10 @@ import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
 @RequestMapping("/knowledgebase")
 public class KnowledgeBaseController
 {
-    private String prefix = null;
     private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
     private String serviceName = null;
     private String defaultPage = null;
-    private int newIdentifierLength = 8; // default of 8
     private String editArticlePage = null;
     private String showArticlePage = null;
     private String createArticlePage = null;
@@ -229,32 +227,6 @@ public class KnowledgeBaseController
         }
 
         this.serviceId = value;
-    }
-
-    public final void setPrefix(final String value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setPrefix(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.prefix = value;
-    }
-
-    public final void setNewIdentifierLength(final int value)
-    {
-        final String methodName = KnowledgeBaseController.CNAME + "#setNewIdentifierLength(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.newIdentifierLength = value;
     }
 
     public final void setPendingArticlesPage(final String value)
@@ -723,9 +695,7 @@ public class KnowledgeBaseController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("articleId", this.prefix + RandomStringUtils.randomAlphanumeric(this.newIdentifierLength));
             mView.addObject("command", new Article());
-            mView.addObject("dateFormat", this.appConfig.getDateFormat());
             mView.setViewName(this.createArticlePage);
         }
         else
@@ -1873,9 +1843,9 @@ public class KnowledgeBaseController
                     {
                         SimpleMailMessage message = new SimpleMailMessage(this.createArticleEmail);
                         message.setTo(String.format(this.createArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.createArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), article.getArticleId()));
+                        message.setSubject(String.format(this.createArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), response.getArticleId()));
                         message.setText(String.format(this.createArticleEmail.getText(),
-                                article.getArticleId(),
+                                response.getArticleId(),
                                 userAccount.getDisplayName(),
                                 article.getTitle(),
                                 article.getSymptoms(),
@@ -1898,7 +1868,6 @@ public class KnowledgeBaseController
                     }
 
                     mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
-                    mView.addObject("articleId", this.prefix + RandomStringUtils.randomAlphanumeric(this.newIdentifierLength));
                     mView.addObject("command", new Article());
                     mView.setViewName(this.createArticlePage);
                 }

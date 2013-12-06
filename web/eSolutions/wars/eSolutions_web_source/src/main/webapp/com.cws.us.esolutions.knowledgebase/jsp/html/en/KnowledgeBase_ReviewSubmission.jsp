@@ -76,7 +76,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="kbase.article.review.submit" arguments="${article.articleId}" /></h1>
+    <h1><spring:message code="kbase.article.review.submit" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -126,7 +126,6 @@
     </p>
 
     <form:form id="reviewArticleData" name="reviewArticleData" action="${pageContext.request.contextPath}/ui/knowledgebase/submit-article" method="post" commandName="article">
-        <form:hidden path="articleId" value="${article.articleId}" />
         <form:hidden path="title" value="${article.title}" />
         <form:hidden path="symptoms" value="${article.symptoms}" />
         <form:hidden path="cause" value="${article.cause}" />

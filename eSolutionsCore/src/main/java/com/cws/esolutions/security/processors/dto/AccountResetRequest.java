@@ -236,8 +236,8 @@ public class AccountResetRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-				    (!(field.getName().equals("userSecurity"))) &&
-				    (!(field.getName().equals("smsCode"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
+                    (!(field.getName().equals("smsCode"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

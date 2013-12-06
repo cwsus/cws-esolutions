@@ -17,8 +17,8 @@ CREATE  TABLE `cwssec`.`usr_lgn_services` (
     `usr_svc_svcname` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     `usr_svc_uri` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     `usr_svc_description` TEXT CHARACTER SET UTF8 NOT NULL,
-	PRIMARY KEY (`usr_svc_svcid`),
-	INDEX `PK_usr_svc_svcid` (`usr_svc_svcid` ASC)
+    PRIMARY KEY (`usr_svc_svcid`),
+    INDEX `PK_usr_svc_svcid` (`usr_svc_svcid` ASC)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 --
@@ -63,8 +63,8 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrAvailableServices`(
 )
 BEGIN
     SELECT usr_svc_uri, usr_svc_svcid
-	FROM `cwssec`.`usr_lgn_services`
-	ORDER BY usr_svc_svcid ASC;
+    FROM `cwssec`.`usr_lgn_services`
+    ORDER BY usr_svc_svcid ASC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -79,13 +79,13 @@ DROP TABLE IF EXISTS `cwssec`.`usr_lgn_svcmap`;
 CREATE  TABLE `cwssec`.`usr_lgn_svcmap` (
     `usr_lgn_guid` VARCHAR(128) NOT NULL ,
     `usr_svc_svcid` VARCHAR(128) NOT NULL,
-	PRIMARY KEY (`usr_svc_svcid`),
-	INDEX `PK_usr_svc_svcid` (`usr_svc_svcid` ASC),
-	CONSTRAINT `FK_usr_svc_svcid`
-		FOREIGN KEY (`usr_svc_svcid`)
-		REFERENCES `cwssec`.`usr_lgn_services` (`usr_svc_svcid`)
-			ON DELETE RESTRICT
-			ON UPDATE NO ACTION
+    PRIMARY KEY (`usr_svc_svcid`),
+    INDEX `PK_usr_svc_svcid` (`usr_svc_svcid` ASC),
+    CONSTRAINT `FK_usr_svc_svcid`
+        FOREIGN KEY (`usr_svc_svcid`)
+        REFERENCES `cwssec`.`usr_lgn_services` (`usr_svc_svcid`)
+            ON DELETE RESTRICT
+            ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 --
@@ -107,9 +107,9 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addServiceToUser`(
     IN serviceid VARCHAR(45)
 )
 BEGIN
-	INSERT INTO `cwssec`.`usr_lgn_svcmap` (usr_lgn_guid, usr_svc_svcid)
-	VALUES (userSecId, serviceId);
-	COMMIT;
+    INSERT INTO `cwssec`.`usr_lgn_svcmap` (usr_lgn_guid, usr_svc_svcid)
+    VALUES (userSecId, serviceId);
+    COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -127,10 +127,10 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeServiceFromUser`(
     IN serviceid VARCHAR(45)
 )
 BEGIN
-	DELETE FROM `cwssec`.`usr_lgn_svcmap`
+    DELETE FROM `cwssec`.`usr_lgn_svcmap`
     WHERE usr_lgn_guid = userSecId
     AND usr_svc_svcid = serviceid;
-	COMMIT;
+    COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -166,12 +166,12 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listServicesForUser` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`listServicesForUser`(
-	IN userGuid VARCHAR(128)
+    IN userGuid VARCHAR(128)
 )
 BEGIN
-	SELECT usr_svc_svcid
-	FROM usr_lgn_svcmap
-	WHERE usr_lgn_guid = userGuid;
+    SELECT usr_svc_svcid
+    FROM usr_lgn_svcmap
+    WHERE usr_lgn_guid = userGuid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

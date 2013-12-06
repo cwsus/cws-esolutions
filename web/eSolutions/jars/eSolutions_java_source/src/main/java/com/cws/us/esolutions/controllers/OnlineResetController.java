@@ -12,14 +12,19 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.Date;
+
 import org.slf4j.Logger;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,6 +41,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.us.esolutions.dto.UserChangeRequest;
+import com.cws.us.esolutions.enums.ResetRequestType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
@@ -290,6 +296,7 @@ public class OnlineResetController
             }
         }
 
+        mView.addObject("resetType", ResetRequestType.USERNAME);
         mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.submitEmailAddrPage);
 
@@ -359,6 +366,7 @@ public class OnlineResetController
             }
         }
 
+        mView.addObject("resetType", ResetRequestType.USERNAME);
         mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.submitUsernamePage);
 
@@ -905,12 +913,14 @@ public class OnlineResetController
                 // xlnt. set the user
                 hSession.setAttribute(Constants.USER_ACCOUNT, resAccount);
 
+                mView.addObject("resetType", ResetRequestType.QUESTIONS);
                 mView.addObject("command", changeReq);
                 mView.setViewName(this.submitAnswersPage);
             }
             else
             {
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                mView.addObject("resetType", ResetRequestType.USERNAME);
                 mView.addObject("command", new UserChangeRequest());
                 mView.setViewName(this.submitUsernamePage);
             }

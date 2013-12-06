@@ -165,7 +165,7 @@ public class CoreServiceListener implements ServletContextListener
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("ServletContextEvent: ", contextEvent);
         }
     }

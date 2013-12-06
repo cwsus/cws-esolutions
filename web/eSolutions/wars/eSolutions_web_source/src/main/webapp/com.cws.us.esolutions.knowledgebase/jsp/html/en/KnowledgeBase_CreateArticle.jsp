@@ -41,7 +41,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="kbase.article.create.banner" arguments="${command.articleId}" /></h1>
+    <h1><spring:message code="kbase.article.create.banner" arguments="${articleId}" /></h1>
 
     <div id="error"></div>
 

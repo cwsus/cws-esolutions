@@ -35,11 +35,9 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="prefix" value="KB" />
         <property name="recordsPerPage" value="20" />
         <property name="serviceName" value="kbase" />
         <property name="serviceId" value="4B081972-92C3-455B-9403-B81E68C538B6" />
-        <property name="newIdentifierLength" value="9" />
         <property name="defaultPage" value="KnowledgeBase_DefaultHandler" />
         <property name="editArticlePage" value="KnowledgeBase_EditArticle" />
         <property name="showArticlePage" value="KnowledgeBase_ShowArticle" />

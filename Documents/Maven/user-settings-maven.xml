@@ -46,6 +46,6 @@
 
     <activeProfiles>
         <activeProfile>nexus</activeProfile>
-		<activeProfile>cws-build</activeProfile>
+        <activeProfile>cws-build</activeProfile>
     </activeProfiles>
 </settings>

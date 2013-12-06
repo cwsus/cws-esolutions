@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
@@ -98,9 +99,16 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
+                String articleId = appConfig.getArticlePrefix() + RandomStringUtils.randomAlphanumeric(appConfig.getArticleIdentifierLength());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("articleId: {}", articleId);
+                }
+
                 List<String> insertList = new ArrayList<>(
                         Arrays.asList(
-                                article.getArticleId(),
+                                articleId,
                                 userAccount.getGuid(),
                                 article.getKeywords(),
                                 article.getTitle(),
@@ -125,7 +133,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setResponse("The article was successfully submitted.");
-                    response.setArticle(article);
+                    response.setArticleId(articleId);
                 }
                 else
                 {

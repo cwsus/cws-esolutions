@@ -209,7 +209,7 @@ public class AuthenticationResponse implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-				    (!(field.getName().equals("userSecurity"))) &&
+                    (!(field.getName().equals("userSecurity"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

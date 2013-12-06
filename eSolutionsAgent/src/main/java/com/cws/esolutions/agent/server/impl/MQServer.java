@@ -146,7 +146,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("JMSException: ", exception);
         }
     }

@@ -71,7 +71,7 @@
                 }
                 else
                 {
-                	setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, timeout);
+                    setInterval(function() { window.location.href = '${pageContext.request.contextPath}/ui/login/logout'; }, timeout);
                 }
             }
         //-->

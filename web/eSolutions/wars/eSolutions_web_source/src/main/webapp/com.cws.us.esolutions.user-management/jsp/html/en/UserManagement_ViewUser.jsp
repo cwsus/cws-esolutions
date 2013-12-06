@@ -51,7 +51,7 @@
     <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
         <h1><spring:message code="user.mgmt.header" /></h1>
         <ul>
-            <li><a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.search.banner' />"><spring:message code="user.mgmt.search.header" /></a></li>
+            <li><a href="${pageContext.request.contextPath}/ui/user-management/default" title="<spring:message code='theme.search.banner' />"><spring:message code="theme.search.banner" /></a></li>
             <li><a href="${pageContext.request.contextPath}/ui/user-management/add-user" title="<spring:message code='user.mgmt.create.user' />"><spring:message code="user.mgmt.create.user" /></a></li>
             <li><a href="${pageContext.request.contextPath}/ui/user-management/services/account/${userAccount.guid}" title="<spring:message code='user.mgmt.user.services' />"><spring:message code='user.mgmt.user.services' /></a></li>
             <li><a href="${pageContext.request.contextPath}/ui/user-management/audit/account/${userAccount.guid}" title="<spring:message code='user.mgmt.audit.user' />"><spring:message code='user.mgmt.audit.user' /></a></li>

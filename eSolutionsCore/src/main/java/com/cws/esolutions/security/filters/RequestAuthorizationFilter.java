@@ -148,8 +148,8 @@ public class RequestAuthorizationFilter implements Filter
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
         final HttpSession hSession = hRequest.getSession(false);
-		final String requestURI = hRequest.getRequestURI();
-		final String unauthorizedRedirect = hRequest.getContextPath() + this.unauthorizedPage;
+        final String requestURI = hRequest.getRequestURI();
+        final String unauthorizedRedirect = hRequest.getContextPath() + this.unauthorizedPage;
 
         if (DEBUG)
         {
@@ -157,7 +157,7 @@ public class RequestAuthorizationFilter implements Filter
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("RequestURI: {}", requestURI);
-			DEBUGGER.debug("unauthorizedRedirect: {}", unauthorizedRedirect);
+            DEBUGGER.debug("unauthorizedRedirect: {}", unauthorizedRedirect);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();

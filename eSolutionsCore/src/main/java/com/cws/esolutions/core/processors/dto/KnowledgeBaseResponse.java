@@ -45,6 +45,7 @@ public class KnowledgeBaseResponse implements Serializable
     private int entryCount = 0;
     private Article article = null;
     private String response = null;
+    private String articleId = null;
     private List<Article> articleList = null;
     private CoreServicesStatus requestStatus = null;
 
@@ -120,6 +121,19 @@ public class KnowledgeBaseResponse implements Serializable
         this.entryCount = value;
     }
 
+    public final void setArticleId(final String value)
+    {
+        final String methodName = KnowledgeBaseResponse.CNAME + "#setArticleId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.articleId = value;
+    }
+
     public final CoreServicesStatus getRequestStatus()
     {
         final String methodName = KnowledgeBaseResponse.CNAME + "#getRequestStatus()";
@@ -183,6 +197,19 @@ public class KnowledgeBaseResponse implements Serializable
         }
 
         return this.entryCount;
+    }
+
+    public final String getArticleId()
+    {
+        final String methodName = KnowledgeBaseResponse.CNAME + "#getArticleId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.articleId);
+        }
+
+        return this.articleId;
     }
 
     @Override

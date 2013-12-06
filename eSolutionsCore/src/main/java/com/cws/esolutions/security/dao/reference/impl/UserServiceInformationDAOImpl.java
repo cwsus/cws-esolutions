@@ -481,14 +481,14 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("commonName: {}", commonName);
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
         
         Connection sqlConn = null;
         boolean isComplete = false;
-		ResultSet resultSet = null;
+        ResultSet resultSet = null;
         PreparedStatement stmt = null;
 
         try

@@ -133,7 +133,7 @@ CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addUserAccount`(
     IN displayName VARCHAR(100)
 )
 BEGIN
-	SELECT unix_timestamp(now()) INTO @EXPIRY_TIME;
+    SELECT unix_timestamp(now()) INTO @EXPIRY_TIME;
 
     INSERT INTO usr_lgn
     (

@@ -55,9 +55,11 @@
 
     <p>
         <form:form id="submitEmailForUserSearch" name="submitEmailForUserSearch" action="${pageContext.request.contextPath}/ui/online-reset/forgot-username" method="post" autocomplete="off">
+            <form:hidden path="resetType" value="${resetType}" />
+
             <p>
                 <label id="txtEmailAddr"><spring:message code="olr.user.email.address" /></label>
-                <form:password path="emailAddr" />
+                <form:input path="emailAddr" />
                 <form:errors path="emailAddr" cssClass="error" />
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />

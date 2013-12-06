@@ -148,7 +148,7 @@ BEGIN
         SET kbase_page_hits = kbase_page_hits + 1
         WHERE kbase_article_id = articleId;
 
-		COMMIT;
+        COMMIT;
 
         SELECT
             kbase_page_hits,
@@ -203,7 +203,7 @@ BEGIN
         symptoms, cause, resolution, 'NEW'
     );
 
-	COMMIT;
+    COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -238,7 +238,7 @@ BEGIN
         kbase_article_status = 'NEW'
     WHERE kbase_article_id = articleId;
 
-	COMMIT;
+    COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -253,12 +253,12 @@ DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateArticleStatus`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateArticleStatus`(
     IN articleId VARCHAR(45),
-	IN modifiedBy VARCHAR(45),
-	IN articleStatus VARCHAR(15)
+    IN modifiedBy VARCHAR(45),
+    IN articleStatus VARCHAR(15)
 )
 BEGIN
-	UPDATE `esolutionssvc`.`articles`
-	SET
+    UPDATE `esolutionssvc`.`articles`
+    SET
         kbase_article_status = articleStatus,
         kbase_article_modifiedby = modifiedBy,
         kbase_article_modifieddate = UNIX_TIMESTAMP(),
@@ -266,7 +266,7 @@ BEGIN
         kbase_article_revieweddate = UNIX_TIMESTAMP()
     WHERE kbase_article_id = articleId;
 
-	COMMIT;
+    COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 

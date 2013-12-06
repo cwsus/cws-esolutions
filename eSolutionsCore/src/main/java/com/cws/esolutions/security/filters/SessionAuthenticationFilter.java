@@ -130,8 +130,8 @@ public class SessionAuthenticationFilter implements Filter
         final HttpServletRequest hRequest = (HttpServletRequest) sRequest;
         final HttpServletResponse hResponse = (HttpServletResponse) sResponse;
         final HttpSession hSession = hRequest.getSession(false);
-		final String requestURI = hRequest.getRequestURI();
-		final String passwdPage = hRequest.getContextPath() + this.passwordURI;
+        final String requestURI = hRequest.getRequestURI();
+        final String passwdPage = hRequest.getContextPath() + this.passwordURI;
         final StringBuilder redirectPath = new StringBuilder()
             .append(hRequest.getContextPath() + this.loginURI)
             .append("?vpath=" + requestURI);
@@ -142,8 +142,8 @@ public class SessionAuthenticationFilter implements Filter
             DEBUGGER.debug("HttpServletResponse: {}", hResponse);
             DEBUGGER.debug("HttpSession: {}", hSession);
             DEBUGGER.debug("RequestURI: {}", requestURI);
-			DEBUGGER.debug("passwdPage: {}", passwdPage);
-			DEBUGGER.debug("redirectPath: {}", redirectPath);
+            DEBUGGER.debug("passwdPage: {}", passwdPage);
+            DEBUGGER.debug("redirectPath: {}", redirectPath);
 
             DEBUGGER.debug("Dumping session content:");
             Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
@@ -219,19 +219,19 @@ public class SessionAuthenticationFilter implements Filter
             }
         }
 
-		if (hRequest.isRequestedSessionIdFromURL())
+        if (hRequest.isRequestedSessionIdFromURL())
         {
-			ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
+            ERROR_RECORDER.error("Session found is from URL. Redirecting request to " + hRequest.getContextPath() + this.loginURI);
 
-			// invalidate the session
+            // invalidate the session
             hRequest.getSession(false).invalidate();
-			hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
-			hSession.invalidate();
+            hSession.removeAttribute(SessionAuthenticationFilter.USER_ACCOUNT);
+            hSession.invalidate();
 
-			hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
+            hResponse.sendRedirect(hRequest.getContextPath() + this.loginURI);
 
             return;
-		}
+        }
 
         Enumeration<String> sessionAttributes = hSession.getAttributeNames();
 
@@ -272,10 +272,7 @@ public class SessionAuthenticationFilter implements Filter
                         case EXPIRED:
                             if ((!(StringUtils.equals(requestURI, passwdPage))))
                             {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Account is expired and this request is not for the password page. Redirecting !");
-                                }
+                                ERROR_RECORDER.error("Account is expired and this request is not for the password page. Redirecting !");
 
                                 hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
 
@@ -288,10 +285,7 @@ public class SessionAuthenticationFilter implements Filter
                         case RESET:
                             if ((!(StringUtils.equals(requestURI, passwdPage))))
                             {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Account has status RESET and this request is not for the password page. Redirecting !");
-                                }
+                                ERROR_RECORDER.error("Account has status RESET and this request is not for the password page. Redirecting !");
 
                                 hResponse.sendRedirect(hRequest.getContextPath() + this.passwordURI);
 
@@ -322,6 +316,11 @@ public class SessionAuthenticationFilter implements Filter
         if (StringUtils.isNotEmpty(hRequest.getQueryString()))
         {
             redirectPath.append("?" + hRequest.getQueryString());
+        }
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("redirectPath: {}", redirectPath.toString());
         }
 
         hResponse.sendRedirect(redirectPath.toString());

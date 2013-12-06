@@ -55,6 +55,8 @@
 
     <p>
         <form:form id="submitSecurityQuestion" name="submitSecurityQuestion" action="${pageContext.request.contextPath}/ui/online-reset/submit" method="post" autocomplete="off">
+            <form:hidden path="resetType" value="${resetType}" />
+
             <p>
                 <label id="txtQuestionOne"><spring:message code="olr.question" /></label>
                 ${command.secQuestionOne}

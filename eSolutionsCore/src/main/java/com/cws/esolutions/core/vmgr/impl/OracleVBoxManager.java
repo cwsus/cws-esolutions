@@ -64,8 +64,8 @@ public class OracleVBoxManager implements VirtualServiceManager
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
-        	DEBUGGER.debug("VirtualServiceRequest: {}", request);
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("VirtualServiceRequest: {}", request);
         }
 
         VirtualServiceResponse response = new VirtualServiceResponse();
@@ -152,8 +152,8 @@ public class OracleVBoxManager implements VirtualServiceManager
         
         if (DEBUG)
         {
-        	DEBUGGER.debug(methodName);
-        	DEBUGGER.debug("VirtualServiceRequest: {}", request);
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("VirtualServiceRequest: {}", request);
         }
 
         IMachine machine = null;
