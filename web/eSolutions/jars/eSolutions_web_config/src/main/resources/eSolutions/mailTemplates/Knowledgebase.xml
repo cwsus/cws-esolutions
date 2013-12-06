@@ -13,11 +13,11 @@
         <property name="text">
             <value>
                 <![CDATA[
-					The article below has been approved and is now available for general consumption.
-					
-					Article ID: %s
-					
-					Please review this article and notify the administration team if there are any anomalies.
+                    The article below has been approved and is now available for general consumption.
+                    
+                    Article ID: %s
+                    
+                    Please review this article and notify the administration team if there are any anomalies.
                 ]]>
             </value>
         </property>
@@ -32,19 +32,19 @@
         <property name="text">
             <value>
                 <![CDATA[
-					A new knowledgebase article has been added and is pending review. Please find the detail below:
-					
-					Article ID: %s
-					Article Author: %s
-					Article Title: %s
-					Article Symptoms: %s
-					Article Cause: %s
-					Article Keywords: %s
-					
-					Article Resolution -
-					%s
-					
-					Please review this new article when possible and approve/reject as necessary.
+                    A new knowledgebase article has been added and is pending review. Please find the detail below:
+                    
+                    Article ID: %s
+                    Article Author: %s
+                    Article Title: %s
+                    Article Symptoms: %s
+                    Article Cause: %s
+                    Article Keywords: %s
+                    
+                    Article Resolution -
+                    %s
+                    
+                    Please review this new article when possible and approve/reject as necessary.
                 ]]>
             </value>
         </property>
@@ -59,11 +59,11 @@
         <property name="text">
             <value>
                 <![CDATA[
-					The article below has been deleted and is no longer available for general consumption.
-					
-					Article ID: %s
-					
-					Please review this article and notify the administration team if there are any anomalies.
+                    The article below has been deleted and is no longer available for general consumption.
+                    
+                    Article ID: %s
+                    
+                    Please review this article and notify the administration team if there are any anomalies.
                 ]]>
             </value>
         </property>
@@ -78,11 +78,11 @@
         <property name="text">
             <value>
                 <![CDATA[
-					The article below has been rejected.
-					
-					Article ID: %s
-					
-					Please review this article and notify the administration team if there are any anomalies.
+                    The article below has been rejected.
+                    
+                    Article ID: %s
+                    
+                    Please review this article and notify the administration team if there are any anomalies.
                 ]]>
             </value>
         </property>
@@ -97,20 +97,20 @@
         <property name="text">
             <value>
                 <![CDATA[
-					A knowledgebase article has been updated and is pending review. Please find the detail below:
-					
-					Article ID: %s
-					Article Title: %s
-					Article Symptoms: %s
-					Article Cause: %s
-					Article Keywords: %s
-					
-					Article Resolution -
-					%s
-					
-					This article was modified by %s.
-					
-					Please review this new article when possible and approve/reject as necessary.
+                    A knowledgebase article has been updated and is pending review. Please find the detail below:
+                    
+                    Article ID: %s
+                    Article Title: %s
+                    Article Symptoms: %s
+                    Article Cause: %s
+                    Article Keywords: %s
+                    
+                    Article Resolution -
+                    %s
+                    
+                    This article was modified by %s.
+                    
+                    Please review this new article when possible and approve/reject as necessary.
                 ]]>
             </value>
         </property>

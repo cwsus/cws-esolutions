@@ -31,14 +31,14 @@
 <script>
     <!--
     function approveArticle(theArticle)
-	{
+    {
         var confirmation = confirm("Are you sure you wish to approve article " + theArticle + " ?");
 
         if (confirmation)
         {
             window.location.href = '${pageContext.request.contextPath}/ui/knowledgebase/approve-article/article/' + theArticle;
         }
-	}
+    }
 
     function rejectArticle(theArticle)
     {

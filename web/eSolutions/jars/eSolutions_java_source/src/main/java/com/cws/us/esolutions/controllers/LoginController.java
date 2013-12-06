@@ -591,7 +591,7 @@ public class LoginController
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
-						ERROR_RECORDER.error("An unspecified error occurred during authentication.");
+                        ERROR_RECORDER.error("An unspecified error occurred during authentication.");
 
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         mView.addObject("command", new LoginRequest());

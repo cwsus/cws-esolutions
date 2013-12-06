@@ -13,10 +13,10 @@
 
     <bean id="validator" class="com.cws.us.esolutions.validators.ArticleValidator">
         <property name="messageArticleTitleRequired" value="kbase.article.title.required" />
-		<property name="messageArticleCauseRequired" value="kbase.article.cause.required" />
-		<property name="messageArticleKeywordsRequired" value="kbase.article.keywords.required" />
-		<property name="messageArticleSymptomsRequired" value="kbase.article.symptoms.required" />
-		<property name="messageArticleResolutionRequired" value="kbase.article.resolution.required" />        
+        <property name="messageArticleCauseRequired" value="kbase.article.cause.required" />
+        <property name="messageArticleKeywordsRequired" value="kbase.article.keywords.required" />
+        <property name="messageArticleSymptomsRequired" value="kbase.article.symptoms.required" />
+        <property name="messageArticleResolutionRequired" value="kbase.article.resolution.required" />        
     </bean>
 
     <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">

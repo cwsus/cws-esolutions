@@ -270,7 +270,7 @@ public class ServiceMessagingController
                 // no existing service messages
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                 mView = new ModelAndView(new RedirectView());
-				mView.setViewName(this.createMessageRedirect);
+                mView.setViewName(this.createMessageRedirect);
             }
         }
         catch (MessagingServiceException msx)
@@ -480,7 +480,7 @@ public class ServiceMessagingController
                 // no existing service messages
                 mView = new ModelAndView(new RedirectView());
                 mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
-				mView.setViewName(this.createMessageRedirect);
+                mView.setViewName(this.createMessageRedirect);
             }
         }
         catch (MessagingServiceException msx)

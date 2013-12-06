@@ -19,14 +19,14 @@
         <property name="searchSuffix" value="caspersbox.corp, caspersbox.com" /> <!-- dns search suffix (not required) -->
         <property name="serviceTypes">
             <list>
-				<value>A</value>
-				<value>MX</value>
-				<value>NS</value>
-				<value>TXT</value>
-				<value>PTR</value>
-				<value>SOA</value>
-				<value>SRV</value>
-				<value>CNAME</value>
+                <value>A</value>
+                <value>MX</value>
+                <value>NS</value>
+                <value>TXT</value>
+                <value>PTR</value>
+                <value>SOA</value>
+                <value>SRV</value>
+                <value>CNAME</value>
             </list>
         </property>
         <!-- where should we go for external dns lookups ? -->

@@ -479,11 +479,11 @@ public final class UserChangeRequest implements Serializable
                     (!(field.getName().equals("DEBUGGER"))) &&
                     (!(field.getName().equals("DEBUG"))) &&
                     (!(field.getName().equals("ERROR_RECORDER"))) &&
-				    (!(field.getName().equals("newPassword"))) &&
-				    (!(field.getName().equals("secAnswerOne"))) &&
-				    (!(field.getName().equals("secAnswerTwo"))) &&
-				    (!(field.getName().equals("currentPassword"))) &&
-				    (!(field.getName().equals("confirmPassword"))) &&
+                    (!(field.getName().equals("newPassword"))) &&
+                    (!(field.getName().equals("secAnswerOne"))) &&
+                    (!(field.getName().equals("secAnswerTwo"))) &&
+                    (!(field.getName().equals("currentPassword"))) &&
+                    (!(field.getName().equals("confirmPassword"))) &&
                     (!(field.getName().equals("serialVersionUID"))))
             {
                 try

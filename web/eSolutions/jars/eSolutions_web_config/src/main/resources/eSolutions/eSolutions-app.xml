@@ -92,42 +92,42 @@
             </list>
         </property>
         <property name="homePage" value="HomePage" />
-	    <property name="contactAdminsPage" value="System_ContactAdmins" />
-	    <property name="errorResponsePage" value="System_ErrorResponse" />
-	    <property name="requestCompletePage" value="System_RequestComplete" />
-	    <property name="searchRequestPage" value="System_SearchRequest" />
-	    <property name="unauthorizedPage" value="System_Unauthorized" />
-	    <property name="unavailablePage" value="System_UnavailablePage" />
-	    <property name="logonRedirect" value="redirect:/ui/login/default" />
-	    <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
-	    <property name="homeRedirect" value="redirect:/ui/common/default" />
-	    <property name="themeMessageSource" value="nls.theme.resources" />
-	    <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
-	    <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
-	    <property name="messagePasswordExpired" value="theme.login.user.expired" />
-	    <property name="messageUserNotLoggedIn" value="theme.error.user.not.authenticated" />
-	    <property name="messageRequestProcessingFailure" value="theme.system.service.failure" />
-	    <property name="messageValidationFailed" value="theme.request.validation.failed" />
-	    <property name="messageNoSearchResults" value="theme.search.no.results" />
-	    <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
+        <property name="contactAdminsPage" value="System_ContactAdmins" />
+        <property name="errorResponsePage" value="System_ErrorResponse" />
+        <property name="requestCompletePage" value="System_RequestComplete" />
+        <property name="searchRequestPage" value="System_SearchRequest" />
+        <property name="unauthorizedPage" value="System_Unauthorized" />
+        <property name="unavailablePage" value="System_UnavailablePage" />
+        <property name="logonRedirect" value="redirect:/ui/login/default" />
+        <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
+        <property name="homeRedirect" value="redirect:/ui/common/default" />
+        <property name="themeMessageSource" value="nls.theme.resources" />
+        <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
+        <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />
+        <property name="messagePasswordExpired" value="theme.login.user.expired" />
+        <property name="messageUserNotLoggedIn" value="theme.error.user.not.authenticated" />
+        <property name="messageRequestProcessingFailure" value="theme.system.service.failure" />
+        <property name="messageValidationFailed" value="theme.request.validation.failed" />
+        <property name="messageNoSearchResults" value="theme.search.no.results" />
+        <property name="messageEmailSentSuccess" value="theme.email.sent.success" />
     </bean>
 
     <!-- internationalization -->
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
             <list>
-				<value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
-				<value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
-				<value>classpath:nls/KnowledgeBaseServlet/KnowledgeBaseServlet</value>
-				<value>classpath:nls/LoginServlet/LoginServlet</value>
-				<value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
-				<value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
-				<value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
-				<value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
-				<value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
-				<value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
-				<value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
-				<value>classpath:nls/theme/resources</value>
+                <value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
+                <value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
+                <value>classpath:nls/KnowledgeBaseServlet/KnowledgeBaseServlet</value>
+                <value>classpath:nls/LoginServlet/LoginServlet</value>
+                <value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
+                <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>
+                <value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
+                <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
+                <value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
+                <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
+                <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
+                <value>classpath:nls/theme/resources</value>
             </list>
         </property>
         <property name="cacheSeconds">

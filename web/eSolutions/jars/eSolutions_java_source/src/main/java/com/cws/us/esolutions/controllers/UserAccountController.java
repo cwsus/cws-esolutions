@@ -75,7 +75,7 @@ public class UserAccountController
     private String myAccountPage = null;
     private String changeEmailPage = null;
     private String changeContactPage = null;
-	private String changeKeysComplete = null;
+    private String changeKeysComplete = null;
     private String changeSecurityPage = null;
     private String changePasswordPage = null;
     private String changeEmailComplete = null;

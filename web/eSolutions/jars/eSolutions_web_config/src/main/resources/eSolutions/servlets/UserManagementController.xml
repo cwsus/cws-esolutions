@@ -13,11 +13,11 @@
 
     <bean id="accountValidator" class="com.cws.us.esolutions.validators.UserAccountValidator">
         <property name="messageUsernameRequired" value="user.mgmt.user.name.required" />
-		<property name="messageEmailAddrRequired" value="user.mgmt.user.email.required" />
-		<property name="messageGivenNameRequired" value="user.mgmt.user.givenname.required" />
-		<property name="messageUserSurnameRequired" value="user.mgmt.user.surname.required" />
-		<property name="messageSuspensionFlagRequired" value="user.mgmt.user.suspension.required" />
-		<property name="messageUserRoleRequired" value="user.mgmt.user.role.required" />
+        <property name="messageEmailAddrRequired" value="user.mgmt.user.email.required" />
+        <property name="messageGivenNameRequired" value="user.mgmt.user.givenname.required" />
+        <property name="messageUserSurnameRequired" value="user.mgmt.user.surname.required" />
+        <property name="messageSuspensionFlagRequired" value="user.mgmt.user.suspension.required" />
+        <property name="messageUserRoleRequired" value="user.mgmt.user.role.required" />
     </bean>
 
     <bean id="userManagementController" class="com.cws.us.esolutions.controllers.UserManagementController">
@@ -29,23 +29,23 @@
         </property>
         <property name="serviceId" value="AEB46994-57B4-4E92-90AA-A4046F60B830" />
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
-	    <property name="serviceName" value="userAdmin" />
-	    <property name="recordsPerPage" value="20" />
-	    <property name="resetURL" value="/ui/olr/forgot-password/" />
-	    <property name="viewUserPage" value="UserManagement_ViewUser" />
-	    <property name="viewAuditPage" value="UserManagement_UserAudit" />
-	    <property name="createUserPage" value="UserManagement_CreateUser" />
-	    <property name="searchUsersPage" value="UserManagement_UserSearch" />
-	    <property name="messageResetComplete" value="user.mgmt.reset.user.success" />
-	    <property name="messageNoUsersFound" value="no.users.found.for.criteria" />
-	    <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
-	    <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
-	    <property name="messageAccountLocked" value="user.mgmt.account.locked" />
-	    <property name="messageAccountUnlocked" value="user.mgmt.account.unlocked" />
-	    <property name="messageAccountUnsuspended" value="user.mgmt.account.unsuspended" />
-	    <property name="messageAccountSuspended" value="user.mgmt.account.suspended" />
-	    <property name="messageProjectLoadFailed" value="user.mgmt.project.load.failed" />
-	    <property name="accountCreatedEmail" ref="accountCreatedEmail" />
-	    <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
-	</bean>
+        <property name="serviceName" value="userAdmin" />
+        <property name="recordsPerPage" value="20" />
+        <property name="resetURL" value="/ui/olr/forgot-password/" />
+        <property name="viewUserPage" value="UserManagement_ViewUser" />
+        <property name="viewAuditPage" value="UserManagement_UserAudit" />
+        <property name="createUserPage" value="UserManagement_CreateUser" />
+        <property name="searchUsersPage" value="UserManagement_UserSearch" />
+        <property name="messageResetComplete" value="user.mgmt.reset.user.success" />
+        <property name="messageNoUsersFound" value="no.users.found.for.criteria" />
+        <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
+        <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
+        <property name="messageAccountLocked" value="user.mgmt.account.locked" />
+        <property name="messageAccountUnlocked" value="user.mgmt.account.unlocked" />
+        <property name="messageAccountUnsuspended" value="user.mgmt.account.unsuspended" />
+        <property name="messageAccountSuspended" value="user.mgmt.account.suspended" />
+        <property name="messageProjectLoadFailed" value="user.mgmt.project.load.failed" />
+        <property name="accountCreatedEmail" ref="accountCreatedEmail" />
+        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
+    </bean>
 </beans>

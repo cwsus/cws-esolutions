@@ -40,9 +40,9 @@
 
     function submitRoleChange(selectable)
     {
-    	var newRole = selectable.options[selectable.selectedIndex].text;
+        var newRole = selectable.options[selectable.selectedIndex].text;
 
-    	window.location.href = '${pageContext.request.contextPath}/ui/user-management/change-role/account/${userAccount.guid}/role/' + newRole;
+        window.location.href = '${pageContext.request.contextPath}/ui/user-management/change-role/account/${userAccount.guid}/role/' + newRole;
     }
     //-->
 </script>

@@ -18,20 +18,20 @@
         <property name="secConfig">
             <ref bean="secConfig" />
         </property>
-		<property name="messagePasswordFailedValidation" value="error.password.requirement.failure" />
-		<property name="messagePasswordMatch" value="user.account.current.matches.new" />
-		<property name="messageConfirmPasswordRequired" value="user.account.confirm.password.empty" />
-		<property name="messageNewPasswordRequired" value="user.account.new.password.empty" />
-		<property name="messageCurrentPasswordRequired" value="user.account.current.password.empty" />
+        <property name="messagePasswordFailedValidation" value="error.password.requirement.failure" />
+        <property name="messagePasswordMatch" value="user.account.current.matches.new" />
+        <property name="messageConfirmPasswordRequired" value="user.account.confirm.password.empty" />
+        <property name="messageNewPasswordRequired" value="user.account.new.password.empty" />
+        <property name="messageCurrentPasswordRequired" value="user.account.current.password.empty" />
     </bean>
 
     <bean id="securityResponseValidator" class="com.cws.us.esolutions.validators.SecurityResponseValidator">
-		<property name="messageSecurityQuestionRequired" value="security.question.required" />
-		<property name="messageSecurityAnswerRequired" value="security.answer.required" />
-		<property name="messageCurrentPasswordEmpty" value="user.account.current.password.empty" />
-		<property name="messageSecurityQuestionsMatch" value="security.questions.cannot.match" />
-		<property name="messageSecurityAnswersMatch" value="security.answers.cannot.match" />
-		<property name="messageQuestionsAnswersMatch" value="security.questions.match.answers" />
+        <property name="messageSecurityQuestionRequired" value="security.question.required" />
+        <property name="messageSecurityAnswerRequired" value="security.answer.required" />
+        <property name="messageCurrentPasswordEmpty" value="user.account.current.password.empty" />
+        <property name="messageSecurityQuestionsMatch" value="security.questions.cannot.match" />
+        <property name="messageSecurityAnswersMatch" value="security.answers.cannot.match" />
+        <property name="messageQuestionsAnswersMatch" value="security.questions.match.answers" />
     </bean>
 
     <bean id="userAccountController" class="com.cws.us.esolutions.controllers.UserAccountController">
@@ -47,15 +47,15 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-	    <property name="myAccountPage" value="UserAccount_ShowUser" />
-	    <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
-	    <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
-	    <property name="changePasswordPage" value="UserAccount_ChangePassword" />
-	    <property name="changeContactPage" value="UserAccount_ChangeContact" />
-	    <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
-	    <property name="changePasswordComplete" value="user.account.password.change.success" />
-	    <property name="changeSecurityComplete" value="user.account.update.security.success" />
-		<property name="changeKeysComplete" value="user.account.update.keys.success" />
-		<property name="changeContactComplete" value="user.account.update.contact.success" />
+        <property name="myAccountPage" value="UserAccount_ShowUser" />
+        <property name="changeEmailPage" value="UserAccount_ChangeEmail" />
+        <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
+        <property name="changePasswordPage" value="UserAccount_ChangePassword" />
+        <property name="changeContactPage" value="UserAccount_ChangeContact" />
+        <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
+        <property name="changePasswordComplete" value="user.account.password.change.success" />
+        <property name="changeSecurityComplete" value="user.account.update.security.success" />
+        <property name="changeKeysComplete" value="user.account.update.keys.success" />
+        <property name="changeContactComplete" value="user.account.update.contact.success" />
     </bean>
 </beans>

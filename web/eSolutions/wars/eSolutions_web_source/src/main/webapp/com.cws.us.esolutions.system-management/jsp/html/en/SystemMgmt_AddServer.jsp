@@ -91,11 +91,11 @@
             else
             {
                 document.getElementById("domainName").style.display = 'block';
-	            document.getElementById("applicationDetail").style.display = 'none';
-	            document.getElementById("locationDetail").style.display = 'block';
-	            document.getElementById("dmgrPort").style.display = 'none';
-	            document.getElementById("owningDmgr").style.display = 'none';
-	            document.getElementById("managerUrl").style.display = 'none';
+                document.getElementById("applicationDetail").style.display = 'none';
+                document.getElementById("locationDetail").style.display = 'block';
+                document.getElementById("dmgrPort").style.display = 'none';
+                document.getElementById("owningDmgr").style.display = 'none';
+                document.getElementById("managerUrl").style.display = 'none';
             }
         }
     }
@@ -147,15 +147,15 @@
                     <%-- domain name --%>
                     <c:choose>
                         <c:when test="${fn:length(domainList) gt 1}">
-	                        <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
-	                        <td id="domainNameSelect" style="display: none;">
-	                            <form:select path="domainName">
-	                                <option><spring:message code="theme.option.select" /></option>
-	                                <option><spring:message code="theme.option.spacer" /></option>
-	                                <form:options items="${domainList}" />
-	                            </form:select>
-	                        </td>
-	                        <td><form:errors path="domainName" cssClass="error" /></td>
+                            <td id="domainName" style="display: none;"><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
+                            <td id="domainNameSelect" style="display: none;">
+                                <form:select path="domainName">
+                                    <option><spring:message code="theme.option.select" /></option>
+                                    <option><spring:message code="theme.option.spacer" /></option>
+                                    <form:options items="${domainList}" />
+                                </form:select>
+                            </td>
+                            <td><form:errors path="domainName" cssClass="error" /></td>
                         </c:when>
                         <c:otherwise>
                             <form:hidden path="domainName" value="${domainList[0]}" />

@@ -869,8 +869,8 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             }
             else
             {
-				response.setRequestStatus(SecurityRequestStatus.FAILURE);
-				response.setResponse("Failed to remove existing keypair");
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                response.setResponse("Failed to remove existing keypair");
             }
         }
         catch (KeyManagementException kmx)

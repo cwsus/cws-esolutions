@@ -13,22 +13,22 @@
         <property name="text">
             <value>
                 <![CDATA[
-				Dear %s,
+                Dear %s,
 
-				A username reminder was requested on your behalf (or perhaps by you) on
-				%s from host %s. If you did not request a reminder, either through your
-				administration team or via the user interface, please notify your security
-				team immediately.
+                A username reminder was requested on your behalf (or perhaps by you) on
+                %s from host %s. If you did not request a reminder, either through your
+                administration team or via the user interface, please notify your security
+                team immediately.
 
-				As requested, your username is:
+                As requested, your username is:
 
-				%s
+                %s
 
-				Please do not respond to this email as it is sent from an unmonitored mailbox.
+                Please do not respond to this email as it is sent from an unmonitored mailbox.
 
-				Thanks,
+                Thanks,
 
-				Your Administration Team
+                Your Administration Team
                 ]]>
             </value>
         </property>

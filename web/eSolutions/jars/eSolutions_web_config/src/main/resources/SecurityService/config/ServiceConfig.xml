@@ -52,7 +52,7 @@
         <telephoneNumber>telephoneNumber</telephoneNumber>
     </auth-data>
 
-	<auth-repo>
+    <auth-repo>
         <repoType>LDAP</repoType>
         <configFile>/opt/cws/eSolutions/config/ldapConfig.properties</configFile>
         <repositoryHost>repositoryHost</repositoryHost>
