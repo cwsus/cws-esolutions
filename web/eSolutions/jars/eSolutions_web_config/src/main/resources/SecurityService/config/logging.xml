@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="audit-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-audit.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-audit.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -14,7 +14,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="info-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-info.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-info.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -26,7 +26,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="warn-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-warn.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-warn.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -38,7 +38,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="error-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-error.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-error.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -50,7 +50,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="fatal-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-fatal.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-fatal.log" />
         <param name="DatePattern" value=".yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -62,7 +62,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="debug-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="${LOG_ROOT}/SecurityService-debug.log" />
+        <param name="File" value="/appvol/ATS70/eSolutions/applog/SecurityService-debug.log" />
         <param name="DatePattern" value=".yyyy-MM-dd" />
         <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">

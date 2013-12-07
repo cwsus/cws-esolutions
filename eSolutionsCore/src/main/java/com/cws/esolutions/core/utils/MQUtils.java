@@ -67,6 +67,13 @@ public final class MQUtils
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param value - A serializable object to be sent to the MQ queue
+     * @return <code>String</code> - the JMS correlation ID associated with the message
+     * @throws UtilityException if an error occurs while putting the message on the configured queue
+     */
     public static final synchronized String sendMqMessage(final Serializable value) throws UtilityException
     {
         final String methodName = MQUtils.CNAME + "sendMqMessage(final Serializable value) throws UtilityException";
@@ -215,6 +222,13 @@ public final class MQUtils
         return correlationId;
     }
 
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param messageId - The correlation ID associated with the message
+     * @return Object - A serializable object as obtained from the MQ message
+     * @throws UtilityException if an error occurs during the MQ get operation
+     */
     public static final synchronized Object getMqMessage(final String messageId) throws UtilityException
     {
         final String methodName = MQUtils.CNAME + "getMqMessage(final String messageId) throws UtilityException";
