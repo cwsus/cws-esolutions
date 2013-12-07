@@ -17,7 +17,6 @@ package com.cws.esolutions.core.controllers;
 
 import java.io.File;
 import java.util.Map;
-import java.util.Locale;
 import org.slf4j.Logger;
 import java.util.HashMap;
 import java.io.IOException;
@@ -27,18 +26,20 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
-import java.util.ResourceBundle;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import com.unboundid.util.ssl.SSLUtil;
+import javax.net.ssl.SSLSocketFactory;
 import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
-import java.util.MissingResourceException;
 import org.apache.commons.lang.StringUtils;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
+import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
+import com.unboundid.util.ssl.TrustStoreTrustManager;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.config.AuthRepo;
@@ -72,6 +73,12 @@ public class ResourceController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ResourceController.CNAME);
 
+    /**
+     * @param authRepo - The <code>AuthRepo</code> object containing connection information
+     * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
+     * @param resBean - The <code>ResourceControllerBean</code> that holds the connection
+     * @throws CoreServiceException if an exception occurs opening the connection
+     */
     public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException
     {
         String methodName = CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException";
@@ -86,6 +93,7 @@ public class ResourceController
 
         int minConnections = 1;
         int maxConnections = 10;
+        FileInputStream fileStream = null;
 
         final AuthRepositoryType authType = AuthRepositoryType.valueOf(authRepo.getRepoType());
 
@@ -111,7 +119,7 @@ public class ResourceController
 
                     if (ldapConfigFile.canRead())
                     {
-                        FileInputStream fileStream = new FileInputStream(ldapConfigFile);
+                        fileStream = new FileInputStream(ldapConfigFile);
 
                         if (DEBUG)
                         {
@@ -139,11 +147,40 @@ public class ResourceController
                                 DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                             }
 
-                            ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
-                                    Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
-                                    ldapProperties.getProperty(authRepo.getRepositoryUser()),
-                                    PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
-                                            ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
+                            if (Boolean.valueOf(ldapProperties.getProperty(authRepo.getIsSecure())))
+                            {
+                                SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
+                                        ldapProperties.getProperty(authRepo.getTrustStoreFile()),
+                                        ldapProperties.getProperty(authRepo.getTrustStorePass()).toCharArray(),
+                                        ldapProperties.getProperty(authRepo.getTrustStoreType()),
+                                        true));
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SSLUtil: {}", sslUtil);
+                                }
+
+                                SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
+                                }
+
+                                ldapConn = new LDAPConnection(sslSocketFactory, connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
+                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
+                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
+                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
+                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
+                            }
+                            else
+                            {
+                                ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
+                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
+                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
+                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
+                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
+                            }
 
                             if (DEBUG)
                             {
@@ -195,6 +232,23 @@ public class ResourceController
 
                     throw new CoreServiceException(iox.getMessage(), iox);
                 }
+                catch (GeneralSecurityException gsx)
+                {
+                    ERROR_RECORDER.error(gsx.getMessage(), gsx);
+
+                    throw new CoreServiceException(gsx.getMessage(), gsx);
+                }
+                finally
+                {
+                    try
+                    {
+                        fileStream.close();
+                    }
+                    catch (IOException iox)
+                    {
+                        ERROR_RECORDER.error(iox.getMessage(), iox);
+                    }
+                }
 
                 break;
             case SQL:
@@ -234,6 +288,12 @@ public class ResourceController
         }
     }
 
+    /**
+     * @param authRepo - The <code>AuthRepo</code> object containing connection information
+     * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
+     * @param resBean - The <code>ResourceControllerBean</code> that holds the connection
+     * @throws CoreServiceException if an exception occurs closing the connection
+     */
     public synchronized static void closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException
     {
         String methodName = CNAME + "#closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException";
@@ -303,9 +363,9 @@ public class ResourceController
      * Sets up an application datasource connection
      * via JNDI to the requested resource reference
      *
-     * @param dsManager
-     * @param resBean
-     * @throws CoreServiceException
+     * @param dsManager - The <code>DataSourceManager</code> containing the connection information
+     * @param resBean - The resource bean to store datasources into
+     * @throws CoreServiceException if an error is thrown during processing
      */
     public synchronized static void configureAndCreateDataConnection(final DataSourceManager dsManager, final ResourceControllerBean resBean) throws CoreServiceException
     {
@@ -382,48 +442,5 @@ public class ResourceController
         }
 
         resBean.setDataSource(dsMap);
-    }
-
-    /**
-     * Retrieves and returns a system property housed in an application
-     * configuration file
-     *
-     * @param pkgName
-     * @param reqProperty
-     * @param classLoader
-     * @throws MissingResourceException
-     * @return String
-     */
-    public static String returnSystemPropertyValue(final String pkgName, final String reqProperty, final ClassLoader classLoader) throws CoreServiceException
-    {
-        final String methodName = ResourceController.CNAME + "#returnSystemPropertyValue(final String pkgName, final String reqProperty, final ClassLoader classLoader) throws CoreServiceException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(pkgName);
-            DEBUGGER.debug(reqProperty);
-        }
-
-        String sProperty = null;
-        ResourceBundle resourceBundle = null;
-
-        try
-        {
-            resourceBundle = ResourceBundle.getBundle(pkgName, Locale.getDefault(), classLoader);
-            sProperty = resourceBundle.getString(reqProperty);
-        }
-        catch (MissingResourceException mrx)
-        {
-            ERROR_RECORDER.error(mrx.getMessage(), mrx);
-
-            throw new CoreServiceException(mrx.getMessage(), mrx);
-        }
-        finally
-        {
-            resourceBundle = null;
-        }
-
-        return sProperty;
     }
 }

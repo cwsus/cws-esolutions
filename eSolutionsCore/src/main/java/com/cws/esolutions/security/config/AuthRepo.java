@@ -16,9 +16,12 @@
 package com.cws.esolutions.security.config;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -49,7 +52,11 @@ import com.cws.esolutions.security.SecurityConstants;
 public final class AuthRepo implements Serializable
 {
     private String repoType = null;
+    private String isSecure = "true";
     private String configFile = null;
+    private String trustStoreFile= null;
+    private String trustStorePass= null;
+    private String trustStoreType= null;
     private String minConnections = null;
     private String maxConnections = null;
     private String repositoryPort = null;
@@ -96,6 +103,44 @@ public final class AuthRepo implements Serializable
         }
         
         this.configFile = value;
+    }
+
+    public final void setTrustStoreFile(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setTrustStoreFile(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.trustStoreFile = value;
+    }
+
+    public final void setTrustStorePass(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setTrustStorePass(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+        
+        this.trustStorePass = value;
+    }
+
+    public final void setTrustStoreType(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setTrustStoreType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.trustStoreType = value;
     }
 
     public final void setRepositoryPort(final String value)
@@ -278,6 +323,19 @@ public final class AuthRepo implements Serializable
         }
         
         this.maxConnections = value;
+    }
+
+    public final void setIsSecure(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setIsSecure(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.isSecure = value;
     }
 
     @XmlElement(name = "repoType")
@@ -502,6 +560,61 @@ public final class AuthRepo implements Serializable
         }
         
         return this.maxConnections;
+    }
+
+    @XmlElement(name = "isSecure")
+    public final String getIsSecure()
+    {
+        final String methodName = AuthRepo.CNAME + "#getIsSecure()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isSecure);
+        }
+        
+        return this.isSecure;
+    }
+
+    @XmlElement(name = "trustStoreFile")
+    public final String getTrustStoreFile()
+    {
+        final String methodName = AuthRepo.CNAME + "#getTrustStoreFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.trustStoreFile);
+        }
+        
+        return this.trustStoreFile;
+    }
+
+    @XmlElement(name = "trustStorePass")
+    public final String getTrustStorePass()
+    {
+        final String methodName = AuthRepo.CNAME + "#getTrustStorePass()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+        
+        return this.trustStorePass;
+    }
+
+    @XmlElement(name = "trustStoreType")
+    public final String getTrustStoreType()
+    {
+        final String methodName = AuthRepo.CNAME + "#getTrustStoreType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.trustStoreType);
+        }
+        
+        return this.trustStoreType;
     }
 
     @Override

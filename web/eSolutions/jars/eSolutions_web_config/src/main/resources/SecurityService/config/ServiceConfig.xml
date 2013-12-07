@@ -64,6 +64,10 @@
         <repositorySalt>repositorySalt</repositorySalt>
         <minConnections>minConnections</minConnections>
         <maxConnections>maxConnections</maxConnections>
+        <isSecure>isSecure</isSecure>
+        <trustStoreFile>trustStoreFile</trustStoreFile>
+        <trustStorePass>trustStorePass</trustStorePass>
+        <trustStoreType>trustStoreType</trustStoreType>
         <baseObjectClass>@baseObjectClass@</baseObjectClass>
         <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
         <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
