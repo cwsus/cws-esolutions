@@ -15,15 +15,7 @@
  */
 package com.cws.esolutions.security.exception;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import javax.mail.MessagingException;
-
 import com.unboundid.ldap.sdk.ResultCode;
-import com.cws.esolutions.core.utils.EmailUtils;
-import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.ExceptionConfig;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 /**
  * SecurityService
  * com.cws.esolutions.security.exception
@@ -48,65 +40,20 @@ public class SecurityServiceException extends Exception
     public SecurityServiceException(final String message)
     {
         super(message);
-
-        SecurityServiceException.sendExceptionLetter(message);
     }
 
     public SecurityServiceException(final Throwable throwable)
     {
         super(throwable);
-
-        SecurityServiceException.sendExceptionLetter(throwable.getMessage());
     }
 
     public SecurityServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);
-
-        SecurityServiceException.sendExceptionLetter(message);
     }
 
     public SecurityServiceException(@SuppressWarnings("unused") final ResultCode code, final String message, final Throwable throwable)
     {
         super(message, throwable);
-
-        SecurityServiceException.sendExceptionLetter(message);
-    }
-
-    private static void sendExceptionLetter(final String message)
-    {
-        final SecurityServiceBean bean = SecurityServiceBean.getInstance();
-        final ExceptionConfig config = bean.getConfigData().getExceptionConfig();
-
-        if (config.getSendExceptionNotifications())
-        {
-            StringBuilder builder = new StringBuilder()
-                .append("A CoreServiceException was thrown: \n")
-                .append("Message: " + message + "\n")
-                .append("Stacktrace: \n\n");
-
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-
-            for (StackTraceElement element : elements)
-            {
-                builder.append(element + "\n");
-            }
-
-            EmailMessage email = new EmailMessage();
-            email.setIsAlert(true);
-            email.setMessageSubject("SecurityServiceException occurred !");
-            email.setEmailAddr(new ArrayList<>(Arrays.asList(config.getEmailFrom())));
-            email.setMessageTo(config.getNotificationAddress());
-            email.setMessageBody(builder.toString());
-
-            try
-            {
-                EmailUtils.sendEmailMessage(email);
-            }
-            catch (MessagingException mx)
-            {
-                // empty catch
-            }
-        }
     }
 }

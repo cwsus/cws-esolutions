@@ -22,18 +22,6 @@
         </property>
     </bean>
 
-    <bean id="mailSession" class="org.springframework.jndi.JndiObjectFactoryBean">
-        <property name="jndiName" value="java:comp/env/mail/MailSession" />
-    </bean>
-
-    <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-        <property name="session" ref="mailSession" />
-    </bean>
-
-    <bean id="mailer" class="com.cws.esolutions.core.utils.EmailUtils">
-        <property name="mailSender" ref="mailSender" />
-    </bean>
-
     <bean id="messageValidator" class="com.cws.us.esolutions.validators.EmailMessageValidator">
         <property name="messageSubjectRequired" value="theme.subject.required" />
         <property name="messageBodyRequired" value="theme.body.required" />

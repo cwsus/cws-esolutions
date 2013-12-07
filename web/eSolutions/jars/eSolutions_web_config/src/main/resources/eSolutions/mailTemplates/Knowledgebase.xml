@@ -9,7 +9,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Article approved: %s" />
+        <property name="subject" value="Article approved: %s" />
         <property name="text">
             <value>
                 <![CDATA[
@@ -28,7 +28,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Article created: %s" />
+        <property name="subject" value="Article created: %s" />
         <property name="text">
             <value>
                 <![CDATA[
@@ -55,7 +55,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Article deleted: %s" />
+        <property name="subject" value="Article deleted: %s" />
         <property name="text">
             <value>
                 <![CDATA[
@@ -74,7 +74,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Article rejected %s" />
+        <property name="subject" value="Article rejected %s" />
         <property name="text">
             <value>
                 <![CDATA[
@@ -93,7 +93,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Article updated: %s" />
+        <property name="subject" value="Article updated: %s" />
         <property name="text">
             <value>
                 <![CDATA[

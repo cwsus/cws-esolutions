@@ -458,7 +458,7 @@ public class CommonController
                 DEBUGGER.debug("EmailMessage: {}", emailMessage);
             }
 
-            EmailUtils.sendEmailMessage(emailMessage);
+            EmailUtils.sendEmailMessage(emailMessage, true);
 
             mView.addObject("command", new EmailMessage());
             mView.setViewName(this.appConfig.getContactAdminsPage());

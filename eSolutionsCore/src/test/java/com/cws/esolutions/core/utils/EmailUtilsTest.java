@@ -78,7 +78,7 @@ public class EmailUtilsTest
 
         try
         {
-            EmailUtils.sendEmailMessage(message);
+            EmailUtils.sendEmailMessage(message, false);
         }
         catch (MessagingException mx)
         {
@@ -110,7 +110,7 @@ public class EmailUtilsTest
             message.setMessageBody("This is a test message");
             message.setMessageAttachments(attachments);
 
-            EmailUtils.sendEmailMessage(message);
+            EmailUtils.sendEmailMessage(message, false);
         }
         catch (MessagingException mx)
         {
@@ -136,7 +136,7 @@ public class EmailUtilsTest
 
         try
         {
-            EmailUtils.sendEmailMessage(message);
+            EmailUtils.sendEmailMessage(message, false);
         }
         catch (MessagingException mx)
         {

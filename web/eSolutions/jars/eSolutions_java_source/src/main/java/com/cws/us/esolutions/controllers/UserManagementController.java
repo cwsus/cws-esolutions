@@ -1959,10 +1959,16 @@ public class UserManagementController
 
                         try
                         {
-                            SimpleMailMessage message = new SimpleMailMessage(this.forgotPasswordEmail);
-                            message.setTo(String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()));
-                            message.setSubject(String.format(this.forgotPasswordEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
-                            message.setText(String.format(this.forgotPasswordEmail.getText(),
+                            EmailMessage message = new EmailMessage();
+                            message.setIsAlert(false);
+                            message.setMessageSubject(this.forgotPasswordEmail.getSubject());
+                            message.setMessageTo(new ArrayList<>(
+                                    Arrays.asList(
+                                            String.format(this.forgotPasswordEmail.getTo()[0], account.getEmailAddr()))));
+                            message.setEmailAddr(new ArrayList<>(
+                                    Arrays.asList(
+                                            String.format(this.forgotPasswordEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                            message.setMessageBody(String.format(this.forgotPasswordEmail.getText(),
                                     account.getGivenName(),
                                     new Date(System.currentTimeMillis()),
                                     reqInfo.getHostName(),
@@ -1972,10 +1978,10 @@ public class UserManagementController
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("SimpleMailMessage: {}", message);
+                                DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(message);
+                            EmailUtils.sendEmailMessage(message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2000,7 +2006,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(smsMessage);
+                                EmailUtils.sendEmailMessage(smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {
@@ -2593,20 +2599,26 @@ public class UserManagementController
                             
                         try
                         {
-                            SimpleMailMessage message = new SimpleMailMessage(this.accountCreatedEmail);
-                            message.setTo(String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()));
-                            message.setSubject(String.format(this.accountCreatedEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16)));
-                            message.setText(String.format(this.accountCreatedEmail.getText(),
-                                this.appConfig.getApplicationName(),
-                                responseAccount.getUsername(),
-                                targetURL.toString()));
+                            EmailMessage message = new EmailMessage();
+                            message.setIsAlert(false);
+                            message.setMessageSubject(this.accountCreatedEmail.getSubject());
+                            message.setMessageTo(new ArrayList<>(
+                                    Arrays.asList(
+                                            String.format(this.accountCreatedEmail.getTo()[0], responseAccount.getEmailAddr()))));
+                            message.setEmailAddr(new ArrayList<>(
+                                    Arrays.asList(
+                                            String.format(this.accountCreatedEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                            message.setMessageBody(String.format(this.accountCreatedEmail.getText(),
+                                    this.appConfig.getApplicationName(),
+                                    responseAccount.getUsername(),
+                                    targetURL.toString()));
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("SimpleMailMessage: {}", message);
+                                DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(message);
+                            EmailUtils.sendEmailMessage(message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2631,7 +2643,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(smsMessage);
+                                EmailUtils.sendEmailMessage(smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {

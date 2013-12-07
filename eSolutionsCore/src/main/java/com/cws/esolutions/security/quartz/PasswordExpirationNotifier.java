@@ -156,7 +156,7 @@ public class PasswordExpirationNotifier implements Job
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, false);
                     }
                 }
             }

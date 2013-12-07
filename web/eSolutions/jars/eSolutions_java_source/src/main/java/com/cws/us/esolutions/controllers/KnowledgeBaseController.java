@@ -12,22 +12,16 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.List;
-
+import java.util.Arrays;
 import org.slf4j.Logger;
-
+import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
-import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -44,6 +38,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.us.esolutions.validators.ArticleValidator;
+import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
@@ -1402,17 +1397,23 @@ public class KnowledgeBaseController
                 {
                     try
                     {
-                        SimpleMailMessage message = new SimpleMailMessage(this.deleteArticleEmail);
-                        message.setTo(String.format(this.deleteArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.deleteArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
-                        message.setText(String.format(this.deleteArticleEmail.getText(), reqArticle.getArticleId()));
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(String.format(this.deleteArticleEmail.getSubject(), reqArticle.getArticleId()));
+                        message.setMessageTo(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.deleteArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.deleteArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setMessageBody(String.format(this.deleteArticleEmail.getText(), reqArticle.getArticleId()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1563,17 +1564,23 @@ public class KnowledgeBaseController
                 {
                     try
                     {
-                        SimpleMailMessage message = new SimpleMailMessage(this.approveArticleEmail);
-                        message.setTo(String.format(this.approveArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.approveArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
-                        message.setText(String.format(this.approveArticleEmail.getText(), reqArticle.getArticleId()));
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(String.format(this.approveArticleEmail.getSubject(), reqArticle.getArticleId()));
+                        message.setMessageTo(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.approveArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.approveArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setMessageBody(String.format(this.approveArticleEmail.getText(), reqArticle.getArticleId()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1724,17 +1731,23 @@ public class KnowledgeBaseController
                 {
                     try
                     {
-                        SimpleMailMessage message = new SimpleMailMessage(this.rejectArticleEmail);
-                        message.setTo(String.format(this.rejectArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.rejectArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), reqArticle.getArticleId()));
-                        message.setText(String.format(this.rejectArticleEmail.getText(), reqArticle.getArticleId()));
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(String.format(this.rejectArticleEmail.getSubject(), reqArticle.getArticleId()));
+                        message.setMessageTo(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.rejectArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.rejectArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setMessageBody(String.format(this.rejectArticleEmail.getText(), reqArticle.getArticleId()));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1980,10 +1993,16 @@ public class KnowledgeBaseController
                     // article created
                     try
                     {
-                        SimpleMailMessage message = new SimpleMailMessage(this.createArticleEmail);
-                        message.setTo(String.format(this.createArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.createArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), response.getArticleId()));
-                        message.setText(String.format(this.createArticleEmail.getText(),
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(String.format(this.createArticleEmail.getSubject(), response.getArticleId()));
+                        message.setMessageTo(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.createArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.createArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setMessageBody(String.format(this.createArticleEmail.getText(),
                                 response.getArticleId(),
                                 userAccount.getDisplayName(),
                                 article.getTitle(),
@@ -1992,12 +2011,7 @@ public class KnowledgeBaseController
                                 article.getKeywords(),
                                 article.getResolution()));
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SimpleMailMessage: {}", message);
-                        }
-
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -2154,10 +2168,16 @@ public class KnowledgeBaseController
                     // article created
                     try
                     {
-                        SimpleMailMessage message = new SimpleMailMessage(this.updateArticleEmail);
-                        message.setTo(String.format(this.updateArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()));
-                        message.setSubject(String.format(this.updateArticleEmail.getSubject(), RandomStringUtils.randomAlphanumeric(16), article.getArticleId()));
-                        message.setText(String.format(this.updateArticleEmail.getText(),
+                        EmailMessage message = new EmailMessage();
+                        message.setIsAlert(false);
+                        message.setMessageSubject(String.format(this.updateArticleEmail.getSubject(), article.getArticleId()));
+                        message.setMessageTo(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.updateArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setEmailAddr(new ArrayList<>(
+                                Arrays.asList(
+                                        String.format(this.updateArticleEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+                        message.setMessageBody(String.format(this.updateArticleEmail.getText(),
                                 article.getArticleId(),
                                 userAccount.getDisplayName(),
                                 article.getTitle(),
@@ -2168,10 +2188,10 @@ public class KnowledgeBaseController
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SimpleMailMessage: {}", message);
+                            DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message);
+                        EmailUtils.sendEmailMessage(message, true);
                     }
                     catch (MessagingException mx)
                     {

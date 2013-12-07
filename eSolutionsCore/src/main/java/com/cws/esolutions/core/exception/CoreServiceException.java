@@ -15,14 +15,6 @@
  */
 package com.cws.esolutions.core.exception;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import javax.mail.MessagingException;
-
-import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.utils.EmailUtils;
-import com.cws.esolutions.core.config.ExceptionConfig;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.exception
@@ -47,59 +39,15 @@ public class CoreServiceException extends Exception
     public CoreServiceException(final String message)
     {
         super(message);
-
-        CoreServiceException.sendExceptionLetter(message);
     }
 
     public CoreServiceException(final Throwable throwable)
     {
         super(throwable);
-
-        CoreServiceException.sendExceptionLetter(throwable.getMessage());
     }
 
     public CoreServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);
-
-        CoreServiceException.sendExceptionLetter(message);
-    }
-
-    private static void sendExceptionLetter(final String message)
-    {
-        final CoreServiceBean bean = CoreServiceBean.getInstance();
-        final ExceptionConfig config = bean.getConfigData().getExceptionConfig();
-
-        if (config.getSendExceptionNotifications())
-        {
-            StringBuilder builder = new StringBuilder()
-                .append("A CoreServiceException was thrown: \n")
-                .append("Message: " + message + "\n")
-                .append("Stacktrace: \n\n");
-
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-
-            for (StackTraceElement element : elements)
-            {
-                builder.append(element + "\n");
-            }
-
-            EmailMessage email = new EmailMessage();
-            email.setIsAlert(true);
-            email.setMessageSubject("CoreServiceException occurred !");
-            email.setEmailAddr(new ArrayList<>(Arrays.asList(config.getEmailFrom())));
-            email.setMessageTo(config.getNotificationAddress());
-            email.setMessageBody(builder.toString());
-
-            // modified "sendEmailMessage(), removing thrown exceptions
-            try
-            {
-                EmailUtils.sendEmailMessage(email);
-            }
-            catch (MessagingException mx)
-            {
-                // empty catch
-            }
-        }
     }
 }
