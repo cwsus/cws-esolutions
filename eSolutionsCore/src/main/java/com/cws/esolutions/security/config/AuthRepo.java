@@ -47,7 +47,7 @@ import com.cws.esolutions.security.SecurityConstants;
 public final class AuthRepo implements Serializable
 {
     private String repoType = null;
-    private String isSecure = "true";
+    private String isSecure = null;
     private String configFile = null;
     private String trustStoreFile= null;
     private String trustStorePass= null;
