@@ -16,12 +16,9 @@
 package com.cws.esolutions.security.config;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,12 +30,10 @@ import com.cws.esolutions.security.SecurityConstants;
  * com.cws.esolutions.security.config
  * AuthRepo.java
  *
- *
- *
- * $Id: AuthRepo.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
+ * $Id:$
+ * $Author:$
+ * $Date:$
+ * $Revision:$
  * @author kmhuntly@gmail.com
  * @version 1.0
  *
@@ -125,8 +120,9 @@ public final class AuthRepo implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.trustStorePass = value;
     }
 
@@ -139,7 +135,7 @@ public final class AuthRepo implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.trustStoreType = value;
     }
 
@@ -152,7 +148,7 @@ public final class AuthRepo implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.repositoryPort = value;
     }
 
@@ -165,7 +161,7 @@ public final class AuthRepo implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.repositoryHost = value;
     }
 
@@ -178,7 +174,7 @@ public final class AuthRepo implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.repositoryUser = value;
     }
 
@@ -598,6 +594,7 @@ public final class AuthRepo implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.trustStorePass);
         }
         
         return this.trustStorePass;
