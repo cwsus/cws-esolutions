@@ -44,6 +44,7 @@ public class ServiceMessage implements Serializable
 {
     private Date expiryDate = null;
     private Date submitDate = null;
+    private boolean isAlert = false;
     private String messageId = null;
     private boolean isActive = false;
     private String messageText = null;
@@ -176,6 +177,19 @@ public class ServiceMessage implements Serializable
         this.expiryDate = value;
     }
 
+    public final void setIsAlert(final boolean value)
+    {
+        final String methodName = ServiceMessage.CNAME + "#setIsAlert(final boolean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.isAlert = value;
+    }
+
     public final String getMessageId()
     {
         final String methodName = ServiceMessage.CNAME + "#getMessageId()";
@@ -291,6 +305,19 @@ public class ServiceMessage implements Serializable
         }
 
         return this.expiryDate;
+    }
+
+    public final boolean isAlert()
+    {
+        final String methodName = ServiceMessage.CNAME + "#isAlert()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isAlert);
+        }
+
+        return this.isAlert;
     }
 
     @Override

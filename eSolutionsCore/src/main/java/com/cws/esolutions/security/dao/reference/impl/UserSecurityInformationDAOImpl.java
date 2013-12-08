@@ -426,7 +426,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -504,7 +504,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -579,7 +579,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -647,7 +647,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -711,7 +711,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {

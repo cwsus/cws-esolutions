@@ -162,7 +162,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new SQLException(sqx.getMessage());
+            throw new SQLException(sqx.getMessage(), sqx);
         }
         finally
         {

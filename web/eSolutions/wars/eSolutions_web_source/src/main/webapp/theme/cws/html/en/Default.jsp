@@ -34,6 +34,15 @@
 
             <tiles:insertAttribute name="body" />
 
+            <c:if test="${not empty alertMessages}">
+                <c:forEach var="message" items="${alertMessages}">
+                    <div id="rightbar">
+                        <h1 id="alert">${message.messageTitle}</h1>
+                        ${message.messageText}
+                    </div>
+                </c:forEach>
+            </c:if>
+
             <tiles:insertAttribute name="footer" />
         </div>
     </body>

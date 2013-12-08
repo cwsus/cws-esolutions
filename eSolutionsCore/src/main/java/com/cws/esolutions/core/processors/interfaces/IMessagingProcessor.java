@@ -73,6 +73,8 @@ public interface IMessagingProcessor
 
     MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException;
 
+    MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException;
+
     MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException;
 
     MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException;

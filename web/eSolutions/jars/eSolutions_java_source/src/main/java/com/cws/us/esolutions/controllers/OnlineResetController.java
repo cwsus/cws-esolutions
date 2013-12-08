@@ -12,6 +12,7 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.Date;
+import java.util.List;
 import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -44,19 +45,26 @@ import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
+import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
+import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
@@ -249,6 +257,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -289,6 +298,25 @@ public class OnlineResetController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
+        }
+
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (MessagingServiceException msx)
+        {
+            // don't do anything with it
         }
 
         mView.addObject("resetType", ResetRequestType.USERNAME);
@@ -319,6 +347,7 @@ public class OnlineResetController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -359,6 +388,25 @@ public class OnlineResetController
 
                 DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
             }
+        }
+
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (MessagingServiceException msx)
+        {
+            // don't do anything with it
         }
 
         mView.addObject("resetType", ResetRequestType.USERNAME);

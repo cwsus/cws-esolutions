@@ -11,6 +11,7 @@
  */
 package com.cws.us.esolutions.controllers;
 
+import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -34,11 +35,18 @@ import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.validators.LoginValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.dto.ServiceMessage;
+import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
+import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
+import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
@@ -212,6 +220,7 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -323,6 +332,25 @@ public class LoginController
                 break;
         }
 
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (MessagingServiceException msx)
+        {
+            // don't do anything with it
+        }
+
         if (StringUtils.isNotBlank(hRequest.getParameter("vpath")))
         {
             mView.addObject("redirectPath", hRequest.getParameter("vpath"));
@@ -346,9 +374,7 @@ public class LoginController
             DEBUGGER.debug(methodName);
         }
 
-        ModelAndView mView = new ModelAndView();
-        mView.addObject(Constants.ALLOW_RESET, this.allowUserReset);
-        mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
+        ModelAndView mView = new ModelAndView(new RedirectView());
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -398,20 +424,8 @@ public class LoginController
         hSession.removeAttribute(Constants.USER_ACCOUNT);
         hSession.invalidate();
 
-        switch (this.appConfig.getLogonType())
-        {
-            case COMBINED:
-                mView.setViewName(this.combinedLoginPage);
-                mView.addObject("command", new LoginRequest());
-
-                break;
-            default:
-                // default to split
-                mView.setViewName(this.usernameLoginPage);
-                mView.addObject("command", new UserAccount());
-
-                break;
-        }
+        mView.addObject(Constants.RESPONSE_MESSAGE, this.logoffCompleteString);
+        mView.setViewName(this.appConfig.getLogonRedirect());
 
         if (DEBUG)
         {
@@ -441,6 +455,7 @@ public class LoginController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -616,6 +631,25 @@ public class LoginController
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (MessagingServiceException msx)
+        {
+            // don't do anything with it
+        }
+
         if (DEBUG)
         {
             DEBUGGER.debug("ModelAndView: {}", mView);
@@ -644,6 +678,7 @@ public class LoginController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -791,6 +826,25 @@ public class LoginController
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.usernameLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
+        }
+
+        try
+        {
+            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+        }
+        catch (MessagingServiceException msx)
+        {
+            // don't do anything with it
         }
 
         if (DEBUG)

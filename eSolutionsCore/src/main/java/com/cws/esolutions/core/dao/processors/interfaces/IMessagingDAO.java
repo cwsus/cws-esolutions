@@ -16,9 +16,13 @@
 package com.cws.esolutions.core.dao.processors.interfaces;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -96,6 +100,8 @@ public interface IMessagingDAO
     List<Object> retrieveMessage(final String messageId) throws SQLException;
 
     List<Object[]> retrieveMessages() throws SQLException;
+
+    List<Object[]> retrieveAlertMessages() throws SQLException;
 
     List<Object[]> getMessagesByAttribute(final String value) throws SQLException;
 

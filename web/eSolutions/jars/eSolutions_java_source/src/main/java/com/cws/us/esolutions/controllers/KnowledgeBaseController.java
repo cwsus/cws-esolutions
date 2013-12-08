@@ -40,19 +40,25 @@ import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.us.esolutions.validators.ArticleValidator;
 import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
+import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.us.esolutions.validators.SearchRequestValidator;
+import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
+import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.impl.KnowledgeBaseProcessorImpl;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
+import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
+import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.controllers
@@ -378,6 +384,7 @@ public class KnowledgeBaseController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IKnowledgeBaseProcessor kbase = new KnowledgeBaseProcessorImpl();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -470,7 +477,26 @@ public class KnowledgeBaseController
             {
                 ERROR_RECORDER.error(kbx.getMessage(), kbx);
             }
-            
+
+            try
+            {
+                MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+                }
+
+                if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    mView.addObject("alertMessages", messageResponse.getSvcMessages());
+                }
+            }
+            catch (MessagingServiceException msx)
+            {
+                // don't do anything with it
+            }
+
             mView.addObject("isHelpSearch", true);
             mView.addObject("command", new SearchRequest());
             mView.setViewName(this.defaultPage);
@@ -507,6 +533,7 @@ public class KnowledgeBaseController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -599,6 +626,25 @@ public class KnowledgeBaseController
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }
+
+                try
+                {
+                    MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+                    }
+
+                    if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                    {
+                        mView.addObject("alertMessages", messageResponse.getSvcMessages());
+                    }
+                }
+                catch (MessagingServiceException msx)
+                {
+                    // don't do anything with it
+                }
             }
             catch (SearchRequestException srx)
             {
@@ -640,6 +686,7 @@ public class KnowledgeBaseController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IKnowledgeBaseProcessor kbase = new KnowledgeBaseProcessorImpl();
+        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -745,6 +792,25 @@ public class KnowledgeBaseController
                         mView.addObject("command", new SearchRequest());
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                         mView.setViewName(this.defaultPage);
+                    }
+
+                    try
+                    {
+                        MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+                        }
+
+                        if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                        {
+                            mView.addObject("alertMessages", messageResponse.getSvcMessages());
+                        }
+                    }
+                    catch (MessagingServiceException msx)
+                    {
+                        // don't do anything with it
                     }
                 }
                 catch (KnowledgeBaseException kbx)

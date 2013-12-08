@@ -116,6 +116,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getMessageText(),
                                 userAccount.getGuid(),
                                 message.getIsActive(),
+                                message.isAlert(),
                                 message.getDoesExpire(),
                                 message.getExpiryDate()));
 
@@ -238,6 +239,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getMessageTitle(),
                                 message.getMessageText(),
                                 message.getIsActive(),
+                                message.isAlert(),
                                 message.getDoesExpire(),
                                 message.getExpiryDate(),
                                 userAccount.getUsername()));
@@ -386,8 +388,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                     message.setMessageText((String) object[2]); // svc_message_txt
                     message.setSubmitDate((Date) object[4]); // svc_message_submitdate
                     message.setIsActive((Boolean) object[5]); // svc_message_active
-                    message.setDoesExpire((Boolean) object[6]); //svc_message_expires
-                    message.setExpiryDate((Date) object[7]); // svc_message_expirydate
+                    message.setIsAlert((Boolean) object[6]); // svc_message_active
+                    message.setDoesExpire((Boolean) object[7]); //svc_message_expires
+                    message.setExpiryDate((Date) object[8]); // svc_message_expirydate
 
                     UserAccount searchAccount = new UserAccount();
                     searchAccount.setGuid((String) object[3]);
@@ -505,6 +508,81 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     @Override
+    public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
+    {
+        final String methodName = IMessagingProcessor.CNAME + "#showAlertMessages(final MessagingRequest request) throws MessagingServiceException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("MessagingRequest: {}", request);
+        }
+
+        MessagingResponse response = new MessagingResponse();
+
+        try
+        {
+            List<Object[]> data = messageDAO.retrieveAlertMessages();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("data: {}", data);
+            }
+
+            if ((data == null) || (data.isEmpty()))
+            {
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
+                response.setResponse("No messages were located.");
+            }
+            else
+            {
+                List<ServiceMessage> svcMessages = new ArrayList<>();
+
+                for (Object[] object : data)
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Object: {}", object);
+                    }
+
+                    ServiceMessage message = new ServiceMessage();
+                    message.setMessageTitle((String) object[1]); // svc_message_title
+                    message.setMessageText((String) object[2]); // svc_message_txt
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ServiceMessage: {}", message);
+                    }
+
+                    svcMessages.add(message);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<ServiceMessage>: {}", svcMessages);
+                }
+
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setResponse("Successfully loaded service messages");
+                response.setSvcMessages(svcMessages);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessageResponse: {}", response);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new MessagingServiceException(sqx.getMessage(), sqx);
+        }
+
+        return response;
+    }
+
+    @Override
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
     {
         final String methodName = IMessagingProcessor.CNAME + "#showMessage(final MessagingRequest request) throws MessagingServiceException";
@@ -558,8 +636,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 message.setMessageText((String) responseList.get(2)); // svc_message_txt
                 message.setSubmitDate((Date) responseList.get(4)); // svc_message_submitdate
                 message.setIsActive((Boolean) responseList.get(5)); // svc_message_active
-                message.setDoesExpire((Boolean) responseList.get(6)); //svc_message_expires
-                message.setExpiryDate((Date) responseList.get(7)); // svc_message_expirydate
+                message.setIsAlert((Boolean) responseList.get(6)); // svc_message_active
+                message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
+                message.setExpiryDate((Date) responseList.get(8)); // svc_message_expirydate
 
                 UserAccount searchAccount = new UserAccount();
                 searchAccount.setGuid((String) responseList.get(3));

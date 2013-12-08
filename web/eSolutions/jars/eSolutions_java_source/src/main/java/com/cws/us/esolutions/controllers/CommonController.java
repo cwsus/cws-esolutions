@@ -211,6 +211,18 @@ public class CommonController
                 mView.addObject("messageList", mResponse.getSvcMessages());
             }
 
+            MessagingResponse messageResponse = msgProcessor.showAlertMessages(new MessagingRequest());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
+            }
+
+            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
+            {
+                mView.addObject("alertMessages", messageResponse.getSvcMessages());
+            }
+
             mView.setViewName(this.homePage);
         }
         catch (MessagingServiceException msx)
