@@ -115,8 +115,14 @@ public class ServiceMessagingProcessorImplTest
     {
         ServiceMessage message = new ServiceMessage();
         message.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-        message.setMessageTitle("Test Message");
-        message.setMessageText("This is a test");
+        message.setMessageTitle("eSolutions - Open Demonstration");
+        message.setMessageText("Welcome to the eSolutions service demonstration site. This is also our development site,"
+                + "so there may be service interruptions from time to time as we make updates."
+                + "Please do let us know what you think of the site and its features. If you have any concerns, don't"
+                + "hestitate to contact us."
+                + "<br /><br />"
+                + "Note that the demo account password will be reset to its default values hourly, so if it has been changed"
+                + "just try again in an hour and it should work normally.");
         message.setMessageAuthor(userAccount);
         message.setDoesExpire(false);
         message.setIsActive(true);
