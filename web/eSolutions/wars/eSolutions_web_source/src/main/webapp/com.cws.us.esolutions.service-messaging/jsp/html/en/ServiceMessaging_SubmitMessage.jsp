@@ -38,7 +38,7 @@
 <div id="main">
     <c:choose>
         <c:when test="${not empty fn:trim(command.messageAuthor)}">
-            <h1><spring:message code="svc.messaging.system.message.edit.banner" arguments="${message.messageId}" /></h1>
+            <h1><spring:message code="svc.messaging.system.message.edit.banner" arguments="${command.messageId}" /></h1>
         </c:when>
         <c:otherwise>
             <h1><spring:message code="svc.messaging.create.system.message" /></h1>

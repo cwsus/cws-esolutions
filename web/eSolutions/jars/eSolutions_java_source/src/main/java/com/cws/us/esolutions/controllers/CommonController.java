@@ -23,6 +23,7 @@ import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -472,15 +473,15 @@ public class CommonController
 
             EmailUtils.sendEmailMessage(emailMessage, true);
 
-            mView.addObject("command", new EmailMessage());
+            mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getContactAdminsPage());
-            mView.addObject(Constants.MESSAGE_RESPONSE, this.appConfig.getMessageEmailSentSuccess());
+            mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
         }
         catch (MessagingException mx)
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-            mView.addObject("command", new EmailMessage());
+            mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getContactAdminsPage());
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }

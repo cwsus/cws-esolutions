@@ -81,7 +81,6 @@
 </div>
 
 <div id="rightbar">
-    <spring:message code="theme.important.information" />
-    <br />
+    <h1 id="alert"><spring:message code="theme.important.information" /></h1>
     <spring:message code="app.mgmt.refresh.current" />
 </div>

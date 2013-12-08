@@ -96,6 +96,6 @@
 </div>
 
 <div id="rightbar">
-    <h1><spring:message code="theme.important.information" /></h1>
+    <h1 id="alert"><spring:message code="theme.important.information" /></h1>
     <spring:message code="dns.svc.lookup.disclaimer" />
 </div>
