@@ -65,46 +65,59 @@
     <p>
         <table id="projectDetail">
             <tr>
-                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label>
+                <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label></td>
                 <td>${project.projectCode}</td>
             </tr>
             <tr>
-                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.service.status" /></label>  
+                <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
                 <td>${project.projectStatus}</td>
             </tr>
             <tr>
-                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label>
-                <td>${project.primaryContact}</td>
+                <td><label id="txtPrimaryContact"><spring:message code="svc.mgmt.project.pcontact" /></label></td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${project.primaryContact.guid}"
+                        title="${project.primaryContact.username}">${project.primaryContact.username}</a>
+                </td>
             </tr>
-            <tr>
-                <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label>
-                <td>${project.secondaryContact}</td>
-            </tr>
+            <c:if test="${not empty project.secondaryContact}">
+                <tr>
+                    <td><label id="txtSecondaryContact"><spring:message code="svc.mgmt.project.scontact" /></label></td>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${project.secondaryContact.guid}"
+                            title="${project.secondaryContact.username}">${project.secondaryContact.username}</a>
+                    </td>
+                </tr>
+            </c:if>
             <tr>
                 <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.dev.group" /></label></td>
-                <td>${project.devEmail}</td>
+                <td><a href="mailto:${project.devEmail}?Subject=Request for Comments: ${project.projectName}">${project.devEmail}</a></td>
                 <td><label id="txtContactEmail"><spring:message code="svc.mgmt.project.prod.group" /></label></td>
-                <td>${project.prodEmail}</td>
+                <td><a href="mailto:${project.prodEmail}?Subject=Request for Comments: ${project.projectName}">${project.prodEmail}</a></td>
             </tr>
             <tr>
-                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label>
+                <td><label id="txtChangeQueue"><spring:message code="svc.mgmt.project.changeq" /></label></td>
                 <td>${project.changeQueue}</td>
-            </tr>
-            <tr>
-                <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label>
+                <td><label id="txtIncidentQueue"><spring:message code="svc.mgmt.project.ticketq" /></label></td>
                 <td>${project.incidentQueue}</td>
             </tr>
             <tr>
-                <td><label id="txtApplications"><spring:message code="svc.mgmt.project.applications" /></label>
+                <td><label id="txtApplications"><spring:message code="svc.mgmt.project.applications" /></label></td>
             </tr>
-            <c:forEach var="application" items="${project.applicationList}">
+            <table>
                 <tr>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
-                            title="${application.applicationName}">${application.applicationName}</a>
-                    </td>
+                    <td><spring:message code="app.mgmt.application.name" /></td>
+                    <td><spring:message code="app.mgmt.application.version" /></td>
                 </tr>
-            </c:forEach>
+                <c:forEach var="application" items="${project.applicationList}">
+                    <tr>
+                        <td>
+                            <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
+                                title="${application.applicationName}">${application.applicationName}</a>
+                        </td>
+                        <td>${application.applicationVersion}</td>
+                    </tr>
+                </c:forEach>
+            </table>
         </table>
     </p>
 </div>

@@ -86,7 +86,11 @@
         </table>
         <br />
         <label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label>
-        <table id="appServerList">
+        <table>
+            <tr>
+                <td><spring:message code="system.mgmt.oper.name" /></td>
+                <td><spring:message code="system.mgmt.server.region" /></td>
+            </tr>
             <tr>
                 <c:forEach var="appServer" items="${platform.appServers}">
                     <c:set var="appCount" value="${appCount + 1}" scope="page" />
@@ -98,6 +102,7 @@
                         <a href="${pageContext.request.contextPath}/ui/system-management/server/${appServer.serverGuid}"
                             title="${appServer.operHostName}">${appServer.operHostName}</a>
                     </td>
+                    <td>${appServer.serverRegion}</td>
                     <c:if test="${appCount eq 4}">
                         <c:set var="appCount" value="0" scope="page" /> <%-- reset the counter --%>
                         </tr>
@@ -107,7 +112,11 @@
         </table>
         <br />
         <label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label>
-        <table id="webServerList">
+        <table>
+            <tr>
+                <td><spring:message code="system.mgmt.oper.name" /></td>
+                <td><spring:message code="system.mgmt.server.region" /></td>
+            </tr>
             <tr>
                 <c:forEach var="webServer" items="${platform.webServers}">
                     <c:set var="webCount" value="${webCount + 1}" scope="page" />
@@ -119,6 +128,7 @@
                         <a href="${pageContext.request.contextPath}/ui/system-management/server/${webServer.serverGuid}"
                             title="${webServer.operHostName}">${webServer.operHostName}</a>
                     </td>
+                    <td>${webServer.serverRegion}</td>
                     <c:if test="${webCount eq 4}">
                         <c:set var="webCount" value="0" scope="page" /> <%-- reset the counter --%>
                         </tr>

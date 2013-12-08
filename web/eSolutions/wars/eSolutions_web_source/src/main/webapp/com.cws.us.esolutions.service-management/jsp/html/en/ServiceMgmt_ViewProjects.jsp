@@ -67,11 +67,13 @@
                 <td><label id="projectStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
             </tr>
             <c:forEach var="project" items="${projectList}">
-                <td>
-                    <a href="${pageContext.request.contextPath}/ui/service-management/project/${project.projectGuid}"
-                        title="${project.projectCode}">${project.projectCode}</a>
-                </td>
-                <td>${project.projectStatus}</td>
+                <tr>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/project/${project.projectGuid}"
+                            title="${project.projectCode}">${project.projectCode}</a>
+                    </td>
+                    <td>${project.projectStatus}</td>
+                </tr>
             </c:forEach>
         </table>
 

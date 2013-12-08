@@ -12,15 +12,20 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -68,6 +73,7 @@ public class CommonController
     private String homePage = null;
     private String serviceId = null;
     private ApplicationServiceBean appConfig = null;
+    private SimpleMailMessage contactResponseEmail = null;
 
     private static final String CNAME = CommonController.class.getName();
 
@@ -112,6 +118,19 @@ public class CommonController
         }
 
         this.serviceId = value;
+    }
+
+    public final void setContactResponseEmail(final SimpleMailMessage value)
+    {
+        final String methodName = CommonController.CNAME + "#setContactResponseEmail(final SimpleMailMessage value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.contactResponseEmail = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -463,7 +482,7 @@ public class CommonController
             emailMessage.setMessageBody(message.getMessageBody());
             emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
             emailMessage.setMessageSubject("[ " + emailId + " ] - " + message.getMessageSubject());
-            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSecEmailAddr())));
+            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSvcEmailAddr())));
             emailMessage.setEmailAddr(message.getEmailAddr());
 
             if (DEBUG)
@@ -472,6 +491,26 @@ public class CommonController
             }
 
             EmailUtils.sendEmailMessage(emailMessage, true);
+
+            EmailMessage autoResponse = new EmailMessage();
+            autoResponse.setIsAlert(false);
+            autoResponse.setMessageSubject(this.contactResponseEmail.getSubject());
+            autoResponse.setMessageTo(new ArrayList<>(
+                    Arrays.asList(
+                            String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr()))));
+            autoResponse.setEmailAddr(new ArrayList<>(
+                    Arrays.asList(
+                            String.format(this.contactResponseEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+            autoResponse.setMessageBody(String.format(this.contactResponseEmail.getText(),
+                    message.getEmailAddr(),
+                    message.getMessageBody()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("EmailMessage: {}", autoResponse);
+            }
+
+            EmailUtils.sendEmailMessage(autoResponse, true);
 
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getContactAdminsPage());

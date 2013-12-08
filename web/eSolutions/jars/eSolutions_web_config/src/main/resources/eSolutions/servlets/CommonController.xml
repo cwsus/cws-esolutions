@@ -9,11 +9,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
+    <import resource="classpath:/eSolutions/mailTemplates/ContactResponse.xml" />
+
     <bean id="commonController" class="com.cws.us.esolutions.controllers.CommonController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
         <property name="homePage" value="HomePage" />
         <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
+        <property name="contactResponseEmail" ref="approveArticleEmail" />
     </bean>
 </beans>

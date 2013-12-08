@@ -67,11 +67,13 @@
                 <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
             </tr>
             <c:forEach var="platform" items="${platformList}">
-                <td>
-                    <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
-                        title="${platform.platformName}">${platform.platformName}</a>
-                </td>
-                <td>${platform.platformRegion}</td>
+                <tr>
+                    <td>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
+                            title="${platform.platformName}">${platform.platformName}</a>
+                    </td>
+                    <td>${platform.platformRegion}</td>
+                </tr>
             </c:forEach>
         </table>
 

@@ -64,7 +64,7 @@
     <p>
         <form:form id="searchRequest" name="searchRequest" action="${pageContext.request.contextPath}/ui/system-management/search" method="post">
             <label id="txtSearchTerms"><spring:message code="theme.search.terms" /><br /></label>
-            <form:input path="searchTerms" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+            <form:input path="searchTerms" />
             <form:errors path="searchTerms" cssClass="error" />
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />

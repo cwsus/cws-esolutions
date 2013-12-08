@@ -137,7 +137,7 @@
             <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
             <form:errors path="isScmEnabled" cssClass="error" />
             <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
-            <form:input path="scmPath" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+            <form:input path="scmPath" />
             <form:errors path="scmPath" cssClass="error" />
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />

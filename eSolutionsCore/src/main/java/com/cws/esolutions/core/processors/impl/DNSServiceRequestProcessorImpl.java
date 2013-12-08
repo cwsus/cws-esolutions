@@ -346,7 +346,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             }
                         }
 
-                        String serverName = (String) data[14];
+                        String serverName = (String) data[15];
 
                         if (DEBUG)
                         {

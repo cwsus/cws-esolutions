@@ -113,7 +113,7 @@
                             //-->
                         </script>
                         <label id="txtFileName"><spring:message code="app.mgmt.select.file" /></label>
-                        <input type="file" name="applicationBinary" id="applicationBinary" size="30" onkeypress="if (event.keyCode == 13) { disableButton(this); validateForm(this.form, event); }" />
+                        <input type="file" name="applicationBinary" id="applicationBinary" size="30" />
                     </c:if>
                     <br /><br />
                     <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
