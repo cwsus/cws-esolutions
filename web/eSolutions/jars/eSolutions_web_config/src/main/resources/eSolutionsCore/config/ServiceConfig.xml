@@ -12,7 +12,7 @@
         <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
         <articleIdentifierLength>9</articleIdentifierLength>
-        <articlePrefix>KB</articlePrefix>
+        <articlePrefix>KB-</articlePrefix>
     </application-config>
 
     <mq-config>

@@ -125,7 +125,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(strings[x]);
@@ -197,7 +197,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -252,7 +252,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -309,7 +309,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -364,7 +364,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -421,7 +421,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -476,7 +476,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -528,7 +528,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+        dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());
@@ -581,7 +581,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+            dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
             Server server = new Server();
             server.setServerGuid(UUID.randomUUID().toString());
@@ -633,7 +633,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+        dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
         for (int x = 0; x < 2; x++)
         {
@@ -687,7 +687,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+        dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
         for (int x = 0; x < 2; x++)
         {
@@ -741,7 +741,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+        dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
         for (int x = 0; x < 2; x++)
         {
@@ -793,7 +793,7 @@ public class ServerManagementProcessorImplTest
     public void addNewServerAsVmgr()
     {
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("cc3b890f-3769-4b77-99eb-a76a84cbf7f4");
+        dataCenter.setDatacenterGuid("03e18633-94da-4318-8683-af50b25a2a1f");
 
         Server server = new Server();
         server.setServerGuid(UUID.randomUUID().toString());

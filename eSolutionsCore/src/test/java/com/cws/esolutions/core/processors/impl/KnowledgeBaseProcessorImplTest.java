@@ -113,32 +113,34 @@ public class KnowledgeBaseProcessorImplTest
     @Test
     public void testAddNewArticle()
     {
-        Article article = new Article();
-        article.setArticleId("KB" + RandomStringUtils.randomNumeric(8));
-        article.setArticleStatus(ArticleStatus.NEW);
-        article.setAuthor(userAccount);
-        article.setCause("Caused By a Test");
-        article.setKeywords("keywords");
-        article.setPageHits(1);
-        article.setResolution("untest");
-        article.setSymptoms("test");
-        article.setTitle("test article");
-
-        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-        request.setArticle(article);
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
-
-        try
+        for (int x = 0; x < 10; x++)
         {
-            KnowledgeBaseResponse response = kbase.addNewArticle(request);
+            Article article = new Article();
+            article.setArticleStatus(ArticleStatus.NEW);
+            article.setAuthor(userAccount);
+            article.setCause("Caused By a Test");
+            article.setKeywords("keywords");
+            article.setPageHits(1);
+            article.setResolution("untest");
+            article.setSymptoms("test");
+            article.setTitle("test article");
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (KnowledgeBaseException kbx)
-        {
-            Assert.fail(kbx.getMessage());
+            KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+            request.setArticle(article);
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
+
+            try
+            {
+                KnowledgeBaseResponse response = kbase.addNewArticle(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (KnowledgeBaseException kbx)
+            {
+                Assert.fail(kbx.getMessage());
+            }
         }
     }
 
@@ -178,50 +180,60 @@ public class KnowledgeBaseProcessorImplTest
     @Test
     public void testApproveArticle()
     {
-        Article article = new Article();
-        article.setArticleId("KB40975607");
-        article.setArticleStatus(ArticleStatus.APPROVED);
+        java.util.List<String> articles = new ArrayList<String>(Arrays.asList("KB-5u9bAIL7C", "KB-9LMplgiuM"));
 
-        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-        request.setArticle(article);
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
-
-        try
+        for (String str : articles)
         {
-            KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+            Article article = new Article();
+            article.setArticleId(str);
+            article.setArticleStatus(ArticleStatus.APPROVED);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (KnowledgeBaseException kbx)
-        {
-            Assert.fail(kbx.getMessage());
+            KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+            request.setArticle(article);
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
+
+            try
+            {
+                KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (KnowledgeBaseException kbx)
+            {
+                Assert.fail(kbx.getMessage());
+            }
         }
     }
 
     @Test
     public void testRejectArticle()
     {
-        Article article = new Article();
-        article.setArticleId("KB99991");
-        article.setArticleStatus(ArticleStatus.REJECTED);
+        java.util.List<String> articles = new ArrayList<String>(Arrays.asList("KB-HsuqTU5kn", "KB-I3wT3VvCu"));
 
-        KnowledgeBaseRequest request = new KnowledgeBaseRequest();
-        request.setArticle(article);
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
-
-        try
+        for (String str : articles)
         {
-            KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+            Article article = new Article();
+            article.setArticleId(str);
+            article.setArticleStatus(ArticleStatus.REJECTED);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (KnowledgeBaseException kbx)
-        {
-            Assert.fail(kbx.getMessage());
+            KnowledgeBaseRequest request = new KnowledgeBaseRequest();
+            request.setArticle(article);
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("4B081972-92C3-455B-9403-B81E68C538B6");
+
+            try
+            {
+                KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (KnowledgeBaseException kbx)
+            {
+                Assert.fail(kbx.getMessage());
+            }
         }
     }
 

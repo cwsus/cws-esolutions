@@ -48,7 +48,9 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * kh05451 @ Jan 2, 2013 1:49:02 PM
  *     Created.
  */
-@WebService(name="CoreRequestProcessorServiceType", targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions")
+@WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
+    portName = "CoreRequestProcessorServicePort",
+    serviceName = "CoreRequestProcessorService")
 public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, IKnowledgeBaseProcessor, ISearchProcessor, IAuthenticationProcessor
 {
     static final String CNAME = ICoreRequestProcessorService.class.getName();

@@ -117,9 +117,9 @@ public class ApplicationManagementProcessorImplTest
     public void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("2a54791f-850d-403b-bb2b-7f4b32abdede");
+        project.setProjectGuid("0dfd5ed0-5dbc-4c14-aa01-78f38608b2cd");
 
-        String[] platforms = { "3681e389-8bb0-426f-b4f3-89c707eb8f01", "1781f74b-9574-4fb9-968f-ac8a52145713", "0d502643-1039-489e-b04b-8053f13ff151" };
+        String[] platforms = { "1c748b69-329c-455f-9637-997b5923b762", "583466c3-7c8e-4ff4-893a-b15dd59e806c", "c2281712-63c6-48b6-8634-dfb51fcad700" };
 
         for (int x = 0; x < 3; x++)
         {

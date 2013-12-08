@@ -11,7 +11,7 @@
     <context:component-scan base-package="com.cws.esolutions.core.ws" />
 
     <bean class="org.springframework.remoting.jaxws.SimpleJaxWsServiceExporter">
-        <property name="baseAddress" value="https://192.168.10.51:10944/eSolutions/ws/" />
+        <property name="baseAddress" value="https://esolutions.caspersbox.com:10944/eSolutions/ws/" />
     </bean>
 
     <bean id="coreRequestProcessorService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">

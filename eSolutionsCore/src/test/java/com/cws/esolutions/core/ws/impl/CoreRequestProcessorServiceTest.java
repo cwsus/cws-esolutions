@@ -63,8 +63,8 @@ public class CoreRequestProcessorServiceTest
         this.reqInfo.setHostName("junit.caspersbox.com");
         this.reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
-        URL url = new URL("http://localhost:8181/eSolutions/eSolutionsService?wsdl");
-        QName qName = new QName("http://agent.caspersbox.corp/s?q=esolutions", "AgentRequestProcessor");
+        URL url = new URL("https://esolutions.caspersbox.com:10944/eSolutions/ws/CoreRequestProcessorService?wsdl");
+        QName qName = new QName("http://agent.caspersbox.corp/s?q=esolutions", "CoreRequestProcessorService");
         Service service = Service.create(url, qName);
         this.webService = service.getPort(ICoreRequestProcessorService.class);
     }

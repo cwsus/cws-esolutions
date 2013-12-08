@@ -126,6 +126,7 @@ public class ServiceMessagingProcessorImplTest
         message.setMessageAuthor(userAccount);
         message.setDoesExpire(false);
         message.setIsActive(true);
+        message.setIsAlert(true);
 
         MessagingRequest request = new MessagingRequest();
         request.setRequestInfo(hostInfo);

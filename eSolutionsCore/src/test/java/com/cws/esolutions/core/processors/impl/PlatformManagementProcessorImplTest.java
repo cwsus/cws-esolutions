@@ -121,16 +121,16 @@ public class PlatformManagementProcessorImplTest
         List<Server> appServers = null;
         Platform platform = new Platform();
 
-        String[] dmgrServers = { "8c367378-5ce3-45f9-9cb7-ddb001e5fd78", "6c935f13-1d44-421b-8be4-39007f76d7ce", "a865da0e-17ea-48ff-a654-4aa1e1a80090" };
+        String[] dmgrServers = { "bc55f443-202b-4f7c-9118-47dd80500ffb", "dac2e765-109e-4385-8563-aab66d6713f9", "fde6d6e9-8bac-4a82-99c6-ef225945d846" };
 
         String[] devWebs = { "ff613974-a936-4dc0-8cfc-84bc4316e810", "1930e5de-1d33-4d80-8404-1ea8204842b9", "239210c0-7c0f-4843-9060-e210aa8cbe1f", "f17a037d-e5fe-4a68-a416-a7ffbb9110e9" };
-        String[] devApps = { "89d8a5a7-ca30-41b9-91c5-f861dd142545", "90a64d5a-69d4-426a-ae45-fe44f2c7f56c", "d0f8dc22-d2e5-48dc-aea4-82dae7d42608", "4b16dd91-b686-4c16-bb16-e46e1123fd07" };
+        String[] devApps = { "782d5e5a-3960-42e1-a97a-b27b9545006e", "0964b7cf-4209-42e6-b0c7-93bb87eddfb5", "891e9fe0-5427-46db-8339-f41bfbd1c956", "9d750935-b005-4726-aca5-b174ff1f2bdf" };
 
-        String[] qaWebs = { "258c0cdb-488e-434b-a584-6b57b8c0624c", "6d38fa8d-fca2-4cf0-969f-65b11ad2719f", "36923e56-5b9b-44e5-b052-195ef71e2085", "69fbc95a-42a6-4eef-bd1a-d31d431f6b7e" };
-        String[] qaApps = { "bb1a9333-aa40-438a-b5dd-d343259483b6", "c56ecc2a-644a-4e9a-af81-9fb039abc478", "8f57fa0a-5ab4-4078-83a8-35fc53325965", "c98576d7-9c07-4dbe-afa4-c26893aada66" };
+        String[] qaWebs = { "7dbe55ba-ed0a-4846-9363-33350b4db4b5", "483a7126-4d21-430f-962f-ed6399997f8f", "acf9c6d6-26cf-40da-90dc-d26859ff9375", "8a531441-e680-4cc8-8b6d-2fa79439ceef" };
+        String[] qaApps = { "828ff830-0973-43c6-a43c-dae9d8353136", "37afebed-aa44-4413-814d-46ee73cefd40", "2f93996a-fc75-4ec5-a7a1-768856024a20", "3e9a62b1-1c18-44fa-9486-3e770ee7f1f7" };
 
-        String[] prdWebs = { "b734d038-9388-4b6c-b8cb-41ea0003ab5f", "1ff9f763-d8be-474f-a154-e6bca5b8849f", "ae6c52e4-ae74-4f38-8a2f-e63c094b0558", "2a6eb578-7b83-4e88-961e-f75b42b946d0" };
-        String[] prdApps = { "0ca57a1b-8079-4cad-b12d-c5e150b5d2b2", "4b522e0c-71f9-44e9-9199-e3401a3d8758", "b049a7dd-b735-48d1-8776-dbf2ecfbe44d", "68054f16-012d-488c-ae45-d25cbe796b5b" };
+        String[] prdWebs = { "13ba5c2d-7f02-44e9-8f42-172d7cd36ed9", "dbf96d3d-a507-4bdb-b22e-0fda7e521636", "a6935d90-9c9d-4607-9929-59c4534d4883", "5cfde183-e2c8-4e8a-9d8d-ae7c9e52d473" };
+        String[] prdApps = { "d0b0c2ec-92df-4147-b075-0768538f1f8b", "778dd013-89a9-406f-baab-91254ac94160", "e8ab22c1-9c48-46ef-b516-5f892bf05388", "b83f437f-b899-4731-a2b3-1511768dac2c" };
 
         for (int x = 0; x < 3; x++)
         {
