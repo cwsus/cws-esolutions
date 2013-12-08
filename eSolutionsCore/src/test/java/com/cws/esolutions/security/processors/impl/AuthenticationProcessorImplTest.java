@@ -79,7 +79,7 @@ public class AuthenticationProcessorImplTest
     public void testUsernameAuthentication()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("khuntly");
+        account.setUsername("demo");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
@@ -138,12 +138,12 @@ public class AuthenticationProcessorImplTest
     public void testCombinedAuthentication()
     {
         UserAccount account = new UserAccount();
-        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        account.setUsername("khuntly");
+        account.setGuid("fcd711bf-829a-4194-bbe2-6925a3095772");
+        account.setUsername("demo");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         UserSecurity userSecurity = new UserSecurity();
-        userSecurity.setPassword("Ariana21*");
+        userSecurity.setPassword("demo");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

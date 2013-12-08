@@ -56,6 +56,7 @@ public class PasswordUtilsTest
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
 
             System.exit(1);
@@ -65,11 +66,11 @@ public class PasswordUtilsTest
     @Test
     public void testCreateHash()
     {
-        final String salt = RandomStringUtils.randomAlphanumeric(32);
-        final String pass = "TUX_t3st";
+        final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
+        final String pass = "demo";
 
         System.out.println(salt);
-        System.out.println(PasswordUtils.encryptText(pass, salt));
+        System.out.println(PasswordUtils.encryptText(pass, salt, bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));
     }
 
     @Test

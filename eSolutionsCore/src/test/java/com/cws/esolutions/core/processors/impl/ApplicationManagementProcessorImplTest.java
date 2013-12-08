@@ -117,9 +117,9 @@ public class ApplicationManagementProcessorImplTest
     public void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("0fd1b62d-7361-4165-a7be-27235f6ab540");
+        project.setProjectGuid("2a54791f-850d-403b-bb2b-7f4b32abdede");
 
-        String[] platforms = { "4b6411c2-568d-49b6-91d7-0212a42ae873", "68c12b68-a990-454f-8b4e-52cd2ef25a0a", "84b7f9df-f1e8-45ab-aee5-35b577473ec3" };
+        String[] platforms = { "3681e389-8bb0-426f-b4f3-89c707eb8f01", "1781f74b-9574-4fb9-968f-ac8a52145713", "0d502643-1039-489e-b04b-8053f13ff151" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -139,11 +139,11 @@ public class ApplicationManagementProcessorImplTest
             app.setApplicationPlatforms(platformList);
             app.setApplicationVersion("1.0");
             app.setApplicationCluster("eSolutions");
-            app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applogs");
+            app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applog");
             app.setApplicationProject(project);
             app.setApplicationInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
-            app.setPidDirectory("/appvol/ATS70/eSolutions/syslog/");
-            app.setScmPath("scm:git:git@github.com:cws-us/cws-esolutions.git");
+            app.setPidDirectory("/appvol/ATS70/logs");
+            app.setScmPath("scm:git:git@github.com:cwsus/cws-esolutions.git");
             app.setJvmName("eSolutions");
             app.setBasePath("/appvol/ATS70/eSolutions");
 
