@@ -70,8 +70,8 @@
                 </tr>
                 <tr>
                     <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label></td>
-                    <td><form:input path="projectCode" /></td>
-                    <td><form:errors path="projectCode" cssClass="error" /></td>
+                    <td><form:input path="projectName" /></td>
+                    <td><form:errors path="projectName" cssClass="error" /></td>
                     <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
                     <td>
                         <form:select path="projectStatus">

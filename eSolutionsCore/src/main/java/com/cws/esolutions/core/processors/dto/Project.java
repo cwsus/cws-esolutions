@@ -46,7 +46,7 @@ public class Project implements Serializable
     private String devEmail = null;
     private String prodEmail = null;
     private String projectGuid = null;
-    private String projectCode = null;
+    private String projectName = null;
     private String changeQueue = null;
     private String incidentQueue = null;
     private UserAccount primaryContact = null;

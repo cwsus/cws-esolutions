@@ -17,17 +17,14 @@ package com.cws.esolutions.core.processors.dto;
 
 import java.io.File;
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.ApplicationManagementType;
 import com.cws.esolutions.core.processors.enums.DeploymentType;
+import com.cws.esolutions.core.processors.enums.ApplicationManagementType;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto

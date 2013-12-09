@@ -91,12 +91,6 @@
             <param-value>SecurityService/config/SSLEnforcementFilter</param-value>
         </init-param>
     </filter>
-    <filter id="SessionFixationFilter">
-        <description>Session Fixation Filter</description>
-        <display-name>SessionFixationFilter</display-name>
-        <filter-name>SessionFixationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.SessionFixationFilter</filter-class>
-    </filter>
     <filter id="SessionAuthenticationFilter">
         <description>Session Authorization Filter</description>
         <display-name>SessionAuthenticationFilter</display-name>
@@ -130,10 +124,6 @@
 
     <filter-mapping id="SSLEnforcementFilter_mapping">
         <filter-name>SSLEnforcementFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="SessionFixationFilter_mapping">
-        <filter-name>SessionFixationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SessionAuthenticationFilter_mapping">

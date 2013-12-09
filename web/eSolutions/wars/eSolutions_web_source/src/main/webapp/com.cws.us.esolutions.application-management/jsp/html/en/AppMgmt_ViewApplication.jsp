@@ -119,7 +119,7 @@
                 <td><label id="txtApplicationProject"><spring:message code="app.mgmt.application.project" /></label></td>
                 <td>
                     <a href="${pageContext.request.contextPath}/ui/service-management/project/${application.applicationProject.projectGuid}"
-                        title="${application.applicationProject.projectCode}">${application.applicationProject.projectCode}</a>
+                        title="${application.applicationProject.projectName}">${application.applicationProject.projectName}</a>
                 </td>
             </tr>
             <tr>

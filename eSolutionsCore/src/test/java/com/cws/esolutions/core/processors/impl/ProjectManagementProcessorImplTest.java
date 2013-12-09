@@ -114,34 +114,31 @@ public class ProjectManagementProcessorImplTest
     @Test
     public void testAddNewProject()
     {
-        for (int x = 0; x < 3; x++)
+        Project project = new Project();
+        project.setProjectName(RandomStringUtils.randomAlphabetic(8));
+        project.setChangeQueue("change-queue");
+        project.setDevEmail("dev@email.com");
+        project.setProdEmail("prod@email.com");
+        project.setIncidentQueue("ticket-queue");
+        project.setPrimaryContact(userAccount);
+        project.setSecondaryContact(userAccount);
+        project.setProjectStatus(ServiceStatus.ACTIVE);
+
+        ProjectManagementRequest request = new ProjectManagementRequest();
+        request.setUserAccount(userAccount);
+        request.setRequestInfo(hostInfo);
+        request.setServiceId("A0F3C71F-5FAF-45B4-AA34-9779F64D397E");
+        request.setProject(project);
+
+        try
         {
-            Project project = new Project();
-            project.setProjectCode(RandomStringUtils.randomAlphabetic(8));
-            project.setChangeQueue("change-queue");
-            project.setDevEmail("dev@email.com");
-            project.setProdEmail("prod@email.com");
-            project.setIncidentQueue("ticket-queue");
-            project.setPrimaryContact(userAccount);
-            project.setSecondaryContact(userAccount);
-            project.setProjectStatus(ServiceStatus.ACTIVE);
+            ProjectManagementResponse response = processor.addNewProject(request);
 
-            ProjectManagementRequest request = new ProjectManagementRequest();
-            request.setUserAccount(userAccount);
-            request.setRequestInfo(hostInfo);
-            request.setServiceId("A0F3C71F-5FAF-45B4-AA34-9779F64D397E");
-            request.setProject(project);
-
-            try
-            {
-                ProjectManagementResponse response = processor.addNewProject(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ProjectManagementException pmx)
-            {
-                Assert.fail(pmx.getMessage());
-            }
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (ProjectManagementException pmx)
+        {
+            Assert.fail(pmx.getMessage());
         }
     }
 

@@ -41,7 +41,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="svc.mgmt.view.project" arguments="${project.projectCode}" /></h1>
+    <h1><spring:message code="svc.mgmt.view.project" arguments="${project.projectName}" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -66,7 +66,7 @@
         <table id="projectDetail">
             <tr>
                 <td><label id="txtProjectCode"><spring:message code="svc.mgmt.service.name" /></label></td>
-                <td>${project.projectCode}</td>
+                <td>${project.projectName}</td>
             </tr>
             <tr>
                 <td><label id="txtProjectStatus"><spring:message code="svc.mgmt.service.status" /></label></td>

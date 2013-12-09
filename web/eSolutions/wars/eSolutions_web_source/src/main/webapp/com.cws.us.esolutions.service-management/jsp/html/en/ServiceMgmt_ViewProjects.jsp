@@ -70,7 +70,7 @@
                 <tr>
                     <td>
                         <a href="${pageContext.request.contextPath}/ui/service-management/project/${project.projectGuid}"
-                            title="${project.projectCode}">${project.projectCode}</a>
+                            title="${project.projectName}">${project.projectName}</a>
                     </td>
                     <td>${project.projectStatus}</td>
                 </tr>
