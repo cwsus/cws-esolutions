@@ -79,11 +79,8 @@
             <input type="button" name="cancel" value="<spring:message code='theme.button.cancel.text' />" id="cancel" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
         </form:form>
 
-        <hr />
-
         <c:if test="${not empty fn:trim(requestScope.searchResults)}">
-            <spring:message code="theme.search.results" />
-            <br />
+            <h1><spring:message code="theme.search.results" /></h1>
             <table id="userSearchResults">
                 <tr>
                     <td><spring:message code="user.mgmt.user.name" /></td>

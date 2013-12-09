@@ -1065,7 +1065,7 @@ public class UserManagementController
                         mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
                     }
 
-                    mView.addObject("userAccount", searchAccount);
+                    mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewAuditPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -1214,7 +1214,7 @@ public class UserManagementController
                         mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                         mView.addObject("page", page);
                         mView.addObject("auditEntries", auditEntries);
-                        mView.addObject("userAccount", searchAccount);
+                        mView.addObject("userAccount", response.getUserAccount());
                         mView.setViewName(this.viewAuditPage);
                     }
                     else

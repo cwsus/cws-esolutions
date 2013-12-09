@@ -73,11 +73,8 @@
         </form:form>
     </p>
 
-    <hr />
-
     <c:if test="${not empty searchResults}">
-        <spring:message code="theme.search.results" />
-        <br /><br />
+        <h1><spring:message code="theme.search.results" /></h1>
         <table id="searchResults">
             <c:forEach var="result" items="${searchResults}">
                 <tr>

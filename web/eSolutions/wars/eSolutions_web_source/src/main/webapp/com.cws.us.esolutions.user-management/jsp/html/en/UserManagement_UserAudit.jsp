@@ -83,13 +83,17 @@
             <c:if test="${pages gt 1}">
                 <br />
                 <hr />
-                <br />
                 <table>
                     <tr>
                         <c:forEach begin="1" end="${pages}" var="i">
+                            <c:set var="pageCount" value="${i}" />
+
                             <c:choose>
                                 <c:when test="${page eq i}">
                                     <td>${i}</td>
+                                    <c:if test="${pageCount gt 10 and i eq 10}">
+                                        <td><a href="${pageContext.request.contextPath}/user-management/audit/account/${userAccount.guid}/page/10" title="Next">Next</a></td>
+                                    </c:if>
                                 </c:when>
                                 <c:otherwise>
                                     <td>

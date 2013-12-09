@@ -73,7 +73,6 @@
 
     <c:if test="${not empty searchResults}">
         <h1><spring:message code="theme.search.results" /></h1>
-        <br /><br />
         <table id="searchResults">
             <c:forEach var="result" items="${searchResults}">
                 <tr>

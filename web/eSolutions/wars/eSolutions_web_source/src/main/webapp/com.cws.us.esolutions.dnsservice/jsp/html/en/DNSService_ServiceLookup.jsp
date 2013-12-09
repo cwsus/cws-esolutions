@@ -74,7 +74,6 @@
     </p>
 
     <c:if test="${not empty dnsEntry or not empty dnsEntries}">
-        <hr />
         <h1><spring:message code="dns.lookup.results" /></h1>
         <br /><br />
         <c:choose>
