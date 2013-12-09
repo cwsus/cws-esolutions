@@ -21,8 +21,8 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.utils.dto.EmailMessage;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /**
  * eSolutionsCore
