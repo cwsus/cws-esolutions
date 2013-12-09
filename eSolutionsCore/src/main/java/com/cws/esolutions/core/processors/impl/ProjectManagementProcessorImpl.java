@@ -109,7 +109,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                 try
                 {
-                    validator = projectDao.getProjectsByAttribute(project.getProjectCode(), request.getStartPage());
+                    validator = projectDao.getProjectsByAttribute(project.getProjectName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -126,7 +126,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
-                                    project.getProjectCode(),
+                                    project.getProjectName(),
                                     project.getPrimaryContact().getGuid(),
                                     (project.getSecondaryContact() != null) ? project.getSecondaryContact().getGuid() : Constants.NOT_SET,
                                     project.getDevEmail(),
@@ -153,18 +153,18 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                     if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully added " + project.getProjectCode() + " to the asset datasource");
+                        response.setResponse("Successfully added " + project.getProjectName() + " to the asset datasource");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + project.getProjectCode() + " to the asset datasource");
+                        response.setResponse("Failed to add " + project.getProjectName() + " to the asset datasource");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Platform " + project.getProjectCode() + " already exists in the asset datasource.");
+                    response.setResponse("Platform " + project.getProjectName() + " already exists in the asset datasource.");
                 }
             }
             else
@@ -176,7 +176,7 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
-sqx.printStackTrace();
+
             throw new ProjectManagementException(sqx.getMessage(), sqx);
         }
         catch (UserControlServiceException ucsx)
@@ -259,7 +259,7 @@ sqx.printStackTrace();
                 List<String> insertData = new ArrayList<>(
                         Arrays.asList(
                                 project.getProjectGuid(),
-                                project.getProjectCode(),
+                                project.getProjectName(),
                                 project.getPrimaryContact().getGuid(),
                                 (project.getSecondaryContact() != null) ? project.getSecondaryContact().getGuid() : Constants.NOT_SET,
                                 project.getDevEmail(),
@@ -286,12 +286,12 @@ sqx.printStackTrace();
                 if (isComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully added " + project.getProjectCode() + " to the asset datasource");
+                    response.setResponse("Successfully added " + project.getProjectName() + " to the asset datasource");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to add " + project.getProjectCode() + " to the asset datasource");
+                    response.setResponse("Failed to add " + project.getProjectName() + " to the asset datasource");
                 }
             }
             else
@@ -404,7 +404,7 @@ sqx.printStackTrace();
                     {
                         Project resProject = new Project();
                         resProject.setProjectGuid(data[0]);
-                        resProject.setProjectCode(data[1]);
+                        resProject.setProjectName(data[1]);
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
                         resProject.setDevEmail(data[5]);
                         resProject.setProdEmail(data[6]);
@@ -601,7 +601,7 @@ sqx.printStackTrace();
 
             if (isServiceAuthorized)
             {
-                List<String[]> projectData = projectDao.getProjectsByAttribute(project.getProjectCode(), request.getStartPage());
+                List<String[]> projectData = projectDao.getProjectsByAttribute(project.getProjectName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -616,7 +616,7 @@ sqx.printStackTrace();
                     {
                         Project resProject = new Project();
                         resProject.setProjectGuid(data[0]);
-                        resProject.setProjectCode(data[1]);
+                        resProject.setProjectName(data[1]);
                         resProject.setProjectStatus(ServiceStatus.valueOf(data[2]));
                         resProject.setDevEmail(data[5]);
                         resProject.setProdEmail(data[6]);
@@ -823,7 +823,7 @@ sqx.printStackTrace();
                     if ((projectList != null) && (projectList.size() != 0))
                     {
                         project.setProjectGuid(projectList.get(0));
-                        project.setProjectCode(projectList.get(1));
+                        project.setProjectName(projectList.get(1));
                         project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
                         project.setDevEmail(projectList.get(5));
                         project.setProdEmail(projectList.get(6));

@@ -725,7 +725,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             {
                                 Project project = new Project();
                                 project.setProjectGuid(projectInfo.get(0));
-                                project.setProjectCode(projectInfo.get(1));
+                                project.setProjectName(projectInfo.get(1));
 
                                 if (DEBUG)
                                 {
@@ -1600,7 +1600,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             {
                                 Project project = new Project();
                                 project.setProjectGuid(projectList.get(0));
-                                project.setProjectCode(projectList.get(1));
+                                project.setProjectName(projectList.get(1));
                                 project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
                                 project.setDevEmail(projectList.get(5));
                                 project.setProdEmail(projectList.get(6));
