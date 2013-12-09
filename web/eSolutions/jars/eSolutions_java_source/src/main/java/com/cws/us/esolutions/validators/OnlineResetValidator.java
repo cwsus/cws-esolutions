@@ -127,17 +127,17 @@ public class OnlineResetValidator implements Validator
 
         switch (request.getResetType())
         {
-            case EMAIL:
+            case USERNAME:
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageEmailAddressRequired);
+
+                break;
+            case PASSWORD:
+                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", this.messageUsernameRequired);
 
                 break;
             case QUESTIONS:
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerOne", this.messageAnswerRequired);
                 ValidationUtils.rejectIfEmptyOrWhitespace(errors, "secAnswerTwo", this.messageAnswerRequired);
-
-                break;
-            case USERNAME:
-                ValidationUtils.rejectIfEmptyOrWhitespace(errors, "username", this.messageUsernameRequired);
 
                 break;
             default:

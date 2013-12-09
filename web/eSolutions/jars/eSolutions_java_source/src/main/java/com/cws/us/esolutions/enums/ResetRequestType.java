@@ -30,6 +30,6 @@ package com.cws.us.esolutions.enums;
 public enum ResetRequestType
 {
     USERNAME,
-    EMAIL,
+    PASSWORD,
     QUESTIONS;
 }

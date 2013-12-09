@@ -409,7 +409,7 @@ public class OnlineResetController
             // don't do anything with it
         }
 
-        mView.addObject("resetType", ResetRequestType.USERNAME);
+        mView.addObject("resetType", ResetRequestType.PASSWORD);
         mView.addObject("command", new UserChangeRequest());
         mView.setViewName(this.submitUsernamePage);
 
@@ -792,6 +792,7 @@ public class OnlineResetController
                     mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                 }
 
+				mView = new ModelAndView(new RedirectView());
                 mView.addObject(Constants.MESSAGE_RESPONSE, response.getResponse());
                 mView.setViewName(this.appConfig.getLogonRedirect());
             }
@@ -805,7 +806,8 @@ public class OnlineResetController
         catch (AccountControlException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
-            
+
+            mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
@@ -977,7 +979,8 @@ public class OnlineResetController
         catch (AuthenticationException ax)
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
-            
+
+            mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getErrorResponsePage());
         }
 
