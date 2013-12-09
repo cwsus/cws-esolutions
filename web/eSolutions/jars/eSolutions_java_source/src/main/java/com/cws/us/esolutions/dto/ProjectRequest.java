@@ -190,7 +190,7 @@ public class ProjectRequest implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectCode);
+            DEBUGGER.debug("Value: {}", this.projectName);
         }
 
         return this.projectName;
