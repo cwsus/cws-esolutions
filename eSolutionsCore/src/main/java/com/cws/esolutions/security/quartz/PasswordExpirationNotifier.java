@@ -28,8 +28,8 @@ import org.quartz.JobExecutionContext;
 
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;

@@ -35,7 +35,7 @@ import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.EmailAddressValidator;
 import com.cws.us.esolutions.validators.EmailMessageValidator;

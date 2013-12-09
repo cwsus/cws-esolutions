@@ -74,9 +74,9 @@ public class Project implements Serializable
         this.projectGuid = value;
     }
 
-    public final void setProjectCode(final String value)
+    public final void setProjectName(final String value)
     {
-        final String methodName = Project.CNAME + "#setProjectCode(final String value)";
+        final String methodName = Project.CNAME + "#setProjectName(final String value)";
 
         if (DEBUG)
         {
@@ -84,7 +84,7 @@ public class Project implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.projectCode = value;
+        this.projectName = value;
     }
 
     public final void setChangeQueue(final String value)
@@ -204,17 +204,17 @@ public class Project implements Serializable
         return this.projectGuid;
     }
 
-    public final String getProjectCode()
+    public final String getProjectName()
     {
-        final String methodName = Project.CNAME + "#getProjectCode()";
+        final String methodName = Project.CNAME + "#getProjectName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectCode);
+            DEBUGGER.debug("Value: {}", this.projectName);
         }
 
-        return this.projectCode;
+        return this.projectName;
     }
 
     public final String getChangeQueue()

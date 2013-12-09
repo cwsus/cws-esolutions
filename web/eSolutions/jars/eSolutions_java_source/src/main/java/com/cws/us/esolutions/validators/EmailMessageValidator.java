@@ -18,7 +18,7 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators

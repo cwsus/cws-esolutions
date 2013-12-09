@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.dto;
+package com.cws.esolutions.core.utils.dto;
 
 import java.util.Map;
 import java.util.Date;
@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.email.messaging.dto
+ * com.cws.esolutions.core.utils.dto
  * EmailMessage.java
  *
  * $Id: $
@@ -432,11 +432,11 @@ public class EmailMessage implements Serializable
             }
 
             if (!(field.getName().equals("methodName")) &&
-                    (!(field.getName().equals("CNAME"))) &&
-                    (!(field.getName().equals("DEBUGGER"))) &&
-                    (!(field.getName().equals("DEBUG"))) &&
-                    (!(field.getName().equals("ERROR_RECORDER"))) &&
-                    (!(field.getName().equals("serialVersionUID"))))
+				(!(field.getName().equals("CNAME"))) &&
+				(!(field.getName().equals("DEBUGGER"))) &&
+				(!(field.getName().equals("DEBUG"))) &&
+				(!(field.getName().equals("ERROR_RECORDER"))) &&
+				(!(field.getName().equals("serialVersionUID"))))
             {
                 try
                 {

@@ -31,8 +31,8 @@ import org.quartz.JobExecutionContext;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.core.processors.dto.EmailMessage;
 /**
  * eSolutionsCore
  * com.cws.esolutions.core.quartz
