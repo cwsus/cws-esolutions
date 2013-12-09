@@ -16,24 +16,17 @@ import java.util.Map;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
-
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
@@ -1099,7 +1092,7 @@ public class ApplicationManagementController
                                 DEBUGGER.debug("Project: {}", project);
                             }
 
-                            projectListing.put(project.getProjectGuid(), project.getProjectCode());
+                            projectListing.put(project.getProjectGuid(), project.getProjectName());
                         }
 
                         if (DEBUG)
@@ -2858,7 +2851,7 @@ public class ApplicationManagementController
                                     DEBUGGER.debug("Project: {}", project);
                                 }
 
-                                projectListing.put(project.getProjectGuid(), project.getProjectCode());
+                                projectListing.put(project.getProjectGuid(), project.getProjectName());
                             }
 
                             if (DEBUG)

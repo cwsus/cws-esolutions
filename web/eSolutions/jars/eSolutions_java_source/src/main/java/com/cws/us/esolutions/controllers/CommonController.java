@@ -379,7 +379,7 @@ public class CommonController
             }
         }
 
-        mView.addObject("serviceEmail", this.appConfig().getSvcEmailAddr());
+        mView.addObject("serviceEmail", this.appConfig.getSvcEmailAddr());
         mView.addObject("command", new EmailMessage());
         mView.setViewName(this.appConfig.getContactAdminsPage());
 
@@ -474,7 +474,7 @@ public class CommonController
 
         try
         {
-            EmailUtils.sendEmailMessage(emailMessage, true);
+            EmailUtils.sendEmailMessage(message, true);
 
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);

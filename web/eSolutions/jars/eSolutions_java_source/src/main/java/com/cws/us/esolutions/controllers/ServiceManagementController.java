@@ -3513,7 +3513,7 @@ public class ServiceManagementController
                 }
 
                 Project reqProject = new Project();
-                reqProject.setProjectCode(request.getProjectCode());
+                reqProject.setProjectName(request.getProjectName());
                 reqProject.setChangeQueue(request.getChangeQueue());
                 reqProject.setDevEmail(request.getDevEmail());
                 reqProject.setProdEmail(request.getProdEmail());

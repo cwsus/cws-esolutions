@@ -39,7 +39,7 @@ public class ProjectRequest implements Serializable
 {
     private String devEmail = null;
     private String prodEmail = null;
-    private String projectCode = null;
+    private String projectName = null;
     private String changeQueue = null;
     private String incidentQueue = null;
     private String primaryContact = null;
@@ -79,9 +79,9 @@ public class ProjectRequest implements Serializable
         this.prodEmail = value;
     }
 
-    public final void setProjectCode(final String value)
+    public final void setProjectName(final String value)
     {
-        final String methodName = ProjectRequest.CNAME + "#setProjectCode(final String value)";
+        final String methodName = ProjectRequest.CNAME + "#setProjectName(final String value)";
 
         if (DEBUG)
         {
@@ -89,7 +89,7 @@ public class ProjectRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.projectCode = value;
+        this.projectName = value;
     }
 
     public final void setChangeQueue(final String value)
@@ -183,9 +183,9 @@ public class ProjectRequest implements Serializable
         return this.prodEmail;
     }
 
-    public final String getProjectCode()
+    public final String getProjectName()
     {
-        final String methodName = ProjectRequest.CNAME + "#getProjectCode()";
+        final String methodName = ProjectRequest.CNAME + "#getProjectName()";
 
         if (DEBUG)
         {
@@ -193,7 +193,7 @@ public class ProjectRequest implements Serializable
             DEBUGGER.debug("Value: {}", this.projectCode);
         }
 
-        return this.projectCode;
+        return this.projectName;
     }
 
     public final String getChangeQueue()
