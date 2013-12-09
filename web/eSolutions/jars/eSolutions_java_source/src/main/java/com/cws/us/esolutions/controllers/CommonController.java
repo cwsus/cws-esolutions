@@ -12,17 +12,13 @@
 package com.cws.us.esolutions.controllers;
 
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -383,6 +379,7 @@ public class CommonController
             }
         }
 
+        mView.addObject("serviceEmail", this.appConfig().getSvcEmailAddr());
         mView.addObject("command", new EmailMessage());
         mView.setViewName(this.appConfig.getContactAdminsPage());
 
@@ -477,33 +474,17 @@ public class CommonController
 
         try
         {
-            EmailMessage emailMessage = new EmailMessage();
-            emailMessage.setIsAlert(false); // set this to alert so it shows as high priority
-            emailMessage.setMessageBody(message.getMessageBody());
-            emailMessage.setMessageId(RandomStringUtils.randomAlphanumeric(16));
-            emailMessage.setMessageSubject("[ " + emailId + " ] - " + message.getMessageSubject());
-            emailMessage.setMessageTo(new ArrayList<>(Arrays.asList(this.appConfig.getSvcEmailAddr())));
-            emailMessage.setEmailAddr(message.getEmailAddr());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailMessage: {}", emailMessage);
-            }
-
             EmailUtils.sendEmailMessage(emailMessage, true);
 
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);
             autoResponse.setMessageSubject(this.contactResponseEmail.getSubject());
-            autoResponse.setMessageTo(new ArrayList<>(
-                    Arrays.asList(
-                            String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr()))));
-            autoResponse.setEmailAddr(new ArrayList<>(
-                    Arrays.asList(
-                            String.format(this.contactResponseEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
-            autoResponse.setMessageBody(String.format(this.contactResponseEmail.getText(),
-                    message.getEmailAddr(),
-                    message.getMessageBody()));
+            autoResponse.setMessageTo(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr()))));
+            autoResponse.setEmailAddr(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+            autoResponse.setMessageBody(String.format(
+                this.contactResponseEmail.getText(),
+                message.getEmailAddr(),
+                message.getMessageBody()));
 
             if (DEBUG)
             {

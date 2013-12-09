@@ -177,7 +177,7 @@ public class ProjectValidator implements Validator
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "devEmail", this.messageDevEmailRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "prodEmail", this.messagePrdEmailRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectCode", this.messageProjectNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "projectName", this.messageProjectNameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "changeQueue", this.messageChangeQueueRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "incidentQueue", this.messageProjectStatusRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "primaryContact", this.messageIncidentQueueRequired);

@@ -56,6 +56,8 @@
 
     <p>
         <form:form name="submitContactForm" method="post" action="${pageContext.request.contextPath}/ui/common/submit-contact">
+            <form:hidden path="messageTo" value="${serviceEmail}" />
+
             <p>
                 <label id="txtMessageSubject"><spring:message code="theme.add.contact.request.subject" /></label>
                 <form:input path="messageSubject" />

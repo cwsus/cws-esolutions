@@ -17,6 +17,6 @@
         </property>
         <property name="homePage" value="HomePage" />
         <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
-        <property name="contactResponseEmail" ref="approveArticleEmail" />
+        <property name="contactResponseEmail" ref="contactResponseEmail" />
     </bean>
 </beans>
