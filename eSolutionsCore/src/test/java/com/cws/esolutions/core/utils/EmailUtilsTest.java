@@ -28,7 +28,7 @@ import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
 
-import com.cws.esolutions.core.processors.dto.EmailMessage;
+import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 /**
  * eSolutionsCore

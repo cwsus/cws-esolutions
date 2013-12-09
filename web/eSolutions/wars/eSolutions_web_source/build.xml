@@ -15,16 +15,16 @@
     <property name="target.platform" value="${platform}" />
 
     <condition property="isWebSphere">
-        <equals arg1="${target.platform}" arg2="websphere" caseSensitive="false" />
+        <equals arg1="${platform}" arg2="websphere" caseSensitive="false" />
     </condition>
     <condition property="isTomcat">
-        <equals arg1="${target.platform}" arg2="tomcat" caseSensitive="false" />
+        <equals arg1="${platform}" arg2="tomcat" caseSensitive="false" />
     </condition>
     <condition property="isWebLogic">
-        <equals arg1="${target.platform}" arg2="weblogic" caseSensitive="false" />
+        <equals arg1="${platform}" arg2="weblogic" caseSensitive="false" />
     </condition>
     <condition property="isGeronimo">
-        <equals arg1="${target.platform}" arg2="geronimo" caseSensitive="false" />
+        <equals arg1="${platform}" arg2="geronimo" caseSensitive="false" />
     </condition>
 
     <target name="buildTomcat" if="isTomcat">

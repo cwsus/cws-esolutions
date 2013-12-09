@@ -11,7 +11,6 @@
  */
 package com.cws.us.esolutions.controllers;
 
-import java.util.List;
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -35,7 +34,6 @@ import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.validators.LoginValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;

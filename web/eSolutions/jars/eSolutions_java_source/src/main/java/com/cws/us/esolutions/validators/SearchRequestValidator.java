@@ -46,6 +46,7 @@ public class SearchRequestValidator implements Validator
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
@@ -105,6 +106,8 @@ public class SearchRequestValidator implements Validator
 
         if (!(pattern.matcher(value.getSearchTerms()).matches()))
         {
+            ERROR_RECORDER.error("Validation failed for requested search terms");
+
             errors.reject("searchTerms");
         }
     }

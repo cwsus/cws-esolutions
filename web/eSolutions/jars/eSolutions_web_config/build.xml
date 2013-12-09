@@ -12,7 +12,17 @@
 
     <artifact:pom id="pom" file="${basedir}/pom.xml" />
 
-    <target name="build">
+    <condition property="isProduction">
+        <equals arg1="${productionRelease}" arg2="true" caseSensitive="false" />
+    </condition>
+
+    <target name="isRelease" if="isRelease">
+        <replace file="${basedir}/target/classes/logging/logging.xml" token="DEBUG" value="ERROR" />
+        <replace file="${basedir}/target/classes/eSolutionsCore/config/logging.xml" token="DEBUG" value="ERROR" />
+        <replace file="${basedir}/target/classes/SecurityService/config/logging.xml" token="DEBUG" value="ERROR" />
+    </target>
+
+    <target name="build" depends="isRelease">
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>

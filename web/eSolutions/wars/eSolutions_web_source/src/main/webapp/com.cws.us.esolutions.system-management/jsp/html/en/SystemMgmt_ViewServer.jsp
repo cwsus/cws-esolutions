@@ -84,19 +84,19 @@
     </c:if>
 
     <p>
-        <table id="serverDetail">
+        <table>
             <tr>
                 <%-- OS name/type --%>
-                <td><label id="txtOsName"><spring:message code="system.mgmt.os.name" /></label>
+                <td><label id="txtOsName"><spring:message code="system.mgmt.os.name" /></label></td>
                 <td>${server.osName}</td>
                 <%-- domain name --%>
-                <td><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label>
+                <td><label id="txtDomainName"><spring:message code="system.mgmt.domain.name" /></label></td>
                 <td>${server.domainName}</td>
             </tr>
             <tr>
-                <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label>
+                <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label></td>
                 <td>${server.serverType}</td>
-                <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label>
+                <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label></td>
                 <td id="serverStatusInput" style="display: block;">${server.serverStatus}</td>
                 <td id="serverStatusModify" style="display: none;">
                     <select name="status" id="status">
@@ -116,78 +116,99 @@
                 </td>
             </tr>
             <tr>
-                <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label>
+                <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label></td>
                 <td>${server.serverRegion}</td>
-                <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label>
+                <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
                 <td>
                     <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${server.datacenter.datacenterGuid}"
                         title="${server.datacenter.datacenterName}">${server.datacenter.datacenterName}</a>
                 </td>
             </tr>
+            <c:if test="${not empty fn:trim(server.virtualId)}">
+                <tr>
+                    <td><label id="txtVirtualId"><spring:message code="system.mgmt.virtual.id" /></label></td>
+                    <td>${server.virtualId}</td>
+                </tr>
+            </c:if>
         </table>
         <c:if test="${server.serverType eq 'DMGRSERVER' or server.serverType eq 'VIRTUALHOST'}">
             <table id="applicationDetail">
                 <tr>
-                    <td><label id="txtManagerUrl"><spring:message code="system.mgmt.manager.url" /></label>
+                    <td><label id="txtManagerUrl"><spring:message code="system.mgmt.manager.url" /></label></td>
                     <td><a href="${server.mgrUrl}" title="${server.operHostName}">${server.mgrUrl}</a></td>
                 </tr>
             </table>
         </c:if>
-        <table id="hardwareDetail">
+        <table>
             <tr>
-                <td><label id="txtCpuType"><spring:message code="system.mgmt.cpu.type" /></label>  
+                <td><label id="txtCpuType"><spring:message code="system.mgmt.cpu.type" /></label></td>
                 <td>${server.cpuType}</td>
-                <td><label id="txtCpuCount"><spring:message code="system.mgmt.cpu.count" /></label>
+                <td><label id="txtCpuCount"><spring:message code="system.mgmt.cpu.count" /></label></td>
                 <td>${server.cpuCount}</td>
             </tr>
             <tr>
-                <td><label id="txtInstalledMemory"><spring:message code="system.mgmt.installed.memory" /></label>
+                <td><label id="txtInstalledMemory"><spring:message code="system.mgmt.installed.memory" /></label></td>
                 <td>${server.installedMemory}</td>
-                <td><label id="txtServerModel"><spring:message code="system.mgmt.server.model" /></label>
-                <td>${server.serverModel}</td>
+                <td><label id="txtServerModel"><spring:message code="system.mgmt.server.model" /></label></td>
+                <td>${server.serverModel} - ${server.serialNumber}</td>
             </tr>
-            <tr>
-                <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label>
-                <td>${server.serverRack}</td>
-                <td><label id="txtRackPosition"><spring:message code="system.mgmt.rack.position" /></label>
-                <td>${server.rackPosition}</td>
-            </tr>
+            <c:if test="${not empty fn:trim(server.serverRack)}">
+	            <tr>
+	                <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label></td>
+	                <td>${server.serverRack}</td>
+	                <td><label id="txtRackPosition"><spring:message code="system.mgmt.rack.position" /></label></td>
+	                <td>${server.rackPosition}</td>
+	            </tr>
+	        </c:if>
         </table>
-        <table id="networkDetail">
+        <table>
             <tr>
-                <td><label id="txtOperHostname"><spring:message code="system.mgmt.oper.name" /></label>  
+                <td><label id="txtOperHostname"><spring:message code="system.mgmt.oper.name" /></label></td>
                 <td>${server.operHostName}</td>
-                <td><label id="txtOperAddress"><spring:message code="system.mgmt.oper.address" /></label>
+                <td><label id="txtOperAddress"><spring:message code="system.mgmt.oper.address" /></label></td>
                 <td>${server.operIpAddress}</td>
             </tr>
-            <tr>
-                <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label>
-                <td>${server.mgmtHostName}</td>
-                <td><label id="txtMgmtAddress"><spring:message code="system.mgmt.mgmt.address" /></label>
-                <td>${server.mgmtIpAddress}</td>
-            </tr>
-            <tr>
-                <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label>
-                <td>${server.bkHostName}</td>
-                <td><label id="txtBackupAddress"><spring:message code="system.mgmt.backup.address" /></label>
-                <td>${server.bkIpAddress}</td>
-            </tr>
-            <tr>
-                <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label>
-                <td>${server.nasHostName}</td>
-                <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label>
-                <td>${server.nasIpAddress}</td>
-            </tr>
-            <tr>
-                <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label>
-                <td>${server.natAddress}</td>
-                <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label>
-                <td>${server.serialNumber}</td>
-            </tr>
+            <c:if test="${not empty fn:trim(server.mgmtHostName)}">
+	            <tr>
+	                <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label></td>
+	                <td>${server.mgmtHostName}</td>
+	                <td><label id="txtMgmtAddress"><spring:message code="system.mgmt.mgmt.address" /></label></td>
+	                <td>${server.mgmtIpAddress}</td>
+	            </tr>
+            </c:if>
+            <c:if test="${not empty fn:trim(server.bkHostName)}">
+	            <tr>
+	                <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label></td>
+	                <td>${server.bkHostName}</td>
+	                <td><label id="txtBackupAddress"><spring:message code="system.mgmt.backup.address" /></label></td>
+	                <td>${server.bkIpAddress}</td>
+	            </tr>
+            </c:if>
+            <c:if test="${not empty fn:trim(server.nasHostName)}">
+	            <tr>
+	                <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label></td>
+	                <td>${server.nasHostName}</td>
+	                <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label></td>
+	                <td>${server.nasIpAddress}</td>
+	            </tr>
+            </c:if>
+            <c:if test="${not empty fn:trim(server.natAddress)}">
+	            <tr>
+	                <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
+	                <td>${server.natAddress}</td>
+	            </tr>
+	        </c:if>
         </table>
-        <table id="comments">
+        <table>
             <tr>
-                <td><label id="txtServerComments"><spring:message code="system.mgmt.server.comments" /></label>
+                <td><label id="txtServerEngineer"><spring:message code="server.mgmt.assigned.engineer" /></label></td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/ui/user-management/view/account/${server.assignedEngineer.guid}"
+                        title="${server.assignedEngineer.username}">${server.assignedEngineer.username}</a>
+                </td>
+            </tr>
+            <tr>
+                <td><label id="txtServerComments"><spring:message code="system.mgmt.server.comments" /></label></td>
                 <td>${server.serverComments}</td>
             </tr>
         </table>

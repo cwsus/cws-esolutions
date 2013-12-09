@@ -11,12 +11,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 --
--- Create user `appuser`
---
--- CREATE USER 'appuser'@'localhost' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
--- COMMIT;
-
---
 -- add in the tables
 --
 SOURCE ./eSolutionsService.sql;
@@ -26,16 +20,6 @@ COMMIT;
 -- Source in all the sql scripts to build the tables
 --
 SOURCE ./cwssec.sql;
-COMMIT;
-
---
--- add privileges
---
-GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON esolutionssvc.* TO 'appuser'@'localhost';
-GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON cwssec.* TO 'appuser'@'localhost';
-GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'localhost';
-
-FLUSH PRIVILEGES;
 COMMIT;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

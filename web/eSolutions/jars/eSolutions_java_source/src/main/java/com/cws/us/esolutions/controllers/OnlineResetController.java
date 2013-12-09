@@ -12,7 +12,6 @@
 package com.cws.us.esolutions.controllers;
 
 import java.util.Date;
-import java.util.List;
 import org.slf4j.Logger;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -37,15 +36,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.us.esolutions.dto.UserChangeRequest;
-import com.cws.us.esolutions.enums.ResetRequestType;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.us.esolutions.enums.ResetRequestType;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
-import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.processors.enums.ControlType;

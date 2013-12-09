@@ -40,7 +40,6 @@ import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.us.esolutions.validators.ArticleValidator;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;

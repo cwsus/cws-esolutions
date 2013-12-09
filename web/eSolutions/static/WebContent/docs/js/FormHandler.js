@@ -1008,7 +1008,7 @@ function validateForm(theForm, e)
             }
             else
             {
-                if (theForm.searchTerms.value = '')
+                if (theForm.searchTerms.value == '')
                 {
                     clearText(theForm);
 

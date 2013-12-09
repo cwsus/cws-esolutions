@@ -5,6 +5,11 @@
     padding: 0;
 }
 
+* html body #sidebar ul.sidemenu li
+{
+    height: 1%;
+}
+
 body
 {
     margin: 0;
@@ -82,11 +87,6 @@ img.float-left
   margin: 5px 10px 5px 0px;
 }
 
-#sidebar h1, #sidebar p
-{
-    padding-left: 0;
-}
-
 ul, ol
 {
     margin: 5px 5px;
@@ -132,6 +132,34 @@ form
     background-color: #FAFAFA;
 }
 
+/* search form */
+form.search
+{
+    position: absolute;
+    top: 15px;
+    right: 5px;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background-color: transparent;
+}
+
+form.search input.textbox
+{
+    margin: 0;
+    width: 120px;
+    border: 1px solid #CCC;
+    background: #FFF;
+    color: #333;
+    vertical-align: top;
+}
+
+form.search input.button
+{
+    width: 60px;
+    vertical-align: top;
+}
+
 label
 {
     display: block;
@@ -168,32 +196,19 @@ input.submit
     color: #75A54B;
 }
 
-/* search form */
-form.search
+table
 {
-    position: absolute;
-    top: 15px;
-    right: 5px;
-    padding: 0;
-    margin: 0;
-    border: none;
-    background-color: transparent;
+    border-collapse: collapse;
 }
 
-form.search input.textbox
+table td, table th
 {
-    margin: 0;
-    width: 120px;
-    border: 1px solid #CCC;
-    background: #FFF;
-    color: #333;
-    vertical-align: top;
+    padding: 0px 0px 0px 15px;
 }
 
-form.search input.button
+#sidebar h1, #sidebar p
 {
-    width: 60px;
-    vertical-align: top;
+    padding-left: 0;
 }
 
 /**************************************
@@ -317,11 +332,6 @@ form.search input.button
     border-bottom: 1px solid #EFF0F1;
     background: url("/html/eSolutions/img/arrow.gif") no-repeat 3px 6px;
     padding: 2px 5px 2px 20px;
-}
-
-* html body #sidebar ul.sidemenu li
-{
-    height: 1%;
 }
 
 #sidebar ul.sidemenu li a

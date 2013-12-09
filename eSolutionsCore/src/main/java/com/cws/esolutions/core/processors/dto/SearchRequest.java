@@ -23,9 +23,15 @@ import java.lang.reflect.Field;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.processors.enums.SearchRequestType;
 /**
+ * SearchRequest object to perform various types of searches.
+ *
+ * @author kmhuntly@gmail.com
+ * @version 1.0
+ */
+/*
  * eSolutionsCore
  * com.cws.esolutions.core.processors.dto
- * UserSearchRequest.java
+ * SearchRequest.java
  *
  * $Id: $
  * $Author: $
