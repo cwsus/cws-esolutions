@@ -1,12 +1,3 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-USE esolutionssvc;
-
 --
 -- Definition of table `esolutionssvc`.`articles`
 -- DATA TABLE
@@ -14,22 +5,22 @@ USE esolutionssvc;
 DROP TABLE IF EXISTS `esolutionssvc`.`articles`;
 CREATE TABLE `esolutionssvc`.`articles` (
     `kbase_page_hits` TINYINT NOT NULL default 0,
-    `kbase_article_id` VARCHAR(100) NOT NULL default '',
+    `kbase_article_id` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
     `kbase_article_createdate` BIGINT NOT NULL,
-    `kbase_article_author` VARCHAR(45) NOT NULL default '',
-    `kbase_article_keywords` VARCHAR(100) NOT NULL default '',
-    `kbase_article_title` VARCHAR(100) NOT NULL default '',
-    `kbase_article_symptoms` VARCHAR(100) NOT NULL default '',
-    `kbase_article_cause` VARCHAR(100) NOT NULL default '',
+    `kbase_article_author` VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
+    `kbase_article_keywords` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `kbase_article_title` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `kbase_article_symptoms` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `kbase_article_cause` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
     `kbase_article_resolution` TEXT NOT NULL,
-    `kbase_article_status` VARCHAR(15) NOT NULL DEFAULT 'NEW',
-    `kbase_article_reviewedby` VARCHAR(45),
+    `kbase_article_status` VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
+    `kbase_article_reviewedby` VARCHAR(45) CHARACTER SET UTF8,
     `kbase_article_revieweddate` BIGINT,
     `kbase_article_modifieddate` BIGINT,
-    `kbase_article_modifiedby` VARCHAR(45),
+    `kbase_article_modifiedby` VARCHAR(45) CHARACTER SET UTF8,
     PRIMARY KEY  (`kbase_article_id`),
     FULLTEXT KEY `articles` (`kbase_article_id`, `kbase_article_keywords`, `kbase_article_title`, `kbase_article_symptoms`, `kbase_article_cause`, `kbase_article_resolution`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
 --
 -- Dumping data for table `esolutionssvc`.`articles`
@@ -328,14 +319,4 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
-COMMIT;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
 COMMIT;

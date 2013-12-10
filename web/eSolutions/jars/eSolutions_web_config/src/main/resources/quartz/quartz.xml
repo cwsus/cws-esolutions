@@ -58,7 +58,7 @@
                 <job-name>CheckEmailMessages</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-                <cron-expression>0 0/15 * * * ?</cron-expression>
+                <cron-expression>0 */15 * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -79,7 +79,7 @@
                 <job-name>Deployer</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-                <cron-expression>0 0/15 * * * ?</cron-expression>
+                <cron-expression>0 */15 * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -100,7 +100,7 @@
                 <job-name>ResetRequestReaper</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
-                <cron-expression>0 0/15 * * * ?</cron-expression>
+                <cron-expression>0 */15 * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>

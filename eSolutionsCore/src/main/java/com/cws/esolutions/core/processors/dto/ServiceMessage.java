@@ -307,6 +307,19 @@ public class ServiceMessage implements Serializable
         return this.expiryDate;
     }
 
+    public final boolean setIsAlert()
+    {
+        final String methodName = ServiceMessage.CNAME + "#setIsAlert()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.isAlert);
+        }
+
+        return this.isAlert;
+    }
+
     public final boolean isAlert()
     {
         final String methodName = ServiceMessage.CNAME + "#isAlert()";

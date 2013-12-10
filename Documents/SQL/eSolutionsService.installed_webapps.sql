@@ -1,37 +1,28 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-USE esolutionssvc;
-
 --
 -- Definition of table `esolutionssvc`.`articles`
 -- DATA TABLE
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`installed_webapps`;
 CREATE TABLE `esolutionssvc`.`installed_webapps` (
-    `app_uid` varchar(64) NOT NULL,
-    `web_code` varchar(45) NOT NULL,
-    `webapp_name` varchar(45) NOT NULL,
-    `webapp_type` varchar(3) NOT NULL DEFAULT 'APP',
-    `server_cluster_name` varchar(45) DEFAULT NULL,
-    `force_operation` tinyint(1) NOT NULL DEFAULT '0',
-    `install_timeout` bigint(20) NOT NULL DEFAULT '60000',
-    `web_scm_path` varchar(100) DEFAULT '',
-    `web_project_directory` varchar(100) DEFAULT NULL,
-    `web_logs_directory` varchar(100) DEFAULT NULL,
-    `web_syslogs_directory` varchar(100) DEFAULT NULL,
-    `server_version` varchar(45) NOT NULL,
-    `entapp_description` text,
-    `pid_directory` varchar(45) NOT NULL,
-    `web_online_date` datetime DEFAULT NULL,
-    `web_offline_date` datetime DEFAULT NULL,
+    `app_uid` VARCHAR(64) CHARACTER SET UTF8 NOT NULL,
+    `web_code` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `webapp_name` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `webapp_type` VARCHAR(3) CHARACTER SET UTF8 NOT NULL DEFAULT 'APP',
+    `server_cluster_name` VARCHAR(45) CHARACTER SET UTF8 DEFAULT NULL,
+    `force_operation` TINYINT(1) NOT NULL DEFAULT '0',
+    `install_timeout` BIGINT(20) NOT NULL DEFAULT '60000',
+    `web_scm_path` VARCHAR(100) CHARACTER SET UTF8 DEFAULT '',
+    `web_project_directory` VARCHAR(100) CHARACTER SET UTF8 DEFAULT NULL,
+    `web_logs_directory` VARCHAR(100) CHARACTER SET UTF8 DEFAULT NULL,
+    `web_syslogs_directory` VARCHAR(100) CHARACTER SET UTF8 DEFAULT NULL,
+    `server_version` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `entapp_description` TEXT CHARACTER SET UTF8,
+    `pid_directory` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `web_online_date` DATETIME DEFAULT NULL,
+    `web_offline_date` DATETIME DEFAULT NULL,
     PRIMARY KEY (`web_code`),
     FULLTEXT KEY `webapps` (`web_code`,`webapp_name`,`server_version`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
 --
 -- Dumping data for table `esolutionssvc`.`articles`
@@ -79,14 +70,4 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
-COMMIT;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
 COMMIT;

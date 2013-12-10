@@ -1,31 +1,22 @@
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-USE esolutionssvc;
-
 --
 -- Definition of table `esolutionssvc`.`service_messages`
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`service_messages`;
 CREATE TABLE `esolutionssvc`.`service_messages` (
-    `svc_message_id` VARCHAR(128) NOT NULL,
-    `svc_message_title` VARCHAR(100) NOT NULL,
-    `svc_message_txt` TEXT NOT NULL,
-    `svc_message_author` VARCHAR(45) NOT NULL,
+    `svc_message_id` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `svc_message_title` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    `svc_message_txt` TEXT CHARACTER SET UTF8 NOT NULL,
+    `svc_message_author` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `svc_message_submitdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `svc_message_active` BOOLEAN NOT NULL DEFAULT TRUE,
     `svc_message_alert` BOOLEAN NOT NULL DEFAULT FALSE,
     `svc_message_expires` BOOLEAN NOT NULL DEFAULT FALSE,
     `svc_message_expirydate` TIMESTAMP,
     `svc_message_modifiedon` TIMESTAMP,
-    `svc_message_modifiedby` VARCHAR(45),
+    `svc_message_modifiedby` VARCHAR(45) CHARACTER SET UTF8,
     PRIMARY KEY (`svc_message_id`, `svc_message_title`), -- prevent the same message from being submitted twice (we hope)
     FULLTEXT KEY `FTK_svcMessages` (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
 -- Dumping data for table `esolutionssvc`.`service_messages`
 --
@@ -60,7 +51,10 @@ BEGIN
     AGAINST (+searchTerms WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_messages`
     WHERE MATCH (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
-    AGAINST (+searchTerms IN BOOLEAN MODE);
+    AGAINST (+searchTerms IN BOOLEAN MODE)
+    AND svc_message_active = TRUE
+    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
+    ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
@@ -170,9 +164,9 @@ COMMIT;
 -- Definition of procedure `esolutionssvc`.`retrAllSvcMessages`
 --
 DELIMITER $$
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServiceMessages`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAllSvcMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrServiceMessages`(
+CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrAllSvcMessages`(
 )
 BEGIN
     SELECT
@@ -189,8 +183,8 @@ BEGIN
         svc_message_modifiedby
     FROM `esolutionssvc`.`service_messages`
     WHERE svc_message_active = TRUE
-    AND svc_message_expires >= NOW()
-    OR svc_message_expires = FALSE
+    AND svc_message_alert = FALSE
+    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -222,21 +216,10 @@ BEGIN
     FROM `esolutionssvc`.`service_messages`
     WHERE svc_message_active = TRUE
     AND svc_message_alert = TRUE
-    AND svc_message_expires >= NOW()
-    OR svc_message_expires = FALSE
+    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 
 DELIMITER ;
-COMMIT;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-
 COMMIT;

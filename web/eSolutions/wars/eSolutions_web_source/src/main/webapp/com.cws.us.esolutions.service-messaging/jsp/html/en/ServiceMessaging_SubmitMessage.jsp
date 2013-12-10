@@ -82,6 +82,9 @@
             <form:radiobutton path="isActive" value="true" /><spring:message code="svc.messaging.system.message.active" />
             <form:radiobutton path="isActive" value="false" /><spring:message code="svc.messaging.system.message.inactive" />
             <form:errors path="isActive" cssClass="error" />
+            <label id="txtIsAlertMessage"><spring:message code="svc.messaging.system.message.alert" /></label>
+            <form:checkbox path="isAlert" value="true" /><spring:message code="svc.messaging.system.message.alert" />
+            <form:errors path="isAlert" cssClass="error" />
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
