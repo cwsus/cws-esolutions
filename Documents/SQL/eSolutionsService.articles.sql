@@ -36,7 +36,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getArticleByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getArticleByAttribute`(
     IN searchTerms VARCHAR(100),
     IN startRow INT
 )
@@ -75,7 +75,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrTopArticles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrTopArticles`(
+CREATE PROCEDURE `esolutionssvc`.`retrTopArticles`(
 )
 BEGIN
     SELECT
@@ -109,7 +109,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `retrArticle`(
+CREATE PROCEDURE `retrArticle`(
     IN articleId VARCHAR(100),
     IN isApproval BOOLEAN
 )
@@ -172,7 +172,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`addNewArticle`(
+CREATE PROCEDURE `esolutionssvc`.`addNewArticle`(
     IN articleId VARCHAR(45),
     IN author VARCHAR(45),
     IN keywords VARCHAR(100),
@@ -207,7 +207,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateArticle`(
+CREATE PROCEDURE `esolutionssvc`.`updateArticle`(
     IN articleId VARCHAR(45),
     IN keywords VARCHAR(100),
     IN title VARCHAR(100),
@@ -242,7 +242,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateArticleStatus`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateArticleStatus`(
+CREATE PROCEDURE `esolutionssvc`.`updateArticleStatus`(
     IN articleId VARCHAR(45),
     IN modifiedBy VARCHAR(45),
     IN articleStatus VARCHAR(15)
@@ -270,7 +270,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getArticleCount`(
+CREATE PROCEDURE `esolutionssvc`.`getArticleCount`(
     IN reqType VARCHAR(45)
 )
 BEGIN
@@ -290,7 +290,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrPendingArticles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrPendingArticles`(
+CREATE PROCEDURE `esolutionssvc`.`retrPendingArticles`(
     IN requestorId VARCHAR(100),
     IN startRow INT
 )

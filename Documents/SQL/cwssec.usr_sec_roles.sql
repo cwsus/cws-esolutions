@@ -47,7 +47,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`validateUserRoles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `validateUserRoles`(
+CREATE PROCEDURE `validateUserRoles`(
     IN userGuid VARCHAR(128),
     IN roleGuid VARCHAR(128)
 )

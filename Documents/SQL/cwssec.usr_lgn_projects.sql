@@ -28,7 +28,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addProjectToUser` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addProjectToUser`(
+CREATE PROCEDURE `cwssec`.`addProjectToUser`(
     IN guid VARCHAR(128),
     IN projectId VARCHAR(128)
 )
@@ -51,7 +51,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeProjectFromUser` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeProjectFromUser`(
+CREATE PROCEDURE `cwssec`.`removeProjectFromUser`(
     IN guid VARCHAR(128),
     IN projectId VARCHAR(128)
 )
@@ -73,7 +73,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`isUserAuthorizedForProject` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`isUserAuthorizedForProject`(
+CREATE PROCEDURE `cwssec`.`isUserAuthorizedForProject`(
     IN guid VARCHAR(128),
     IN projectId VARCHAR(128)
 )
@@ -94,7 +94,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrieveAuthorizedProjectsForUser` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrieveAuthorizedProjectsForUser`(
+CREATE PROCEDURE `cwssec`.`retrieveAuthorizedProjectsForUser`(
     IN guid VARCHAR(128)
 )
 BEGIN

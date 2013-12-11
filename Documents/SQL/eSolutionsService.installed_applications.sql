@@ -44,7 +44,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getApplicationByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getApplicationByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getApplicationByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -83,7 +83,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewApplication`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertNewApplication`(
+CREATE PROCEDURE `esolutionssvc`.`insertNewApplication`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion VARCHAR(10),
@@ -124,7 +124,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateApplicationData`(
+CREATE PROCEDURE `esolutionssvc`.`updateApplicationData`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion VARCHAR(10),
@@ -167,7 +167,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removeApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`removeApplicationData`(
+CREATE PROCEDURE `esolutionssvc`.`removeApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
@@ -188,7 +188,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getApplicationData`(
+CREATE PROCEDURE `esolutionssvc`.`getApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
@@ -222,7 +222,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getApplicationCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getApplicationCount`(
+CREATE PROCEDURE `esolutionssvc`.`getApplicationCount`(
 )
 BEGIN
     SELECT COUNT(*)
@@ -240,7 +240,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listApplications`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listApplications`(
+CREATE PROCEDURE `esolutionssvc`.`listApplications`(
     IN startRow INT
 )
 BEGIN

@@ -24,7 +24,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDataCenterByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getDataCenterByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getDataCenterByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -52,7 +52,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewDatacenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`addNewDatacenter`(
+CREATE PROCEDURE `esolutionssvc`.`addNewDatacenter`(
     IN datacenterGuid VARCHAR(128),
     IN datacenterName VARCHAR(45),
     IN datacenterStatus VARCHAR(45),
@@ -77,7 +77,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removeDataCenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`removeDataCenter`(
+CREATE PROCEDURE `esolutionssvc`.`removeDataCenter`(
     IN datacenterGuid VARCHAR(128)
 )
 BEGIN
@@ -98,7 +98,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDatacenterCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getDatacenterCount`(
+CREATE PROCEDURE `esolutionssvc`.`getDatacenterCount`(
 )
 BEGIN
     SELECT COUNT(*)
@@ -116,7 +116,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listDataCenters`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listDataCenters`(
+CREATE PROCEDURE `esolutionssvc`.`listDataCenters`(
     IN startRow INT
 )
 BEGIN
@@ -140,7 +140,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrDataCenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrDataCenter`(
+CREATE PROCEDURE `esolutionssvc`.`retrDataCenter`(
     IN datacenterGuid VARCHAR(128)
 )
 BEGIN

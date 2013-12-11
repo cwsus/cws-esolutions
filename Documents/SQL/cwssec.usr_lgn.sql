@@ -36,7 +36,7 @@ CREATE TABLE `cwssec`.`usr_lgn` (
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getUserByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getUserByAttribute`(
+CREATE PROCEDURE `cwssec`.`getUserByAttribute`(
     IN attributeName VARCHAR(100)
 )
 BEGIN
@@ -74,7 +74,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listUserAccounts`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`listUserAccounts`(
+CREATE PROCEDURE `cwssec`.`listUserAccounts`(
     IN attributeName VARCHAR(100)
 )
 BEGIN
@@ -108,7 +108,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addUserAccount`(
+CREATE PROCEDURE `cwssec`.`addUserAccount`(
     IN uid VARCHAR(45),
     IN userPassword VARCHAR(255),
     IN cwsRole VARCHAR(45),
@@ -145,7 +145,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`updateUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`updateUserAccount`(
+CREATE PROCEDURE `cwssec`.`updateUserAccount`(
     IN commonName VARCHAR(128),
     IN cwsRole VARCHAR(45),
     IN surname VARCHAR(100),
@@ -176,7 +176,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`updateUserPassword`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`updateUserPassword`(
+CREATE PROCEDURE `cwssec`.`updateUserPassword`(
     IN commonName VARCHAR(128),
     IN currentPassword VARCHAR(255),
     IN newPassword VARCHAR(255)
@@ -203,7 +203,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`resetUserPassword`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`resetUserPassword`(
+CREATE PROCEDURE `cwssec`.`resetUserPassword`(
     IN commonName VARCHAR(128),
     IN newPassword VARCHAR(255)
 )
@@ -228,7 +228,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`showUserAccounts`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`showUserAccounts`(
+CREATE PROCEDURE `cwssec`.`showUserAccounts`(
 )
 BEGIN
     SELECT
@@ -259,7 +259,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`showUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`showUserAccount`(
+CREATE PROCEDURE `cwssec`.`showUserAccount`(
     IN commonName VARCHAR(128)
 )
 BEGIN
@@ -293,7 +293,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeUserAccount`(
+CREATE PROCEDURE `cwssec`.`removeUserAccount`(
     IN commonName VARCHAR(128)
 )
 BEGIN
@@ -313,7 +313,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`performAuthentication`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`performAuthentication`(
+CREATE PROCEDURE `cwssec`.`performAuthentication`(
     IN guid VARCHAR(128),
     IN username VARCHAR(100),
     IN password VARCHAR(255)
@@ -351,7 +351,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`loginSuccess`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`loginSuccess`(
+CREATE PROCEDURE `cwssec`.`loginSuccess`(
     IN commonName VARCHAR(128),
     IN userName VARCHAR(100)
 )
@@ -376,7 +376,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`verifySecurityQuestions`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`verifySecurityQuestions`(
+CREATE PROCEDURE `cwssec`.`verifySecurityQuestions`(
     IN commonName VARCHAR(128),
     IN userName VARCHAR(100),
     IN secAnswerOne VARCHAR(255),
@@ -400,7 +400,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addOrUpdateSecurityQuestions`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addOrUpdateSecurityQuestions`(
+CREATE PROCEDURE `cwssec`.`addOrUpdateSecurityQuestions`(
     IN commonName VARCHAR(128),
     IN userName VARCHAR(100),
     IN userPassword VARCHAR(255),
@@ -433,7 +433,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`lockUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`lockUserAccount`(
+CREATE PROCEDURE `cwssec`.`lockUserAccount`(
     IN commonName VARCHAR(128)
 )
 BEGIN
@@ -459,7 +459,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`unlockUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`unlockUserAccount`(
+CREATE PROCEDURE `cwssec`.`unlockUserAccount`(
     IN commonName VARCHAR(128)
 )
 BEGIN
@@ -480,7 +480,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`modifyUserSuspension`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`modifyUserSuspension`(
+CREATE PROCEDURE `cwssec`.`modifyUserSuspension`(
     IN commonName VARCHAR(128),
     IN isSuspended BOOLEAN
 )
@@ -502,7 +502,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addPublicKey`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addPublicKey`(
+CREATE PROCEDURE `cwssec`.`addPublicKey`(
     IN commonName VARCHAR(128),
     IN publicKey VARBINARY(4352)
 )
@@ -524,7 +524,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrPublicKey`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrPublicKey`(
+CREATE PROCEDURE `cwssec`.`retrPublicKey`(
     IN commonName VARCHAR(128)
 )
 BEGIN
@@ -543,7 +543,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`passwordExpirationNotifier`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`passwordExpirationNotifier`(
+CREATE PROCEDURE `cwssec`.`passwordExpirationNotifier`(
 )
 BEGIN
     SELECT

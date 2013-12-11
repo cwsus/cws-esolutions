@@ -31,7 +31,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getMessagesByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getMessagesByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getMessagesByAttribute`(
     IN searchTerms VARCHAR(100)
 )
 BEGIN
@@ -67,7 +67,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`submitSvcMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`submitSvcMessage`(
+CREATE PROCEDURE `esolutionssvc`.`submitSvcMessage`(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -100,7 +100,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateServiceMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateServiceMessage`(
+CREATE PROCEDURE `esolutionssvc`.`updateServiceMessage`(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -136,7 +136,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServiceMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrServiceMessage`(
+CREATE PROCEDURE `esolutionssvc`.`retrServiceMessage`(
     IN requestId VARCHAR(45)
 )
 BEGIN
@@ -166,7 +166,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAllSvcMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrAllSvcMessages`(
+CREATE PROCEDURE `esolutionssvc`.`retrAllSvcMessages`(
 )
 BEGIN
     SELECT
@@ -198,7 +198,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAlertMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrAlertMessages`(
+CREATE PROCEDURE `esolutionssvc`.`retrAlertMessages`(
 )
 BEGIN
     SELECT

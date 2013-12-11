@@ -42,7 +42,7 @@ CREATE TABLE `esolutionssvc`.`dns_service` (
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getRecordByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getRecordByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getRecordByAttribute`(
     IN attributeName VARCHAR(126)
 )
 BEGIN
@@ -88,7 +88,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertApex`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertApex`(
+CREATE PROCEDURE `esolutionssvc`.`insertApex`(
     IN projectCode VARCHAR(255),
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
@@ -129,7 +129,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertRecord`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertRecord`(
+CREATE PROCEDURE `esolutionssvc`.`insertRecord`(
     IN projectCode VARCHAR(255),
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),

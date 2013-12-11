@@ -29,7 +29,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditEntryByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditEntryByAttribute`(
+CREATE PROCEDURE `cwssec`.`getAuditEntryByAttribute`(
     IN attributeName VARCHAR(100)
 )
 BEGIN
@@ -61,7 +61,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditCount`(
+CREATE PROCEDURE `cwssec`.`getAuditCount`(
     IN userguid VARCHAR(128)
 )
 BEGIN
@@ -80,7 +80,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditInterval`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getAuditInterval`(
+CREATE PROCEDURE `cwssec`.`getAuditInterval`(
     IN userguid VARCHAR(128),
     IN startRow INT
 )
@@ -112,7 +112,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`insertAuditEntry`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`insertAuditEntry`(
+CREATE PROCEDURE `cwssec`.`insertAuditEntry`(
     IN usersessid VARCHAR(100),
     IN username VARCHAR(45),
     IN userguid VARCHAR(128),

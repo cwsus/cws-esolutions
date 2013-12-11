@@ -23,7 +23,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`insertResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`insertResetData`(
+CREATE PROCEDURE `cwssec`.`insertResetData`(
     IN guid VARCHAR(128),
     IN resetId VARCHAR(128),
     IN timeCreated BIGINT(20),
@@ -48,7 +48,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`getResetData`(
+CREATE PROCEDURE `cwssec`.`getResetData`(
     IN resetId VARCHAR(128)
 )
 BEGIN
@@ -67,7 +67,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`verifySmsCodeForReset`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`verifySmsCodeForReset`(
+CREATE PROCEDURE `cwssec`.`verifySmsCodeForReset`(
     IN guid VARCHAR(128),
     IN resetId VARCHAR(128),
     IN smsId VARCHAR(8)
@@ -90,7 +90,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listActiveResetRequests`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`listActiveResetRequests`(
+CREATE PROCEDURE `cwssec`.`listActiveResetRequests`(
 )
 BEGIN
     SELECT cn, resetKey, createTime
@@ -107,7 +107,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeResetData`(
+CREATE PROCEDURE `cwssec`.`removeResetData`(
     IN commonName VARCHAR(128),
     IN resetId VARCHAR(128)
 )

@@ -30,7 +30,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`submitSvcRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`submitSvcRequest`(
+CREATE PROCEDURE `esolutionssvc`.`submitSvcRequest`(
     IN serviceId VARCHAR(128),
     IN requestAuthor VARCHAR(100),
     IN authorEmail VARCHAR(45),
@@ -69,7 +69,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`assignServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`assignServiceRequest`(
+CREATE PROCEDURE `esolutionssvc`.`assignServiceRequest`(
     IN messageId VARCHAR(128),
     IN assignee VARCHAR(45),
     IN assigneeEmail VARCHAR(100)
@@ -95,7 +95,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`acceptServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`acceptServiceRequest`(
+CREATE PROCEDURE `esolutionssvc`.`acceptServiceRequest`(
     IN messageId VARCHAR(128),
     IN comments TEXT
 )
@@ -120,7 +120,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`rejectServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`rejectServiceRequest`(
+CREATE PROCEDURE `esolutionssvc`.`rejectServiceRequest`(
     IN messageId VARCHAR(128),
     IN comments TEXT
 )
@@ -145,7 +145,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`completeServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`completeServiceRequest`(
+CREATE PROCEDURE `esolutionssvc`.`completeServiceRequest`(
     IN messageId VARCHAR(128),
     IN comments TEXT
 )
@@ -170,7 +170,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`closeServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`closeServiceRequest`(
+CREATE PROCEDURE `esolutionssvc`.`closeServiceRequest`(
     IN messageId VARCHAR(128),
     IN comments TEXT
 )

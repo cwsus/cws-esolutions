@@ -34,7 +34,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -57,7 +57,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewPlatform`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`addNewPlatform`(
+CREATE PROCEDURE `esolutionssvc`.`addNewPlatform`(
     IN platformGuid VARCHAR(128),
     IN platformName VARCHAR(45),
     IN platformRegion VARCHAR(45),
@@ -85,7 +85,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updatePlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updatePlatformData`(
+CREATE PROCEDURE `esolutionssvc`.`updatePlatformData`(
     IN platformGuid VARCHAR(128),
     IN platformName VARCHAR(45),
     IN platformRegion VARCHAR(45),
@@ -115,7 +115,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removePlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`removePlatformData`(
+CREATE PROCEDURE `esolutionssvc`.`removePlatformData`(
     IN platformGuid VARCHAR(128)
 )
 BEGIN
@@ -135,7 +135,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformData`(
+CREATE PROCEDURE `esolutionssvc`.`getPlatformData`(
     IN platformGuid VARCHAR(128)
 )
 BEGIN
@@ -154,7 +154,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getPlatformCount`(
+CREATE PROCEDURE `esolutionssvc`.`getPlatformCount`(
 )
 BEGIN
     SELECT COUNT(*)
@@ -172,7 +172,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listPlatforms`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listPlatforms`(
+CREATE PROCEDURE `esolutionssvc`.`listPlatforms`(
     IN startRow INT
 )
 BEGIN

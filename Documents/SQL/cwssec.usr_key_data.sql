@@ -20,7 +20,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addUserKeys` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addUserKeys`(
+CREATE PROCEDURE `cwssec`.`addUserKeys`(
     IN userGuid VARCHAR(45),
     IN privKey VARBINARY(4352)
 )
@@ -43,7 +43,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrUserKeys` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrUserKeys`(
+CREATE PROCEDURE `cwssec`.`retrUserKeys`(
     IN userGuid VARCHAR(45)
 )
 BEGIN
@@ -62,7 +62,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`deleteUserKeys` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`deleteUserKeys`(
+CREATE PROCEDURE `cwssec`.`deleteUserKeys`(
     IN userGuid VARCHAR(45)
 )
 BEGIN

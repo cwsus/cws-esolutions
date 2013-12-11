@@ -20,7 +20,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addUserSalt`(
+CREATE PROCEDURE `cwssec`.`addUserSalt`(
     IN guid VARCHAR(100),
     IN salt VARCHAR(128),
     in sType VARCHAR(15)
@@ -42,7 +42,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrUserSalt`(
+CREATE PROCEDURE `cwssec`.`retrUserSalt`(
     IN guid VARCHAR(100),
     IN sType VARCHAR(15)
 )
@@ -63,7 +63,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`updateUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`updateUserSalt`(
+CREATE PROCEDURE `cwssec`.`updateUserSalt`(
     IN guid VARCHAR(100),
     IN saltValue VARCHAR(64),
     IN sType VARCHAR(15)
@@ -86,7 +86,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeUserData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeUserData`(
+CREATE PROCEDURE `cwssec`.`removeUserData`(
     IN guid VARCHAR(100)
 )
 BEGIN

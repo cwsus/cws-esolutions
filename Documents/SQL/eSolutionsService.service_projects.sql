@@ -24,7 +24,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getProjectByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getProjectByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -47,7 +47,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewProject`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertNewProject`(
+CREATE PROCEDURE `esolutionssvc`.`insertNewProject`(
     IN projectGuid VARCHAR(128),
     IN projectName VARCHAR(45),
     IN primaryOwner VARCHAR(45),
@@ -76,7 +76,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateProjectData`(
+CREATE PROCEDURE `esolutionssvc`.`updateProjectData`(
     IN projectGuid VARCHAR(128),
     IN primaryOwner VARCHAR(45),
     IN secondaryOwner VARCHAR(45),
@@ -108,7 +108,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removeProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`removeProjectData`(
+CREATE PROCEDURE `esolutionssvc`.`removeProjectData`(
     IN projectGuid VARCHAR(128)
 )
 BEGIN
@@ -128,7 +128,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getProjectData`(
+CREATE PROCEDURE `esolutionssvc`.`getProjectData`(
     IN projectGuid VARCHAR(128)
 )
 BEGIN
@@ -147,7 +147,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getProjectCount`(
+CREATE PROCEDURE `esolutionssvc`.`getProjectCount`(
 )
 BEGIN
     SELECT COUNT(*)
@@ -165,7 +165,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listProjects`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`listProjects`(
+CREATE PROCEDURE `esolutionssvc`.`listProjects`(
     IN startRow INT
 )
 BEGIN

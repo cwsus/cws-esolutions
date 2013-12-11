@@ -31,7 +31,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrieve_user_questions`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrieve_user_questions`(
+CREATE PROCEDURE `cwssec`.`retrieve_user_questions`(
 )
 BEGIN
     SELECT *

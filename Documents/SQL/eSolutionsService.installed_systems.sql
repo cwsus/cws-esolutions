@@ -49,7 +49,7 @@ CREATE TABLE `esolutionssvc`.`installed_systems` (
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getServerByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -104,7 +104,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerByAttributeWithRegion`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerByAttributeWithRegion`(
+CREATE PROCEDURE `esolutionssvc`.`getServerByAttributeWithRegion`(
     IN attributeName VARCHAR(100),
     IN region VARCHAR(25),
     IN startRow INT
@@ -162,7 +162,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`validateServerHostName`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`validateServerHostName`(
+CREATE PROCEDURE `esolutionssvc`.`validateServerHostName`(
     IN operHostname VARCHAR(128)
 )
 BEGIN
@@ -180,7 +180,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewServer`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`insertNewServer`(
+CREATE PROCEDURE `esolutionssvc`.`insertNewServer`(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -237,7 +237,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateServerData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`updateServerData`(
+CREATE PROCEDURE `esolutionssvc`.`updateServerData`(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -313,7 +313,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retireServer`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retireServer`(
+CREATE PROCEDURE `esolutionssvc`.`retireServer`(
     IN systemGuid VARCHAR(128)
 )
 BEGIN
@@ -335,7 +335,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerCount`(
+CREATE PROCEDURE `esolutionssvc`.`getServerCount`(
 )
 BEGIN
     SELECT COUNT(*)
@@ -353,7 +353,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerList`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getServerList`(
+CREATE PROCEDURE `esolutionssvc`.`getServerList`(
     IN startRow INT
 )
 BEGIN
@@ -403,7 +403,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServerData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrServerData`(
+CREATE PROCEDURE `esolutionssvc`.`retrServerData`(
     IN serverGuid VARCHAR(100)
 )
 BEGIN
@@ -453,7 +453,7 @@ DELIMITER ;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServersForDmgr`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`retrServersForDmgr`(
+CREATE PROCEDURE `esolutionssvc`.`retrServersForDmgr`(
     IN serverGuid VARCHAR(100)
 )
 BEGIN

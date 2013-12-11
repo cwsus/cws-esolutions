@@ -38,7 +38,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getWebappByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `esolutionssvc`.`getWebappByAttribute`(
+CREATE PROCEDURE `esolutionssvc`.`getWebappByAttribute`(
     IN searchTerms VARCHAR(100),
     IN startRow INT
 )

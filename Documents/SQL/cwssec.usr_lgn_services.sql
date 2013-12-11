@@ -50,7 +50,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrAvailableServices` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`retrAvailableServices`(
+CREATE PROCEDURE `cwssec`.`retrAvailableServices`(
 )
 BEGIN
     SELECT usr_svc_uri, usr_svc_svcid
@@ -93,7 +93,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addServiceToUser`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`addServiceToUser`(
+CREATE PROCEDURE `cwssec`.`addServiceToUser`(
     IN userSecId VARCHAR(45),
     IN serviceid VARCHAR(45)
 )
@@ -113,7 +113,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeServiceFromUser`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`removeServiceFromUser`(
+CREATE PROCEDURE `cwssec`.`removeServiceFromUser`(
     IN userSecId VARCHAR(45),
     IN serviceid VARCHAR(45)
 )
@@ -134,7 +134,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`verifySvcForUser`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`verifySvcForUser`(
+CREATE PROCEDURE `cwssec`.`verifySvcForUser`(
     IN userSecId VARCHAR(45),
     IN serviceid VARCHAR(45)
 )
@@ -156,7 +156,7 @@ COMMIT;
 DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listServicesForUser` $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE DEFINER=`appuser`@`localhost` PROCEDURE `cwssec`.`listServicesForUser`(
+CREATE PROCEDURE `cwssec`.`listServicesForUser`(
     IN userGuid VARCHAR(128)
 )
 BEGIN
