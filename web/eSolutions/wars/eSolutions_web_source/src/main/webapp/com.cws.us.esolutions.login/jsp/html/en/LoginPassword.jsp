@@ -28,6 +28,27 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.password.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+            document.getElementById('txtPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('password').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

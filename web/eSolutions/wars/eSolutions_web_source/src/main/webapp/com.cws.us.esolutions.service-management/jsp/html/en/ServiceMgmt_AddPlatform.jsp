@@ -27,6 +27,55 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.platformName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A platform name must be provided.';
+            document.getElementById('txtPlatformName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('platformName').focus();
+        }
+        else if (theForm.status.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A platform status must be provided.';
+            document.getElementById('txtPlatformStatus').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('platformName').focus();
+        }
+        else if ((theForm.appServers) && (theForm.appServers.value == ''))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Target application servers must be provided.';
+            document.getElementById('txtPlatformAppservers').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('platformName').focus();
+        }
+        else if ((theForm.webServers) && (theForm.webServers.value == ''))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Target web servers must be provided.';
+            document.getElementById('txtPlatformWebservers').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('platformName').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>

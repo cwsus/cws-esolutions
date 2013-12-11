@@ -27,6 +27,37 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.telNumber.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide a contact telephone number.';
+            document.getElementById('txtTelNumber').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('telNumber').focus();
+        }
+        else if (theForm.pagerNumber.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide a notification pager number.';
+            document.getElementById('txtPagerNumber').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('pagerNumber').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="user.account.update.security" /></h1>
     <ul>

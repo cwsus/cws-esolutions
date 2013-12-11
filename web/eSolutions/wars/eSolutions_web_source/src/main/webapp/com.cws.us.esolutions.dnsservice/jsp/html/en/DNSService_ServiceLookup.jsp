@@ -27,6 +27,28 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.recordName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide a hostname or IP address to perform a query against.';
+            document.getElementById('txtServiceName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('recordName').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

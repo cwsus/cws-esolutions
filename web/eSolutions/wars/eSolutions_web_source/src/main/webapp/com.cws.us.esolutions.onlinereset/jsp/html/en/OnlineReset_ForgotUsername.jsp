@@ -27,6 +27,28 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.emailAddr.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your email address must be provided.';
+            document.getElementById('txtEmailAddr').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('emailAddr').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

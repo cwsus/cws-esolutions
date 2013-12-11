@@ -27,6 +27,28 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.username.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+            document.getElementById('txtUsername').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('username').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

@@ -27,6 +27,121 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.secQuestionOne.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+            document.getElementById('txtQuestionOne').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else if (theForm.secQuestionTwo.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+            document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        if (theForm.secAnswerOne.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
+            document.getElementById('txtAnswerOne').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else if (theForm.secAnswerTwo.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A security answer must be selected.';
+            document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else if (theForm.currentPassword.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your current password must be provided.';
+            document.getElementById('txtPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secQuestionOne').focus();
+        }
+        else
+        {
+            if (theForm.secQuestionOne.value == theForm.secQuestionTwo.value) // make sure the questions arent the same
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'The security questions must be different.';
+                document.getElementById('txtQuestionOne').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else if (theForm.secAnswerOne.value == theForm.secAnswerTwo.value) // make sure the answers arent the same
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'The security answers must be different.';
+                document.getElementById('txtQuestionOne').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else if (theForm.secQuestionOne.value == theForm.secAnswerOne.value) // make sure question 1 doesnt match answer 1
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else if (theForm.secQuestionTwo.value == theForm.secAnswerTwo.value) // make sure question 2 doesnt match answer 2
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else if (theForm.secQuestionOne.value == theForm.secAnswerTwo.value) // make sure question 1 doesnt match answer 2
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else if (theForm.secQuestionTwo.value == theForm.secAnswerOne.value)
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'A security question must be selected.';
+                document.getElementById('txtQuestionTwo').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('secQuestionOne').focus();
+            }
+            else
+            {
+                theForm.submit();
+            }
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="user.account.update.security" /></h1>
     <ul>

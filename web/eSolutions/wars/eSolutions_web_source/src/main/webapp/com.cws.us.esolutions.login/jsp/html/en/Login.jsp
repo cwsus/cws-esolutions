@@ -28,6 +28,35 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.loginUser.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your username must be provided.';
+            document.getElementById('txtUsername').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('username').focus();
+        }
+        else if (theForm.loginPass.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Your password must be provided.';
+            document.getElementById('txtPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('username').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

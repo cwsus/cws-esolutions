@@ -9,7 +9,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Your New Account" />
+        <property name="subject" value="Your New Account" />
         <property name="text">
             <value>
                 <![CDATA[
@@ -36,7 +36,7 @@
             <value><![CDATA[eSolutions Administrator <noreply@caspersbox.com>]]></value>
         </property>
         <property name="to" value="%s" />
-        <property name="subject" value="[ %s ] Your Password Request" />
+        <property name="subject" value="Your Password Request" />
         <property name="text">
             <value>
                 <![CDATA[

@@ -27,6 +27,28 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.searchTerms.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Search terms must be provided.';
+            document.getElementById('txtSearchTerms').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('searchTerms').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="kbase.header" /></h1>
     <ul>

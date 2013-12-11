@@ -28,6 +28,38 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.messageTitle.value == '')
+        {
+            document.getElementById('validationError').innerHTML = 'A message subject must be provided.';
+            document.getElementById('txtSysMessageSubject').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('messageTitle').focus();
+        }
+        else if (theForm.messageText.value == '')
+        {
+            document.getElementById('validationError').innerHTML = 'A message body must be provided.';
+            document.getElementById('txtSysMessageBody').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('datacenterStatus').focus();
+        }
+        else if (!((theForm.isActive1.checked)) && (!(theForm.isActive2.checked)))
+        {
+            document.getElementById('validationError').innerHTML = 'A message status must be provided.';
+            document.getElementById('txtIsMessageActive').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="svc.messaging.list.messages" /></h1>
     <ul>

@@ -220,8 +220,6 @@ public final class EmailUtils
             // handing it here.
             if (message.getMessageTo().size() != 0)
             {
-                String messageID = (StringUtils.isBlank(message.getMessageId())) ? message.getMessageId() : RandomStringUtils.randomAlphanumeric(16);
-
                 for (String to : message.getMessageTo())
                 {
                     if (DEBUG)
@@ -233,7 +231,8 @@ public final class EmailUtils
                 }
 
                 mailMessage.setFrom(new InternetAddress(message.getEmailAddr().get(0)));
-                mailMessage.setSubject("[" + messageID + "] " + message.getMessageSubject());
+                mailMessage.setSubject("[" + RandomStringUtils.randomAlphanumeric(
+                        appBean.getConfigData().getAppConfig().getMessageIdLength()) + "] " + message.getMessageSubject());
                 mailMessage.setContent(message.getMessageBody(), "text/html");
 
                 if (message.isAlert())

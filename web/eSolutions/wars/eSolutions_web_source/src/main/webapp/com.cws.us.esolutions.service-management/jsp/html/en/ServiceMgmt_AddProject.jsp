@@ -27,6 +27,82 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.projectCode.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A project code must be provided.';
+            document.getElementById('txtProjectCode').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('projectCode').focus();
+        }
+        else if (theForm.projectStatus.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A project status must be provided.';
+            document.getElementById('txtProjectStatus').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('projectCode').focus();
+        }
+        else if (theForm.primaryContact.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A project contact must be provided.';
+            document.getElementById('txtPrimaryContact').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('projectCode').focus();
+        }
+        else if (theForm.devEmail.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
+            document.getElementById('txtContactEmail').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('devEmail').focus();
+        }
+        else if (theForm.prodEmail.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A contact email must be provided.';
+            document.getElementById('txtContactEmail').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('prodEmail').focus();
+        }
+        else if (theForm.changeQueue.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A change queue must be provided.';
+            document.getElementById('txtChangeQueue').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('projectCode').focus();
+        }
+        else if (theForm.incidentQueue.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'An incident queue must be provided.';
+            document.getElementById('txtIncidentQueue').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('projectCode').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>

@@ -27,6 +27,28 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.serverGuid.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A deployment manager must be provided.';
+            document.getElementById('txtPlatformDmgr').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('serverGuid').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>

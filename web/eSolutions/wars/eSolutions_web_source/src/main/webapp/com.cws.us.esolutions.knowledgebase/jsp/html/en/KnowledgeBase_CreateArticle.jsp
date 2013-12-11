@@ -27,6 +27,64 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.title.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The new article must have a title.';
+            document.getElementById('txtArticleTitle').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('title').focus();
+        }
+        else if (theForm.symptoms.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The new article must have associated symptoms.';
+            document.getElementById('txtArticleSymptoms').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('symptoms').focus();
+        }
+        else if (theForm.cause.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The new article must have an associated cause.';
+            document.getElementById('txtArticleCause').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('cause').focus();
+        }
+        else if (theForm.keywords.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The new article must have searchable keywords.';
+            document.getElementById('txtArticleKeywords').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('keywords').focus();
+        }
+        else if (theForm.resolution.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The new article must have an associated resolution.';
+            document.getElementById('txtArticleResolution').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('resolution').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="kbase.header" /></h1>
     <ul>

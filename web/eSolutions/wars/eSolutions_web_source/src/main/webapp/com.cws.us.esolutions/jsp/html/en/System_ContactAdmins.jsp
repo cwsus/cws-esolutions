@@ -28,6 +28,36 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.messageSubject.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide a brief subject for your request.';
+            document.getElementById('txtMessageSubject').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('messageSubject').focus();
+        }
+        else if (theForm.messageBody.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide the information regarding your request.';
+            document.getElementById('txtMessageBody').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('messageSubject').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

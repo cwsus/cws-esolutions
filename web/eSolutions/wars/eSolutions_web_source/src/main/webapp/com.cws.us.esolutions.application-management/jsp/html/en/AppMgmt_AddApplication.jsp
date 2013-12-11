@@ -41,6 +41,73 @@
             document.getElementById('scmData').style.display = 'none';
         }
     }
+
+    function validateForm(theForm)
+    {
+        if (theForm.applicationName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'An application name must be provided.';
+            document.getElementById('txtApplicationName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationName').focus();
+        }
+        else if (theForm.version.value == '')
+        {
+            // default to 1.0
+            document.getElementById('applicationName').value = '1.0';
+        }
+        else if (theForm.clusterName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A target application cluster must be provided.';
+            document.getElementById('txtApplicationCluster').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationName').focus();
+        }
+        else if (theForm.project.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The application must be associated with a project.';
+            document.getElementById('txtApplicationProject').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationName').focus();
+        }
+        else if (theForm.platform.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'The application must be associated with a platform.';
+            document.getElementById('txtApplicationPlatform').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationPlatform').focus();
+        }
+        else if (theForm.logsPath.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A valid path must be provided for application logs.';
+            document.getElementById('txtApplicationLogsPath').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationName').focus();
+        }
+        else if (theForm.installPath.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A valid path for application binaries must be provided.';
+            document.getElementById('txtApplicationInstallPath').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('applicationName').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
     //-->
 </script>
 

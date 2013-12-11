@@ -28,6 +28,48 @@
  */
 --%>
 
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        var i = 0;
+        var f = 0;
+        var entryFound = false;
+
+        for (f = 0; f < document.forms.length; f++)
+        {
+            // for each element in each form
+            for (i = 0; i < document.forms[f].length; i++)
+            {
+                // if it's not a hidden element, disabled or a button
+                if ((document.forms[f][i].type != "hidden") && (document.forms[f][i].disabled != true) && (document.forms[f][i].type != "button"))
+                {
+                    // clear it
+                    if (document.forms[f][i].value != '')
+                    {
+                        entryFound = true;
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (entryFound)
+        {
+            theForm.submit();
+        }
+        else
+        {
+            document.getElementById('validationError').innerHTML = 'A search criterion must be provided.';
+            document.getElementById('txtUserName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('username').focus();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="user.mgmt.header" /></h1>
     <ul>

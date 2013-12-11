@@ -31,8 +31,8 @@
 <head>
     <title><tiles:insertAttribute name="pageTitle" /></title>
     <link rel="stylesheet" type="text/css" media="all" href="/html/eSolutions/css/esolutions.css" />
-    <link rel="image/x-icon" href="/favicon.ico" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="image/x-icon" href="/html/eSolutions/img/favicon.ico" />
+    <link rel="shortcut icon" href="/html/eSolutions/img/favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Script-Type" content="text/javascript" />
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta http-equiv="Content-Language" content="en-US" />

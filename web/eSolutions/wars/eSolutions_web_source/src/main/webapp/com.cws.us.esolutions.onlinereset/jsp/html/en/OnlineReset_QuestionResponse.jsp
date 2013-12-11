@@ -27,6 +27,37 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.secAnswerOne.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+            document.getElementById('txtAnswerOne').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secAnswerOne').focus();
+        }
+        else if (theForm.secAnswerTwo.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide your account username.';
+            document.getElementById('txtAnswerTwo').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('secAnswerOne').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">&nbsp;</div>
 
 <div id="main">

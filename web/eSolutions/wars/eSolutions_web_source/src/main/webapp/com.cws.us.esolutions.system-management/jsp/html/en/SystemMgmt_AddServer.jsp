@@ -99,6 +99,101 @@
             }
         }
     }
+
+    function validateForm(theForm)
+    {
+        if (theForm.osName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'An OS type must be provided.';
+            document.getElementById('txtOsName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('osName').focus();
+        }
+        else if (theForm.operHostName.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A system hostname must be provided.';
+            document.getElementById('txtOperHostname').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('osName').focus();
+        }
+        else if (theForm.operIpAddress.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A system IP address must be provided.';
+            document.getElementById('txtOperAddress').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('osName').focus();
+        }
+        else
+        {
+            if ((theForm.serverType.value == 'DMGR') || (theForm.serverType.value == 'VIRTUALHOST'))
+            {
+                if (theForm.serverType.value == 'DMGR') 
+                {
+                    if ((theForm.dmgrPort.value == '') || (theForm.dmgrPort.value == 0))
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no service port was provided.';
+                        document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                        document.getElementById("dmgrPort").style.display = 'block';
+                        document.getElementById("mgrUrl").style.display = 'none';
+                        document.getElementById('serverType').selected.value = 'DMGR';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('osName').focus();
+                    }
+                    else if (theForm.mgrUrl.value == '')
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'Server type specified as Deployment Manager but no manager URL was provided.';
+                        document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                        document.getElementById("dmgrPort").style.display = 'block';
+                        document.getElementById("mgrUrl").style.display = 'none';
+                        document.getElementById('serverType').selected.value = 'DMGR';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('osName').focus();
+                    }
+                    else
+                    {
+                        theForm.submit();
+                    }
+                }
+                else if (theForm.serverType.value == 'VIRTUALHOST')
+                {
+                    if (theForm.mgrUrl.value == '')
+                    {
+                        clearText(theForm);
+
+                        document.getElementById('validationError').innerHTML = 'Server type specified as Virtual Manager but no manager URL was provided.';
+                        document.getElementById('txtDmgrPort').style.color = '#FF0000';
+                        document.getElementById("dmgrPort").style.display = 'block';
+                        document.getElementById("mgrUrl").style.display = 'none';
+                        document.getElementById('serverType').selected.value = 'VIRTUALHOST';
+                        document.getElementById('execute').disabled = false;
+                        document.getElementById('osName').focus();
+                    }
+                    else
+                    {
+                        theForm.submit();
+                    }
+                }
+                else
+                {
+                    theForm.submit();
+                }
+            }
+            else
+            {
+                theForm.submit();
+            }
+        }
+    }
     //-->
 </script>
 

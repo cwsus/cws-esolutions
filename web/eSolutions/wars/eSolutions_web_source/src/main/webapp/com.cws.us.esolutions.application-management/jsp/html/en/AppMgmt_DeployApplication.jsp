@@ -27,6 +27,45 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (!((theForm.deploymentType1.checked)) && (!(theForm.deploymentType2.checked)))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide the deployment type.';
+            document.getElementById('txtDeploymentType').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+        }
+        else if ((theForm.version.value == '') || (theForm.version.value == '0.0'))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide the software version to deploy.';
+            document.getElementById('txtScmVersion').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('version').focus();
+        }
+        else if ((theForm.file) && (theForm.file.value == ''))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'Please provide the file to deploy.';
+            document.getElementById('txtMessageSubject').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('messageSubject').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="app.mgmt.header" /></h1>
     <ul>

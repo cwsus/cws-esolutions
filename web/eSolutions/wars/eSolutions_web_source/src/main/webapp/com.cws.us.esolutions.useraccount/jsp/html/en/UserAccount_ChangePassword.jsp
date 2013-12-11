@@ -27,6 +27,67 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if ((theForm.currentPassword) && (theForm.currentPassword.value == ''))
+        {
+            document.getElementById('validationError').innerHTML = 'You must provide your current password.';
+            document.getElementById('txtCurrentPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('currentPassword').focus();
+        }
+        else if (theForm.newPassword.value == '')
+        {
+            document.getElementById('validationError').innerHTML = 'You must provide your new password.';
+            document.getElementById('txtNewPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('newPassword').focus();
+        }
+        else if (theForm.confirmPassword.value == '')
+        {
+            document.getElementById('validationError').innerHTML = 'Your new password must be confirmed.';
+            document.getElementById('txtConfirmPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('confirmPassword').focus();
+        }
+        else
+        {
+            if ((theForm.currentPassword) && (theForm.currentPassword.value == theForm.newPassword.value))
+            {
+                clearForm();
+
+                document.getElementById('validationError').innerHTML = 'Your new password cannot match your existing password.';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('currentPassword').focus();
+            }
+            else if ((theForm.currentPassword) && (theForm.currentPassword.value == theForm.confirmPassword.value))
+            {
+                clearForm();
+
+                document.getElementById('validationError').innerHTML = 'Your new password cannot match your existing password.';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('currentPassword').focus();
+            }
+            else if (theForm.newPassword.value != theForm.confirmPassword.value)
+            {
+                clearForm();
+
+                document.getElementById('validationError').innerHTML = 'Your new and confirmed passwords must match.';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('currentPassword').focus();
+            }
+            else
+            {
+                theForm.submit();
+            }
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="user.account.update.security" /></h1>
     <ul>

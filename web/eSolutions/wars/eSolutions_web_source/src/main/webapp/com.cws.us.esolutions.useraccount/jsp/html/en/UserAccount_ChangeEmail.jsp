@@ -27,6 +27,49 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.emailAddr.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide your new email address.';
+            document.getElementById('txtEmailAddr').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('emailAddr').focus();
+        }
+        if (theForm.currentPassword.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'You must provide your password.';
+            document.getElementById('txtPassword').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('emailAddr').focus();
+        }
+        else
+        {
+            if (checkEmailAddr(theForm.emailAddr.value))
+            {
+                theForm.submit();
+            }
+            else
+            {
+                clearText(theForm);
+
+                document.getElementById('validationError').innerHTML = 'Your email address did not pass validation. Please provide a new email address.';
+                document.getElementById('txtEmailAddr').style.color = '#FF0000';
+                document.getElementById('execute').disabled = false;
+                document.getElementById('emailAddr').focus();
+            }
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="user.account.update.security" /></h1>
     <ul>

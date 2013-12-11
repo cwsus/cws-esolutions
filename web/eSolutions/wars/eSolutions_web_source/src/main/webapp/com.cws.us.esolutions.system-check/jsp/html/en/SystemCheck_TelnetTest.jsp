@@ -27,6 +27,37 @@
  *     Created.
  */
 --%>
+
+<script>
+<!--
+    function validateForm(theForm)
+    {
+        if (theForm.targetServer.value == '')
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A target host must be provided.';
+            document.getElementById('txtTargetHostName').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('targetServer').focus();
+        }
+        else if ((theForm.targetPort.value == '') || (isNaN(theForm.targetPort.value)))
+        {
+            clearText(theForm);
+
+            document.getElementById('validationError').innerHTML = 'A target port number must be provided.';
+            document.getElementById('txtTargetPort').style.color = '#FF0000';
+            document.getElementById('execute').disabled = false;
+            document.getElementById('targetServer').focus();
+        }
+        else
+        {
+            theForm.submit();
+        }
+    }
+//-->
+</script>
+
 <div id="sidebar">
     <h1><spring:message code="system.check.header" /></h1>
     <ul>
