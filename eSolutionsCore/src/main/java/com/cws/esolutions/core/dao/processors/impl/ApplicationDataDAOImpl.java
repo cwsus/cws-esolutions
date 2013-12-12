@@ -67,39 +67,36 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
-            {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, value.get(0)); // appGuid
-                stmt.setString(2, value.get(1)); // appName
-                stmt.setString(3, value.get(2)); // appVersion
-                stmt.setString(4, value.get(3)); // basePath
-                stmt.setString(5, value.get(4)); // scm path
-                stmt.setString(6, value.get(5)); // clusterName
-                stmt.setString(7, value.get(6)); // jvmName
-                stmt.setString(8, value.get(8)); // installPath
-                stmt.setString(9, value.get(8)); // logsDir
-                stmt.setString(10, value.get(9)); // pidDir
-                stmt.setString(11, value.get(10)); // projectGuid
-                stmt.setString(12, value.get(11)); // platformGuid
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-            }
-            else
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, value.get(0)); // appGuid
+            stmt.setString(2, value.get(1)); // appName
+            stmt.setString(3, value.get(2)); // appVersion
+            stmt.setString(4, value.get(3)); // basePath
+            stmt.setString(5, value.get(4)); // scm path
+            stmt.setString(6, value.get(5)); // clusterName
+            stmt.setString(7, value.get(6)); // jvmName
+            stmt.setString(8, value.get(8)); // installPath
+            stmt.setString(9, value.get(8)); // logsDir
+            stmt.setString(10, value.get(9)); // pidDir
+            stmt.setString(11, value.get(10)); // projectGuid
+            stmt.setString(12, value.get(11)); // platformGuid
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -147,39 +144,36 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
-            {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-                stmt.setString(1, value.get(0)); // appGuid
-                stmt.setString(2, value.get(1)); // appName
-                stmt.setString(3, value.get(2)); // appVersion
-                stmt.setString(4, value.get(3)); // basePath
-                stmt.setString(5, value.get(4)); // scm path
-                stmt.setString(6, value.get(5)); // clusterName
-                stmt.setString(7, value.get(6)); // jvmName
-                stmt.setString(8, value.get(8)); // installPath
-                stmt.setString(9, value.get(8)); // logsDir
-                stmt.setString(10, value.get(9)); // pidDir
-                stmt.setString(11, value.get(10)); // projectGuid
-                stmt.setString(12, value.get(11)); // platformGuid
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-            }
-            else
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, value.get(0)); // appGuid
+            stmt.setString(2, value.get(1)); // appName
+            stmt.setString(3, value.get(2)); // appVersion
+            stmt.setString(4, value.get(3)); // basePath
+            stmt.setString(5, value.get(4)); // scm path
+            stmt.setString(6, value.get(5)); // clusterName
+            stmt.setString(7, value.get(6)); // jvmName
+            stmt.setString(8, value.get(8)); // installPath
+            stmt.setString(9, value.get(8)); // logsDir
+            stmt.setString(10, value.get(9)); // pidDir
+            stmt.setString(11, value.get(10)); // projectGuid
+            stmt.setString(12, value.get(11)); // platformGuid
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -223,28 +217,25 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
-            {
-                sqlConn.setAutoCommit(true);
-
-                stmt = sqlConn.prepareCall("{CALL removeApplicationData(?)}");
-                stmt.setString(1, value); // systemGuid
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug(stmt.toString());
-                }
-
-                isComplete = (!(stmt.execute()));
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isComplete: {}", isComplete);
-                }
-            }
-            else
+            if (sqlConn.isClosed())
             {
                 throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL removeApplicationData(?)}");
+            stmt.setString(1, value); // systemGuid
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            isComplete = (!(stmt.execute()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isComplete: {}", isComplete);
             }
         }
         catch (SQLException sqx)
@@ -288,42 +279,39 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
-                sqlConn.setAutoCommit(true);
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
 
-                stmt = sqlConn.prepareCall("{CALL getApplicationCount()}");
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getApplicationCount()}");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    count = resultSet.getInt(1);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        count = resultSet.getInt(1);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("count: {}", count);
-                        }
+                        DEBUGGER.debug("count: {}", count);
                     }
                 }
-            }
-            else
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -484,65 +472,62 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
-                sqlConn.setAutoCommit(true);
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
 
-                stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
-                stmt.setString(1, value);
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
+            stmt.setString(1, value);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.first();
+
+                    responseData = new ArrayList<>
+                    (
+                        Arrays.asList
+                        (
+                            resultSet.getString(1), // app guid
+                            resultSet.getString(2), // app name
+                            resultSet.getString(3), // app version
+                            resultSet.getString(4), // base path
+                            resultSet.getString(5), // app scm path
+                            resultSet.getString(6), // cluster name
+                            resultSet.getString(7), // jvm name
+                            resultSet.getString(8), // install path
+                            resultSet.getString(9), // logs dir
+                            resultSet.getString(10), // pid dir
+                            resultSet.getString(11), // project guid
+                            resultSet.getString(12), // platform guid
+                            resultSet.getTimestamp(13).toString(), // app online date
+                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                        )
+                    );
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.first();
-
-                        responseData = new ArrayList<>
-                        (
-                            Arrays.asList
-                            (
-                                resultSet.getString(1), // app guid
-                                resultSet.getString(2), // app name
-                                resultSet.getString(3), // app version
-                                resultSet.getString(4), // base path
-                                resultSet.getString(5), // app scm path
-                                resultSet.getString(6), // cluster name
-                                resultSet.getString(7), // jvm name
-                                resultSet.getString(8), // install path
-                                resultSet.getString(9), // logs dir
-                                resultSet.getString(10), // pid dir
-                                resultSet.getString(11), // project guid
-                                resultSet.getString(12), // platform guid
-                                resultSet.getTimestamp(13).toString(), // app online date
-                                (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
-                            )
-                        );
-
-                        if (DEBUG)
+                        for (String data : responseData)
                         {
-                            for (String data : responseData)
-                            {
-                                DEBUGGER.debug("data: {}", data);
-                            }
+                            DEBUGGER.debug("data: {}", data);
                         }
                     }
                 }
-            }
-            else
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
@@ -593,80 +578,77 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         {
             sqlConn = dataSource.getConnection();
 
-            if (!(sqlConn.isClosed()))
+            if (sqlConn.isClosed())
             {
-                sqlConn.setAutoCommit(true);
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
 
-                stmt = sqlConn.prepareCall("{CALL getApplicationByAttribute(?, ?)}");
-                stmt.setString(1, value);
-                stmt.setInt(2, startRow);
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getApplicationByAttribute(?, ?)}");
+            stmt.setString(1, value);
+            stmt.setInt(2, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug(stmt.toString());
+                    DEBUGGER.debug("resultSet: {}", resultSet);
                 }
 
-                if (stmt.execute())
+                if (resultSet.next())
                 {
-                    resultSet = stmt.getResultSet();
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<>();
 
-                    if (DEBUG)
+                    while (resultSet.next())
                     {
-                        DEBUGGER.debug("resultSet: {}", resultSet);
-                    }
-
-                    if (resultSet.next())
-                    {
-                        resultSet.beforeFirst();
-                        responseData = new ArrayList<>();
-
-                        while (resultSet.next())
+                        String[] data = new String[]
                         {
-                            String[] data = new String[]
-                            {
-                                resultSet.getString(1), // app guid
-                                resultSet.getString(2), // app name
-                                resultSet.getString(3), // app version
-                                resultSet.getString(4), // base path
-                                resultSet.getString(5), // app scm path
-                                resultSet.getString(6), // cluster name
-                                resultSet.getString(7), // jvm name
-                                resultSet.getString(8), // install path
-                                resultSet.getString(9), // logs dir
-                                resultSet.getString(10), // pid dir
-                                resultSet.getString(11), // project guid
-                                resultSet.getString(12), // platform guid
-                                resultSet.getTimestamp(13).toString(), // app online date
-                                (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : data)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            responseData.add(data);
-                        }
+                            resultSet.getString(1), // app guid
+                            resultSet.getString(2), // app name
+                            resultSet.getString(3), // app version
+                            resultSet.getString(4), // base path
+                            resultSet.getString(5), // app scm path
+                            resultSet.getString(6), // cluster name
+                            resultSet.getString(7), // jvm name
+                            resultSet.getString(8), // install path
+                            resultSet.getString(9), // logs dir
+                            resultSet.getString(10), // pid dir
+                            resultSet.getString(11), // project guid
+                            resultSet.getString(12), // platform guid
+                            resultSet.getTimestamp(13).toString(), // app online date
+                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                        };
 
                         if (DEBUG)
                         {
-                            for (String[] str : responseData)
+                            for (String str : data)
                             {
-                                for (String str1 : str)
-                                {
-                                    DEBUGGER.debug(str1);
-                                }
+                                DEBUGGER.debug(str);
+                            }
+                        }
+
+                        responseData.add(data);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (String[] str : responseData)
+                        {
+                            for (String str1 : str)
+                            {
+                                DEBUGGER.debug(str1);
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
             }
         }
         catch (SQLException sqx)
