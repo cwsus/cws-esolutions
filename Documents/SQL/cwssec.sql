@@ -15,7 +15,6 @@ SOURCE ./cwssec.usr_reset_data.sql;
 SOURCE ./cwssec.usr_sec_ques.sql;
 SOURCE ./cwssec.usr_audit.sql;
 SOURCE ./cwssec.usr_key_data.sql;
-SOURCE ./cwssec.usr_sec_roles.sql;
 SOURCE ./cwssec.usr_lgn_services.sql;
 SOURCE ./cwssec.usr_lgn_projects.sql;
 
