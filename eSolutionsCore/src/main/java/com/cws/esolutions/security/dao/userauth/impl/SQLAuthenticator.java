@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,20 +28,26 @@ import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /*
- * UserSQLAuthenticationDAOImpl
- * Data access class for agent authentication events
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
- * Author                       Date                            Comments
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly                 11/23/2008 22:39:20             Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
  */
 public class SQLAuthenticator implements Authenticator
 {
     private static final String CNAME = SQLAuthenticator.class.getName();
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_SECURITYDS_MANAGER);
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException
     {
@@ -184,6 +190,9 @@ public class SQLAuthenticator implements Authenticator
         return userAccount;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#lockUserAccount(java.lang.String, int)
+     */
     @Override
     public synchronized void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException
     {
@@ -255,6 +264,9 @@ public class SQLAuthenticator implements Authenticator
         }
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.util.List)
+     */
     @Override
     public synchronized boolean verifySecurityData(final List<String> request) throws AuthenticatorException
     {
@@ -343,6 +355,9 @@ public class SQLAuthenticator implements Authenticator
         return isAuthorized;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized List<String> obtainSecurityData(final String userName, final String userGuid) throws AuthenticatorException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,24 +16,18 @@
 package com.cws.esolutions.core.utils.exception;
 
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.utils.exception
- * UtilityException.java
- *
- *
- *
- * $Id: UtilityException.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Dec 26, 2012 1:23:00 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.exception.CoreServiceException
  */
 public class UtilityException extends CoreServiceException
 {

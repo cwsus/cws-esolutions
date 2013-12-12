@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,65 +16,56 @@
 package com.cws.esolutions.security.processors.impl;
 
 import javax.crypto.Cipher;
-
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.Signature;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-
 import java.io.FileNotFoundException;
-
 import javax.crypto.CipherInputStream;
+import org.apache.commons.io.FileUtils;
 import javax.crypto.CipherOutputStream;
-
 import java.security.SignatureException;
 import java.security.InvalidKeyException;
-
 import javax.crypto.NoSuchPaddingException;
-
 import java.security.NoSuchAlgorithmException;
-
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
-import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
+import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
-/**
+/*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.processors.impl
  * File: FileSecurityProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
  *
  * History
  * ----------------------------------------------------------------------------
  * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
  */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
+ */
 public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#signFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)
+     */
     @Override
     public synchronized FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException
     {
@@ -242,6 +233,9 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#verifyFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)
+     */
     @Override
     public synchronized FileSecurityResponse verifyFile(final FileSecurityRequest request) throws FileSecurityException
     {
@@ -401,6 +395,9 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#encryptFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)
+     */
     @Override
     public synchronized FileSecurityResponse encryptFile(final FileSecurityRequest request) throws FileSecurityException
     {
@@ -566,6 +563,9 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor#decryptFile(com.cws.esolutions.security.processors.dto.FileSecurityRequest)
+     */
     @Override
     public synchronized FileSecurityResponse decryptFile(final FileSecurityRequest request) throws FileSecurityException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.enums;
-/**
- * SecurityService
- * com.cws.esolutions.security.processors.enums
- * ModificationType.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 31, 2012 1:00:18 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public enum ModificationType
 {

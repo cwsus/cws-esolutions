@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,25 +25,24 @@ import java.sql.CallableStatement;
 
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.sysmgmt.impl
- * dataDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 8, 2013 11:16:06 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO
  */
 public class ApplicationDataDAOImpl implements IApplicationDataDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#addNewApplication(java.util.List)
+     */
     @Override
     public synchronized boolean addNewApplication(final List<String> value) throws SQLException
     {
@@ -121,6 +120,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
+     */
     @Override
     public synchronized boolean updateApplication(final List<String> value) throws SQLException
     {
@@ -198,6 +200,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#deleteApplication(java.lang.String)
+     */
     @Override
     public synchronized boolean deleteApplication(final String value) throws SQLException
     {
@@ -260,6 +265,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationCount()
+     */
     @Override
     public synchronized int getApplicationCount() throws SQLException
     {
@@ -341,6 +349,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#listInstalledApplications(int)
+     */
     @Override
     public synchronized List<String[]> listInstalledApplications(final int startRow) throws SQLException
     {
@@ -452,6 +463,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationData(java.lang.String)
+     */
     @Override
     public synchronized List<String> getApplicationData(final String value) throws SQLException
     {
@@ -557,6 +571,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<String[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
     {

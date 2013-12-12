@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -46,27 +46,26 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServiceMessagingProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Apr 29, 2013 1:32:21 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 {
     private static final IMessagingDAO messageDAO = new ServiceMessagingDAOImpl();
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     */
     @Override
     public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
     {
@@ -199,6 +198,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     */
     @Override
     public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
     {
@@ -328,6 +330,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     */
     @Override
     public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
     {
@@ -507,6 +512,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     */
     @Override
     public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
     {
@@ -582,6 +590,9 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     */
     @Override
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,21 +42,11 @@ import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAO
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /*
- * IAuthenticationProcessor
- * This interface allows for user authentication, and provides methods for
- * authenticating against an LDAP datastore or a SQL datastore. Two types
- * of authentication are available: standard username/password combination,
- * and two-factor authentication, such as username/password and a one-time
- * password or security image, depending on what is configured. If two-factor
- * authentication is utilized, a second client utility is required, and
- * configuration therein.
- *
- * $Id: IAuthenticationProcessor.java 2276 2013-01-03 16:32:52Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: $
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * Kevin Huntly         11/23/2008 22:39:20             Created.

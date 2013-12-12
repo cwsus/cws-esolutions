@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,21 +23,14 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.dto
- * ServiceMessage.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 31, 2012 8:34:20 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class ServiceMessage implements Serializable

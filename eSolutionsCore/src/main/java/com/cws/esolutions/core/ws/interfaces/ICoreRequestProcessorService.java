@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,21 +31,14 @@ import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.webservice.interfaces
- * ICoreRequestProcessorService.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 2, 2013 1:49:02 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -68,28 +68,20 @@ import com.cws.esolutions.core.config.SSHConfig;
 import com.cws.esolutions.core.config.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.utils
- * NetworkUtils.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Dec 26, 2012 12:54:17 PM
- *     Created.
- * kh05451 @ Dec 31, 2012 9:45:18 AM
- *     Add in http method
- * kh05451 @ May 30, 2013 11:41:18 AM
- *     Add in ssh method. It currently uses the IgnoreHostKeyVerification for
- *     hostkey verification, sadly, this should not be the way it is. But at
- *     the moment, there isn't a way for jsch to import a host key and save it
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * Kevin Huntly         05/30/2013 11:41:18             Add in ssh method. It currently uses the
+ * IgnoreHostKeyVerification for
+ * hostkey verification, sadly, this should not be the way it is. But at
+ * the moment, there isn't a way for jsch to import a host key and save it
  */
 public final class NetworkUtils
 {

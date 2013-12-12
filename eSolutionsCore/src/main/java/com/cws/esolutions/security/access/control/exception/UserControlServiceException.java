@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,17 @@ package com.cws.esolutions.security.access.control.exception;
 
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /*
- * SecurityService
- * com.cws.esolutions.security.access.control.exception
- * public class UserControlServiceException{ }
- *
- *
- *
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Nov 17, 2012 12:43:26 PM                 Created
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
 public class UserControlServiceException extends SecurityServiceException
 {

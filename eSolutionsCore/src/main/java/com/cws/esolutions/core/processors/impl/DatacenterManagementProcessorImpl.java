@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,26 +35,25 @@ import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServerManagementProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class DatacenterManagementProcessorImpl implements IDatacenterManagementProcessor
 {
     @Override
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#addNewDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
+     */
     public DatacenterManagementResponse addNewDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
         final String methodName = IDatacenterManagementProcessor.CNAME + "#addNewDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException";
@@ -207,6 +206,9 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#updateDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
+     */
     @Override
     public DatacenterManagementResponse updateDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
@@ -334,6 +336,9 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#listDatacenters(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
+     */
     @Override
     public DatacenterManagementResponse listDatacenters(final DatacenterManagementRequest request) throws DatacenterManagementException
     {
@@ -468,6 +473,9 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor#getDatacenter(com.cws.esolutions.core.processors.dto.DatacenterManagementRequest)
+     */
     @Override
     public DatacenterManagementResponse getDatacenter(final DatacenterManagementRequest request) throws DatacenterManagementException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,18 +20,18 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
-import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.dao.audit.impl.AuditDAOImpl;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
+import com.cws.esolutions.security.audit.exception.AuditServiceException;
 /*
- * IUserAccountControlProcessor
- * User Account Controller processor API
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * Kevin Huntly         11/23/2008 22:39:20             Created.

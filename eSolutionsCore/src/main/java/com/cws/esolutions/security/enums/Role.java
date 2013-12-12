@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.enums;
-/**
- * eSolutions
- * com.cws.esolutions.security.auth.dto
- * Role.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * khuntly @ Oct 15, 2012 9:14:24 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public enum Role

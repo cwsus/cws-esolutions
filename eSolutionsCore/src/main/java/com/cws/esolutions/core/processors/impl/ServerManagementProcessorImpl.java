@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,25 +59,24 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServerManagementProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class ServerManagementProcessorImpl implements IServerManagementProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#addNewServer(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse addNewServer(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -269,6 +268,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#updateServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -427,6 +429,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServersByDmgr(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -759,6 +764,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServersByType(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse listServersByType(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -1109,6 +1117,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#getServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -1451,6 +1462,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse runNetstatCheck(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -1602,6 +1616,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse runTelnetCheck(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -1754,6 +1771,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse runRemoteDateCheck(final ServerManagementRequest request) throws ServerManagementException
     {
@@ -1906,6 +1926,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
     @Override
     public ServerManagementResponse runProcessListCheck(final ServerManagementRequest request) throws ServerManagementException
     {

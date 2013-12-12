@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,22 +39,18 @@ import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.config.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.listeners
- * SecurityServiceListener.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 16, 2012 4:57:44 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class CoreServiceListener implements ServletContextListener
 {

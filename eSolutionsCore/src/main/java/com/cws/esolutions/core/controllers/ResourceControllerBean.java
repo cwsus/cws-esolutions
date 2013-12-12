@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,21 +23,14 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.controllers
- * ResourceControllerBean.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 23, 2012 8:21:09 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class ResourceControllerBean implements Serializable

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,33 +28,26 @@ import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.processors.interfaces
- * IAccountResetProcessor.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 10, 2013 3:34:22 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public interface IAccountResetProcessor
 {

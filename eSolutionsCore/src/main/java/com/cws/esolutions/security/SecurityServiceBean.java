@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,14 +23,15 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 /*
- * SecurityServiceInitBean
- * SecurityServiceInitializerServlet for application. Currently loads logging
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
- * Author               Date                           Comments
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20            Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public class SecurityServiceBean implements Serializable
 {

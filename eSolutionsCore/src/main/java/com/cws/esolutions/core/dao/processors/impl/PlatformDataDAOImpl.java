@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,25 +25,24 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.sysmgmt.impl
- * ProjectDataImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 8, 2013 11:17:08 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO
  */
 public class PlatformDataDAOImpl implements IPlatformDataDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#addNewPlatform(java.util.List)
+     */
     @Override
     public synchronized boolean addNewPlatform(final List<String> platformData) throws SQLException
     {
@@ -118,6 +117,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#deletePlatform(java.lang.String)
+     */
     @Override
     public synchronized boolean deletePlatform(final String platformGuid) throws SQLException
     {
@@ -181,6 +183,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#updatePlatformData(java.util.List)
+     */
     @Override
     public synchronized boolean updatePlatformData(final List<String> platformData) throws SQLException
     {
@@ -255,6 +260,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#getPlatformData(java.lang.String)
+     */
     @Override
     public synchronized List<String> getPlatformData(final String platformGuid) throws SQLException
     {
@@ -347,6 +355,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#getPlatformCount()
+     */
     @Override
     public synchronized int getPlatformCount() throws SQLException
     {
@@ -435,6 +446,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#listAvailablePlatforms(int)
+     */
     @Override
     public synchronized List<String[]> listAvailablePlatforms(final int startRow) throws SQLException
     {
@@ -541,6 +555,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         return platformList;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#listPlatformsByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<String[]> listPlatformsByAttribute(final String value, final int startRow) throws SQLException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,27 +47,24 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/**
- * SecurityService
- * com.cws.esolutions.security.processors.impl
- * AgentAuthenticationProcessor.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly @ Nov 23, 2008 22:39:20
- *     Created.
- * khuntly @ Dec 5, 2008 13:36:09
- *     Added method to process change requests
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor
  */
 public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
     @Override
     public AuthenticationResponse processAgentLogon(final AuthenticationRequest request) throws AuthenticationException
     {
@@ -405,6 +402,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
     @Override
     public AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {
@@ -579,6 +579,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
     @Override
     public AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
     {

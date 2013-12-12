@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,25 +45,24 @@ import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServerManagementProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class ProjectManagementProcessorImpl implements IProjectManagementProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor#addNewProject(com.cws.esolutions.core.processors.dto.ProjectManagementRequest)
+     */
     @Override
     public ProjectManagementResponse addNewProject(final ProjectManagementRequest request) throws ProjectManagementException
     {
@@ -221,6 +220,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor#updateProjectData(com.cws.esolutions.core.processors.dto.ProjectManagementRequest)
+     */
     @Override
     public ProjectManagementResponse updateProjectData(final ProjectManagementRequest request) throws ProjectManagementException
     {
@@ -348,6 +350,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor#listProjects(com.cws.esolutions.core.processors.dto.ProjectManagementRequest)
+     */
     @Override
     public ProjectManagementResponse listProjects(final ProjectManagementRequest request) throws ProjectManagementException
     {
@@ -565,6 +570,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor#listProjectsByAttribute(com.cws.esolutions.core.processors.dto.ProjectManagementRequest)
+     */
     @Override
     public ProjectManagementResponse listProjectsByAttribute(final ProjectManagementRequest request) throws ProjectManagementException
     {
@@ -775,6 +783,9 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor#getProjectData(com.cws.esolutions.core.processors.dto.ProjectManagementRequest)
+     */
     @Override
     public ProjectManagementResponse getProjectData(final ProjectManagementRequest request) throws ProjectManagementException
     {

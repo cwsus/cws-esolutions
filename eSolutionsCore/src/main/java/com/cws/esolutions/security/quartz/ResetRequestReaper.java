@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,22 +26,18 @@ import org.quartz.JobExecutionContext;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.quartz
- * ResetRequestReaper.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author khuntly
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * khuntly @ May 1, 2013 6:18:40 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class ResetRequestReaper implements Job
 {

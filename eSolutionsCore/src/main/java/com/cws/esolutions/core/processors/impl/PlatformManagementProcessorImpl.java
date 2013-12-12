@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,25 +51,24 @@ import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * PlatformManagementProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class PlatformManagementProcessorImpl implements IPlatformManagementProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#addNewPlatform(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     */
     @Override
     public PlatformManagementResponse addNewPlatform(final PlatformManagementRequest request) throws PlatformManagementException
     {
@@ -259,6 +258,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#updatePlatformData(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     */
     @Override
     public PlatformManagementResponse updatePlatformData(final PlatformManagementRequest request) throws PlatformManagementException
     {
@@ -417,6 +419,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#listPlatforms(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     */
     @Override
     public PlatformManagementResponse listPlatforms(final PlatformManagementRequest request) throws PlatformManagementException
     {
@@ -976,6 +981,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#listPlatformsByAttribute(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     */
     @Override
     public PlatformManagementResponse listPlatformsByAttribute(final PlatformManagementRequest request) throws PlatformManagementException
     {
@@ -1528,6 +1536,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#getPlatformData(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     */
     @Override
     public PlatformManagementResponse getPlatformData(final PlatformManagementRequest request) throws PlatformManagementException
     {

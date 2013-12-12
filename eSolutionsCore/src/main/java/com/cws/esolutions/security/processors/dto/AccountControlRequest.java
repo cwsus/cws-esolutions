@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,22 +28,16 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
-/**
- * SecurityService
- * com.cws.esolutions.security.usermgmt.dto
- * AccountControlRequest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 31, 2012 10:35:25 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public class AccountControlRequest implements Serializable
 {

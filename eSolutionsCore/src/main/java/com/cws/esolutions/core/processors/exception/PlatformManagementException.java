@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,24 +16,18 @@
 package com.cws.esolutions.core.processors.exception;
 
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.exception
- * PlatformManagementException.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Jun 3, 2013 1:18:43 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.exception.CoreServiceException
  */
 public class PlatformManagementException extends CoreServiceException
 {

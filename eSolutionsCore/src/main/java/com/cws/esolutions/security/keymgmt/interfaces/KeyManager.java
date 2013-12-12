@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,21 +30,14 @@ import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
-/**
- * SecurityService
- * com.cws.esolutions.security.dao.ldap
- * Authenticator.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 26, 2012 4:34:11 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public interface KeyManager

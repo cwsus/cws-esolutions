@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,21 +47,14 @@ import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.config.DataSourceManager;
 import com.cws.esolutions.security.enums.AuthRepositoryType;
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.controllers
- * ResourceController.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 23, 2012 8:21:09 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class ResourceController

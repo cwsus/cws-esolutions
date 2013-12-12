@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +21,23 @@ import com.cws.esolutions.security.access.control.interfaces.IUserControlService
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.dto.UserAccount;
 /*
- * AdminControlServiceImpl
- * Determines if the provided user has the proper level of authority
- * to perform an administrative task.
- *
- * While not currently implemented in this class, the long-term vision
- * is to provide this as a service.
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Oct 31, 2009
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class UserControlServiceImpl implements IUserControlService
 {
+    /**
+     * @see com.cws.esolutions.security.access.control.interfaces.IUserControlService#isUserAuthorizedForService(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
+     */
     @Override
     public boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException
     {
@@ -79,6 +81,9 @@ public class UserControlServiceImpl implements IUserControlService
         return isUserAuthorized;
     }
 
+    /**
+     * @see com.cws.esolutions.security.access.control.interfaces.IUserControlService#isUserAuthorizedForProject(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
+     */
     @Override
     public boolean isUserAuthorizedForProject(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException
     {

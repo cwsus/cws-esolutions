@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,18 +24,15 @@ import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOI
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /*
- * IAdminControlService.java
- * Determines if the provided user has the proper level of authority
- * to perform an administrative task.
- *
- * While not currently implemented in this class, the long-term vision
- * is to provide this as a service.
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Oct 31, 2009
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public interface IUserControlService
 {

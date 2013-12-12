@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.enums.ModificationType;
@@ -33,26 +34,24 @@ import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.access.control.interfaces.IEmailControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.access.control.imp
- * EmailControlService.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class EmailControlServiceImpl implements IEmailControlService
 {
+    /**
+     * @see com.cws.esolutions.security.access.control.interfaces.IEmailControlService#isEmailAuthorized(java.lang.String, java.lang.String[], boolean)
+     */
     @Override
     public boolean isEmailAuthorized(final String sender, final String[] sources, final boolean isException) throws EmailControlServiceException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,25 +41,24 @@ import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * SearchProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class SearchProcessorImpl implements ISearchProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doArticleSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
     {
@@ -149,6 +148,9 @@ public class SearchProcessorImpl implements ISearchProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doMessageSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException
     {
@@ -238,6 +240,9 @@ public class SearchProcessorImpl implements ISearchProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServerSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException
     {
@@ -327,6 +332,9 @@ public class SearchProcessorImpl implements ISearchProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doApplicationSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException
     {
@@ -416,6 +424,9 @@ public class SearchProcessorImpl implements ISearchProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServiceSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException
     {
@@ -518,6 +529,9 @@ public class SearchProcessorImpl implements ISearchProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doSiteSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     public SearchResponse doSiteSearch(final SearchRequest request) throws SearchRequestException
     {

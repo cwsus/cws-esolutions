@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,21 +23,14 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.dto
- * KnowledgeBaseResponse.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 30, 2012 12:34:49 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class KnowledgeBaseResponse implements Serializable

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,22 +29,16 @@ import org.apache.commons.codec.binary.Base64;
 import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.security.SecurityConstants;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.utils
- * File: PasswordUtils.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author 35033355
- * @version 1.0
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355 @ Sep 3, 2013 10:21:37 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public final class PasswordUtils
 {

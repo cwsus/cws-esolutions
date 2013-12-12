@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,21 +24,14 @@ import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.dto
- * MessagingRequest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 30, 2012 7:57:29 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class MessagingRequest implements Serializable

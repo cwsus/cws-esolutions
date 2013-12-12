@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,18 @@
 package com.cws.esolutions.security.processors.exception;
 
 import com.cws.esolutions.security.exception.SecurityServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.processors.exception
- * AccountResetException.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 11, 2013 10:02:56 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
 public class AccountResetException extends SecurityServiceException
 {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,49 +59,30 @@ import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: DNSServiceRequestProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
- * kh05451 @ Dec 27, 2012 10:16:05 AM
- *     Added logic to add in a new zone to dns
- * kh05451 @ Dec 31, 2012 9:50:06 AM
- *     Moved http stuff into <code>NetworkUtils</code>
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcessor
 {
-    /**
+    /*
      * Project: eSolutionsCore
-     * Package: com.cws.esolutions.core.processors.impl
-     * File: DNSServiceRequestProcessorImpl.java$ModifyEntryToAddRecord
-     *
-     * This inner class is used to assemble DNSRecord objects into a provided
-     * DNSEntry object. The resulting object can then be used to build a physical
-     * representation of the actual data, e.g. a zone file.
-     *
-     * $Id: $
-     * $Author: $
-     * $Date: $
-     * $Revision: $
-     * @author kmhuntly@gmail.com
-     * @version 1.0
+     * Package: com.cws.esolutions.security.audit.processors.interfaces
+     * File: IAuditProcessor.java
      *
      * History
+     * Author               Date                            Comments
      * ----------------------------------------------------------------------------
-     * 35033355 @ Aug 1, 2013 2:28:05 PM
-     *     Created.
+     * Kevin Huntly         11/23/2008 22:39:20             Created.
      */
     static class ModifyEntryToAddRecord
     {
@@ -175,7 +156,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         }
     }
 
-    
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performLookup(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     public DNSServiceResponse performLookup(DNSServiceRequest request) throws DNSServiceException
     {
@@ -399,6 +382,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#createNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     public DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException
     {
@@ -636,6 +622,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#pushNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     public DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException
     {
@@ -971,6 +960,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performSiteTransfer(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     public DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException
     {
@@ -1083,6 +1075,9 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#getDataFromDatabase(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     public DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException
     {

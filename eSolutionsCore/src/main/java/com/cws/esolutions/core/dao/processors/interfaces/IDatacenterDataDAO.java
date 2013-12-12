@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,21 +24,14 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.interfaces
- * IServerDataDAO.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:35 PM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
  */
 public interface IDatacenterDataDAO

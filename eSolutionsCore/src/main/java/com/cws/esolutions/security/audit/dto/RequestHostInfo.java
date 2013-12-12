@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,24 +21,16 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
-/**
- * SecurityService
- * com.cws.esolutions.security.dto
- * RequestHostInfo.java
- *
- *
- *
- * $Id: RequestHostInfo.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 30, 2012 12:09:59 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public class RequestHostInfo implements Serializable
 {

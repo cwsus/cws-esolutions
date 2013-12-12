@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,25 +53,24 @@ import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-/**
- * SecurityService
- * com.cws.esolutions.security.processors.impl
- * AccountControlProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class AccountControlProcessorImpl implements IAccountControlProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#createNewUser(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException
     {
@@ -337,6 +336,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#removeUserAccount(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException
     {
@@ -441,6 +443,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserSuspension(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException
     {
@@ -565,6 +570,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserLockout(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException
     {
@@ -702,6 +710,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserRole(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException
     {
@@ -880,6 +891,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserPassword(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse modifyUserPassword(final AccountControlRequest request) throws AccountControlException
     {
@@ -1038,6 +1052,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#searchAccounts(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse searchAccounts(final AccountControlRequest request) throws AccountControlException
     {
@@ -1263,6 +1280,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#loadUserAccount(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse loadUserAccount(final AccountControlRequest request) throws AccountControlException
     {
@@ -1413,6 +1433,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#loadUserAudit(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse loadUserAudit(final AccountControlRequest request) throws AccountControlException
     {
@@ -1589,6 +1612,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#listUserAccounts(com.cws.esolutions.security.processors.dto.AccountControlRequest)
+     */
     @Override
     public AccountControlResponse listUserAccounts(final AccountControlRequest request) throws AccountControlException
     {

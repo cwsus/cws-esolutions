@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,22 +20,15 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
-/**
- * SecurityService
- * com.cws.esolutions.security.dao.factory
- * AuthenticatorFactory.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 26, 2012 4:31:17 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public class AuthenticatorFactory
 {

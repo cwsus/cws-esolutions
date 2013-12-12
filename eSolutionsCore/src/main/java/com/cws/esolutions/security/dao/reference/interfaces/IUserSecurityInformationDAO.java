@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,24 +24,15 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.dao.reference.interfaces
- * IUserSecurityInformationDAO.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author khuntly
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly @ May 1, 2013 6:41:46 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public interface IUserSecurityInformationDAO
 {

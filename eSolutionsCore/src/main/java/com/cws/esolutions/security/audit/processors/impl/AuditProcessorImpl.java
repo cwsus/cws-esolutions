@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,37 +21,34 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
-/**
- * SecurityService
- * com.cws.esolutions.security.audit.processors.impl
- * AuditProcessorImpl.java
- *
- *
- *
- * $Id: AuditProcessorImpl.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 30, 2012 10:38:04 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class AuditProcessorImpl implements IAuditProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor#auditRequest(com.cws.esolutions.security.audit.dto.AuditRequest)
+     */
     @Override
     public void auditRequest(final AuditRequest request) throws AuditServiceException
     {
@@ -138,6 +135,9 @@ public class AuditProcessorImpl implements IAuditProcessor
         }
     }
 
+    /**
+     * @see com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor#getAuditEntries(com.cws.esolutions.security.audit.dto.AuditRequest)
+     */
     @Override
     public AuditResponse getAuditEntries(final AuditRequest request) throws AuditServiceException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,32 +19,31 @@ import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
-import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.impl
- * KnowledgeBaseDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#updateArticleStatus(java.lang.String, java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean updateArticleStatus(final String articleId, final String modifiedBy, final String status) throws SQLException
     {
@@ -111,6 +110,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#doCreateArticle(java.util.List)
+     */
     @Override
     public synchronized boolean doCreateArticle(final List<String> articleDetail) throws SQLException
     {
@@ -180,6 +182,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#doUpdateArticle(java.util.List)
+     */
     @Override
     public synchronized boolean doUpdateArticle(final List<String> articleDetail) throws SQLException
     {
@@ -250,6 +255,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#getArticleCount(java.lang.String)
+     */
     @Override
     public synchronized int getArticleCount(final String type) throws SQLException
     {
@@ -340,6 +348,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#retrieveArticle(java.lang.String, boolean)
+     */
     @Override
     public synchronized List<Object> retrieveArticle(final String articleId, final boolean isApproval) throws SQLException
     {
@@ -436,6 +447,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return articleData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#searchPendingArticles(java.lang.String, int)
+     */
     @Override
     public synchronized List<Object[]> searchPendingArticles(final String author, final int startRow) throws SQLException
     {
@@ -542,6 +556,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return articleData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#listTopArticles()
+     */
     @Override
     public synchronized List<Object[]> listTopArticles() throws SQLException
     {
@@ -650,6 +667,9 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
         return responseList;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO#getArticlesByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<Object[]> getArticlesByAttribute(final String attribute, final int startRow) throws SQLException
     {

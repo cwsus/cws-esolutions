@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,25 +25,24 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.sysmgmt.impl
- * ProjectDataImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 8, 2013 11:17:08 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO
  */
 public class ProjectDataDAOImpl implements IProjectDataDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#addNewProject(java.util.List)
+     */
     @Override
     public synchronized boolean addNewProject(final List<String> projectDetail) throws SQLException
     {
@@ -119,6 +118,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#deleteProjectData(java.lang.String)
+     */
     @Override
     public synchronized boolean deleteProjectData(final String projectName) throws SQLException
     {
@@ -182,7 +184,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return isComplete;
     }
 
-
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#updateProjectData(java.util.List)
+     */
     @Override
     public synchronized boolean updateProjectData(final List<String> projectDetail) throws SQLException
     {
@@ -258,7 +262,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return isComplete;
     }
 
-
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#getProjectData(java.lang.String)
+     */
     @Override
     public synchronized List<String> getProjectData(final String projectGuid) throws SQLException
     {
@@ -353,7 +359,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return responseData;
     }
 
-
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#getProjectCount()
+     */
     @Override
     public synchronized int getProjectCount() throws SQLException
     {
@@ -436,7 +444,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return count;
     }
 
-
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#listAvailableProjects(int)
+     */
     @Override
     public synchronized List<String[]> listAvailableProjects(final int startRow) throws SQLException
     {
@@ -545,7 +555,9 @@ public class ProjectDataDAOImpl implements IProjectDataDAO
         return projectList;
     }
 
-
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO#getProjectsByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<String[]> getProjectsByAttribute(final String attribute, final int startRow) throws SQLException
     {

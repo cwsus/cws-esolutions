@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,21 +25,14 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.processors.interfaces
- * File: IDNSServiceDAO.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 19, 2013 10:34:54 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
  */
 public interface IDNSServiceDAO

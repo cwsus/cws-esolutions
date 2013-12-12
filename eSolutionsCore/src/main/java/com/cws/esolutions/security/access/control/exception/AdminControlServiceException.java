@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,18 +17,17 @@ package com.cws.esolutions.security.access.control.exception;
 
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /*
- * SecurityService
- * com.cws.esolutions.security.access.control.exception
- * public class AdminControlServiceException{ }
- *
- *
- *
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
- *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Nov 17, 2012 12:43:08 PM                 Created
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
 public class AdminControlServiceException extends SecurityServiceException
 {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,17 +27,23 @@ import java.sql.ResultSetMetaData;
 
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 /*
- * IUserSQLServiceInformationDAO
- * API to retrieve and return user service information
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
 {
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainApprovedServers()
+     */
     @Override
     public synchronized List<String> obtainApprovedServers() throws SQLException
     {
@@ -130,6 +136,9 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         return securityList;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#obtainSecurityQuestionList()
+     */
     @Override
     public synchronized List<String> obtainSecurityQuestionList() throws SQLException
     {
@@ -222,6 +231,9 @@ public class SecurityReferenceDAOImpl implements ISecurityReferenceDAO
         return questionList;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO#listAvailableServices()
+     */
     @Override
     public synchronized Map<String, String> listAvailableServices() throws SQLException
     {

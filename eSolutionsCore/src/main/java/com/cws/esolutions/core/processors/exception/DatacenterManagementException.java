@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,18 @@
 package com.cws.esolutions.core.processors.exception;
 
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.exception
- * File: DatacenterManagementException.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author 35033355
- * @version 1.0
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Oct 22, 2013 12:24:26 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.exception.CoreServiceException
  */
 public class DatacenterManagementException extends CoreServiceException
 {

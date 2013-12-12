@@ -1,13 +1,17 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CaspersBox Web Services N.A and no part of
- * these materials should be reproduced, published in any form
- * by any means, electronic or mechanical, including photocopy
- * or any information storage or retrieval system not should
- * the materials be disclosed to third parties without the
- * express written authorization of CaspersBox Web Services, N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
 
@@ -42,27 +46,24 @@ import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.processors.impl
- * AccountChangeProcessorImpl.java
- *
- * TODO: Add class description
- *
- * $Id: cws-codetemplates.xml 2286 2013-01-03 20:50:12Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2013-01-03 15:50:12 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2286 $
- * @author khuntly
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly @ Nov 14, 2013 12:27:04 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */
 public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserEmail(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
     @Override
     public AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -203,6 +204,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserContact(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
     @Override
     public AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -345,6 +349,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserPassword(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
     @Override
     public AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -574,6 +581,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserSecurity(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
     @Override
     public AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException
     {
@@ -781,6 +791,9 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
+     */
     @Override
     public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
     {

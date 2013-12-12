@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,19 +24,23 @@ import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 /*
- * UserSQLServiceInformationDAOImpl
- * Obtains and returns the user service list for the provided
- * user information. This information can then be shared across
- * to the calling application for consumption.
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         01/18/2010 10:05:24             Created.
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
 {
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#addProjectIdForUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean addProjectIdForUser(final String commonName, final String projectGuid) throws SQLException
     {
@@ -106,6 +110,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#removeProjectIdForUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean removeProjectIdForUser(final String commonName, final String projectGuid) throws SQLException
     {
@@ -175,6 +182,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#verifyProjectForUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean verifyProjectForUser(final String commonName, final String projectGuid) throws SQLException
     {
@@ -244,6 +254,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#returnUserAuthorizedProjects(java.lang.String)
+     */
     @Override
     public synchronized List<String> returnUserAuthorizedProjects(final String commonName) throws SQLException
     {
@@ -336,6 +349,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return projectList;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#addServiceToUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean addServiceToUser(final String commonName, final String serviceGuid) throws SQLException
     {
@@ -405,6 +421,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#removeServiceFromUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean removeServiceFromUser(final String commonName, final String serviceGuid) throws SQLException
     {
@@ -474,6 +493,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#verifyServiceForUser(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean verifyServiceForUser(final String commonName, final String serviceGuid) throws SQLException
     {
@@ -564,6 +586,9 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#listServicesForUser(java.lang.String)
+     */
     @Override
     public synchronized List<String> listServicesForUser(final String commonName) throws SQLException
     {

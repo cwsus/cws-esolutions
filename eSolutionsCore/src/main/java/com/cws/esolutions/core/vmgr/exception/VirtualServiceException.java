@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,24 +16,18 @@
 package com.cws.esolutions.core.vmgr.exception;
 
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.vmgr.exception
- * VirtualServiceException.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ May 17, 2013 3:44:41 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.exception.CoreServiceException
  */
 public class VirtualServiceException extends CoreServiceException
 {

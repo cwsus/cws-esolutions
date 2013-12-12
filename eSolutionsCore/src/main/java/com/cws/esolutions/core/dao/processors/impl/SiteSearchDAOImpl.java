@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,25 +23,24 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.impl
- * ServiceMessagingDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class SiteSearchDAOImpl implements ISiteSearchDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO#getPageCount(java.lang.String)
+     */
     @Override
     public synchronized int getPageCount(final String attribute) throws SQLException
     {
@@ -132,6 +131,9 @@ public class SiteSearchDAOImpl implements ISiteSearchDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO#getPagesByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<Object[]> getPagesByAttribute(final String attribute, final int startRow) throws SQLException
     {

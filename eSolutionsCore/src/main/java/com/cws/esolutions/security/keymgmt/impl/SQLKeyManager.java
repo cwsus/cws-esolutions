@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,28 +37,27 @@ import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
 import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
-/**
- * SecurityService
- * com.cws.esolutions.security.usermgmt.impl
- * LDAPUserManager.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class SQLKeyManager implements KeyManager
 {
     private static final String CNAME = SQLKeyManager.class.getName();
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
 
+    /**
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     */
     @Override
     public synchronized KeyManagementResponse returnKeys(final KeyManagementRequest request) throws KeyManagementException
     {
@@ -230,6 +229,9 @@ public class SQLKeyManager implements KeyManager
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     */
     @Override
     public synchronized KeyManagementResponse createKeys(final KeyManagementRequest request) throws KeyManagementException
     {
@@ -414,6 +416,9 @@ public class SQLKeyManager implements KeyManager
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     */
     @Override
     public synchronized KeyManagementResponse removeKeys(final KeyManagementRequest request) throws KeyManagementException
     {

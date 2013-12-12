@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,22 +29,16 @@ import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.interfaces
- * File: IFileSecurityProcessor.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:00:17 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public interface IFileSecurityProcessor
 {

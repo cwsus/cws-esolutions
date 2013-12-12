@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,28 +30,21 @@ import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
+import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.interfaces
- * IDNSServiceRequestProcessor.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public interface IDNSServiceRequestProcessor
 {

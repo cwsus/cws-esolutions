@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,18 +24,17 @@ import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
 /*
- * IAgentAuditDAO
- * Data access class interface API for agent audit events
- *
- * $Id: AuditDAOImpl.java 2276 2013-01-03 16:32:52Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: $
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
- *
- * Author                       Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly                 11/23/2008 22:39:20             Created.
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class AuditDAOImpl implements IAuditDAO
 {

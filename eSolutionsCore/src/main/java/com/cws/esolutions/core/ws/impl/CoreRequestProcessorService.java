@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,22 +34,18 @@ import com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.webservice.impl
- * CoreRequestProcessorService.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 21, 2012 3:47:42 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
@@ -57,8 +53,8 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 @SOAPBinding(style=Style.RPC, use=Use.LITERAL)
 public class CoreRequestProcessorService implements ICoreRequestProcessorService
 {
-    /*
-     * Authentication Processing
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#processAgentLogon(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
      */
     @Override
     @WebMethod(operationName = "processAgentLogon")
@@ -82,6 +78,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#obtainUserSecurityConfig(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
     @Override
     @WebMethod(operationName = "obtainUserSecurityConfig")
     public AuthenticationResponse obtainUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
@@ -104,6 +103,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor#verifyUserSecurityConfig(com.cws.esolutions.security.processors.dto.AuthenticationRequest)
+     */
     @Override
     @WebMethod(operationName = "verifyUserSecurityConfig")
     public AuthenticationResponse verifyUserSecurityConfig(final AuthenticationRequest request) throws AuthenticationException
@@ -126,6 +128,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performLookup(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     @WebMethod(operationName = "performLookup")
     public DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException
@@ -148,6 +153,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#getDataFromDatabase(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     @WebMethod(operationName = "getDataFromDatabase")
     public DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException
@@ -170,6 +178,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#createNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     @WebMethod(operationName = "createNewService")
     public DNSServiceResponse createNewService(final DNSServiceRequest request) throws DNSServiceException
@@ -192,6 +203,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#pushNewService(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     @WebMethod(operationName = "pushNewService")
     public DNSServiceResponse pushNewService(final DNSServiceRequest request) throws DNSServiceException
@@ -214,6 +228,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#performSiteTransfer(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
+     */
     @Override
     @WebMethod(operationName = "performSiteTransfer")
     public DNSServiceResponse performSiteTransfer(final DNSServiceRequest request) throws DNSServiceException
@@ -236,6 +253,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#addNewArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "addNewArticle")
     public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -258,6 +278,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "updateArticle")
     public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -280,6 +303,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticleStatus(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "updateArticleStatus")
     public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -302,6 +328,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "getArticle")
     public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -324,6 +353,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getPendingArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "getPendingArticles")
     public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -345,6 +377,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getTopArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     @WebMethod(operationName = "getTopArticles")
     public KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
@@ -366,6 +401,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doArticleSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doArticleSearch")
     public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
@@ -388,6 +426,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServerSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doServerSearch")
     public SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException
@@ -410,6 +451,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doMessageSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doMessageSearch")
     public SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException
@@ -432,6 +476,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doApplicationSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doApplicationSearch")
     public SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException
@@ -454,6 +501,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServiceSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doServiceSearch")
     public SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException
@@ -476,6 +526,9 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doSiteSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
+     */
     @Override
     @WebMethod(operationName = "doSiteSearch")
     public SearchResponse doSiteSearch(final SearchRequest request) throws SearchRequestException

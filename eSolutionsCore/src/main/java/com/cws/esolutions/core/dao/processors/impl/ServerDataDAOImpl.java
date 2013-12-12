@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,25 +24,24 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.sysmgmt.impl
- * ServerDataDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 8, 2013 11:16:06 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO
  */
 public class ServerDataDAOImpl implements IServerDataDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#addNewServer(java.util.List)
+     */
     @Override
     public synchronized boolean addNewServer(final List<Object> serverData) throws SQLException
     {
@@ -138,6 +137,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#removeExistingServer(java.lang.String)
+     */
     @Override
     public synchronized boolean removeExistingServer(final String serverGuid) throws SQLException
     {
@@ -201,6 +203,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getInstalledServers(int)
+     */
     @Override
     public synchronized List<Object[]> getInstalledServers(final int startRow) throws SQLException
     {
@@ -338,6 +343,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getServersForDmgr(java.lang.String)
+     */
     @Override
     public synchronized List<Object[]> getServersForDmgr(final String dmgr) throws SQLException
     {
@@ -473,6 +481,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getInstalledServer(java.lang.String)
+     */
     @Override
     public synchronized List<Object> getInstalledServer(final String attribute) throws SQLException
     {
@@ -591,6 +602,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getServerCount()
+     */
     @Override
     public synchronized int getServerCount() throws SQLException
     {
@@ -679,6 +693,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#validateServerHostName(java.lang.String)
+     */
     @Override
     public synchronized int validateServerHostName(final String hostName) throws SQLException
     {
@@ -768,6 +785,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getServersByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<Object[]> getServersByAttribute(final String value, final int startRow) throws SQLException
     {
@@ -907,6 +927,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#modifyServerData(java.lang.String, java.util.List)
+     */
     @Override
     public synchronized boolean modifyServerData(final String serverGuid, final List<Object> serverData) throws SQLException
     {
@@ -1003,6 +1026,9 @@ public class ServerDataDAOImpl implements IServerDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getServersByAttributeWithRegion(java.lang.String, java.lang.String, int)
+     */
     @Override
     public synchronized List<Object[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException
     {

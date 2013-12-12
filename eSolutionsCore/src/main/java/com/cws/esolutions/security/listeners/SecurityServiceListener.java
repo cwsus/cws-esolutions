@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,14 +42,17 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 /*
- * InitializeApplication
- * SecurityServiceInitializerServlet for application. Currently loads logging
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
- *
- * Author               Date                           Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20            Created.
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
+/**
+ * @see javax.servlet.ServletContextListener
  */
 public class SecurityServiceListener implements ServletContextListener
 {

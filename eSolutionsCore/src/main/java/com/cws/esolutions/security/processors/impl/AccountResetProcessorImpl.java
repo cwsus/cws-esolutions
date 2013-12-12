@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,25 +40,24 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.processors.impl
- * AccountResetProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 10, 2013 3:38:34 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor
  */
 public class AccountResetProcessorImpl implements IAccountResetProcessor
 {
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#verifyResetRequest(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
     @Override
     public AccountResetResponse verifyResetRequest(final AccountResetRequest request) throws AccountResetException
     {
@@ -186,6 +185,9 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#resetUserPassword(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
     @Override
     public AccountResetResponse resetUserPassword(final AccountResetRequest request) throws AccountResetException
     {
@@ -338,6 +340,9 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor#getSecurityQuestions(com.cws.esolutions.security.processors.dto.AccountResetRequest)
+     */
     @Override
     public AccountResetResponse getSecurityQuestions(final AccountResetRequest request) throws AccountResetException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,25 +24,24 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.sysmgmt.impl
- * ServerDataDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 8, 2013 11:16:06 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO
  */
 public class DatacenterDataDAOImpl implements IDatacenterDataDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#addNewDatacenter(java.util.List)
+     */
     @Override
     public synchronized boolean addNewDatacenter(final List<String> data) throws SQLException
     {
@@ -113,6 +112,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#updateDatacenter(java.util.List)
+     */
     @Override
     public synchronized boolean updateDatacenter(final List<String> data) throws SQLException
     {
@@ -183,6 +185,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#removeExistingDatacenter(java.lang.String)
+     */
     @Override
     public synchronized boolean removeExistingDatacenter(final String datacenter) throws SQLException
     {
@@ -246,6 +251,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#getDatacenterCount()
+     */
     @Override
     public synchronized int getDatacenterCount() throws SQLException
     {
@@ -334,6 +342,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return count;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#getAvailableDataCenters(int)
+     */
     @Override
     public synchronized List<String[]> getAvailableDataCenters(final int startRow) throws SQLException
     {
@@ -430,6 +441,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#getDataCenterByAttribute(java.lang.String, int)
+     */
     @Override
     public synchronized List<String[]> getDataCenterByAttribute(final String attribute, final int startRow) throws SQLException
     {
@@ -527,6 +541,9 @@ public class DatacenterDataDAOImpl implements IDatacenterDataDAO
         return responseData;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO#getDatacenter(java.lang.String)
+     */
     @Override
     public synchronized List<String> getDatacenter(final String attribute) throws SQLException
     {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,28 +28,27 @@ import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/**
- * SecurityService
- * com.cws.esolutions.security.usermgmt.impl
- * SQLUserManager.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 6, 2012 4:00:38 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class SQLUserManager implements UserManager
 {
     private static final String CNAME = SQLUserManager.class.getName();
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_SECURITYDS_MANAGER);
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized void validateUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
@@ -161,6 +160,9 @@ public class SQLUserManager implements UserManager
         }
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List, java.lang.String)
+     */
     @Override
     public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException
     {
@@ -238,6 +240,9 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserInformation(java.lang.String, java.lang.String, java.util.Map)
+     */
     @Override
     public synchronized boolean modifyUserInformation(final String userId, final String userGuid, Map<String, Object> changeRequest) throws UserManagementException
     {
@@ -326,6 +331,9 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.Long)
+     */
     @Override
     public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException
     {
@@ -400,6 +408,9 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#removeUserAccount(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException
     {
@@ -469,6 +480,9 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
+     */
     @Override
     public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
@@ -583,6 +597,9 @@ public class SQLUserManager implements UserManager
         return results;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType, java.lang.String)
+     */
     @Override
     public synchronized List<String[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
     {
@@ -700,6 +717,9 @@ public class SQLUserManager implements UserManager
         return results;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#loadUserAccount(java.lang.String)
+     */
     @Override
     public synchronized List<Object> loadUserAccount(final String guid) throws UserManagementException
     {
@@ -824,6 +844,9 @@ public class SQLUserManager implements UserManager
         return userAccount;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserSuspension(java.lang.String, java.lang.String, boolean)
+     */
     @Override
     public synchronized boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException
     {
@@ -902,6 +925,9 @@ public class SQLUserManager implements UserManager
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized boolean unlockUserAccount(final String userId, final String userGuid) throws UserManagementException
     {

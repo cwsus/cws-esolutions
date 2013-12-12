@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,18 +21,14 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 /*
- * SecurityService
- * com.cws.esolutions.security.usermgmt.factory
- * public class UserManagerFactory{ }
- *
- *
- *
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Oct 27, 2012 8:58:01 AM                 Created
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
  */
 public class UserManagerFactory
 {

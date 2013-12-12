@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,21 +22,23 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /*
- * AdminControlServiceImpl
- * Determines if the provided user has the proper level of authority
- * to perform an administrative task.
- *
- * While not currently implemented in this class, the long-term vision
- * is to provide this as a service.
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Oct 31, 2009
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class AdminControlServiceImpl implements IAdminControlService
 {
+    /**
+     * @see com.cws.esolutions.security.access.control.interfaces.IAdminControlService#adminControlService(com.cws.esolutions.security.dto.UserAccount)
+     */
     @Override
     public boolean adminControlService(final UserAccount userAccount)
     {
@@ -59,6 +61,9 @@ public class AdminControlServiceImpl implements IAdminControlService
         return false;
     }
 
+    /**
+     * @see com.cws.esolutions.security.access.control.interfaces.IAdminControlService#adminControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.access.control.enums.AdminControlType)
+     */
     @Override
     public boolean adminControlService(final UserAccount userAccount, final AdminControlType controlType)
     {

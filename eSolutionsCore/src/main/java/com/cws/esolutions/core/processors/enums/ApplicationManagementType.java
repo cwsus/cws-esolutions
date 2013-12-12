@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.enums;
-
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.dto
- * ApplicationManagementRequest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Apr 1, 2013 4:12:25 PM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public enum ApplicationManagementType

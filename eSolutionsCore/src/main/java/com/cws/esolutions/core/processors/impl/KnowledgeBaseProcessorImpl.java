@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,25 +45,24 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * KnowledgeBaseProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#addNewArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
@@ -200,6 +199,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
@@ -339,6 +341,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticleStatus(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
@@ -476,6 +481,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
@@ -645,6 +653,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         return knowledgeBaseResponse;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getPendingArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {
@@ -878,6 +889,9 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getTopArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
+     */
     @Override
     public KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
     {

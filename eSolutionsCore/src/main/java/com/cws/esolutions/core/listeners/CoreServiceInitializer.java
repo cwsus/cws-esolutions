@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,23 +27,16 @@ import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.ConfigurationData;
 import com.cws.esolutions.core.config.DataSourceManager;
 import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.core.exception.CoreServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.listeners
- * CoreServiceInitializer.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+import com.cws.esolutions.core.controllers.ResourceControllerBean;
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 23, 2008 22:39:20
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
 public class CoreServiceInitializer

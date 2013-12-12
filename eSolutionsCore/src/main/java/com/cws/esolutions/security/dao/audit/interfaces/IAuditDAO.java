@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,34 +16,23 @@
 package com.cws.esolutions.security.dao.audit.interfaces;
 
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/**
- * SecurityService
- * com.cws.esolutions.security.audit.dao.interfaces
- * IAuditDAO.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 30, 2012 10:38:04 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
  */
 public interface IAuditDAO
 {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,25 +61,24 @@ import com.cws.esolutions.core.processors.exception.ApplicationManagementExcepti
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServerManagementProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */
 public class ApplicationManagementProcessorImpl implements IApplicationManagementProcessor
 {
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#addNewApplication(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -318,6 +317,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#updateApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -496,6 +498,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#deleteApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -625,6 +630,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplications(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -917,6 +925,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplicationsByProject(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse listApplicationsByProject(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1143,6 +1154,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#getApplicationData(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -1787,6 +1801,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#applicationFileRequest(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
@@ -2045,6 +2062,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#deployApplication(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
     @Override
     public ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {

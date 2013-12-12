@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,36 +16,25 @@
 package com.cws.esolutions.security.config;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
-
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityConstants;
-/**
- * SecurityService
- * com.cws.esolutions.security.config
- * Configuration.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Nov 23, 2012 8:21:09 AM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 @XmlType(name = "file-security-config")
 @XmlAccessorType(XmlAccessType.NONE)

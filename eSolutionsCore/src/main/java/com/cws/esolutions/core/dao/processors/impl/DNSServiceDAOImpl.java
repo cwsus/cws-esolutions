@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,25 +25,24 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO;
-/**
+/*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.processors.impl
- * File: DNSServiceDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
  *
  * History
  * ----------------------------------------------------------------------------
- * 35033355 @ Jul 19, 2013 10:40:24 AM
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO
  */
 public class DNSServiceDAOImpl implements IDNSServiceDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO#getServiceData(java.lang.String)
+     */
     @Override
     public synchronized List<Vector<String>> getServiceData(final String serviceName) throws SQLException
     {
@@ -158,6 +157,9 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO#addNewService(java.util.List, boolean)
+     */
     @Override
     public synchronized boolean addNewService(final List<String> service, final boolean isApex) throws SQLException
     {
@@ -259,6 +261,9 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO#removeService(java.lang.String)
+     */
     @Override
     public synchronized boolean removeService(final String serviceName)
     {

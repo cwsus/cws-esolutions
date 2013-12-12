@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,25 +23,24 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.impl
- * ServiceMessagingDAOImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
  *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class ServiceMessagingDAOImpl implements IMessagingDAO
 {
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#insertMessage(java.util.List)
+     */
     @Override
     public synchronized boolean insertMessage(final List<Object> messageList) throws SQLException
     {
@@ -106,6 +105,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#retrieveMessage(java.lang.String)
+     */
     @Override
     public synchronized List<Object> retrieveMessage(final String messageId) throws SQLException
     {
@@ -194,6 +196,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return svcMessage;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#retrieveMessages()
+     */
     @Override
     public synchronized List<Object[]> retrieveMessages() throws SQLException
     {
@@ -294,6 +299,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#retrieveAlertMessages()
+     */
     @Override
     public synchronized List<Object[]> retrieveAlertMessages() throws SQLException
     {
@@ -394,6 +402,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return response;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#updateMessage(java.lang.String, java.util.List)
+     */
     @Override
     public synchronized boolean updateMessage(final String messageId, final List<Object> messageList) throws SQLException
     {
@@ -464,6 +475,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#deleteMessage(java.lang.String)
+     */
     @Override
     public synchronized boolean deleteMessage(final String messageId) throws SQLException
     {
@@ -526,6 +540,9 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
         return isComplete;
     }
 
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO#getMessagesByAttribute(java.lang.String)
+     */
     @Override
     public synchronized List<Object[]> getMessagesByAttribute(final String value) throws SQLException
     {

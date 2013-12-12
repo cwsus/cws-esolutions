@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,22 +40,25 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /*
- * UserLDAPAuthenticationDAOImpl.java
- * Data Access class for agent authentication. Processes the request against
- * the provided LDAP datastore to determine if the provided credentials are
- * valid for the user, and if so, returns the user information as housed in
- * the datastore.
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
  *
  * History
- *
- * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly              Oct 31, 2009
+ * 35033355 @ Jul 12, 2013 3:04:41 PM
+ *     Created.
+ */
+/**
+ * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
 public class LDAPAuthenticator implements Authenticator
 {
     private static final String CNAME = LDAPAuthenticator.class.getName();
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException
     {
@@ -254,6 +257,9 @@ public class LDAPAuthenticator implements Authenticator
         return userAccount;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#lockUserAccount(java.lang.String, int)
+     */
     @Override
     public synchronized void lockUserAccount(final String userGuid, final int currentCount) throws AuthenticatorException
     {
@@ -377,6 +383,9 @@ public class LDAPAuthenticator implements Authenticator
         }
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#obtainSecurityData(java.lang.String, java.lang.String)
+     */
     @Override
     public synchronized List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException
     {
@@ -497,6 +506,9 @@ public class LDAPAuthenticator implements Authenticator
         return userSecurity;
     }
 
+    /**
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#verifySecurityData(java.util.List)
+     */
     @Override
     public synchronized boolean verifySecurityData(final List<String> request) throws AuthenticatorException
     {
