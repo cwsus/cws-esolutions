@@ -163,7 +163,7 @@ public class DatacenterManagementProcessorImplTest
     public void testGetDatacenter()
     {
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("dcee7e07-0452-4da2-a40c-e93a28344c87");
+        dataCenter.setDatacenterGuid("4af213f1-a03c-4665-a28f-62922f82e5e5");
 
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setDataCenter(dataCenter);

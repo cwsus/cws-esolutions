@@ -21,7 +21,6 @@ import java.util.Arrays;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.ArrayList;
-import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;

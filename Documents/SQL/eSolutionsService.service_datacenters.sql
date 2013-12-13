@@ -10,18 +10,16 @@ CREATE TABLE `esolutionssvc`.`service_datacenters` (
     PRIMARY KEY (`DATACENTER_GUID`),
     FULLTEXT KEY `IDX_DATACENTERS` (`DATACENTER_GUID`, `DATACENTER_NAME`, `DATACENTER_STATUS`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
---
--- Dumping data for table `esolutionssvc`.`service_datacenters`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`service_datacenters` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`service_datacenters` ENABLE KEYS */;
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`service_datacenters` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getDataCenterByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDataCenterByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getDataCenterByAttribute`(
@@ -42,14 +40,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`addNewDatacenter`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewDatacenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`addNewDatacenter`(
@@ -67,14 +62,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`removeDataCenter`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removeDataCenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`removeDataCenter`(
@@ -88,14 +80,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `getDatacenterCount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getDatacenterCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getDatacenterCount`(
@@ -106,14 +95,11 @@ BEGIN
     WHERE DATACENTER_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`listDataCenters`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listDataCenters`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`listDataCenters`(
@@ -130,14 +116,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrDataCenter`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrDataCenter`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrDataCenter`(
@@ -154,6 +137,7 @@ BEGIN
     AND DATACENTER_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

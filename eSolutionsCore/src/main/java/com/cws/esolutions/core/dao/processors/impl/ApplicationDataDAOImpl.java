@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
-import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 /*
  * Project: eSolutionsCore
@@ -405,11 +404,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     {
                         String[] data = new String[]
                         {
-                                resultSet.getString(1), // app guid
-                                resultSet.getString(2), // app name
-                                resultSet.getString(3), // app version
-                                resultSet.getString(4), // project guid
-                                resultSet.getString(5), // platform guid
+                            resultSet.getString(1), // T1.APPLICATION_GUID
+                            resultSet.getString(2), // T1.APPLICATION_NAME
+                            resultSet.getString(3), // T2.PROJECT_GUID
+                            resultSet.getString(4), // T2.PROJECT_NAME
                         };
 
                         if (DEBUG)
@@ -517,20 +515,33 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     (
                         Arrays.asList
                         (
-                            resultSet.getString(1), // app guid
-                            resultSet.getString(2), // app name
-                            resultSet.getString(3), // app version
-                            resultSet.getString(4), // base path
-                            resultSet.getString(5), // app scm path
-                            resultSet.getString(6), // cluster name
-                            resultSet.getString(7), // jvm name
-                            resultSet.getString(8), // install path
-                            resultSet.getString(9), // logs dir
-                            resultSet.getString(10), // pid dir
-                            resultSet.getString(11), // project guid
-                            resultSet.getString(12), // platform guid
-                            resultSet.getTimestamp(13).toString(), // app online date
-                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                            resultSet.getString(1), // T1.APPLICATION_GUID
+                            resultSet.getString(2), // T1.APPLICATION_NAME
+                            resultSet.getString(3), // T1.APPLICATION_VERSION
+                            resultSet.getString(4), // T1.BASE_PATH
+                            resultSet.getString(5), // T1.SCM_PATH
+                            resultSet.getString(6), // T1.CLUSTER_NAME
+                            resultSet.getString(7), // T1.JVM_NAME
+                            resultSet.getString(8), // T1.INSTALL_PATH
+                            resultSet.getString(9), // T1.LOGS_DIRECTORY
+                            resultSet.getString(10), // T1.PID_DIRECTORY
+                            resultSet.getString(11), // T2.PLATFORM_GUID
+                            resultSet.getString(12), // T2.PLATFORM_NAME
+                            resultSet.getString(13), // T2.PLATFORM_REGION
+                            resultSet.getString(14), // T2.PLATFORM_DMGR
+                            resultSet.getString(15), // T2.PLATFORM_APPSERVERS
+                            resultSet.getString(16), // T2.PLATFORM_WEBSERVERS
+                            resultSet.getString(17), // T2.PLATFORM_STATUS
+                            resultSet.getString(18), // T2.PLATFORM_DESC
+                            resultSet.getString(19), // T3.PROJECT_GUID
+                            resultSet.getString(20), // T3.PROJECT_NAME
+                            resultSet.getString(21), // T3.PROJECT_STATUS
+                            resultSet.getString(22), // T3.PRIMARY_OWNER
+                            resultSet.getString(23), // T3.SECONDARY_OWNER
+                            resultSet.getString(24), // T3.DEV_EMAIL
+                            resultSet.getString(25), // T3.PROD_EMAIL
+                            resultSet.getString(26), // T3.INCIDENT_QUEUE
+                            resultSet.getString(27) // T3.CHANGE_QUEUE
                         )
                     );
 
@@ -628,20 +639,10 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // app guid
-                            resultSet.getString(2), // app name
-                            resultSet.getString(3), // app version
-                            resultSet.getString(4), // base path
-                            resultSet.getString(5), // app scm path
-                            resultSet.getString(6), // cluster name
-                            resultSet.getString(7), // jvm name
-                            resultSet.getString(8), // install path
-                            resultSet.getString(9), // logs dir
-                            resultSet.getString(10), // pid dir
-                            resultSet.getString(11), // project guid
-                            resultSet.getString(12), // platform guid
-                            resultSet.getTimestamp(13).toString(), // app online date
-                            (resultSet.getTimestamp(14) != null) ? resultSet.getTimestamp(14).toString() : Constants.NOT_SET // app offline date
+                            resultSet.getString(1), // T1.APPLICATION_GUID
+                            resultSet.getString(2), // T1.APPLICATION_NAME
+                            resultSet.getString(3), // T2.PROJECT_GUID
+                            resultSet.getString(4), // T2.PROJECT_NAME
                         };
 
                         if (DEBUG)

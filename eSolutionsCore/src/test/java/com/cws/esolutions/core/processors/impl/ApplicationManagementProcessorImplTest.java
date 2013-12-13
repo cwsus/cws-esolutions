@@ -61,7 +61,7 @@ public class ApplicationManagementProcessorImplTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final IApplicationManagementProcessor appProcess = new ApplicationManagementProcessorImpl();
+    private static final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
 
     @Before
     public void setUp()
@@ -117,9 +117,9 @@ public class ApplicationManagementProcessorImplTest
     public void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("0dfd5ed0-5dbc-4c14-aa01-78f38608b2cd");
+        project.setProjectGuid("9d63e244-2f9b-47f2-b2e7-fab4b9c0a5e8");
 
-        String[] platforms = { "1c748b69-329c-455f-9637-997b5923b762", "583466c3-7c8e-4ff4-893a-b15dd59e806c", "c2281712-63c6-48b6-8634-dfb51fcad700" };
+        String[] platforms = { "1b5a340d-3cdd-4818-ad81-f64e3d1f2acb", "269a7028-116e-4ac8-9760-f4e3b14dedb8", "ab6ddf07-69a0-4573-8404-0dca628f2c8d" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -155,7 +155,7 @@ public class ApplicationManagementProcessorImplTest
 
             try
             {
-                ApplicationManagementResponse response = appProcess.addNewApplication(request);
+                ApplicationManagementResponse response = processor.addNewApplication(request);
 
                 Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
             }
@@ -180,7 +180,7 @@ public class ApplicationManagementProcessorImplTest
 
         try
         {
-            ApplicationManagementResponse response = appProcess.deleteApplicationData(request);
+            ApplicationManagementResponse response = processor.deleteApplicationData(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -200,34 +200,7 @@ public class ApplicationManagementProcessorImplTest
 
         try
         {
-            ApplicationManagementResponse response = appProcess.listApplications(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ApplicationManagementException amx)
-        {
-            Assert.fail(amx.getMessage());
-        }
-    }
-
-    @Test
-    public void testListApplicationsByProject()
-    {
-        Project project = new Project();
-        project.setProjectGuid("7c2e3991-1b01-47db-9c78-bd9c453bd07c");
-
-        Application app = new Application();
-        app.setApplicationProject(project);
-
-        ApplicationManagementRequest request = new ApplicationManagementRequest();
-        request.setApplication(app);
-        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-
-        try
-        {
-            ApplicationManagementResponse response = appProcess.listApplicationsByProject(request);
+            ApplicationManagementResponse response = processor.listApplications(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -251,7 +224,7 @@ public class ApplicationManagementProcessorImplTest
 
         try
         {
-            ApplicationManagementResponse response = appProcess.getApplicationData(request);
+            ApplicationManagementResponse response = processor.getApplicationData(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -279,7 +252,7 @@ public class ApplicationManagementProcessorImplTest
 
         try
         {
-            ApplicationManagementResponse response = appProcess.applicationFileRequest(request);
+            ApplicationManagementResponse response = processor.applicationFileRequest(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -308,7 +281,7 @@ public class ApplicationManagementProcessorImplTest
 
         try
         {
-            ApplicationManagementResponse response = appProcess.applicationFileRequest(request);
+            ApplicationManagementResponse response = processor.applicationFileRequest(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }

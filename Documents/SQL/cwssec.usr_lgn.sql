@@ -29,11 +29,16 @@ CREATE TABLE `cwssec`.`usr_lgn` (
     KEY `CN` USING BTREE (`CN`),
     FULLTEXT KEY `USER_SEARCH` (`UID`, `CWSROLE`, `GIVENNAME`, `SN`, `EMAIL`, `CN`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+ALTER TABLE `cwssec`.`usr_lgn` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `cwssec`.`getUserByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getUserByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`getUserByAttribute`(
@@ -65,13 +70,11 @@ BEGIN
     AGAINST (+attributeName IN BOOLEAN MODE);
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`listUserAccounts`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listUserAccounts`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`listUserAccounts`(
@@ -99,13 +102,11 @@ BEGIN
     FROM `cwssec`.`usr_lgn`;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`addUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`addUserAccount`(
@@ -135,14 +136,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`updateUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`updateUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`updateUserAccount`(
@@ -166,14 +164,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`updateUserPassword`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`updateUserPassword`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`updateUserPassword`(
@@ -193,14 +188,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`resetUserPassword`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`resetUserPassword`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`resetUserPassword`(
@@ -218,14 +210,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `showUserAccounts`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`showUserAccounts`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`showUserAccounts`(
@@ -249,14 +238,11 @@ BEGIN
     FROM usr_lgn;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `showUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`showUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`showUserAccount`(
@@ -283,14 +269,11 @@ BEGIN
     WHERE cn = commonName;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `removeUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`removeUserAccount`(
@@ -303,14 +286,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`performAuthentication`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`performAuthentication`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`performAuthentication`(
@@ -341,14 +321,11 @@ BEGIN
     AND USERPASSWORD = password;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`loginSuccess`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`loginSuccess`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`loginSuccess`(
@@ -366,14 +343,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`verifySecurityQuestions`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`verifySecurityQuestions`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`verifySecurityQuestions`(
@@ -390,14 +364,11 @@ BEGIN
     AND CN = commonName;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`addOrUpdateSecurityQuestions`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addOrUpdateSecurityQuestions`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`addOrUpdateSecurityQuestions`(
@@ -423,14 +394,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`lockUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`lockUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`lockUserAccount`(
@@ -449,14 +417,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`unlockUserAccount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`unlockUserAccount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`unlockUserAccount`(
@@ -470,14 +435,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`modifyUserSuspension`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`modifyUserSuspension`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`modifyUserSuspension`(
@@ -492,14 +454,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`addPublicKey`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`addPublicKey`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`addPublicKey`(
@@ -514,14 +473,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`retrPublicKey`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`retrPublicKey`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`retrPublicKey`(
@@ -533,14 +489,11 @@ BEGIN
     WHERE CN = commonName;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
--- Definition of procedure `cwssec`.`quartzDataRetr`
+-- Definition of procedure `cwssec`.`passwordExpirationNotifier`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`passwordExpirationNotifier`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`passwordExpirationNotifier`(
@@ -555,6 +508,7 @@ BEGIN
     FROM usr_lgn;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

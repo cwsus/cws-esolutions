@@ -15,13 +15,16 @@ CREATE TABLE `esolutionssvc`.`service_projects` (
     PRIMARY KEY (`PROJECT_GUID`),
     FULLTEXT KEY `IDX_PROJECTS` (`PROJECT_NAME`, `PROJECT_STATUS`, `PRIMARY_OWNER`, `SECONDARY_OWNER`, `DEV_EMAIL`, `PROD_EMAIL`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`service_projects` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getProjectByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getProjectByAttribute`(
@@ -38,13 +41,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`insertNewProject`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewProject`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertNewProject`(
@@ -67,13 +68,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`updateProjectData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`updateProjectData`(
@@ -99,13 +98,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`removeProjectData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removeProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`removeProjectData`(
@@ -119,32 +116,28 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`getProjectData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getProjectData`(
     IN projectGuid VARCHAR(128)
 )
 BEGIN
-    SELECT PROJECT_GUID, PROJECT_CODE, PROJECT_STATUS, PRIMARY_OWNER, SECONDARY_OWNER, DEV_EMAIL, PROD_EMAIL, INCIDENT_QUEUE, CHANGE_QUEUE
+    SELECT PROJECT_GUID, PROJECT_NAME, PROJECT_STATUS, PRIMARY_OWNER, SECONDARY_OWNER, DEV_EMAIL, PROD_EMAIL, INCIDENT_QUEUE, CHANGE_QUEUE
     FROM `esolutionssvc`.`service_projects`
     WHERE PROJECT_GUID = projectGuid
     AND PROJECT_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `getProjectCount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getProjectCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getProjectCount`(
@@ -155,26 +148,24 @@ BEGIN
     WHERE PROJECT_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`listProjects`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listProjects`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`listProjects`(
     IN startRow INT
 )
 BEGIN
-    SELECT PROJECT_GUID, PROJECT_CODE, PROJECT_STATUS, PRIMARY_OWNER, SECONDARY_OWNER, DEV_EMAIL, PROD_EMAIL, INCIDENT_QUEUE, CHANGE_QUEUE
+    SELECT PROJECT_GUID, PROJECT_NAME, PROJECT_STATUS, PRIMARY_OWNER, SECONDARY_OWNER, DEV_EMAIL, PROD_EMAIL, INCIDENT_QUEUE, CHANGE_QUEUE
     FROM `esolutionssvc`.`service_projects`
     WHERE PROJECT_STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

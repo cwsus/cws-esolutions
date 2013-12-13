@@ -16,18 +16,16 @@ CREATE TABLE `esolutionssvc`.`service_requests` (
     PRIMARY KEY (`SERVICE_REQUEST_ID`),
     FULLTEXT KEY `IDX_SEARCH` (`SERVICE_REQUEST_ID`,`SERVICE_REQUEST_AUTHOR`,`SERVICE_REQUEST_ASSIGNEE`,`SERVICE_REQUEST_STATUS`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
---
--- Dumping data for table `esolutionssvc`.`service_requests`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`service_requests` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`service_requests` ENABLE KEYS */;
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`service_requests` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`submitSvcRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`submitSvcRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`submitSvcRequest`(
@@ -59,14 +57,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`assignServiceRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`assignServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`assignServiceRequest`(
@@ -85,14 +80,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`acceptServiceRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`acceptServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`acceptServiceRequest`(
@@ -110,14 +102,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`rejectServiceRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`rejectServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`rejectServiceRequest`(
@@ -135,14 +124,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`completeServiceRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`completeServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`completeServiceRequest`(
@@ -160,14 +146,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`closeServiceRequest`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`closeServiceRequest`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`closeServiceRequest`(
@@ -185,6 +168,7 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

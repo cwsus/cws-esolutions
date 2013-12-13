@@ -15,18 +15,16 @@ CREATE TABLE `cwssec`.`usr_audit` (
     `usr_audit_srchost` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
     FULLTEXT KEY `audit_search` (`usr_audit_userid`, `usr_audit_userguid`, `usr_audit_role`, `usr_audit_srcaddr`, `usr_audit_srchost`, `usr_audit_action`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
---
--- Dumping data for table `cwssec`.`usr_audit`
---
-/*!40000 ALTER TABLE `cwssec`.`usr_audit` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cwssec`.`usr_audit` ENABLE KEYS */;
 COMMIT;
+
+ALTER TABLE `cwssec`.`usr_audit` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `cwssec`.`getAuditEntryByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditEntryByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`getAuditEntryByAttribute`(
@@ -51,14 +49,11 @@ BEGIN
     AGAINST (+attributeName IN BOOLEAN MODE);
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `getAuditCount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`getAuditCount`(
@@ -70,14 +65,11 @@ BEGIN
     WHERE usr_audit_userguid = userguid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `getAuditInterval`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getAuditInterval`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`getAuditInterval`(
@@ -102,14 +94,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `insertAuditEntry`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`insertAuditEntry`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`insertAuditEntry`(
@@ -128,6 +117,7 @@ BEGIN
     VALUES (usersessid, username, userguid, userrole, applid, applname, UNIX_TIMESTAMP(NOW()), useraction, srcaddr, srchost);
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

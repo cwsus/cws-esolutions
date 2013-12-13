@@ -13,48 +13,32 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 --
--- Create user `tomcat`
+-- Create schema `tomcat`
 --
 
-CREATE USER 'tomcat'@'192.168.15.%' IDENTIFIED BY PASSWORD '*BC76B32594D63CEE07D4144CBFD349B88E2FDBBB';
-CREATE USER 'tomcat'@'localhost' IDENTIFIED BY PASSWORD '*BC76B32594D63CEE07D4144CBFD349B88E2FDBBB';
+CREATE DATABASE IF NOT EXISTS `tomcat`;
+USE `tomcat`;
 
 --
--- Create schema `session`
+-- Definition of table `tomcat`
 --
 
-CREATE DATABASE IF NOT EXISTS `session`;
-USE `session`;
-
---
--- Definition of table `tomcat$sessions`
---
-
-DROP TABLE IF EXISTS `session`.`tomcat$sessions`;
-CREATE TABLE `session`.`tomcat$sessions` (
-  `sess_id` VARCHAR(100) NOT NULL,
-  `sess_valid` CHAR(1) NOT NULL,
-  `sess_maxinactive` INT(11) NOT NULL,
-  `sess_lastaccess` BIGINT(20) NOT NULL,
-  `app_name` VARCHAR(255) NOT NULL,
-  `sess_data` MEDIUMBLOB,
-  PRIMARY KEY (`sess_id`),
-  KEY `kapp_name` (`app_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `tomcat$sessions`
---
-
-/*!40000 ALTER TABLE `session`.`tomcat$sessions` DISABLE KEYS */;
-/*!40000 ALTER TABLE `session`.`tomcat$sessions` ENABLE KEYS */;
+DROP TABLE IF EXISTS `tomcat`.`sessions`;
+CREATE TABLE `tomcat`.`sessions` (
+    `sess_id` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    `sess_valid` CHAR(1) CHARACTER SET UTF8 NOT NULL,
+    `sess_maxinactive` INT(11) NOT NULL,
+    `sess_lastaccess` BIGINT(20) NOT NULL,
+    `app_name` VARCHAR(255) CHARACTER SET UTF8 NOT NULL,
+    `sess_data` MEDIUMBLOB,
+    PRIMARY KEY (`sess_id`),
+    KEY `kapp_name` (`app_name`)
+) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
 --
 -- Grant select, insert, update, delete and execute to user
 --
-
-GRANT SELECT,INSERT,UPDATE,DELETE ON `session`.`tomcat$sessions` TO 'tomcat'@'192.168.15.%';
-GRANT SELECT,INSERT,UPDATE,DELETE ON `session`.`tomcat$sessions` TO 'tomcat'@'localhost';
+GRANT SELECT, INSERT, UPDATE, DELETE ON `tomcat`.`sessions` TO 'tomcat'@'localhost' IDENTIFIED BY PASSWORD '*BC76B32594D63CEE07D4144CBFD349B88E2FDBBB';
 FLUSH PRIVILEGES;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

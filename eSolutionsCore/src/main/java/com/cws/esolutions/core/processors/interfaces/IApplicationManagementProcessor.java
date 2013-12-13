@@ -83,8 +83,6 @@ public interface IApplicationManagementProcessor
 
     ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
-    ApplicationManagementResponse listApplicationsByProject(final ApplicationManagementRequest request) throws ApplicationManagementException;
-
     ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
     ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException;

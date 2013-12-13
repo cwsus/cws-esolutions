@@ -3,8 +3,8 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`service_platforms`;
 CREATE TABLE `esolutionssvc`.`service_platforms` (
-    `PLATFORM_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `PLATFORM_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
+    `PLATFORM_NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
     `PLATFORM_REGION` VARCHAR(15) CHARACTER SET UTF8 NOT NULL,
     `PLATFORM_DMGR` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     `PLATFORM_APPSERVERS` TEXT CHARACTER SET UTF8 NOT NULL,
@@ -20,18 +20,16 @@ CREATE TABLE `esolutionssvc`.`service_platforms` (
             ON DELETE RESTRICT
             ON UPDATE NO ACTION
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
---
--- Dumping data for table `esolutionssvc`.`service_platforms`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`service_platforms` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`service_platforms` ENABLE KEYS */;
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`service_platforms` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getPlatformByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
@@ -39,22 +37,23 @@ CREATE PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
     IN startRow INT
 )
 BEGIN
-    SELECT PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_DESC,
+    SELECT
+        PLATFORM_GUID,
+        PLATFORM_NAME,
     MATCH (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_platforms`
     WHERE MATCH (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`)
     AGAINST (+attributeName IN BOOLEAN MODE)
+    AND PLATFORM_STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`addNewPlatform`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewPlatform`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`addNewPlatform`(
@@ -76,13 +75,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`updatePlatformData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updatePlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`updatePlatformData`(
@@ -106,13 +103,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`removePlatformData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`removePlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`removePlatformData`(
@@ -126,32 +121,67 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`getPlatformData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getPlatformData`(
     IN platformGuid VARCHAR(128)
 )
 BEGIN
-    SELECT PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_DESC
-    FROM `esolutionssvc`.`service_platforms`
+    SELECT
+        T1.PLATFORM_GUID,
+        T1.PLATFORM_NAME,
+        T1.PLATFORM_REGION,
+        T1.PLATFORM_APPSERVERS,
+        T1.PLATFORM_WEBSERVERS,
+        T1.PLATFORM_DESC,
+        T2.SYSTEM_GUID,
+        T2.SYSTEM_OSTYPE,
+        T2.SYSTEM_STATUS,
+        T2.NETWORK_PARTITION,
+        T2.DOMAIN_NAME,
+        T2.CPU_TYPE,
+        T2.CPU_COUNT,
+        T2.SERVER_RACK,
+        T2.RACK_POSITION,
+        T2.SERVER_MODEL,
+        T2.SERIAL_NUMBER,
+        T2.INSTALLED_MEMORY,
+        T2.OPER_IP,
+        T2.OPER_HOSTNAME,
+        T2.MGMT_IP,
+        T2.MGMT_HOSTNAME,
+        T2.BKUP_IP,
+        T2.BKUP_HOSTNAME,
+        T2.NAS_IP,
+        T2.NAS_HOSTNAME,
+        T2.NAT_ADDR,
+        T2.COMMENTS,
+        T2.ASSIGNED_ENGINEER,
+        T2.DMGR_PORT,
+        T2.MGR_ENTRY,
+        T3.DATACENTER_GUID,
+        T3.DATACENTER_NAME,
+        T3.DATACENTER_STATUS,
+        T3.DATACENTER_DESC
+    FROM `esolutionssvc`.`service_platforms` T1
+    INNER JOIN `esolutionssvc`.`installed_systems` T2
+    ON T1.PLATFORM_DMGR = T2.SYSTEM_GUID
+    INNER JOIN `esolutionssvc`.`service_datacenters` T3
+    ON T2.DATACENTER_GUID = T3.DATACENTER_GUID
     WHERE PLATFORM_GUID = platformGuid
     AND PLATFORM_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `getPlatformCount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getPlatformCount`(
@@ -162,26 +192,26 @@ BEGIN
     WHERE PLATFORM_STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`listPlatforms`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`listPlatforms`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`listPlatforms`(
     IN startRow INT
 )
 BEGIN
-    SELECT PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_DESC
+    SELECT
+        PLATFORM_GUID,
+        PLATFORM_NAME
     FROM `esolutionssvc`.`service_platforms`
     WHERE PLATFORM_STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

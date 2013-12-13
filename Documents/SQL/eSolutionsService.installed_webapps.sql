@@ -23,19 +23,16 @@ CREATE TABLE `esolutionssvc`.`installed_webapps` (
     PRIMARY KEY (`web_code`),
     FULLTEXT KEY `webapps` (`web_code`,`webapp_name`,`server_version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
---
--- Dumping data for table `esolutionssvc`.`articles`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`articles` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`articles` ENABLE KEYS */;
-
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`installed_webapps` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getWebappByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getWebappByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getWebappByAttribute`(
@@ -68,6 +65,7 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

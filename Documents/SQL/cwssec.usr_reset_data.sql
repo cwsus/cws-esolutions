@@ -9,18 +9,16 @@ CREATE TABLE `cwssec`.`usr_reset_data` (
     `smsCode` VARCHAR(8),
     PRIMARY KEY (`cn`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-
---
--- Dumping data for table `usr_reset_data`
---
-/*!40000 ALTER TABLE `usr_reset_data` DISABLE KEYS */;
-/*!40000 ALTER TABLE `usr_reset_data` ENABLE KEYS */;
 COMMIT;
+
+ALTER TABLE `cwssec`.`usr_reset_data` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `cwssec`.`insertResetData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`insertResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`insertResetData`(
@@ -38,14 +36,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`getResetData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`getResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`getResetData`(
@@ -57,14 +52,11 @@ BEGIN
     WHERE resetKey = resetId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`verifySmsCodeForReset`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`verifySmsCodeForReset`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`verifySmsCodeForReset`(
@@ -80,14 +72,11 @@ BEGIN
     AND smsCode = smsId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`listActiveResetRequests`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`listActiveResetRequests`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`listActiveResetRequests`(
@@ -97,14 +86,11 @@ BEGIN
     FROM usr_reset_data;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `cwssec`.`removeResetData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `cwssec`.`removeResetData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `cwssec`.`removeResetData`(
@@ -119,6 +105,7 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

@@ -42,11 +42,16 @@ CREATE TABLE `esolutionssvc`.`installed_systems` (
             ON UPDATE NO ACTION,
     FULLTEXT KEY `IDX_SEARCH` (`SYSTEM_GUID`, `SYSTEM_OSTYPE`, `SYSTEM_STATUS`, `SYSTEM_REGION`, `NETWORK_PARTITION`, `DATACENTER_GUID`, `SYSTEM_TYPE`, `OPER_HOSTNAME`, `ASSIGNED_ENGINEER`, `OWNING_DMGR`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+ALTER TABLE `esolutionssvc`.`installed_systems` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getServerByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getServerByAttribute`(
@@ -94,14 +99,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`getServerByAttributeWithRegion`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerByAttributeWithRegion`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getServerByAttributeWithRegion`(
@@ -152,14 +154,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`validateServerHostName`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`validateServerHostName`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`validateServerHostName`(
@@ -171,13 +170,11 @@ BEGIN
     WHERE OPER_HOSTNAME = operHostname;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`insertNewServer`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewServer`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertNewServer`(
@@ -228,13 +225,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`updateServerData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateServerData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`updateServerData`(
@@ -304,13 +299,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retireServer`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retireServer`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retireServer`(
@@ -326,13 +319,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `getServerCount`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getServerCount`(
@@ -343,14 +334,11 @@ BEGIN
     WHERE DELETE_DATE = '0000-00-00 00:00:00';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`getServerList`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getServerList`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getServerList`(
@@ -394,13 +382,11 @@ BEGIN
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrServerData`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServerData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrServerData`(
@@ -408,49 +394,53 @@ CREATE PROCEDURE `esolutionssvc`.`retrServerData`(
 )
 BEGIN
     SELECT
-        SYSTEM_GUID,
-        SYSTEM_OSTYPE,
-        SYSTEM_STATUS,
-        SYSTEM_REGION,
-        NETWORK_PARTITION,
-        DATACENTER_GUID,
-        SYSTEM_TYPE,
-        DOMAIN_NAME,
-        CPU_TYPE,
-        CPU_COUNT,
-        SERVER_RACK,
-        RACK_POSITION,
-        SERVER_MODEL,
-        SERIAL_NUMBER,
-        INSTALLED_MEMORY,
-        OPER_IP,
-        OPER_HOSTNAME,
-        MGMT_IP,
-        MGMT_HOSTNAME,
-        BKUP_IP,
-        BKUP_HOSTNAME,
-        NAS_IP,
-        NAS_HOSTNAME,
-        NAT_ADDR,
-        COMMENTS,
-        ASSIGNED_ENGINEER,
-        ADD_DATE,
-        DELETE_DATE,
-        DMGR_PORT,
-        OWNING_DMGR,
-        MGR_ENTRY
-    FROM `esolutionssvc`.`installed_systems`
-    WHERE SYSTEM_GUID = serverGuid
+        T1.SYSTEM_GUID,
+        T1.SYSTEM_OSTYPE,
+        T1.SYSTEM_STATUS,
+        T1.SYSTEM_REGION,
+        T1.NETWORK_PARTITION,
+        T1.DATACENTER_GUID,
+        T1.SYSTEM_TYPE,
+        T1.DOMAIN_NAME,
+        T1.CPU_TYPE,
+        T1.CPU_COUNT,
+        T1.SERVER_RACK,
+        T1.RACK_POSITION,
+        T1.SERVER_MODEL,
+        T1.SERIAL_NUMBER,
+        T1.INSTALLED_MEMORY,
+        T1.OPER_IP,
+        T1.OPER_HOSTNAME,
+        T1.MGMT_IP,
+        T1.MGMT_HOSTNAME,
+        T1.BKUP_IP,
+        T1.BKUP_HOSTNAME,
+        T1.NAS_IP,
+        T1.NAS_HOSTNAME,
+        T1.NAT_ADDR,
+        T1.COMMENTS,
+        T1.ASSIGNED_ENGINEER,
+        T1.ADD_DATE,
+        T1.DELETE_DATE,
+        T1.DMGR_PORT,
+        T1.OWNING_DMGR,
+        T1.MGR_ENTRY,
+        T2.DATACENTER_GUID,
+        T2.DATACENTER_NAME,
+        T2.DATACENTER_STATUS,
+        T2.DATACENTER_DESC
+    FROM `esolutionssvc`.`installed_systems` T1
+    INNER JOIN `esolutionssvc`.`service_datacenters` T2
+    ON T1.DATACENTER_GUID = T2.DATACENTER_GUID
+    WHERE T1.SYSTEM_GUID = serverGuid
     AND DELETE_DATE = '0000-00-00 00:00:00';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrServersForDmgr`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServersForDmgr`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrServersForDmgr`(
@@ -492,13 +482,7 @@ BEGIN
     AND DELETE_DATE = '0000-00-00 00:00:00';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
-COMMIT;
-
---
--- Dumping data for table `esolutionssvc`.`installed_systems`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`installed_systems` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`installed_systems` ENABLE KEYS */;
 COMMIT;

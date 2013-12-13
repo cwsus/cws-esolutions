@@ -20,10 +20,10 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
@@ -35,28 +35,14 @@ import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
@@ -167,16 +153,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 }
 
                                 // make sure its a valid platform
-                                List<String> isPlatformValid = platformDao.getPlatformData(targetPlatform.getPlatformGuid());
-
-                                if (DEBUG)
+                                if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) != null)
                                 {
-                                    DEBUGGER.debug("isPlatformValid: {}", isPlatformValid);
-                                }
-
-                                if ((isPlatformValid == null) || (isPlatformValid.size() == 0))
-                                {
-                                    throw new ApplicationManagementException("Provided platform does not exist in the asset datasource. Cannot add application.");
+                                    throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                                 }
 
                                 platforms.add(targetPlatform.getPlatformGuid());
@@ -671,200 +650,77 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isUserAuthorized)
                 {
-                    List<String> serviceList = new ArrayList<>();
-                    List<Application> applicationList = new ArrayList<>();
-
-                    if (userAccount.getRole() == Role.SITEADMIN)
-                    {
-                        IProjectDataDAO projectDAO = new ProjectDataDAOImpl();
-                        List<String[]> projects = projectDAO.listAvailableProjects(request.getStartPage());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("projects: {}", projects);
-                        }
-
-                        if ((projects != null) && (projects.size() != 0))
-                        {
-                            for (String[] project : projects)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("project: {}", project[0]);
-                                }
-
-                                serviceList.add(project[0]);
-                            }
-                        }
-                        else
-                        {
-                            throw new ApplicationManagementException("No installed projects were located. Cannot continue.");
-                        }
-                    }
-                    else
-                    {
-                        // pull a list of projects the user has access to
-                        serviceList = userAccount.getProjectList();
-                    }
+                    List<String[]> appData = appDAO.listInstalledApplications(request.getStartPage());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<String>: {}", serviceList);
+                        DEBUGGER.debug("List<String[]>: {}", appData);
                     }
 
-                    if ((serviceList != null) && (serviceList.size() != 0))
+                    if ((appData != null) && (appData.size() != 0))
                     {
-                        // ok, get all the associated applications with the project
-                        for (String projectId : serviceList)
+                        List<Application> appList = new ArrayList<Application>();
+
+                        for (String[] array : appData)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("projectId: {}", projectId);
-                            }
-
-                            List<String> projectInfo = projectDAO.getProjectData(projectId);
+                            // we're getting a full list here, and then we'll pull out as necessary
+                            boolean isUserAuthorizedForProject = userControl.isUserAuthorizedForProject(userAccount, array[2]); // T2.PROJECT_GUID
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("projectInfo: {}", projectInfo);
+                                DEBUGGER.debug("isUserAuthorizedForProject: {}", isUserAuthorizedForProject);
                             }
 
-                            if ((projectInfo != null) && (projectInfo.size() != 0))
+                            if (isUserAuthorizedForProject)
                             {
                                 Project project = new Project();
-                                project.setProjectGuid(projectInfo.get(0));
-                                project.setProjectName(projectInfo.get(1));
+                                project.setProjectGuid(array[2]);
+                                project.setProjectName(array[3]);
 
                                 if (DEBUG)
                                 {
                                     DEBUGGER.debug("Project: {}", project);
                                 }
 
-                                List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid(), request.getStartPage());
+                                Application app = new Application();
+                                app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
+                                app.setApplicationName(array[1]); // T1.APPLICATION_NAME
+                                app.setApplicationProject(project);
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("appData: {}", appData);
+                                    DEBUGGER.debug("Application: {}", app);
                                 }
 
-                                if ((appData != null) && (appData.size() != 0))
-                                {
-                                    List<Platform> platforms = new ArrayList<>();
-
-                                    for (String[] data : appData)
-                                    {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("data: {}", data);
-                                        }
-
-                                        // build the platform
-                                        if (StringUtils.split(data[11], ",").length >= 1)
-                                        {
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("platformList: {}", StringUtils.split(data[11], ","));
-                                            }
-
-                                            for (String platformGuid : data[11].split(","))
-                                            {
-                                                String guid = StringUtils.remove(platformGuid, "[");
-                                                guid = StringUtils.remove(guid, "]");
-                                                guid = StringUtils.trim(guid);
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("guid: {}", guid);
-                                                }
-
-                                                List<String> platformData = platformDao.getPlatformData(guid);
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("platformData: {}", platformData);
-                                                }
-
-                                                if ((platformData != null) && (platformData.size() != 0))
-                                                {
-                                                    Platform platform = new Platform();
-                                                    platform.setPlatformGuid(platformData.get(0));
-                                                    platform.setPlatformName(platformData.get(1));
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("Platform: {}", platform);
-                                                    }
-
-                                                    platforms.add(platform);
-                                                }
-                                                else
-                                                {
-                                                    throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
-                                                }
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("platforms: {}", platforms);
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
-                                        }
-
-                                        Application resApplication = new Application();
-                                        resApplication.setApplicationGuid(data[0]);
-                                        resApplication.setApplicationName(data[1]);
-                                        resApplication.setApplicationVersion(data[2]);
-                                        resApplication.setBasePath(data[3]);
-                                        resApplication.setScmPath(data[4]);
-                                        resApplication.setApplicationCluster(data[5]);
-                                        resApplication.setJvmName(data[6]);
-                                        resApplication.setApplicationInstallPath(data[7]);
-                                        resApplication.setApplicationLogsPath(data[8]);
-                                        resApplication.setPidDirectory(data[9]);
-                                        resApplication.setApplicationProject(project);
-                                        resApplication.setApplicationPlatforms(platforms);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Application: {}", resApplication);
-                                        }
-
-                                        applicationList.add(resApplication);
-                                    }
-                                }
-                                else
-                                {
-                                    // moo
-                                    continue;
-                                }
+                                appList.add(app);
                             }
-                            else
+
+                            if (DEBUG)
                             {
-                                throw new ApplicationManagementException("No project information was located. Cannot continue.");
+                                DEBUGGER.debug("List<Application>: {}", appList);
                             }
                         }
-                    }
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("applicationList: {}", applicationList);
-                    }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("applicationList: {}", appList);
+                        }
 
-                    if (applicationList.size() != 0)
-                    {
-                        response.setApplicationList(applicationList);
+                        response.setApplicationList(appList);
                         response.setResponse("Successfully loaded application list");
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     }
                     else
                     {
-                        // no applications
+                        // no data
                         response.setResponse("No applications were located for the provided information");
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                    }
                 }
                 else
                 {
@@ -883,235 +739,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
                 throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
-        }
-        else
-        {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
-        }
-        
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplicationsByProject(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
-     */
-    @Override
-    public ApplicationManagementResponse listApplicationsByProject(final ApplicationManagementRequest request) throws ApplicationManagementException
-    {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#listApplicationsByProject(final ApplicationManagementRequest request) throws ApplicationManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ApplicationManagementRequest: {}", request);
-        }
-
-        ApplicationManagementResponse response = new ApplicationManagementResponse();
-
-        final Application application = request.getApplication();
-        final Project project = application.getApplicationProject();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Application: {}", application);
-            DEBUGGER.debug("Project: {}", project);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        if (reqInfo != null)
-        {
-            try
-            {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                }
-
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if ((isAdminAuthorized) && (isUserAuthorized))
-                {
-                    List<Application> applicationList = new ArrayList<>();
-                    List<String[]> appData = appDAO.getApplicationsByAttribute(project.getProjectGuid(), request.getStartPage());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("appData: {}", appData);
-                    }
-
-                    if ((appData != null) && (appData.size() != 0))
-                    {
-                        List<Platform> platforms = new ArrayList<>();
-
-                        for (String[] data : appData)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("data: {}", data);
-                            }
-
-                            // build the platform
-                            String[] platformList = StringUtils.split(data[11], ",");
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("platformList: {}", platformList);
-                            }
-
-                            if ((platformList != null) && (platformList.length != 0))
-                            {
-                                for (String guid : platformList)
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("guid: {}", guid);
-                                    }
-
-                                    List<String> platformData = platformDao.getPlatformData(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("platformData: {}", platformData);
-                                    }
-
-                                    if ((platformData != null) && (platformData.size() != 0))
-                                    {
-                                        Platform platform = new Platform();
-                                        platform.setPlatformGuid(platformData.get(0));
-                                        platform.setPlatformName(platformData.get(1));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Platform: {}", platform);
-                                        }
-
-                                        platforms.add(platform);
-                                    }
-                                    else
-                                    {
-                                        throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("platforms: {}", platforms);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                throw new ApplicationManagementException("No platform data was located for the associated application. Cannot continue.");
-                            }
-
-                            Application resApplication = new Application();
-                            resApplication.setApplicationGuid(data[0]);
-                            resApplication.setApplicationName(data[1]);
-                            resApplication.setApplicationVersion(data[2]);
-                            resApplication.setBasePath(data[3]);
-                            resApplication.setScmPath(data[4]);
-                            resApplication.setApplicationCluster(data[5]);
-                            resApplication.setJvmName(data[6]);
-                            resApplication.setApplicationInstallPath(data[7]);
-                            resApplication.setApplicationLogsPath(data[8]);
-                            resApplication.setPidDirectory(data[9]);
-                            resApplication.setApplicationProject(project);
-                            resApplication.setApplicationPlatforms(platforms);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", resApplication);
-                            }
-
-                            applicationList.add(resApplication);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("applicationList: {}", applicationList);
-                        }
-
-                        response.setApplicationList(applicationList);
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully loaded application listing.");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                        }
-                    }
-                    else
-                    {
-                        throw new ApplicationManagementException("No applications were located with the provided project. Cannot continue.");
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-                
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
             }
             finally
             {
@@ -1168,16 +795,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("ApplicationManagementRequest: {}", request);
         }
 
-        UserAccount svcAccount = null;
-        UserAccount searchAccount = null;
-        AccountControlRequest searchRequest = null;
-        AccountControlResponse searchResponse = null;
         ApplicationManagementResponse response = new ApplicationManagementResponse();
 
         final Application application = request.getApplication();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
-        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -1200,6 +822,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isUserAuthorized)
                 {
+                    List<Platform> appPlatforms = null;
                     List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
 
                     if (DEBUG)
@@ -1209,18 +832,25 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if ((appData != null) && (appData.size() != 0))
                     {
-                        Application resApplication = new Application();
+                        Project appProject = new Project();
+                        appProject.setProjectGuid(appData.get(11)); // T2.PROJECT_GUID
+                        appProject.setProjectName(appData.get(12)); // T2.PROJECT_NAME
 
-                        if (StringUtils.split(appData.get(11), ",").length >= 1)
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Project: {}", appProject);
+                        }
+
+                        if (StringUtils.split(appData.get(10), ",").length >= 1) // T1.PLATFORM_GUID
                         {
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(11), ","));
+                                DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(10), ","));
                             }
 
-                            List<Platform> platformList = new ArrayList<>();
+                            appPlatforms = new ArrayList<>();
 
-                            for (String platformGuid : appData.get(11).split(","))
+                            for (String platformGuid : appData.get(10).split(","))
                             {
                                 String guid = StringUtils.remove(platformGuid, "[");
                                 guid = StringUtils.remove(guid, "]");
@@ -1231,7 +861,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     DEBUGGER.debug("guid: {}", guid);
                                 }
 
-                                List<String> platformData = platformDao.getPlatformData(guid);
+                                List<Object> platformData = platformDao.getPlatformData(guid);
 
                                 if (DEBUG)
                                 {
@@ -1241,360 +871,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 if ((platformData != null) && (platformData.size() != 0))
                                 {
                                     Platform platform = new Platform();
-                                    platform.setPlatformGuid(platformData.get(0));
-                                    platform.setPlatformName(platformData.get(1));
-                                    platform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                                    platform.setDescription(platformData.get(6));
-
-                                    // load info
-                                    // get the dmgr
-                                    List<Object> dmgrData = serverDao.getInstalledServer(platformData.get(3));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("dmgrData: {}", dmgrData);
-                                    }
-
-                                    if ((dmgrData != null) && (dmgrData.size() != 0))
-                                    {
-                                        Server dmgrServer = new Server();
-                                        dmgrServer.setServerGuid((String) dmgrData.get(0)); // SYSTEM_GUID
-                                        dmgrServer.setOsName((String) dmgrData.get(1)); // SYSTEM_OSTYPE
-                                        dmgrServer.setServerStatus(ServerStatus.valueOf((String) dmgrData.get(2))); // SYSTEM_STATUS
-                                        dmgrServer.setServerRegion(ServiceRegion.valueOf((String) dmgrData.get(3))); // SYSTEM_REGION
-                                        dmgrServer.setNetworkPartition(NetworkPartition.valueOf((String) dmgrData.get(4))); // NETWORK_PARTITION
-                                        dmgrServer.setServerType(ServerType.valueOf((String) dmgrData.get(6))); // SYSTEM_TYPE
-                                        dmgrServer.setDomainName((String) dmgrData.get(7)); // DOMAIN_NAME
-                                        dmgrServer.setCpuType((String) dmgrData.get(8)); // CPU_TYPE
-                                        dmgrServer.setCpuCount((Integer) dmgrData.get(9)); // CPU_COUNT
-                                        dmgrServer.setServerRack((String) dmgrData.get(10)); // SERVER_RACK
-                                        dmgrServer.setRackPosition((String) dmgrData.get(11)); // RACK_POSITION
-                                        dmgrServer.setServerModel((String) dmgrData.get(12)); // SERVER_MODEL
-                                        dmgrServer.setSerialNumber((String) dmgrData.get(13)); // SERIAL_NUMBER
-                                        dmgrServer.setInstalledMemory((Integer) dmgrData.get(14)); // INSTALLED_MEMORY
-                                        dmgrServer.setOperIpAddress((String) dmgrData.get(15)); // OPER_IP
-                                        dmgrServer.setOperHostName((String) dmgrData.get(16)); // OPER_HOSTNAME
-                                        dmgrServer.setMgmtIpAddress((String) dmgrData.get(17)); // MGMT_IP
-                                        dmgrServer.setMgmtHostName((String) dmgrData.get(18)); // MGMT_HOSTNAME
-                                        dmgrServer.setBkIpAddress((String) dmgrData.get(19)); // BKUP_IP
-                                        dmgrServer.setBkHostName((String) dmgrData.get(20)); // BKUP_HOSTNAME
-                                        dmgrServer.setNasIpAddress((String) dmgrData.get(21)); // NAS_IP
-                                        dmgrServer.setNasHostName((String) dmgrData.get(22)); // NAS_HOSTNAME
-                                        dmgrServer.setNatAddress((String) dmgrData.get(23)); // NAT_ADDR
-                                        dmgrServer.setServerComments((String) dmgrData.get(24)); // COMMENTS
-                                        dmgrServer.setDmgrPort((Integer) dmgrData.get(28)); // DMGR_PORT
-                                        dmgrServer.setMgrUrl((String) dmgrData.get(30)); // MGR_ENTRY
-
-                                        searchAccount = new UserAccount();
-                                        searchAccount.setGuid((String) dmgrData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                        }
-
-                                        svcAccount = new UserAccount();
-                                        svcAccount.setUsername(serviceAccount.get(0));
-                                        svcAccount.setGuid(serviceAccount.get(1));
-                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                        }
-
-                                        searchRequest = new AccountControlRequest();
-                                        searchRequest.setHostInfo(request.getRequestInfo());
-                                        searchRequest.setUserAccount(searchAccount);
-                                        searchRequest.setApplicationName(request.getApplicationName());
-                                        searchRequest.setApplicationId(request.getApplicationId());
-                                        searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(svcAccount);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                        }
-
-                                        try
-                                        {
-                                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                            }
-
-                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                            {
-                                                dmgrServer.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                            }
-                                        }
-                                        catch (AccountControlException acx)
-                                        {
-                                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", dmgrServer);
-                                        }
-
-                                        platform.setPlatformDmgr(dmgrServer);
-                                    }
-
-                                    if (platformData.get(3).split(",").length >= 1)
-                                    {
-                                        List<Server> appServerList = new ArrayList<>();
-
-                                        // list application servers
-                                        for (String serverGuid : platformData.get(4).split(","))
-                                        {
-                                            String appGuid = StringUtils.remove(serverGuid, "[");
-                                            appGuid = StringUtils.remove(appGuid, "]");
-                                            appGuid = StringUtils.trim(appGuid);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("serverGuid: {}", appGuid);
-                                            }
-
-                                            List<Object> appServerData = serverDao.getInstalledServer(appGuid);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("appServerData: {}", appServerData);
-                                            }
-
-                                            if ((appServerData != null) && (appServerData.size() != 0))
-                                            {
-                                                Server server = new Server();
-                                                server.setServerGuid((String) appServerData.get(0)); // SYSTEM_GUID
-                                                server.setOsName((String) appServerData.get(1)); // SYSTEM_OSTYPE
-                                                server.setServerStatus(ServerStatus.valueOf((String) appServerData.get(2))); // SYSTEM_STATUS
-                                                server.setServerRegion(ServiceRegion.valueOf((String) appServerData.get(3))); // SYSTEM_REGION
-                                                server.setNetworkPartition(NetworkPartition.valueOf((String) appServerData.get(4))); // NETWORK_PARTITION
-                                                server.setServerType(ServerType.valueOf((String) appServerData.get(6))); // SYSTEM_TYPE
-                                                server.setDomainName((String) appServerData.get(7)); // DOMAIN_NAME
-                                                server.setCpuType((String) appServerData.get(8)); // CPU_TYPE
-                                                server.setCpuCount((Integer) appServerData.get(9)); // CPU_COUNT
-                                                server.setServerRack((String) appServerData.get(10)); // SERVER_RACK
-                                                server.setRackPosition((String) appServerData.get(11)); // RACK_POSITION
-                                                server.setServerModel((String) appServerData.get(12)); // SERVER_MODEL
-                                                server.setSerialNumber((String) appServerData.get(13)); // SERIAL_NUMBER
-                                                server.setInstalledMemory((Integer) appServerData.get(14)); // INSTALLED_MEMORY
-                                                server.setOperIpAddress((String) appServerData.get(15)); // OPER_IP
-                                                server.setOperHostName((String) appServerData.get(16)); // OPER_HOSTNAME
-                                                server.setMgmtIpAddress((String) appServerData.get(17)); // MGMT_IP
-                                                server.setMgmtHostName((String) appServerData.get(18)); // MGMT_HOSTNAME
-                                                server.setBkIpAddress((String) appServerData.get(19)); // BKUP_IP
-                                                server.setBkHostName((String) appServerData.get(20)); // BKUP_HOSTNAME
-                                                server.setNasIpAddress((String) appServerData.get(21)); // NAS_IP
-                                                server.setNasHostName((String) appServerData.get(22)); // NAS_HOSTNAME
-                                                server.setNatAddress((String) appServerData.get(23)); // NAT_ADDR
-                                                server.setServerComments((String) appServerData.get(24)); // COMMENTS
-                                                server.setDmgrPort((Integer) appServerData.get(28)); // DMGR_PORT
-                                                server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
-                                                server.setMgrUrl((String) appServerData.get(30)); // MGR_ENTRY
-
-                                                searchAccount = new UserAccount();
-                                                searchAccount.setGuid((String) appServerData.get(25));
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                                }
-
-                                                svcAccount = new UserAccount();
-                                                svcAccount.setUsername(serviceAccount.get(0));
-                                                svcAccount.setGuid(serviceAccount.get(1));
-                                                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                                }
-
-                                                searchRequest = new AccountControlRequest();
-                                                searchRequest.setHostInfo(request.getRequestInfo());
-                                                searchRequest.setUserAccount(searchAccount);
-                                                searchRequest.setApplicationName(request.getApplicationName());
-                                                searchRequest.setApplicationId(request.getApplicationId());
-                                                searchRequest.setSearchType(SearchRequestType.GUID);
-                                                searchRequest.setRequestor(svcAccount);
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                                }
-
-                                                try
-                                                {
-                                                    searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                                    }
-
-                                                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                                    {
-                                                        server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                                    }
-                                                }
-                                                catch (AccountControlException acx)
-                                                {
-                                                    ERROR_RECORDER.error(acx.getMessage(), acx);
-                                                }
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("Server: {}", server);
-                                                }
-
-                                                appServerList.add(server);
-                                            }
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("appServerList: {}", appServerList);
-                                        }
-
-                                        platform.setAppServers(appServerList);
-                                    }
-
-                                    // list web servers
-                                    if (platformData.get(4).split(",").length >= 1)
-                                    {
-                                        List<Server> webServerList = new ArrayList<>();
-
-                                        for (String serverGuid : platformData.get(5).split(","))
-                                        {
-                                            String webGuid = StringUtils.remove(serverGuid, "[");
-                                            webGuid = StringUtils.remove(webGuid, "]");
-                                            webGuid = StringUtils.trim(webGuid);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("serverGuid: {}", webGuid);
-                                            }
-
-                                            List<Object> webServerData = serverDao.getInstalledServer(webGuid);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("webServerData: {}", webServerData);
-                                            }
-
-                                            if ((webServerData != null) && (webServerData.size() != 0))
-                                            {
-                                                Server server = new Server();
-                                                server.setServerGuid((String) webServerData.get(0)); // SYSTEM_GUID
-                                                server.setOsName((String) webServerData.get(1)); // SYSTEM_OSTYPE
-                                                server.setServerStatus(ServerStatus.valueOf((String) webServerData.get(2))); // SYSTEM_STATUS
-                                                server.setServerRegion(ServiceRegion.valueOf((String) webServerData.get(3))); // SYSTEM_REGION
-                                                server.setNetworkPartition(NetworkPartition.valueOf((String) webServerData.get(4))); // NETWORK_PARTITION
-                                                server.setServerType(ServerType.valueOf((String) webServerData.get(6))); // SYSTEM_TYPE
-                                                server.setDomainName((String) webServerData.get(7)); // DOMAIN_NAME
-                                                server.setCpuType((String) webServerData.get(8)); // CPU_TYPE
-                                                server.setCpuCount((Integer) webServerData.get(9)); // CPU_COUNT
-                                                server.setServerRack((String) webServerData.get(10)); // SERVER_RACK
-                                                server.setRackPosition((String) webServerData.get(11)); // RACK_POSITION
-                                                server.setServerModel((String) webServerData.get(12)); // SERVER_MODEL
-                                                server.setSerialNumber((String) webServerData.get(13)); // SERIAL_NUMBER
-                                                server.setInstalledMemory((Integer) webServerData.get(14)); // INSTALLED_MEMORY
-                                                server.setOperIpAddress((String) webServerData.get(15)); // OPER_IP
-                                                server.setOperHostName((String) webServerData.get(16)); // OPER_HOSTNAME
-                                                server.setMgmtIpAddress((String) webServerData.get(17)); // MGMT_IP
-                                                server.setMgmtHostName((String) webServerData.get(18)); // MGMT_HOSTNAME
-                                                server.setBkIpAddress((String) webServerData.get(19)); // BKUP_IP
-                                                server.setBkHostName((String) webServerData.get(20)); // BKUP_HOSTNAME
-                                                server.setNasIpAddress((String) webServerData.get(21)); // NAS_IP
-                                                server.setNasHostName((String) webServerData.get(22)); // NAS_HOSTNAME
-                                                server.setNatAddress((String) webServerData.get(23)); // NAT_ADDR
-                                                server.setServerComments((String) webServerData.get(24)); // COMMENTS
-                                                server.setDmgrPort((Integer) webServerData.get(28)); // DMGR_PORT
-                                                server.setMgrUrl((String) webServerData.get(30)); // MGR_ENTRY
-
-                                                searchAccount = new UserAccount();
-                                                searchAccount.setGuid((String) webServerData.get(25));
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                                }
-
-                                                svcAccount = new UserAccount();
-                                                svcAccount.setUsername(serviceAccount.get(0));
-                                                svcAccount.setGuid(serviceAccount.get(1));
-                                                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                                }
-
-                                                searchRequest = new AccountControlRequest();
-                                                searchRequest.setHostInfo(request.getRequestInfo());
-                                                searchRequest.setUserAccount(searchAccount);
-                                                searchRequest.setApplicationName(request.getApplicationName());
-                                                searchRequest.setApplicationId(request.getApplicationId());
-                                                searchRequest.setSearchType(SearchRequestType.GUID);
-                                                searchRequest.setRequestor(svcAccount);
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                                }
-
-                                                try
-                                                {
-                                                    searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                                    if (DEBUG)
-                                                    {
-                                                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                                    }
-
-                                                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                                    {
-                                                        server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                                    }
-                                                }
-                                                catch (AccountControlException acx)
-                                                {
-                                                    ERROR_RECORDER.error(acx.getMessage(), acx);
-                                                }
-
-                                                if (DEBUG)
-                                                {
-                                                    DEBUGGER.debug("Server: {}", server);
-                                                }
-
-                                                webServerList.add(server);
-                                            }
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("webServerList: {}", webServerList);
-                                        }
-
-                                        platform.setWebServers(webServerList);
-                                    }
+                                    platform.setPlatformGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
+                                    platform.setPlatformName((String) platformData.get(1)); // T1.PLATFORM_NAME
 
                                     if (DEBUG)
                                     {
                                         DEBUGGER.debug("Platform: {}", platform);
                                     }
 
-                                    platformList.add(platform);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("platformList: {}", platformList);
-                                    }
+                                    appPlatforms.add(platform);
                                 }
                                 else
                                 {
@@ -1602,139 +887,39 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 }
                             }
 
-                            // then the project...
-                            List<String> projectList = projectDAO.getProjectData(appData.get(10));
-
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("projectList: {}", projectList);
+                                DEBUGGER.debug("List<Platform>: {}", appPlatforms);
                             }
+                        }
 
-                            if ((projectList != null) && (projectList.size() != 0))
-                            {
-                                Project project = new Project();
-                                project.setProjectGuid(projectList.get(0));
-                                project.setProjectName(projectList.get(1));
-                                project.setProjectStatus(ServiceStatus.valueOf(projectList.get(2)));
-                                project.setDevEmail(projectList.get(5));
-                                project.setProdEmail(projectList.get(6));
-                                project.setIncidentQueue(projectList.get(7));
-                                project.setChangeQueue(projectList.get(8));
+                        // then put it all together
+                        Application resApplication = new Application();
+                        resApplication.setApplicationPlatforms(appPlatforms);
+                        resApplication.setApplicationProject(appProject);
+                        resApplication.setApplicationGuid(appData.get(0)); // T1.APPLICATION_GUID
+                        resApplication.setApplicationName(appData.get(1)); // T1.APPLICATION_NAME
+                        resApplication.setApplicationVersion(appData.get(2)); // T1.APPLICATION_VERSION
+                        resApplication.setBasePath(appData.get(3)); // T1.BASE_PATH
+                        resApplication.setScmPath(appData.get(4)); // T1.SCM_PATH
+                        resApplication.setApplicationCluster(appData.get(5)); // T1.CLUSTER_NAME
+                        resApplication.setJvmName(appData.get(6)); // T1.JVM_NAME
+                        resApplication.setApplicationInstallPath(appData.get(7)); // T1.INSTALL_PATH
+                        resApplication.setApplicationLogsPath(appData.get(8)); // T1.LOGS_DIRECTORY
+                        resApplication.setPidDirectory(appData.get(9)); // T1.PID_DIRECTORY
 
-                                int x = 0;
-                                List<String> userList = new ArrayList<>(
-                                        Arrays.asList(
-                                                projectList.get(3),
-                                                projectList.get(4)));
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Application: {}", resApplication);
+                        }
 
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("List<String>: {}", userList);
-                                }
+                        response.setApplication(resApplication);
+                        response.setResponse("Successfully loaded application");
+                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
 
-                                for (String guid : userList)
-                                {
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid(guid);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            switch (x)
-                                            {
-                                                case 0:
-                                                    project.setPrimaryContact(searchResponse.getUserAccount());
-
-                                                    break;
-                                                case 1:
-                                                    project.setSecondaryContact(searchResponse.getUserAccount());
-
-                                                    break;
-                                            }
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
-
-                                    x++;
-                                }
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Project: {}", project);
-                                }
-
-                                resApplication.setApplicationProject(project);
-                            }
-                            else
-                            {
-                                throw new ApplicationManagementException("Unable to load associated application project. Cannot continue.");
-                            }
-
-                            // then put it all together
-                            resApplication.setApplicationPlatforms(platformList);
-                            resApplication.setApplicationGuid(appData.get(0));
-                            resApplication.setApplicationName(appData.get(1));
-                            resApplication.setApplicationVersion(appData.get(2));
-                            resApplication.setBasePath(appData.get(3));
-                            resApplication.setScmPath(appData.get(4));
-                            resApplication.setApplicationCluster(appData.get(5));
-                            resApplication.setJvmName(appData.get(6));
-                            resApplication.setApplicationInstallPath(appData.get(7));
-                            resApplication.setApplicationLogsPath(appData.get(8));
-                            resApplication.setPidDirectory(appData.get(9));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", resApplication);
-                            }
-
-                            response.setApplication(resApplication);
-                            response.setResponse("Successfully loaded application");
-                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                         }
                     }
                     else

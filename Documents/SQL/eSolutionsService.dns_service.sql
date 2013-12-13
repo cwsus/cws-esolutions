@@ -36,10 +36,14 @@ CREATE TABLE `esolutionssvc`.`dns_service` (
     FULLTEXT KEY `IDX_SEARCH` (`PROJECT_CODE`, `ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
+ALTER TABLE `esolutionssvc`.`dns_service` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
+
 --
 -- Definition of procedure `esolutionssvc`.`getRecordByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getRecordByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getRecordByAttribute`(
@@ -78,14 +82,11 @@ BEGIN
     ORDER BY APEX_RECORD DESC, RR_ORIGIN ASC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT; 
+COMMIT$$ 
 
 --
 -- Definition of procedure `esolutionssvc`.`insertApex`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertApex`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertApex`(
@@ -119,14 +120,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`insertRecord`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertRecord`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertRecord`(
@@ -164,6 +162,7 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$ 
 
 DELIMITER ;
-COMMIT; 
+COMMIT;

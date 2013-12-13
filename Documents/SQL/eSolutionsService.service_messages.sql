@@ -17,18 +17,16 @@ CREATE TABLE `esolutionssvc`.`service_messages` (
     PRIMARY KEY (`svc_message_id`, `svc_message_title`), -- prevent the same message from being submitted twice (we hope)
     FULLTEXT KEY `FTK_svcMessages` (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
-
--- Dumping data for table `esolutionssvc`.`service_messages`
---
-/*!40000 ALTER TABLE `esolutionssvc`.`service_messages` DISABLE KEYS */;
-/*!40000 ALTER TABLE `esolutionssvc`.`service_messages` ENABLE KEYS */;
-
 COMMIT;
+
+ALTER TABLE `esolutionssvc`.`service_messages` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+COMMIT;
+
+DELIMITER $$
 
 --
 -- Definition of procedure `esolutionssvc`.`getMessagesByAttribute`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getMessagesByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getMessagesByAttribute`(
@@ -57,14 +55,11 @@ BEGIN
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`submitSvcMessage`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`submitSvcMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`submitSvcMessage`(
@@ -90,14 +85,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`updateServiceMessage`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateServiceMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`updateServiceMessage`(
@@ -126,14 +118,11 @@ BEGIN
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrSvcMessages`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServiceMessage`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrServiceMessage`(
@@ -156,14 +145,12 @@ BEGIN
     WHERE svc_message_id = requestId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrAllSvcMessages`
 --
-DELIMITER $$
+COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAllSvcMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrAllSvcMessages`(
@@ -188,14 +175,11 @@ BEGIN
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-
-DELIMITER ;
-COMMIT;
+COMMIT$$
 
 --
 -- Definition of procedure `esolutionssvc`.`retrAlertMessages`
 --
-DELIMITER $$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAlertMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`retrAlertMessages`(
@@ -220,6 +204,7 @@ BEGIN
     ORDER BY svc_message_id DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
 
 DELIMITER ;
 COMMIT;

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
@@ -433,15 +432,10 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
-        UserAccount svcAccount = null;
-        UserAccount searchAccount = null;
-        AccountControlRequest searchRequest = null;
-        AccountControlResponse searchResponse = null;
         PlatformManagementResponse response = new PlatformManagementResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
-        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -483,425 +477,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         Platform platform = new Platform();
                         platform.setPlatformGuid(data[0]);
                         platform.setPlatformName(data[1]);
-                        platform.setPlatformRegion(ServiceRegion.valueOf(data[2]));
-                        platform.setDescription(data[6]);
-                        
-                        if (!(StringUtils.equals(Constants.NOT_SET, data[3])))
-                        {
-                            List<Object> serverData = serverDao.getInstalledServer(data[3]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("serverData: {}", serverData);
-                            }
-
-                            if ((serverData != null) && (serverData.size() != 0))
-                            {
-                                List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("List<String>: {}", datacenter);
-                                }
-
-                                if ((datacenter != null) && (datacenter.size() != 0))
-                                {
-                                    DataCenter dataCenter = new DataCenter();
-                                    dataCenter.setDatacenterGuid(datacenter.get(0));
-                                    dataCenter.setDatacenterName(datacenter.get(1));
-                                    dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                    dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                    }
-
-                                    Server server = new Server();
-                                    server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                    server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                    server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                    server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                    server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                    server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                    server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                    server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                    server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                    server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                    server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                    server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                    server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                    server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                    server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                    server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                    server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                    server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                    server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                    server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                    server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                    server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                    server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid((String) serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    platform.setPlatformDmgr(server);
-                                }
-                                else
-                                {
-                                    throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                }
-                            }
-                        }
-
-                        // appservers
-                        if (data[4].split(",").length >= 1)
-                        {
-                            List<Server> appServerList = new ArrayList<>();
-
-                            for (String serverGuid : data[4].split(","))
-                            {
-                                String guid = StringUtils.remove(serverGuid, "[");
-                                guid = StringUtils.remove(guid, "]");
-                                guid = StringUtils.trim(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverGuid: {}", guid);
-                                }
-
-                                List<Object> serverData = serverDao.getInstalledServer(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("List<String>: {}", datacenter);
-                                    }
-
-                                    if ((datacenter != null) && (datacenter.size() != 0))
-                                    {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
-                                        Server server = new Server();
-                                        server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                        server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                        server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                        server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                        server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                        server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                        server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                        server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                        server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                        server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                        server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                        server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                        server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                        server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                        server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                        server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                        server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                        server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                        server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                        server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                        server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                        server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                        server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                        server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                        server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
-                                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                        searchAccount = new UserAccount();
-                                        searchAccount.setGuid((String) serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                        }
-
-                                        svcAccount = new UserAccount();
-                                        svcAccount.setUsername(serviceAccount.get(0));
-                                        svcAccount.setGuid(serviceAccount.get(1));
-                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                        }
-
-                                        searchRequest = new AccountControlRequest();
-                                        searchRequest.setHostInfo(request.getRequestInfo());
-                                        searchRequest.setUserAccount(searchAccount);
-                                        searchRequest.setApplicationName(request.getApplicationName());
-                                        searchRequest.setApplicationId(request.getApplicationId());
-                                        searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(svcAccount);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                        }
-
-                                        try
-                                        {
-                                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                            }
-
-                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                            {
-                                                server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                            }
-                                        }
-                                        catch (AccountControlException acx)
-                                        {
-                                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        appServerList.add(server);
-                                    }
-                                    else
-                                    {
-                                        throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                    }
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("appServerList: {}", appServerList);
-                            }
-
-                            platform.setAppServers(appServerList);
-                        }
-
-                        // webservers
-                        if (data[5].split(",").length >= 1)
-                        {
-                            List<Server> webServerList = new ArrayList<>();
-
-                            for (String serverGuid : data[5].split(","))
-                            {
-                                String guid = StringUtils.remove(serverGuid, "[");
-                                guid = StringUtils.remove(guid, "]");
-                                guid = StringUtils.trim(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverGuid: {}", guid);
-                                }
-
-                                List<Object> serverData = serverDao.getInstalledServer(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("List<String>: {}", datacenter);
-                                    }
-
-                                    if ((datacenter != null) && (datacenter.size() != 0))
-                                    {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
-                                        Server server = new Server();
-                                        server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                        server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                        server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                        server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                        server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                        server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                        server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                        server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                        server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                        server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                        server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                        server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                        server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                        server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                        server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                        server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                        server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                        server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                        server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                        server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                        server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                        server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                        server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                        server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                        searchAccount = new UserAccount();
-                                        searchAccount.setGuid((String) serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                        }
-
-                                        svcAccount = new UserAccount();
-                                        svcAccount.setUsername(serviceAccount.get(0));
-                                        svcAccount.setGuid(serviceAccount.get(1));
-                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                        }
-
-                                        searchRequest = new AccountControlRequest();
-                                        searchRequest.setHostInfo(request.getRequestInfo());
-                                        searchRequest.setUserAccount(searchAccount);
-                                        searchRequest.setApplicationName(request.getApplicationName());
-                                        searchRequest.setApplicationId(request.getApplicationId());
-                                        searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(svcAccount);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                        }
-
-                                        try
-                                        {
-                                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                            }
-
-                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                            {
-                                                server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                            }
-                                        }
-                                        catch (AccountControlException acx)
-                                        {
-                                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        webServerList.add(server);
-                                    }
-                                    else
-                                    {
-                                        throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                    }
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("webServerList: {}", webServerList);
-                            }
-
-                            platform.setWebServers(webServerList);
-                        }
 
                         if (DEBUG)
                         {
@@ -995,20 +570,15 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
-        UserAccount svcAccount = null;
-        UserAccount searchAccount = null;
-        AccountControlRequest searchRequest = null;
-        AccountControlResponse searchResponse = null;
         PlatformManagementResponse response = new PlatformManagementResponse();
 
-        final Platform platform = request.getPlatform();
+        final Platform reqPlatform = request.getPlatform();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
-        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Platform: {}", platform);
+            DEBUGGER.debug("Platform: {}", reqPlatform);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -1024,7 +594,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String[]> platformData = platformDao.listPlatformsByAttribute(platform.getPlatformName(), request.getStartPage());
+                List<String[]> platformData = platformDao.listPlatformsByAttribute(reqPlatform.getPlatformName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -1037,435 +607,16 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                     for (String[] data : platformData)
                     {
-                        Platform resPlatform = new Platform();
-                        resPlatform.setPlatformGuid(data[0]);
-                        resPlatform.setPlatformName(data[1]);
-                        resPlatform.setPlatformRegion(ServiceRegion.valueOf(data[2]));
-                        resPlatform.setDescription(data[6]);
-
-                        if (!(StringUtils.equals(Constants.NOT_SET, data[3])))
-                        {
-                            List<Object> serverData = serverDao.getInstalledServer(data[3]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("serverData: {}", serverData);
-                            }
-
-                            if ((serverData != null) && (serverData.size() != 0))
-                            {
-                                List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("List<String>: {}", datacenter);
-                                }
-
-                                if ((datacenter != null) && (datacenter.size() != 0))
-                                {
-                                    DataCenter dataCenter = new DataCenter();
-                                    dataCenter.setDatacenterGuid(datacenter.get(0));
-                                    dataCenter.setDatacenterName(datacenter.get(1));
-                                    dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                    dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                    }
-
-                                    Server server = new Server();
-                                    server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                    server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                    server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                    server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                    server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                    server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                    server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                    server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                    server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                    server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                    server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                    server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                    server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                    server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                    server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                    server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                    server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                    server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                    server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                    server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                    server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                    server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                    server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid((String) serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    resPlatform.setPlatformDmgr(server);
-                                }
-                                else
-                                {
-                                    throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                }
-                            }
-                        }
-
-                        // appservers
-                        if (data[4].split(",").length >= 1)
-                        {
-                            List<Server> appServerList = new ArrayList<>();
-
-                            for (String serverGuid : data[4].split(","))
-                            {
-                                String guid = StringUtils.remove(serverGuid, "[");
-                                guid = StringUtils.remove(guid, "]");
-                                guid = StringUtils.trim(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverGuid: {}", guid);
-                                }
-
-                                List<Object> serverData = serverDao.getInstalledServer(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("List<String>: {}", datacenter);
-                                    }
-
-                                    if ((datacenter != null) && (datacenter.size() != 0))
-                                    {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
-                                        Server server = new Server();
-                                        server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                        server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                        server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                        server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                        server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                        server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                        server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                        server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                        server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                        server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                        server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                        server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                        server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                        server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                        server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                        server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                        server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                        server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                        server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                        server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                        server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                        server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                        server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                        server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                        server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
-                                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                        searchAccount = new UserAccount();
-                                        searchAccount.setGuid((String) serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                        }
-
-                                        svcAccount = new UserAccount();
-                                        svcAccount.setUsername(serviceAccount.get(0));
-                                        svcAccount.setGuid(serviceAccount.get(1));
-                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                        }
-
-                                        searchRequest = new AccountControlRequest();
-                                        searchRequest.setHostInfo(request.getRequestInfo());
-                                        searchRequest.setUserAccount(searchAccount);
-                                        searchRequest.setApplicationName(request.getApplicationName());
-                                        searchRequest.setApplicationId(request.getApplicationId());
-                                        searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(svcAccount);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                        }
-
-                                        try
-                                        {
-                                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                            }
-
-                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                            {
-                                                server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                            }
-                                        }
-                                        catch (AccountControlException acx)
-                                        {
-                                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        appServerList.add(server);
-                                    }
-                                    else
-                                    {
-                                        throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                    }
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("appServerList: {}", appServerList);
-                            }
-
-                            resPlatform.setAppServers(appServerList);
-                        }
-
-                        // webservers
-                        if (data[5].split(",").length >= 1)
-                        {
-                            List<Server> webServerList = new ArrayList<>();
-
-                            for (String serverGuid : data[5].split(","))
-                            {
-                                String guid = StringUtils.remove(serverGuid, "[");
-                                guid = StringUtils.remove(guid, "]");
-                                guid = StringUtils.trim(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverGuid: {}", guid);
-                                }
-
-                                List<Object> serverData = serverDao.getInstalledServer(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("List<String>: {}", datacenter);
-                                    }
-
-                                    if ((datacenter != null) && (datacenter.size() != 0))
-                                    {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
-                                        Server server = new Server();
-                                        server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                        server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                        server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                        server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                        server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                        server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                        server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                        server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                        server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                        server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                        server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                        server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                        server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                        server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                        server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                        server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                        server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                        server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                        server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                        server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                        server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                        server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                        server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                        server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                        server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                        server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                        searchAccount = new UserAccount();
-                                        searchAccount.setGuid((String) serverData.get(25));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                        }
-
-                                        svcAccount = new UserAccount();
-                                        svcAccount.setUsername(serviceAccount.get(0));
-                                        svcAccount.setGuid(serviceAccount.get(1));
-                                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                        }
-
-                                        searchRequest = new AccountControlRequest();
-                                        searchRequest.setHostInfo(request.getRequestInfo());
-                                        searchRequest.setUserAccount(searchAccount);
-                                        searchRequest.setApplicationName(request.getApplicationName());
-                                        searchRequest.setApplicationId(request.getApplicationId());
-                                        searchRequest.setSearchType(SearchRequestType.GUID);
-                                        searchRequest.setRequestor(svcAccount);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                        }
-
-                                        try
-                                        {
-                                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                            }
-
-                                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                            {
-                                                server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                            }
-                                        }
-                                        catch (AccountControlException acx)
-                                        {
-                                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                                        }
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Server: {}", server);
-                                        }
-
-                                        webServerList.add(server);
-                                    }
-                                    else
-                                    {
-                                        throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                    }
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("webServerList: {}", webServerList);
-                            }
-
-                            resPlatform.setWebServers(webServerList);
-                        }
+                        Platform platform = new Platform();
+                        platform.setPlatformGuid(data[0]);
+                        platform.setPlatformName(data[1]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Platform: {}", resPlatform);
+                            DEBUGGER.debug("Platform: {}", platform);
                         }
 
-                        platformList.add(resPlatform);
+                        platformList.add(platform);
                     }
 
                     if (DEBUG)
@@ -1579,9 +730,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
+                List<Server> appServerList = null;
+                List<Server> webServerList = null;
+
                 if (platform != null)
                 {
-                    List<String> platformData = platformDao.getPlatformData(platform.getPlatformGuid());
+                    List<Object> platformData = platformDao.getPlatformData(platform.getPlatformGuid());
 
                     if (DEBUG)
                     {
@@ -1590,142 +744,119 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                     if ((platformData != null) && (platformData.size() != 0))
                     {
-                        Platform resPlatform = new Platform();
-                        resPlatform.setPlatformGuid(platformData.get(0));
-                        resPlatform.setPlatformName(platformData.get(1));
-                        resPlatform.setPlatformRegion(ServiceRegion.valueOf(platformData.get(2)));
-                        resPlatform.setDescription(platformData.get(6));
+                        DataCenter dataCenter = new DataCenter();
+                        dataCenter.setDatacenterGuid((String) platformData.get(33));
+                        dataCenter.setDatacenterName((String) platformData.get(34));
+                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf((String) platformData.get(35)));
+                        dataCenter.setDatacenterDesc((String) platformData.get(36));
 
-                        if (!(StringUtils.equals(Constants.NOT_SET, platformData.get(3))))
+                        if (DEBUG)
                         {
-                            List<Object> serverData = serverDao.getInstalledServer(platformData.get(3));
+                            DEBUGGER.debug("DataCenter: {}", dataCenter);
+                        }
+
+                        Server dmgr = new Server();
+                        dmgr.setServerGuid((String) platformData.get(6)); // T2.SYSTEM_GUID
+                        dmgr.setOsName((String) platformData.get(7)); // T2.SYSTEM_OSTYPE
+                        dmgr.setServerStatus(ServerStatus.valueOf((String) platformData.get(8))); // T2.SYSTEM_STATUS
+                        dmgr.setServerRegion(ServiceRegion.valueOf((String) platformData.get(2))); // T1.PLATFORM_REGION
+                        dmgr.setNetworkPartition(NetworkPartition.valueOf((String) platformData.get(9))); // T2.NETWORK_PARTITION
+                        dmgr.setDatacenter(dataCenter); // datacenter as earlier obtained
+                        dmgr.setServerType(ServerType.DMGRSERVER);
+                        dmgr.setDomainName((String) platformData.get(10)); // T2.DOMAIN_NAME
+                        dmgr.setCpuType((String) platformData.get(11)); // T2.CPU_TYPE
+                        dmgr.setCpuCount((Integer) platformData.get(12)); // T2.CPU_COUNT
+                        dmgr.setServerRack((String) platformData.get(13)); // T2.SERVER_RACK
+                        dmgr.setRackPosition((String) platformData.get(14)); // T2.RACK_POSITION
+                        dmgr.setServerModel((String) platformData.get(15)); // T2.SERVER_MODEL
+                        dmgr.setSerialNumber((String) platformData.get(16)); // T2.SERIAL_NUMBER
+                        dmgr.setInstalledMemory((Integer) platformData.get(17)); // T2.INSTALLED_MEMORY
+                        dmgr.setOperIpAddress((String) platformData.get(18)); // T2.OPER_IP
+                        dmgr.setOperHostName((String) platformData.get(19)); // T2.OPER_HOSTNAME
+                        dmgr.setMgmtIpAddress((String) platformData.get(20)); // T2.MGMT_IP
+                        dmgr.setMgmtHostName((String) platformData.get(21)); // T2.MGMT_HOSTNAME
+                        dmgr.setBkIpAddress((String) platformData.get(22)); // T2.BKUP_IP
+                        dmgr.setBkHostName((String) platformData.get(23)); // T2.BKUP_HOSTNAME
+                        dmgr.setNasIpAddress((String) platformData.get(24)); // T2.NAS_IP
+                        dmgr.setNasHostName((String) platformData.get(25)); // T2.NAS_HOSTNAME
+                        dmgr.setNatAddress((String) platformData.get(26)); // T2.NAT_ADDR
+                        dmgr.setServerComments((String) platformData.get(27)); // T2.COMMENTS
+                        dmgr.setDmgrPort((Integer) platformData.get(29)); // T2.DMGR_PORT
+                        dmgr.setMgrUrl((String) platformData.get(30)); // T2.MGR_ENTRY
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", dmgr);
+                        }
+
+                        searchAccount = new UserAccount();
+                        searchAccount.setGuid((String) platformData.get(28));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", searchAccount);
+                        }
+
+                        svcAccount = new UserAccount();
+                        svcAccount.setUsername(serviceAccount.get(0));
+                        svcAccount.setGuid(serviceAccount.get(1));
+                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserAccount: {}", svcAccount);
+                        }
+
+                        searchRequest = new AccountControlRequest();
+                        searchRequest.setHostInfo(request.getRequestInfo());
+                        searchRequest.setUserAccount(searchAccount);
+                        searchRequest.setApplicationName(request.getApplicationName());
+                        searchRequest.setApplicationId(request.getApplicationId());
+                        searchRequest.setSearchType(SearchRequestType.GUID);
+                        searchRequest.setRequestor(svcAccount);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                        }
+
+                        try
+                        {
+                            searchResponse = acctControl.loadUserAccount(searchRequest);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("serverData: {}", serverData);
+                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
                             }
 
-                            if ((serverData != null) && (serverData.size() != 0))
+                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                             {
-                                List<String> datacenter = datactrDAO.getDatacenter((String) serverData.get(5));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("List<String>: {}", datacenter);
-                                }
-
-                                if ((datacenter != null) && (datacenter.size() != 0))
-                                {
-                                    DataCenter dataCenter = new DataCenter();
-                                    dataCenter.setDatacenterGuid(datacenter.get(0));
-                                    dataCenter.setDatacenterName(datacenter.get(1));
-                                    dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                    dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                    }
-
-                                    Server server = new Server();
-                                    server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                    server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                    server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                    server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                    server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                    server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                    server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                    server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                    server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                    server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                    server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                    server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                    server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                    server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                    server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                    server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                    server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                    server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                    server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                    server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                    server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                    server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                    server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid((String) serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    resPlatform.setPlatformDmgr(server);
-                                }
-                                else
-                                {
-                                    throw new PlatformManagementException("The server provided has no associated datacenter.");
-                                }
+                                dmgr.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
                             }
+                        }
+                        catch (AccountControlException acx)
+                        {
+                            ERROR_RECORDER.error(acx.getMessage(), acx);
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", dmgr);
                         }
 
                         // appservers
-                        if (platformData.get(4).split(",").length >= 1)
-                        {
-                            List<Server> appServerList = new ArrayList<>();
+                        String platformApps = (String) platformData.get(3); // T1.PLATFORM_APPSERVERS
 
-                            for (String serverGuid : platformData.get(4).split(","))
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String: {}", platformApps);
+                        }
+
+                        if (platformApps.split(",").length >= 1)
+                        {
+                            appServerList = new ArrayList<>();
+
+                            for (String serverGuid : platformApps.split(","))
                             {
                                 String guid = StringUtils.remove(serverGuid, "[");
                                 guid = StringUtils.remove(guid, "]");
@@ -1754,17 +885,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                                     if ((datacenter != null) && (datacenter.size() != 0))
                                     {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
                                         Server server = new Server();
                                         server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
                                         server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
@@ -1864,15 +984,27 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 DEBUGGER.debug("appServerList: {}", appServerList);
                             }
 
+                            Platform resPlatform = new Platform();
+                            resPlatform.setPlatformGuid((String) platformData.get(0));
+                            resPlatform.setPlatformName((String) platformData.get(1));
+                            resPlatform.setPlatformRegion(ServiceRegion.valueOf((String) platformData.get(2)));
+                            resPlatform.setDescription((String) platformData.get(6));
                             resPlatform.setAppServers(appServerList);
                         }
 
-                        // webservers
-                        if (platformData.get(5).split(",").length >= 1)
-                        {
-                            List<Server> webServerList = new ArrayList<>();
+                        // appservers
+                        String platformWebs = (String) platformData.get(4); // T1.PLATFORM_WEBSERVERS
 
-                            for (String serverGuid : platformData.get(5).split(","))
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("String: {}", platformWebs);
+                        }
+
+                        if (platformWebs.split(",").length >= 1)
+                        {
+                            webServerList = new ArrayList<>();
+
+                            for (String serverGuid : platformWebs.split(","))
                             {
                                 String guid = StringUtils.remove(serverGuid, "[");
                                 guid = StringUtils.remove(guid, "]");
@@ -1901,17 +1033,6 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                                     if ((datacenter != null) && (datacenter.size() != 0))
                                     {
-                                        DataCenter dataCenter = new DataCenter();
-                                        dataCenter.setDatacenterGuid(datacenter.get(0));
-                                        dataCenter.setDatacenterName(datacenter.get(1));
-                                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                        dataCenter.setDatacenterDesc(datacenter.get(3));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                                        }
-
                                         Server server = new Server();
                                         server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
                                         server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
@@ -1939,6 +1060,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                         server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
                                         server.setServerComments((String) serverData.get(24)); // COMMENTS
                                         server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
+                                        server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
                                         server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
 
                                         searchAccount = new UserAccount();
@@ -2009,9 +1131,15 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                             {
                                 DEBUGGER.debug("webServerList: {}", webServerList);
                             }
-
-                            resPlatform.setWebServers(webServerList);
                         }
+
+                        Platform resPlatform = new Platform();
+                        resPlatform.setPlatformGuid((String) platformData.get(0));
+                        resPlatform.setPlatformName((String) platformData.get(1));
+                        resPlatform.setPlatformRegion(ServiceRegion.valueOf((String) platformData.get(2)));
+                        resPlatform.setDescription((String) platformData.get(6));
+                        resPlatform.setAppServers(appServerList);
+                        resPlatform.setAppServers(webServerList);
 
                         if (DEBUG)
                         {
