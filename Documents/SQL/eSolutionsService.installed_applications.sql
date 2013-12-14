@@ -176,19 +176,9 @@ BEGIN
         T1.INSTALL_PATH,
         T1.LOGS_DIRECTORY,
         T1.PID_DIRECTORY,
-        T1.PROJECT_GUID,
         T1.PLATFORM_GUID,
-        T1.APP_ONLINE_DATE,
-        T1.APP_OFFLINE_DATE,
         T2.PROJECT_GUID,
-        T2.PROJECT_NAME,
-        T2.PROJECT_STATUS,
-        T2.PRIMARY_OWNER,
-        T2.SECONDARY_OWNER,
-        T2.DEV_EMAIL,
-        T2.PROD_EMAIL,
-        T2.INCIDENT_QUEUE,
-        T2.CHANGE_QUEUE
+        T2.PROJECT_NAME
     FROM `esolutionssvc`.`installed_applications` T1
     INNER JOIN `esolutionssvc`.`service_projects` T2
     ON T1.PROJECT_GUID = T2.PROJECT_GUID

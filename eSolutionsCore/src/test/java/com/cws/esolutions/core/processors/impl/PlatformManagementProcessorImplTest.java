@@ -17,12 +17,17 @@ package com.cws.esolutions.core.processors.impl;
 
 import java.util.List;
 import java.util.UUID;
+
 import org.junit.Test;
 import org.junit.After;
+
 import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
+
 import java.util.ArrayList;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -122,14 +127,14 @@ public class PlatformManagementProcessorImplTest
         List<Server> appServers = null;
         Platform platform = new Platform();
 
-        String[] devApps = { "337b03a9-3183-4308-b342-fa95ac1b0054", "c4489015-3d81-4196-88b8-263600ac22af", "ddd5003b-416e-48a5-8b20-e34b614c0961", "8df742ca-6877-48f4-837f-d495bdc30d14" };
-        String[] devWebs = { "ba13b6dc-f457-4fb6-ac2c-500742355802", "a57aa00c-a48b-423c-a562-32b976b3d43d", "184d6578-1272-452a-ae5b-1651fac23cc6", "a89e412b-4c4d-495c-9092-70a739124ea2" };
+        String[] devApps = { "f42c6cfa-09dc-4466-8d6b-f8dd3dc1b4cc", "0d069a14-6784-4062-a3a9-f15ae016fc14", "646e4092-e94a-441b-b8ae-e389db572f82", "dad6aea6-d6a9-4b0f-a344-75d04839483a" };
+        String[] devWebs = { "f21dba8a-1ad9-41f7-a649-c611efd877d0", "baad4160-2e13-4416-8a21-a4e2dcd20903", "935df58d-679a-4371-a849-0eaa0cf21c0b", "253ef6b2-4b55-4cd3-a70e-ad1d745031c5" };
 
-        String[] qaApps = { "16d7382d-4222-4868-ad22-339df1b965d9", "1f7f91e5-4027-4355-b559-50acd0810d76", "d15b195c-dcde-4607-8eb5-8ef45029c93f", "1419e626-206e-463d-b712-e9737542c40b" };
-        String[] qaWebs = { "f7c0e1ad-4d41-4603-94dd-972b5bbce025", "427b1c7e-7b8e-4225-8537-b293734fbae1", "66c290b3-4500-4183-82b5-66adcb84845a", "a482701c-9de4-4c51-81ad-086f7f780f9c" };
+        String[] qaApps = { "b84641e3-7668-47ab-8b92-68ac46d2cdd7", "db1f7113-29da-4602-a495-97c3b756dc66", "7203c86d-3942-41d4-b153-1e58ffb82c5e", "8302e2ab-2d78-4e02-85ee-fff372e2ed13" };
+        String[] qaWebs = { "be004f67-4cdf-45d1-8cd7-aaa2afa5da0b", "4fbc14b1-d47f-4aa7-81db-ab014ba2d3da", "f4b1b42a-b309-4656-afc0-690ccacf176f", "5c6391f8-4d16-47f4-9b1d-3f2139354f26" };
 
-        String[] prdApps = { "da58c050-2a23-4e9b-bfa7-078a0f5689a9", "88b7227a-6348-440d-ba43-481690787cb9", "b74b97c7-24bf-4849-b9cc-fda6922c96a8", "4f385034-6835-4c8c-85b8-5cbf57e297c2" };
-        String[] prdWebs = { "9cc509a3-bdd2-412c-821a-255e889d9463", "0728f077-f95d-4216-832a-51029f16162f", "e47cea1f-4b8c-4aec-b528-b8294c506c30", "e3c1f2de-50a9-4af8-9c79-a4192684661e" };
+        String[] prdApps = { "b0f6450c-06dc-4461-9b6e-0bc9bef1ed53", "60f19ffe-6d2f-45ac-9e92-b98cdcb9579f", "07e1b4fe-2263-41d4-83d7-6bdc77bd48af", "0bf33b7b-b84e-46d5-90cd-ab554cf0298e" };
+        String[] prdWebs = { "b834950b-353e-4f44-8ea0-d1a9c12d6f5c", "6c061f27-fca8-44e4-a0f4-6190813e4c4b", "19728549-1f3f-47a5-af24-b8eeb8270219", "58e440ea-80b0-43c8-8b44-102c8203d6d9" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -141,7 +146,7 @@ public class PlatformManagementProcessorImplTest
             if (x == 0)
             {
                 dmgrServer = new Server();
-                dmgrServer.setServerGuid("baa0be9a-562c-44a6-9f3b-ee70582e021f");
+                dmgrServer.setServerGuid("7269ccd3-c867-40ec-a44a-89d1ebca8e16");
 
                 platform.setPlatformRegion(ServiceRegion.DEV);
 
@@ -168,7 +173,7 @@ public class PlatformManagementProcessorImplTest
             else if (x == 1)
             {
                 dmgrServer = new Server();
-                dmgrServer.setServerGuid("f2584d54-27d7-4dd6-914c-f2f16d6c4abd");
+                dmgrServer.setServerGuid("774307b5-5f8c-4dc3-9c71-06ea05df7da8");
 
                 platform.setPlatformRegion(ServiceRegion.QA);
 
@@ -195,7 +200,7 @@ public class PlatformManagementProcessorImplTest
             else if (x == 2)
             {
                 dmgrServer = new Server();
-                dmgrServer.setServerGuid("a42748df-96de-4449-a8fd-b58095f3bd10");
+                dmgrServer.setServerGuid("1d9c28ef-5d65-4251-a486-e2b6cf335911");
 
                 platform.setPlatformRegion(ServiceRegion.PRD);
 
@@ -290,24 +295,29 @@ public class PlatformManagementProcessorImplTest
     @Test
     public void testGetPlatformData()
     {
-        Platform platform = new Platform();
-        platform.setPlatformGuid("1b5a340d-3cdd-4818-ad81-f64e3d1f2acb");
+        String[] platforms = { "046119de-9dc0-406d-bf4f-32f32b199f5c", "3eedf26a-a789-4bbf-8ad7-b5f4bbfefe33", "7cc7cd82-aa87-4af8-a967-f2493cc7c095" };
 
-        PlatformManagementRequest request = new PlatformManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
-        request.setPlatform(platform);
-
-        try
+        for (String str : platforms)
         {
-            PlatformManagementResponse response = processor.getPlatformData(request);
+            Platform platform = new Platform();
+            platform.setPlatformGuid(str);
 
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (PlatformManagementException pmx)
-        {
-            Assert.fail(pmx.getMessage());
+            PlatformManagementRequest request = new PlatformManagementRequest();
+            request.setRequestInfo(hostInfo);
+            request.setUserAccount(userAccount);
+            request.setServiceId("D1B5D088-32B3-4AA1-9FCF-822CB476B649");
+            request.setPlatform(platform);
+
+            try
+            {
+                PlatformManagementResponse response = processor.getPlatformData(request);
+
+                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+            }
+            catch (PlatformManagementException pmx)
+            {
+                Assert.fail(pmx.getMessage());
+            }
         }
     }
 

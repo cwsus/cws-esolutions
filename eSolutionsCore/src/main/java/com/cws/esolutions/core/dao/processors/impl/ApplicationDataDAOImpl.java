@@ -525,23 +525,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             resultSet.getString(8), // T1.INSTALL_PATH
                             resultSet.getString(9), // T1.LOGS_DIRECTORY
                             resultSet.getString(10), // T1.PID_DIRECTORY
-                            resultSet.getString(11), // T2.PLATFORM_GUID
-                            resultSet.getString(12), // T2.PLATFORM_NAME
-                            resultSet.getString(13), // T2.PLATFORM_REGION
-                            resultSet.getString(14), // T2.PLATFORM_DMGR
-                            resultSet.getString(15), // T2.PLATFORM_APPSERVERS
-                            resultSet.getString(16), // T2.PLATFORM_WEBSERVERS
-                            resultSet.getString(17), // T2.PLATFORM_STATUS
-                            resultSet.getString(18), // T2.PLATFORM_DESC
-                            resultSet.getString(19), // T3.PROJECT_GUID
-                            resultSet.getString(20), // T3.PROJECT_NAME
-                            resultSet.getString(21), // T3.PROJECT_STATUS
-                            resultSet.getString(22), // T3.PRIMARY_OWNER
-                            resultSet.getString(23), // T3.SECONDARY_OWNER
-                            resultSet.getString(24), // T3.DEV_EMAIL
-                            resultSet.getString(25), // T3.PROD_EMAIL
-                            resultSet.getString(26), // T3.INCIDENT_QUEUE
-                            resultSet.getString(27) // T3.CHANGE_QUEUE
+                            resultSet.getString(11), // T1.PLATFORM_GUID
+                            resultSet.getString(12), // T2.PROJECT_GUID
+                            resultSet.getString(13) // T2.PROJECT_NAME
                         )
                     );
 

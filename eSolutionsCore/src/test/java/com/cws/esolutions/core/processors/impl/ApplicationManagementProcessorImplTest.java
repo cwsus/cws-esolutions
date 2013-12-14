@@ -117,9 +117,9 @@ public class ApplicationManagementProcessorImplTest
     public void testAddNewApplication()
     {
         Project project = new Project();
-        project.setProjectGuid("9d63e244-2f9b-47f2-b2e7-fab4b9c0a5e8");
+        project.setProjectGuid("7d2f68b8-cb17-4283-952e-d080103e9cac");
 
-        String[] platforms = { "1b5a340d-3cdd-4818-ad81-f64e3d1f2acb", "269a7028-116e-4ac8-9760-f4e3b14dedb8", "ab6ddf07-69a0-4573-8404-0dca628f2c8d" };
+        String[] platforms = { "046119de-9dc0-406d-bf4f-32f32b199f5c", "3eedf26a-a789-4bbf-8ad7-b5f4bbfefe33", "7cc7cd82-aa87-4af8-a967-f2493cc7c095" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -214,7 +214,7 @@ public class ApplicationManagementProcessorImplTest
     public void testGetApplicationData()
     {
         Application app = new Application();
-        app.setApplicationGuid("d3da855d-8ce8-4b7d-b14a-0c472f196aff");
+        app.setApplicationGuid("073bfe73-b601-4c10-b7db-16b2a0c433ef");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);

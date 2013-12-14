@@ -179,7 +179,7 @@ public class KnowledgeBaseProcessorImplTest
     @Test
     public void testApproveArticle()
     {
-        java.util.List<String> articles = new ArrayList<String>(Arrays.asList("KB-5u9bAIL7C", "KB-9LMplgiuM"));
+        java.util.List<String> articles = new ArrayList<>(Arrays.asList("KB-5u9bAIL7C", "KB-9LMplgiuM"));
 
         for (String str : articles)
         {
@@ -209,7 +209,7 @@ public class KnowledgeBaseProcessorImplTest
     @Test
     public void testRejectArticle()
     {
-        java.util.List<String> articles = new ArrayList<String>(Arrays.asList("KB-HsuqTU5kn", "KB-I3wT3VvCu"));
+        java.util.List<String> articles = new ArrayList<>(Arrays.asList("KB-HsuqTU5kn", "KB-I3wT3VvCu"));
 
         for (String str : articles)
         {

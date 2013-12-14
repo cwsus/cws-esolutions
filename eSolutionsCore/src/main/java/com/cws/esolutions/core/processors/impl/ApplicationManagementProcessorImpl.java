@@ -153,7 +153,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 }
 
                                 // make sure its a valid platform
-                                if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) != null)
+                                if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) == null)
                                 {
                                     throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                                 }
@@ -659,7 +659,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if ((appData != null) && (appData.size() != 0))
                     {
-                        List<Application> appList = new ArrayList<Application>();
+                        List<Application> appList = new ArrayList<>();
 
                         for (String[] array : appData)
                         {
@@ -848,20 +848,20 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(10), ","));
                             }
 
+                            String tmp = StringUtils.remove(appData.get(10), "[");
+                            String platformList = StringUtils.remove(tmp, "]");
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("platformList: {}", platformList);
+                            }
+
                             appPlatforms = new ArrayList<>();
 
-                            for (String platformGuid : appData.get(10).split(","))
+                            for (String platformGuid : platformList.split(","))
                             {
-                                String guid = StringUtils.remove(platformGuid, "[");
-                                guid = StringUtils.remove(guid, "]");
-                                guid = StringUtils.trim(guid);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("guid: {}", guid);
-                                }
-
-                                List<Object> platformData = platformDao.getPlatformData(guid);
+                                System.out.println(platformGuid);
+                                List<Object> platformData = platformDao.getPlatformData(StringUtils.trim(platformGuid));
 
                                 if (DEBUG)
                                 {

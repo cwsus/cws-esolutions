@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.interfaces;
-
+/**
+ * Interface for the Platform Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * platform information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
@@ -65,7 +72,6 @@ public interface IPlatformDataDAO
      * @param platformData - The information to store for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean addNewPlatform(final List<String> platformData) throws SQLException;
 
@@ -87,7 +93,6 @@ public interface IPlatformDataDAO
      * @param platformData - The information to update for the platform, as outlined above.
      * @return <code>true</code> if the data is successfully updated, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean updatePlatformData(final List<String> platformData) throws SQLException;
 
@@ -98,7 +103,6 @@ public interface IPlatformDataDAO
      * @param platformGuid - The unique identifier for the platform to be removed.
      * @return <code>true</code> if the data is successfully updated, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean deletePlatform(final String platformGuid) throws SQLException;
 
@@ -152,7 +156,6 @@ public interface IPlatformDataDAO
      * @param platformGuid - The platform identifier to obtain information for
      * @return <code>List<Object></code> - The information as obtained from the database
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     List<Object> getPlatformData(final String platformGuid) throws SQLException;
 
@@ -163,7 +166,6 @@ public interface IPlatformDataDAO
      *
      * @return Total count of platforms in the database
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     int getPlatformCount() throws SQLException;
 
@@ -179,7 +181,6 @@ public interface IPlatformDataDAO
      * 2. Platform Name - A name for the platform. Must be unique.
      *
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     List<String[]> listAvailablePlatforms(final int startRow) throws SQLException;
 
@@ -187,7 +188,7 @@ public interface IPlatformDataDAO
      * Returns a list of platforms as obtained from the asset database that are listed with
      * a status of "ACTIVE". No other platforms are returned.
      *
-     * @param value - A search value to search the database against.
+     * @param attribute - A search value to search the database against.
      * @param startRow - The starting row for the data records. This is used to drive
      *        pagination in a front-end app.
      * @return <code>List<String[]></code> - The information as obtained from the database:
@@ -196,7 +197,6 @@ public interface IPlatformDataDAO
      * 2. Platform Name - A name for the platform. Must be unique.
      *
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
-    List<String[]> listPlatformsByAttribute(final String value, final int startRow) throws SQLException;
+    List<String[]> listPlatformsByAttribute(final String attribute, final int startRow) throws SQLException;
 }

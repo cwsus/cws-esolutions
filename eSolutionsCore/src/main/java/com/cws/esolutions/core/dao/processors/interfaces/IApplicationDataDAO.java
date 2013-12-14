@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.interfaces;
-
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
@@ -70,7 +77,6 @@ public interface IApplicationDataDAO
      * @param applicationData - The information to store for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean addNewApplication(final List<String> applicationData) throws SQLException;
 
@@ -98,7 +104,6 @@ public interface IApplicationDataDAO
      * @param applicationData - The information to update for the application, as outlined above.
      * @return <code>true</code> if the data is successfully updated, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean updateApplication(final List<String> applicationData) throws SQLException;
 
@@ -126,7 +131,6 @@ public interface IApplicationDataDAO
      * @param applicationData - The information to update for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     boolean deleteApplication(final String appGuid) throws SQLException;
 
@@ -137,7 +141,6 @@ public interface IApplicationDataDAO
      *
      * @return Total count of applications in the database
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     int getApplicationCount() throws SQLException;
 
@@ -150,7 +153,6 @@ public interface IApplicationDataDAO
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     List<String[]> listInstalledApplications(final int startRow) throws SQLException;
 
@@ -158,12 +160,9 @@ public interface IApplicationDataDAO
      * Lists applications stored within the asset management database. This listing
      * can then be utilized by the processor to massage and prepare for display.
      *
-     * @param startRow - A starting row to obtain data from, correlated into
-     *        pagination.
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     List<String> getApplicationData(final String appGuid) throws SQLException;
 
@@ -171,12 +170,12 @@ public interface IApplicationDataDAO
      * Lists applications stored within the asset management database. This listing
      * can then be utilized by the processor to massage and prepare for display.
      *
+     * @param attribute - A search value to obtain information for
      * @param startRow - A starting row to obtain data from, correlated into
      *        pagination.
      * @return A string array of the information contained within the datasource.
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
-     * @author 35033355
      */
     List<String[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
 }

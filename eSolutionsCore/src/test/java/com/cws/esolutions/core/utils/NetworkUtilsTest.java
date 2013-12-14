@@ -93,8 +93,8 @@ public class NetworkUtilsTest
                 try
                 {
                     NetworkUtils.executeSshConnection(box + ".systems.uk.hsbc",
-                            new ArrayList<String>(Arrays.asList(user, "ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6", "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD")),
-                            new ArrayList<String>(Arrays.asList("/usr/local/bin/sudo -l")));
+                            new ArrayList<>(Arrays.asList(user, "ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6", "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD")),
+                            new ArrayList<>(Arrays.asList("/usr/local/bin/sudo -l")));
 
                     System.out.println("User account: " + user + " on host " + box + ": SUCCESS");
                 }

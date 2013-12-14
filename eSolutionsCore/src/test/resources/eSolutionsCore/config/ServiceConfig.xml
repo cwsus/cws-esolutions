@@ -16,7 +16,7 @@
     </application-config>
 
     <mq-config>
-        <hostURL>tcp://127.0.0.1:61616</hostURL>
+        <hostURL>tcp://192.168.10.53:61616</hostURL>
         <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
     </mq-config>
@@ -64,9 +64,9 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://192.168.10.53/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
+            <dsUser>junit</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
             <salt>OITltocOUZjW</salt>
         </DataSourceManager>
