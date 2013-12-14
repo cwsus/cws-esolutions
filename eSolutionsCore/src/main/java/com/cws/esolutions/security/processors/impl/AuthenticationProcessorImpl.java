@@ -186,6 +186,15 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                 if ((userData != null) && (!(userData.isEmpty())))
                 {
+                    if (((Integer) userData.get(9) >= maxAttempts) || ((Boolean) userData.get(12)))
+                    {
+                        // user locked
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                        response.setResponse("Requested user account has been suspended.");
+
+                        return response;
+                    }
+
                     userAccount = new UserAccount();
                     userAccount.setGuid((String) userData.get(0));
                     userAccount.setUsername((String) userData.get(1));
@@ -204,84 +213,70 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setOlrLocked((Boolean) userData.get(14));
                     userAccount.setTcAccepted((Boolean) userData.get(15));
 
-                    // list user services
-                    List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", serviceList);
-                    }
-
-                    if ((serviceList != null) && (serviceList.size() != 0))
-                    {
-                        userAccount.setServiceList(serviceList);
-                    }
-
-                    List<String> authorizedProjects = svcInfo.returnUserAuthorizedProjects(userAccount.getGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<String>: {}", authorizedProjects);
-                    }
-
-                    if ((authorizedProjects != null) && (authorizedProjects.size() != 0))
-                    {
-                        userAccount.setProjectList(authorizedProjects);
-                    }
-
                     // have a user account, run with it
-                    if (userAccount.isSuspended())
+                    // reset the failed count, this is a successful logon
+                    try
                     {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Requested account is currently suspended.");
+                        userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), new HashMap<String, Object>()
+                                {
+                                    private static final long serialVersionUID = 3026623264042376743L;
+
+                                    {
+                                        put(authData.getLockCount(), 0);
+                                        put(authData.getLastLogin(), System.currentTimeMillis());
+                                    }
+                                });
+                    }
+                    catch (UserManagementException umx)
+                    {
+                        ERROR_RECORDER.error(umx.getMessage(), umx);
+                    }
+
+                    // site admins pretty much get access to everything
+                    if (userAccount.getRole() != Role.SITEADMIN)
+                    {
+                        // list user services
+                        List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", serviceList);
+                        }
+
+                        if ((serviceList != null) && (serviceList.size() != 0))
+                        {
+                            userAccount.setServiceList(serviceList);
+                        }
+
+                        List<String> authorizedProjects = svcInfo.returnUserAuthorizedProjects(userAccount.getGuid());
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", authorizedProjects);
+                        }
+
+                        if ((authorizedProjects != null) && (authorizedProjects.size() != 0))
+                        {
+                            userAccount.setProjectList(authorizedProjects);
+                        }
+                    }
+
+                    // user not already logged in or concurrent auth is allowed
+                    if (System.currentTimeMillis() >= userAccount.getExpiryDate())
+                    {
+                        userAccount.setStatus(LoginStatus.EXPIRED);
+
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Authentication request successfully processed");
+                        response.setUserAccount(userAccount);
                     }
                     else
                     {
-                        // user active, keep going
-                        if (userAccount.getFailedCount() >= maxAttempts)
-                        {
-                            // user locked
-                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            response.setResponse("Requested user account has been locked");
-                        }
-                        else
-                        {
-                            // reset the failed count, this is a successful logon
-                            try
-                            {
-                                userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), new HashMap<String, Object>()
-                                        {
-                                            private static final long serialVersionUID = 3026623264042376743L;
-    
-                                            {
-                                                put(authData.getLockCount(), 0);
-                                                put(authData.getLastLogin(), System.currentTimeMillis());
-                                            }
-                                        });
-                            }
-                            catch (UserManagementException umx)
-                            {
-                                ERROR_RECORDER.error(umx.getMessage(), umx);
-                            }
+                        userAccount.setStatus(LoginStatus.SUCCESS);
 
-                            // user not already logged in or concurrent auth is allowed
-                            if (System.currentTimeMillis() >= userAccount.getExpiryDate())
-                            {
-                                userAccount.setStatus(LoginStatus.EXPIRED);
-
-                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                response.setResponse("Authentication request successfully processed");
-                                response.setUserAccount(userAccount);
-                            }
-                            else
-                            {
-                                userAccount.setStatus(LoginStatus.SUCCESS);
-
-                                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                response.setResponse("Authentication request successfully processed");
-                                response.setUserAccount(userAccount);
-                            }
-                        }
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("Authentication request successfully processed");
+                        response.setUserAccount(userAccount);
                     }
                 }
                 else

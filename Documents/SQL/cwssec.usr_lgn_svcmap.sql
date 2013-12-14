@@ -102,5 +102,21 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
+--
+-- Definition of procedure `cwssec`.`listServicesForUser`
+--
+DROP PROCEDURE IF EXISTS `cwssec`.`listServicesForUser` $$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE PROCEDURE `cwssec`.`listServicesForUser`(
+    IN guid VARCHAR(128)
+)
+BEGIN
+    SELECT usr_svc_svcid
+    FROM usr_lgn_svcmap
+    WHERE usr_lgn_guid = userGuid;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
+
 DELIMITER ;
 COMMIT;

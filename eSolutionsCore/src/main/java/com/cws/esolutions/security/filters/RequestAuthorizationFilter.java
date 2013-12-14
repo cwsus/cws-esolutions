@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.access.control.enums.AdminControlType;
@@ -277,90 +278,93 @@ public class RequestAuthorizationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                try
+                if (userAccount.getRole() != Role.SITEADMIN)
                 {
-                    for (String adminURI : this.adminList)
+                    try
                     {
-                        if (DEBUG)
+                        for (String adminURI : this.adminList)
                         {
-                            DEBUGGER.debug("String: {}", adminURI);
-                        }
-
-                        if (StringUtils.startsWith(requestURI, adminURI))
-                        {
-                            IAdminControlService adminControl = new AdminControlServiceImpl();
-                            boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                                DEBUGGER.debug("String: {}", adminURI);
                             }
 
-                            if (!(isAdminAuthorized))
+                            if (StringUtils.startsWith(requestURI, adminURI))
                             {
+                                IAdminControlService adminControl = new AdminControlServiceImpl();
+                                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
+                                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
                                 }
 
-                                hResponse.sendRedirect(unauthorizedRedirect);
+                                if (!(isAdminAuthorized))
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
+                                    }
 
-                                return;
+                                    hResponse.sendRedirect(unauthorizedRedirect);
+
+                                    return;
+                                }
                             }
                         }
-                    }
 
-                    for (String key : this.serviceMap.keySet())
-                    {
-                        if (DEBUG)
+                        for (String key : this.serviceMap.keySet())
                         {
-                            DEBUGGER.debug("String: {}", key);
-                        }
-
-                        if (StringUtils.startsWith(requestURI, key))
-                        {
-                            // make sure the user is authorized for the service
-                            IUserControlService userControl = new UserControlServiceImpl();
-                            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
-
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                                DEBUGGER.debug("String: {}", key);
                             }
 
-                            if (!(isUserAuthorized))
+                            if (StringUtils.startsWith(requestURI, key))
                             {
+                                // make sure the user is authorized for the service
+                                IUserControlService userControl = new UserControlServiceImpl();
+                                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
+
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
+                                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                                 }
 
-                                hResponse.sendRedirect(unauthorizedRedirect);
+                                if (!(isUserAuthorized))
+                                {
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
+                                    }
+
+                                    hResponse.sendRedirect(unauthorizedRedirect);
     
-                                return;
+                                    return;
+                                }
                             }
                         }
+
+                        filterChain.doFilter(sRequest, sResponse);
+
+                        return;
                     }
+                    catch (AdminControlServiceException acsx)
+                    {
+                        ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-                    filterChain.doFilter(sRequest, sResponse);
-
-                    return;
-                }
-                catch (AdminControlServiceException acsx)
-                {
-                    ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                    hResponse.sendRedirect(unauthorizedRedirect);
+                        hResponse.sendRedirect(unauthorizedRedirect);
                     
-                    return;
-                }
-                catch (UserControlServiceException ucsx)
-                {
-                    ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+                        return;
+                    }
+                    catch (UserControlServiceException ucsx)
+                    {
+                        ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-                    hResponse.sendRedirect(unauthorizedRedirect);
+                        hResponse.sendRedirect(unauthorizedRedirect);
                     
-                    return;
+                        return;
+                    }
                 }
             }
         }
