@@ -479,8 +479,8 @@ public class CommonController
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);
             autoResponse.setMessageSubject(this.contactResponseEmail.getSubject());
-            autoResponse.setMessageTo(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr()))));
-            autoResponse.setEmailAddr(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], this.appConfig.getSvcEmailAddr()))));
+            autoResponse.setMessageTo(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getTo()[0], message.getEmailAddr().get(0)))));
+            autoResponse.setEmailAddr(new ArrayList<>(Arrays.asList(String.format(this.contactResponseEmail.getFrom()))));
             autoResponse.setMessageBody(String.format(
                 this.contactResponseEmail.getText(),
                 message.getEmailAddr(),

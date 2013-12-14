@@ -300,9 +300,9 @@ public class ServiceMessage implements Serializable
         return this.expiryDate;
     }
 
-    public final boolean setIsAlert()
+    public final boolean getIsAlert()
     {
-        final String methodName = ServiceMessage.CNAME + "#setIsAlert()";
+        final String methodName = ServiceMessage.CNAME + "#getIsAlert()";
 
         if (DEBUG)
         {

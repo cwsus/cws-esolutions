@@ -97,7 +97,8 @@ BEGIN
         T1.USR_SVC_SVCNAME
     FROM USR_LGN_SERVICES T1
     INNER JOIN USR_LGN_SVCMAP T2
-    ON T1.USR_SVC_SVCID = T2.USR_SVC_SVCID;
+    ON T1.USR_SVC_SVCID = T2.USR_SVC_SVCID
+    WHERE CN = guid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -113,7 +114,7 @@ CREATE PROCEDURE `cwssec`.`listServicesForUser`(
 BEGIN
     SELECT usr_svc_svcid
     FROM usr_lgn_svcmap
-    WHERE usr_lgn_guid = userGuid;
+    WHERE cn = userGuid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

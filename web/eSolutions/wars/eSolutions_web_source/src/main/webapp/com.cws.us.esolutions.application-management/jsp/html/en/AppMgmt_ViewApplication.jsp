@@ -136,7 +136,7 @@
 </div>
 
 <div id="rightbar">
-    <spring:message code="theme.important.information" />
+    <h1 id="alert"><spring:message code="theme.important.information" /></h1>
     <br />
     <spring:message code="app.mgmt.refresh.current" />
 </div>

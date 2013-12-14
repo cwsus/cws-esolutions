@@ -148,12 +148,12 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`retrAllSvcMessages`
+-- Definition of procedure `esolutionssvc`.`retrServiceMessages`
 --
 COMMIT$$
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrAllSvcMessages`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrServiceMessages`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`retrAllSvcMessages`(
+CREATE PROCEDURE `esolutionssvc`.`retrServiceMessages`(
 )
 BEGIN
     SELECT
