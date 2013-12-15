@@ -41,8 +41,6 @@ import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
@@ -199,57 +197,44 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if (isUserCreated)
                     {
                         // generate a key for the user
-                        KeyManagementRequest keyRequest = new KeyManagementRequest();
-                        keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-                        keyRequest.setGuid(userGuid);
-
-                        if (DEBUG)
+                        try
                         {
-                            DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
+                            keyManager.createKeys(userGuid);
+                        }
+                        catch (KeyManagementException kmx)
+                        {
+                            ERROR_RECORDER.error(kmx.getMessage(), kmx);
                         }
 
-                        KeyManagementResponse keyResponse = keyManager.createKeys(keyRequest);
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                        response.setResponse("New user successfully created");
 
-                        if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                        // assign services (if any)
+                        if ((request.getServicesList() != null) && (request.getServicesList().size() != 0))
                         {
-                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setResponse("New user successfully created");
-
-                            // assign services (if any)
-                            if ((request.getServicesList() != null) && (request.getServicesList().size() != 0))
+                            try
                             {
-                                try
+                                for (String svcId : request.getServicesList())
                                 {
-                                    for (String svcId : request.getServicesList())
+                                    if (DEBUG)
                                     {
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("Service: {}", svcId);
-                                        }
+                                        DEBUGGER.debug("Service: {}", svcId);
+                                    }
 
-                                        boolean isServiceAdded = userSvcs.addServiceToUser(userAccount.getGuid(), svcId);
+                                    boolean isServiceAdded = userSvcs.addServiceToUser(userAccount.getGuid(), svcId);
 
-                                        if (!(isServiceAdded))
-                                        {
-                                            throw new SQLException("Failed to provision service " + svcId + " for the provided user");
-                                        }
+                                    if (!(isServiceAdded))
+                                    {
+                                        throw new SQLException("Failed to provision service " + svcId + " for the provided user");
                                     }
                                 }
-                                catch (SQLException sqx)
-                                {
-                                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                                    response.setResponse("Successfully added the new user, but failed to provision services. Please review application logs.");
-                                }
                             }
-                        }
-                        else
-                        {
-                            // failed to generate user keypair
-                            userManager.removeUserAccount(userAccount.getUsername(), userGuid);
-                            userSec.removeUserData(userGuid);
+                            catch (SQLException sqx)
+                            {
+                                ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                            throw new AccountControlException("Failed to provision new user: failed to generate keys for the provided user");
+                                response.setResponse("Successfully added the new user, but failed to provision services. Please review application logs.");
+                            }
                         }
                     }
                     else
@@ -293,12 +278,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccountControlException(sqx.getMessage(), sqx);
-        }
-        catch (KeyManagementException kmx)
-        {
-            ERROR_RECORDER.error(kmx.getMessage(), kmx);
-            
-            throw new AccountControlException(kmx.getMessage(), kmx);
         }
         finally
         {

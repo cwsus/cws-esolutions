@@ -48,10 +48,7 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import java.security.spec.InvalidKeySpecException;
 
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 /*
  * Project: eSolutionsCore
@@ -75,17 +72,18 @@ public class LDAPKeyManager implements KeyManager
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse returnKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#returnKeys(final KeyManagementRequest request)";
+        final String methodName = LDAPKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("Value: ", guid);
         }
 
         String userDN = null;
+        KeyPair keyPair = null;
         byte[] pubKeyBytes = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
@@ -97,7 +95,6 @@ public class LDAPKeyManager implements KeyManager
         SearchResultEntry entry = null;
         SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
-        KeyManagementResponse keyResponse = new KeyManagementResponse();
 
         try
         {
@@ -123,7 +120,7 @@ public class LDAPKeyManager implements KeyManager
                 {
                     // need to get the DN
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");
+                            "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     if (DEBUG)
                     {
@@ -173,7 +170,7 @@ public class LDAPKeyManager implements KeyManager
                     // privkey will always be stored in the database
                     // i probably shouldnt mix this but im going to anyway
                     stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
-                    stmt.setString(1, request.getGuid());
+                    stmt.setString(1, guid);
 
                     if (DEBUG)
                     {
@@ -207,7 +204,7 @@ public class LDAPKeyManager implements KeyManager
 
                     // get the public key
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");
+                            "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     searchReq = new SearchRequest(
                             authRepo.getRepositoryBaseDN(),
@@ -242,7 +239,7 @@ public class LDAPKeyManager implements KeyManager
                         if ((privKeyBytes != null) && (pubKeyBytes != null))
                         {
                             // xlnt, keypair !
-                            KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
+                            KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
 
                             // generate private key
                             PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
@@ -252,31 +249,10 @@ public class LDAPKeyManager implements KeyManager
                             X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
                             PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-                            KeyPair keyPair = new KeyPair(pubKey, privKey);
-
-                            keyResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            keyResponse.setResponse("Successfully loaded user keys");
-                            keyResponse.setKeyPair(keyPair);
-                        }
-                        else
-                        {
-                            keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
+                            keyPair = new KeyPair(pubKey, privKey);
                         }
                     }
-                    else
-                    {
-                        throw new KeyManagementException("Unable to locate a public key for the the given account"); 
-                    }
                 }
-                else
-                {
-                    throw new KeyManagementException("Unable to locate the given account in the authentication repository");
-                }
-            }
-            else
-            {
-                // no ldap connection was made
-                throw new KeyManagementException("No connection to the user repository could be established");
             }
         }
         catch (InvalidKeySpecException iksx)
@@ -333,25 +309,26 @@ public class LDAPKeyManager implements KeyManager
             }
         }
 
-        return keyResponse;
+        return keyPair;
     }
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse createKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final KeyManagementRequest request)";
+        final String methodName = LDAPKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("Value: ", guid);
         }
 
         String userDN = null;
         Connection sqlConn = null;
+        boolean isComplete = false;
         ResultSet resultSet = null;
         Filter searchFilter = null;
         PreparedStatement stmt = null;
@@ -360,7 +337,6 @@ public class LDAPKeyManager implements KeyManager
         SearchResultEntry entry = null;
         SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
-        KeyManagementResponse keyResponse = new KeyManagementResponse();
 
         try
         {
@@ -386,7 +362,7 @@ public class LDAPKeyManager implements KeyManager
                 {
                     // need to get the DN
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");
+                            "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     if (DEBUG)
                     {
@@ -432,10 +408,9 @@ public class LDAPKeyManager implements KeyManager
                     {
                         throw new KeyManagementException("No users were located with the search data provided");
                     }
-                    
-                    SecureRandom random = new SecureRandom();
-                    KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
-                    keyGenerator.initialize(request.getKeySize(), random);
+
+                    KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
+                    keyGenerator.initialize(keyConfig.getKeySize(), new SecureRandom());
                     KeyPair keyPair = keyGenerator.generateKeyPair();
 
                     if (keyPair != null)
@@ -443,7 +418,7 @@ public class LDAPKeyManager implements KeyManager
                         // store the privkey
                         // privkey ALWAYS goes into db
                         stmt = sqlConn.prepareCall("{CALL addUserKeys(?, ?)}");
-                        stmt.setString(1, request.getGuid());
+                        stmt.setString(1, guid);
                         stmt.setBytes(2, keyPair.getPrivate().getEncoded());
 
                         if (DEBUG)
@@ -469,12 +444,7 @@ public class LDAPKeyManager implements KeyManager
                                 DEBUGGER.debug("LDAPResult: {}", ldapResult);
                             }
 
-                            if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                            {
-                                keyResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                keyResponse.setKeyPair(keyPair);
-                            }
-                            else
+                            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
                             {
                                 // failed to insert pubkey
                                 // delete the private key we already inserted
@@ -482,7 +452,7 @@ public class LDAPKeyManager implements KeyManager
                                 stmt = null;
 
                                 stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
-                                stmt.setString(1, request.getGuid());
+                                stmt.setString(1, guid);
 
                                 if (DEBUG)
                                 {
@@ -494,34 +464,13 @@ public class LDAPKeyManager implements KeyManager
                                     ERROR_RECORDER.error("Failed to remove generated private key for the provided user");
                                 }
 
-                                // removed key, return failure
-                                keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
+                                return isComplete;
                             }
-                        }
-                        else
-                        {
-                            ERROR_RECORDER.error("Failed to insert generated private key for the provided user");
 
-                            // failed to insert privkey
-                            keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
+                            isComplete = true;
                         }
                     }
-                    else
-                    {
-                        // failed to generate keypair
-                        throw new KeyManagementException("Failed to generate a user keypair");
-                    }
                 }
-                else
-                {
-                    // no ldap connection was made
-                    throw new KeyManagementException("No connection to the user repository could be established");
-                }
-            }
-            else
-            {
-                // no ldap connection was made
-                throw new KeyManagementException("No connection to the user repository could be established");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -572,34 +521,34 @@ public class LDAPKeyManager implements KeyManager
             }
         }
 
-        return keyResponse;
+        return isComplete;
     }
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse removeKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = LDAPKeyManager.CNAME + "#removeKeys(final KeyManagementRequest request)";
+        final String methodName = LDAPKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("Value: ", guid);
         }
 
         String userDN = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
         Filter searchFilter = null;
+        boolean isComplete = false;
         PreparedStatement stmt = null;
         SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
         SearchResultEntry entry = null;
         SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
-        KeyManagementResponse keyResponse = new KeyManagementResponse();
 
         try
         {
@@ -625,7 +574,7 @@ public class LDAPKeyManager implements KeyManager
                 {
                     // need to get the DN
                     searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getCommonName() +  "=" + request.getGuid() + ")))");
+                            "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     if (DEBUG)
                     {
@@ -675,7 +624,7 @@ public class LDAPKeyManager implements KeyManager
                     // remove the user keys from the store
                     // first, we have to get it from the db
                     stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
-                    stmt.setString(1, request.getGuid());
+                    stmt.setString(1, guid);
 
                     if (DEBUG)
                     {
@@ -701,26 +650,9 @@ public class LDAPKeyManager implements KeyManager
                             DEBUGGER.debug("LDAPResult: {}", ldapResult);
                         }
 
-                        if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                        {
-                            keyResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        }
-                    }
-                    else
-                    {
-                        throw new KeyManagementException("No private key was found for the provided user.");
+                        isComplete = true;
                     }
                 }
-                else
-                {
-                    // no ldap connection was made
-                    throw new KeyManagementException("No connection to the user repository could be established");
-                }
-            }
-            else
-            {
-                // no ldap connection was made
-                throw new KeyManagementException("No connection to the user repository could be established");
             }
         }
         catch (SQLException sqx)
@@ -765,6 +697,6 @@ public class LDAPKeyManager implements KeyManager
             }
         }
 
-        return keyResponse;
+        return isComplete;
     }
 }

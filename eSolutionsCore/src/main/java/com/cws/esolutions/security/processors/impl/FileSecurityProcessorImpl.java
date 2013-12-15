@@ -37,8 +37,6 @@ import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
@@ -97,36 +95,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            KeyManagementRequest keyRequest = new KeyManagementRequest();
-            keyRequest.setGuid(userAccount.getGuid());
-            keyRequest.setKeySize(keyConfig.getKeySize());
-            keyRequest.setPubKeyField(authData.getPublicKey());
-            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+            KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
-            if (DEBUG)
+            if (keyPair != null)
             {
-                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-            }
-
-            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-            }
-
-            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                KeyPair keys = keyResponse.getKeyPair();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("KeyPair: {}", keys);
-                }
-
                 Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
-                signature.initSign(keys.getPrivate());
+                signature.initSign(keyPair.getPrivate());
                 signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
 
                 if (DEBUG)
@@ -267,34 +241,10 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            KeyManagementRequest keyRequest = new KeyManagementRequest();
-            keyRequest.setGuid(userAccount.getGuid());
-            keyRequest.setKeySize(keyConfig.getKeySize());
-            keyRequest.setPubKeyField(authData.getPublicKey());
-            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+            KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
-            if (DEBUG)
+            if (keyPair != null)
             {
-                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-            }
-
-            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-            }
-
-            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                KeyPair keys = keyResponse.getKeyPair();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("KeyPair: {}", keys);
-                }
-
                 // read in the file signature
                 byte[] sigToVerify = IOUtils.toByteArray(new FileInputStream(request.getSignedFile()));
 
@@ -304,7 +254,7 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 }
 
                 Signature signature = Signature.getInstance(fileSecurityConfig.getSignatureAlgorithm());
-                signature.initVerify(keys.getPublic());
+                signature.initVerify(keyPair.getPublic());
                 signature.update(IOUtils.toByteArray(new FileInputStream(request.getUnsignedFile())));
 
                 if (DEBUG)
@@ -429,36 +379,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            KeyManagementRequest keyRequest = new KeyManagementRequest();
-            keyRequest.setGuid(userAccount.getGuid());
-            keyRequest.setKeySize(keyConfig.getKeySize());
-            keyRequest.setPubKeyField(authData.getPublicKey());
-            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+            KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
-            if (DEBUG)
+            if (keyPair != null)
             {
-                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-            }
-
-            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-            }
-
-            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                KeyPair keys = keyResponse.getKeyPair();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("KeyPair: {}", keys);
-                }
-
                 Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
-                cipher.init(Cipher.ENCRYPT_MODE, keys.getPrivate());
+                cipher.init(Cipher.ENCRYPT_MODE, keyPair.getPrivate());
 
                 if (DEBUG)
                 {
@@ -597,36 +523,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            KeyManagementRequest keyRequest = new KeyManagementRequest();
-            keyRequest.setGuid(userAccount.getGuid());
-            keyRequest.setKeySize(keyConfig.getKeySize());
-            keyRequest.setPubKeyField(authData.getPublicKey());
-            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
+            KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
-            if (DEBUG)
+            if (keyPair != null)
             {
-                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-            }
-
-            KeyManagementResponse keyResponse = keyManager.returnKeys(keyRequest);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManagementResponse: {}", keyResponse);
-            }
-
-            if (keyResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-            {
-                KeyPair keys = keyResponse.getKeyPair();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("KeyPair: {}", keys);
-                }
-
                 Cipher cipher = Cipher.getInstance(fileSecurityConfig.getEncryptionAlgorithm());
-                cipher.init(Cipher.DECRYPT_MODE, keys.getPublic());
+                cipher.init(Cipher.DECRYPT_MODE, keyPair.getPublic());
 
                 if (DEBUG)
                 {

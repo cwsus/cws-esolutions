@@ -28,5 +28,6 @@ public enum SecurityRequestStatus
 {
     SUCCESS,
     FAILURE,
-    UNAUTHORIZED;
+    UNAUTHORIZED,
+    DISABLED;
 }

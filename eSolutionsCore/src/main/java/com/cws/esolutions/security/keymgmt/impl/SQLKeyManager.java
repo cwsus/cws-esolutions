@@ -32,10 +32,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 /*
  * Project: eSolutionsCore
@@ -56,25 +53,25 @@ public class SQLKeyManager implements KeyManager
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.Value)
      */
     @Override
-    public synchronized KeyManagementResponse returnKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = SQLKeyManager.CNAME + "#returnKeys(final KeyManagementRequest request) throws KeyManagementException";
+        final String methodName = SQLKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: {}", request);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
+        KeyPair keyPair = null;
         byte[] pubKeyBytes = null;
         Connection sqlConn = null;
         byte[] privKeyBytes = null;
         ResultSet resultSet = null;
         PreparedStatement stmt = null;
-        KeyManagementResponse response = null;
 
         try
         {
@@ -88,7 +85,7 @@ public class SQLKeyManager implements KeyManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL retrUserKeys(?) }");
-            stmt.setString(1, request.getGuid());
+            stmt.setString(1, guid);
 
             if (DEBUG)
             {
@@ -123,7 +120,7 @@ public class SQLKeyManager implements KeyManager
             }
 
             stmt = sqlConn.prepareCall("{ CALL retrPublicKey(?) }");
-            stmt.setString(1, request.getGuid());
+            stmt.setString(1, guid);
 
             if (DEBUG)
             {
@@ -156,7 +153,7 @@ public class SQLKeyManager implements KeyManager
             if ((privKeyBytes != null) && (pubKeyBytes != null))
             {
                 // xlnt, make the keypair
-                KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
+                KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
 
                 // generate private key
                 PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
@@ -166,16 +163,7 @@ public class SQLKeyManager implements KeyManager
                 X509EncodedKeySpec publicSpec = new X509EncodedKeySpec(pubKeyBytes);
                 PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
-                KeyPair keyPair = new KeyPair(pubKey, privKey);
-
-                response = new KeyManagementResponse();
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setKeyPair(keyPair);
-            }
-            else
-            {
-                response = new KeyManagementResponse();
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                keyPair = new KeyPair(pubKey, privKey);
             }
         }
         catch (InvalidKeySpecException iksx)
@@ -224,26 +212,26 @@ public class SQLKeyManager implements KeyManager
             }
         }
 
-        return response;
+        return keyPair;
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.Value)
      */
     @Override
-    public synchronized KeyManagementResponse createKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = SQLKeyManager.CNAME + "#keyManager(final KeyManagementRequest request) throws KeyManagementException";
+        final String methodName = SQLKeyManager.CNAME + "#keyManager(final String guid) throws KeyManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: {}", request);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         Connection sqlConn = null;
+        boolean isComplete = false;
         PreparedStatement stmt = null;
-        KeyManagementResponse response = null;
 
         try
         {
@@ -257,9 +245,8 @@ public class SQLKeyManager implements KeyManager
 
             sqlConn.setAutoCommit(true);
 
-            SecureRandom random = new SecureRandom();
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
-            keyGenerator.initialize(request.getKeySize(), random);
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
+            keyGenerator.initialize(keyConfig.getKeySize(), new SecureRandom());
             KeyPair keyPair = keyGenerator.generateKeyPair();
 
             // ok we should have a keypair now
@@ -287,7 +274,7 @@ public class SQLKeyManager implements KeyManager
                         throw new SQLException("Failed to create callable statement against connection");
                     }
 
-                    stmt.setString(1, request.getGuid()); // guid
+                    stmt.setString(1, guid); // guid
                     stmt.setBytes(2, privKey.getEncoded()); // privkey
 
                     if (DEBUG)
@@ -325,7 +312,7 @@ public class SQLKeyManager implements KeyManager
                 if (pubKey != null)
                 {
                     stmt = sqlConn.prepareCall("{ CALL addPublicKey(?, ?) }");
-                    stmt.setString(1, request.getGuid()); // guid
+                    stmt.setString(1, guid); // guid
                     stmt.setBytes(2, pubKey.getEncoded()); // privkey
 
                     if (DEBUG)
@@ -346,6 +333,8 @@ public class SQLKeyManager implements KeyManager
 
                         throw new KeyManagementException("Failed to insert public key. Cannot continue.");
                     }
+
+                    isComplete = true;
                 }
                 else
                 {
@@ -355,7 +344,7 @@ public class SQLKeyManager implements KeyManager
                     stmt.close();
                     stmt = null;
                     stmt = sqlConn.prepareCall("{ CALL deleteUserKeys(?) }");
-                    stmt.setString(1, request.getGuid());
+                    stmt.setString(1, guid);
 
                     if (DEBUG)
                     {
@@ -363,17 +352,7 @@ public class SQLKeyManager implements KeyManager
                     }
 
                     stmt.execute();
-
-                    throw new KeyManagementException("Public key is null. Cannot continue.");
                 }
-
-                response = new KeyManagementResponse();
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
-            {
-                // failed to generate keypair
-                throw new KeyManagementException("Failed to generate a user keypair");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -410,26 +389,26 @@ public class SQLKeyManager implements KeyManager
             }
         }
 
-        return response;
+        return isComplete;
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.Value)
      */
     @Override
-    public synchronized KeyManagementResponse removeKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = SQLKeyManager.CNAME + "#removeKeys(final KeyManagementRequest request) throws KeyManagementException";
+        final String methodName = SQLKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: {}", request);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         Connection sqlConn = null;
+        boolean isComplete = false;
         PreparedStatement stmt = null;
-        KeyManagementResponse response = null;
 
         try
         {
@@ -441,11 +420,10 @@ public class SQLKeyManager implements KeyManager
             }
 
             sqlConn.setAutoCommit(true);
-            response = new KeyManagementResponse();
 
             // remove the user keys from the store
             stmt = sqlConn.prepareCall("{CALL deleteUserKeys(?)}");
-            stmt.setString(1, request.getGuid());
+            stmt.setString(1, guid);
 
             if (DEBUG)
             {
@@ -455,12 +433,7 @@ public class SQLKeyManager implements KeyManager
             if (!(stmt.execute()))
             {
                 // good
-                response = new KeyManagementResponse();
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            }
-            else
-            {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                isComplete = true;
             }
         }
         catch (SQLException sqx)
@@ -491,6 +464,6 @@ public class SQLKeyManager implements KeyManager
             }
         }
 
-        return response;
+        return isComplete;
     }
 }

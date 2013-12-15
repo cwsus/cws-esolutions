@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.sql.SQLException;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -35,8 +34,6 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
@@ -839,37 +836,25 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 DEBUGGER.debug("KeyManager: {}", keyManager);
             }
 
-            KeyManagementRequest keyRequest = new KeyManagementRequest();
-            keyRequest.setGuid(userAccount.getGuid());
-            keyRequest.setKeySize(keyConfig.getKeySize());
-            keyRequest.setPubKeyField(authData.getPublicKey());
-            keyRequest.setKeyAlgorithm(keyConfig.getKeyAlgorithm());
-            keyRequest.setKeyDirectory(FileUtils.getFile(keyConfig.getKeyDirectory()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManagementRequest: {}", keyRequest);
-            }
-
             // delete the existing keys
-            KeyManagementResponse deleteResponse = keyManager.removeKeys(keyRequest);
+            boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("KeyManagementResponse: {}", deleteResponse);
+                DEBUGGER.debug("keysRemoved: {}", keysRemoved);
             }
 
-            if (deleteResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+            if (keysRemoved)
             {
                 // good, now re-generate
-                KeyManagementResponse createResponse = keyManager.createKeys(keyRequest);
+                boolean keysAdded = keyManager.createKeys(userAccount.getGuid());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("KeyManagementResponse: {}", createResponse);
+                    DEBUGGER.debug("keysAdded: {}", keysAdded);
                 }
 
-                if (createResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                if (keysAdded)
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     response.setResponse("Successfully reloaded user keys");

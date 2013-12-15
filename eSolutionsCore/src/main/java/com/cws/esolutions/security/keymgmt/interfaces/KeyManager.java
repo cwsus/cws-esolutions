@@ -16,6 +16,7 @@
 package com.cws.esolutions.security.keymgmt.interfaces;
 
 import org.slf4j.Logger;
+import java.security.KeyPair;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.AuthRepo;
@@ -24,8 +25,6 @@ import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
@@ -56,9 +55,9 @@ public interface KeyManager
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + KeyManager.class.getName());
 
-    KeyManagementResponse returnKeys(final KeyManagementRequest request) throws KeyManagementException;
+    KeyPair returnKeys(final String guid) throws KeyManagementException;
 
-    KeyManagementResponse createKeys(final KeyManagementRequest request) throws KeyManagementException;
+    boolean createKeys(final String guid) throws KeyManagementException;
 
-    KeyManagementResponse removeKeys(final KeyManagementRequest request) throws KeyManagementException;
+    boolean removeKeys(final String guid) throws KeyManagementException;
 }

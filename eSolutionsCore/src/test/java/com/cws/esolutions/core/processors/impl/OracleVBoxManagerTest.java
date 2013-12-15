@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.impl;
+package com.cws.esolutions.core.processors.impl;
 
 import org.junit.Test;
 import org.junit.After;
@@ -29,18 +29,18 @@ import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceResponse;
+import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
+import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.core.vmgr.factory.VirtualManagerFactory;
+import com.cws.esolutions.core.processors.factory.VirtualManagerFactory;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager;
-import com.cws.esolutions.core.vmgr.exception.VirtualServiceException;
+import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
+import com.cws.esolutions.core.processors.exception.VirtualServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 /**
  * eSolutionsCore
- * com.cws.esolutions.core.vmgr.impl
+ * com.cws.esolutions.core.processors.impl
  * OracleVBoxManagerTest.java
  *
  * $Id: $
@@ -113,7 +113,7 @@ public class OracleVBoxManagerTest
     }
 
     /**
-     * Test method for {@link com.cws.esolutions.core.vmgr.impl.OracleVBoxManager#getVBoxManager()}.
+     * Test method for {@link com.cws.esolutions.core.processors.impl.OracleVBoxManager#getVBoxManager()}.
      */
     @Test
     public void testListVirtualMachines()

@@ -35,10 +35,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest;
-import com.cws.esolutions.security.keymgmt.dto.KeyManagementResponse;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 /*
  * Project: eSolutionsCore
@@ -61,33 +58,33 @@ public class FileKeyManager implements KeyManager
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse returnKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#returnKeys(final KeyManagementRequest request)";
+        final String methodName = FileKeyManager.CNAME + "#returnKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("Value: ", guid);
         }
-        
+
+        KeyPair keyPair = null;
         InputStream pubStream = null;
         InputStream privStream = null;
-        KeyManagementResponse response = new KeyManagementResponse();
 
-        final File keyDirectory = FileUtils.getFile(request.getKeyDirectory() + request.getGuid() + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
 
         try
         {
-            if (!(request.getKeyDirectory().exists()))
+            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
 
             if (keyDirectory.exists())
             {
-                File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
-                File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
+                File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
+                File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
 
                 if ((publicFile.exists()) && (privateFile.exists()))
                 {
@@ -98,7 +95,7 @@ public class FileKeyManager implements KeyManager
                     byte[] pubKeyBytes = IOUtils.toByteArray(pubStream);
 
                     // files exist
-                    KeyFactory keyFactory = KeyFactory.getInstance(request.getKeyAlgorithm());
+                    KeyFactory keyFactory = KeyFactory.getInstance(keyConfig.getKeyAlgorithm());
 
                     // generate private key
                     PKCS8EncodedKeySpec privateSpec = new PKCS8EncodedKeySpec(privKeyBytes);
@@ -109,10 +106,7 @@ public class FileKeyManager implements KeyManager
                     PublicKey pubKey = keyFactory.generatePublic(publicSpec);
 
                     // make the keypair
-                    KeyPair keyPair = new KeyPair(pubKey, privKey);
-
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setKeyPair(keyPair);
+                    keyPair = new KeyPair(pubKey, privKey);
                 }
                 else
                 {
@@ -162,32 +156,32 @@ public class FileKeyManager implements KeyManager
             }
         }
 
-        return response;
+        return keyPair;
     }
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse createKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean createKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#createKeys(final KeyManagementRequest request)";
+        final String methodName = FileKeyManager.CNAME + "#createKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("Value: ", guid);
         }
 
+        boolean isComplete = false;
         OutputStream publicStream = null;
         OutputStream privateStream = null;
-        KeyManagementResponse response = new KeyManagementResponse();
 
-        final File keyDirectory = FileUtils.getFile(request.getKeyDirectory() + request.getGuid() + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
 
         try
         {
-            if (!(request.getKeyDirectory().exists()))
+            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
@@ -203,14 +197,14 @@ public class FileKeyManager implements KeyManager
             keyDirectory.setExecutable(true, true);
 
             SecureRandom random = new SecureRandom();
-            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(request.getKeyAlgorithm());
-            keyGenerator.initialize(request.getKeySize(), random);
+            KeyPairGenerator keyGenerator = KeyPairGenerator.getInstance(keyConfig.getKeyAlgorithm());
+            keyGenerator.initialize(keyConfig.getKeySize(), random);
             KeyPair keyPair = keyGenerator.generateKeyPair();
 
             if (keyPair != null)
             {
-                File privateFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".key");
-                File publicFile = FileUtils.getFile(keyDirectory + "/" + request.getGuid() + ".pub");
+                File privateFile = FileUtils.getFile(keyDirectory + "/" + guid + ".key");
+                File publicFile = FileUtils.getFile(keyDirectory + "/" + guid + ".pub");
 
                 if (!(privateFile.createNewFile()))
                 {
@@ -232,7 +226,7 @@ public class FileKeyManager implements KeyManager
                 IOUtils.write(keyPair.getPublic().getEncoded(), publicStream);
 
                 // assume success, as we'll get an IOException if the write failed
-                response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                isComplete = true;
             }
             else
             {
@@ -270,35 +264,35 @@ public class FileKeyManager implements KeyManager
             }
         }
 
-        return response;
+        return isComplete;
     }
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
      */
     @Override
-    public synchronized KeyManagementResponse removeKeys(final KeyManagementRequest request) throws KeyManagementException
+    public synchronized boolean removeKeys(final String guid) throws KeyManagementException
     {
-        final String methodName = FileKeyManager.CNAME + "#removeKeys(final KeyManagementRequest request)";
+        final String methodName = FileKeyManager.CNAME + "#removeKeys(final String guid) throws KeyManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", request);
+            DEBUGGER.debug("KeyManagementRequest: ", guid);
         }
         
-        KeyManagementResponse response = new KeyManagementResponse();
+        boolean isComplete = false;
 
-        final File keyDirectory = FileUtils.getFile(request.getKeyDirectory() + request.getGuid() + "/");
+        final File keyDirectory = FileUtils.getFile(keyConfig.getKeyDirectory() + guid + "/");
 
         try
         {
-            if (!(request.getKeyDirectory().exists()))
+            if (!(FileUtils.getFile(keyConfig.getKeyDirectory()).exists()))
             {
                 throw new KeyManagementException("Configured key directory does not exist");
             }
 
-            if ((request.getKeyDirectory().canWrite()) && (keyDirectory.canWrite()))
+            if ((FileUtils.getFile(keyConfig.getKeyDirectory()).canWrite()) && (keyDirectory.canWrite()))
             {
                 // delete the files ...
                 for (File file : keyDirectory.listFiles())
@@ -317,12 +311,7 @@ public class FileKeyManager implements KeyManager
                 // ... then delete the dir
                 if (keyDirectory.delete())
                 {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    // failed to remove key directory (which means keys could still exist)
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
+                    isComplete = true;
                 }
             }
             else
@@ -343,6 +332,6 @@ public class FileKeyManager implements KeyManager
             throw new KeyManagementException(iox.getMessage(), iox);
         }
 
-        return response;
+        return isComplete;
     }
 }
