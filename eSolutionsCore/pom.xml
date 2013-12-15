@@ -145,25 +145,4 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <!--
-        exclude everything out of src/main/resources
-        applications CALLING this library MUST provide
-        their own configuration (everyone might not fit
-        into the same model). the server portion does NOT
-        load its config from the jar, its loaded on the fs
-        -->
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>nls/*</include>
-                </includes>
-                <excludes>
-                    <exclude>**/*</exclude>
-                </excludes>
-            </resource>
-        </resources>
-    </build>
 </project>
