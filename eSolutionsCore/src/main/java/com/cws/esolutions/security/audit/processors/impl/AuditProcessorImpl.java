@@ -243,12 +243,10 @@ public class AuditProcessorImpl implements IAuditProcessor
                     response.setEntryCount(rowCount);
                     response.setAuditList(auditList);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully loaded audit entries for user " + request.getAuditEntry().getUserAccount().getUsername());
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("No audit entries were found for user " + request.getAuditEntry().getUserAccount().getUsername());
                 }
             }
             catch (SQLException sqx)
@@ -260,8 +258,7 @@ public class AuditProcessorImpl implements IAuditProcessor
         }
         else
         {
-            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setResponse("Auditing has been disabled in the security configuration.");
+            response.setRequestStatus(SecurityRequestStatus.DISABLED);
         }
 
         return response;

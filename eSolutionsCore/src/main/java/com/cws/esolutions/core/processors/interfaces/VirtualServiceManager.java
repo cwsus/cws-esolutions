@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.interfaces;
+package com.cws.esolutions.core.processors.interfaces;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.ApplicationConfig;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceResponse;
-import com.cws.esolutions.core.vmgr.exception.VirtualServiceException;
+import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
+import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
+import com.cws.esolutions.core.processors.exception.VirtualServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.interfaces

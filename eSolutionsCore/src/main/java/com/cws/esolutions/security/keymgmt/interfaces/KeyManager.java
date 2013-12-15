@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.config.AuthData;
+import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
@@ -47,6 +48,7 @@ public interface KeyManager
     static final ResourceControllerBean resBean = svcBean.getResourceBean();
     static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final AuthData authData = svcBean.getConfigData().getAuthData();
+    static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
 
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     

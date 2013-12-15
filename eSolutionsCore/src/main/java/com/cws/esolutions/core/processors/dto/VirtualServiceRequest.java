@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.dto;
+package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
 import java.io.Serializable;

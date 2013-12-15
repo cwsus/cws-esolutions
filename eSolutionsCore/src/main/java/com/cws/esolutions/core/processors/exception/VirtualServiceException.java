@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.exception;
+package com.cws.esolutions.core.processors.exception;
 
 import com.cws.esolutions.core.exception.CoreServiceException;
 /*

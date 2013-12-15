@@ -170,14 +170,12 @@ public class SQLKeyManager implements KeyManager
 
                 response = new KeyManagementResponse();
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Successfully loaded user keys");
                 response.setKeyPair(keyPair);
             }
             else
             {
                 response = new KeyManagementResponse();
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to load user keys");
             }
         }
         catch (InvalidKeySpecException iksx)
@@ -370,7 +368,6 @@ public class SQLKeyManager implements KeyManager
                 }
 
                 response = new KeyManagementResponse();
-                response.setResponse("Successfully created user keypair");
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
             }
             else
@@ -460,12 +457,10 @@ public class SQLKeyManager implements KeyManager
                 // good
                 response = new KeyManagementResponse();
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Successfully removed user keypair");
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to removed user keypair");
             }
         }
         catch (SQLException sqx)

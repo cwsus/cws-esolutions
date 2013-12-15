@@ -112,7 +112,6 @@ public class FileKeyManager implements KeyManager
                     KeyPair keyPair = new KeyPair(pubKey, privKey);
 
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully loaded user keys");
                     response.setKeyPair(keyPair);
                 }
                 else
@@ -234,7 +233,6 @@ public class FileKeyManager implements KeyManager
 
                 // assume success, as we'll get an IOException if the write failed
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                response.setResponse("Successfully generated and added the user keypair.");
             }
             else
             {
@@ -320,13 +318,11 @@ public class FileKeyManager implements KeyManager
                 if (keyDirectory.delete())
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully removed user keypair");
                 }
                 else
                 {
                     // failed to remove key directory (which means keys could still exist)
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to delete user keys. Please remove manually.");
                 }
             }
             else

@@ -37,7 +37,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 public class AuditResponse implements Serializable
 {
     private int entryCount = 0;
-    private String response = null;
     private List<AuditEntry> auditList = null;
     private SecurityRequestStatus requestStatus = null;
 
@@ -59,19 +58,6 @@ public class AuditResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = AuditResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -111,19 +97,6 @@ public class AuditResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = AuditResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.impl;
+package com.cws.esolutions.core.processors.impl;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -31,11 +31,11 @@ import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest;
-import com.cws.esolutions.core.vmgr.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager;
-import com.cws.esolutions.core.vmgr.exception.VirtualServiceException;
+import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
+import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
+import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
+import com.cws.esolutions.core.processors.exception.VirtualServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.interfaces

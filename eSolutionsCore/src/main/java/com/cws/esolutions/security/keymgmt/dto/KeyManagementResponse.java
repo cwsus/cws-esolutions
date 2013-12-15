@@ -36,7 +36,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class KeyManagementResponse implements Serializable
 {
-    private String response = null;
     private KeyPair keyPair = null;
     private SecurityRequestStatus requestStatus = null;
 
@@ -58,19 +57,6 @@ public class KeyManagementResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = KeyManagementResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setKeyPair(final KeyPair value)
@@ -96,19 +82,6 @@ public class KeyManagementResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = KeyManagementResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final KeyPair getKeyPair()

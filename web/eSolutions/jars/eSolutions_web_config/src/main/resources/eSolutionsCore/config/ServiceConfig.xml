@@ -4,12 +4,12 @@
         <appName>eSolutionsCore</appName>
         <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
         <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
-        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <fileRepositoryRoot>/opt/cws/eSolutions/repository</fileRepositoryRoot>
         <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
         <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
-        <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
         <articleIdentifierLength>9</articleIdentifierLength>
         <articlePrefix>KB-</articlePrefix>
@@ -61,7 +61,7 @@
         <sshUserAccount>kh05451</sshUserAccount> <!-- username to use for authentication -->
         <sshUserSalt />
         <sshUserPassword />
-        <sshKeyFile>C:/home/35033355/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
+        <sshKeyFile>/opt/cws/eSolutions/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
         <sshKeyPassword /> <!-- password for key, if required -->
     </ssh-config>
 

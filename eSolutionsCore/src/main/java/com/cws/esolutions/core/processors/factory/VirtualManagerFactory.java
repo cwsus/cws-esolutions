@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.vmgr.factory;
+package com.cws.esolutions.core.processors.factory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager;
+import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.interfaces

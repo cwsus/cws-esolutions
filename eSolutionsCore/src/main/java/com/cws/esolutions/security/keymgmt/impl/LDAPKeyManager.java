@@ -261,7 +261,6 @@ public class LDAPKeyManager implements KeyManager
                         else
                         {
                             keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            keyResponse.setResponse("Failed to load user private keys");
                         }
                     }
                     else
@@ -473,7 +472,6 @@ public class LDAPKeyManager implements KeyManager
                             if (ldapResult.getResultCode() == ResultCode.SUCCESS)
                             {
                                 keyResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                keyResponse.setResponse("Successfully generated keypair");
                                 keyResponse.setKeyPair(keyPair);
                             }
                             else
@@ -498,7 +496,6 @@ public class LDAPKeyManager implements KeyManager
 
                                 // removed key, return failure
                                 keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                keyResponse.setResponse("Failed to insert keys into user datastore.");
                             }
                         }
                         else
@@ -507,7 +504,6 @@ public class LDAPKeyManager implements KeyManager
 
                             // failed to insert privkey
                             keyResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            keyResponse.setResponse("Failed to insert keys into user datastore.");
                         }
                     }
                     else
@@ -708,7 +704,6 @@ public class LDAPKeyManager implements KeyManager
                         if (ldapResult.getResultCode() == ResultCode.SUCCESS)
                         {
                             keyResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            keyResponse.setResponse("Successfully removed user keypair");
                         }
                     }
                     else
