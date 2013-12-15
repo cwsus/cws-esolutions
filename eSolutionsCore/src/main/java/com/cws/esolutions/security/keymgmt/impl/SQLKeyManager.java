@@ -53,7 +53,7 @@ public class SQLKeyManager implements KeyManager
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.Value)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
     @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
@@ -216,7 +216,7 @@ public class SQLKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.Value)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
     @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
@@ -393,7 +393,7 @@ public class SQLKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.Value)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
     @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException

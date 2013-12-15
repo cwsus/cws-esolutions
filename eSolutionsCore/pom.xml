@@ -157,6 +157,9 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>nls/*</include>
+                </includes>
                 <excludes>
                     <exclude>**/*</exclude>
                 </excludes>

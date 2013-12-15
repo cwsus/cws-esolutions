@@ -54,7 +54,7 @@ public class OracleVBoxManager implements VirtualServiceManager
     private static final String CNAME = OracleVBoxManager.class.getName();
 
     /**
-     * @see com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager#listVirtualMachines(com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager#listVirtualMachines(com.cws.esolutions.core.processors.dto.VirtualServiceRequest)
      */
     @Override
     public synchronized VirtualServiceResponse listVirtualMachines(final VirtualServiceRequest request) throws VirtualServiceException
@@ -145,7 +145,7 @@ public class OracleVBoxManager implements VirtualServiceManager
     }
 
     /**
-     * @see com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager#startVirtualMachine(com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager#startVirtualMachine(com.cws.esolutions.core.processors.dto.VirtualServiceRequest)
      */
     @Override
     public synchronized VirtualServiceResponse startVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException
@@ -289,7 +289,7 @@ public class OracleVBoxManager implements VirtualServiceManager
     }
 
     /**
-     * @see com.cws.esolutions.core.vmgr.interfaces.VirtualServiceManager#stopVirtualMachine(com.cws.esolutions.core.vmgr.dto.VirtualServiceRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager#stopVirtualMachine(com.cws.esolutions.core.processors.dto.VirtualServiceRequest)
      */
     @Override
     public synchronized VirtualServiceResponse stopVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException

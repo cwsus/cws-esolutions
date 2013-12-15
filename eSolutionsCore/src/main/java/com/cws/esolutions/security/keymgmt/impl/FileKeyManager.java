@@ -55,7 +55,7 @@ public class FileKeyManager implements KeyManager
     private static final String CNAME = FileKeyManager.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys()
      */
     @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
@@ -160,7 +160,7 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
     @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
@@ -268,7 +268,7 @@ public class FileKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(com.cws.esolutions.security.keymgmt.dto.KeyManagementRequest)
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
     @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException

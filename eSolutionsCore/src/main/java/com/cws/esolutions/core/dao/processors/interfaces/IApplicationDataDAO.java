@@ -128,7 +128,7 @@ public interface IApplicationDataDAO
      * 12. Platform GUID - The platform(s) this application is associated with. This
      *     drives deployment processing.
      *
-     * @param applicationData - The information to update for the application, as outlined above.
+     * @param appGuid - The information to update for the application, as outlined above.
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
      */
