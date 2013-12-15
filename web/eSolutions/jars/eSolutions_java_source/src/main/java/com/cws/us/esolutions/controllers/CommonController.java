@@ -320,7 +320,7 @@ public class CommonController
         return mView;
     }
 
-    @RequestMapping(value = "/submit-contact", method = RequestMethod.GET)
+    @RequestMapping(value = "/contact", method = RequestMethod.GET)
     public final ModelAndView showContactPage()
     {
         final String methodName = CommonController.CNAME + "#showContactPage()";
@@ -386,7 +386,7 @@ public class CommonController
         return mView;
     }
 
-    @RequestMapping(value = "/submit-contact", method = RequestMethod.POST)
+    @RequestMapping(value = "/contact", method = RequestMethod.POST)
     public final ModelAndView doSubmitMessage(@ModelAttribute("message") final EmailMessage message, final BindingResult bindResult)
     {
         final String methodName = CommonController.CNAME + "#doSubmitMessage(@ModelAttribute(\"message\") final EmailMessage message, final BindingResult bindResult)";
@@ -494,7 +494,7 @@ public class CommonController
             EmailUtils.sendEmailMessage(autoResponse, true);
 
             mView = new ModelAndView(new RedirectView());
-            mView.setViewName(this.appConfig.getContactAdminsPage());
+            mView.setViewName(this.appConfig.getContactAdminsRedirect());
             mView.addObject(Constants.RESPONSE_MESSAGE, this.appConfig.getMessageEmailSentSuccess());
         }
         catch (MessagingException mx)

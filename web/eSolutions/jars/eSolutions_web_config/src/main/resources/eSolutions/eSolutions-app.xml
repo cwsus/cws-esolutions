@@ -89,6 +89,7 @@
         <property name="logonRedirect" value="redirect:/ui/login/default" />
         <property name="expiredRedirect" value="redirect:/ui/user-account/password" />
         <property name="homeRedirect" value="redirect:/ui/common/default" />
+        <property name="contactAdminsRedirect" value="redirect:/ui/common/contact" />
         <property name="themeMessageSource" value="nls.theme.resources" />
         <property name="messageEmailSendFailed" value="theme.system.message.email.send.failed" />
         <property name="messageRequestCanceled" value="theme.system.message.request.canceled" />

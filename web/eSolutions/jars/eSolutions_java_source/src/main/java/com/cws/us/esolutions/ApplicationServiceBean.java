@@ -56,6 +56,7 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String searchRequestPage = null;
     @Autowired private String themeMessageSource = null;
     @Autowired private String requestCompletePage = null;
+    @Autowired private String contactAdminsRedirect = null;
     @Autowired private SecurityConfig securityConfig = null;
     @Autowired private String messageNoSearchResults = null;
     @Autowired private String messageEmailSendFailed = null;
@@ -194,6 +195,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.contactAdminsPage = value;
+    }
+
+    public final void setContactAdminsRedirect(final String value)
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#setContactAdminsRedirect(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.contactAdminsRedirect = value;
     }
 
     public final void setErrorResponsePage(final String value)
@@ -987,6 +1001,19 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.themeMessageSource;
+    }
+
+    public final String getContactAdminsRedirect()
+    {
+        final String methodName = ApplicationServiceBean.CNAME + "#getContactAdminsRedirect()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.contactAdminsRedirect);
+        }
+
+        return this.contactAdminsRedirect;
     }
 
     @Override

@@ -344,10 +344,6 @@ public class RequestAuthorizationFilter implements Filter
                                 }
                             }
                         }
-
-                        filterChain.doFilter(sRequest, sResponse);
-
-                        return;
                     }
                     catch (AdminControlServiceException acsx)
                     {
@@ -366,6 +362,10 @@ public class RequestAuthorizationFilter implements Filter
                         return;
                     }
                 }
+
+                filterChain.doFilter(sRequest, sResponse);
+
+                return;
             }
         }
     }
