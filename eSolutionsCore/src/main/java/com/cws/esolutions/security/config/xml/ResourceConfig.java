@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.core.config.DataSourceManager;
+import com.cws.esolutions.core.config.xml.DataSourceManager;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.audit.processors.interfaces

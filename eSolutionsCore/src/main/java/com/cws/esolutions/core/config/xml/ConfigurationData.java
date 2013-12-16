@@ -39,11 +39,11 @@ import com.cws.esolutions.core.Constants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class ConfigurationData implements Serializable
 {
-    private MQConfig mqConfig = null;
     private SSHConfig sshConfig = null;
     private DNSConfig dnsConfig = null;
     private MailConfig mailConfig = null;
     private ProxyConfig proxyConfig = null;
+    private AgentConfig agentConfig = null;
     private ScriptConfig scriptConfig = null;
     private ApplicationConfig appConfig = null;
     private ResourceConfig resourceConfig = null;
@@ -161,9 +161,9 @@ public final class ConfigurationData implements Serializable
         this.deploymentConfig = value;
     }
 
-    public final void setMqConfig(final MQConfig value)
+    public final void setAgentConfig(final AgentConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setMqConfig(final MQConfig value)";
+        final String methodName = ConfigurationData.CNAME + "#setAgentConfig(final AgentConfig value)";
 
         if (DEBUG)
         {
@@ -171,7 +171,7 @@ public final class ConfigurationData implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.mqConfig = value;
+        this.agentConfig = value;
     }
 
     public final void setMailConfig(final MailConfig value)
@@ -299,18 +299,18 @@ public final class ConfigurationData implements Serializable
         return this.deploymentConfig;
     }
 
-    @XmlElement(name = "mq-config")
-    public final MQConfig getMqConfig()
+    @XmlElement(name = "agent-config")
+    public final AgentConfig getAgentConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getMqConfig()";
+        final String methodName = ConfigurationData.CNAME + "#getAgentConfig()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.mqConfig);
+            DEBUGGER.debug("Value: {}", this.agentConfig);
         }
 
-        return this.mqConfig;
+        return this.agentConfig;
     }
 
     @XmlElement(name = "mail-config")

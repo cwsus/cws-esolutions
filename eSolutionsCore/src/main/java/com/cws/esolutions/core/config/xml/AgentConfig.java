@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.config.enums.AgentListenerType;
+import com.cws.esolutions.config.xml.enums.AgentListenerType;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.config
