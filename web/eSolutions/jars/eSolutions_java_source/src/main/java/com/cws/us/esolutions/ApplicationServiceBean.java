@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.enums.LogonType;
-import com.cws.esolutions.security.config.SecurityConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.us.esolutions.validators.EmailAddressValidator;
 import com.cws.us.esolutions.validators.EmailMessageValidator;
 /**

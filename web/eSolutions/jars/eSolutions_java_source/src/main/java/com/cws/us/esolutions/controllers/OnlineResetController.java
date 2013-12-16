@@ -41,7 +41,7 @@ import com.cws.us.esolutions.enums.ResetRequestType;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.us.esolutions.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.config.SecurityConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.us.esolutions.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;

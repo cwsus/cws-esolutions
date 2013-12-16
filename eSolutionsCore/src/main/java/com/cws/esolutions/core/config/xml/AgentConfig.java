@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.config.xml.enums.AgentListenerType;
+import com.cws.esolutions.core.config.enums.AgentListenerType;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.config
@@ -155,10 +155,10 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: ", this.listenerType);
         }
 
-        this.listenerType = value;
+        return this.listenerType;
     }
 
     @XmlElement(name = "connectionName")
@@ -169,10 +169,10 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: ", this.connectionName);
         }
 
-        this.connectionName = value;
+        return this.connectionName;
     }
 
     @XmlElement(name = "tcpPort")
@@ -183,10 +183,10 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: ", this.tcpPort);
         }
 
-        this.tcpPort = value;
+        return this.tcpPort;
     }
 
     @XmlElement(name = "requestQueue")

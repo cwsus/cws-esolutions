@@ -32,7 +32,7 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.config.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.audit.processors.interfaces

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
@@ -65,7 +66,8 @@ public interface IApplicationManagementProcessor
     static final String CNAME = IApplicationManagementProcessor.class.getName();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
-    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
+    static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
+    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();    
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final int CONNECT_TIMEOUT = appConfig.getConnectTimeout();

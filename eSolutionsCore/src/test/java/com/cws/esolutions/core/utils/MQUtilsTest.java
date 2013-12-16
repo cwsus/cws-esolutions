@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Assert;
 
 import com.cws.esolutions.core.utils.MQUtils;
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
@@ -45,6 +46,8 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
  */
 public class MQUtilsTest
 {
+    CoreServiceBean bean = CoreServiceBean.getInstance();
+
     @Before
     public void setUp()
     {
@@ -76,7 +79,7 @@ public class MQUtilsTest
 
         try
         {
-            Assert.assertNotNull(MQUtils.sendMqMessage(request));
+            Assert.assertNotNull(MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(), this.bean.getConfigData().getAgentConfig().getRequestQueue(), request));
         }
         catch (UtilityException ux)
         {
@@ -89,7 +92,7 @@ public class MQUtilsTest
     {
         try
         {
-            Assert.assertNotNull(MQUtils.getMqMessage("5Np8bVEpOEhqMuKxqOvlGM7Zh8ASkqZddsjLyyV50OnsuNgMwBzS8SLDHGHQgZIe"));
+            Assert.assertNotNull(MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(), this.bean.getConfigData().getAgentConfig().getResponseQueue(), "5Np8bVEpOEhqMuKxqOvlGM7Zh8ASkqZddsjLyyV50OnsuNgMwBzS8SLDHGHQgZIe"));
         }
         catch (UtilityException ux)
         {

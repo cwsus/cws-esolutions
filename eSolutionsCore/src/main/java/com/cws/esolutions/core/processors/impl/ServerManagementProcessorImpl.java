@@ -1525,7 +1525,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     case MQ:
                         // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentRequest);
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
 
                         if (DEBUG)
                         {
@@ -1534,7 +1534,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
                         }
                         else
                         {
@@ -1691,7 +1691,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     case MQ:
                         // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentRequest);
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
 
                         if (DEBUG)
                         {
@@ -1700,7 +1700,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
                         }
                         else
                         {
@@ -1857,7 +1857,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     case MQ:
                         // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentRequest);
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
 
                         if (DEBUG)
                         {
@@ -1866,7 +1866,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
                         }
                         else
                         {
@@ -2022,7 +2022,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     case MQ:
                         // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentRequest);
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
 
                         if (DEBUG)
                         {
@@ -2031,7 +2031,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
                         }
                         else
                         {

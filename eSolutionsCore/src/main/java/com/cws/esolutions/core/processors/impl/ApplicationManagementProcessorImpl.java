@@ -999,6 +999,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("ApplicationManagementRequest: {}", request);
         }
 
+        AgentResponse agentResponse = null;
         ApplicationManagementResponse response = new ApplicationManagementResponse();
 
         final Server server = request.getServer();
@@ -1094,79 +1095,89 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 DEBUGGER.debug("AgentRequest: {}", agentRequest);
                             }
 
-                            String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                            if (DEBUG)
+                            switch (agentConfig.getListenerType())
                             {
-                                DEBUGGER.debug("correlator: {}", correlator);
-                            }
-
-                            if (StringUtils.isNotEmpty(correlator))
-                            {
-                                AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                                }
-
-                                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                                {
-                                    FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+                                case MQ:
+                                    String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(), agentRequest);
 
                                     if (DEBUG)
                                     {
-                                        DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
+                                        DEBUGGER.debug("correlator: {}", correlator);
                                     }
 
-                                    if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                                    if (StringUtils.isNotEmpty(correlator))
                                     {
-                                        if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
-                                        {
-                                            byte[] fileData = fileResponse.getFileData();
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("fileData: {}", fileData);
-                                            }
-
-                                            response.setFileData(fileData);
-                                        }
-                                        else
-                                        {
-                                            // just a directory listing
-                                            List<String> fileList = fileResponse.getDirListing();
-
-                                            if (DEBUG)
-                                            {
-                                                DEBUGGER.debug("fileList: {}", fileList);
-                                            }
-
-                                            response.setFileList(fileList);
-                                        }
-
-                                        response.setApplication(resApplication);
-                                        response.setCurrentPath(request.getRequestFile());
-                                        response.setResponse("Successfully loaded file data");
-                                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                                        agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(), correlator);
                                     }
                                     else
                                     {
-                                        response.setApplication(resApplication);
-                                        response.setResponse("An error occurred while processing the remote request.");
+                                        response.setResponse("Failed to send message to configured request queue for action");
                                         response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                                        return response;
                                     }
+
+                                    break;
+                                case TCP:
+                                    break;
+                            }
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                            }
+
+                            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                            {
+                                FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+
+                                if (DEBUG)
+                                {
+                                    DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
+                                }
+
+                                if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                                {
+                                    if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
+                                    {
+                                        byte[] fileData = fileResponse.getFileData();
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("fileData: {}", fileData);
+                                        }
+
+                                        response.setFileData(fileData);
+                                    }
+                                    else
+                                    {
+                                        // just a directory listing
+                                        List<String> fileList = fileResponse.getDirListing();
+
+                                        if (DEBUG)
+                                        {
+                                            DEBUGGER.debug("fileList: {}", fileList);
+                                        }
+
+                                        response.setFileList(fileList);
+                                    }
+
+                                    response.setApplication(resApplication);
+                                    response.setCurrentPath(request.getRequestFile());
+                                    response.setResponse("Successfully loaded file data");
+                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                                 }
                                 else
                                 {
                                     response.setApplication(resApplication);
-                                    response.setResponse(agentResponse.getResponse());
+                                    response.setResponse("An error occurred while processing the remote request.");
                                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                                 }
                             }
                             else
                             {
-                                response.setResponse("Failed to send message to configured request queue for action");
+                                response.setApplication(resApplication);
+                                response.setResponse(agentResponse.getResponse());
                                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                             }
                         }

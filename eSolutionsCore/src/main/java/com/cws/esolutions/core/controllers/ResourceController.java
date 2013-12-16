@@ -42,10 +42,9 @@ import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.config.AuthRepo;
+import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.security.enums.AuthRepositoryType;
 import com.cws.esolutions.core.exception.CoreServiceException;
 /*
  * Project: eSolutionsCore

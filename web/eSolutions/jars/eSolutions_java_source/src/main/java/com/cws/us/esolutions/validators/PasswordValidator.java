@@ -21,7 +21,7 @@ import org.springframework.validation.ValidationUtils;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.us.esolutions.dto.UserChangeRequest;
-import com.cws.esolutions.security.config.SecurityConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 /**
  * eSolutions_java_source
  * com.cws.us.esolutions.validators
