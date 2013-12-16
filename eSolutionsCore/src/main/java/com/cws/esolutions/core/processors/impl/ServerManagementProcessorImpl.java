@@ -1741,14 +1741,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+				response.setResponse("Requesting user was not authorized to perform the operation.");
+				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
-        }
-        else
-        {
-            response.setResponse("Requesting user was not authorized to perform the operation.");
-            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
@@ -1912,14 +1907,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+				response.setResponse("Requesting user was not authorized to perform the operation.");
+				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
-        }
-        else
-        {
-            response.setResponse("Requesting user was not authorized to perform the operation.");
-            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
@@ -2082,14 +2072,9 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-                response.setResponse("Failed to send message to configured request queue for action");
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
+				response.setResponse("Requesting user was not authorized to perform the operation.");
+				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
-        }
-        else
-        {
-            response.setResponse("Requesting user was not authorized to perform the operation.");
-            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
