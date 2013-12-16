@@ -232,9 +232,6 @@ public final class MQUtils
         MessageConsumer consumer = null;
         ConnectionFactory connFactory = null;
 
-         = mqConfig.getConnectionName();
-         = mqConfig.getResponseQueue();
-
         try
         {
             try
