@@ -27,32 +27,50 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import com.cws.esolutions.core.Constants;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.config
+ * File: AgentConfig.java
  *
  * History
  * ----------------------------------------------------------------------------
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
-@XmlType(name = "mq-config")
+@XmlType(name = "agent-config")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class MQConfig implements Serializable
+public final class AgentConfig implements Serializable
 {
+    private int tcpPort = 0;
+	private String listenerType = null;
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
+	private String trustStoreFile = null;
+	private String trustStorePass = null;
+	private String trustStoreType = null;
 
-    private static final String CNAME = MQConfig.class.getName();
+    private static final String CNAME = AgentConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
+    public void setListenerType(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setListenerType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.listenerType = value;
+    }
+
     public void setConnectionName(final String value)
     {
-        final String methodName = MQConfig.CNAME + "#setConnectionName(final String value)";
+        final String methodName = AgentConfig.CNAME + "#setConnectionName(final String value)";
 
         if (DEBUG)
         {
@@ -63,9 +81,22 @@ public final class MQConfig implements Serializable
         this.connectionName = value;
     }
 
+    public void setTcpPort(final int value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setTcpPort(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.tcpPort = value;
+    }
+
     public void setRequestQueue(final String value)
     {
-        final String methodName = MQConfig.CNAME + "#setRequestQueue(final String value)";
+        final String methodName = AgentConfig.CNAME + "#setRequestQueue(final String value)";
 
         if (DEBUG)
         {
@@ -76,37 +107,91 @@ public final class MQConfig implements Serializable
         this.requestQueue = value;
     }
 
-    public void setResponseQueue(final String value)
+    public void setTrustStoreFile(final String value)
     {
-        final String methodName = MQConfig.CNAME + "#setResponseQueue(final String value)";
+        final String methodName = AgentConfig.CNAME + "#setTrustStoreFile(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: ", value);
         }
-        
-        this.responseQueue = value;
+
+        this.trustStoreFile = value;
     }
 
-    @XmlElement(name = "connectionName")
-    public final String getConnectionName()
+    public void setTrustStorePass(final String value)
     {
-        final String methodName = MQConfig.CNAME + "#getConnectionName()";
+        final String methodName = AgentConfig.CNAME + "#setTrustStorePass(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.connectionName);
+            DEBUGGER.debug("Value: ", value);
         }
-        
-        return this.connectionName;
+
+        this.trustStorePass = value;
+    }
+
+    public void setTrustStoreType(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setTrustStoreType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.trustStoreType = value;
+    }
+
+    @XmlElement(name = "listenerType")
+    public void setListenerType(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setListenerType(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.listenerType = value;
+    }
+
+    @XmlElement(name = "connectionName")
+    public void setConnectionName(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setConnectionName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.connectionName = value;
+    }
+
+    @XmlElement(name = "tcpPort")
+    public void setTcpPort(final int value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setTcpPort(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.tcpPort = value;
     }
 
     @XmlElement(name = "requestQueue")
     public final String getRequestQueue()
     {
-        final String methodName = MQConfig.CNAME + "#getRequestQueue()";
+        final String methodName = AgentConfig.CNAME + "#getRequestQueue()";
 
         if (DEBUG)
         {
@@ -120,7 +205,7 @@ public final class MQConfig implements Serializable
     @XmlElement(name = "responseQueue")
     public final String getResponseQueue()
     {
-        final String methodName = MQConfig.CNAME + "#getResponseQueue()";
+        final String methodName = AgentConfig.CNAME + "#getResponseQueue()";
 
         if (DEBUG)
         {
@@ -131,10 +216,52 @@ public final class MQConfig implements Serializable
         return this.responseQueue;
     }
 
+    @XmlElement(name = "trustStoreFile")
+    public final String getTrustStoreFile()
+    {
+        final String methodName = AgentConfig.CNAME + "#getTrustStoreFile()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", this.trustStoreFile);
+        }
+
+        return this.trustStoreFile;
+    }
+
+    @XmlElement(name = "trustStorePass")
+    public final String getTrustStorePass()
+    {
+        final String methodName = AgentConfig.CNAME + "#getTrustStorePass()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", this.trustStorePass);
+        }
+
+        return this.trustStorePass;
+    }
+
+    @XmlElement(name = "trustStoreType")
+    public final String getTrustStoreType()
+    {
+        final String methodName = AgentConfig.CNAME + "#getTrustStoreType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", this.trustStoreType);
+        }
+
+        return this.trustStoreType;
+    }
+
     @Override
     public final String toString()
     {
-        final String methodName = MQConfig.CNAME + "#toString()";
+        final String methodName = AgentConfig.CNAME + "#toString()";
 
         if (DEBUG)
         {

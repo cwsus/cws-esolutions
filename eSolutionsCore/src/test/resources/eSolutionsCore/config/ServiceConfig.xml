@@ -9,18 +9,25 @@
         <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
-        <virtualManagerClass>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</virtualManagerClass>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
         <articleIdentifierLength>9</articleIdentifierLength>
         <articlePrefix>KB-</articlePrefix>
     </application-config>
 
-    <mq-config>
-        <hostURL>tcp://192.168.10.53:61616</hostURL>
+    <!-- how do we talk to the agent? -->
+    <agent-config>
+        <listenerType>MQ</listenerType>
+        <tcpPort /> <!-- if listener type is tcp, specify port here -->
+        <connectionName>tcp://192.168.10.53:61616</connectionName>
         <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
-    </mq-config>
+        <trustStoreFile /> <!-- we always talk to the agent over an ssl conn. path to trust store here -->
+        <trustStorePass /> <!-- password to unlock truststore -->
+        <trustStoreType />
+    </agent-config>
 
+    <!-- do we need a proxy for internet access? -->
     <proxy-config>
         <proxyServiceRequired>true</proxyServiceRequired>
         <proxyServerName>chibcarray.us.hsbc</proxyServerName>
