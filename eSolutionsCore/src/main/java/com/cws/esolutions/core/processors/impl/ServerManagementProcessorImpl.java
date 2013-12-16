@@ -1476,6 +1476,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: ", request);
         }
 
+        AgentResponse agentResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer();
@@ -1533,7 +1534,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
                         }
                         else
                         {
@@ -1640,6 +1641,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: ", request);
         }
 
+        AgentResponse agentResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer();
@@ -1698,7 +1700,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
                         }
                         else
                         {
@@ -1810,6 +1812,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: ", request);
         }
 
+        AgentResponse agentResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer();
@@ -1868,7 +1871,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
                         }
                         else
                         {
@@ -1980,6 +1983,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             DEBUGGER.debug("ServerManagementRequest: ", request);
         }
 
+        AgentResponse agentResponse = null;
         ServerManagementResponse response = new ServerManagementResponse();
 
         final Server sourceServer = request.getSourceServer();
@@ -2037,7 +2041,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
                         }
                         else
                         {
