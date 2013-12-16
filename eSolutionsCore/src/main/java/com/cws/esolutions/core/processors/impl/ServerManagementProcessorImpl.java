@@ -1520,45 +1520,55 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                if (DEBUG)
+                switch (agentConfig.getListenerType())
                 {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                    }
-
-                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                    {
-                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    case MQ:
+                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                        String correlator = MQUtils.sendMqMessage(agentRequest);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                            DEBUGGER.debug("correlator: {}", correlator);
                         }
 
-                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                        response.setResponse(systemRes.getResponse());
-                        response.setResponseObject(systemRes.getResponseData());
-                    }
-                    else
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                        }
+                        else
+                        {
+                            response.setResponse("Failed to send message to configured request queue for action");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                            return response;
+                        }
+
+                        break;
+                    case TCP:
+                        break;
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                }
+
+                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                {
+                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                    if (DEBUG)
                     {
-                        response.setResponse(agentResponse.getResponse());
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
                     }
+
+                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                    response.setResponse(systemRes.getResponse());
+                    response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse("Failed to send message to configured request queue for action");
+                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
@@ -1675,53 +1685,68 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                if (DEBUG)
+                switch (agentConfig.getListenerType())
                 {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                    }
-
-                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                    {
-                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    case MQ:
+                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                        String correlator = MQUtils.sendMqMessage(agentRequest);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                            DEBUGGER.debug("correlator: {}", correlator);
                         }
 
-                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                        response.setResponse(systemRes.getResponse());
-                        response.setResponseObject(systemRes.getResponseData());
-                    }
-                    else
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                        }
+                        else
+                        {
+                            response.setResponse("Failed to send message to configured request queue for action");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                            return response;
+                        }
+
+                        break;
+                    case TCP:
+                        break;
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                }
+
+                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                {
+                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                    if (DEBUG)
                     {
-                        response.setResponse(agentResponse.getResponse());
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
                     }
+
+                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                    response.setResponse(systemRes.getResponse());
+                    response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse("Failed to send message to configured request queue for action");
+                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Requesting user was not authorized to perform the operation.");
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("Failed to send message to configured request queue for action");
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
+        }
+        else
+        {
+            response.setResponse("Requesting user was not authorized to perform the operation.");
+            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
@@ -1830,53 +1855,68 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                if (DEBUG)
+                switch (agentConfig.getListenerType())
                 {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                    }
-
-                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                    {
-                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    case MQ:
+                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                        String correlator = MQUtils.sendMqMessage(agentRequest);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                            DEBUGGER.debug("correlator: {}", correlator);
                         }
 
-                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                        response.setResponse(systemRes.getResponse());
-                        response.setResponseObject(systemRes.getResponseData());
-                    }
-                    else
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                        }
+                        else
+                        {
+                            response.setResponse("Failed to send message to configured request queue for action");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                            return response;
+                        }
+
+                        break;
+                    case TCP:
+                        break;
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                }
+
+                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                {
+                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                    if (DEBUG)
                     {
-                        response.setResponse(agentResponse.getResponse());
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
                     }
+
+                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                    response.setResponse(systemRes.getResponse());
+                    response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse("Failed to send message to configured request queue for action");
+                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Requesting user was not authorized to perform the operation.");
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("Failed to send message to configured request queue for action");
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
+        }
+        else
+        {
+            response.setResponse("Requesting user was not authorized to perform the operation.");
+            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
@@ -1984,53 +2024,68 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                String correlator = MQUtils.sendMqMessage(agentRequest);
-
-                if (DEBUG)
+                switch (agentConfig.getListenerType())
                 {
-                    DEBUGGER.debug("correlator: {}", correlator);
-                }
-
-                if (StringUtils.isNotEmpty(correlator))
-                {
-                    AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                    }
-
-                    if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                    {
-                        SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    case MQ:
+                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
+                        String correlator = MQUtils.sendMqMessage(agentRequest);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                            DEBUGGER.debug("correlator: {}", correlator);
                         }
 
-                        response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                        response.setResponse(systemRes.getResponse());
-                        response.setResponseObject(systemRes.getResponseData());
-                    }
-                    else
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            AgentResponse agentResponse = (AgentResponse) MQUtils.getMqMessage(correlator);
+                        }
+                        else
+                        {
+                            response.setResponse("Failed to send message to configured request queue for action");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                            return response;
+                        }
+
+                        break;
+                    case TCP:
+                        break;
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                }
+
+                if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                {
+                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+
+                    if (DEBUG)
                     {
-                        response.setResponse(agentResponse.getResponse());
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
                     }
+
+                    response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
+                    response.setResponse(systemRes.getResponse());
+                    response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse("Failed to send message to configured request queue for action");
+                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Requesting user was not authorized to perform the operation.");
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                response.setResponse("Failed to send message to configured request queue for action");
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
+        }
+        else
+        {
+            response.setResponse("Requesting user was not authorized to perform the operation.");
+            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
         }
         catch (UtilityException ux)
         {
