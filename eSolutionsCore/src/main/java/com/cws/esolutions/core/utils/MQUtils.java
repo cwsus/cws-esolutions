@@ -35,7 +35,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.MQConfig;
+import com.cws.esolutions.core.config.xml.MQConfig;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /*
  * Project: eSolutionsCore

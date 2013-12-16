@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.config;
+package com.cws.esolutions.security.config.xml;
 
 import java.util.List;
-
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -27,16 +26,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElementWrapper;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.SecurityConstants;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * File: IAuditProcessor.java
  *
  * History
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 @XmlRootElement(name = "exception-config")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -44,14 +44,14 @@ public final class ExceptionConfig implements Serializable
 {
     private String emailFrom = null;
     private List<String> notificationAddress = null;
-    private boolean sendExceptionNotifications = false;
+    private boolean sendExceptionNotifications = true;
 
-    private static final long serialVersionUID = -8486613546271441632L;
+    private static final long serialVersionUID = 5834154758068491231L;
     private static final String CNAME = ExceptionConfig.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
     public final void setSendExceptionNotifications(final boolean value)
     {
@@ -146,7 +146,7 @@ public final class ExceptionConfig implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityConstants.LINE_BREAK + "{" + SecurityConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -166,7 +166,7 @@ public final class ExceptionConfig implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

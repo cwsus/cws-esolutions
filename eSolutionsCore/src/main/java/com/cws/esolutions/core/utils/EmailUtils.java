@@ -50,7 +50,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.MailConfig;
+import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.access.control.impl.EmailControlServiceImpl;
 import com.cws.esolutions.security.access.control.interfaces.IEmailControlService;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.config;
+package com.cws.esolutions.security.config.xml;
 
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.interfaces
@@ -39,7 +40,6 @@ import com.cws.esolutions.security.SecurityConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AuthRepo implements Serializable
 {
-    private String repoType = null;
     private String isSecure = null;
     private String configFile = null;
     private String trustStoreFile= null;
@@ -57,6 +57,7 @@ public final class AuthRepo implements Serializable
     private String repositoryBaseDN = null;
     private String repositoryAppBase = null;
     private String repositoryUserBase = null;
+    private AuthRepositoryType repoType = null;
     private String repositoryConnTimeout = null;
     private String repositoryReadTimeout = null;
 
@@ -67,9 +68,9 @@ public final class AuthRepo implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
 
-    public final void setRepoType(final String value)
+    public final void setRepoType(final AuthRepositoryType value)
     {
-        final String methodName = AuthRepo.CNAME + "#setRepoType(final String value)";
+        final String methodName = AuthRepo.CNAME + "#setRepoType(final AuthRepositoryType value)";
 
         if (DEBUG)
         {
@@ -328,7 +329,7 @@ public final class AuthRepo implements Serializable
     }
 
     @XmlElement(name = "repoType")
-    public final String getRepoType()
+    public final AuthRepositoryType getRepoType()
     {
         final String methodName = AuthRepo.CNAME + "#getRepoType()";
 

@@ -35,7 +35,7 @@ import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.DataSourceManager;
+import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;

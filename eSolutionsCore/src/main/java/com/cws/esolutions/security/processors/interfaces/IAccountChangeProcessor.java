@@ -18,12 +18,12 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.config.AuthData;
-import com.cws.esolutions.security.config.AuthRepo;
-import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.SecurityConfig;
+import com.cws.esolutions.security.config.xml.AuthData;
+import com.cws.esolutions.security.config.xml.AuthRepo;
+import com.cws.esolutions.security.config.xml.KeyConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;

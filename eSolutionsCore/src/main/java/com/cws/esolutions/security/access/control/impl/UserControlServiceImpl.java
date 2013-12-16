@@ -17,9 +17,9 @@ package com.cws.esolutions.security.access.control.impl;
 
 import java.sql.SQLException;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.dto.UserAccount;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.processors.impl

@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.ApplicationConfig;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
 import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.processors.exception.VirtualServiceException;

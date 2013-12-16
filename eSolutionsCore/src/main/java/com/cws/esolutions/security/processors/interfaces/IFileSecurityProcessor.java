@@ -18,16 +18,16 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.config.AuthData;
-import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.FileSecurityConfig;
+import com.cws.esolutions.security.config.xml.AuthData;
+import com.cws.esolutions.security.config.xml.KeyConfig;
+import com.cws.esolutions.security.config.xml.FileSecurityConfig;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
-import com.cws.esolutions.security.config.SecurityServiceConfiguration;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
+import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /*
  * Project: eSolutionsCore

@@ -24,8 +24,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.ConfigurationData;
-import com.cws.esolutions.core.config.DataSourceManager;
+import com.cws.esolutions.core.config.xml.ConfigurationData;
+import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;

@@ -19,11 +19,11 @@ import org.slf4j.Logger;
 import java.security.KeyPair;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.config.AuthRepo;
-import com.cws.esolutions.security.config.AuthData;
-import com.cws.esolutions.security.config.KeyConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.config.xml.AuthRepo;
+import com.cws.esolutions.security.config.xml.AuthData;
+import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;

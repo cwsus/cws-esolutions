@@ -64,8 +64,8 @@ import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.SSHConfig;
-import com.cws.esolutions.core.config.ProxyConfig;
+import com.cws.esolutions.core.config.xml.SSHConfig;
+import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /*

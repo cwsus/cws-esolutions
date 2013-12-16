@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.ApplicationConfig;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;

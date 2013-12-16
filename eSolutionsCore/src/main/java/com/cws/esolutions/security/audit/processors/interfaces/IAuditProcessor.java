@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.security.audit.dto.AuditResponse;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.audit.impl.AuditDAOImpl;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;

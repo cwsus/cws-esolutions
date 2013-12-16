@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.ApplicationConfig;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;

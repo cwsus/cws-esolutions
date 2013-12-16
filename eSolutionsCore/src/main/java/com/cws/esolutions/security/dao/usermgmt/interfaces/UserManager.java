@@ -20,9 +20,9 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.config.AuthData;
-import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.config.xml.AuthData;
+import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;

@@ -44,7 +44,7 @@ import com.unboundid.util.ssl.TrustStoreTrustManager;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.config.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.core.config.DataSourceManager;
+import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.security.enums.AuthRepositoryType;
 import com.cws.esolutions.core.exception.CoreServiceException;
 /*
@@ -88,14 +88,7 @@ public class ResourceController
         int maxConnections = 10;
         FileInputStream fileStream = null;
 
-        final AuthRepositoryType authType = AuthRepositoryType.valueOf(authRepo.getRepoType());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("AuthRepositoryType: {}", authType);
-        }
-
-        switch (authType)
+        switch (authRepo.getRepoType())
         {
             case LDAP:
                 LDAPConnection ldapConn = null;
@@ -299,16 +292,9 @@ public class ResourceController
             DEBUGGER.debug("ResourceControllerBean: {}", resBean);
         }
 
-        final AuthRepositoryType authType = AuthRepositoryType.valueOf(authRepo.getRepoType());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("AuthRepositoryType: {}", authType);
-        }
-
         try
         {
-            switch (authType)
+            switch (authRepo.getRepoType())
             {
                 case LDAP:
                     LDAPConnectionPool ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();

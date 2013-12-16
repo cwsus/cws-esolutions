@@ -20,7 +20,6 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;

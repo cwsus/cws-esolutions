@@ -19,7 +19,7 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.config.ConfigurationData;
+import com.cws.esolutions.core.config.xml.ConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /*
  * Project: eSolutionsCore

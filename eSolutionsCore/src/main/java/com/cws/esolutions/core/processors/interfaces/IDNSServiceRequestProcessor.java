@@ -20,9 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.DNSConfig;
-import com.cws.esolutions.core.config.SSHConfig;
-import com.cws.esolutions.core.config.ApplicationConfig;
+import com.cws.esolutions.core.config.xml.DNSConfig;
+import com.cws.esolutions.core.config.xml.SSHConfig;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.dao.processors.impl.DNSServiceDAOImpl;

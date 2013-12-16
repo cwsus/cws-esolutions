@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.config.enums.AgentListenerType;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.config
@@ -40,13 +41,13 @@ import com.cws.esolutions.core.Constants;
 public final class AgentConfig implements Serializable
 {
     private int tcpPort = 0;
-	private String listenerType = null;
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
 	private String trustStoreFile = null;
 	private String trustStorePass = null;
 	private String trustStoreType = null;
+	private AgentListenerType listenerType = null;
 
     private static final String CNAME = AgentConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
@@ -55,9 +56,9 @@ public final class AgentConfig implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public void setListenerType(final String value)
+    public final void setListenerType(final AgentListenerType value)
     {
-        final String methodName = AgentConfig.CNAME + "#setListenerType(final String value)";
+        final String methodName = AgentConfig.CNAME + "#setListenerType(final AgentListenerType value)";
 
         if (DEBUG)
         {
@@ -68,7 +69,7 @@ public final class AgentConfig implements Serializable
         this.listenerType = value;
     }
 
-    public void setConnectionName(final String value)
+    public final void setConnectionName(final String value)
     {
         final String methodName = AgentConfig.CNAME + "#setConnectionName(final String value)";
 
@@ -81,7 +82,7 @@ public final class AgentConfig implements Serializable
         this.connectionName = value;
     }
 
-    public void setTcpPort(final int value)
+    public final void setTcpPort(final int value)
     {
         final String methodName = AgentConfig.CNAME + "#setTcpPort(final String value)";
 
@@ -94,7 +95,7 @@ public final class AgentConfig implements Serializable
         this.tcpPort = value;
     }
 
-    public void setRequestQueue(final String value)
+    public final void setRequestQueue(final String value)
     {
         final String methodName = AgentConfig.CNAME + "#setRequestQueue(final String value)";
 
@@ -107,7 +108,7 @@ public final class AgentConfig implements Serializable
         this.requestQueue = value;
     }
 
-    public void setTrustStoreFile(final String value)
+    public final void setTrustStoreFile(final String value)
     {
         final String methodName = AgentConfig.CNAME + "#setTrustStoreFile(final String value)";
 
@@ -120,7 +121,7 @@ public final class AgentConfig implements Serializable
         this.trustStoreFile = value;
     }
 
-    public void setTrustStorePass(final String value)
+    public final void setTrustStorePass(final String value)
     {
         final String methodName = AgentConfig.CNAME + "#setTrustStorePass(final String value)";
 
@@ -133,7 +134,7 @@ public final class AgentConfig implements Serializable
         this.trustStorePass = value;
     }
 
-    public void setTrustStoreType(final String value)
+    public final void setTrustStoreType(final String value)
     {
         final String methodName = AgentConfig.CNAME + "#setTrustStoreType(final String value)";
 
@@ -147,9 +148,9 @@ public final class AgentConfig implements Serializable
     }
 
     @XmlElement(name = "listenerType")
-    public void setListenerType(final String value)
+    public final AgentListenerType getListenerType()
     {
-        final String methodName = AgentConfig.CNAME + "#setListenerType(final String value)";
+        final String methodName = AgentConfig.CNAME + "#getListenerType()";
 
         if (DEBUG)
         {
@@ -161,9 +162,9 @@ public final class AgentConfig implements Serializable
     }
 
     @XmlElement(name = "connectionName")
-    public void setConnectionName(final String value)
+    public final String getConnectionName()
     {
-        final String methodName = AgentConfig.CNAME + "#setConnectionName(final String value)";
+        final String methodName = AgentConfig.CNAME + "#getConnectionName()";
 
         if (DEBUG)
         {
@@ -175,9 +176,9 @@ public final class AgentConfig implements Serializable
     }
 
     @XmlElement(name = "tcpPort")
-    public void setTcpPort(final int value)
+    public final int getTcpPort()
     {
-        final String methodName = AgentConfig.CNAME + "#setTcpPort(final String value)";
+        final String methodName = AgentConfig.CNAME + "#getTcpPort()";
 
         if (DEBUG)
         {
