@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-import com.cws.esolutions.security.config.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.audit.processors.interfaces

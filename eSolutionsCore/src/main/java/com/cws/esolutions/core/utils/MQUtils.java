@@ -35,7 +35,6 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.xml.MQConfig;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /*
  * Project: eSolutionsCore
@@ -52,7 +51,6 @@ public final class MQUtils
     private static final String INIT_CONTEXT = "java:comp/env";
     private static final String CNAME = MQUtils.class.getName();
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    private static final MQConfig mqConfig = appBean.getConfigData().getMqConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -65,9 +63,9 @@ public final class MQUtils
      * @return <code>String</code> - the JMS correlation ID associated with the message
      * @throws UtilityException if an error occurs while putting the message on the configured queue
      */
-    public static final synchronized String sendMqMessage(final Serializable value) throws UtilityException
+    public static final synchronized String sendMqMessage(final String connName, final String requestQueue, final Serializable value) throws UtilityException
     {
-        final String methodName = MQUtils.CNAME + "sendMqMessage(final Serializable value) throws UtilityException";
+        final String methodName = MQUtils.CNAME + "sendMqMessage(final String connName, final String requestQueue, final Serializable value) throws UtilityException";
 
         if (DEBUG)
         {
@@ -82,14 +80,10 @@ public final class MQUtils
         MessageProducer producer = null;
         ConnectionFactory connFactory = null;
 
-        final String connName = mqConfig.getConnectionName();
-        final String requestQueue = mqConfig.getRequestQueue();
         final String correlationId = RandomStringUtils.randomAlphanumeric(64);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("String: {}", connName);
-            DEBUGGER.debug("String: {}", requestQueue);
             DEBUGGER.debug("correlationId: {}", correlationId);
         }
 
@@ -220,9 +214,9 @@ public final class MQUtils
      * @return Object - A serializable object as obtained from the MQ message
      * @throws UtilityException if an error occurs during the MQ get operation
      */
-    public static final synchronized Object getMqMessage(final String messageId) throws UtilityException
+    public static final synchronized Object getMqMessage(final String connName, final String responseQueue, final String messageId) throws UtilityException
     {
-        final String methodName = MQUtils.CNAME + "getMqMessage(final String messageId) throws UtilityException";
+        final String methodName = MQUtils.CNAME + "getMqMessage(final String connName, final String responseQueue, final String messageId) throws UtilityException";
 
         if (DEBUG)
         {
@@ -238,14 +232,8 @@ public final class MQUtils
         MessageConsumer consumer = null;
         ConnectionFactory connFactory = null;
 
-        final String connName = mqConfig.getConnectionName();
-        final String responseQueue = mqConfig.getResponseQueue();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("String: {}", connName);
-            DEBUGGER.debug("String: {}", responseQueue);
-        }
+         = mqConfig.getConnectionName();
+         = mqConfig.getResponseQueue();
 
         try
         {

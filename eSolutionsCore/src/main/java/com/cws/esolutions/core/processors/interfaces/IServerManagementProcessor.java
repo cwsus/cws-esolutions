@@ -21,10 +21,11 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.SSHConfig;
-import com.cws.esolutions.core.config.ScriptConfig;
+import com.cws.esolutions.core.config.xml.SSHConfig;
+import com.cws.esolutions.core.config.xml.AgentConfig;
+import com.cws.esolutions.core.config.xml.ScriptConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.ApplicationConfig;
+import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
@@ -52,15 +53,17 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
 public interface IServerManagementProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
+    static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
+    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();
+
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
-    static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
-    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
+    static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
 
