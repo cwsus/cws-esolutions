@@ -36,6 +36,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
 import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
@@ -91,6 +92,7 @@ public class UserManagementController
     private String viewAuditPage = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
+    private CoreServiceBean coreConfig = null;
     private String messageNoUsersFound = null;
     private String messageAccountLocked = null;
     private String messageResetComplete = null;
@@ -110,6 +112,19 @@ public class UserManagementController
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
+    public final void setCoreConfig(final CoreServiceBean value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.coreConfig = value;
+    }
 
     public final void setServiceId(final String value)
     {
@@ -1981,7 +1996,7 @@ public class UserManagementController
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(message, true);
+                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2006,7 +2021,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(smsMessage, true);
+                                EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {
@@ -2618,7 +2633,7 @@ public class UserManagementController
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(message, true);
+                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2643,7 +2658,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(smsMessage, true);
+                                EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {

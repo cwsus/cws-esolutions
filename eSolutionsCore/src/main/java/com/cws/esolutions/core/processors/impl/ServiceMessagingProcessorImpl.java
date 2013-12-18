@@ -130,19 +130,16 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 if (!(isSubmitted))
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to submit message into the datastore.");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setMessageId(messageId);
-                    response.setResponse("Successfully inserted contact message into datastore.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -258,12 +255,10 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setMessageId(message.getMessageId());
-                    response.setResponse("Successfully inserted contact message into datastore.");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to submit message into the datastore.");
                 }
 
                 if (DEBUG)
@@ -274,7 +269,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -368,102 +362,100 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             if ((data == null) || (data.isEmpty()))
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No messages were located.");
+
+                return response;
             }
-            else
+
+            List<ServiceMessage> svcMessages = new ArrayList<>();
+            SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+            if (DEBUG)
             {
-                List<ServiceMessage> svcMessages = new ArrayList<>();
-                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                }
-
-                for (Object[] object : data)
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Object: {}", object);
-                    }
-
-                    ServiceMessage message = new ServiceMessage();
-                    message.setMessageId((String) object[0]); // svc_message_id
-                    message.setMessageTitle((String) object[1]); // svc_message_title
-                    message.setMessageText((String) object[2]); // svc_message_txt
-                    message.setSubmitDate((Date) object[4]); // svc_message_submitdate
-                    message.setIsActive((Boolean) object[5]); // svc_message_active
-                    message.setIsAlert((Boolean) object[6]); // svc_message_active
-                    message.setDoesExpire((Boolean) object[7]); //svc_message_expires
-                    message.setExpiryDate((Date) object[8]); // svc_message_expirydate
-
-                    UserAccount searchAccount = new UserAccount();
-                    searchAccount.setGuid((String) object[3]);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                    }
-
-                    UserAccount svcAccount = new UserAccount();
-                    svcAccount.setUsername(serviceAccount.get(0));
-                    svcAccount.setGuid(serviceAccount.get(1));
-                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                    }
-
-                    AccountControlRequest searchRequest = new AccountControlRequest();
-                    searchRequest.setHostInfo(request.getRequestInfo());
-                    searchRequest.setUserAccount(searchAccount);
-                    searchRequest.setApplicationName(request.getApplicationName());
-                    searchRequest.setApplicationId(request.getApplicationId());
-                    searchRequest.setSearchType(SearchRequestType.GUID);
-                    searchRequest.setRequestor(svcAccount);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                    }
-
-                    try
-                    {
-                        AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                        }
-
-                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                        {
-                            message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
-                        }
-                    }
-                    catch (AccountControlException acx)
-                    {
-                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceMessage: {}", message);
-                    }
-
-                    svcMessages.add(message);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<ServiceMessage>: {}", svcMessages);
-                }
-
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Successfully loaded service messages");
-                response.setSvcMessages(svcMessages);
+                DEBUGGER.debug("SimpleDateFormat: {}", sdf);
             }
+
+            for (Object[] object : data)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Object: {}", object);
+                }
+
+                ServiceMessage message = new ServiceMessage();
+                message.setMessageId((String) object[0]); // svc_message_id
+                message.setMessageTitle((String) object[1]); // svc_message_title
+                message.setMessageText((String) object[2]); // svc_message_txt
+                message.setSubmitDate((Date) object[4]); // svc_message_submitdate
+                message.setIsActive((Boolean) object[5]); // svc_message_active
+                message.setIsAlert((Boolean) object[6]); // svc_message_active
+                message.setDoesExpire((Boolean) object[7]); //svc_message_expires
+                message.setExpiryDate((Date) object[8]); // svc_message_expirydate
+
+                UserAccount searchAccount = new UserAccount();
+                searchAccount.setGuid((String) object[3]);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                }
+
+                UserAccount svcAccount = new UserAccount();
+                svcAccount.setUsername(serviceAccount.get(0));
+                svcAccount.setGuid(serviceAccount.get(1));
+                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", svcAccount);
+                }
+
+                AccountControlRequest searchRequest = new AccountControlRequest();
+                searchRequest.setHostInfo(request.getRequestInfo());
+                searchRequest.setUserAccount(searchAccount);
+                searchRequest.setApplicationName(request.getApplicationName());
+                searchRequest.setApplicationId(request.getApplicationId());
+                searchRequest.setSearchType(SearchRequestType.GUID);
+                searchRequest.setRequestor(svcAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+                }
+
+                try
+                {
+                    AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
+                    }
+
+                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
+                    {
+                        message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
+                    }
+                }
+                catch (AccountControlException acx)
+                {
+                    ERROR_RECORDER.error(acx.getMessage(), acx);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServiceMessage: {}", message);
+                }
+
+                svcMessages.add(message);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<ServiceMessage>: {}", svcMessages);
+            }
+
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            response.setSvcMessages(svcMessages);
 
             if (DEBUG)
             {
@@ -540,40 +532,38 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             if ((data == null) || (data.isEmpty()))
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No messages were located.");
+
+                return response;
             }
-            else
+
+            List<ServiceMessage> svcMessages = new ArrayList<>();
+
+            for (Object[] object : data)
             {
-                List<ServiceMessage> svcMessages = new ArrayList<>();
-
-                for (Object[] object : data)
+                if (DEBUG)
                 {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Object: {}", object);
-                    }
-
-                    ServiceMessage message = new ServiceMessage();
-                    message.setMessageTitle((String) object[1]); // svc_message_title
-                    message.setMessageText((String) object[2]); // svc_message_txt
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceMessage: {}", message);
-                    }
-
-                    svcMessages.add(message);
+                    DEBUGGER.debug("Object: {}", object);
                 }
+
+                ServiceMessage message = new ServiceMessage();
+                message.setMessageTitle((String) object[1]); // svc_message_title
+                message.setMessageText((String) object[2]); // svc_message_txt
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<ServiceMessage>: {}", svcMessages);
+                    DEBUGGER.debug("ServiceMessage: {}", message);
                 }
 
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Successfully loaded service messages");
-                response.setSvcMessages(svcMessages);
+                svcMessages.add(message);
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<ServiceMessage>: {}", svcMessages);
+            }
+
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            response.setSvcMessages(svcMessages);
 
             if (DEBUG)
             {
@@ -630,90 +620,88 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             if ((responseList == null) || (responseList.isEmpty()))
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("The requested message could not be loaded.");
+
+                return response;
             }
-            else
+
+            SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+
+            if (DEBUG)
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
+                DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+            }
+
+            ServiceMessage message = new ServiceMessage();
+            message.setMessageId((String) responseList.get(0)); // svc_message_id
+            message.setMessageTitle((String) responseList.get(1)); // svc_message_title
+            message.setMessageText((String) responseList.get(2)); // svc_message_txt
+            message.setSubmitDate((Date) responseList.get(4)); // svc_message_submitdate
+            message.setIsActive((Boolean) responseList.get(5)); // svc_message_active
+            message.setIsAlert((Boolean) responseList.get(6)); // svc_message_active
+            message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
+            message.setExpiryDate((Date) responseList.get(8)); // svc_message_expirydate
+
+            UserAccount searchAccount = new UserAccount();
+            searchAccount.setGuid((String) responseList.get(3));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", searchAccount);
+            }
+
+            UserAccount svcAccount = new UserAccount();
+            svcAccount.setUsername(serviceAccount.get(0));
+            svcAccount.setGuid(serviceAccount.get(1));
+            svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("UserAccount: {}", svcAccount);
+            }
+
+            AccountControlRequest searchRequest = new AccountControlRequest();
+            searchRequest.setHostInfo(request.getRequestInfo());
+            searchRequest.setUserAccount(searchAccount);
+            searchRequest.setApplicationName(request.getApplicationName());
+            searchRequest.setApplicationId(request.getApplicationId());
+            searchRequest.setSearchType(SearchRequestType.GUID);
+            searchRequest.setRequestor(svcAccount);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
+            }
+
+            try
+            {
+                AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
+                    DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
                 }
 
-                ServiceMessage message = new ServiceMessage();
-                message.setMessageId((String) responseList.get(0)); // svc_message_id
-                message.setMessageTitle((String) responseList.get(1)); // svc_message_title
-                message.setMessageText((String) responseList.get(2)); // svc_message_txt
-                message.setSubmitDate((Date) responseList.get(4)); // svc_message_submitdate
-                message.setIsActive((Boolean) responseList.get(5)); // svc_message_active
-                message.setIsAlert((Boolean) responseList.get(6)); // svc_message_active
-                message.setDoesExpire((Boolean) responseList.get(7)); //svc_message_expires
-                message.setExpiryDate((Date) responseList.get(8)); // svc_message_expirydate
-
-                UserAccount searchAccount = new UserAccount();
-                searchAccount.setGuid((String) responseList.get(3));
-
-                if (DEBUG)
+                if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    DEBUGGER.debug("UserAccount: {}", searchAccount);
+                    message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
                 }
+            }
+            catch (AccountControlException acx)
+            {
+                ERROR_RECORDER.error(acx.getMessage(), acx);
+            }
 
-                UserAccount svcAccount = new UserAccount();
-                svcAccount.setUsername(serviceAccount.get(0));
-                svcAccount.setGuid(serviceAccount.get(1));
-                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ServiceMessage: {}", message);
+            }
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", svcAccount);
-                }
+            response.setRequestStatus(CoreServicesStatus.SUCCESS);
+            response.setServiceMessage(message);
 
-                AccountControlRequest searchRequest = new AccountControlRequest();
-                searchRequest.setHostInfo(request.getRequestInfo());
-                searchRequest.setUserAccount(searchAccount);
-                searchRequest.setApplicationName(request.getApplicationName());
-                searchRequest.setApplicationId(request.getApplicationId());
-                searchRequest.setSearchType(SearchRequestType.GUID);
-                searchRequest.setRequestor(svcAccount);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                }
-
-                try
-                {
-                    AccountControlResponse searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                    }
-
-                    if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        message.setMessageAuthor(searchResponse.getUserAccount()); // svc_message_author
-                    }
-                }
-                catch (AccountControlException acx)
-                {
-                    ERROR_RECORDER.error(acx.getMessage(), acx);
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ServiceMessage: {}", message);
-                }
-
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Successfully retrieved message");
-                response.setServiceMessage(message);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("MessageResponse: {}", response);
-                }
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessageResponse: {}", response);
             }
 
             if (DEBUG)

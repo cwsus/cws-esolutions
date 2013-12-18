@@ -38,7 +38,6 @@ public class ApplicationManagementResponse implements Serializable
 {
     private int entryCount = 0;
     private byte[] fileData = null;
-    private String response = null;
     private String currentPath = null;
     private Application appData = null;
     private Project projectData = null;
@@ -65,19 +64,6 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -195,19 +181,6 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

@@ -18,11 +18,14 @@
     </bean>
 
     <bean id="onlineResetController" class="com.cws.us.esolutions.controllers.OnlineResetController">
-        <property name="validator">
-            <ref bean="onlineResetValidator" />
-        </property>
         <property name="appConfig">
             <ref bean="appConfig" />
+        </property>
+        <property name="coreConfig">
+            <ref bean="coreConfig" />
+        </property>
+        <property name="validator">
+            <ref bean="onlineResetValidator" />
         </property>
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />

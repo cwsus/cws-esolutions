@@ -27,6 +27,7 @@ import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
 
 import com.cws.esolutions.core.utils.EmailUtils;
+import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -48,6 +49,9 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
  */
 public class PasswordExpirationNotifier implements Job
 {
+    private static final String MAILHOST = "mailHost";
+    private static final String MAIL_FROM = "mailFrom";
+    private static final String MAIL_PROPERTIES = "mailProps";
     private static final String CNAME = PasswordExpirationNotifier.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
@@ -104,6 +108,16 @@ public class PasswordExpirationNotifier implements Job
 
             if ((accounts != null) && (accounts.size() != 0))
             {
+                MailConfig mailConfig = new MailConfig();
+                mailConfig.setMailFrom((String) jobData.get(PasswordExpirationNotifier.MAIL_FROM));
+                mailConfig.setDataSourceName((String) jobData.get(PasswordExpirationNotifier.MAILHOST));
+                mailConfig.setPropertyFile((String) jobData.get(PasswordExpirationNotifier.MAIL_PROPERTIES));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("MailConfig: {}", mailConfig);
+                }
+
                 Calendar cal = Calendar.getInstance();
                 cal.add(Calendar.DATE, 30);
                 Long expiryTime = cal.getTimeInMillis();
@@ -152,7 +166,7 @@ public class PasswordExpirationNotifier implements Job
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message, false);
+                        EmailUtils.sendEmailMessage(mailConfig, message, false);
                     }
                 }
             }

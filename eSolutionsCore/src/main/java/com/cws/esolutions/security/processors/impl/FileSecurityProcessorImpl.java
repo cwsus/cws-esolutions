@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import org.apache.commons.io.IOUtils;
 import java.io.FileNotFoundException;
 import javax.crypto.CipherInputStream;
-import org.apache.commons.io.FileUtils;
 import javax.crypto.CipherOutputStream;
 import java.security.SignatureException;
 import java.security.InvalidKeyException;
@@ -121,18 +120,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 {
                     response.setSignedFile(request.getSignedFile());
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Signature successfully generated for provided file.");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to generate signature for provided file.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Unable to load user keys");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -262,14 +258,12 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                     DEBUGGER.debug("Signature: {}", signature);
                 }
 
-                response.setResponse("Successfully obtained file signature");
                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 response.setIsSignatureValid(signature.verify(sigToVerify));
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Unable to load user keys");
             }
         }
         catch (NoSuchAlgorithmException nsax)
@@ -408,18 +402,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 {
                     response.setSignedFile(request.getEncryptedFile());
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Signature successfully generated for provided file.");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to generate signature for provided file.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to obtain user keys.");
             }
         }
         catch (IOException iox)
@@ -541,18 +532,15 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                 {
                     response.setSignedFile(request.getEncryptedFile());
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Signature successfully generated for provided file.");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to generate signature for provided file.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to obtain user keys.");
             }
         }
         catch (IOException iox)

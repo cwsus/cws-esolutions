@@ -131,19 +131,16 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 if (requestComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("The article was successfully submitted.");
                     response.setArticleId(articleId);
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to approve article in datastore.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -269,7 +266,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 if (requestComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("The article was successfully updated.");
                     response.setArticle(article);
 
                     if (DEBUG)
@@ -280,18 +276,16 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to approve article in datastore.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -390,7 +384,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setArticle(article);
-                    response.setResponse("Article has been successfully approved.");
 
                     if (DEBUG)
                     {
@@ -400,18 +393,16 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to approve article in datastore.");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -495,7 +486,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             DEBUGGER.debug("KnowledgeBaseRequest: {}", request);
         }
 
-        KnowledgeBaseResponse knowledgeBaseResponse = new KnowledgeBaseResponse();
+        KnowledgeBaseResponse response = new KnowledgeBaseResponse();
 
         final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
@@ -628,19 +619,17 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                     DEBUGGER.debug("Article: {}", article);
                 }
 
-                knowledgeBaseResponse.setRequestStatus(CoreServicesStatus.SUCCESS);
-                knowledgeBaseResponse.setResponse("Successfully loaded requested article.");
-                knowledgeBaseResponse.setArticle(article);
+                response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                response.setArticle(article);
             }
             else
             {
-                knowledgeBaseResponse.setRequestStatus(CoreServicesStatus.FAILURE);
-                knowledgeBaseResponse.setResponse("No articles were located with the provided data.");
+                response.setRequestStatus(CoreServicesStatus.FAILURE);
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("KnowledgeBaseResponse: {}", knowledgeBaseResponse);
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -650,7 +639,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
 
-        return knowledgeBaseResponse;
+        return response;
     }
 
     /**
@@ -821,24 +810,21 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
                     response.setEntryCount(count);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded pending articles");
                     response.setArticleList(articleList);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
-                    }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("No articles are currently pending approval.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("KnowledgeBaseResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -1032,7 +1018,6 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Successfully loaded pending articles");
                 response.setArticleList(articleList);
 
                 if (DEBUG)

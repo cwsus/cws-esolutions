@@ -36,7 +36,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class MessagingResponse implements Serializable
 {
-    private String response = null;
     private String messageId = null;
     private ServiceMessage svcMessage = null;
     private EmailMessage emailMessage = null;
@@ -62,19 +61,6 @@ public class MessagingResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = MessagingResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setMessageId(final String value)
@@ -153,19 +139,6 @@ public class MessagingResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = MessagingResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final String getMessageId()

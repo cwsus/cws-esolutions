@@ -63,8 +63,6 @@ import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
@@ -85,8 +83,6 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
  */
 public final class NetworkUtils
 {
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-
     private static final String CRLF = "\r\n";
     private static final int HTTP_SOCKET_LINGER = 1;
     private static final String TERMINATE_TELNET = "^]";
@@ -95,9 +91,13 @@ public final class NetworkUtils
     private static final String PROXY_AUTH_TYPE_BASIC = "basic";
     private static final String CNAME = NetworkUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
-    static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final String SALT = "userSalt";
+    private static final String KEYFILE = "userKeyFile";
+    private static final String ACCOUNT = "userAccount";
+    private static final String PASSWORD = "userPassword";
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -125,37 +125,28 @@ public final class NetworkUtils
      *            is a download 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized void executeSCPTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSCPTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
+        final String methodName = CNAME + "#executeSCPTransfer(final Properties sshProps, final Properties authProps, final List<String> authList, final String targetFile, final String targetHost, final String passphrase) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", sshProps);
             DEBUGGER.debug("Value: {}", sourceFile);
             DEBUGGER.debug("Value: {}", targetFile);
             DEBUGGER.debug("Value: {}", targetHost);
         }
 
         final SshClient sshClient = new SshClient();
-        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("SshClient: {}", sshClient);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
         {
-            Properties sshProps = new Properties();
-            sshProps.load(NetworkUtils.class.getResourceAsStream(appBean.getConfigData().getSshConfig().getSshProperties()));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Properties: {}", sshProps);
-            }
-
             if ((sourceFile != null) && (sourceFile.size() != 0))
             {
                 SshConnectionProperties connProps = new SshConnectionProperties();
@@ -170,32 +161,28 @@ public final class NetworkUtils
                 PasswordAuthenticationClient passAuth = null;
                 PublicKeyAuthenticationClient keyAuth = null;
 
-                if ((StringUtils.isNotEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isEmpty(sshConfig.getSshKeyFile()))))
-                {
-                    passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername(sshConfig.getSshUserAccount());
-                    passAuth.setPassword(
-                            (StringUtils.isNotEmpty(sshConfig.getSshUserSalt())) ?
-                                    PasswordUtils.decryptText(sshConfig.getSshUserPassword(), sshConfig.getSshUserSalt().length()) :
-                                        sshConfig.getSshUserPassword());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                    }
-                }
-                else if ((StringUtils.isEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isNotEmpty(sshConfig.getSshKeyFile()))))
+                if (authProps.containsKey(NetworkUtils.KEYFILE))
                 {
                     isKeyAuthentication = true;
 
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKeyFile()));
-                    SshPrivateKey sshPrivateKey = (StringUtils.isNotEmpty(sshConfig.getSshKeySalt())) ? sshPrivateKeyFile.toPrivateKey(
-                            PasswordUtils.decryptText(sshConfig.getSshKeyPassword(), sshConfig.getSshKeySalt().length())) : 
+                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
+                    SshPrivateKey sshPrivateKey = null;
+
+                    switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
+                    {
+                        case 0:
                             sshPrivateKeyFile.toPrivateKey(null);
+
+                            break;
+                        default:
+                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                            break;
+                    }
 
                     keyAuth = new PublicKeyAuthenticationClient();
                     keyAuth.setKey(sshPrivateKey);
-                    keyAuth.setUsername(sshConfig.getSshUserAccount());
+                    keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
 
                     if (DEBUG)
                     {
@@ -204,7 +191,14 @@ public final class NetworkUtils
                 }
                 else
                 {
-                    throw new UtilityException("No valid authentication method has been configured. Cannot continue.");
+                    passAuth = new PasswordAuthenticationClient();
+                    passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
+                    passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
+                    }
                 }
 
                 sshClient.connect(connProps, new IgnoreHostKeyVerification());
@@ -263,12 +257,12 @@ public final class NetworkUtils
                         }
                         else
                         {
-                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + sshConfig.getSshUserAccount());
+                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                         }
                     }
                     else
                     {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + sshConfig.getSshUserAccount());
+                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                     }
                 }
                 else
@@ -303,9 +297,9 @@ public final class NetworkUtils
     }
 
 
-    public static final synchronized void executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeSftpTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSftpTransfer(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = CNAME + "#executeSftpTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -317,19 +311,14 @@ public final class NetworkUtils
         }
 
         final SshClient sshClient = new SshClient();
-        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("SshClient: {}", sshClient);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
         {
-            Properties sshProps = new Properties();
-            sshProps.load(NetworkUtils.class.getResourceAsStream(appBean.getConfigData().getSshConfig().getSshProperties()));
-
             if ((sourceFile != null) && (sourceFile.size() != 0))
             {
                 SshConnectionProperties connProps = new SshConnectionProperties();
@@ -344,32 +333,28 @@ public final class NetworkUtils
                 PasswordAuthenticationClient passAuth = null;
                 PublicKeyAuthenticationClient keyAuth = null;
 
-                if ((StringUtils.isNotEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isEmpty(sshConfig.getSshKeyFile()))))
-                {
-                    passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername(sshConfig.getSshUserAccount());
-                    passAuth.setPassword(
-                            (StringUtils.isNotEmpty(sshConfig.getSshUserSalt())) ?
-                                    PasswordUtils.decryptText(sshConfig.getSshUserPassword(), sshConfig.getSshUserSalt().length()) :
-                                        sshConfig.getSshUserPassword());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                    }
-                }
-                else if ((StringUtils.isEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isNotEmpty(sshConfig.getSshKeyFile()))))
+                if (authProps.containsKey(NetworkUtils.KEYFILE))
                 {
                     isKeyAuthentication = true;
 
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKeyFile()));
-                    SshPrivateKey sshPrivateKey = (StringUtils.isNotEmpty(sshConfig.getSshKeySalt())) ? sshPrivateKeyFile.toPrivateKey(
-                            PasswordUtils.decryptText(sshConfig.getSshKeyPassword(), sshConfig.getSshKeySalt().length())) : 
+                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
+                    SshPrivateKey sshPrivateKey = null;
+
+                    switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
+                    {
+                        case 0:
                             sshPrivateKeyFile.toPrivateKey(null);
+
+                            break;
+                        default:
+                            sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                            break;
+                    }
 
                     keyAuth = new PublicKeyAuthenticationClient();
                     keyAuth.setKey(sshPrivateKey);
-                    keyAuth.setUsername(sshConfig.getSshUserAccount());
+                    keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
 
                     if (DEBUG)
                     {
@@ -378,7 +363,14 @@ public final class NetworkUtils
                 }
                 else
                 {
-                    throw new UtilityException("No valid authentication method has been configured. Cannot continue.");
+                    passAuth = new PasswordAuthenticationClient();
+                    passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
+                    passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
+                    }
                 }
 
                 sshClient.connect(connProps, new IgnoreHostKeyVerification());
@@ -439,12 +431,12 @@ public final class NetworkUtils
                         }
                         else
                         {
-                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + sshConfig.getSshUserAccount());
+                            throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                         }
                     }
                     else
                     {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + sshConfig.getSshUserAccount());
+                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                     }
                 }
                 else
@@ -502,30 +494,29 @@ public final class NetworkUtils
      * @param commandList - The list of commands to execute on the remote host. 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized StringBuilder executeSshConnection(final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException
+    public static final synchronized StringBuilder executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSshConnection(final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException";
+        final String methodName = CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("targetHost: {}", targetHost);
-            DEBUGGER.debug("command: {}", commandList);
+            DEBUGGER.debug("Value: {}", sshProps);
+            DEBUGGER.debug("Value: {}", authProps);
+            DEBUGGER.debug("Value: {}", targetHost);
+            DEBUGGER.debug("Value: {}", commandList);
         }
 
-        String username = null;
         StringBuilder sBuilder = null;
         boolean isKeyAuthentication = false;
         PasswordAuthenticationClient passAuth = null;
         PublicKeyAuthenticationClient keyAuth = null;
 
         final SshClient sshClient = new SshClient();
-        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("SshClient: {}", sshClient);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
@@ -538,75 +529,43 @@ public final class NetworkUtils
                 DEBUGGER.debug("SshConnectionProperties: {}", connProps);
             }
 
-            if ((secList != null) && (secList.size() != 0))
+            if (authProps.containsKey(NetworkUtils.KEYFILE))
             {
-                username = secList.get(0);
+                isKeyAuthentication = true;
 
-                if (DEBUG)
+                SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(authProps.getProperty(NetworkUtils.KEYFILE)));
+                SshPrivateKey sshPrivateKey = null;
+
+                switch (authProps.getProperty(NetworkUtils.PASSWORD).length())
                 {
-                    DEBUGGER.debug("username: {}", username);
+                    case 0:
+                        sshPrivateKeyFile.toPrivateKey(null);
+
+                        break;
+                    default:
+                        sshPrivateKeyFile.toPrivateKey(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                        break;
                 }
 
-                passAuth = new PasswordAuthenticationClient();
-                passAuth.setUsername(username);
-                passAuth.setPassword(PasswordUtils.decryptText(secList.get(1), secList.get(2).length()));
+                keyAuth = new PublicKeyAuthenticationClient();
+                keyAuth.setKey(sshPrivateKey);
+                keyAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
+                    DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
                 }
             }
             else
             {
-                if ((StringUtils.isNotEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isEmpty(sshConfig.getSshKeyFile()))))
+                passAuth = new PasswordAuthenticationClient();
+                passAuth.setUsername(authProps.getProperty(NetworkUtils.ACCOUNT));
+                passAuth.setPassword(PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+
+                if (DEBUG)
                 {
-                    username = sshConfig.getSshUserAccount();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("username: {}", username);
-                    }
-
-                    passAuth = new PasswordAuthenticationClient();
-                    passAuth.setUsername(username);
-                    passAuth.setPassword(
-                            (StringUtils.isNotEmpty(sshConfig.getSshUserSalt())) ?
-                                    PasswordUtils.decryptText(sshConfig.getSshUserPassword(), sshConfig.getSshUserSalt().length()) :
-                                        sshConfig.getSshUserPassword());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
-                    }
-                }
-                else if ((StringUtils.isEmpty(sshConfig.getSshUserPassword()) && (StringUtils.isNotEmpty(sshConfig.getSshKeyFile()))))
-                {
-                    isKeyAuthentication = true;
-
-                    username = sshConfig.getSshUserAccount();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("username: {}", username);
-                    }
-
-                    SshPrivateKeyFile sshPrivateKeyFile = SshPrivateKeyFile.parse(FileUtils.getFile(sshConfig.getSshKeyFile()));
-                    SshPrivateKey sshPrivateKey = (StringUtils.isNotEmpty(sshConfig.getSshKeySalt())) ? sshPrivateKeyFile.toPrivateKey(
-                            PasswordUtils.decryptText(sshConfig.getSshKeyPassword(), sshConfig.getSshKeySalt().length())) : 
-                                sshPrivateKeyFile.toPrivateKey(null);
-
-                    keyAuth = new PublicKeyAuthenticationClient();
-                    keyAuth.setUsername(username);
-                    keyAuth.setKey(sshPrivateKey);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("PublicKeyAuthenticationClient: {}", keyAuth);
-                    }
-                }
-                else
-                {
-                    throw new UtilityException("No valid authentication method has been configured. Cannot continue.");
+                    DEBUGGER.debug("PasswordAuthenticationClient: {}", passAuth);
                 }
             }
 
@@ -685,12 +644,12 @@ public final class NetworkUtils
                     }
                     else
                     {
-                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + username);
+                        throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                     }
                 }
                 else
                 {
-                    throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + username);
+                    throw new AuthenticationProtocolException("Failed to authenticate to remote host. Username: " + authProps.getProperty(NetworkUtils.ACCOUNT));
                 }
             }
             else
@@ -721,13 +680,14 @@ public final class NetworkUtils
         return sBuilder;
     }
 
-    public static final synchronized void executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeFtpConnection(final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = CNAME + "#executeFtpConnection(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", authProps);
             DEBUGGER.debug("Value: {}", sourceFile);
             DEBUGGER.debug("Value: {}", targetFile);
             DEBUGGER.debug("Value: {}", targetHost);
@@ -735,12 +695,10 @@ public final class NetworkUtils
         }
 
         final FTPClient client = new FTPClient();
-        final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
 
         if (DEBUG)
         {
             DEBUGGER.debug("FTPClient: {}", client);
-            DEBUGGER.debug("SSHConfig: {}", sshConfig);
         }
 
         try
@@ -754,8 +712,17 @@ public final class NetworkUtils
 
             if (client.isConnected())
             {
-                boolean isAuthenticated = client.login(sshConfig.getSshUserAccount(),
-                        PasswordUtils.decryptText(sshConfig.getSshKeyPassword(), sshConfig.getSshKeySalt().length()));
+                boolean isAuthenticated = false;
+
+                if (StringUtils.isNotBlank(authProps.getProperty(NetworkUtils.PASSWORD)))
+                {
+                    isAuthenticated = client.login(authProps.getProperty(NetworkUtils.ACCOUNT),
+                            PasswordUtils.decryptText(authProps.getProperty(NetworkUtils.PASSWORD), authProps.getProperty(NetworkUtils.SALT).length()));
+                }
+                else
+                {
+                    isAuthenticated = client.login(authProps.getProperty(NetworkUtils.ACCOUNT), null);
+                }
 
                 if (DEBUG)
                 {
@@ -939,23 +906,23 @@ public final class NetworkUtils
      * @throws UtilityException if the connection cannot be established or if the
      *     response code != 200
      */
-    public static final synchronized byte[] executeHttpConnection(final String hostName, final int timeout, final String method) throws UtilityException
+    public static final synchronized byte[] executeHttpConnection(final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException
     {
-        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final String hostName, final int timeout, final String method) throws UtilityException";
+        final String methodName = NetworkUtils.CNAME + "#executeHttpConnection(final ProxyConfig proxyConfig, final String hostName, final int timeout, final String method) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("hostName: {}", hostName);
-            DEBUGGER.debug("timeout: {}", timeout);
-            DEBUGGER.debug("method: {}", method);
+            DEBUGGER.debug("Value: {}", proxyConfig);
+            DEBUGGER.debug("Value: {}", hostName);
+            DEBUGGER.debug("Value: {}", timeout);
+            DEBUGGER.debug("Value: {}", method);
         }
 
         HttpMethod httpMethod = null;
 
         final HttpClient httpClient = new HttpClient();
         final HttpClientParams httpParams = new HttpClientParams();
-        final ProxyConfig proxyConfig = appBean.getConfigData().getProxyConfig();
 
         try
         {

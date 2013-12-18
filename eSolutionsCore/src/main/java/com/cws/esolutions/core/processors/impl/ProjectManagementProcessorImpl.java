@@ -152,24 +152,20 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                     if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully added " + project.getProjectName() + " to the asset datasource");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + project.getProjectName() + " to the asset datasource");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Platform " + project.getProjectName() + " already exists in the asset datasource.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -288,18 +284,15 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                 if (isComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully added " + project.getProjectName() + " to the asset datasource");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to add " + project.getProjectName() + " to the asset datasource");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (UserControlServiceException ucsx)
@@ -508,18 +501,15 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                     response.setEntryCount(count);
                     response.setProjectList(projectList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded project list");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("No projects were located for the provided information.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -722,17 +712,15 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
 
                     response.setProjectList(projectList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded project list");
                 }
                 else
                 {
-                    throw new ProjectManagementException("No projects were located in the asset datasource.");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -963,7 +951,6 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                         }
 
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully loaded project data");
                         response.setProject(project);
 
                         if (DEBUG)
@@ -974,18 +961,16 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No projects were found with the provided information.");
                     }
                 }
                 else
                 {
-                    throw new ProjectManagementException("No project data was provided. Cannot continue.");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)

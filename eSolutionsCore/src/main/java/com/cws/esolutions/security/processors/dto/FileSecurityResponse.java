@@ -36,7 +36,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class FileSecurityResponse implements Serializable
 {
-    private String response = null;
     private File signedFile = null;
     private File encryptedFile = null;
     private boolean isSignatureValid = false;
@@ -60,19 +59,6 @@ public class FileSecurityResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = FileSecurityResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setSignedFile(final File value)
@@ -125,19 +111,6 @@ public class FileSecurityResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = FileSecurityResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final File getSignedFile()

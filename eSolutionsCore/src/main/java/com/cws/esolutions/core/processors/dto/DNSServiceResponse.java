@@ -36,7 +36,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class DNSServiceResponse implements Serializable
 {
-    private String response = null;
     private DNSEntry dnsEntry = null;
     private DNSRecord dnsRecord = null;
     private StringBuilder zoneData = null;
@@ -62,19 +61,6 @@ public class DNSServiceResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = DNSServiceResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setDnsEntry(final DNSEntry value)
@@ -153,19 +139,6 @@ public class DNSServiceResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = DNSServiceResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final DNSEntry getDnsEntry()

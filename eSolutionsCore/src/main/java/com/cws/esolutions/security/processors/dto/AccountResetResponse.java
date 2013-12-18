@@ -38,7 +38,6 @@ public class AccountResetResponse implements Serializable
 {
     private String resetId = null;
     private String smsCode = null;
-    private String response = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private List<UserAccount> userList = null;
@@ -62,19 +61,6 @@ public class AccountResetResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = AccountResetResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setUserAccount(final UserAccount value)
@@ -151,19 +137,6 @@ public class AccountResetResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = AccountResetResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final UserAccount getUserAccount()

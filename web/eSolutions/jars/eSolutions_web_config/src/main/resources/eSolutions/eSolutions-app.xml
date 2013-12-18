@@ -32,7 +32,9 @@
         <property name="messageEmailAddressRequired" value="email.source.addr.required" />
     </bean>
 
-    <bean id="secConfig" class="com.cws.esolutions.security.config.SecurityConfig" />
+    <bean id="secConfig" class="com.cws.esolutions.security.config.xml.SecurityConfig" />
+
+    <bean id="coreConfig" class="com.cws.esolutions.core.config..xml.CoreServiceBean" />
 
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">

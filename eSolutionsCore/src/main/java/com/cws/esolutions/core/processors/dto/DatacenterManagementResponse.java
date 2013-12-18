@@ -37,7 +37,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 public class DatacenterManagementResponse implements Serializable
 {
     private int entryCount = 0;
-    private String response = null;
     private DataCenter dataCenter = null;
     private List<DataCenter> datacenterList = null;
     private CoreServicesStatus requestStatus = null;
@@ -60,19 +59,6 @@ public class DatacenterManagementResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = DatacenterManagementResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -125,19 +111,6 @@ public class DatacenterManagementResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = DatacenterManagementResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

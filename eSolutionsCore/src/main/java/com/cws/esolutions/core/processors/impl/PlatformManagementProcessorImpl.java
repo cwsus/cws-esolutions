@@ -189,24 +189,20 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully added " + platform.getPlatformName() + " to the asset datasource");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + platform.getPlatformName() + " to the asset datasource");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Platform " + platform.getPlatformName() + " already exists in the asset datasource.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -356,18 +352,15 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 if (isComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully added " + platform.getPlatformName() + " to the asset datasource");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to add " + platform.getPlatformName() + " to the asset datasource");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (UserControlServiceException ucsx)
@@ -494,18 +487,15 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     response.setEntryCount(count);
                     response.setPlatformList(platformList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded platform list");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("No platforms were located in the asset datasource.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -626,17 +616,15 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                     response.setPlatformList(platformList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded platform list");
                 }
                 else
                 {
-                    throw new PlatformManagementException("No platforms were located in the asset datasource.");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -1097,24 +1085,21 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         }
 
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully loaded platform information.");
                         response.setPlatformData(resPlatform);
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No platform was located with the provided information");
                     }
                 }
                 else
                 {
-                    throw new PlatformManagementException("No platform search data was provided. Cannot continue");
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)

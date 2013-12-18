@@ -663,7 +663,7 @@ public class ApplicationManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoResultsFound);
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }
@@ -2637,7 +2637,7 @@ public class ApplicationManagementController
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, searchRes.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoApplicationsFound);
                     mView.addObject("command", new SearchRequest());
                     mView.setViewName(this.defaultPage);
                 }

@@ -200,24 +200,20 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     {
                         // install agent
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully added " + requestServer.getOperHostName() + " to the asset datasource");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + requestServer.getOperHostName() + " to the asset datasource");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Server " + requestServer.getOperHostName() + " already exists in the asset datasource.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -367,18 +363,15 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 if (isComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully added " + requestServer.getOperHostName() + " to the asset datasource");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to add " + requestServer.getOperHostName() + " to the asset datasource");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (UserControlServiceException ucsx)
@@ -687,7 +680,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             else
                             {
                                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                response.setResponse("Failed to load deployment manager data. Cannot continue.");
 
                                 return response;
                             }
@@ -706,14 +698,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded installed server information.");
                     response.setServerList(serverList);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -1059,14 +1049,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded installed server information.");
                     response.setServerList(serverList);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -1389,7 +1377,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             }
 
                             response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                            response.setResponse("Successfully loaded installed server information.");
                             response.setServer(server);
                         }
                         else
@@ -1400,7 +1387,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No server was located with the provided information");
                     }
                 }
                 else
@@ -1411,7 +1397,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requested user was not authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -1538,7 +1523,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                         else
                         {
-                            response.setResponse("Failed to send message to configured request queue for action");
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                             return response;
@@ -1569,13 +1553,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
-                response.setResponse("Requesting user was not authorized to perform the operation.");
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
@@ -1704,7 +1686,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                         else
                         {
-                            response.setResponse("Failed to send message to configured request queue for action");
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                             return response;
@@ -1741,7 +1722,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-				response.setResponse("Requesting user was not authorized to perform the operation.");
 				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
@@ -1870,7 +1850,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                         else
                         {
-                            response.setResponse("Failed to send message to configured request queue for action");
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                             return response;
@@ -1907,7 +1886,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-				response.setResponse("Requesting user was not authorized to perform the operation.");
 				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
@@ -2035,7 +2013,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         }
                         else
                         {
-                            response.setResponse("Failed to send message to configured request queue for action");
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                             return response;
@@ -2072,7 +2049,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
             }
             else
             {
-				response.setResponse("Requesting user was not authorized to perform the operation.");
 				response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }

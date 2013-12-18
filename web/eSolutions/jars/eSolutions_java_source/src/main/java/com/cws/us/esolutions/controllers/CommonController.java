@@ -32,6 +32,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.us.esolutions.ApplicationServiceBean;
@@ -68,6 +69,7 @@ public class CommonController
 {
     private String homePage = null;
     private String serviceId = null;
+    private CoreServiceBean coreConfig = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
 
@@ -88,6 +90,19 @@ public class CommonController
         }
 
         this.appConfig = value;
+    }
+
+    public final void setCoreConfig(final CoreServiceBean value)
+    {
+        final String methodName = CommonController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.coreConfig = value;
     }
 
     public final void setHomePage(final String value)
@@ -474,7 +489,7 @@ public class CommonController
 
         try
         {
-            EmailUtils.sendEmailMessage(message, true);
+            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
 
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);
@@ -491,7 +506,7 @@ public class CommonController
                 DEBUGGER.debug("EmailMessage: {}", autoResponse);
             }
 
-            EmailUtils.sendEmailMessage(autoResponse, true);
+            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), autoResponse, true);
 
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getContactAdminsRedirect());

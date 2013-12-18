@@ -209,13 +209,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                             if (isApplicationAdded)
                             {
-                                response.setResponse("Successfully added application " + application.getApplicationName() + " to the asset database");
                                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                             }
                             else
                             {
                                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                response.setResponse("Failed to add application " + application.getApplicationName() + " to the asset database");
                             }
                         }
                         else
@@ -227,13 +225,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     {
                         // project already exists
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + application.getApplicationName() + " to the asset datasource as it already exists.");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -414,7 +410,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -535,18 +530,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully deactivated application " + application.getApplicationName());
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to deactivate application " + application.getApplicationName());
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -706,13 +698,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         }
 
                         response.setApplicationList(appList);
-                        response.setResponse("Successfully loaded application list");
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     }
                     else
                     {
                         // no data
-                        response.setResponse("No applications were located for the provided information");
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
 
@@ -724,7 +714,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -913,23 +902,23 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         }
 
                         response.setApplication(resApplication);
-                        response.setResponse("Successfully loaded application");
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("ApplicationManagementResponse: {}", response);
-                        }
                     }
                     else
                     {
-                        throw new ApplicationManagementException("No applications were located for the provided data.");
+                        ERROR_RECORDER.error("No applications were located for the provided data.");
+
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                 }
             }
             catch (SQLException sqx)
@@ -1111,7 +1100,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     }
                                     else
                                     {
-                                        response.setResponse("Failed to send message to configured request queue for action");
                                         response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                                         return response;
@@ -1164,38 +1152,35 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                                     response.setApplication(resApplication);
                                     response.setCurrentPath(request.getRequestFile());
-                                    response.setResponse("Successfully loaded file data");
                                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                                 }
                                 else
                                 {
                                     response.setApplication(resApplication);
-                                    response.setResponse("An error occurred while processing the remote request.");
                                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                                 }
                             }
                             else
                             {
                                 response.setApplication(resApplication);
-                                response.setResponse(agentResponse.getResponse());
                                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                             }
                         }
                         else
                         {
-                            throw new ApplicationManagementException("No application data was located and no target was found on the request. Cannot continue.");
+                            ERROR_RECORDER.error("No application data was located and no target was found on the request. Cannot continue.");
+
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                        response.setResponse("The requesting user was NOT authorized to perform the operation");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (UserControlServiceException ucsx)
@@ -1303,7 +1288,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (UserControlServiceException ucsx)

@@ -40,13 +40,11 @@ import com.cws.esolutions.core.Constants;
 public final class SSHConfig implements Serializable
 {
     private int timeout = 10000; // default to 10 seconds
-    private String sshKeyFile = null;
-    private String sshKeySalt = null;
-    private String sshUserSalt = null;
+    private String sshKey = null;
+    private String sshSalt= null;
+    private String sshAccount = null;
+    private String sshPassword = null;
     private String sshProperties = null;
-    private String sshUserAccount = null;
-    private String sshKeyPassword = null;
-    private String sshUserPassword = null;
 
     private static final String CNAME = SSHConfig.class.getName();
     private static final long serialVersionUID = -4670903285628304991L;
@@ -55,9 +53,9 @@ public final class SSHConfig implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setSshUserAccount(final String value)
+    public final void setSshAccount(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshUserAccount(final String value)";
+        final String methodName = SSHConfig.CNAME + "#setSshAccount(final String value)";
 
         if (DEBUG)
         {
@@ -65,12 +63,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshUserAccount = value;
+        this.sshAccount = value;
     }
 
-    public final void setSshUserPassword(final String value)
+    public final void setSshPassword(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshUserPassword(final String value)";
+        final String methodName = SSHConfig.CNAME + "#setSshPassword(final String value)";
 
         if (DEBUG)
         {
@@ -78,12 +76,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshUserPassword = value;
+        this.sshPassword = value;
     }
 
-    public final void setSshUserSalt(final String value)
+    public final void setSshSalt(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshUserSalt(final String value)";
+        final String methodName = SSHConfig.CNAME + "#setSshSalt(final String value)";
 
         if (DEBUG)
         {
@@ -91,12 +89,12 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshUserSalt = value;
+        this.sshSalt = value;
     }
 
-    public final void setSshKeyFile(final String value)
+    public final void setSshKey(final String value)
     {
-        final String methodName = SSHConfig.CNAME + "#setSshKeyFile(final String value)";
+        final String methodName = SSHConfig.CNAME + "#setSshKey(final String value)";
 
         if (DEBUG)
         {
@@ -104,33 +102,7 @@ public final class SSHConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.sshKeyFile = value;
-    }
-
-    public final void setSshKeyPassword(final String value)
-    {
-        final String methodName = SSHConfig.CNAME + "#setSshKeyPassword(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sshKeyPassword = value;
-    }
-
-    public final void setSshKeySalt(final String value)
-    {
-        final String methodName = SSHConfig.CNAME + "#setSshKeySalt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sshKeySalt = value;
+        this.sshKey = value;
     }
 
     public final void setTimeout(final int value)
@@ -159,88 +131,60 @@ public final class SSHConfig implements Serializable
         this.sshProperties = value;
     }
 
-    @XmlElement(name = "sshUserAccount")
-    public final String getSshUserAccount()
+    @XmlElement(name = "sshAccount")
+    public final String getSshAccount()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshUserAccount()";
+        final String methodName = SSHConfig.CNAME + "#getSshAccount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshUserAccount);
+            DEBUGGER.debug("Value: {}", this.sshAccount);
         }
 
-        return this.sshUserAccount;
+        return this.sshAccount;
     }
 
-    @XmlElement(name = "sshUserPassword")
-    public final String getSshUserPassword()
+    @XmlElement(name = "sshPassword")
+    public final String getSshPassword()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshUserPassword()";
+        final String methodName = SSHConfig.CNAME + "#getSshPassword()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshUserPassword);
+            DEBUGGER.debug("Value: {}", this.sshPassword);
         }
 
-        return this.sshUserPassword;
+        return this.sshPassword;
     }
 
-    @XmlElement(name = "sshUserSalt")
-    public final String getSshUserSalt()
+    @XmlElement(name = "sshSalt")
+    public final String getSshSalt()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshUserSalt()";
+        final String methodName = SSHConfig.CNAME + "#getSshSalt()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshUserSalt);
+            DEBUGGER.debug("Value: {}", this.sshSalt);
         }
 
-        return this.sshUserSalt;
+        return this.sshSalt;
     }
 
-    @XmlElement(name = "sshKeyFile")
-    public final String getSshKeyFile()
+    @XmlElement(name = "sshKey")
+    public final String getSshKey()
     {
-        final String methodName = SSHConfig.CNAME + "#getSshKeyFile()";
+        final String methodName = SSHConfig.CNAME + "#getSshKey()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshKeyFile);
+            DEBUGGER.debug("Value: {}", this.sshKey);
         }
 
-        return this.sshKeyFile;
-    }
-
-    @XmlElement(name = "sshKeyPassword")
-    public final String getSshKeyPassword()
-    {
-        final String methodName = SSHConfig.CNAME + "#getSshKeyPassword()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshKeyPassword);
-        }
-
-        return this.sshKeyPassword;
-    }
-
-    @XmlElement(name = "sshKeySalt")
-    public final String getSshKeySalt()
-    {
-        final String methodName = SSHConfig.CNAME + "#getSshKeySalt()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sshKeySalt);
-        }
-
-        return this.sshKeySalt;
+        return this.sshKey;
     }
 
     @XmlElement(name = "timeout")

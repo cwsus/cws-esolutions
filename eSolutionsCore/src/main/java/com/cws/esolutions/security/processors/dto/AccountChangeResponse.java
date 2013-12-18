@@ -37,7 +37,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
  */
 public class AccountChangeResponse implements Serializable
 {
-    private String response = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private SecurityRequestStatus requestStatus = null;
@@ -60,19 +59,6 @@ public class AccountChangeResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = AccountChangeResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setUserAccount(final UserAccount value)
@@ -112,19 +98,6 @@ public class AccountChangeResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = AccountChangeResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final UserAccount getUserAccount()

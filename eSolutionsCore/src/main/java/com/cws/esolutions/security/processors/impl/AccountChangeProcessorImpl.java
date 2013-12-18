@@ -93,7 +93,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // requesting user is not the same as the user being reset. no authorization here,
             // no one is allowed to change user security but the owning user
             response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            response.setResponse("The requesting user was NOT authorized to perform the operation");
 
             return response;
         }
@@ -134,12 +133,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                     response.setUserAccount(retAccount);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Modification request successfully performed");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Modification request was not completed successfully");
                 }
             }
             else
@@ -236,7 +233,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // requesting user is not the same as the user being reset. no authorization here,
             // no one is allowed to change user security but the owning user
             response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            response.setResponse("The requesting user was NOT authorized to perform the operation");
 
             return response;
         }
@@ -279,12 +275,10 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                     response.setUserAccount(retAccount);
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Modification request successfully performed");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Modification request was not completed successfully");
                 }
             }
             else
@@ -388,7 +382,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // requesting user is not the same as the user being reset. no authorization here,
             // no one is allowed to change user security but the owning user
             response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            response.setResponse("The requesting user was NOT authorized to perform the operation");
 
             return response;
         }
@@ -479,7 +472,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
 
                                 response.setUserAccount(userAccount);
                                 response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                response.setResponse("Successfully changed password.");
                             }
                             else
                             {
@@ -498,13 +490,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 }
 
                                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                response.setResponse("Failed to change the password associated with the user account");
                             }
                         }
                         else
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            response.setResponse("Failed to change the password associated with the user account");
                         }
                     }
                     else
@@ -615,7 +605,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
             // requesting user is not the same as the user being reset. no authorization here,
             // no one is allowed to change user security but the owning user
             response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            response.setResponse("The requesting user was NOT authorized to perform the operation");
 
             return response;
         }
@@ -692,7 +681,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 if (isComplete)
                                 {
                                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                                    response.setResponse("Successfully changed security information.");
                                 }
                                 else
                                 {
@@ -709,28 +697,32 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     }
 
                                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                    response.setResponse("Failed to change the password associated with the user account");
                                 }
                             }
                             else
                             {
                                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                                response.setResponse("Failed to change the password associated with the user account");
                             }
                         }
                         else
                         {
-                            throw new AccountChangeException("Unable to generate new salt for provided user account.");
+                            ERROR_RECORDER.error("Unable to generate new salt for provided user account.");
+
+                            response.setRequestStatus(SecurityRequestStatus.FAILURE);
                         }
                     }
                     else
                     {
-                        throw new AccountChangeException("Unable to obtain existing salt value from datastore. Cannot continue.");
+                        ERROR_RECORDER.error("Unable to obtain existing salt value from datastore. Cannot continue.");
+
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    throw new AccountChangeException("Unable to obtain configured user salt. Cannot continue");
+                    ERROR_RECORDER.error("Unable to obtain configured user salt. Cannot continue");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
         }
@@ -821,7 +813,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         {
             // requesting user is not the same as the user being reset. authorize
             response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            response.setResponse("The requesting user was NOT authorized to perform the operation");
 
             return response;
         }
@@ -857,18 +848,15 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 if (keysAdded)
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully reloaded user keys");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to regenerate security keys");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Failed to remove existing keypair");
             }
         }
         catch (KeyManagementException kmx)

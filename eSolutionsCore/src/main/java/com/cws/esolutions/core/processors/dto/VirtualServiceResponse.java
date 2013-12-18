@@ -36,7 +36,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class VirtualServiceResponse implements Serializable
 {
-    private String response = null;
     private boolean isComplete = false;
     private Map<String, String> machines = null;
     private CoreServicesStatus requestStatus = null;
@@ -59,19 +58,6 @@ public class VirtualServiceResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = VirtualServiceResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setMachines(final Map<String, String> value)
@@ -111,19 +97,6 @@ public class VirtualServiceResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = VirtualServiceResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final Map<String, String> getMachines()

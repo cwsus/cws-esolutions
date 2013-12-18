@@ -38,7 +38,6 @@ public class ProjectManagementResponse implements Serializable
 {
     private int entryCount = 0;
     private Project project = null;
-    private String response = null;
     private List<Project> projectList = null;
     private CoreServicesStatus requestStatus = null;
 
@@ -60,19 +59,6 @@ public class ProjectManagementResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = ProjectManagementResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -125,19 +111,6 @@ public class ProjectManagementResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = ProjectManagementResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

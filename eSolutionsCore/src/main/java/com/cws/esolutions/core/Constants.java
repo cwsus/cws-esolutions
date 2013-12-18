@@ -34,7 +34,11 @@ public class Constants
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 
     /* Configuration constants */
+    public static final String SALT = "userSalt";
+    public static final String KEYFILE = "userKeyFile";
+    public static final String ACCOUNT = "userAccount";
     public static final String NOT_SET = "Unconfigured";
+    public static final String PASSWORD = "userPassword";
     public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
     public static final String LINE_BREAK = System.getProperty("line.separator");
 }

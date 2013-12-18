@@ -93,13 +93,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.jcraft</groupId>
-            <artifactId>jsch</artifactId>
-            <version>${jsch.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- virtualbox -->
         <dependency>
             <groupId>org.virtualbox</groupId>
@@ -121,20 +114,6 @@
             </exclusions>
             <type>jar</type>
             <scope>provided</scope>
-        </dependency>
-        <!-- spring -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>${spring.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-logging</artifactId>
-                    <groupId>commons-logging</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- expect -->
         <dependency>

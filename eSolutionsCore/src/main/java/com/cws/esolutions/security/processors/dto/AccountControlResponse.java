@@ -40,7 +40,6 @@ public class AccountControlResponse implements Serializable
     private int entryCount = 0;
     private String smsCode = null;
     private String resetId = null;
-    private String response = null;
     private UserAccount userAccount = null;
     private List<String> questionList = null;
     private List<UserAccount> userList = null;
@@ -65,19 +64,6 @@ public class AccountControlResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = AccountControlResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -180,19 +166,6 @@ public class AccountControlResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = AccountControlResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

@@ -140,7 +140,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         if (!(StringUtils.contains(umx.getMessage(), "UUID")))
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            response.setResponse("A user already exists with the provided username.");
 
                             return response;
                         }
@@ -207,7 +206,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("New user successfully created");
 
                         // assign services (if any)
                         if ((request.getServicesList() != null) && (request.getServicesList().size() != 0))
@@ -232,27 +230,28 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             catch (SQLException sqx)
                             {
                                 ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                                response.setResponse("Successfully added the new user, but failed to provision services. Please review application logs.");
                             }
                         }
                     }
                     else
                     {
                         // failed to add the user to the repository
-                        throw new AccountControlException("Failed to add user to the userAccount repository");
+                        ERROR_RECORDER.error("Failed to add user to the userAccount repository");
+
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
                     }
                 }
                 else
                 {
                     // failed to insert salt
-                    throw new AccountControlException("Failed to provision new user: failed to insert the generated salt value");
+                    ERROR_RECORDER.error("Failed to provision new user: failed to insert the generated salt value");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (AccountControlException acx)
@@ -365,12 +364,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 if (isComplete)
                 {
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("User userAccount was successfully deleted");
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Failed to delete user");
                 }
             }
         }
@@ -481,23 +478,22 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     {
                         response.setUserAccount(userAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully performed suspension modification.");
                     }
                     else
                     {
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Failed to perform suspension modification for requested user.");
                     }
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user for given GUID");
+                    ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (AdminControlServiceException acsx)
@@ -621,23 +617,22 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if (isComplete)
                     {
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully performed suspension modification.");
                     }
                     else
                     {
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Failed to perform suspension modification for requested user.");
                     }
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user for given GUID");
+                    ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (AdminControlServiceException acsx)
@@ -802,23 +797,22 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully performed role modification.");
                     }
                     else
                     {
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Failed to perform role modification for requested user.");
                     }
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to locate user for given GUID");
+                    ERROR_RECORDER.error("Failed to locate user for given GUID");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (AdminControlServiceException acsx)
@@ -954,27 +948,31 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         {
                             response.setResetId(resetId);
                             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setResponse("Successfully generated password reset request");
                         }
                         else
                         {
-                            throw new AccountControlException("Unable to insert password identifier into database. Cannot continue.");
+                            ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
+
+                            response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                         }
                     }
                     else
                     {
-                        throw new AccountControlException("Unable to generate a unique identifier. Cannot continue.");
+                        ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
+
+                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }
                 }
                 else
                 {
-                    throw new AccountControlException("Failed to generate a temporary password. Cannot continue.");
+                    ERROR_RECORDER.error("Failed to generate a temporary password. Cannot continue.");
+
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -1151,7 +1149,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if ((searchType == SearchRequestType.FORGOTUID) && (userList.size() != 1))
                     {
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Multiple accounts were located with the provided information.");
                     }
                     else
                     {
@@ -1186,12 +1183,10 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         if (userAccounts.size() == 0)
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            response.setResponse("No accounts were found with the provided data");
                         }
                         else
                         {
                             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setResponse("Successfully loaded matching accounts");
                             response.setUserList(userAccounts);
                         }
                     }
@@ -1199,13 +1194,11 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("No accounts were found with the provided data");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
         }
         catch (UserManagementException umx)
@@ -1341,19 +1334,16 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     }
 
                     response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    response.setResponse("Successfully loaded user");
                     response.setUserAccount(loadAccount);
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("No accounts were found with the provided data");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -1510,26 +1500,22 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             response.setUserAccount(loadAccount);
                             response.setEntryCount(auditResponse.getEntryCount());
                             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                            response.setResponse("Successfully loaded audit trail");
                             response.setAuditEntries(auditEntries);
                         }
                         else
                         {
                             response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                            response.setResponse("No audit history was located for the provided user.");
                         }
                     }
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Unable to load user account with the provided information.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
 
             if (DEBUG)
@@ -1675,25 +1661,21 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     if (userAccounts.size() == 0)
                     {
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("No accounts were found with the provided data");
                     }
                     else
                     {
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded matching accounts");
                         response.setUserList(userAccounts);
                     }
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("No accounts were found with the provided data");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("Requesting user was NOT authorized to perform the operation");
             }
         }
         catch (UserManagementException umx)

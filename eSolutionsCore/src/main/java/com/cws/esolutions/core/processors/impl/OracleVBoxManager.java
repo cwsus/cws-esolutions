@@ -132,7 +132,6 @@ public class OracleVBoxManager implements VirtualServiceManager
             vboxMgr.disconnect();
 
             response.setRequestStatus(CoreServicesStatus.SUCCESS);
-            response.setResponse("Successfully loaded virtual machine guest list");
             response.setMachines(machines);
 
             if (DEBUG)
@@ -404,22 +403,20 @@ public class OracleVBoxManager implements VirtualServiceManager
                         if (isComplete)
                         {
                             response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                            response.setResponse("Successfully performed shutdown operation for provided server");
                         }
                         else
                         {
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
-                            response.setResponse("Failed to process shutdown request within specified timeout. Virtual guest may be hung or in a previously shutdown state.");
                         }
                     }
                     else
                     {
-                        throw new VirtualServiceException("Requested machine is not currently running. Cannot perform shutdown request.");
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    throw new VirtualServiceException("No machine was found with identifier " + server.getVirtualId());
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
         }

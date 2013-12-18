@@ -26,14 +26,17 @@
     </bean>
 
     <bean id="knowledgeBaseController" class="com.cws.us.esolutions.controllers.KnowledgeBaseController">
+        <property name="appConfig">
+            <ref bean="appConfig" />
+        </property>
+        <property name="coreConfig">
+            <ref bean="coreConfig" />
+        </property>
         <property name="validator">
             <ref bean="validator" />
         </property>
         <property name="searchValidator">
             <ref bean="searchRequestValidator" />
-        </property>
-        <property name="appConfig">
-            <ref bean="appConfig" />
         </property>
         <property name="recordsPerPage" value="20" />
         <property name="serviceName" value="kbase" />

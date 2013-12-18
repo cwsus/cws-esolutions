@@ -125,12 +125,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)
@@ -217,12 +215,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)
@@ -309,12 +305,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)
@@ -401,12 +395,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)
@@ -462,7 +454,6 @@ public class SearchProcessorImpl implements ISearchProcessor
                     break;
                 default:
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("An invalid search request type was specified. Cannot continue.");
 
                     return response;
             }
@@ -506,12 +497,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)
@@ -598,12 +587,10 @@ public class SearchProcessorImpl implements ISearchProcessor
 
                 response.setResults(responseList);
                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                response.setResponse("Search completed successfully.");
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
-                response.setResponse("No results were located with the provided search terms.");
             }
 
             if (DEBUG)

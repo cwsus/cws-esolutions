@@ -34,6 +34,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.us.esolutions.dto.UserChangeRequest;
 import com.cws.esolutions.security.dto.UserAccount;
@@ -97,6 +98,7 @@ public class OnlineResetController
     private String submitAnswersPage = null;
     private String messageOlrComplete = null;
     private String submitUsernamePage = null;
+    private CoreServiceBean coreConfig = null;
     private String submitEmailAddrPage = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
@@ -109,6 +111,19 @@ public class OnlineResetController
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
+    public final void setCoreConfig(final CoreServiceBean value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.coreConfig = value;
+    }
 
     public final void setResetURL(final String value)
     {
@@ -781,7 +796,7 @@ public class OnlineResetController
                         DEBUGGER.debug("EmailMessage: {}", message);
                     }
 
-                    EmailUtils.sendEmailMessage(message, true);
+                    EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
                 }
                 catch (MessagingException mx)
                 {
@@ -1188,7 +1203,7 @@ public class OnlineResetController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(message, true);
+                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1213,7 +1228,7 @@ public class OnlineResetController
 
                         try
                         {
-                            EmailUtils.sendEmailMessage(smsMessage, true);
+                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                         }
                         catch (MessagingException mx)
                         {

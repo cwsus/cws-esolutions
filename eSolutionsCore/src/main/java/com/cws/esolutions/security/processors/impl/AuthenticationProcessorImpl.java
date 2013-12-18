@@ -107,7 +107,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Invalid authentication data.");
             }
             else
             {
@@ -144,7 +143,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded user account");
                         response.setUserAccount(authAccount);
 
                         return response;
@@ -190,7 +188,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         // user locked
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Requested user account has been suspended.");
 
                         return response;
                     }
@@ -267,7 +264,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         userAccount.setStatus(LoginStatus.EXPIRED);
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Authentication request successfully processed");
                         response.setUserAccount(userAccount);
                     }
                     else
@@ -275,20 +271,17 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         userAccount.setStatus(LoginStatus.SUCCESS);
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Authentication request successfully processed");
                         response.setUserAccount(userAccount);
                     }
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Login failed. Please ensure your login information is correct.");
                 }
             }
             else
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Login failed. Please ensure your login information is correct.");
             }
 
             if (DEBUG)
@@ -347,7 +340,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
 
             response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            response.setResponse("Authentication request failed.");
         }
         catch (SecurityServiceException ssx)
         {
@@ -435,7 +427,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             if ((userInfo == null) || (userInfo.size() == 0) || (userInfo.size() > 1))
             {
                 response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                response.setResponse("Invalid authentication data.");
             }
             else
             {
@@ -501,20 +492,17 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                         response.setUserAccount(resAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Account successfully loaded");
                         response.setUserSecurity(userSecurity);
                     }
                     else
                     {
                         // null data
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                        response.setResponse("Unable to load security questions. Cannot continue.");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("Unable to locate provided user account. Cannot continue.");
                 }
             }
 
@@ -625,7 +613,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 if (isVerified)
                 {
                     authResponse.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    authResponse.setResponse("Successfully validated user security data.");
                 }
                 else
                 {
@@ -651,7 +638,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                     authResponse.setCount(request.getCount() + 1);
                     authResponse.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    authResponse.setResponse("Failed to validate user security data.");
                 }
             }
             else

@@ -46,10 +46,8 @@ import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.access.control.impl.EmailControlServiceImpl;
@@ -57,8 +55,8 @@ import com.cws.esolutions.security.access.control.interfaces.IEmailControlServic
 import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.utils
+ * File: EmailUtils.java
  *
  * History
  * ----------------------------------------------------------------------------
@@ -69,7 +67,6 @@ public final class EmailUtils
 {
     private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -131,22 +128,21 @@ public final class EmailUtils
      * @param isWeb - <code>true</code> if this came from a container, <code>false</code> otherwise
      * @throws MessagingException if an exception occurs sending the message
      */
-    public static final synchronized void sendEmailMessage(final EmailMessage message, final boolean isWeb) throws MessagingException
+    public static final synchronized void sendEmailMessage(final MailConfig mailConfig, final EmailMessage message, final boolean isWeb) throws MessagingException
     {
-        final String methodName = EmailUtils.CNAME + "#sendEmailMessage(final EmailMessage message, final boolean isWeb) throws MessagingException";
+        final String methodName = EmailUtils.CNAME + "#sendEmailMessage(final MailConfig mailConfig, final EmailMessage message, final boolean isWeb) throws MessagingException";
 
         Session mailSession = null;
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("emailMessage: {}", message);
-            DEBUGGER.debug("emailMessage: {}", isWeb);
+            DEBUGGER.debug("Value: {}", mailConfig);
+            DEBUGGER.debug("Value: {}", message);
+            DEBUGGER.debug("Value: {}", isWeb);
         }
 
         SMTPAuthenticator smtpAuth = null;
-
-        final MailConfig mailConfig = appBean.getConfigData().getMailConfig();
 
         if (DEBUG)
         {
@@ -222,8 +218,7 @@ public final class EmailUtils
                 }
 
                 mailMessage.setFrom(new InternetAddress(message.getEmailAddr().get(0)));
-                mailMessage.setSubject("[" + RandomStringUtils.randomAlphanumeric(
-                        appBean.getConfigData().getAppConfig().getMessageIdLength()) + "] " + message.getMessageSubject());
+                mailMessage.setSubject(message.getMessageSubject());
                 mailMessage.setContent(message.getMessageBody(), "text/html");
 
                 if (message.isAlert())
@@ -290,7 +285,6 @@ public final class EmailUtils
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR, -24);
 
-        final String HOSTNAME = appBean.getHostName();
         final Long TIME_PERIOD = cal.getTimeInMillis();
         final URLName URL_NAME = (authRequired) ? new URLName(dataSource.getProperty("mailtype"), dataSource.getProperty("host"),
                 Integer.parseInt(dataSource.getProperty("port")), null, authList.get(0), authList.get(1))
@@ -299,7 +293,6 @@ public final class EmailUtils
 
         if (DEBUG)
         {
-            DEBUGGER.debug("HOSTNAME: {}", HOSTNAME);
             DEBUGGER.debug("timePeriod: {}", TIME_PERIOD);
             DEBUGGER.debug("URL_NAME: {}", URL_NAME);
         }

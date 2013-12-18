@@ -138,24 +138,20 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                     if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully added " + dataCenter.getDatacenterName() + " to the asset datasource");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("Failed to add " + dataCenter.getDatacenterName() + " to the asset datasource");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Server " + dataCenter.getDatacenterName() + " already exists in the asset datasource.");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -274,18 +270,15 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                 if (isComplete)
                 {
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully updated " + dataCenter.getDatacenterName() + " in the asset datasource");
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("Failed to update " + dataCenter.getDatacenterName() + " in the asset datasource");
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -415,14 +408,12 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                     response.setEntryCount(count);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully loaded installed server information.");
                     response.setDatacenterList(datacenterList);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)
@@ -534,24 +525,23 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         }
 
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully loaded installed server information.");
                         response.setDataCenter(datactr);
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No server was located with the provided information");
                     }
                 }
                 else
                 {
-                    throw new DatacenterManagementException("No server search data was provided. Cannot continue");
+                    ERROR_RECORDER.error("No server search data was provided. Cannot continue");
+
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
             }
         }
         catch (SQLException sqx)

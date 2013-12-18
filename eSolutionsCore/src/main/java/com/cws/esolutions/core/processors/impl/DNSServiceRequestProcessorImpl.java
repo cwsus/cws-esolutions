@@ -23,6 +23,7 @@ import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
 import java.util.ArrayList;
 import java.io.IOException;
+import java.util.Properties;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
 import java.sql.SQLException;
@@ -45,8 +46,8 @@ import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
@@ -253,7 +254,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                     response.setDnsRecord(responseRecord);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    response.setResponse("Successfully performed service lookup");
 
                     if (DEBUG)
                     {
@@ -293,12 +293,10 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                         response.setDnsRecords(responseList);
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully performed service lookup");
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No records were located for the provided query.");
                     }
                 }
 
@@ -344,7 +342,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    response.setResponse("No results were found for the specified query.");
                 }
             }
         }
@@ -543,7 +540,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                         response.setDnsEntry(entry);
                         response.setZoneData(sBuilder);
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setResponse("Successfully built zone file data");
                     }
                     else
                     {
@@ -556,7 +552,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 {
                     // unauthorized
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -616,7 +611,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             ERROR_RECORDER.error("No audit information was provided. Cannot continue.");
 
             response.setRequestStatus(CoreServicesStatus.FAILURE);
-            response.setResponse("No audit information was provided. Cannot continue.");
         }
 
         return response;
@@ -809,7 +803,21 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
                                 if ((dnsServers != null) && (dnsServers.size() != 0))
                                 {
-                                    NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+                                    final Properties sshProps = new Properties();
+                                    sshProps.load(this.getClass().getClassLoader().getResourceAsStream(sshConfig.getSshProperties()));
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("Properties: {}", sshProps);
+                                    }
+
+                                    final Properties authProps = new Properties();
+                                    authProps.put(Constants.ACCOUNT, sshConfig.getSshAccount());
+                                    authProps.put(Constants.PASSWORD, sshConfig.getSshPassword());
+                                    authProps.put(Constants.SALT, sshConfig.getSshSalt());
+                                    authProps.put(Constants.KEYFILE, sshConfig.getSshKey());
+
+                                    NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
                                     List<Object[]> slaveServers = dao.getServersByAttributeWithRegion(ServerType.DNSSLAVE.name(), request.getServiceRegion().name(), 0);
 
@@ -826,7 +834,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         {
                                             try
                                             {
-                                                NetworkUtils.executeSCPTransfer(new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
+                                                NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
                                             }
                                             catch (UtilityException ux)
                                             {
@@ -839,12 +847,10 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         if (errCount == 0)
                                         {
                                             response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                            response.setResponse("Successfully pushed new zone file to available DNS servers");
                                         }
                                         else
                                         {
                                             response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                            response.setResponse("One or more attempts to transfer the zone to configured slave servers has failed.");
                                         }
                                     }
                                 }
@@ -852,25 +858,30 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             else
                             {
                                 // zone file wasn't created
-                                throw new DNSServiceException("Zone file was not created. Cannot continue.");
+                                ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
+
+                                response.setRequestStatus(CoreServicesStatus.FAILURE);
                             }
                         }
                         else
                         {
                             // zone file wasn't created
-                            throw new DNSServiceException("No zone data was provided in the request. Cannot continue.");
+                            ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
+
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
                     else
                     {
-                        throw new DNSServiceException("Failed to insert apex record into the datastore. Cannot continue.");
+                        ERROR_RECORDER.error("Failed to insert apex record into the datastore. Cannot continue.");
+
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
                     // unauthorized
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -954,7 +965,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             ERROR_RECORDER.error("No audit information was provided. Cannot continue.");
 
             response.setRequestStatus(CoreServicesStatus.FAILURE);
-            response.setResponse("No audit information was provided. Cannot continue.");
         }
 
         return response;
@@ -1010,7 +1020,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SecurityException sx)
@@ -1069,7 +1078,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             ERROR_RECORDER.error("No audit information was provided. Cannot continue.");
 
             response.setRequestStatus(CoreServicesStatus.FAILURE);
-            response.setResponse("No audit information was provided. Cannot continue.");
         }
 
         return response;
@@ -1290,19 +1298,16 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                         {
                             response.setDnsEntries(responseList);
                             response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                            response.setResponse("Successfully loaded available entries for the provided data.");
                         }
                     }
                     else
                     {
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
-                        response.setResponse("No data was located for the provided entry.");
                     }
                 }
                 else
                 {
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                    response.setResponse("The requesting user was NOT authorized to perform the operation");
                 }
             }
             catch (SQLException sqx)
@@ -1354,7 +1359,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             ERROR_RECORDER.error("No audit information was provided. Cannot continue.");
 
             response.setRequestStatus(CoreServicesStatus.FAILURE);
-            response.setResponse("No audit information was provided. Cannot continue.");
         }
 
         return response;

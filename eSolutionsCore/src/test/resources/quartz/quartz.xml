@@ -27,6 +27,18 @@
             <recover>true</recover>
             <job-data-map>
                 <entry>
+                    <key>mailHost</key>
+                    <value>localhost</value>
+                </entry>
+                <entry>
+                    <key>mailFrom</key>
+                    <value>secadm@caspersbox.com</value>
+                </entry>
+                <entry>
+                    <key>mailProps</key>
+                    <value>/eSolutionsCore/mail/MailConfig.properties</value>
+                </entry>
+                <entry>
                     <key>userAccount</key>
                     <value>secadm</value>
                 </entry>

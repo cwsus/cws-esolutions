@@ -38,7 +38,6 @@ import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /*
  * Project: eSolutionsCore
@@ -145,7 +144,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         }
 
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully loaded user reset request");
                         response.setUserAccount(userAccount);
                     }
                     else
@@ -156,7 +154,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 else
                 {
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    response.setResponse("The reset request either does not exist or has expired.");
                 }
 
                 if (DEBUG)
@@ -221,7 +218,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             if (!(StringUtils.equals(userAccount.getGuid(), reqAccount.getGuid())))
             {
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-                response.setResponse("The requesting user was NOT authorized to perform the operation");
 
                 return response;
             }
@@ -269,21 +265,26 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                         response.setSmsCode(((secConfig.getSmsResetEnabled()) ? smsReset : null));
                         response.setUserAccount(responseAccount);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setResponse("Successfully generated password reset request");
                     }
                     else
                     {
-                        throw new AuthenticatorException("Failed to locate user account in authentication repository. Cannot continue.");
+                        ERROR_RECORDER.error("Failed to locate user account in authentication repository. Cannot continue.");
+
+                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    throw new AccountResetException("Unable to insert password identifier into database. Cannot continue.");
+                    ERROR_RECORDER.error("Unable to insert password identifier into database. Cannot continue.");
+
+                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
             else
             {
-                throw new AccountResetException("Unable to generate a unique identifier. Cannot continue.");
+                ERROR_RECORDER.error("Unable to generate a unique identifier. Cannot continue.");
+
+                response.setRequestStatus(SecurityRequestStatus.FAILURE);
             }
         }
         catch (SQLException sqx)
@@ -297,12 +298,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
             ERROR_RECORDER.error(umx.getMessage(), umx);
 
             throw new AccountResetException(umx.getMessage(), umx);
-        }
-        catch (AuthenticatorException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new AccountResetException(ax.getMessage(), ax);
         }
         finally
         {
@@ -376,7 +371,6 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
 
             response.setQuestionList(questionList);
             response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-            response.setResponse("Successfully loaded available security questions");
 
             if (DEBUG)
             {

@@ -34,7 +34,6 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /*
  * Project: eSolutionsCore
@@ -50,7 +49,6 @@ public final class MQUtils
 {
     private static final String INIT_CONTEXT = "java:comp/env";
     private static final String CNAME = MQUtils.class.getName();
-    private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

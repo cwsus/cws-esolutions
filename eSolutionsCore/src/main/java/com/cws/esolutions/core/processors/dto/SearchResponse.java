@@ -37,7 +37,6 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 public class SearchResponse implements Serializable
 {
     private int entryCount = 0;
-    private String response = null;
     private List<SearchResult> results = null;
     private CoreServicesStatus requestStatus = null;
 
@@ -59,19 +58,6 @@ public class SearchResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = SearchResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setEntryCount(final int value)
@@ -111,19 +97,6 @@ public class SearchResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = SearchResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final int getEntryCount()

@@ -24,6 +24,9 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
+        <property name="coreConfig">
+            <ref bean="coreConfig" />
+        </property>
         <property name="validator">
             <ref bean="accountValidator" />
         </property>

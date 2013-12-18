@@ -15,11 +15,16 @@
         <articlePrefix>KB-</articlePrefix>
     </application-config>
 
-    <mq-config>
-        <connectionName>jms/mqConnectionFactory</connectionName>
-        <requestQueue>jms/requestQueue</requestQueue>
-        <responseQueue>jms/responseQueue</responseQueue>
-    </mq-config>
+    <agent-config>
+        <listenerType>MQ</listenerType>
+        <tcpPort /> <!-- if listener type is tcp, specify port here -->
+        <connectionName>tcp://192.168.10.53:61616</connectionName>
+        <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
+        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+        <trustStoreFile /> <!-- we always talk to the agent over an ssl conn. path to trust store here -->
+        <trustStorePass /> <!-- password to unlock truststore -->
+        <trustStoreType />
+    </agent-config>
 
     <proxy-config>
         <proxyServiceRequired>false</proxyServiceRequired>
@@ -58,11 +63,11 @@
     <ssh-config>
         <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
         <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
-        <sshUserAccount>kh05451</sshUserAccount> <!-- username to use for authentication -->
-        <sshUserSalt />
-        <sshUserPassword />
-        <sshKeyFile>/opt/cws/eSolutions/.ssh/id_rsa</sshKeyFile> <!-- path to the ssh private key -->
-        <sshKeyPassword /> <!-- password for key, if required -->
+        <sshAccount>kh05451</sshAccount> <!-- username to use for authentication -->
+        <sshSalt />
+        <sshPassword />
+        <sshKey>/opt/cws/eSolutions/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
+        <sshProperties /> <!-- password for key, if required -->
     </ssh-config>
 
     <exception-config>

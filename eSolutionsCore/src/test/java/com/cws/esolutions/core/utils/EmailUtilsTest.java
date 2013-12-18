@@ -28,6 +28,7 @@ import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
 import org.apache.commons.io.FileUtils;
 
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 /**
@@ -49,6 +50,8 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
  */
 public class EmailUtilsTest
 {
+    private static final CoreServiceBean bean = CoreServiceBean.getInstance();
+
     @Before
     public void setUp()
     {
@@ -78,7 +81,7 @@ public class EmailUtilsTest
 
         try
         {
-            EmailUtils.sendEmailMessage(message, false);
+            EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
         catch (MessagingException mx)
         {
@@ -110,7 +113,7 @@ public class EmailUtilsTest
             message.setMessageBody("This is a test message");
             message.setMessageAttachments(attachments);
 
-            EmailUtils.sendEmailMessage(message, false);
+            EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
         catch (MessagingException mx)
         {
@@ -136,7 +139,7 @@ public class EmailUtilsTest
 
         try
         {
-            EmailUtils.sendEmailMessage(message, false);
+            EmailUtils.sendEmailMessage(EmailUtilsTest.bean.getConfigData().getMailConfig(), message, false);
         }
         catch (MessagingException mx)
         {
