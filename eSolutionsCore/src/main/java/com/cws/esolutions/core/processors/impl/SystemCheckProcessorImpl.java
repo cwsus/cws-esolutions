@@ -15,16 +15,9 @@
  */
 package com.cws.esolutions.core.processors.impl;
 
-import java.util.UUID;
-import java.util.List;
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.core.utils.MQUtils;
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
@@ -32,35 +25,19 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
-import com.cws.esolutions.agent.processors.dto.SystemCheckRequest;
-import com.cws.esolutions.agent.processors.dto.SystemCheckResponse;
+import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
+import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
-import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
-import com.cws.esolutions.core.processors.exception.ServerManagementException;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
+import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /*
  * Project: eSolutionsCore
@@ -73,17 +50,17 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
  *     Created.
  */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * @see com.cws.esolutions.core.dao.processors.interfaces.ISystemCheckProcessor
  */
-public class ServerManagementProcessorImpl implements IServerManagementProcessor
+public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 {
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
     public SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException";
+        final String methodName = ISystemCheckProcessor.CNAME + "#runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
@@ -240,12 +217,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
     public SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException";
+        final String methodName = ISystemCheckProcessor.CNAME + "#runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
@@ -404,12 +381,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
     public SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException";
+        final String methodName = ISystemCheckProcessor.CNAME + "#runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
@@ -568,12 +545,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
     public SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException";
+        final String methodName = ISystemCheckProcessor.CNAME + "#runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {

@@ -29,14 +29,11 @@ import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
-import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
@@ -77,11 +74,11 @@ public interface ISystemCheckProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
 
-    SystemCheckRequest runNetstatCheck(final SystemCheckResponse request) throws SystemCheckException;
+    SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException;
 
-    SystemCheckRequest runTelnetCheck(final SystemCheckResponse request) throws SystemCheckException;
+    SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException;
 
-    SystemCheckRequest runRemoteDateCheck(final SystemCheckResponse request) throws SystemCheckException;
+    SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException;
 
-    SystemCheckRequest runProcessListCheck(final SystemCheckResponse request) throws SystemCheckException;
+    SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException;
 }

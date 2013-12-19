@@ -16,11 +16,15 @@
 package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.dto.UserAccount;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.audit.processors.interfaces
@@ -34,10 +38,15 @@ import com.cws.esolutions.core.Constants;
  */
 public class SystemCheckRequest implements Serializable
 {
-    private int targetPort = 0;
+    private int portNumber = 0;
+    private String serviceId = null;
     private String processName = null;
-    private String sourceServer = null;
-    private String targetServer = null;
+    private Server sourceServer = null;
+    private Server targetServer = null;
+    private String applicationId = null;
+    private String applicationName = null;
+    private UserAccount userAccount = null;
+    private RequestHostInfo requestInfo = null;
 
     private static final long serialVersionUID = -46841443676631031L;
     private static final String CNAME = SystemCheckRequest.class.getName();
@@ -46,9 +55,9 @@ public class SystemCheckRequest implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setTargetPort(final int value)
+    public final void setUserAccount(final UserAccount value)
     {
-        final String methodName = SystemCheckRequest.CNAME + "#setTargetPort(final int value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -56,7 +65,72 @@ public class SystemCheckRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.targetPort = value;
+        this.userAccount = value;
+    }
+
+    public final void setRequestInfo(final RequestHostInfo value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.requestInfo = value;
+    }
+
+    public final void setServiceId(final String value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setServiceId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceId = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
+
+    public final void setPortNumber(final int value)
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#setPortNumber(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.portNumber = value;
     }
 
     public final void setProcessName(final String value)
@@ -72,9 +146,9 @@ public class SystemCheckRequest implements Serializable
         this.processName = value;
     }
 
-    public final void setSourceServer(final String value)
+    public final void setSourceServer(final Server value)
     {
-        final String methodName = SystemCheckRequest.CNAME + "#setSourceServer(final String value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setSourceServer(final Server value)";
 
         if (DEBUG)
         {
@@ -85,9 +159,9 @@ public class SystemCheckRequest implements Serializable
         this.sourceServer = value;
     }
 
-    public final void setTargetServer(final String value)
+    public final void setTargetServer(final Server value)
     {
-        final String methodName = SystemCheckRequest.CNAME + "#setTargetServer(final String value)";
+        final String methodName = SystemCheckRequest.CNAME + "#setTargetServer(final Server value)";
 
         if (DEBUG)
         {
@@ -98,17 +172,82 @@ public class SystemCheckRequest implements Serializable
         this.targetServer = value;
     }
 
-    public final int getTargetPort()
+    public final UserAccount getUserAccount()
     {
-        final String methodName = SystemCheckRequest.CNAME + "#getTargetPort()";
+        final String methodName = SystemCheckRequest.CNAME + "#getUserAccount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.targetPort);
+            DEBUGGER.debug("Value: {}", this.userAccount);
         }
 
-        return this.targetPort;
+        return this.userAccount;
+    }
+
+    public final RequestHostInfo getRequestInfo()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getRequestInfo()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.requestInfo);
+        }
+
+        return this.requestInfo;
+    }
+
+    public final String getServiceId()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getServiceId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceId);
+        }
+
+        return this.serviceId;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
+    }
+
+    public final int getPortNumber()
+    {
+        final String methodName = SystemCheckRequest.CNAME + "#getPortNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.portNumber);
+        }
+
+        return this.portNumber;
     }
 
     public final String getProcessName()
@@ -124,7 +263,7 @@ public class SystemCheckRequest implements Serializable
         return this.processName;
     }
 
-    public final String getSourceServer()
+    public final Server getSourceServer()
     {
         final String methodName = SystemCheckRequest.CNAME + "#getSourceServer()";
 
@@ -137,7 +276,7 @@ public class SystemCheckRequest implements Serializable
         return this.sourceServer;
     }
 
-    public final String getTargetServer()
+    public final Server getTargetServer()
     {
         final String methodName = SystemCheckRequest.CNAME + "#getTargetServer()";
 

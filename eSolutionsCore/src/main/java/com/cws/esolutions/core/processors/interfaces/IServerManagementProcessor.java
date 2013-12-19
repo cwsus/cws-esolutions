@@ -26,14 +26,11 @@ import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
-import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
-import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
@@ -87,12 +84,4 @@ public interface IServerManagementProcessor
     ServerManagementResponse listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException;
 
     ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;
-
-    SystemCheckRequest runNetstatCheck(final SystemCheckResponse request) throws SystemCheckException;
-
-    SystemCheckRequest runTelnetCheck(final SystemCheckResponse request) throws SystemCheckException;
-
-    SystemCheckRequest runRemoteDateCheck(final SystemCheckResponse request) throws SystemCheckException;
-
-    SystemCheckRequest runProcessListCheck(final SystemCheckResponse request) throws SystemCheckException;
 }

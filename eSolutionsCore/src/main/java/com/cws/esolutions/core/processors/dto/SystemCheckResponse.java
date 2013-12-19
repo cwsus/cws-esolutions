@@ -16,8 +16,10 @@
 package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -37,6 +39,7 @@ public class SystemCheckResponse implements Serializable
 {
     private String response = null;
     private boolean isComplete = false;
+    private Object responseObject = null;
     private CoreServicesStatus requestStatus = null;
 
     private static final long serialVersionUID = -7337349584404643896L;
@@ -70,6 +73,19 @@ public class SystemCheckResponse implements Serializable
         }
 
         this.response = value;
+    }
+
+    public final void setResponseObject(final Object value)
+    {
+        final String methodName = SystemCheckResponse.CNAME + "#setResponseObject(final Object value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.responseObject = value;
     }
 
     public final void setIsComplete(final boolean value)
@@ -109,6 +125,19 @@ public class SystemCheckResponse implements Serializable
         }
 
         return this.response;
+    }
+
+    public final Object getResponseObject()
+    {
+        final String methodName = SystemCheckResponse.CNAME + "#getResponseObject()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.responseObject);
+        }
+
+        return this.responseObject;
     }
 
     public final boolean isComplete()

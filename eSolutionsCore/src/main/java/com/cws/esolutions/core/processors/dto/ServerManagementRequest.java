@@ -40,12 +40,9 @@ import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 public class ServerManagementRequest implements Serializable
 {
     private int startPage = 0;
-    private int portNumber = 0;
     private String serviceId = null;
-    private String processName = null;
     private Server sourceServer = null;
     private Server targetServer = null;
-    private String extTargetDir = null;
     private String applicationId = null;
     private boolean installAgent = false;
     private String applicationName = null;
@@ -190,45 +187,6 @@ public class ServerManagementRequest implements Serializable
         }
 
         this.serviceType = value;
-    }
-
-    public final void setPortNumber(final int value)
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#setPortNumber(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.portNumber = value;
-    }
-
-    public final void setProcessName(final String value)
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#setProcessName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.processName = value;
-    }
-
-    public final void setExtTargetDir(final String value)
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#setExtTargetDir(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.extTargetDir = value;
     }
 
     public final void setInstallAgent(final boolean value)
@@ -385,45 +343,6 @@ public class ServerManagementRequest implements Serializable
         }
 
         return this.serviceType;
-    }
-
-    public final int getPortNumber()
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#getPortNumber()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.portNumber);
-        }
-
-        return this.portNumber;
-    }
-
-    public final String getProcessName()
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#getProcessName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.processName);
-        }
-
-        return this.processName;
-    }
-
-    public final String getExtTargetDir()
-    {
-        final String methodName = ServerManagementRequest.CNAME + "#getExtTargetDir()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.extTargetDir);
-        }
-
-        return this.extTargetDir;
     }
 
     public final boolean installAgent()

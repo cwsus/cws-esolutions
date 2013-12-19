@@ -38,7 +38,6 @@ public class ServerManagementResponse implements Serializable
 {
     private int entryCount = 0;
     private Server server = null;
-    private Object responseObject = null;
     private List<Server> serverList = null;
     private CoreServicesStatus requestStatus = null;
 
@@ -101,18 +100,7 @@ public class ServerManagementResponse implements Serializable
         this.serverList = value;
     }
 
-    public final void setResponseObject(final Object value)
-    {
-        final String methodName = ServerManagementResponse.CNAME + "#setResponseObject(final Object value)";
 
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.responseObject = value;
-    }
 
     public final CoreServicesStatus getRequestStatus()
     {
@@ -164,19 +152,6 @@ public class ServerManagementResponse implements Serializable
         }
 
         return this.serverList;
-    }
-
-    public final Object getResponseObject()
-    {
-        final String methodName = ServerManagementResponse.CNAME + "#getResponseObject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.responseObject);
-        }
-
-        return this.responseObject;
     }
 
     @Override
