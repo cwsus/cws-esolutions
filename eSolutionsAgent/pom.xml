@@ -64,7 +64,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!--
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>admin-client</artifactId>
@@ -72,7 +71,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        -->
         <dependency>
             <groupId>com.ibm</groupId>
             <artifactId>wsexception</artifactId>
