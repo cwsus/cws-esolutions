@@ -48,14 +48,14 @@ import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
  *     Created.
  */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager
  */
 public class FileKeyManager implements KeyManager
 {
     private static final String CNAME = FileKeyManager.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys()
+     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
     @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException

@@ -32,8 +32,8 @@ import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOI
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.security.keymgmt.interfaces
+ * File: KeyManager.java
  *
  * History
  * ----------------------------------------------------------------------------

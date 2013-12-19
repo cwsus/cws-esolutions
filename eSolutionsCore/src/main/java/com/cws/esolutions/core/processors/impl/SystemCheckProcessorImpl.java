@@ -41,8 +41,8 @@ import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.processors
+ * File: SystemCheckProcessorImpl.java
  *
  * History
  * ----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ import com.cws.esolutions.security.access.control.exception.UserControlServiceEx
  *     Created.
  */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.ISystemCheckProcessor
+ * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
  */
 public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 {

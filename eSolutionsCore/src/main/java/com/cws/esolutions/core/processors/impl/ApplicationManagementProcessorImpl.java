@@ -88,204 +88,197 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // this is an administrative function and requires admin level
+            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+
+            if (DEBUG)
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+            }
+
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if ((isAdminAuthorized) && (isUserAuthorized))
+            {
+                String applGuid = (StringUtils.isNotEmpty(application.getApplicationGuid())) ? application.getApplicationGuid() : UUID.randomUUID().toString();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("applGuid: {}", applGuid);
                 }
 
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                List<String> validator = null;
+                response = new ApplicationManagementResponse();
+
+                try
+                {
+                    validator = appDAO.getApplicationData(applGuid);
+                }
+                catch (SQLException sqx)
+                {
+                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+                }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("validator: {}", validator);
                 }
 
-                if ((isAdminAuthorized) && (isUserAuthorized))
+                if ((validator == null) || (validator.size() == 0))
                 {
-                    String applGuid = (StringUtils.isNotEmpty(application.getApplicationGuid())) ? application.getApplicationGuid() : UUID.randomUUID().toString();
-
-                    if (DEBUG)
+                    // project does't already exist. we can add it
+                    // we are NOT adding any applications to the project YET
+                    // if there are any to add we'll do that later (its a
+                    // different table in the database)
+                    if ((application.getApplicationPlatforms() != null) && (application.getApplicationPlatforms().size() != 0))
                     {
-                        DEBUGGER.debug("applGuid: {}", applGuid);
-                    }
+                        List<String> platforms = new ArrayList<>();
 
-                    List<String> validator = null;
-                    response = new ApplicationManagementResponse();
-
-                    try
-                    {
-                        validator = appDAO.getApplicationData(applGuid);
-                    }
-                    catch (SQLException sqx)
-                    {
-                        ERROR_RECORDER.error(sqx.getMessage(), sqx);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("validator: {}", validator);
-                    }
-
-                    if ((validator == null) || (validator.size() == 0))
-                    {
-                        // project does't already exist. we can add it
-                        // we are NOT adding any applications to the project YET
-                        // if there are any to add we'll do that later (its a
-                        // different table in the database)
-                        if ((application.getApplicationPlatforms() != null) && (application.getApplicationPlatforms().size() != 0))
+                        for (Platform targetPlatform : application.getApplicationPlatforms())
                         {
-                            List<String> platforms = new ArrayList<>();
-
-                            for (Platform targetPlatform : application.getApplicationPlatforms())
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Platform: {}", targetPlatform);
-                                }
-
-                                // make sure its a valid platform
-                                if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) == null)
-                                {
-                                    throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
-                                }
-
-                                platforms.add(targetPlatform.getPlatformGuid());
-                            }
-
-                            Project targetProject = application.getApplicationProject();
-
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Project: {}", targetProject);
+                                DEBUGGER.debug("Platform: {}", targetPlatform);
                             }
 
-                            List<String> isProjectValid = projectDAO.getProjectData(targetProject.getProjectGuid());
-
-                            if (DEBUG)
+                            // make sure its a valid platform
+                            if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) == null)
                             {
-                                DEBUGGER.debug("isProjectValid: {}", isProjectValid);
+                                throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                             }
 
-                            if ((isProjectValid == null) || (isProjectValid.size() == 0))
-                            {
-                                throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
-                            }
+                            platforms.add(targetPlatform.getPlatformGuid());
+                        }
 
-                            // ok, good platform. we can add the application in
-                            List<String> appDataList = new ArrayList<>(
-                                    Arrays.asList(
-                                            applGuid,
-                                            application.getApplicationName(),
-                                            application.getApplicationVersion(),
-                                            application.getBasePath(),
-                                            application.getScmPath(),
-                                            application.getApplicationCluster(),
-                                            application.getJvmName(),
-                                            application.getApplicationInstallPath(),
-                                            application.getApplicationLogsPath(),
-                                            application.getPidDirectory(),
-                                            targetProject.getProjectGuid(),
-                                            platforms.toString()));
+                        Project targetProject = application.getApplicationProject();
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("appDataList: {}", appDataList);
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Project: {}", targetProject);
+                        }
 
-                            boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+                        List<String> isProjectValid = projectDAO.getProjectData(targetProject.getProjectGuid());
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isProjectValid: {}", isProjectValid);
+                        }
 
-                            if (isApplicationAdded)
-                            {
-                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                            }
-                            else
-                            {
-                                response.setRequestStatus(CoreServicesStatus.FAILURE);
-                            }
+                        if ((isProjectValid == null) || (isProjectValid.size() == 0))
+                        {
+                            throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
+                        }
+
+                        // ok, good platform. we can add the application in
+                        List<String> appDataList = new ArrayList<>(
+                                Arrays.asList(
+                                        applGuid,
+                                        application.getApplicationName(),
+                                        application.getApplicationVersion(),
+                                        application.getBasePath(),
+                                        application.getScmPath(),
+                                        application.getApplicationCluster(),
+                                        application.getJvmName(),
+                                        application.getApplicationInstallPath(),
+                                        application.getApplicationLogsPath(),
+                                        application.getPidDirectory(),
+                                        targetProject.getProjectGuid(),
+                                        platforms.toString()));
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("appDataList: {}", appDataList);
+                        }
+
+                        boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
+                        }
+
+                        if (isApplicationAdded)
+                        {
+                            response.setRequestStatus(CoreServicesStatus.SUCCESS);
                         }
                         else
                         {
-                            throw new ApplicationManagementException("No platform was assigned to the given application. Cannot continue.");
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
                     else
                     {
-                        // project already exists
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        throw new ApplicationManagementException("No platform was assigned to the given application. Cannot continue.");
                     }
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    // project already exists
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-                
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.ADDAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
-        }
         else
         {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+        }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.ADDAPP);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
 
         return response;
@@ -318,154 +311,147 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // this is an administrative function and requires admin level
+            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+
+            if (DEBUG)
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+            }
+
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if ((isAdminAuthorized) && (isUserAuthorized))
+            {
+                // get the current application information
+                List<String> currAppData = appDAO.getApplicationData(application.getApplicationGuid());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("currAppData: {}", currAppData);
                 }
 
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
-
-                if (DEBUG)
+                if (currAppData.get(11).split(",").length >= 1)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
+                    List<Platform> appPlatforms = new ArrayList<>();
 
-                if ((isAdminAuthorized) && (isUserAuthorized))
-                {
-                    // get the current application information
-                    List<String> currAppData = appDAO.getApplicationData(application.getApplicationGuid());
+                    for (String guid : currAppData.get(11).split(","))
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("guid: {}", guid);
+                        }
+
+                        Platform platform = new Platform();
+                        platform.setPlatformGuid(guid);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Platform: {}", platform);
+                        }
+
+                        appPlatforms.add(platform);
+                    }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("currAppData: {}", currAppData);
+                        DEBUGGER.debug("List<Platform>: {}", appPlatforms);
                     }
 
-                    if (currAppData.get(11).split(",").length >= 1)
+                    Project currentProject = new Project();
+                    currentProject.setProjectGuid(currAppData.get(9));
+
+                    if (DEBUG)
                     {
-                        List<Platform> appPlatforms = new ArrayList<>();
-
-                        for (String guid : currAppData.get(11).split(","))
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("guid: {}", guid);
-                            }
-
-                            Platform platform = new Platform();
-                            platform.setPlatformGuid(guid);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Platform: {}", platform);
-                            }
-
-                            appPlatforms.add(platform);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<Platform>: {}", appPlatforms);
-                        }
-
-                        Project currentProject = new Project();
-                        currentProject.setProjectGuid(currAppData.get(9));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Project: {}", currentProject);
-                        }
-
-                        Application currentApp = new Application();
-                        currentApp.setApplicationGuid(currAppData.get(0));
-                        currentApp.setApplicationName(currAppData.get(1));
-                        currentApp.setApplicationVersion(currAppData.get(2));
-                        currentApp.setBasePath(currAppData.get(3));
-                        currentApp.setScmPath(currAppData.get(4));
-                        currentApp.setApplicationCluster(currAppData.get(5));
-                        currentApp.setJvmName(currAppData.get(6));
-                        currentApp.setApplicationInstallPath(currAppData.get(7));
-                        currentApp.setApplicationLogsPath(currAppData.get(8));
-                        currentApp.setPidDirectory(currAppData.get(9));
-                        currentApp.setApplicationProject(currentProject);
-                        currentApp.setApplicationPlatforms(appPlatforms);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Application: {}", currentApp);
-                        }
+                        DEBUGGER.debug("Project: {}", currentProject);
                     }
-                    else
+
+                    Application currentApp = new Application();
+                    currentApp.setApplicationGuid(currAppData.get(0));
+                    currentApp.setApplicationName(currAppData.get(1));
+                    currentApp.setApplicationVersion(currAppData.get(2));
+                    currentApp.setBasePath(currAppData.get(3));
+                    currentApp.setScmPath(currAppData.get(4));
+                    currentApp.setApplicationCluster(currAppData.get(5));
+                    currentApp.setJvmName(currAppData.get(6));
+                    currentApp.setApplicationInstallPath(currAppData.get(7));
+                    currentApp.setApplicationLogsPath(currAppData.get(8));
+                    currentApp.setPidDirectory(currAppData.get(9));
+                    currentApp.setApplicationProject(currentProject);
+                    currentApp.setApplicationPlatforms(appPlatforms);
+
+                    if (DEBUG)
                     {
-                        throw new ApplicationManagementException("No platform was located for the provided application. Cannot continue.");
+                        DEBUGGER.debug("Application: {}", currentApp);
                     }
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    throw new ApplicationManagementException("No platform was located for the provided application. Cannot continue.");
                 }
             }
-            catch (SQLException sqx)
+            else
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-                
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.UPDATEAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (SQLException sqx)
         {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.UPDATEAPP);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
         
         return response;
@@ -498,103 +484,96 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // this is an administrative function and requires admin level
+            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+
+            if (DEBUG)
             {
-                // this is an administrative function and requires admin level
-                boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+            }
+
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if ((isAdminAuthorized) && (isUserAuthorized))
+            {
+                boolean isComplete = appDAO.deleteApplication(application.getApplicationGuid());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
+                    DEBUGGER.debug("isComplete: {}", isComplete);
                 }
 
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
-
-                if (DEBUG)
+                if (isComplete)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
-
-                if ((isAdminAuthorized) && (isUserAuthorized))
-                {
-                    boolean isComplete = appDAO.deleteApplication(application.getApplicationGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (isComplete)
-                    {
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                    }
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
-            catch (SQLException sqx)
+            else
             {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (AdminControlServiceException acsx)
-            {
-                ERROR_RECORDER.error(acsx.getMessage(), acsx);
-                
-                throw new ApplicationManagementException(acsx.getMessage(), acsx);
-            }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DELETEAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (SQLException sqx)
         {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (AdminControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.DELETEAPP);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
         
         return response;
@@ -627,143 +606,136 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
             {
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                List<String[]> appData = appDAO.listInstalledApplications(request.getStartPage());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("List<String[]>: {}", appData);
                 }
 
-                if (isUserAuthorized)
+                if ((appData != null) && (appData.size() != 0))
                 {
-                    List<String[]> appData = appDAO.listInstalledApplications(request.getStartPage());
+                    List<Application> appList = new ArrayList<>();
 
-                    if (DEBUG)
+                    for (String[] array : appData)
                     {
-                        DEBUGGER.debug("List<String[]>: {}", appData);
-                    }
+                        // we're getting a full list here, and then we'll pull out as necessary
+                        boolean isUserAuthorizedForProject = userControl.isUserAuthorizedForProject(userAccount, array[2]); // T2.PROJECT_GUID
 
-                    if ((appData != null) && (appData.size() != 0))
-                    {
-                        List<Application> appList = new ArrayList<>();
-
-                        for (String[] array : appData)
+                        if (DEBUG)
                         {
-                            // we're getting a full list here, and then we'll pull out as necessary
-                            boolean isUserAuthorizedForProject = userControl.isUserAuthorizedForProject(userAccount, array[2]); // T2.PROJECT_GUID
+                            DEBUGGER.debug("isUserAuthorizedForProject: {}", isUserAuthorizedForProject);
+                        }
+
+                        if (isUserAuthorizedForProject)
+                        {
+                            Project project = new Project();
+                            project.setProjectGuid(array[2]);
+                            project.setProjectName(array[3]);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("isUserAuthorizedForProject: {}", isUserAuthorizedForProject);
+                                DEBUGGER.debug("Project: {}", project);
                             }
 
-                            if (isUserAuthorizedForProject)
-                            {
-                                Project project = new Project();
-                                project.setProjectGuid(array[2]);
-                                project.setProjectName(array[3]);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Project: {}", project);
-                                }
-
-                                Application app = new Application();
-                                app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
-                                app.setApplicationName(array[1]); // T1.APPLICATION_NAME
-                                app.setApplicationProject(project);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Application: {}", app);
-                                }
-
-                                appList.add(app);
-                            }
+                            Application app = new Application();
+                            app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
+                            app.setApplicationName(array[1]); // T1.APPLICATION_NAME
+                            app.setApplicationProject(project);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("List<Application>: {}", appList);
+                                DEBUGGER.debug("Application: {}", app);
                             }
+
+                            appList.add(app);
                         }
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("applicationList: {}", appList);
+                            DEBUGGER.debug("List<Application>: {}", appList);
                         }
-
-                        response.setApplicationList(appList);
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        // no data
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                        DEBUGGER.debug("applicationList: {}", appList);
                     }
+
+                    response.setApplicationList(appList);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    // no data
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            finally
-            {
-                // audit
-                try
+                if (DEBUG)
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LISTAPPS);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                 }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (SQLException sqx)
         {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTAPPS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
         
         return response;
@@ -796,179 +768,172 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
             {
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                List<Platform> appPlatforms = null;
+                List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("appData: {}", appData);
                 }
 
-                if (isUserAuthorized)
+                if ((appData != null) && (appData.size() != 0))
                 {
-                    List<Platform> appPlatforms = null;
-                    List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
+                    Project appProject = new Project();
+                    appProject.setProjectGuid(appData.get(11)); // T2.PROJECT_GUID
+                    appProject.setProjectName(appData.get(12)); // T2.PROJECT_NAME
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("appData: {}", appData);
+                        DEBUGGER.debug("Project: {}", appProject);
                     }
 
-                    if ((appData != null) && (appData.size() != 0))
+                    if (StringUtils.split(appData.get(10), ",").length >= 1) // T1.PLATFORM_GUID
                     {
-                        Project appProject = new Project();
-                        appProject.setProjectGuid(appData.get(11)); // T2.PROJECT_GUID
-                        appProject.setProjectName(appData.get(12)); // T2.PROJECT_NAME
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(10), ","));
+                        }
+
+                        String tmp = StringUtils.remove(appData.get(10), "[");
+                        String platformList = StringUtils.remove(tmp, "]");
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Project: {}", appProject);
+                            DEBUGGER.debug("platformList: {}", platformList);
                         }
 
-                        if (StringUtils.split(appData.get(10), ",").length >= 1) // T1.PLATFORM_GUID
+                        appPlatforms = new ArrayList<>();
+
+                        for (String platformGuid : platformList.split(","))
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("platformList: {}", StringUtils.split(appData.get(10), ","));
-                            }
-
-                            String tmp = StringUtils.remove(appData.get(10), "[");
-                            String platformList = StringUtils.remove(tmp, "]");
+                            System.out.println(platformGuid);
+                            List<Object> platformData = platformDao.getPlatformData(StringUtils.trim(platformGuid));
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("platformList: {}", platformList);
+                                DEBUGGER.debug("platformData: {}", platformData);
                             }
 
-                            appPlatforms = new ArrayList<>();
-
-                            for (String platformGuid : platformList.split(","))
+                            if ((platformData != null) && (platformData.size() != 0))
                             {
-                                System.out.println(platformGuid);
-                                List<Object> platformData = platformDao.getPlatformData(StringUtils.trim(platformGuid));
+                                Platform platform = new Platform();
+                                platform.setPlatformGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
+                                platform.setPlatformName((String) platformData.get(1)); // T1.PLATFORM_NAME
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("platformData: {}", platformData);
+                                    DEBUGGER.debug("Platform: {}", platform);
                                 }
 
-                                if ((platformData != null) && (platformData.size() != 0))
-                                {
-                                    Platform platform = new Platform();
-                                    platform.setPlatformGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
-                                    platform.setPlatformName((String) platformData.get(1)); // T1.PLATFORM_NAME
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Platform: {}", platform);
-                                    }
-
-                                    appPlatforms.add(platform);
-                                }
-                                else
-                                {
-                                    throw new ApplicationManagementException("Unable to locate a valid platform for the provided application. Cannot continue.");
-                                }
+                                appPlatforms.add(platform);
                             }
-
-                            if (DEBUG)
+                            else
                             {
-                                DEBUGGER.debug("List<Platform>: {}", appPlatforms);
+                                throw new ApplicationManagementException("Unable to locate a valid platform for the provided application. Cannot continue.");
                             }
                         }
-
-                        // then put it all together
-                        Application resApplication = new Application();
-                        resApplication.setApplicationPlatforms(appPlatforms);
-                        resApplication.setApplicationProject(appProject);
-                        resApplication.setApplicationGuid(appData.get(0)); // T1.APPLICATION_GUID
-                        resApplication.setApplicationName(appData.get(1)); // T1.APPLICATION_NAME
-                        resApplication.setApplicationVersion(appData.get(2)); // T1.APPLICATION_VERSION
-                        resApplication.setBasePath(appData.get(3)); // T1.BASE_PATH
-                        resApplication.setScmPath(appData.get(4)); // T1.SCM_PATH
-                        resApplication.setApplicationCluster(appData.get(5)); // T1.CLUSTER_NAME
-                        resApplication.setJvmName(appData.get(6)); // T1.JVM_NAME
-                        resApplication.setApplicationInstallPath(appData.get(7)); // T1.INSTALL_PATH
-                        resApplication.setApplicationLogsPath(appData.get(8)); // T1.LOGS_DIRECTORY
-                        resApplication.setPidDirectory(appData.get(9)); // T1.PID_DIRECTORY
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Application: {}", resApplication);
+                            DEBUGGER.debug("List<Platform>: {}", appPlatforms);
                         }
-
-                        response.setApplication(resApplication);
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     }
-                    else
+
+                    // then put it all together
+                    Application resApplication = new Application();
+                    resApplication.setApplicationPlatforms(appPlatforms);
+                    resApplication.setApplicationProject(appProject);
+                    resApplication.setApplicationGuid(appData.get(0)); // T1.APPLICATION_GUID
+                    resApplication.setApplicationName(appData.get(1)); // T1.APPLICATION_NAME
+                    resApplication.setApplicationVersion(appData.get(2)); // T1.APPLICATION_VERSION
+                    resApplication.setBasePath(appData.get(3)); // T1.BASE_PATH
+                    resApplication.setScmPath(appData.get(4)); // T1.SCM_PATH
+                    resApplication.setApplicationCluster(appData.get(5)); // T1.CLUSTER_NAME
+                    resApplication.setJvmName(appData.get(6)); // T1.JVM_NAME
+                    resApplication.setApplicationInstallPath(appData.get(7)); // T1.INSTALL_PATH
+                    resApplication.setApplicationLogsPath(appData.get(8)); // T1.LOGS_DIRECTORY
+                    resApplication.setPidDirectory(appData.get(9)); // T1.PID_DIRECTORY
+
+                    if (DEBUG)
                     {
-                        ERROR_RECORDER.error("No applications were located for the provided data.");
-
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("Application: {}", resApplication);
                     }
+
+                    response.setApplication(resApplication);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                    ERROR_RECORDER.error("No applications were located for the provided data.");
+
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LOADAPP);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
                 }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-    
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            catch (UserControlServiceException ucsx)
-            {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-                
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            finally
-            {
-                // audit
-                try
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
                 {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.LOADAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
+
+                auditor.auditRequest(auditRequest);
             }
-        }
-        else
-        {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
         
         return response;
@@ -1004,161 +969,153 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
-            try
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
             {
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+                }
+
+                // need to authorize for project
+                boolean isAuthorizedForRequest = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("isAuthorizedForRequest: {}", isAuthorizedForRequest);
                 }
 
-                if (isUserAuthorized)
+                if (isAuthorizedForRequest)
                 {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    // need to authorize for project
-                    boolean isAuthorizedForRequest = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                    List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isAuthorizedForRequest: {}", isAuthorizedForRequest);
+                        DEBUGGER.debug("appData: {}", appData);
                     }
 
-                    if (isAuthorizedForRequest)
+                    if ((appData != null) && (appData.size() != 0))
                     {
-                        List<String> appData = appDAO.getApplicationData(application.getApplicationGuid());
+                        Application resApplication = new Application();
+                        resApplication.setApplicationGuid(appData.get(0));
+                        resApplication.setApplicationName(appData.get(1));
+                        resApplication.setApplicationVersion(appData.get(2));
+                        resApplication.setBasePath(appData.get(3));
+                        resApplication.setScmPath(appData.get(4));
+                        resApplication.setApplicationCluster(appData.get(5));
+                        resApplication.setJvmName(appData.get(6));
+                        resApplication.setApplicationInstallPath(appData.get(7));
+                        resApplication.setApplicationLogsPath(appData.get(8));
+                        resApplication.setPidDirectory(appData.get(9));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("appData: {}", appData);
+                            DEBUGGER.debug("Application: {}", resApplication);
                         }
 
-                        if ((appData != null) && (appData.size() != 0))
+                        FileManagerRequest fileRequest = new FileManagerRequest();
+
+                        if (StringUtils.isEmpty(request.getRequestFile()))
                         {
-                            Application resApplication = new Application();
-                            resApplication.setApplicationGuid(appData.get(0));
-                            resApplication.setApplicationName(appData.get(1));
-                            resApplication.setApplicationVersion(appData.get(2));
-                            resApplication.setBasePath(appData.get(3));
-                            resApplication.setScmPath(appData.get(4));
-                            resApplication.setApplicationCluster(appData.get(5));
-                            resApplication.setJvmName(appData.get(6));
-                            resApplication.setApplicationInstallPath(appData.get(7));
-                            resApplication.setApplicationLogsPath(appData.get(8));
-                            resApplication.setPidDirectory(appData.get(9));
+                            fileRequest.setRequestFile(appData.get(3)); // TODO: this should be the root dir
+                        }
+                        else
+                        {
+                            fileRequest.setRequestFile(appData.get(3) + "/" + request.getRequestFile());
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", resApplication);
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("FileManagerRequest: {}", fileRequest);
+                        }
 
-                            FileManagerRequest fileRequest = new FileManagerRequest();
+                        AgentRequest agentRequest = new AgentRequest();
+                        agentRequest.setAppName(appConfig.getAppName());
+                        agentRequest.setRequestPayload(fileRequest);
 
-                            if (StringUtils.isEmpty(request.getRequestFile()))
-                            {
-                                fileRequest.setRequestFile(appData.get(3)); // TODO: this should be the root dir
-                            }
-                            else
-                            {
-                                fileRequest.setRequestFile(appData.get(3) + "/" + request.getRequestFile());
-                            }
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AgentRequest: {}", agentRequest);
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("FileManagerRequest: {}", fileRequest);
-                            }
-
-                            AgentRequest agentRequest = new AgentRequest();
-                            agentRequest.setAppName(appConfig.getAppName());
-                            agentRequest.setRequestPayload(fileRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AgentRequest: {}", agentRequest);
-                            }
-
-                            switch (agentConfig.getListenerType())
-                            {
-                                case MQ:
-                                    String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(), agentRequest);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("correlator: {}", correlator);
-                                    }
-
-                                    if (StringUtils.isNotEmpty(correlator))
-                                    {
-                                        agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(), correlator);
-                                    }
-                                    else
-                                    {
-                                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                                        return response;
-                                    }
-
-                                    break;
-                                case TCP:
-                                    break;
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AgentResponse: {}", agentResponse);
-                            }
-
-                            if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
-                            {
-                                FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+                        switch (agentConfig.getListenerType())
+                        {
+                            case MQ:
+                                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(), agentRequest);
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
+                                    DEBUGGER.debug("correlator: {}", correlator);
                                 }
 
-                                if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                                if (StringUtils.isNotEmpty(correlator))
                                 {
-                                    if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
-                                    {
-                                        byte[] fileData = fileResponse.getFileData();
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("fileData: {}", fileData);
-                                        }
-
-                                        response.setFileData(fileData);
-                                    }
-                                    else
-                                    {
-                                        // just a directory listing
-                                        List<String> fileList = fileResponse.getDirListing();
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("fileList: {}", fileList);
-                                        }
-
-                                        response.setFileList(fileList);
-                                    }
-
-                                    response.setApplication(resApplication);
-                                    response.setCurrentPath(request.getRequestFile());
-                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(), correlator);
                                 }
                                 else
                                 {
-                                    response.setApplication(resApplication);
                                     response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                                    return response;
                                 }
+
+                                break;
+                            case TCP:
+                                break;
+                        }
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("AgentResponse: {}", agentResponse);
+                        }
+
+                        if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                        {
+                            FileManagerResponse fileResponse = (FileManagerResponse) agentResponse.getResponsePayload();
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("FileManagerResponse: {}", fileResponse);
+                            }
+
+                            if (fileResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                            {
+                                if ((fileResponse.getFileData() != null) && (fileResponse.getFileData().length != 0))
+                                {
+                                    byte[] fileData = fileResponse.getFileData();
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("fileData: {}", fileData);
+                                    }
+
+                                    response.setFileData(fileData);
+                                }
+                                else
+                                {
+                                    // just a directory listing
+                                    List<String> fileList = fileResponse.getDirListing();
+
+                                    if (DEBUG)
+                                    {
+                                        DEBUGGER.debug("fileList: {}", fileList);
+                                    }
+
+                                    response.setFileList(fileList);
+                                }
+
+                                response.setApplication(resApplication);
+                                response.setCurrentPath(request.getRequestFile());
+                                response.setRequestStatus(CoreServicesStatus.SUCCESS);
                             }
                             else
                             {
@@ -1168,14 +1125,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         }
                         else
                         {
-                            ERROR_RECORDER.error("No application data was located and no target was found on the request. Cannot continue.");
-
+                            response.setApplication(resApplication);
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
                     else
                     {
-                        response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+                        ERROR_RECORDER.error("No application data was located and no target was found on the request. Cannot continue.");
+
+                        response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
@@ -1183,60 +1141,60 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
                 }
             }
-            catch (UserControlServiceException ucsx)
+            else
             {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-            }
-            catch (UtilityException ux)
-            {
-                ERROR_RECORDER.error(ux.getMessage(), ux);
-
-                throw new ApplicationManagementException(ux.getMessage(), ux);
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                throw new ApplicationManagementException(sqx.getMessage(), sqx);
-            }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.GETFILES);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        else
+        catch (UserControlServiceException ucsx)
         {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (UtilityException ux)
+        {
+            ERROR_RECORDER.error(ux.getMessage(), ux);
+
+            throw new ApplicationManagementException(ux.getMessage(), ux);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.GETFILES);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
         }
         
         return response;
@@ -1269,69 +1227,62 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
 
-        if (reqInfo != null)
+        try
         {
+            // it also requires authorization for the service
+            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                // do deployment work here
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+        }
+        catch (UserControlServiceException ucsx)
+        {
+            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+
+            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+        }
+        finally
+        {
+            // audit
             try
             {
-                // it also requires authorization for the service
-                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.DEPLOYAPP);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
                 }
 
-                if (isUserAuthorized)
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
                 {
-                    // do deployment work here
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-                }
+
+                auditor.auditRequest(auditRequest);
             }
-            catch (UserControlServiceException ucsx)
+            catch (AuditServiceException asx)
             {
-                ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-                throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+                ERROR_RECORDER.error(asx.getMessage(), asx);
             }
-            finally
-            {
-                // audit
-                try
-                {
-                    AuditEntry auditEntry = new AuditEntry();
-                    auditEntry.setHostInfo(reqInfo);
-                    auditEntry.setAuditType(AuditType.DEPLOYAPP);
-                    auditEntry.setUserAccount(userAccount);
-                    auditEntry.setApplicationId(request.getApplicationId());
-                    auditEntry.setApplicationName(request.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                    }
-
-                    AuditRequest auditRequest = new AuditRequest();
-                    auditRequest.setAuditEntry(auditEntry);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                    }
-
-                    auditor.auditRequest(auditRequest);
-                }
-                catch (AuditServiceException asx)
-                {
-                    ERROR_RECORDER.error(asx.getMessage(), asx);
-                }
-            }
-        }
-        else
-        {
-            throw new ApplicationManagementException("No audit host info was provided. Cannot continue");
         }
         
         return response;
