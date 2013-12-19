@@ -102,7 +102,7 @@ public class SearchRequestValidator implements Validator
             DEBUGGER.debug("Pattern: {}", pattern);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "searchTerms", appConfig.getMessageValidationFailed());
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "searchTerms", this.appConfig.getMessageValidationFailed());
 
         if (!(pattern.matcher(value.getSearchTerms()).matches()))
         {

@@ -442,12 +442,12 @@ public class DNSServiceController
                     }
                     else
                     {
-                        mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                        mView.addObject(Constants.ERROR_RESPONSE, this.messageNoResultsFound);
                     }
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, response.getResponse());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoResultsFound);
                 }
 
                 mView.addObject("serviceTypes", this.serviceTypes);
