@@ -24,14 +24,14 @@ import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: DataCenter.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public class DataCenter implements Serializable
 {

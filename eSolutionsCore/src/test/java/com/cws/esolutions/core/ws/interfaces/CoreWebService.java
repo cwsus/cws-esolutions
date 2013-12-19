@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.ws.interfaces;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.ws.interfaces
+ * File: CoreWebService.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import javax.xml.ws.Endpoint;
 import org.slf4j.LoggerFactory;
@@ -25,23 +35,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.ws.impl.CoreRequestProcessorService;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.agent.listener
- * AgentWSListener.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Nov 12, 2012 12:32:24 PM
- *     Created.
- */
+
 public class CoreWebService
 {
     private String serviceURL = null;

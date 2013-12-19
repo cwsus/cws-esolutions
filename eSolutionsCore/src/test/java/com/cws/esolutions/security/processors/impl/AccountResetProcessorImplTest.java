@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,39 +14,33 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: AccountResetProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.processors.impl
- * AccountResetProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 10:24:03 AM
- *     Created.
- */
+
 public class AccountResetProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;

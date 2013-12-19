@@ -11,13 +11,13 @@
 
     <import resource="classpath:/eSolutions/mailTemplates/OnlineReset.xml" />
 
-    <bean id="onlineResetValidator" class="com.cws.us.esolutions.validators.OnlineResetValidator">
+    <bean id="onlineResetValidator" class="com.cws.esolutions.web.validators.OnlineResetValidator">
         <property name="messageAnswerRequired" value="error.answer.empty" />
         <property name="messageEmailAddressRequired" value="error.email.required" />
         <property name="messageUsernameRequired" value="error.username.empty" />
     </bean>
 
-    <bean id="onlineResetController" class="com.cws.us.esolutions.controllers.OnlineResetController">
+    <bean id="onlineResetController" class="com.cws.esolutions.web.controllers.OnlineResetController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -29,7 +29,8 @@
         </property>
         <property name="allowUserReset" value="true" /> <!-- enable/disable user reset process -->
         <property name="resetURL" value="/ui/online-reset/forgot-password/" />
-        <property name="messageOlrComplete" value="olr.request.complete" />
+        <property name="messageRequestComplete" value="olr.request.complete" />
+        <property name="messageRequestFailure" value="olr.request.failure" />
         <property name="submitAnswersPage" value="OnlineReset_SubmitAnswers" />
         <property name="submitUsernamePage" value="OnlineReset_SubmitUsername" />
         <property name="submitEmailAddrPage" value="OnlineReset_ForgotUsername" />

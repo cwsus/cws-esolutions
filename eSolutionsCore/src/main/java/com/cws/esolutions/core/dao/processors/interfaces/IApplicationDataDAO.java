@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.interfaces;
-/**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.processors.interfaces
+ * File: IApplicationDataDAO.java
  *
- * @author khuntly
- * @version 1.0
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import org.slf4j.Logger;
@@ -31,15 +34,13 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImpl.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:04:41 PM
- *     Created.
+ * @author khuntly
+ * @version 1.0
  */
 public interface IApplicationDataDAO
 {

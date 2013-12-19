@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.ws.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.ws.impl
+ * File: CoreRequestProcessorService.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
@@ -34,18 +44,8 @@ import com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * @see com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService
  */
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",

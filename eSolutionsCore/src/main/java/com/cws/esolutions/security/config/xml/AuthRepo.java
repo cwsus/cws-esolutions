@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.config.xml;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.config.xml
+ * File: AuthRepo.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -26,15 +36,13 @@ import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.config.enums.AuthRepositoryType;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * @author khuntly
+ * @version 1.0
  */
 @XmlType(name = "auth-repo")
 @XmlAccessorType(XmlAccessType.NONE)

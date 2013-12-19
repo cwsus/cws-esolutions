@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: DatacenterManagementProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
@@ -37,23 +47,7 @@ import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
-/**
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: DatacenterManagementProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author 35033355
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Oct 22, 2013 12:42:00 PM
- *     Created.
- */
+
 public class DatacenterManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

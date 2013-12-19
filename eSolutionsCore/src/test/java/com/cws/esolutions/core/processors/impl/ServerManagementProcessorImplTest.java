@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ServerManagementProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
@@ -41,23 +51,7 @@ import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServiceManagementImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Apr 5, 2013 3:30:30 PM
- *     Created.
- */
+
 public class ServerManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

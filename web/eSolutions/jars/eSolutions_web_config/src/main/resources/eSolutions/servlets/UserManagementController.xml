@@ -11,7 +11,7 @@
 
     <import resource="classpath:/eSolutions/mailTemplates/UserManagement.xml" />
 
-    <bean id="accountValidator" class="com.cws.us.esolutions.validators.UserAccountValidator">
+    <bean id="accountValidator" class="com.cws.esolutions.web.validators.UserAccountValidator">
         <property name="messageUsernameRequired" value="user.mgmt.user.name.required" />
         <property name="messageEmailAddrRequired" value="user.mgmt.user.email.required" />
         <property name="messageGivenNameRequired" value="user.mgmt.user.givenname.required" />
@@ -20,7 +20,7 @@
         <property name="messageUserRoleRequired" value="user.mgmt.user.role.required" />
     </bean>
 
-    <bean id="userManagementController" class="com.cws.us.esolutions.controllers.UserManagementController">
+    <bean id="userManagementController" class="com.cws.esolutions.web.controllers.UserManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -34,21 +34,20 @@
         <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
         <property name="serviceName" value="userAdmin" />
         <property name="recordsPerPage" value="20" />
+        <property name="accountCreatedEmail" ref="accountCreatedEmail" />
+        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
         <property name="resetURL" value="/ui/olr/forgot-password/" />
         <property name="viewUserPage" value="UserManagement_ViewUser" />
         <property name="viewAuditPage" value="UserManagement_UserAudit" />
         <property name="createUserPage" value="UserManagement_CreateUser" />
         <property name="searchUsersPage" value="UserManagement_UserSearch" />
-        <property name="messageResetComplete" value="user.mgmt.reset.user.success" />
-        <property name="messageNoUsersFound" value="no.users.found.for.criteria" />
-        <property name="messageAccountCreated" value="user.mgmt.create.user.success" />
-        <property name="messageRoleChangedSuccessfully" value="user.mgmt.role.changed.successfully" />
-        <property name="messageAccountLocked" value="user.mgmt.account.locked" />
-        <property name="messageAccountUnlocked" value="user.mgmt.account.unlocked" />
-        <property name="messageAccountUnsuspended" value="user.mgmt.account.unsuspended" />
-        <property name="messageAccountSuspended" value="user.mgmt.account.suspended" />
-        <property name="messageProjectLoadFailed" value="user.mgmt.project.load.failed" />
-        <property name="accountCreatedEmail" ref="accountCreatedEmail" />
-        <property name="forgotPasswordEmail" ref="forgotPasswordEmail" />
+        <property name="messageAddUserSuccess" value="user.mgmt.add.user.success" />
+        <property name="messageAddUserFailed" value="user.mgmt.add.user.failed" />
+        <property name="messageRoleChangedSuccess" value="user.mgmt.role.change.success" />
+        <property name="messageAccountResetSuccess" value="user.mgmt.reset.user.success" />
+        <property name="messageAccountLockSuccess" value="user.mgmt.account.lock.success" />
+        <property name="messageAccountUnlockSuccess" value="user.mgmt.account.unlock.success" />
+        <property name="messageAccountUnsuspendSuccess" value="user.mgmt.account.unsuspend.success" />
+        <property name="messageAccountSuspendSuccess" value="user.mgmt.account.suspend.success" />
     </bean>
 </beans>

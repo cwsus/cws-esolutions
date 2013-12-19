@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.keymgmt.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.keymgmt.impl
+ * File: SQLKeyManager.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.sql.ResultSet;
 import java.sql.Connection;
 import javax.sql.DataSource;
@@ -34,18 +44,8 @@ import java.security.spec.InvalidKeySpecException;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager
  */
 public class SQLKeyManager implements KeyManager
 {

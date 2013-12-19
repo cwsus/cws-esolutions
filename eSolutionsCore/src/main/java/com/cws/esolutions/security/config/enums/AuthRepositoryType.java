@@ -16,13 +16,22 @@
 package com.cws.esolutions.security.config.enums;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.security.config.enums
+ * File: AuthRepositoryType.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
 public enum AuthRepositoryType
 {

@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.utils
+ * File: NetworkUtils.java
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
 import java.io.File;
 import java.util.List;
 import java.net.Socket;
@@ -66,20 +75,13 @@ import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
- * Kevin Huntly         05/30/2013 11:41:18             Add in ssh method. It currently uses the
- * IgnoreHostKeyVerification for
- * hostkey verification, sadly, this should not be the way it is. But at
- * the moment, there isn't a way for jsch to import a host key and save it
+ * @author khuntly
+ * @version 1.0
  */
 public final class NetworkUtils
 {

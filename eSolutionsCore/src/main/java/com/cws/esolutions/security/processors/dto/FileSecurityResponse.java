@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.dto;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.dto
+ * File: FileSecurityResponse.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -23,16 +33,13 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * @author khuntly
+ * @version 1.0
  */
 public class FileSecurityResponse implements Serializable
 {

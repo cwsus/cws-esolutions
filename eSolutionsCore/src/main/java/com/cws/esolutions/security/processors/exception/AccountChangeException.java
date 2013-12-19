@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.exception;
-
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.security.processors.exception
+ * File: AccountChangeException.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * @see com.cws.esolutions.security.exception.SecurityServiceException
  */

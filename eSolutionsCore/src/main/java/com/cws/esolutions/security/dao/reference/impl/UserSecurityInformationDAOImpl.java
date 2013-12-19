@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.reference.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.reference.impl
+ * File: UserSecurityInformationDAOImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
@@ -24,18 +34,8 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImpl.java
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:04:41 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
+ * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO
  */
 public class UserSecurityInformationDAOImpl implements IUserSecurityInformationDAO
 {

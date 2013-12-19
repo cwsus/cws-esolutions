@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.processors.impl
+ * File: KnowledgeBaseDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.junit.Test;
 import java.util.Arrays;
@@ -27,25 +37,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.KnowledgeBaseDAOImplTest.dao.processors.impl
- * KnowledgeBaseDAOImplTest.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 4, 2013 3:09:29 PM
- *     Created.
- */
+
 public class KnowledgeBaseDAOImplTest
 {
     private static final IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();

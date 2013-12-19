@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: SearchProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -33,25 +43,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * SearchProcessorImplTest.java
- *
- *
- *
- * $Id: SearchProcessorImplTest.java 2287 2013-01-03 20:52:22Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: 2013-01-03 15:52:22 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2287 $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Nov 21, 2012 8:40:21 AM
- *     Created.
- */
+
 public class SearchProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

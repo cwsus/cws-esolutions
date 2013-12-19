@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.audit.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.audit.impl
+ * File: AuditDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.junit.Test;
 import org.junit.After;
@@ -28,23 +38,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.dao.audit.impl
- * AuditDAOImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Apr 5, 2013 1:05:26 PM
- *     Created.
- */
+
 public class AuditDAOImplTest
 {
     private static final IAuditDAO auditDAO = new AuditDAOImpl();

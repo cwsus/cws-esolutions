@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.utils
+ * File: MQUtilsTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
@@ -27,23 +37,7 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.utils
- * MQUtilsTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 11, 2013 12:41:03 PM
- *     Created.
- */
+
 public class MQUtilsTest
 {
     CoreServiceBean bean = CoreServiceBean.getInstance();

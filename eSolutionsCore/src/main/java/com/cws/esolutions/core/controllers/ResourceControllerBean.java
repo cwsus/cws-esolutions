@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.controllers;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.controllers
+ * File: ResourceControllerBean.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Map;
 import org.slf4j.Logger;
 import javax.sql.DataSource;
@@ -23,15 +33,13 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * @author khuntly
+ * @version 1.0
  */
 public class ResourceControllerBean implements Serializable
 {

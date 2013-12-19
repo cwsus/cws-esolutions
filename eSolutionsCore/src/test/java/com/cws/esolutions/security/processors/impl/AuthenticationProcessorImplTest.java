@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: AuthenticationProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -33,23 +43,7 @@ import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-/**
- * SecurityService
- * com.cws.esolutions.security.processors.impl
- * AgentAuthenticationProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 22, 2012 12:55:33 PM
- *     Created.
- */
+
 public class AuthenticationProcessorImplTest
 {
     private static RequestHostInfo hostInfo = null;

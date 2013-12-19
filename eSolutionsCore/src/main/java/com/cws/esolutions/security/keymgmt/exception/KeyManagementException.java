@@ -16,18 +16,20 @@
 package com.cws.esolutions.security.keymgmt.exception;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.security.keymgmt.exception
+ * File: KeyManagementException.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
- * @see java.lang.Exception
+ * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
-public class KeyManagementException extends Exception
+public class KeyManagementException extends SecurityServiceException
 {
     private static final long serialVersionUID = -6006500480862957327L;
 

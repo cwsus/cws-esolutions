@@ -16,13 +16,22 @@
 package com.cws.esolutions.security.dao.userauth.enums;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.security.dao.userauth.enums
+ * File: LogoffReasonCode.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
 public enum LogoffReasonCode
 {

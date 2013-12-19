@@ -11,7 +11,7 @@
 
     <import resource="classpath:/eSolutions/mailTemplates/ContactResponse.xml" />
 
-    <bean id="commonController" class="com.cws.us.esolutions.controllers.CommonController">
+    <bean id="commonController" class="com.cws.esolutions.web.controllers.CommonController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>

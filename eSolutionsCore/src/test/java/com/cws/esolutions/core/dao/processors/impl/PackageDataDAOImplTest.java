@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,30 +14,22 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.processors.impl
+ * File: PackageDataDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Assert;
 import org.junit.Before;
 
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.processors.impl
- * PackageDataDAOImplTest.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 4, 2013 3:09:50 PM
- *     Created.
- */
+
 public class PackageDataDAOImplTest
 {
     @Before

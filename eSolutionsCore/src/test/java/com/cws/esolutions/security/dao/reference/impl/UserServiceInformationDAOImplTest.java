@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.reference.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.reference.impl
+ * File: UserServiceInformationDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
@@ -23,25 +33,7 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.dao.reference.impl
- * UserServiceInformationDAOImplTest.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Apr 5, 2013 1:40:02 PM
- *     Created.
- */
+
 public class UserServiceInformationDAOImplTest
 {
     private static final IUserServiceInformationDAO userSvcDAO = new UserServiceInformationDAOImpl();

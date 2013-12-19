@@ -39,7 +39,7 @@ import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
  * $Author: $
  * $Date: $
  * $Revision: $
- * @author 35033355
+ * @author kmhuntly@gmail.com
  * @version 1.0
  *
  * History

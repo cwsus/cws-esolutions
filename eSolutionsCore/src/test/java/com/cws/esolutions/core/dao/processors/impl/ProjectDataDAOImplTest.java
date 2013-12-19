@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.processors.impl
+ * File: ProjectDataDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.UUID;
 import java.util.List;
 import org.junit.Test;
@@ -27,25 +37,7 @@ import java.sql.SQLException;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.dao.processors.impl
- * ProjectDataDAOImplTest.java
- *
- *
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ May 24, 2013 10:19:08 AM
- *     Created.
- */
+
 public class ProjectDataDAOImplTest
 {
     private static final IProjectDataDAO dao = new ProjectDataDAOImpl();

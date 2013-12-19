@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.listeners;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.listeners
+ * File: SecurityServiceListener.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.net.URL;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -41,16 +51,6 @@ import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
  * @see javax.servlet.ServletContextListener
  */

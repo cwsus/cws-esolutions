@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.exception;
-
-import com.unboundid.ldap.sdk.ResultCode;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.security.exception
+ * File: SecurityServiceException.java
  *
  * History
  * ----------------------------------------------------------------------------
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
+import com.unboundid.ldap.sdk.ResultCode;
 /**
  * @see java.lang.Exception
  */

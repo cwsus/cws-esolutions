@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +14,25 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: PlatformManagementProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.UUID;
-
 import org.junit.Test;
 import org.junit.After;
-
 import java.util.Arrays;
-
 import org.junit.Assert;
 import org.junit.Before;
-
 import java.util.ArrayList;
-
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -45,23 +50,7 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * PlatformManagementProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 4, 2013 1:46:05 PM
- *     Created.
- */
+
 public class PlatformManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

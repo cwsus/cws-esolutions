@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ServiceMessagingProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -35,23 +45,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * ServiceMessagingProcessorTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Apr 29, 2013 2:51:21 PM
- *     Created.
- */
+
 public class ServiceMessagingProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

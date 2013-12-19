@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.ws.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package:com.cws.esolutions.core.ws.impl
+ * File: CoreRequestProcessorServiceTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.net.URL;
 import org.junit.Test;
 import org.junit.Assert;
@@ -34,23 +44,7 @@ import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.webservice.impl
- * WebServiceRequestProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ May 23, 2013 11:50:01 AM
- *     Created.
- */
+
 public class CoreRequestProcessorServiceTest
 {
     private ICoreRequestProcessorService webService = null;

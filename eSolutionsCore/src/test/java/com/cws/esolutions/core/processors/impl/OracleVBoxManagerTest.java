@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: OracleVBoxManagerTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -29,32 +39,16 @@ import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
-import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.core.processors.factory.VirtualManagerFactory;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
+import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
+import com.cws.esolutions.core.processors.factory.VirtualManagerFactory;
+import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
 import com.cws.esolutions.core.processors.exception.VirtualServiceException;
-import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.impl
- * OracleVBoxManagerTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * khuntly @ Apr 19, 2013 7:47:32 AM
- *     Created.
- */
+
 public class OracleVBoxManagerTest
 {
     private static UserAccount userAccount = null;

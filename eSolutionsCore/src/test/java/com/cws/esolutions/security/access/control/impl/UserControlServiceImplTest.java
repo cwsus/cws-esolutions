@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.access.control.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.access.control.impl
+ * File: UserControlServiceImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -30,25 +40,7 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-/**
- * SecurityService
- * com.cws.esolutions.security.access.control.impl
- * UserControlServiceImplTest.java
- *
- *
- *
- * $Id: UserControlServiceImplTest.java 2276 2013-01-03 16:32:52Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Nov 21, 2012 12:47:12 PM
- *     Created.
- */
+
 public class UserControlServiceImplTest
 {
     private static UserAccount userAccount = null;

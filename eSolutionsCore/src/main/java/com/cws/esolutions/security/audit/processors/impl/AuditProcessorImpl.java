@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.audit.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.audit.processors.impl
+ * File: AuditProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Date;
 import java.util.List;
 import java.util.ArrayList;
@@ -31,18 +41,8 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImpl.java
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:04:41 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
+ * @see com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor
  */
 public class AuditProcessorImpl implements IAuditProcessor
 {

@@ -22,7 +22,7 @@ package com.cws.esolutions.security;
  * History
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
 public class SecurityConstants

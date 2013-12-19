@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.reference.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.reference.impl
+ * File: UserSecurityInformationDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,23 +35,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security.dao.reference.impl
- * UserSecurityInformationDAOImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 11, 2013 12:43:18 PM
- *     Created.
- */
+
 public class UserSecurityInformationDAOImplTest
 {
     private static String resetId = null;

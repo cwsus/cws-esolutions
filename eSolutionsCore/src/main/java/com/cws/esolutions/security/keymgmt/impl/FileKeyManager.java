@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.keymgmt.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.keymgmt.impl
+ * File: FileKeyManager.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,16 +47,6 @@ import java.security.spec.InvalidKeySpecException;
 
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
  * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager
  */

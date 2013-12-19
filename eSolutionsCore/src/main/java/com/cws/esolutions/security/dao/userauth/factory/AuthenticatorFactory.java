@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.userauth.factory;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.userauth.factory
+ * File: AuthenticatorFactory.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
  */
 public class AuthenticatorFactory
 {

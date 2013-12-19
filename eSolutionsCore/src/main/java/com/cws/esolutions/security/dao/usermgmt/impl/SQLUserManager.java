@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.usermgmt.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.usermgmt.impl
+ * File: SQLUserManager.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Map;
 import java.util.List;
 import java.sql.ResultSet;
@@ -28,18 +38,8 @@ import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager
  */
 public class SQLUserManager implements UserManager
 {

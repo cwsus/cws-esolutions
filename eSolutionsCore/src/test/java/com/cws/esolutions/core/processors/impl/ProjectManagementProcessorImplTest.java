@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ProjectManagementProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -37,23 +47,7 @@ import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
-/**
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: ProjectManagementProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author 35033355
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Oct 11, 2013 12:24:53 PM
- *     Created.
- */
+
 public class ProjectManagementProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

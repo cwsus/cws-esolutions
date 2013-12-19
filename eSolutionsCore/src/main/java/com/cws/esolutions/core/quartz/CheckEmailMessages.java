@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.quartz;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.quartz
+ * File: CheckEmailMessages.java
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
 import java.util.Map;
 import java.util.List;
 import org.quartz.Job;
@@ -33,18 +42,13 @@ import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.utils.PasswordUtils;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
 public class CheckEmailMessages implements Job
 {

@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.userauth.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.userauth.impl
+ * File: LDAPAuthenticator.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -39,18 +49,8 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImpl.java
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:04:41 PM
- *     Created.
- */
 /**
- * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
+ * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
  */
 public class LDAPAuthenticator implements Authenticator
 {

@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.dao.userauth.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.dao.userauth.impl
+ * File: SQLAuthenticator.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
@@ -27,16 +37,6 @@ import java.sql.PreparedStatement;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
- *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- */
 /**
  * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator
  */

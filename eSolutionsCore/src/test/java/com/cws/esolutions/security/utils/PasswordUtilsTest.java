@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.utils
+ * File: PasswordUtilsTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -25,23 +35,7 @@ import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.security
- * SecurityFunctionProcessorTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 24, 2013 8:47:20 AM
- *     Created.
- */
+
 public class PasswordUtilsTest
 {
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();

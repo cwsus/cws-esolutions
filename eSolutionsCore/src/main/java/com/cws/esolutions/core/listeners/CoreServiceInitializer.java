@@ -31,13 +31,14 @@ import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.listeners
+ * File: CoreServiceInitializer.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public class CoreServiceInitializer
 {

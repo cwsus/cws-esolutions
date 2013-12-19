@@ -13,19 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @see java.lang.Exception
+ */
 package com.cws.esolutions.core.exception;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.exception
+ * File: CoreServiceException.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
-/**
- * @see java.lang.Exception
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public class CoreServiceException extends Exception
 {

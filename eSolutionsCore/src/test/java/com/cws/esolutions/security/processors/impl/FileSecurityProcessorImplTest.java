@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -35,23 +45,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.impl.FileSecurityProcessorImpl;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
-/**
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 15, 2013 10:17:32 AM
- *     Created.
- */
+
 public class FileSecurityProcessorImplTest
 {
     private static UserAccount userAccount = new UserAccount();

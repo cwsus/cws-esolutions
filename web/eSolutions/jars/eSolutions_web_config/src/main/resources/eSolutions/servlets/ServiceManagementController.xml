@@ -9,14 +9,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean id="platformRequestValidator" class="com.cws.us.esolutions.validators.PlatformValidator">
+    <bean id="platformRequestValidator" class="com.cws.esolutions.web.validators.PlatformValidator">
         <property name="messagePlatformStatusRequired" value="svc.mgmt.service.status.required" />
         <property name="messagePlatformNameRequired" value="svc.mgmt.service.name.required" />
         <property name="messagePlatformAppServersRequired" value="svc.mgmt.platform.appservers.required" />
         <property name="messagePlatformWebServersRequired" value="svc.mgmt.platform.webservers.required" />
     </bean>
 
-    <bean id="projectRequestValidator" class="com.cws.us.esolutions.validators.ProjectValidator">
+    <bean id="projectRequestValidator" class="com.cws.esolutions.web.validators.ProjectValidator">
         <property name="messageProjectStatusRequired" value="svc.mgmt.service.status.required" />
         <property name="messageProjectNameRequired" value="svc.mgmt.service.name.required" />
         <property name="messageDevEmailRequired" value="svc.mgmt.project.dev.email.required" />
@@ -26,19 +26,19 @@
         <property name="messagePrimaryContactRequired" value="svc.mgmt.project.primary.contact.required" />
     </bean>
 
-    <bean id="datactrValidator" class="com.cws.us.esolutions.validators.DatacenterValidator">
+    <bean id="datactrValidator" class="com.cws.esolutions.web.validators.DatacenterValidator">
         <property name="messageDatacenterNameRequired" value="svc.mgmt.service.name.required" />
         <property name="messageDatacenterStatusRequired" value="svc.mgmt.service.status.required" />
         <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.datacenter.description.required" />
     </bean>
 
-    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">
+    <bean id="searchRequestValidator" class="com.cws.esolutions.web.validators.SearchRequestValidator">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
     </bean>
 
-    <bean id="serviceManagementController" class="com.cws.us.esolutions.controllers.ServiceManagementController">
+    <bean id="serviceManagementController" class="com.cws.esolutions.web.controllers.ServiceManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -60,9 +60,6 @@
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
         <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
-        <property name="messagePlatformSuccessfullyAdded" value="svc.mgmt.platform.added" />
-        <property name="messageDatacenterSuccessfullyAdded" value="svc.mgmt.datacenter.added" />
-        <property name="messageProjectSuccessfullyAdded" value="svc.mgmt.project.added" />
         <property name="recordsPerPage" value="20" />
         <property name="addProjectPage" value="ServiceMgmt_AddProject" />
         <property name="selectDmgrPage" value="ServiceMgmt_SelectDmgr" />
@@ -80,5 +77,11 @@
         <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
         <property name="addProjectRedirect" value="redirect:/ui/service-management/add-project" />
         <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
+        <property name="messagePlatformAddSuccess" value="svc.mgmt.platform.add.success" />
+        <property name="messagePlatformAddFailure" value="svc.mgmt.platform.add.failure" />
+        <property name="messageDatacenterAddSuccess" value="svc.mgmt.datacenter.add.success" />
+        <property name="messageDatacenterAddFailure" value="svc.mgmt.datacenter.add.failure" />
+        <property name="messageProjectAddSuccess" value="svc.mgmt.project.add.success" />
+        <property name="messageProjectAddFailure" value="svc.mgmt.project.add.failure" />
     </bean>
 </beans>

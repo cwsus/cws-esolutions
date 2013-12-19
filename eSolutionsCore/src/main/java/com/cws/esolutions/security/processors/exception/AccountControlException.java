@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.exception;
-
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.security.processors.exception
+ * File: AccountControlException.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * @see com.cws.esolutions.security.exception.SecurityServiceException
  */

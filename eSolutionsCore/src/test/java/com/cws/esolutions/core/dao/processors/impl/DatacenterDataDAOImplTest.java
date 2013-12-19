@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.processors.impl
+ * File: DatacenterDataDAOImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
@@ -26,23 +36,7 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
-/**
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.processors.impl
- * File: DatacenterDataDAOImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author 35033355
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Oct 22, 2013 12:41:42 PM
- *     Created.
- */
+
 public class DatacenterDataDAOImplTest
 {
     private static final IDatacenterDataDAO dao = new DatacenterDataDAOImpl();

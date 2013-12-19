@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.utils
+ * File: MQUtils.java
+ *
+ * History
+ * ----------------------------------------------------------------------------
+ * kh05451 @ Jan 4, 2013 3:36:54 PM
+ *     Created.
+ */
 import org.slf4j.Logger;
 import javax.jms.Session;
 import java.io.Serializable;
@@ -35,15 +44,13 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * @author khuntly
+ * @version 1.0
  */
 public final class MQUtils
 {

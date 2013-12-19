@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
+ */
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
@@ -41,16 +43,14 @@ import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors
+ * Package: com.cws.esolutions.core.processors.impl
  * File: SystemCheckProcessorImpl.java
  *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
-/**
- * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 {

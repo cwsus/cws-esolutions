@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: DNSServiceRequestImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.junit.Test;
 import org.junit.After;
@@ -41,23 +51,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.processors.test
- * DNSServiceRequestImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 3:17:41 PM
- *     Created.
- */
+
 public class DNSServiceRequestImplTest
 {
     private static UserAccount userAccount = new UserAccount();

@@ -28,14 +28,14 @@ import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: ServerManagementRequest.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public class ServerManagementRequest implements Serializable
 {

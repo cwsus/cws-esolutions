@@ -22,22 +22,22 @@
         </property>
     </bean>
 
-    <bean id="messageValidator" class="com.cws.us.esolutions.validators.EmailMessageValidator">
+    <bean id="messageValidator" class="com.cws.esolutions.web.validators.EmailMessageValidator">
         <property name="messageSubjectRequired" value="theme.subject.required" />
         <property name="messageBodyRequired" value="theme.body.required" />
         <property name="messageFromRequired" value="theme.from.required" />
     </bean>
 
-    <bean id="addressValidator" class="com.cws.us.esolutions.validators.EmailAddressValidator">
+    <bean id="addressValidator" class="com.cws.esolutions.web.validators.EmailAddressValidator">
         <property name="messageEmailAddressRequired" value="email.source.addr.required" />
     </bean>
 
     <bean id="secConfig" class="com.cws.esolutions.security.config.xml.SecurityConfig" />
 
-    <bean id="coreConfig" class="com.cws.esolutions.core.config..xml.CoreServiceBean" />
+    <bean id="coreConfig" class="com.cws.esolutions.core.config.xml.CoreServiceBean" />
 
     <!-- application configuration -->
-    <bean id="appConfig" class="com.cws.us.esolutions.ApplicationServiceBean">
+    <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean">
         <property name="securityConfig">
             <ref bean="secConfig" />
         </property>

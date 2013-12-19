@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.quartz;
-
-import org.quartz.Job;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.quartz.JobExecutionContext;
-
-import com.cws.esolutions.core.Constants;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
+ * Package: com.cws.esolutions.core.quartz
+ * File: Deployer.java
  *
  * History
  * ----------------------------------------------------------------------------
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
+import org.quartz.Job;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.quartz.JobExecutionContext;
+
+import com.cws.esolutions.core.Constants;
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
 public class Deployer implements Job
 {

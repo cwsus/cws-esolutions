@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.access.control.interfaces;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.access.control.interfaces
+ * File: IEmailControlService.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,16 +37,13 @@ import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
+ * @author khuntly
+ * @version 1.0
  */
 public interface IEmailControlService
 {

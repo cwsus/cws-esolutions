@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.quartz;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.quartz
+ * File: PasswordExpirationNotifier.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Map;
 import java.util.List;
 import org.quartz.Job;
@@ -34,16 +44,6 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
  * @see com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO
  */

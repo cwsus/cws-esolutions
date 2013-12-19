@@ -11,7 +11,7 @@
 
     <import resource="classpath:/eSolutions/mailTemplates/Knowledgebase.xml" />
 
-    <bean id="validator" class="com.cws.us.esolutions.validators.ArticleValidator">
+    <bean id="validator" class="com.cws.esolutions.web.validators.ArticleValidator">
         <property name="messageArticleTitleRequired" value="kbase.article.title.required" />
         <property name="messageArticleCauseRequired" value="kbase.article.cause.required" />
         <property name="messageArticleKeywordsRequired" value="kbase.article.keywords.required" />
@@ -19,13 +19,13 @@
         <property name="messageArticleResolutionRequired" value="kbase.article.resolution.required" />        
     </bean>
 
-    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">
+    <bean id="searchRequestValidator" class="com.cws.esolutions.web.validators.SearchRequestValidator">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
     </bean>
 
-    <bean id="knowledgeBaseController" class="com.cws.us.esolutions.controllers.KnowledgeBaseController">
+    <bean id="knowledgeBaseController" class="com.cws.esolutions.web.controllers.KnowledgeBaseController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
@@ -55,5 +55,6 @@
         <property name="deleteArticleEmail" ref="deleteArticleEmail" />
         <property name="createArticleEmail" ref="createArticleEmail" />
         <property name="approveArticleEmail" ref="approveArticleEmail" />
+        <property name="messageAddArticleSuccess" value="kbase.article.add.success" />
     </bean>
 </beans>

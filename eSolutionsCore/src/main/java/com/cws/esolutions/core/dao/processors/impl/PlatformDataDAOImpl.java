@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.dao.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.dao.interfaces
+ * File: IPackageDataDAO.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
@@ -25,16 +35,6 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.dao.interfaces
- * File: IPackageDataDAO.java
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
- */
 /**
  * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO
  */

@@ -9,12 +9,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean id="checkValidator" class="com.cws.us.esolutions.validators.SystemCheckValidator">
+    <bean id="checkValidator" class="com.cws.esolutions.web.validators.SystemCheckValidator">
         <property name="messageTargetNameRequired" value="system.error.no.target.name" />
         <property name="messageTargetPortRequired" value="error.no.target.port" />
     </bean>
 
-    <bean id="systemCheckController" class="com.cws.us.esolutions.controllers.SystemCheckController">
+    <bean id="systemCheckController" class="com.cws.esolutions.web.controllers.SystemCheckController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>

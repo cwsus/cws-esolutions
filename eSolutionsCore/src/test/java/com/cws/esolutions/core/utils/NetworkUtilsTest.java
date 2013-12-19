@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.utils
+ * File: NetworkUtilsTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
 
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.utils
- * NetworkUtilsTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ May 30, 2013 9:32:47 AM
- *     Created.
- */
+
 public class NetworkUtilsTest
 {
     @Before

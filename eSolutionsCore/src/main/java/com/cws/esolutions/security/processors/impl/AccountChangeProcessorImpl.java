@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: AccountChangeProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
@@ -43,16 +53,6 @@ import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
- *
- * History
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
- */
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor
  */

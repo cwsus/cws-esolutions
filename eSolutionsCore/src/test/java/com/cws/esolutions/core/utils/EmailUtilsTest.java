@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.utils;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.utils
+ * File: EmailUtilsTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Map;
 import org.junit.Test;
 import org.junit.Before;
@@ -31,23 +41,7 @@ import org.apache.commons.io.FileUtils;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
-/**
- * eSolutionsCore
- * com.cws.esolutions.core.utils
- * EmailUtilsTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jun 11, 2013 12:40:46 PM
- *     Created.
- */
+
 public class EmailUtilsTest
 {
     private static final CoreServiceBean bean = CoreServiceBean.getInstance();

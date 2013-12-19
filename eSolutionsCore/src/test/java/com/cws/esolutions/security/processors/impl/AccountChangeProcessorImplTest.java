@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: AccountChangeProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -35,23 +45,7 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
-/**
- * SecurityService
- * com.cws.esolutions.security.processors.impl
- * AccountControlProcessorImplTest.java
- *
- * $Id: AccountControlProcessorImplTest.java 2276 2013-01-03 16:32:52Z kmhuntly@gmail.com $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Nov 12, 2012 8:51:00 AM
- *     Created.
- */
+
 public final class AccountChangeProcessorImplTest
 {
      private static UserAccount userAccount = new UserAccount();

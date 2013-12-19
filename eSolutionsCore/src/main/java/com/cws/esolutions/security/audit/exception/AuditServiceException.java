@@ -16,18 +16,20 @@
 package com.cws.esolutions.security.audit.exception;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
- * File: IAuditProcessor.java
+ * Package: com.cws.esolutions.security.audit.exception
+ * File: AuditServiceException.java
  *
  * History
+ *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * Kevin Huntly         11/23/2008 22:39:20             Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
- * @see java.lang.Exception
+ * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
-public class AuditServiceException extends Exception
+public class AuditServiceException extends SecurityServiceException
 {
     private static final long serialVersionUID = -4989476871384420297L;
 

@@ -33,7 +33,7 @@
         </layout>
     </appender>
 
-    <category name="ERROR_RECORDER.com.cws.us.esolutions" additivity="false">
+    <category name="ERROR_RECORDER.com.cws.esolutions.web" additivity="false">
         <priority value="ERROR" />
         <appender-ref ref="esolutions-error" />
     </category>

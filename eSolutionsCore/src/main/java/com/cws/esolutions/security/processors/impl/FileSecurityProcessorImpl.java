@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.processors.impl;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: FileSecurityProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import javax.crypto.Cipher;
 import java.io.IOException;
 import java.security.KeyPair;
@@ -45,16 +55,6 @@ import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.processors.impl
- * File: FileSecurityProcessorImpl.java
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Jul 12, 2013 3:04:41 PM
- *     Created.
- */
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */

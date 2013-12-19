@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.security.keymgmt.interfaces;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.security.keymgmt.interfaces
+ * File: KeyManager.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.security.KeyPair;
 import org.slf4j.LoggerFactory;
@@ -30,15 +40,13 @@ import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.keymgmt.interfaces
- * File: KeyManager.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 4, 2013 3:36:54 PM
- *     Created.
+ * @author khuntly
+ * @version 1.0
  */
 public interface KeyManager
 {

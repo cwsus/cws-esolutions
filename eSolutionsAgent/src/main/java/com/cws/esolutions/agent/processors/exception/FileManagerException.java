@@ -25,7 +25,7 @@ import com.cws.esolutions.agent.exception.AgentException;
  * $Author: $
  * $Date: $
  * $Revision: $
- * @author 35033355
+ * @author kmhuntly@gmail.com
  * @version 1.0
  *
  * History

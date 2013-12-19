@@ -13,7 +13,7 @@
         <property name="maxUploadSize" value="-1" />
     </bean>
 
-    <bean id="applicationValidatorBean" class="com.cws.us.esolutions.validators.ApplicationValidator">
+    <bean id="applicationValidatorBean" class="com.cws.esolutions.web.validators.ApplicationValidator">
         <property name="messageApplicationNameRequired" value="app.mgmt.app.name.required" />
         <property name="messageApplicationLogsPathRequired" value="app.mgmt.app.logs.required" />
         <property name="messageApplicationProjectRequired" value="app.mgmt.app.project.required" />
@@ -26,7 +26,7 @@
         <property name="messagePidDirectoryRequired" value="app.mgmt.pid.dir.required" />
     </bean>
 
-    <bean id="deploymentValidatorBean" class="com.cws.us.esolutions.validators.DeploymentValidator">
+    <bean id="deploymentValidatorBean" class="com.cws.esolutions.web.validators.DeploymentValidator">
         <property name="messageBinaryInvalid" value="app.mgmt.binary.invalid.type" />
         <property name="messageBinaryInvalidForType" value="app.mgmt.binary.not.valid.for.type" />
         <property name="messageDeploymentTypeRequired" value="app.mgmt.app.deployment.type.required" />
@@ -34,13 +34,13 @@
         <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
     </bean>
 
-    <bean id="searchRequestValidator" class="com.cws.us.esolutions.validators.SearchRequestValidator">
+    <bean id="searchRequestValidator" class="com.cws.esolutions.web.validators.SearchRequestValidator">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
     </bean>
 
-    <bean id="applicationManagementController" class="com.cws.us.esolutions.controllers.ApplicationManagementController">
+    <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
         <property name="applicationValidator">
             <ref bean="applicationValidatorBean" />
         </property>

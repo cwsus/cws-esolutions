@@ -9,12 +9,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean id="contactValidator" class="com.cws.us.esolutions.validators.TelephoneValidator">
+    <bean id="contactValidator" class="com.cws.esolutions.web.validators.TelephoneValidator">
         <property name="messageNumberInvalid" value="error.tel.number.invalid" />
         <property name="messagePasswordRequired" value="user.account.current.password.empty" />
     </bean>
 
-    <bean id="passwordValidator" class="com.cws.us.esolutions.validators.PasswordValidator">
+    <bean id="passwordValidator" class="com.cws.esolutions.web.validators.PasswordValidator">
         <property name="secConfig">
             <ref bean="secConfig" />
         </property>
@@ -25,7 +25,7 @@
         <property name="messageCurrentPasswordRequired" value="user.account.current.password.empty" />
     </bean>
 
-    <bean id="securityResponseValidator" class="com.cws.us.esolutions.validators.SecurityResponseValidator">
+    <bean id="securityResponseValidator" class="com.cws.esolutions.web.validators.SecurityResponseValidator">
         <property name="messageSecurityQuestionRequired" value="security.question.required" />
         <property name="messageSecurityAnswerRequired" value="security.answer.required" />
         <property name="messageCurrentPasswordEmpty" value="user.account.current.password.empty" />
@@ -34,7 +34,7 @@
         <property name="messageQuestionsAnswersMatch" value="security.questions.match.answers" />
     </bean>
 
-    <bean id="userAccountController" class="com.cws.us.esolutions.controllers.UserAccountController">
+    <bean id="userAccountController" class="com.cws.esolutions.web.controllers.UserAccountController">
         <property name="passwordValidator">
             <ref bean="passwordValidator" />
         </property>
@@ -52,10 +52,10 @@
         <property name="changeSecurityPage" value="UserAccount_ChangeSecurity" />
         <property name="changePasswordPage" value="UserAccount_ChangePassword" />
         <property name="changeContactPage" value="UserAccount_ChangeContact" />
-        <property name="changeEmailComplete" value="user.account.emailaddr.change.success" />
-        <property name="changePasswordComplete" value="user.account.password.change.success" />
-        <property name="changeSecurityComplete" value="user.account.update.security.success" />
-        <property name="changeKeysComplete" value="user.account.update.keys.success" />
-        <property name="changeContactComplete" value="user.account.update.contact.success" />
+        <property name="messageEmailChangeSuccess" value="user.account.email.change.success" />
+        <property name="messagePasswordChangeSuccess" value="user.account.password.change.success" />
+        <property name="messageSecurityChangeSuccess" value="user.account.update.security.success" />
+        <property name="messageKeyGenerationSuccess" value="user.account.update.keys.success" />
+        <property name="messageContactChangeSuccess" value="user.account.update.contact.success" />
     </bean>
 </beans>
