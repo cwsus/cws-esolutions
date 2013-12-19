@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.impl
+ * File: ApplicationManagerProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import java.util.List;
 import java.net.Socket;
@@ -27,31 +37,17 @@ import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 
 import com.cws.esolutions.agent.enums.AgentStatus;
+import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandRequest;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandResponse;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
-import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 import com.cws.esolutions.agent.executors.impl.ExecuteRequestCommandImpl;
 import com.cws.esolutions.agent.executors.exception.ExecuteCommandException;
 import com.cws.esolutions.agent.executors.interfaces.IExecuteRequestCommand;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
+import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.processors.impl
- * SystemManagerProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 2, 2013 1:49:02 PM
- *     Created.
+ * @see com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor
  */
 public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 {

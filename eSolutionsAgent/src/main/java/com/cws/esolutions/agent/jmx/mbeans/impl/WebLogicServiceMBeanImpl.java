@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.jmx.mbeans.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.jmx.mbeans.impl
+ * File: WebLogicServiceMBeanImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.IOException;
 import weblogic.health.HealthState;
 import javax.management.ObjectName;
@@ -50,21 +60,7 @@ import com.cws.esolutions.agent.jmx.mbeans.interfaces.ServiceMBean;
 import com.cws.esolutions.agent.jmx.exception.JMXConnectorException;
 import com.cws.esolutions.agent.jmx.mbeans.exception.ServiceMBeanException;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.jmx.mbeans.impl
- * WebLogicServiceMBeanImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 02, 2012 12:37:19
- *     Created.
+ * @see com.cws.esolutions.agent.jmx.mbeans.interfaces.ServiceMBean
  */
 public class WebLogicServiceMBeanImpl implements ServiceMBean
 {

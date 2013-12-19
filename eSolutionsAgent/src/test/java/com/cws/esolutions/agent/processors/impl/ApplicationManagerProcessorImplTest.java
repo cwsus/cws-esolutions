@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.impl
+ * File: ApplicationManagerProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.Assert;
 import org.junit.Before;
 
 import com.cws.esolutions.agent.AgentDaemon;
-/**
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.impl
- * File: ApplicationManagerProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Aug 16, 2013 11:35:13 AM
- *     Created.
- */
+
 public class ApplicationManagerProcessorImplTest
 {
     @Before

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.processor.impl;
-
+package com.cws.esolutions.agent.server.processors.impl;
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.server.processors.impl
+ * File: AgentRequestProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import java.net.Socket;
 import org.junit.Assert;
@@ -35,23 +45,7 @@ import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
-/**
- * eSolutionsAgent
- * com.cws.esolutions.agent.agent.processor.impl
- * AgentRequestProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 2, 2013 3:30:29 PM
- *     Created.
- */
+
 public class AgentRequestProcessorImplTest
 {
     @Test

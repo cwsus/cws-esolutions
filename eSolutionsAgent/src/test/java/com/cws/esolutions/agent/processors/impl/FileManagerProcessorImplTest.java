@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.impl
+ * File: FileManagerProcessorImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.junit.Test;
 import java.util.Arrays;
@@ -30,23 +40,7 @@ import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
-/**
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.impl
- * File: FileManagerProcessorImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Aug 16, 2013 10:58:45 AM
- *     Created.
- */
+
 public class FileManagerProcessorImplTest
 {
     private static final IFileManagerProcessor processor = new FileManagerProcessorImpl();

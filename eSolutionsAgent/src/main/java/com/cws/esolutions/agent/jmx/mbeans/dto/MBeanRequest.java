@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.jmx.mbeans.dto;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.jmx.mbeans.dto
+ * File: MBeanRequest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -24,21 +34,12 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.agent.jmx.mbeans.enums.MBeanRequestType;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.jmx.mbeans.dto
- * MBeanRequest.java
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
+ * @author khuntly
  * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 10:33:14 AM
- *     Created.
  */
 public class MBeanRequest implements Serializable
 {

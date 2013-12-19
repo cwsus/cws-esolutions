@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.jmx.dto;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.jmx.dto
+ * File: JMXConnectorObject.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -22,21 +32,12 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.Constants;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.jmx.dto
- * JMXConnectorObject.java
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
  * @author khuntly
  * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * khuntly @ May 13, 2013 5:25:07 PM
- *     Created.
  */
 public class JMXConnectorObject implements Serializable
 {

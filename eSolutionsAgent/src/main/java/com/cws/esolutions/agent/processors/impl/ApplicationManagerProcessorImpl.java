@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.impl
+ * File: ApplicationManagerProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.io.File;
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -37,21 +47,7 @@ import com.cws.esolutions.agent.executors.interfaces.IExecuteRequestCommand;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.processors.impl
- * ApplicationManagerProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
- *     Created.
+ * @see com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor
  */
 public class ApplicationManagerProcessorImpl implements IApplicationManagerProcessor
 {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.utils;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.utils
+ * File: PasswordUtils.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import javax.crypto.Cipher;
 import org.slf4j.LoggerFactory;
@@ -30,21 +40,12 @@ import java.security.NoSuchAlgorithmException;
 
 import com.cws.esolutions.agent.Constants;
 /**
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.utils
- * File: PasswordUtils.java
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
+ * @author khuntly
  * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Sep 3, 2013 10:21:37 AM
- *     Created.
  */
 public final class PasswordUtils
 {

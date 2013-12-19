@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.impl
+ * File: SystemManagementImplTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
@@ -27,23 +37,7 @@ import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
-/**
- * eSolutionsAgent
- * com.cws.esolutions.agent.processors.impl
- * SystemManagementImplTest.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ May 20, 2013 9:08:29 AM
- *     Created.
- */
+
 public class SystemManagementImplTest
 {
     private static final ISystemManagerProcessor systemMgr = new SystemManagerProcessorImpl();

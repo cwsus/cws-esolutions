@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +14,24 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.executors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.executors.impl
+ * File: ExecuteRequestCommandImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandRequest;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandResponse;
 import com.cws.esolutions.agent.executors.exception.ExecuteCommandException;
 import com.cws.esolutions.agent.executors.interfaces.IExecuteRequestCommand;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.executors.impl
- * ExecuteRequestCommandImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
- *     Created.
+ * @see com.cws.esolutions.agent.executors.interfaces.IExecuteRequestCommand
  */
 public class ExecuteRequestCommandImpl implements IExecuteRequestCommand
 {

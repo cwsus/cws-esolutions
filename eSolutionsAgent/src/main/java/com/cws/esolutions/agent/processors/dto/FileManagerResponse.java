@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.processors.dto;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.dto
+ * File: FileManagerResponse.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -24,21 +34,12 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.agent.enums.AgentStatus;
 /**
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.processors.dto
- * File: FileManagerResponse.java
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
+ * @author khuntly
  * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ Aug 15, 2013 12:02:37 PM
- *     Created.
  */
 public class FileManagerResponse implements Serializable
 {

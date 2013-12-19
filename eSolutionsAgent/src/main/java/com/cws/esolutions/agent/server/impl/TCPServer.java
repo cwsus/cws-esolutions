@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.server.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.server.impl
+ * File: TCPServer.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.net.Socket;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -39,28 +49,14 @@ import java.security.cert.CertificateException;
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
-import com.cws.esolutions.agent.config.ServerConfig;
 import com.cws.esolutions.agent.utils.PasswordUtils;
+import com.cws.esolutions.agent.config.xml.ServerConfig;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.server.interfaces.AgentServer;
 import com.cws.esolutions.agent.server.processors.impl.AgentRequestProcessorImpl;
 import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.server.impl
- * TCPServer.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Jan 2, 2013 1:12:48 PM
- *     Created.
+ * @see com.cws.esolutions.agent.server.interfaces.AgentServer
  */
 public class TCPServer extends Thread implements AgentServer
 {

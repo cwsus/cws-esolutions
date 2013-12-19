@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (final c) 2009 - 2012 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.server.processors.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.server.processors.impl
+ * File: AgentRequestProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
@@ -36,21 +46,7 @@ import com.cws.esolutions.agent.processors.exception.ApplicationManagerException
 import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
 import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
 /**
- * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.server.processors.impl
- * File: AgentRequestProcessorImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Nov 21, 2012 3:47:42 PM
- *     Created.
+ * @see com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor
  */
 public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 {

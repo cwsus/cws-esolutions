@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.server.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent
+ * File: Constants.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import javax.jms.Session;
 import javax.jms.Message;
 import javax.jms.Connection;
@@ -26,34 +36,19 @@ import javax.jms.MessageProducer;
 import javax.jms.MessageConsumer;
 import javax.jms.ExceptionListener;
 import javax.jms.ConnectionFactory;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
-import com.cws.esolutions.agent.config.ServerConfig;
+import com.cws.esolutions.agent.config.xml.ServerConfig;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.server.interfaces.AgentServer;
 import com.cws.esolutions.agent.server.processors.impl.AgentRequestProcessorImpl;
 import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.server.impl
- * AgentDaemon.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * khuntly @ Nov 17, 2012 10:23:31 PM
- *     Created.
+ * @see com.cws.esolutions.agent.server.interfaces.AgentServer
  */
 public class MQServer extends Thread implements AgentServer, MessageListener, ExceptionListener
 {

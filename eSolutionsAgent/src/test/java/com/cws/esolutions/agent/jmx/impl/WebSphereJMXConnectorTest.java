@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.jmx.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.jmx.impl
+ * File: WebSphereJMXConnectorTest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
@@ -26,23 +36,7 @@ import com.cws.esolutions.agent.jmx.dto.JMXConnectorObject;
 import com.cws.esolutions.agent.jmx.interfaces.JMXConnection;
 import com.cws.esolutions.agent.jmx.factory.JMXConnectionFactory;
 import com.cws.esolutions.agent.jmx.exception.JMXConnectorException;
-/**
- * eSolutionsAgent
- * com.cws.esolutions.agent.jmx.impl
- * WebSphereJMXConnectorTest.java
- *
- * $Id: cws-codetemplates.xml 2286 2013-01-03 20:50:12Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2013-01-03 15:50:12 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2286 $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * khuntly @ May 13, 2013 6:26:27 PM
- *     Created.
- */
+
 public class WebSphereJMXConnectorTest
 {
     private static final AgentBean agentBean = AgentBean.getInstance();

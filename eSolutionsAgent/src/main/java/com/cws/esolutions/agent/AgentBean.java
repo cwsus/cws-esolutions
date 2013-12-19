@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent
+ * File: AgentBean.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.config.ConfigurationData;
+import com.cws.esolutions.agent.config.xml.ConfigurationData;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent
- * AgentBean.java
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
+ * @author khuntly
  * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 29, 2012 9:44:46 AM
- *     Created.
  */
 public class AgentBean
 {
@@ -52,7 +53,7 @@ public class AgentBean
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    /**
+    /*
      * Returns a static instance of this bean
      *
      * @return InitializerBean
@@ -75,7 +76,7 @@ public class AgentBean
         return AgentBean.instance;
     }
 
-    /**
+    /*
      * Sets a static copy of the Application configuration as defined in the
      * configuration xml files.
      *
@@ -94,7 +95,7 @@ public class AgentBean
         this.configData = value;
     }
 
-    /**
+    /*
      * Sets a static copy of the Application configuration as defined in the
      * configuration xml files.
      *
@@ -114,7 +115,7 @@ public class AgentBean
         this.osType = value;
     }
 
-    /**
+    /*
      * Sets a static copy of the Application configuration as defined in the
      * configuration xml files.
      *
@@ -147,7 +148,7 @@ public class AgentBean
         this.stopServer = value;
     }
 
-    /**
+    /*
      * Returns a static copy of the Application configuration as defined in the
      * configuration xml files.
      *
@@ -167,7 +168,7 @@ public class AgentBean
         return this.configData;
     }
 
-    /**
+    /*
      * Returns the string representation of the system-provided Operating
      * System name.
      *
@@ -187,7 +188,7 @@ public class AgentBean
         return this.osType;
     }
 
-    /**
+    /*
      * Returns the string representation of the system-provided hostname.
      *
      * @return String - The system-provided hostname

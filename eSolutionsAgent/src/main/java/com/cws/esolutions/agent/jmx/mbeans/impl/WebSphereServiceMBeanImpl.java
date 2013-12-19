@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.agent.jmx.mbeans.impl;
-
+/*
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.jmx.mbeans.impl
+ * File: WebSphereServiceMBeanImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.Set;
 import java.util.Locale;
 import java.util.Hashtable;
@@ -47,21 +57,7 @@ import com.cws.esolutions.agent.jmx.mbeans.interfaces.ServiceMBean;
 import com.cws.esolutions.agent.jmx.exception.JMXConnectorException;
 import com.cws.esolutions.agent.jmx.mbeans.exception.ServiceMBeanException;
 /**
- * eSolutionsAgent
- * com.cws.esolutions.agent.jmx.mbeans.impl
- * WebSphereServiceMBeanImpl.java
- *
- * $Id: $
- * $Author: $
- * $Date: $
- * $Revision: $
- * @author kmhuntly@gmail.com
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * 35033355 @ May 15, 2013 8:50:06 AM
- *     Created.
+ * @see com.cws.esolutions.agent.jmx.mbeans.interfaces.ServiceMBean
  */
 public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationListener
 {
@@ -106,7 +102,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                     DEBUGGER.debug("ObjectName: {}", nodeAgent);
                 }
 
-                Set<Object> objectSet = adminClient.queryNames(nodeAgent, null);
+                @SuppressWarnings("unchecked") Set<Object> objectSet = adminClient.queryNames(nodeAgent, null);
 
                 if (DEBUG)
                 {
@@ -132,7 +128,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                             DEBUGGER.debug("serverObject: {}", serverName);
                         }
 
-                        Set<Object> serverSet = adminClient.queryNames(serverName, null);
+                        @SuppressWarnings("unchecked") Set<Object> serverSet = adminClient.queryNames(serverName, null);
 
                         if (DEBUG)
                         {
@@ -345,7 +341,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
         return response;
     }
 
-    /**
+    /*
      * At the moment the only thing this can do is test, and it hasn't been verified yet.
      * May add the ability to create a datasource here, but I'm not sure yet.
      *
@@ -580,7 +576,7 @@ public class WebSphereServiceMBeanImpl implements ServiceMBean, NotificationList
                     DEBUGGER.debug("ObjectName: {}", appObject);
                 }
 
-                Set<Object> objectSet = adminClient.queryNames(appObject, null);
+                @SuppressWarnings("unchecked") Set<Object> objectSet = adminClient.queryNames(appObject, null);
 
                 if (DEBUG)
                 {
