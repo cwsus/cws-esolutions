@@ -35,6 +35,7 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  */
 public class SystemCheckResponse implements Serializable
 {
+    private String response = null;
     private boolean isComplete = false;
     private CoreServicesStatus requestStatus = null;
 
@@ -56,6 +57,19 @@ public class SystemCheckResponse implements Serializable
         }
 
         this.requestStatus = value;
+    }
+
+    public final void setResponse(final String value)
+    {
+        final String methodName = SystemCheckResponse.CNAME + "#setResponse(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.response = value;
     }
 
     public final void setIsComplete(final boolean value)
@@ -82,6 +96,19 @@ public class SystemCheckResponse implements Serializable
         }
 
         return this.requestStatus;
+    }
+
+    public final String getResponse()
+    {
+        final String methodName = SystemCheckResponse.CNAME + "#getResponse()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.response);
+        }
+
+        return this.response;
     }
 
     public final boolean isComplete()

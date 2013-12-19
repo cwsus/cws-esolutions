@@ -53,7 +53,7 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
  * Kevin Huntly         11/23/2008 22:39:20             Created.
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
-public interface IServerManagementProcessor
+public interface ISystemCheckProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
@@ -76,17 +76,6 @@ public interface IServerManagementProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
-
-    // for service management we're going to do platforms and servers
-    ServerManagementResponse addNewServer(final ServerManagementRequest request) throws ServerManagementException;
-
-    ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException;
-
-    ServerManagementResponse listServersByType(final ServerManagementRequest request) throws ServerManagementException;
-
-    ServerManagementResponse listServersByDmgr(final ServerManagementRequest request) throws ServerManagementException;
-
-    ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;
 
     SystemCheckRequest runNetstatCheck(final SystemCheckResponse request) throws SystemCheckException;
 

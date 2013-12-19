@@ -43,6 +43,8 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
+import com.cws.esolutions.agent.processors.dto.SystemCheckRequest;
+import com.cws.esolutions.agent.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
@@ -53,6 +55,7 @@ import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
@@ -1448,21 +1451,21 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runNetstatCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
-    public ServerManagementResponse runNetstatCheck(final ServerManagementRequest request) throws ServerManagementException
+    public SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runNetstatCheck(final ServerManagementRequest request)";
+        final String methodName = IServerManagementProcessor.CNAME + "#runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServerManagementRequest: ", request);
+            DEBUGGER.debug("SystemCheckRequest: ", request);
         }
 
         AgentResponse agentResponse = null;
-        ServerManagementResponse response = new ServerManagementResponse();
+        SystemCheckResponse response = new SystemCheckResponse();
 
         final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -1565,13 +1568,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
-            throw new ServerManagementException(ux.getMessage(), ux);
+            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (UserControlServiceException ucsx)
         {
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -1610,12 +1613,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runTelnetCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
-    public ServerManagementResponse runTelnetCheck(final ServerManagementRequest request) throws ServerManagementException
+    public SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runTelnetCheck(final ServerManagementRequest request)";
+        final String methodName = IServerManagementProcessor.CNAME + "#runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
@@ -1624,7 +1627,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         }
 
         AgentResponse agentResponse = null;
-        ServerManagementResponse response = new ServerManagementResponse();
+        SystemCheckResponse response = new SystemCheckResponse();
 
         final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -1729,13 +1732,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
-            throw new ServerManagementException(ux.getMessage(), ux);
+            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (UserControlServiceException ucsx)
         {
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -1774,21 +1777,21 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runRemoteDateCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
-    public ServerManagementResponse runRemoteDateCheck(final ServerManagementRequest request) throws ServerManagementException
+    public SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runRemoteDateCheck(final ServerManagementRequest request)";
+        final String methodName = IServerManagementProcessor.CNAME + "#runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServerManagementRequest: ", request);
+            DEBUGGER.debug("SystemCheckResponse: ", request);
         }
 
         AgentResponse agentResponse = null;
-        ServerManagementResponse response = new ServerManagementResponse();
+        SystemCheckResponse response = new SystemCheckResponse();
 
         final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -1893,13 +1896,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
-            throw new ServerManagementException(ux.getMessage(), ux);
+            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (UserControlServiceException ucsx)
         {
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -1938,21 +1941,21 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#runProcessListCheck(com.cws.esolutions.core.processors.dto.SystemCheckRequest)
      */
     @Override
-    public ServerManagementResponse runProcessListCheck(final ServerManagementRequest request) throws ServerManagementException
+    public SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException
     {
-        final String methodName = IServerManagementProcessor.CNAME + "#runProcessListCheck(final ServerManagementRequest request)";
+        final String methodName = IServerManagementProcessor.CNAME + "#runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServerManagementRequest: ", request);
+            DEBUGGER.debug("SystemCheckResponse: ", request);
         }
 
         AgentResponse agentResponse = null;
-        ServerManagementResponse response = new ServerManagementResponse();
+        SystemCheckResponse response = new SystemCheckResponse();
 
         final Server sourceServer = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -2056,13 +2059,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
         {
             ERROR_RECORDER.error(ux.getMessage(), ux);
 
-            throw new ServerManagementException(ux.getMessage(), ux);
+            throw new SystemCheckException(ux.getMessage(), ux);
         }
         catch (UserControlServiceException ucsx)
         {
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(ucsx.getMessage(), ucsx);
         }
         finally
         {
