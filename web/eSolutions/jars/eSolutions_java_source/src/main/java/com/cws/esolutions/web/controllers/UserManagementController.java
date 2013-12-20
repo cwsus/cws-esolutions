@@ -27,6 +27,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -97,12 +98,13 @@ public class UserManagementController
     private String messageAccountResetSuccess = null;
     private String messageAccountUnlockSuccess = null;
     private String messageAccountSuspendSuccess = null;
-    private String messageAccountUnsuspendSuccess = null;
     private SecurityConfigurationData secConfig = null;
+    private String messageAccountUnsuspendSuccess = null;
     private SimpleMailMessage accountCreatedEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
     private static final String CNAME = UserManagementController.class.getName();
+    private static final String ADD_USER_REDIRECT = "redirect:/ui/user-management/add-user";
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -814,7 +816,32 @@ public class UserManagementController
                 mView.addObject(Constants.ERROR_RESPONSE, this.messageProjectLoadFailed);
             }
 
-            mView.addObject("roles", Role.values());
+            List<Role> availableRoles = new ArrayList<Role>();
+
+            switch (userAccount.getRole())
+            {
+                case SITEADMIN:
+                    availableRoles.addAll(Arrays.asList(Role.values()));
+
+                    break;
+                case ADMIN:
+                    availableRoles.addAll(Arrays.asList(Role.ADMIN, Role.SERVICEADMIN, Role.USERADMIN, Role.USER));
+
+                    break;
+                case USERADMIN:
+                    availableRoles.addAll(Arrays.asList(Role.USERADMIN, Role.USER));
+
+                    break;
+                default:
+                    break;
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Role>: {}", availableRoles);
+            }
+
+            mView.addObject("roles", availableRoles);
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.createUserPage);
         }
@@ -2752,9 +2779,9 @@ public class UserManagementController
                             }
                         }
 
+                        mView = new ModelAndView(new RedirectView());
                         mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
-                        mView.addObject("command", new UserAccount());
-                        mView.setViewName(this.createUserPage);
+                        mView.setViewName(UserManagementController.ADD_USER_REDIRECT);
                     }
                     else
                     {

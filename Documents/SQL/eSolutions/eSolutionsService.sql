@@ -19,7 +19,6 @@ SOURCE ./eSolutionsService.service_datacenters.sql;
 SOURCE ./eSolutionsService.service_messages.sql;
 SOURCE ./eSolutionsService.service_platforms.sql;
 SOURCE ./eSolutionsService.service_projects.sql;
-SOURCE ./eSolutionsService.service_requests.sql;
 
 COMMIT;
 

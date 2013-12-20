@@ -173,6 +173,7 @@ input
     border: 1px solid #eee;
     font: normal 1em;
     color: #777;
+    width: 130px;
 }
 
 textarea
@@ -194,6 +195,7 @@ input.submit
     padding: 2px 3px;
     background: #FFF url("/html/eSolutions/img/btn.gif") top center repeat-x;
     color: #75A54B;
+    width: 80px;
 }
 
 table

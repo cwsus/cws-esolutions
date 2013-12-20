@@ -16,7 +16,7 @@
     <!-- Common -->
     <definition name="HomePage" extends="baseLayout">
         <put-attribute name="title"         value="eSolutions - Home"/>
-        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/CommonLandingPage.jsp"/>      
+        <put-attribute name="body"          value="/com.cws.esolutions.web/jsp/html/en/CommonLandingPage.jsp"/>
     </definition>
     <definition name="System_ContactAdmins" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Contact Administrators" cascade="true" />

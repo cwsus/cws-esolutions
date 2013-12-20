@@ -86,7 +86,7 @@ public class SystemManagementController
     private String messageNoDmgrsFound = null;
     private String addDatacenterRedirect = null;
     private List<String> availableDomains = null;
-    private String messageAddServerFailed = null;
+    private String messageAddServerSuccess = null;
     private ServerValidator serverValidator = null;
     private ApplicationServiceBean appConfig = null;
     private SearchRequestValidator searchValidator = null;
@@ -293,9 +293,9 @@ public class SystemManagementController
         this.addDatacenterRedirect = value;
     }
 
-    public final void setMessageAddServerFailed(final String value)
+    public final void setMessageAddServerSuccess(final String value)
     {
-        final String methodName = SystemManagementController.CNAME + "#setMessageAddServerFailed(final String value)";
+        final String methodName = SystemManagementController.CNAME + "#setMessageAddServerSuccess(final String value)";
 
         if (DEBUG)
         {
@@ -303,7 +303,7 @@ public class SystemManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageAddServerFailed = value;
+        this.messageAddServerSuccess = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -1485,7 +1485,7 @@ public class SystemManagementController
 
                     serverMgr.installSoftwarePackage(installRequest);*/ // we are NOT waiting for a response here
 
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddServerFailed);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddServerSuccess);
                     mView.setViewName(SystemManagementController.ADD_SERVER_REDIRECT);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)

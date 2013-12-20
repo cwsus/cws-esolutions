@@ -185,9 +185,11 @@
                     <form:options items="${questionList}" />
                 </form:select>
                 <form:errors path="secQuestionOne" cssClass="error" />
+
                 <label id="txtAnswerOne"><spring:message code="user.account.update.security.answer" /></label>
                 <form:password path="secAnswerOne" />
                 <form:errors path="secAnswerOne" cssClass="error" />
+
                 <label id="txtQuestionTwo"><spring:message code="user.account.update.security.question" /></label>
                 <form:select path="secQuestionTwo">
                     <option><spring:message code="theme.option.select" /></option>
@@ -195,12 +197,15 @@
                     <form:options items="${questionList}" />
                 </form:select>
                 <form:errors path="secQuestionTwo" cssClass="error" />            
+
                 <label id="txtAnswerTwo"><spring:message code="user.account.update.security.answer" /></label>
                 <form:password path="secAnswerTwo" />
                 <form:errors path="secAnswerTwo" cssClass="error" />
+
                 <label id="txtPassword"><spring:message code="user.account.update.password.current" /></label>
                 <form:password path="currentPassword" />
                 <form:errors path="currentPassword" cssClass="error" />
+
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

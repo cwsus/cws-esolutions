@@ -67,7 +67,7 @@
         <!--<property name="messageServerAdded" value="system.mgmt.server.successfully.added" />-->
         <property name="messageNoDmgrsFound" value="system.mgmt.no.dmgrs" />
         <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
-        <property name="messageAddServerFailed" value="system.mgmt.add.server.failure" />
+        <property name="messageAddServerSuccess" value="system.mgmt.add.server.success" />
         <!--<property name="platformService" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />-->
     </bean>
 </beans>

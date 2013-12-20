@@ -149,6 +149,7 @@ public class CommonController
         }
 
         ModelAndView mView = new ModelAndView();
+        mView.setViewName(this.homePage);
 
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
@@ -247,8 +248,6 @@ public class CommonController
             {
                 mView.addObject("alertMessages", messageResponse.getSvcMessages());
             }
-
-            mView.setViewName(this.homePage);
         }
         catch (MessagingServiceException msx)
         {

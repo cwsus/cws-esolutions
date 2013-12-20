@@ -109,9 +109,11 @@
                 <label id="txtEmailAddr"><spring:message code="user.account.change.email.address" /></label>
                 <form:input path="emailAddr" />
                 <form:errors path="emailAddr" cssClass="error" />
+
                 <label id="txtPassword"><spring:message code="login.user.pwd" /><br /></label>
                 <form:password path="currentPassword" />
                 <form:errors path="currentPassword" cssClass="error" />
+
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

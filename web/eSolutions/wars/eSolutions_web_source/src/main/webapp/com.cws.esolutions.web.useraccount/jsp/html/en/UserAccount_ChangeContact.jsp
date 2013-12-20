@@ -98,12 +98,15 @@
                 <label id="txtTelNumber"><spring:message code="user.account.telephone" /></label>
                 <form:input path="telNumber" value="${sessionScope.userAccount.telephoneNumber}" />
                 <form:errors path="telNumber" cssClass="error" />
+
                 <label id="txtPagerNumber"><spring:message code="user.account.pager" /></label>
                 <form:input path="pagerNumber" value="${sessionScope.userAccount.pagerNumber}" />
                 <form:errors path="pagerNumber" cssClass="error" />
+
                 <label id="txtPassword"><spring:message code="login.user.pwd" /><br /></label>
                 <form:password path="currentPassword" />
                 <form:errors path="currentPassword" cssClass="error" />
+
                 <br /><br />
                 <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                 <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

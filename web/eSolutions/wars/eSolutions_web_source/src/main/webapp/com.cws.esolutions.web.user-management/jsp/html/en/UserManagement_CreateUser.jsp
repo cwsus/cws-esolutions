@@ -121,6 +121,7 @@
             <label id="txtUsername"><spring:message code="user.mgmt.user.name" /></label>
             <form:input path="username" type="text" size="20" value="" name="username" id="username" />
             <form:errors path="username" cssClass="error" />
+
             <label id="txtUserRole"><spring:message code="user.mgmt.user.role" /></label>
             <form:select path="role" name="role" id="role">
                 <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='theme.option.select' /></option>
@@ -130,6 +131,7 @@
                 </c:forEach>
             </form:select>
             <form:errors path="role" cssClass="error" />
+
             <%--
             <label id="createUserUnit"><spring:message code="user.mgmt.user.dept" /></label>
             <form:select path="dept" name="dept" id="dept">
@@ -141,18 +143,23 @@
             </form:select>
             <form:errors path="dept" cssClass="error" />
             --%>
+
             <label id="txtFirstName"><spring:message code="user.mgmt.user.givenname" /></label>
             <form:input path="givenName" type="text" size="20" value="" name="givenName" id="givenName" />
             <form:errors path="givenName" cssClass="error" />
+
             <label id="txtLastName"><spring:message code="user.mgmt.user.surname" /></label>
             <form:input path="surname" type="text" size="20" value="" name="surname" id="surname" />
             <form:errors path="surname" cssClass="error" />
+
             <label id="txtEmailAddr"><spring:message code="user.mgmt.user.email" /></label>
             <form:input path="emailAddr" type="text" size="20" value="" name="emailAddr" id="emailAddr" />
             <form:errors path="emailAddr" cssClass="error" />
+
             <label id="txtLockout"><spring:message code="user.mgmt.user.locked" /></label>
             <form:checkbox path="suspended" name="suspended" id="suspended" />
             <form:errors path="suspended" cssClass="error" />
+
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

@@ -32,14 +32,14 @@
 <!--
     function validateForm(theForm)
     {
-        if (theForm.projectCode.value == '')
+        if (theForm.projectName.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'A project code must be provided.';
-            document.getElementById('txtProjectCode').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'A project name must be provided.';
+            document.getElementById('projectName').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('projectCode').focus();
+            document.getElementById('projectName').focus();
         }
         else if (theForm.projectStatus.value == '')
         {

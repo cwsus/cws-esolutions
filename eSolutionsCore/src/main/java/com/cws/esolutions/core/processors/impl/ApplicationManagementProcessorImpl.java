@@ -225,10 +225,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
-        else
-        {
-            response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-        }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
         }
         catch (SQLException sqx)
         {
@@ -402,6 +407,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
         }
         catch (SQLException sqx)
         {
@@ -523,6 +533,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -691,6 +706,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
         catch (SQLException sqx)
@@ -1145,6 +1165,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
         }
         catch (UserControlServiceException ucsx)
         {
@@ -1244,6 +1269,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             else
             {
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
         catch (UserControlServiceException ucsx)

@@ -106,15 +106,19 @@
             <label id="txtUserName"><spring:message code="user.mgmt.user.name" /><br /></label>
             <form:input path="username" id="username" />
             <form:errors path="username" cssClass="error" />
+
             <label id="txtUserGuid"><spring:message code="user.mgmt.user.guid" /><br /></label>
             <form:input path="guid" id="guid" />
             <form:errors path="guid" cssClass="error" />
+
             <label id="txtEmailAddress"><spring:message code="user.mgmt.user.email" /><br /></label>
             <form:input path="emailAddr" id="emailAddress" />
             <form:errors path="emailAddr" cssClass="error" />
+
             <label id="txtDisplayName"><spring:message code="user.mgmt.display.name" /><br /></label>
             <form:input path="displayName" id="displayName" />
             <form:errors path="displayName" cssClass="error" />
+
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />
@@ -142,7 +146,6 @@
             <c:if test="${pages gt 1}">
                 <br />
                 <hr />
-                <br />
                 <table>
                     <tr>
                         <c:forEach begin="1" end="${pages}" var="i">

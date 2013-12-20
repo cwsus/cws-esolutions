@@ -83,7 +83,7 @@
 
     <table id="viewUser">
         <tr>
-            <td><spring:message code="user.mgmt.user.name" /></td>
+            <td><label><spring:message code="user.mgmt.user.name" /></label></td>
             <td>${userAccount.username}</td>
             <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
                 <td>
@@ -93,7 +93,7 @@
             </c:if>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.user.role" /></td>
+            <td><label><spring:message code="user.mgmt.user.role" /></label></td>
             <td id="userRoleInput" style="display: block;">${userAccount.role}</td>
             <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN' or sessionScope.userAccount.role eq 'ADMIN'}">
                 <td id="userRoleModify" style="display: none;">
@@ -115,21 +115,21 @@
             </c:if>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.user.givenname" /></td>
+            <td><label><spring:message code="user.mgmt.user.givenname" /></label></td>
             <td>${userAccount.givenName}</td>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.user.surname" /></td>
+            <td><label><spring:message code="user.mgmt.user.surname" /></label></td>
             <td>${userAccount.surname}</td>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.user.email" /></td>
+            <td><label><spring:message code="user.mgmt.user.email" /></label></td>
             <td>
                 <a href="mailto:${userAccount.emailAddr}" title="">${userAccount.emailAddr}</a>
             </td>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.user.locked" /></td>
+            <td><label><spring:message code="user.mgmt.user.locked" /></label></td>
             <c:choose>
                 <c:when test="${userAccount.failedCount ge 3}">
                     <td><spring:message code="theme.true" /></td>
@@ -152,11 +152,11 @@
             </c:choose>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.last.logon" /></td>
+            <td><label><spring:message code="user.mgmt.last.logon" /></label></td>
             <td>${userAccount.lastLogin}</td>
         </tr>
         <tr>
-            <td><spring:message code="user.mgmt.suspend.account" /></td>
+            <td><label><spring:message code="user.mgmt.suspend.account" /></label></td>
             <td>${userAccount.suspended}</td>
             <c:if test="${sessionScope.userAccount.role eq 'USERADMIN' or sessionScope.userAccount.role eq 'SITEADMIN'}">
                 <c:choose>

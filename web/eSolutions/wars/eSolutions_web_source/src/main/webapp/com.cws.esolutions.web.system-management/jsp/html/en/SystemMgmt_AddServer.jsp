@@ -34,11 +34,17 @@
     {
         if (box.checked)
         {
-            document.getElementById('natAddr').style.display = 'block';
+            document.getElementById('natAttrLabel').style.display = 'block';
+            document.getElementById('natAddrHr').style.display = 'block';
+            document.getElementById('natAddrBr').style.display = 'block';
+            document.getElementById('natAddrTable').style.display = 'block';
         }
         else
         {
-            document.getElementById('natAddr').style.display = 'none';
+            document.getElementById('natAttrLabel').style.display = 'none';
+            document.getElementById('natAddrHr').style.display = 'none';
+            document.getElementById('natAddrBr').style.display = 'none';
+            document.getElementById('natAddrTable').style.display = 'none';
         }
     }
 
@@ -236,7 +242,7 @@
             <table id="serverDetail">
                 <tr>
                     <%-- OS name/type --%>
-                    <td><label id="txtOsName"><spring:message code="system.mgmt.os.name" /></label></td>
+                    <td><label><spring:message code="system.mgmt.os.name" /></label></td>
                     <td><form:input path="osName" /></td>
                     <td><form:errors path="osName" cssClass="error" /></td>
                     <%-- domain name --%>
@@ -257,8 +263,13 @@
                         </c:otherwise>
                     </c:choose>
                 </tr>
+            </table>
+            <label><spring:message code="system.mgmt.hardware.title" /></label>
+            <hr />
+            <br />
+            <table>
                 <tr>
-                    <td><label id="txtServerType"><spring:message code="system.mgmt.server.type" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.type" /></label></td>
                     <td>
                         <form:select path="serverType" onchange="showOptions(this);">
                             <option><spring:message code="theme.option.select" /></option>
@@ -267,7 +278,7 @@
                         </form:select>
                     </td>
                     <td><form:errors path="serverType" cssClass="error" /></td>
-                    <td><label id="txtServerStatus"><spring:message code="system.mgmt.server.status" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.status" /></label></td>
                     <td>
                         <form:select path="serverStatus">
                             <option><spring:message code="theme.option.select" /></option>
@@ -280,7 +291,7 @@
             </table>
             <table id="locationDetail" style="display: none;">
                 <tr>
-                    <td><label id="txtServerRegion"><spring:message code="system.mgmt.server.region" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.region" /></label></td>
                     <td>
                         <form:select path="serverRegion">
                             <option><spring:message code="theme.option.select" /></option>
@@ -291,7 +302,7 @@
                     <td><form:errors path="serverRegion" cssClass="error" /></td>
                 </tr>
                 <tr>
-                    <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.datacenter" /></label></td>
                     <td>
                         <form:select path="datacenter">
                             <option><spring:message code="theme.option.select" /></option>
@@ -302,7 +313,7 @@
                         </form:select>
                     </td>
                     <td><form:errors path="datacenter" cssClass="error" /></td>
-                    <td><label id="txtNetworkPartition"><spring:message code="system.mgmt.network.partition" /></label></td>
+                    <td><label><spring:message code="system.mgmt.network.partition" /></label></td>
                     <td>
                         <form:select path="networkPartition">
                             <option><spring:message code="theme.option.select" /></option>
@@ -320,12 +331,12 @@
                     <td><form:errors path="dmgrPort" cssClass="error" /></td>
                 </tr>
                 <tr id="managerUrl" style="display: none">
-                    <td><label id="txtManagerUrl"><spring:message code="system.mgmt.manager.url" /></label></td>
+                    <td><label><spring:message code="system.mgmt.manager.url" /></label></td>
                     <td><form:input path="mgrUrl" /></td>
                     <td><form:errors path="mgrUrl" cssClass="error" /></td>
                 </tr>
                 <tr id="owningDmgr" style="display: none">
-                    <td><label id="txtOwningDmgr"><spring:message code="system.mgmt.owning.dmgr" /></label></td>
+                    <td><label><spring:message code="system.mgmt.owning.dmgr" /></label></td>
                     <td>
                         <c:choose>
                             <c:when test="${not empty dmgrServers}">
@@ -346,99 +357,107 @@
                     <td><form:errors path="owningDmgr" cssClass="error" /></td>
                 </tr>
             </table>
-            <table id="hardwareDetail">
+            <table>
                 <tr>
-                    <td><label id="txtServerModel"><spring:message code="system.mgmt.server.model" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.model" /></label></td>
                     <td><form:input path="serverModel" /></td>
                     <td><form:errors path="serverModel" cssClass="error" /></td>
-                    <td><label id="txtSerialNumber"><spring:message code="system.mgmt.serial.number" /></label></td>
+                    <td><label><spring:message code="system.mgmt.serial.number" /></label></td>
                     <td><form:input path="serialNumber" /></td>
                     <td><form:errors path="serialNumber" cssClass="error" /></td>
                 </tr>
                 <tr>
-                    <td><label id="txtCpuType"><spring:message code="system.mgmt.cpu.type" /></label></td>
+                    <td><label><spring:message code="system.mgmt.cpu.type" /></label></td>
                     <td><form:input path="cpuType" /></td>
                     <td><form:errors path="cpuType" cssClass="error" /></td>
-                    <td><label id="txtCpuCount"><spring:message code="system.mgmt.cpu.count" /></label></td>
+                    <td><label><spring:message code="system.mgmt.cpu.count" /></label></td>
                     <td><form:input path="cpuCount" /></td>
                     <td><form:errors path="cpuCount" cssClass="error" /></td>
                 </tr>
                 <tr>
-                    <td><label id="txtInstalledMemory"><spring:message code="system.mgmt.installed.memory" /></label></td>
+                    <td><label><spring:message code="system.mgmt.installed.memory" /></label></td>
                     <td><form:input path="installedMemory" /></td>
                     <td><form:errors path="installedMemory" cssClass="error" /></td>
                 </tr>
                 <tr>
-                    <td><label id="txtServerRack"><spring:message code="system.mgmt.server.rack" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.rack" /></label></td>
                     <td><form:input path="serverRack" /></td>
                     <td><form:errors path="serverRack" cssClass="error" /></td>
-                    <td><label id="txtRackPosition"><spring:message code="system.mgmt.rack.position" /></label></td>
+                    <td><label><spring:message code="system.mgmt.rack.position" /></label></td>
                     <td><form:input path="rackPosition" /></td>
                     <td><form:errors path="rackPosition" cssClass="error" /></td>
                 </tr>
             </table>
-            <table id="networkDetail">
+            <label><spring:message code="system.mgmt.oper.title" /></label>
+            <hr />
+            <br />
+            <table>
                 <tr>
-                    <td><label id="txtOperInfo"><spring:message code="system.mgmt.oper.title" /></label></td>
-                </tr>
-                <tr>
-                    <td><label id="txtOperHostname"><spring:message code="system.mgmt.oper.name" /></label></td>
+                    <td><label><spring:message code="system.mgmt.oper.name" /></label></td>
                     <td><form:input path="operHostName" /></td>
                     <td><form:errors path="operHostName" cssClass="error" /></td>
-                    <td><label id="txtOperAddress"><spring:message code="system.mgmt.oper.address" /></label></td>
+                    <td><label><spring:message code="system.mgmt.oper.address" /></label></td>
                     <td><form:input path="operIpAddress" /></td>
                     <td><form:errors path="operIpAddress" cssClass="error" /></td>
                 </tr>
+            </table>
+            <label><spring:message code="system.mgmt.mgmt.title" /></label>
+            <hr />
+            <br />
+            <table>
                 <tr>
-                    <td><label id="txtMgmtInfo"><spring:message code="system.mgmt.mgmt.title" /></label></td>
-                </tr>
-                <tr>
-                    <td><label id="txtMgmtHostname"><spring:message code="system.mgmt.mgmt.name" /></label></td>
+                    <td><label><spring:message code="system.mgmt.mgmt.name" /></label></td>
                     <td><form:input path="mgmtHostName" /></td>
                     <td><form:errors path="mgmtHostName" cssClass="error" /></td>
-                    <td><label id="txtMgmtAddress"><spring:message code="system.mgmt.mgmt.address" /></label></td>
+                    <td><label><spring:message code="system.mgmt.mgmt.address" /></label></td>
                     <td><form:input path="mgmtIpAddress" /></td>
                     <td><form:errors path="mgmtIpAddress" cssClass="error" /></td>
                 </tr>
+            </table>
+            <label><spring:message code="system.mgmt.backup.title" /></label>
+            <hr />
+            <br />
+            <table>
                 <tr>
-                    <td><label id="txtBkup"><spring:message code="system.mgmt.backup.title" /></label></td>
-                </tr>
-                <tr>
-                    <td><label id="txtBackupHostname"><spring:message code="system.mgmt.backup.name" /></label></td>
+                    <td><label><spring:message code="system.mgmt.backup.name" /></label></td>
                     <td><form:input path="bkHostName" /></td>
                     <td><form:errors path="bkHostName" cssClass="error" /></td>
-                    <td><label id="txtBackupAddress"><spring:message code="system.mgmt.backup.address" /></label></td>
+                    <td><label><spring:message code="system.mgmt.backup.address" /></label></td>
                     <td><form:input path="bkIpAddress" /></td>
                     <td><form:errors path="bkIpAddress" cssClass="error" /></td>
-                </tr>
+            </table>
+            <label><spring:message code="system.mgmt.nas.title" /></label>
+            <hr />
+            <br />
+            <table>
                 <tr>
-                    <td><label id="txtNasInfo"><spring:message code="system.mgmt.nas.title" /></label></td>
-                </tr>
-                <tr>
-                    <td><label id="txtNasHostname"><spring:message code="system.mgmt.nas.name" /></label></td>
+                    <td><label><spring:message code="system.mgmt.nas.name" /></label></td>
                     <td><form:input path="nasHostName" /></td>
                     <td><form:errors path="nasHostName" cssClass="error" /></td>
-                    <td><label id="txtNasAddress"><spring:message code="system.mgmt.nas.address" /></label></td>
+                    <td><label><spring:message code="system.mgmt.nas.address" /></label></td>
                     <td><form:input path="nasIpAddress" /></td>
                     <td><form:errors path="nasIpAddress" cssClass="error" /></td>
                 </tr>
             </table>
             <table>
                 <tr>
-                    <td><label id="txtIsScmEnabled"><spring:message code="system.mgmt.nat.enabled" /></label></td>
+                    <td><label><spring:message code="system.mgmt.nat.enabled" /></label></td>
                     <td><input onclick="showNatData(this);" type="checkbox" value="false"></td>
                 </tr>
             </table>
-            <table id="natAddr" style="display: none;">
+            <label id="natAttrLabel" style="display: none;"><spring:message code="system.mgmt.nas.title" /></label>
+            <hr id="natAddrHr" style="display: none;" />
+            <br id="natAddrBr" style="display: none;" />
+            <table id="natAddrTable" style="display: none;">
                 <tr>
-                    <td><label id="txtNatAddress"><spring:message code="system.mgmt.nat.address" /></label></td>
+                    <td><label><spring:message code="system.mgmt.nat.address" /></label></td>
                     <td><form:input path="natAddress" /></td>
                     <td><form:errors path="natAddress" cssClass="error" /></td>
                 </tr>
             </table>
-            <table id="comments">
+            <table>
                 <tr>
-                    <td><label id="txtServerComments"><spring:message code="system.mgmt.server.comments" /></label></td>
+                    <td><label><spring:message code="system.mgmt.server.comments" /></label></td>
                     <td><form:textarea path="serverComments" /></td>
                     <td><form:errors path="serverComments" cssClass="error" /></td>
                 </tr>

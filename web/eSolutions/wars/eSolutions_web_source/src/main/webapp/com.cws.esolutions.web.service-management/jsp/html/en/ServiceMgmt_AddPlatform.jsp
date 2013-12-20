@@ -118,6 +118,7 @@
             <label id="txtPlatformName"><spring:message code="svc.mgmt.service.name" /></label>
             <form:input path="platformName" />
             <form:errors path="platformName" cssClass="error" />
+
             <label id="txtPlatformStatus"><spring:message code="svc.mgmt.service.status" /></label>
             <form:select path="status" multiple="false">
                 <option><spring:message code="theme.option.select" /></option>
@@ -125,6 +126,7 @@
                 <form:options items="${statusList}" />
             </form:select>
             <form:errors path="status" cssClass="error" />
+
             <label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label>
             ${command.platformDmgrName}
             <label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label>
@@ -137,9 +139,10 @@
                     </form:select>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/systems/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
+                    <a href="${pageContext.request.contextPath}/ui/system-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
                 </c:otherwise>
             </c:choose>
+
             <label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label>
             <c:choose>
                 <c:when test="${not empty webServerList}">
@@ -150,12 +153,14 @@
                     </form:select>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/systems/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
+                    <a href="${pageContext.request.contextPath}/ui/system-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
                 </c:otherwise>
             </c:choose>
+
             <label id="txtPlatformDescription"><spring:message code="svc.mgmt.service.description" /></label>
             <form:textarea path="description" />
             <form:errors path="description" cssClass="error" />
+
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

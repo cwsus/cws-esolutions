@@ -117,7 +117,7 @@ public class DatacenterManagementProcessorImplTest
 
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setDataCenter(dataCenter);
-        request.setRequestInfo(hostInfo);
+        // request.setRequestInfo(hostInfo);
         request.setServiceId(DatacenterManagementProcessorImplTest.serviceId);
         request.setUserAccount(userAccount);
 

@@ -30,6 +30,7 @@ import com.cws.esolutions.core.Constants;
  */
 public class Package implements Serializable
 {
+    private String packageGuid = null;
     private String packageName = null;
     private String packagePath = null;
     private double packageVersion = 0.0;
@@ -42,6 +43,19 @@ public class Package implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+
+    public final void setPackageGuid(final String value)
+    {
+        final String methodName = Package.CNAME + "#setPackageGuid(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.packageGuid = value;
+    }
 
     public final void setPackageName(final String value)
     {
@@ -106,6 +120,19 @@ public class Package implements Serializable
         }
 
         this.packageInstaller = value;
+    }
+
+    public final String getPackageGuid()
+    {
+        final String methodName = Package.CNAME + "#getPackageGuid()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.packageGuid);
+        }
+
+        return this.packageGuid;
     }
 
     public final String getPackageName()

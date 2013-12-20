@@ -63,35 +63,35 @@
     <p>
         <table id="viewUserAccount">
             <tr>
-                <td><spring:message code="user.account.username" /></td>
+                <td><label><spring:message code="user.account.username" /></label></td>
                 <td>${sessionScope.userAccount.username}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.name" /></td>
+                <td><label><spring:message code="user.account.name" /></label></td>
                 <td>${sessionScope.userAccount.displayName}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.givenname" /></td>
+                <td><label><spring:message code="user.account.givenname" /></label></td>
                 <td>${sessionScope.userAccount.givenName}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.surname" /></td>
+                <td><label><spring:message code="user.account.surname" /></label></td>
                 <td>${sessionScope.userAccount.surname}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.telephone" /></td>
+                <td><label><spring:message code="user.account.telephone" /></label></td>
                 <td>${sessionScope.userAccount.telephoneNumber}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.pager" /></td>
+                <td><label><spring:message code="user.account.pager" /></label></td>
                 <td>${sessionScope.userAccount.pagerNumber}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.email.addr" /></td>
+                <td><label><spring:message code="user.account.email.addr" /></label></td>
                 <td>${sessionScope.userAccount.emailAddr}</td>
             </tr>
             <tr>
-                <td><spring:message code="user.account.role" /></td>
+                <td><label><spring:message code="user.account.role" /></label></td>
                 <td>${sessionScope.userAccount.role}</td>
             </tr>
         </table>

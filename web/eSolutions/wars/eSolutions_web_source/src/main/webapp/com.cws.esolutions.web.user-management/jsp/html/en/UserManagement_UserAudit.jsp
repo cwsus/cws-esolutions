@@ -65,10 +65,10 @@
         <c:if test="${not empty auditEntries}">
             <table id="viewAuditTrail">
                 <tr>
-                    <td><spring:message code="user.mgmt.audit.timestamp" /></td>
-                    <td><spring:message code="user.mgmt.audit.type" /></td>
-                    <td><spring:message code="user.mgmt.audit.application" /></td>
-                    <td><spring:message code="user.mgmt.audit.hostinfo" /></td>
+                    <td><label><spring:message code="user.mgmt.audit.timestamp" /></label></td>
+                    <td><label><spring:message code="user.mgmt.audit.type" /></label></td>
+                    <td><label><spring:message code="user.mgmt.audit.application" /></label></td>
+                    <td><label><spring:message code="user.mgmt.audit.hostinfo" /></label></td>
                 </tr>
                 <c:forEach var="entry" items="${auditEntries}">
                     <tr>
