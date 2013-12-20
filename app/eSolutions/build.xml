@@ -1,75 +1,31 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="eSolutions" default="build" basedir=".">
-    <description>eSolutions buildfile</description>
+<?xml version = "1.0" encoding = "UTF-8"?>
+<project name="eSolutions" default="build" basedir="."
+    xmlns:artifact="antlib:org.apache.maven.artifact.ant"
+    xmlns:antcontrib="antlib:net.sf.antcontrib">
+    <description>eSolutions Android buildfile</description>
 
-    <path id="path.antcontrib">
-        <fileset dir="${ant.home}/lib">
-            <include name="**/ant-contrib.jar" />
-        </fileset>
-    </path>
+    <property environment="env" />
+    <property file="buildProps/build.properties" />
 
-    <path id="path.svnant">
-        <fileset dir="${ant.home}/lib">
-            <include name="**/svnant.jar" />
-            <include name="**/svnClientAdapter.jar" />
-            <include name="**/svnjavahl.jar" />
-            <include name="**/svnkit.jar" />
-            <include name="**/ganymed.jar" />
-            <include name="**/jna.jar" />
-        </fileset>
-    </path>
+    <taskdef uri="antlib:net.sf.antcontrib" resource="net/sf/antcontrib/antlib.xml" classpath="${env.ANT_HOME}/lib/ant-contrib.jar"/>
+    <taskdef uri="antlib:org.apache.maven.artifact.ant" resource="org/apache/maven/artifact/ant/antlib.xml" classpath="${env.ANT_HOME}/lib/maven-ant-tasks-2.1.3.jar" reverseLoader="true" />
 
-    <path id="path.googlecode">
-        <fileset dir="${ant.home}/lib">
-            <include name="**/ant-googlecode-0.0.3.jar" />
-        </fileset>
-    </path>
-
-    <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="path.antcontrib" />
-    <typedef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="path.svnant" />
-    <taskdef classname="net.bluecow.googlecode.ant.GoogleCodeUploadTask" classpathref="path.googlecode" name="gcupload"/>
-
-    <property file="build/build.properties" />
-    <property file="build/build.credentials.properties" />
-    <propertyfile file="build/build.properties">
-        <entry key="major.num" type="int" operation="+" value="1" pattern="0" />
-        <entry key="minor.num" type="int" operation="+" value="1" pattern="0" />
-        <entry key="build.num" type="int" operation="+" value="1" pattern="00" />
-        <entry key="rev.num" type="int" operation="+" value="1" pattern="00" />
-    </propertyfile>
-
-    <mkdir dir="${basedir}/${tmp}" />
-    <mkdir dir="${basedir}/${buildArea}" />
+    <artifact:pom id="pom" file="${basedir}/pom.xml" />
 
     <target name="build">
         <tstamp>
-            <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+            <format property = "TODAY" pattern = "yyyy-MM-dd HH:mm:ss" />
         </tstamp>
 
-        <svn javahl="false">
-            <info target="${svnpath}" />
-        </svn>
+        <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
 
-        <touch file="${buildArea}/${VersionFile}" />
+        <touch file="${buildArea}/${pom.artifactId}-${pom.version}.version" />
 
-        <echo message="${ProjectName} version ${major.num}.${minor.num}.${build.num}.${rev.num} built ${TODAY}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message="${line.separator}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message = "SVN Revision: ${svn.info.rev}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message="${line.separator}" output="${buildArea}/${VersionFile}" append="true" />
-        <echo message = "Last changed author: ${svn.info.author}" output="${buildArea}/${VersionFile}" append="true" />
-
-        <delete dir="${basedir}/${tmp}" />
-        <delete dir="${basedir}/${buildArea}" />
-    </target>
-
-    <target name="doSnapshot" depends="build">
-        <gcupload
-            username="googleuser"
-            password="secretpassword"
-            projectname="cws-esolutions"
-            filename="${basedir}/target/${ProjectName}-${ProjectVersion}.apk"
-            targetfilename="${ProjectName}-${ProjectVersion}.apk"
-            summary="Version 0 of myproject"
-            labels="Featured, Type-Package, OpSys-All" />
+        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${pom.artifactId}-${pom.version}.version" append="false" />
     </target>
 </project>
