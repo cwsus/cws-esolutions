@@ -34,7 +34,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
@@ -49,6 +48,7 @@ import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
@@ -91,12 +91,12 @@ public class OnlineResetController
     private boolean allowUserReset = true;
     private String submitAnswersPage = null;
     private String submitUsernamePage = null;
-    private CoreServiceBean coreConfig = null;
     private String submitEmailAddrPage = null;
     private String messageRequestFailure = null;
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
+    private CoreConfigurationData coreConfig = null;
     private SecurityConfigurationData secConfig = null;
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
@@ -108,9 +108,9 @@ public class OnlineResetController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    public final void setCoreConfig(final CoreServiceBean value)
+    public final void setCoreConfig(final CoreConfigurationData value)
     {
-        final String methodName = OnlineResetController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+        final String methodName = OnlineResetController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -214,7 +214,7 @@ public class OnlineResetController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = OnlineResetController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = OnlineResetController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -818,7 +818,7 @@ public class OnlineResetController
                         DEBUGGER.debug("EmailMessage: {}", message);
                     }
 
-                    EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
+                    EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                 }
                 catch (MessagingException mx)
                 {
@@ -1218,7 +1218,7 @@ public class OnlineResetController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1243,7 +1243,7 @@ public class OnlineResetController
 
                         try
                         {
-                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                         }
                         catch (MessagingException mx)
                         {

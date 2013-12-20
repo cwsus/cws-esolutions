@@ -33,7 +33,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
@@ -47,6 +46,7 @@ import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
@@ -84,12 +84,12 @@ public class KnowledgeBaseController
     private String reviewArticlePage = null;
     private String pendingArticlesPage = null;
     private ArticleValidator validator = null;
-    private CoreServiceBean coreConfig = null;
     private String messageArticleDeleted = null;
     private String messageArticleApproved = null;
     private String messageArticleRejected = null;
     private String messageAddArticleSuccess = null;
     private ApplicationServiceBean appConfig = null;
+    private CoreConfigurationData coreConfig = null;
     private SimpleMailMessage updateArticleEmail = null;
     private SimpleMailMessage rejectArticleEmail = null;
     private SimpleMailMessage deleteArticleEmail = null;
@@ -105,7 +105,7 @@ public class KnowledgeBaseController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -116,9 +116,9 @@ public class KnowledgeBaseController
         this.appConfig = value;
     }
 
-    public final void setCoreConfig(final CoreServiceBean value)
+    public final void setCoreConfig(final CoreConfigurationData value)
     {
-        final String methodName = KnowledgeBaseController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+        final String methodName = KnowledgeBaseController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -1501,7 +1501,7 @@ public class KnowledgeBaseController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1667,7 +1667,7 @@ public class KnowledgeBaseController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1833,7 +1833,7 @@ public class KnowledgeBaseController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -2096,7 +2096,7 @@ public class KnowledgeBaseController
                                 article.getKeywords(),
                                 article.getResolution()));
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -2274,7 +2274,7 @@ public class KnowledgeBaseController
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {

@@ -137,7 +137,7 @@ public class ServiceManagementController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = ServiceManagementController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = ServiceManagementController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

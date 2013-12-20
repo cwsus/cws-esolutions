@@ -36,7 +36,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.enums.Role;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
@@ -48,6 +47,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.web.validators.UserAccountValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
@@ -86,19 +86,19 @@ public class UserManagementController
     private String viewAuditPage = null;
     private String createUserPage = null;
     private String searchUsersPage = null;
-    private CoreServiceBean coreConfig = null;
-    private String messageAccountLocked = null;
-    private String messageResetComplete = null;
     private String messageAddUserFailed = null;
-    private String messageAccountCreated = null;
-    private String messageAccountUnlocked = null;
-    private String messageAccountSuspended = null;
+    private String messageAddUserSuccess = null;
     private UserAccountValidator validator = null;
     private Object messageProjectLoadFailed = null;
-    private String messageAccountUnsuspended = null;
+    private String messageRoleChangeSuccess = null;
     private ApplicationServiceBean appConfig = null;
+    private CoreConfigurationData coreConfig = null;
+    private String messageAccountLockSuccess = null;
+    private String messageAccountResetSuccess = null;
+    private String messageAccountUnlockSuccess = null;
+    private String messageAccountSuspendSuccess = null;
+    private String messageAccountUnsuspendSuccess = null;
     private SecurityConfigurationData secConfig = null;
-    private String messageRoleChangedSuccessfully = null;
     private SimpleMailMessage accountCreatedEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
@@ -108,9 +108,9 @@ public class UserManagementController
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
 
-    public final void setCoreConfig(final CoreServiceBean value)
+    public final void setCoreConfig(final CoreConfigurationData value)
     {
-        final String methodName = UserManagementController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+        final String methodName = UserManagementController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -251,20 +251,7 @@ public class UserManagementController
         this.searchUsersPage = value;
     }
 
-    public final void setMessageAccountCreated(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setMessageAccountCreated(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageAccountCreated = value;
-    }
-
-    public final void setMessageResetComplete(final String value)
+    public final void setMessageAccountResetSuccess(final String value)
     {
         final String methodName = UserManagementController.CNAME + "#setMessageResetComplete(final String value)";
 
@@ -274,10 +261,10 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageResetComplete = value;
+        this.messageAccountResetSuccess = value;
     }
 
-    public final void setMessageAccountLocked(final String value)
+    public final void setMessageAccountLockSuccess(final String value)
     {
         final String methodName = UserManagementController.CNAME + "#setMessageAccountLocked(final String value)";
 
@@ -287,12 +274,12 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageAccountLocked = value;
+        this.messageAccountLockSuccess = value;
     }
 
-    public final void setMessageAccountUnlocked(final String value)
+    public final void setMessageAccountUnlockSuccess(final String value)
     {
-        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnlocked(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnlockSuccess(final String value)";
 
         if (DEBUG)
         {
@@ -300,12 +287,12 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageAccountUnlocked = value;
+        this.messageAccountUnlockSuccess = value;
     }
 
-    public final void setMessageAccountUnsuspended(final String value)
+    public final void setMessageAccountUnsuspendSuccess(final String value)
     {
-        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnsuspended(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountUnsuspendSuccess(final String value)";
 
         if (DEBUG)
         {
@@ -313,12 +300,12 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageAccountUnsuspended = value;
+        this.messageAccountUnsuspendSuccess = value;
     }
 
-    public final void setMessageAccountSuspended(final String value)
+    public final void setMessageAccountSuspendSuccess(final String value)
     {
-        final String methodName = UserManagementController.CNAME + "#setMessageAccountSuspended(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setMessageAccountSuspendSuccess(final String value)";
 
         if (DEBUG)
         {
@@ -326,12 +313,12 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageAccountSuspended = value;
+        this.messageAccountSuspendSuccess = value;
     }
 
-    public final void setMessageRoleChangedSuccessfully(final String value)
+    public final void setMessageRoleChangeSuccess(final String value)
     {
-        final String methodName = UserManagementController.CNAME + "#setMessageRoleChangedSuccessfully(final String value)";
+        final String methodName = UserManagementController.CNAME + "#setMessageRoleChangeSuccess(final String value)";
 
         if (DEBUG)
         {
@@ -339,7 +326,7 @@ public class UserManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageRoleChangedSuccessfully = value;
+        this.messageRoleChangeSuccess = value;
     }
 
     public final void setMessageProjectLoadFailed(final String value)
@@ -357,7 +344,7 @@ public class UserManagementController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = UserManagementController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = UserManagementController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -405,6 +392,19 @@ public class UserManagementController
         }
 
         this.forgotPasswordEmail = value;
+    }
+
+    public final void setMessageAddUserSuccess(final String value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setMessageAddUserSuccess(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageAddUserSuccess = value;
     }
 
     public final void setMessageAddUserFailed(final String value)
@@ -1413,7 +1413,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLocked);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountLockSuccess);
                     mView.addObject("userRoles", Role.values());
                     mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewUserPage);
@@ -1559,7 +1559,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlocked);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnlockSuccess);
                     mView.addObject("userRoles", Role.values());
                     mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewUserPage);
@@ -1705,7 +1705,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspended);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountSuspendSuccess);
                     mView.addObject("userRoles", Role.values());
                     mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewUserPage);
@@ -1851,7 +1851,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspended);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountUnsuspendSuccess);
                     mView.addObject("userRoles", Role.values());
                     mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewUserPage);
@@ -2062,7 +2062,7 @@ public class UserManagementController
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2087,7 +2087,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                                EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {
@@ -2097,7 +2097,7 @@ public class UserManagementController
                             }
                         }
 
-                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageResetComplete);
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountResetSuccess);
                         mView.addObject("userRoles", Role.values());
                         mView.addObject("userAccount", response.getUserAccount());
                         mView.setViewName(this.viewUserPage);
@@ -2266,7 +2266,7 @@ public class UserManagementController
                 {
                     mView.addObject("userRoles", Role.values());
                     mView.addObject("userAccount", response.getUserAccount());
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangedSuccessfully);
+                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageRoleChangeSuccess);
                     mView.setViewName(this.viewUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -2717,7 +2717,7 @@ public class UserManagementController
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2742,7 +2742,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                                EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {
@@ -2751,6 +2751,10 @@ public class UserManagementController
                                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                             }
                         }
+
+                        mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAddUserSuccess);
+                        mView.addObject("command", new UserAccount());
+                        mView.setViewName(this.createUserPage);
                     }
                     else
                     {
@@ -2758,10 +2762,6 @@ public class UserManagementController
                         mView.addObject(Constants.ERROR_RESPONSE, this.messageAddUserFailed);
                         mView.setViewName(this.appConfig.getErrorResponsePage());
                     }
-
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageAccountCreated);
-                    mView.addObject("command", new UserAccount());
-                    mView.setViewName(this.createUserPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {

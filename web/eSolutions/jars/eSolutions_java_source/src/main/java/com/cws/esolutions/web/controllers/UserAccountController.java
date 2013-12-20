@@ -87,7 +87,7 @@ public class UserAccountController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = UserAccountController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = UserAccountController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

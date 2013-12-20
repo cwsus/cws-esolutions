@@ -161,7 +161,7 @@ public class SystemCheckController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = SystemCheckController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = SystemCheckController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

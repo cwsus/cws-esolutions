@@ -27,6 +27,5 @@
         <property name="testTelnetPage" value="SystemCheck_TelnetTest" />
         <property name="netstatPage" value="SystemCheck_Netstat" />
         <property name="listProcessesPage" value="SystemCheck_ListProcesses" />
-        <property name="messageSource" value="nls/SystemCheckServlet" />
     </bean>
 </beans>

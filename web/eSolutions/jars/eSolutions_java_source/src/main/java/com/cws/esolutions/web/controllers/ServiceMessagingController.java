@@ -69,7 +69,7 @@ public class ServiceMessagingController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = ServiceMessagingController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = ServiceMessagingController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

@@ -44,7 +44,7 @@ public class SearchRequestValidator implements Validator
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = SearchRequestValidator.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = SearchRequestValidator.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

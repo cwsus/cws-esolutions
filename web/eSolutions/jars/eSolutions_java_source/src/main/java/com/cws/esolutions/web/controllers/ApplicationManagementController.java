@@ -163,7 +163,7 @@ public class ApplicationManagementController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = ApplicationManagementController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {

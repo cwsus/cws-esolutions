@@ -21,7 +21,7 @@ import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.dto.UserChangeRequest;
-import com.cws.esolutions.security.config.xml.SecurityConfig;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -35,9 +35,9 @@ import com.cws.esolutions.security.config.xml.SecurityConfig;
  */
 public class PasswordValidator implements Validator
 {
-    private SecurityConfig secConfig = null;
     private String messagePasswordMatch = null;
     private String messageNewPasswordRequired = null;
+    private SecurityConfigurationData secConfig = null;
     private String messageConfirmPasswordRequired = null;
     private String messageCurrentPasswordRequired = null;
     private String messagePasswordFailedValidation = null;
@@ -47,9 +47,9 @@ public class PasswordValidator implements Validator
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setSecConfig(final SecurityConfig value)
+    public final void setSecConfig(final SecurityConfigurationData value)
     {
-        final String methodName = PasswordValidator.CNAME + "#setSecConfig(final SecurityConfig value)";
+        final String methodName = PasswordValidator.CNAME + "#setSecConfig(final SecurityConfigurationData value)";
 
         if (DEBUG)
         {
@@ -160,8 +160,8 @@ public class PasswordValidator implements Validator
         final UserChangeRequest changeReq = (UserChangeRequest) target;
         final String newPassword = changeReq.getNewPassword();
         final String existingPassword = changeReq.getCurrentPassword();
-        final int minLength = (this.secConfig.getPasswordMinLength() >= 8) ? this.secConfig.getPasswordMinLength() : 8;
-        final int maxLength = (this.secConfig.getPasswordMaxLength() <= 128) ? this.secConfig.getPasswordMaxLength() : 128;
+        final int minLength = (this.secConfig.getSecurityConfig().getPasswordMinLength() >= 8) ? this.secConfig.getSecurityConfig().getPasswordMinLength() : 8;
+        final int maxLength = (this.secConfig.getSecurityConfig().getPasswordMaxLength() <= 128) ? this.secConfig.getSecurityConfig().getPasswordMaxLength() : 128;
         final Pattern pattern = Pattern.compile("((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[~`!@#\\$%\\^\\&\\*()\\_\\-\\+\\=\\{\\}\\[\\]\\/|'\";:.,<>?]).{" + minLength + "," + maxLength + "})");
 
         if (DEBUG)

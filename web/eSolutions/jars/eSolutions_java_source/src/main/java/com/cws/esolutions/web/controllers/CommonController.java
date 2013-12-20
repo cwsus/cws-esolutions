@@ -32,7 +32,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
@@ -41,6 +40,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
@@ -63,7 +63,7 @@ public class CommonController
 {
     private String homePage = null;
     private String serviceId = null;
-    private CoreServiceBean coreConfig = null;
+    private CoreConfigurationData coreConfig = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
 
@@ -75,7 +75,7 @@ public class CommonController
 
     public final void setAppConfig(final ApplicationServiceBean value)
     {
-        final String methodName = CommonController.CNAME + "#setAppConfig(final CoreServiceBean value)";
+        final String methodName = CommonController.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
 
         if (DEBUG)
         {
@@ -86,9 +86,9 @@ public class CommonController
         this.appConfig = value;
     }
 
-    public final void setCoreConfig(final CoreServiceBean value)
+    public final void setCoreConfig(final CoreConfigurationData value)
     {
-        final String methodName = CommonController.CNAME + "#setCoreConfig(final CoreServiceBean value)";
+        final String methodName = CommonController.CNAME + "#setCoreConfig(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -483,7 +483,7 @@ public class CommonController
 
         try
         {
-            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), message, true);
 
             EmailMessage autoResponse = new EmailMessage();
             autoResponse.setIsAlert(false);
@@ -500,7 +500,7 @@ public class CommonController
                 DEBUGGER.debug("EmailMessage: {}", autoResponse);
             }
 
-            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), autoResponse, true);
+            EmailUtils.sendEmailMessage(this.coreConfig.getMailConfig(), autoResponse, true);
 
             mView = new ModelAndView(new RedirectView());
             mView.setViewName(this.appConfig.getContactAdminsRedirect());

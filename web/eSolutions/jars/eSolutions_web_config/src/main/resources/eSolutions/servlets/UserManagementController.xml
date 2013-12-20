@@ -46,7 +46,7 @@
         <property name="searchUsersPage" value="UserManagement_UserSearch" />
         <property name="messageAddUserSuccess" value="user.mgmt.add.user.success" />
         <property name="messageAddUserFailed" value="user.mgmt.add.user.failed" />
-        <property name="messageRoleChangedSuccess" value="user.mgmt.role.change.success" />
+        <property name="messageRoleChangeSuccess" value="user.mgmt.role.change.success" />
         <property name="messageAccountResetSuccess" value="user.mgmt.reset.user.success" />
         <property name="messageAccountLockSuccess" value="user.mgmt.account.lock.success" />
         <property name="messageAccountUnlockSuccess" value="user.mgmt.account.unlock.success" />
