@@ -14,21 +14,14 @@ package com.cws.esolutions.web.controllers;
 import java.util.Date;
 import java.util.List;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -41,16 +34,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.web.validators.UserAccountValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -59,6 +54,7 @@ import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ProjectManagementException;
@@ -66,9 +62,6 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.validators.UserAccountValidator;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.controllers
@@ -104,6 +97,7 @@ public class UserManagementController
     private Object messageProjectLoadFailed = null;
     private String messageAccountUnsuspended = null;
     private ApplicationServiceBean appConfig = null;
+    private SecurityConfigurationData secConfig = null;
     private String messageRoleChangedSuccessfully = null;
     private SimpleMailMessage accountCreatedEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
@@ -125,6 +119,19 @@ public class UserManagementController
         }
 
         this.coreConfig = value;
+    }
+
+    public final void setSecConfig(final SecurityConfigurationData value)
+    {
+        final String methodName = UserManagementController.CNAME + "#setSecConfig(final SecurityConfigurationData value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.secConfig = value;
     }
 
     public final void setServiceId(final String value)
@@ -1902,7 +1909,6 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
@@ -1911,7 +1917,6 @@ public class UserManagementController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("SecurityConfig: {}", secConfig);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
@@ -2049,15 +2054,15 @@ public class UserManagementController
                                     new Date(System.currentTimeMillis()),
                                     reqInfo.getHostName(),
                                     targetURL.toString(),
-                                    secConfig.getPasswordMinLength(),
-                                    secConfig.getPasswordMaxLength()));
+                                    this.secConfig.getSecurityConfig().getPasswordMinLength(),
+                                    this.secConfig.getSecurityConfig().getPasswordMaxLength()));
 
                             if (DEBUG)
                             {
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2066,7 +2071,7 @@ public class UserManagementController
                             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
 
-                        if (secConfig.getSmsResetEnabled())
+                        if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
                         {
                             // send an sms code
                             EmailMessage smsMessage = new EmailMessage();
@@ -2082,7 +2087,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                                EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {
@@ -2513,7 +2518,6 @@ public class UserManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IAccountControlProcessor processor = new AccountControlProcessorImpl();
 
@@ -2603,8 +2607,8 @@ public class UserManagementController
                 }
 
                 UserSecurity security = new UserSecurity();
-                security.setPassword(RandomStringUtils.randomAlphanumeric(secConfig.getPasswordMaxLength()));
-                security.setUserSalt(RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength()));
+                security.setPassword(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getPasswordMaxLength()));
+                security.setUserSalt(RandomStringUtils.randomAlphanumeric(this.secConfig.getSecurityConfig().getSaltLength()));
 
                 if (DEBUG)
                 {
@@ -2713,7 +2717,7 @@ public class UserManagementController
                                 DEBUGGER.debug("EmailMessage: {}", message);
                             }
 
-                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
                         }
                         catch (MessagingException mx)
                         {
@@ -2722,7 +2726,7 @@ public class UserManagementController
                             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                         }
 
-                        if (secConfig.getSmsResetEnabled())
+                        if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
                         {
                             // send an sms code
                             EmailMessage smsMessage = new EmailMessage();
@@ -2738,7 +2742,7 @@ public class UserManagementController
 
                             try
                             {
-                                EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                                EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                             }
                             catch (MessagingException mx)
                             {

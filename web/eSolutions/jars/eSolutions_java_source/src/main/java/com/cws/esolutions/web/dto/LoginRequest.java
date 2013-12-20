@@ -12,14 +12,12 @@
 package com.cws.esolutions.web.dto;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.security.SecurityConstants;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto

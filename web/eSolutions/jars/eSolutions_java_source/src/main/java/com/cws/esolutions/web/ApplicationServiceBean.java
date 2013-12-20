@@ -6,16 +6,12 @@ package com.cws.esolutions.web;
 
 import java.util.Map;
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.enums.LogonType;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
@@ -54,7 +50,6 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String themeMessageSource = null;
     @Autowired private String requestCompletePage = null;
     @Autowired private String contactAdminsRedirect = null;
-    @Autowired private SecurityConfig securityConfig = null;
     @Autowired private String messageNoSearchResults = null;
     @Autowired private String messageEmailSendFailed = null;
     @Autowired private String messageRequestCanceled = null;
@@ -491,19 +486,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.messageEmailSentSuccess = value;
-    }
-
-    public final void setSecurityConfig(final SecurityConfig value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setSecConfig(final SecurityConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.securityConfig = value;
     }
 
     public final void setEmailValidator(final EmailAddressValidator value)
@@ -946,19 +928,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageEmailSentSuccess;
-    }
-
-    public final SecurityConfig getSecurityConfig()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getSecurityConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.securityConfig);
-        }
-
-        return this.securityConfig;
     }
 
     public final EmailAddressValidator getEmailValidator()

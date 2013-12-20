@@ -12,18 +12,16 @@
 package com.cws.esolutions.web.validators;
 
 import org.slf4j.Logger;
-
 import java.util.regex.Pattern;
-
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
-import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.dto.ServerRequest;
+import com.cws.esolutions.core.processors.enums.ServerType;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators

@@ -42,7 +42,7 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -65,7 +65,7 @@ public class SecurityServiceInitializer
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        SecurityServiceConfiguration configData = null;
+        SecurityConfigurationData configData = null;
 
         final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
         final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
@@ -89,9 +89,9 @@ public class SecurityServiceInitializer
                 throw new SecurityServiceException("Failed to load service configuration.");
             }
 
-            context = JAXBContext.newInstance(SecurityServiceConfiguration.class);
+            context = JAXBContext.newInstance(SecurityConfigurationData.class);
             marshaller = context.createUnmarshaller();
-            configData = (SecurityServiceConfiguration) marshaller.unmarshal(xmlURL);
+            configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
             svcBean.setConfigData(configData);
             svcBean.setResourceBean(resBean);
@@ -122,11 +122,11 @@ public class SecurityServiceInitializer
             DEBUGGER.debug(methodName);
         }
 
-        final SecurityServiceConfiguration configData = svcBean.getConfigData();
+        final SecurityConfigurationData configData = svcBean.getConfigData();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SecurityServiceConfiguration: {}", configData);
+            DEBUGGER.debug("SecurityConfigurationData: {}", configData);
         }
 
         try
@@ -144,7 +144,7 @@ public class SecurityServiceInitializer
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        SecurityServiceConfiguration configData = null;
+        SecurityConfigurationData configData = null;
 
         final ResourceControllerBean resBean = svcBean.getResourceBean();
 
@@ -167,9 +167,9 @@ public class SecurityServiceInitializer
                 throw new SecurityServiceException("Failed to load service configuration.");
             }
 
-            context = JAXBContext.newInstance(SecurityServiceConfiguration.class);
+            context = JAXBContext.newInstance(SecurityConfigurationData.class);
             marshaller = context.createUnmarshaller();
-            configData = (SecurityServiceConfiguration) marshaller.unmarshal(xmlURL);
+            configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
             svcBean.setConfigData(configData);
             svcBean.setResourceBean(resBean);

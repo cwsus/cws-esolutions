@@ -12,19 +12,14 @@
 package com.cws.esolutions.web.controllers;
 
 import java.util.Date;
-
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -38,13 +33,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.web.dto.UserChangeRequest;
+import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.web.enums.ResetRequestType;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.processors.enums.ControlType;
@@ -57,6 +56,7 @@ import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
@@ -72,11 +72,6 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.UserChangeRequest;
-import com.cws.esolutions.web.enums.ResetRequestType;
-import com.cws.esolutions.web.validators.OnlineResetValidator;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.controllers
@@ -102,6 +97,7 @@ public class OnlineResetController
     private String messageRequestComplete = null;
     private OnlineResetValidator validator = null;
     private ApplicationServiceBean appConfig = null;
+    private SecurityConfigurationData secConfig = null;
     private SimpleMailMessage forgotUsernameEmail = null;
     private SimpleMailMessage forgotPasswordEmail = null;
 
@@ -123,6 +119,19 @@ public class OnlineResetController
         }
 
         this.coreConfig = value;
+    }
+
+    public final void setSecConfig(final SecurityConfigurationData value)
+    {
+        final String methodName = OnlineResetController.CNAME + "#setSecConfig(final SecurityConfigurationData value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.secConfig = value;
     }
 
     public final void setResetURL(final String value)
@@ -809,7 +818,7 @@ public class OnlineResetController
                         DEBUGGER.debug("EmailMessage: {}", message);
                     }
 
-                    EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                    EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
                 }
                 catch (MessagingException mx)
                 {
@@ -1032,7 +1041,6 @@ public class OnlineResetController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final SecurityConfig secConfig = this.appConfig.getSecurityConfig();
         final IAccountResetProcessor resetProcess = new AccountResetProcessorImpl();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
@@ -1041,7 +1049,6 @@ public class OnlineResetController
             DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
             DEBUGGER.debug("HttpServletRequest: {}", hRequest);
             DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("SecurityConfig: {}", secConfig);
             DEBUGGER.debug("Session ID: {}", hSession.getId());
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
@@ -1203,15 +1210,15 @@ public class OnlineResetController
                             new Date(System.currentTimeMillis()),
                             reqInfo.getHostName(),
                             targetURL.toString(),
-                            secConfig.getPasswordMinLength(),
-                            secConfig.getPasswordMaxLength()));
+                            this.secConfig.getSecurityConfig().getPasswordMinLength(),
+                            this.secConfig.getSecurityConfig().getPasswordMaxLength()));
 
                         if (DEBUG)
                         {
                             DEBUGGER.debug("EmailMessage: {}", message);
                         }
 
-                        EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), message, true);
+                        EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), message, true);
                     }
                     catch (MessagingException mx)
                     {
@@ -1220,7 +1227,7 @@ public class OnlineResetController
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageEmailSendFailed());
                     }
 
-                    if (secConfig.getSmsResetEnabled())
+                    if (this.secConfig.getSecurityConfig().getSmsResetEnabled())
                     {
                         // send an sms code
                         EmailMessage smsMessage = new EmailMessage();
@@ -1236,7 +1243,7 @@ public class OnlineResetController
 
                         try
                         {
-                            EmailUtils.sendEmailMessage(coreConfig.getConfigData().getMailConfig(), smsMessage, true);
+                            EmailUtils.sendEmailMessage(this.coreConfig.getConfigData().getMailConfig(), smsMessage, true);
                         }
                         catch (MessagingException mx)
                         {

@@ -16,15 +16,13 @@
 package com.cws.esolutions.core.processors.dto;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto

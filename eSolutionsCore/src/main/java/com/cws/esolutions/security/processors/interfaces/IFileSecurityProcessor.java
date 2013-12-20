@@ -38,7 +38,7 @@ import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -54,7 +54,7 @@ public interface IFileSecurityProcessor
     static final String CNAME = IFileSecurityProcessor.class.getName();
     static final AuthData authData = secBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
-    static final SecurityServiceConfiguration secConfig = secBean.getConfigData();
+    static final SecurityConfigurationData secConfig = secBean.getConfigData();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
     static final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 

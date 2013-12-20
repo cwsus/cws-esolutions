@@ -12,17 +12,12 @@
 package com.cws.esolutions.web.controllers;
 
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,17 +29,25 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.dto.ProjectRequest;
+import com.cws.esolutions.web.dto.PlatformRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.DataCenter;
+import com.cws.esolutions.web.validators.ProjectValidator;
+import com.cws.esolutions.web.validators.PlatformValidator;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.web.validators.DatacenterValidator;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
@@ -73,14 +76,6 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.PlatformRequest;
-import com.cws.esolutions.web.dto.ProjectRequest;
-import com.cws.esolutions.web.validators.DatacenterValidator;
-import com.cws.esolutions.web.validators.PlatformValidator;
-import com.cws.esolutions.web.validators.ProjectValidator;
-import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;

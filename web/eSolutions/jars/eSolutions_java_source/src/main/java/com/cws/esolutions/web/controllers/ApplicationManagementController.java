@@ -16,24 +16,17 @@ import java.util.Map;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
-
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
@@ -47,7 +40,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.web.dto.ApplicationRequest;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
@@ -55,11 +51,8 @@ import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.ApplicationRequest;
-import com.cws.esolutions.web.validators.ApplicationValidator;
 import com.cws.esolutions.web.validators.DeploymentValidator;
+import com.cws.esolutions.web.validators.ApplicationValidator;
 import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;

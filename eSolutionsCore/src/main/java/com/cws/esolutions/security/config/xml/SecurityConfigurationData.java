@@ -17,7 +17,7 @@ package com.cws.esolutions.security.config.xml;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.config.xml
- * File: SecurityServiceConfiguration.java
+ * File: SecurityConfigurationData.java
  *
  * History
  *
@@ -45,7 +45,7 @@ import com.cws.esolutions.security.SecurityConstants;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class SecurityServiceConfiguration implements Serializable
+public final class SecurityConfigurationData implements Serializable
 {
     private String emailAddr = null;
     private AuthData authData = null;
@@ -57,7 +57,7 @@ public final class SecurityServiceConfiguration implements Serializable
     private FileSecurityConfig fileSecurityConfig = null;
 
     private static final long serialVersionUID = -795898942156658458L;
-    private static final String CNAME = SecurityServiceConfiguration.class.getName();
+    private static final String CNAME = SecurityConfigurationData.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -65,7 +65,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setEmailAddr(final String value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setEmailAddr(final String value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setEmailAddr(final String value)";
 
         if (DEBUG)
         {
@@ -78,7 +78,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setSecurityConfig(final SecurityConfig value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setHostName(final SecurityConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final SecurityConfig value)";
 
         if (DEBUG)
         {
@@ -91,7 +91,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setAuthData(final AuthData value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setHostName(final AuthData value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final AuthData value)";
 
         if (DEBUG)
         {
@@ -104,7 +104,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setAuthRepo(final AuthRepo value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setHostName(final AuthRepo value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final AuthRepo value)";
 
         if (DEBUG)
         {
@@ -117,7 +117,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setResourceConfig(final ResourceConfig value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setHostName(final ResourceConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
 
         if (DEBUG)
         {
@@ -130,7 +130,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setKeyConfig(final KeyConfig value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setKeyConfig(final KeyConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setKeyConfig(final KeyConfig value)";
 
         if (DEBUG)
         {
@@ -143,7 +143,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setExceptionConfig(final ExceptionConfig value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
 
         if (DEBUG)
         {
@@ -156,7 +156,7 @@ public final class SecurityServiceConfiguration implements Serializable
 
     public final void setFileSecurityConfig(final FileSecurityConfig value)
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
+        final String methodName = SecurityConfigurationData.CNAME + "#setFileSecurityConfig(final ExceptionConfig value)";
 
         if (DEBUG)
         {
@@ -170,7 +170,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "email-address")
     public final String getEmailAddr()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getEmailAddr()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getEmailAddr()";
 
         if (DEBUG)
         {
@@ -184,7 +184,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "security-config")
     public final SecurityConfig getSecurityConfig()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getSecurityConfig()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getSecurityConfig()";
 
         if (DEBUG)
         {
@@ -198,7 +198,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "auth-data")
     public final AuthData getAuthData()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getAuthData()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getAuthData()";
 
         if (DEBUG)
         {
@@ -212,7 +212,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "auth-repo")
     public final AuthRepo getAuthRepo()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getAuthRepo()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getAuthRepo()";
 
         if (DEBUG)
         {
@@ -226,7 +226,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "resource-config")
     public final ResourceConfig getResourceConfig()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getResourceConfig()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getResourceConfig()";
 
         if (DEBUG)
         {
@@ -240,7 +240,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "key-config")
     public final KeyConfig getKeyConfig()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getKeyConfig()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getKeyConfig()";
 
         if (DEBUG)
         {
@@ -254,7 +254,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "exception-config")
     public final ExceptionConfig getExceptionConfig()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getExceptionConfig()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getExceptionConfig()";
 
         if (DEBUG)
         {
@@ -268,7 +268,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @XmlElement(name = "file-security-config")
     public final FileSecurityConfig getFileSecurityConfig()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#getFileSecurityConfig()";
+        final String methodName = SecurityConfigurationData.CNAME + "#getFileSecurityConfig()";
 
         if (DEBUG)
         {
@@ -282,7 +282,7 @@ public final class SecurityServiceConfiguration implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = SecurityServiceConfiguration.CNAME + "#toString()";
+        final String methodName = SecurityConfigurationData.CNAME + "#toString()";
 
         if (DEBUG)
         {

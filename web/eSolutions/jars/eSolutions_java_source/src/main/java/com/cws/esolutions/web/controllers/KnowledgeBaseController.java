@@ -13,21 +13,14 @@ package com.cws.esolutions.web.controllers;
 
 import java.util.List;
 import java.util.Arrays;
-
 import org.slf4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.validation.BindingResult;
@@ -39,20 +32,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Article;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
+import com.cws.esolutions.web.validators.ArticleValidator;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.validators.ArticleValidator;
-import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ArticleStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
+import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;

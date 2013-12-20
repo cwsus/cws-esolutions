@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.config.xml.ConfigurationData;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -43,7 +43,7 @@ public class CoreServiceBean
 {
     private String osType = null;
     private String hostName = null;
-    private ConfigurationData configData = null;
+    private CoreConfigurationData configData = null;
     private ResourceControllerBean resourceBean = null;
 
     private static CoreServiceBean instance = null;
@@ -83,9 +83,9 @@ public class CoreServiceBean
      *
      * @param value - The complete copy of application configuration information
      */
-    public final void setConfigData(final ConfigurationData value)
+    public final void setConfigData(final CoreConfigurationData value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setConfigData(final ConfigurationData value)";
+        final String methodName = CoreServiceBean.CNAME + "#setConfigData(final CoreConfigurationData value)";
 
         if (DEBUG)
         {
@@ -153,10 +153,10 @@ public class CoreServiceBean
      * Returns a static copy of the Application configuration as defined in the
      * configuration xml files.
      *
-     * @return ConfigurationData - A complete copy of the application
+     * @return CoreConfigurationData - A complete copy of the application
      * configuration data.
      */
-    public final ConfigurationData getConfigData()
+    public final CoreConfigurationData getConfigData()
     {
         final String methodName = CoreServiceBean.CNAME + "#getConfigData()";
 

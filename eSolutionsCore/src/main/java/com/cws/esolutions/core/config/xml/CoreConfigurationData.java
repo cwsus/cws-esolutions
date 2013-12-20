@@ -17,7 +17,7 @@ package com.cws.esolutions.core.config.xml;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.config.xml
- * File: ConfigurationData.java
+ * File: CoreConfigurationData.java
  *
  * History
  *
@@ -45,7 +45,7 @@ import com.cws.esolutions.core.Constants;
  */
 @XmlRootElement(name = "configuration")
 @XmlAccessorType(XmlAccessType.NONE)
-public final class ConfigurationData implements Serializable
+public final class CoreConfigurationData implements Serializable
 {
     private SSHConfig sshConfig = null;
     private DNSConfig dnsConfig = null;
@@ -59,7 +59,7 @@ public final class ConfigurationData implements Serializable
     private DeploymentConfig deploymentConfig = null;
 
     private static final long serialVersionUID = -3876853588713098436L;
-    private static final String CNAME = ConfigurationData.class.getName();
+    private static final String CNAME = CoreConfigurationData.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -67,7 +67,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setAppConfig(final ApplicationConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setAppConfig(final ApplicationConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setAppConfig(final ApplicationConfig value)";
 
         if (DEBUG)
         {
@@ -80,7 +80,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setScriptConfig(final ScriptConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setScriptConfig(final ScriptConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setScriptConfig(final ScriptConfig value)";
 
         if (DEBUG)
         {
@@ -93,7 +93,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setResourceConfig(final ResourceConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setHostName(final ResourceConfig value)";
 
         if (DEBUG)
         {
@@ -106,7 +106,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setProxyConfig(final ProxyConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setProxyConfig(final ProxyConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setProxyConfig(final ProxyConfig value)";
 
         if (DEBUG)
         {
@@ -119,7 +119,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setDNSConfig(final DNSConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setDNSConfig(final DNSConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setDNSConfig(final DNSConfig value)";
 
         if (DEBUG)
         {
@@ -132,7 +132,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setSshConfig(final SSHConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setSshConfig(final SSHConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setSshConfig(final SSHConfig value)";
 
         if (DEBUG)
         {
@@ -145,7 +145,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setExceptionConfig(final ExceptionConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setExceptionConfig(final ExceptionConfig value)";
 
         if (DEBUG)
         {
@@ -158,7 +158,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setDeploymentConfig(final DeploymentConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setDeploymentConfig(final DeploymentConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setDeploymentConfig(final DeploymentConfig value)";
 
         if (DEBUG)
         {
@@ -171,7 +171,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setAgentConfig(final AgentConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setAgentConfig(final AgentConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setAgentConfig(final AgentConfig value)";
 
         if (DEBUG)
         {
@@ -184,7 +184,7 @@ public final class ConfigurationData implements Serializable
 
     public final void setMailConfig(final MailConfig value)
     {
-        final String methodName = ConfigurationData.CNAME + "#setMailConfig(final MailConfig value)";
+        final String methodName = CoreConfigurationData.CNAME + "#setMailConfig(final MailConfig value)";
 
         if (DEBUG)
         {
@@ -198,7 +198,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "application-config")
     public final ApplicationConfig getAppConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getAppConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getAppConfig()";
 
         if (DEBUG)
         {
@@ -212,7 +212,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "script-config")
     public final ScriptConfig getScriptConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getScriptConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getScriptConfig()";
 
         if (DEBUG)
         {
@@ -226,7 +226,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "proxy-config")
     public final ProxyConfig getProxyConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getProxyConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getProxyConfig()";
 
         if (DEBUG)
         {
@@ -240,7 +240,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "dns-config")
     public final DNSConfig getDNSConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getDNSConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getDNSConfig()";
 
         if (DEBUG)
         {
@@ -254,7 +254,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "resource-config")
     public final ResourceConfig getResourceConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getResourceConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getResourceConfig()";
 
         if (DEBUG)
         {
@@ -268,7 +268,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "ssh-config")
     public final SSHConfig getSshConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getSshConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getSshConfig()";
 
         if (DEBUG)
         {
@@ -282,7 +282,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "exception-config")
     public final ExceptionConfig getExceptionConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getExceptionConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getExceptionConfig()";
 
         if (DEBUG)
         {
@@ -296,7 +296,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "deployment-config")
     public final DeploymentConfig getDeploymentConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getDeploymentConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getDeploymentConfig()";
 
         if (DEBUG)
         {
@@ -310,7 +310,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "agent-config")
     public final AgentConfig getAgentConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getAgentConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getAgentConfig()";
 
         if (DEBUG)
         {
@@ -324,7 +324,7 @@ public final class ConfigurationData implements Serializable
     @XmlElement(name = "mail-config")
     public final MailConfig getMailConfig()
     {
-        final String methodName = ConfigurationData.CNAME + "#getMailConfig()";
+        final String methodName = CoreConfigurationData.CNAME + "#getMailConfig()";
 
         if (DEBUG)
         {
@@ -338,7 +338,7 @@ public final class ConfigurationData implements Serializable
     @Override
     public final String toString()
     {
-        final String methodName = ConfigurationData.CNAME + "#toString()";
+        final String methodName = CoreConfigurationData.CNAME + "#toString()";
 
         if (DEBUG)
         {

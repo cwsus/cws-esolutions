@@ -50,7 +50,7 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
-import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
  * @see javax.servlet.ServletContextListener
  */
@@ -80,7 +80,7 @@ public class SecurityServiceListener implements ServletContextListener
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        SecurityServiceConfiguration configData = null;
+        SecurityConfigurationData configData = null;
         Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = sContextEvent.getServletContext();
@@ -125,9 +125,9 @@ public class SecurityServiceListener implements ServletContextListener
 
                 if (xmlURL != null)
                 {
-                    context = JAXBContext.newInstance(SecurityServiceConfiguration.class);
+                    context = JAXBContext.newInstance(SecurityConfigurationData.class);
                     marshaller = context.createUnmarshaller();
-                    configData = (SecurityServiceConfiguration) marshaller.unmarshal(xmlURL);
+                    configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
                     svcBean.setConfigData(configData);
                     svcBean.setResourceBean(resBean);
@@ -183,11 +183,11 @@ public class SecurityServiceListener implements ServletContextListener
             DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
         }
 
-        final SecurityServiceConfiguration configData = svcBean.getConfigData();
+        final SecurityConfigurationData configData = svcBean.getConfigData();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SecurityServiceConfiguration: {}", configData);
+            DEBUGGER.debug("SecurityConfigurationData: {}", configData);
         }
 
         try

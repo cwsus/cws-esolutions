@@ -12,18 +12,16 @@
 package com.cws.esolutions.web.dto;
 
 import org.slf4j.Logger;
-
 import java.io.Serializable;
 import java.lang.reflect.Field;
-
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
-import com.cws.esolutions.web.Constants;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.dto

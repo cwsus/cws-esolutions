@@ -24,10 +24,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.xml.ConfigurationData;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /*
  * Project: eSolutionsCore
@@ -49,7 +49,7 @@ public class CoreServiceInitializer
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        ConfigurationData configData = null;
+        CoreConfigurationData configData = null;
 
         final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
         final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
@@ -73,9 +73,9 @@ public class CoreServiceInitializer
                 throw new CoreServiceException("Failed to load service configuration.");
             }
 
-            context = JAXBContext.newInstance(ConfigurationData.class);
+            context = JAXBContext.newInstance(CoreConfigurationData.class);
             marshaller = context.createUnmarshaller();
-            configData = (ConfigurationData) marshaller.unmarshal(xmlURL);
+            configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
             appBean.setConfigData(configData);
             appBean.setResourceBean(resBean);
@@ -100,7 +100,7 @@ public class CoreServiceInitializer
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        ConfigurationData configData = null;
+        CoreConfigurationData configData = null;
 
         final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
@@ -123,9 +123,9 @@ public class CoreServiceInitializer
                 throw new CoreServiceException("Failed to load service configuration.");
             }
 
-            context = JAXBContext.newInstance(ConfigurationData.class);
+            context = JAXBContext.newInstance(CoreConfigurationData.class);
             marshaller = context.createUnmarshaller();
-            configData = (ConfigurationData) marshaller.unmarshal(xmlURL);
+            configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
             appBean.setConfigData(configData);
             appBean.setResourceBean(resBean);

@@ -12,13 +12,10 @@
 package com.cws.esolutions.web.validators;
 
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;

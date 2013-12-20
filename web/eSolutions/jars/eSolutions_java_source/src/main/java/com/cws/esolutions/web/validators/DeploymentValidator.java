@@ -12,7 +12,6 @@
 package com.cws.esolutions.web.validators;
 
 import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
@@ -23,9 +22,9 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.Constants;
+import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.core.processors.dto.Application;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators

@@ -35,9 +35,9 @@ import javax.servlet.ServletContextListener;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.config.xml.ConfigurationData;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /*
  * Project: eSolutionsCore
@@ -69,7 +69,7 @@ public class CoreServiceListener implements ServletContextListener
         URL xmlURL = null;
         JAXBContext context = null;
         Unmarshaller marshaller = null;
-        ConfigurationData configData = null;
+        CoreConfigurationData configData = null;
         Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = contextEvent.getServletContext();
@@ -114,9 +114,9 @@ public class CoreServiceListener implements ServletContextListener
                 if (xmlURL != null)
                 {
                     // set the app configuration
-                    context = JAXBContext.newInstance(ConfigurationData.class);
+                    context = JAXBContext.newInstance(CoreConfigurationData.class);
                     marshaller = context.createUnmarshaller();
-                    configData = (ConfigurationData) marshaller.unmarshal(xmlURL);
+                    configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
                     appBean.setConfigData(configData);
                     appBean.setResourceBean(resBean);

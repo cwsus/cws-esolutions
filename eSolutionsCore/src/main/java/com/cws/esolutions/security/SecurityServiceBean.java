@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
+import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.audit.processors.interfaces
@@ -36,7 +36,7 @@ import com.cws.esolutions.security.config.xml.SecurityServiceConfiguration;
 public class SecurityServiceBean implements Serializable
 {
     private ResourceControllerBean resourceBean = null;
-    private SecurityServiceConfiguration configData = null;
+    private SecurityConfigurationData configData = null;
 
     private static SecurityServiceBean instance = null;
 
@@ -70,9 +70,9 @@ public class SecurityServiceBean implements Serializable
         return SecurityServiceBean.instance;
     }
 
-    public final void setConfigData(final SecurityServiceConfiguration value)
+    public final void setConfigData(final SecurityConfigurationData value)
     {
-        final String methodName = SecurityServiceBean.CNAME + "#setConfigData(final SecurityServiceConfiguration value)";
+        final String methodName = SecurityServiceBean.CNAME + "#setConfigData(final SecurityConfigurationData value)";
 
         if (DEBUG)
         {
@@ -96,7 +96,7 @@ public class SecurityServiceBean implements Serializable
         this.resourceBean = value;
     }
 
-    public final SecurityServiceConfiguration getConfigData()
+    public final SecurityConfigurationData getConfigData()
     {
         final String methodName = SecurityServiceBean.CNAME + "#getConfigData()";
 

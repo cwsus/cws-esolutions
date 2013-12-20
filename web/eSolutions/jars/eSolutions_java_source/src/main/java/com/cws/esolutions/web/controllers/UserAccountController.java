@@ -12,14 +12,10 @@
 package com.cws.esolutions.web.controllers;
 
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,11 +26,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.web.dto.UserChangeRequest;
 import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.web.ApplicationServiceBean;
+import com.cws.esolutions.web.validators.PasswordValidator;
+import com.cws.esolutions.web.validators.TelephoneValidator;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.web.validators.SecurityResponseValidator;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -46,13 +49,6 @@ import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.processors.interfaces.IAccountResetProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.dto.UserChangeRequest;
-import com.cws.esolutions.web.validators.EmailAddressValidator;
-import com.cws.esolutions.web.validators.PasswordValidator;
-import com.cws.esolutions.web.validators.SecurityResponseValidator;
-import com.cws.esolutions.web.validators.TelephoneValidator;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.controllers
