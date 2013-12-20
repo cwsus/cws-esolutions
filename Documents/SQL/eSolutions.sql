@@ -13,13 +13,13 @@
 --
 -- add in the tables
 --
-SOURCE ./eSolutionsService.sql;
+SOURCE ./eSolutions/eSolutionsService.sql;
 COMMIT;
 
 --
 -- Source in all the sql scripts to build the tables
 --
-SOURCE ./cwssec.sql;
+SOURCE ./cwssec/cwssec.sql;
 COMMIT;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
