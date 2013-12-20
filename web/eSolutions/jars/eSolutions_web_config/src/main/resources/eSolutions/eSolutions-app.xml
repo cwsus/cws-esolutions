@@ -38,9 +38,6 @@
 
     <!-- application configuration -->
     <bean id="appConfig" class="com.cws.esolutions.web.ApplicationServiceBean">
-        <property name="securityConfig">
-            <ref bean="secConfig" />
-        </property>
         <property name="messageValidator">
             <ref bean="messageValidator" />
         </property>
