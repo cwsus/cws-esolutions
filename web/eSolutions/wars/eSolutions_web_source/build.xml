@@ -12,57 +12,7 @@
     
     <artifact:pom id="pom" file="${basedir}/pom.xml" />
 
-    <property name="target.platform" value="${platform}" />
-
-    <condition property="isWebSphere">
-        <equals arg1="${platform}" arg2="websphere" caseSensitive="false" />
-    </condition>
-    <condition property="isTomcat">
-        <equals arg1="${platform}" arg2="tomcat" caseSensitive="false" />
-    </condition>
-    <condition property="isWebLogic">
-        <equals arg1="${platform}" arg2="weblogic" caseSensitive="false" />
-    </condition>
-    <condition property="isGeronimo">
-        <equals arg1="${platform}" arg2="geronimo" caseSensitive="false" />
-    </condition>
-
-    <target name="buildTomcat" if="isTomcat">
-        <copy file="${basedir}/src/main/tomcat/context.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" />
-
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@document.base@" value="${documentBase}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@cookie.domain.name@" value="${cookieDomain}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.user.name@" value="${dsUser}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.user.password@" value="${dsPass}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@database.host.name@" value="${dsHost}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@amq.host.name@" value="${amqHostName}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@amq.host.port@" value="${amqHostPort}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" token="@sysLogDirectory@" value="${sysLogDirectory}" />
-
-        <chmod file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/${pom.properties.context.root}.xml" perm="640" />
-    </target>
-
-    <target name="buildWebLogic" if="isWebLogic">
-        <copy file="${basedir}/${weblogic}/weblogic.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/weblogic.xml" />
-    </target>
-
-    <target name="buildWebSphere" if="isWebSphere">
-        <copy file="${basedir}/${websphere}/ibm-web-bnd.xmi" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/ibm-web-bnd.xmi" />
-        <copy file="${basedir}/${websphere}/ibm-web-ext.xmi" tofile="${basedir}/target/${pomartifactId}-${pom.version}/WEB-INF/ibm-web-ext.xmi" />
-
-        <replace file="${basedir}/target/${artifactId}-${version}/WEB-INF/ibm-web-bnd.xmi" token="@vhost.name@" value="${vhostName}" />
-    </target>
-
-    <target name="buildGeronimo" if="isGeronimo">
-        <copy file="${basedir}/${geronimo}/geronimo-web.xml" tofile="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" />
-
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@groupId@" value="${pom.groupId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@artifactId@" value="${pom.artifactId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@version@" value="${pom.version}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/WEB-INF/geronimo-web.xml" token="@contextRoot@" value="${pom.properties.context.root}" />
-    </target>
-
-    <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
+    <target name="build">
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>

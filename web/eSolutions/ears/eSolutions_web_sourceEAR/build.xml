@@ -12,39 +12,7 @@
 
     <artifact:pom id="pom" file="${basedir}/pom.xml" />
 
-    <property name="target.platform" value="${platform}" />
-
-    <condition property="isWebSphere">
-        <equals arg1="${target.platform}" arg2="websphere" caseSensitive="false" />
-    </condition>
-    <condition property="isTomcat">
-        <equals arg1="${target.platform}" arg2="tomcat" caseSensitive="false" />
-    </condition>
-    <condition property="isWebLogic">
-        <equals arg1="${target.platform}" arg2="weblogic" caseSensitive="false" />
-    </condition>
-    <condition property="isGeronimo">
-        <equals arg1="${target.platform}" arg2="geronimo" caseSensitive="false" />
-    </condition>
-
-    <target name="buildTomcat" if="isTomcat" />
-
-    <target name="buildWebLogic" if="isWebLogic" />
-
-    <target name="buildWebSphere" if="isWebSphere">
-        <copy file="${basedir}/${websphere}/ibm-application-bnd.xmi" tofile="${basedir}/${buildArea}/${pom.artifactId}-${pom.version}/META-INF/ibm-application-bnd.xmi" />
-    </target>
-    
-    <target name="buildGeronimo" if="isGeronimo">
-        <copy file="${basedir}/${geronimo}/geronimo-application.xml" tofile="${basedir}/${buildArea}/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" />
-
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@groupId@" value="${pom.groupId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@artifactId@" value="${pom.artifactId}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@version@" value="${pom.version}" />
-        <replace file="${basedir}/target/${pom.artifactId}-${pom.version}/META-INF/geronimo-application.xml" token="@module@" value="${pom.dependencies[0].artifactId}-${pom.dependencies[0].version}.${pom.dependencies[0].type}" />
-    </target>
-
-    <target name="build" depends="buildTomcat, buildWebLogic, buildWebSphere, buildGeronimo">
+    <target name="build">
         <tstamp>
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>
