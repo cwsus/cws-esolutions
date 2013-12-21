@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.IPackageManagementProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: PackageManagementProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.UUID;
@@ -49,16 +57,8 @@ import com.cws.esolutions.core.processors.exception.PackageManagementException;
 import com.cws.esolutions.core.processors.interfaces.IPackageManagementProcessor;
 import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
 import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: PackageManagementProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IPackageManagementProcessor
  */
 public class PackageManagementProcessorImpl implements IPackageManagementProcessor
 {

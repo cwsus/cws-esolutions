@@ -186,7 +186,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("accountData: {}", accountData);
                     }
 
-                    boolean isUserCreated = userManager.addUserAccount(userDN.toString(), accountData, request.getApplicationName());
+                    boolean isUserCreated = userManager.addUserAccount(userDN.toString(), accountData);
 
                     if (DEBUG)
                     {
@@ -1624,7 +1624,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                List<String[]> userList = userManager.listUserAccounts();
+                List<String[]> userList = userManager.listUserAccounts(request.getUserType().name());
 
                 if (DEBUG)
                 {

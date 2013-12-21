@@ -35,6 +35,7 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.dao.usermgmt.enums.UserType;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -481,16 +482,17 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts(java.lang.String)
      */
     @Override
-    public synchronized List<String[]> listUserAccounts() throws UserManagementException
+    public synchronized List<String[]> listUserAccounts(final String userType) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#listUserAccounts(final String userType) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userType);
         }
 
         Connection sqlConn = null;

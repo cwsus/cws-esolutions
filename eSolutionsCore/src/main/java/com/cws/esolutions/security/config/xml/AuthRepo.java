@@ -65,6 +65,7 @@ public final class AuthRepo implements Serializable
     private String repositoryBaseDN = null;
     private String repositoryAppBase = null;
     private String repositoryUserBase = null;
+    private String repositoryAdminBase = null;
     private AuthRepositoryType repoType = null;
     private String repositoryConnTimeout = null;
     private String repositoryReadTimeout = null;
@@ -295,6 +296,19 @@ public final class AuthRepo implements Serializable
         }
         
         this.repositoryUserBase = value;
+    }
+
+    public final void setRepositoryAdminBase(final String value)
+    {
+        final String methodName = AuthRepo.CNAME + "#setRepositoryAdminBase(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.repositoryAdminBase = value;
     }
 
     public final void setMinConnections(final String value)
@@ -530,6 +544,20 @@ public final class AuthRepo implements Serializable
         }
         
         return this.repositoryUserBase;
+    }
+
+    @XmlElement(name = "repositoryAdminBase")
+    public final String getRepositoryAdminBase()
+    {
+        final String methodName = AuthRepo.CNAME + "#getRepositoryAdminBase()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.repositoryAdminBase);
+        }
+
+        return this.repositoryAdminBase;
     }
 
     @XmlElement(name = "minConnections")

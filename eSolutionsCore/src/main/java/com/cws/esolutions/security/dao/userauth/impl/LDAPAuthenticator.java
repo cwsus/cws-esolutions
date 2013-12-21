@@ -106,7 +106,7 @@ public class LDAPAuthenticator implements Authenticator
                     }
 
                     SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getCommonName(),
@@ -124,7 +124,8 @@ public class LDAPAuthenticator implements Authenticator
                             authData.getIsSuspended(),
                             authData.getOlrSetupReq(),
                             authData.getOlrLocked(),
-                            authData.getTcAccepted());
+                            authData.getTcAccepted(),
+                            authData.getUserType());
 
                     if (DEBUG)
                     {
@@ -213,6 +214,7 @@ public class LDAPAuthenticator implements Authenticator
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
+                        userAccount.add(entry.getAttributeValue(authData.getUserType()).toUpperCase());
 
                         if (DEBUG)
                         {
@@ -304,7 +306,7 @@ public class LDAPAuthenticator implements Authenticator
                     }
 
                     SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getLockCount());
@@ -432,7 +434,7 @@ public class LDAPAuthenticator implements Authenticator
                     }
 
                     SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -551,7 +553,7 @@ public class LDAPAuthenticator implements Authenticator
                             "(&(" + authData.getSecAnswerTwo() + "=" + request.get(3) + ")))");
 
                     SearchRequest searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getCommonName());

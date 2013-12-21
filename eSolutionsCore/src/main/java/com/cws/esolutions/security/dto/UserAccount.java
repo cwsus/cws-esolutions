@@ -33,6 +33,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
@@ -53,6 +54,7 @@ public class UserAccount implements Serializable
     private String username = null;
     private String emailAddr = null;
     private String givenName = null;
+    private UserType userType = null;
     private boolean olrSetup = false;
     private String displayName = null;
     private boolean olrLocked = false;
@@ -319,6 +321,19 @@ public class UserAccount implements Serializable
         this.projectList = value;
     }
 
+    public final void setUserType(final UserType value)
+    {
+        final String methodName = UserAccount.CNAME + "#setUserType(final UserType value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userType = value;
+    }
+
     public final LoginStatus getStatus()
     {
         final String methodName = UserAccount.CNAME + "#getStatus()";
@@ -577,6 +592,19 @@ public class UserAccount implements Serializable
         }
 
         return this.projectList;
+    }
+
+    public final UserType getUserType()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userType);
+        }
+
+        return this.userType;
     }
 
     @Override

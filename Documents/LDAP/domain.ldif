@@ -15,28 +15,8 @@ objectClass: organizationalUnit
 objectClass: top
 organizationalUnitName: Users
 
-dn: organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-organizationalUnitName: RD
-
-dn: ou=admins,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-ou: admins
-
-dn: ou=developers,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-ou: developers
-
-dn: organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+dn: organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalUnit
 objectClass: top
 organizationalUnitName: Service Accounts
-
-dn: ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-ou: AppAdmins
 

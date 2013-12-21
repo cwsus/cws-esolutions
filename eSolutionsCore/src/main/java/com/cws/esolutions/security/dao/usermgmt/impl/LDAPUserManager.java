@@ -191,18 +191,17 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException
+    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final String userDN, final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final String userDN, final String userDN, final List<String> createRequest) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("CreateRequest: {}", createRequest);
-            DEBUGGER.debug("groupName: {}", groupName);
         }
 
         LDAPResult ldapResult = null;
@@ -241,6 +240,7 @@ public class LDAPUserManager implements UserManager
                     newAttributes.add(new Attribute(authData.getEmailAddr(), createRequest.get(5)));
                     newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
                     newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
+                    newAttributes.add(new Attribute(authData.getUserType(), createRequest.get(8)));
 
                     AddRequest addRequest = new AddRequest(userDN, newAttributes);
 
@@ -253,30 +253,6 @@ public class LDAPUserManager implements UserManager
 
                     if (ldapResult.getResultCode() == ResultCode.SUCCESS)
                     {
-                        if (StringUtils.isNotEmpty(groupName))
-                        {
-                            List<Modification> modifyList = new ArrayList<>(
-                                    Arrays.asList(
-                                            new Modification(ModificationType.ADD, "uniqueMember", userDN)));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("modifyList: {}", modifyList);
-                            }
-
-                            ldapResult = ldapConn.modify(new ModifyRequest("cn=" + groupName + "," + authRepo.getRepositoryAppBase(), modifyList));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("ldapResult: {}", ldapResult);
-                            }
-
-                            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
-                            {
-                                throw new UserManagementException("Failed to create the new user account. Please ensure that the data provided is valid and accurate.");
-                            }
-                        }
-
                         isUserCreated = true;
                     }
                     else
@@ -362,7 +338,7 @@ public class LDAPUserManager implements UserManager
                             "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
 
                     SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getCommonName(),
@@ -529,7 +505,7 @@ public class LDAPUserManager implements UserManager
                             "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
 
                     SearchRequest searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getIsSuspended());
@@ -659,7 +635,7 @@ public class LDAPUserManager implements UserManager
                             "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
 
                     SearchRequest searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getLockCount());
@@ -794,7 +770,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     SearchRequest searchReq = new SearchRequest(
-                        authRepo.getRepositoryBaseDN(),
+                        authRepo.getRepositoryUserBase(),
                         SearchScope.SUB,
                         searchFilter,
                         authData.getUserId(),
@@ -898,12 +874,7 @@ public class LDAPUserManager implements UserManager
         }
 
         boolean isComplete = false;
-        Filter searchFilter = null;
-        LDAPResult ldapResult = null;
         LDAPConnection ldapConn = null;
-        SearchResultEntry entry = null;
-        SearchRequest searchReq = null;
-        SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -926,12 +897,12 @@ public class LDAPUserManager implements UserManager
 
                 if (ldapConn.isConnected())
                 {
-                    searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
                             "(&("  + authData.getUserId() +  "=" + userId + "))" +
                             "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
 
-                    searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                    SearchRequest searchReq = new SearchRequest(
+						    authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getCommonName());
@@ -942,7 +913,7 @@ public class LDAPUserManager implements UserManager
                         DEBUGGER.debug("searchRequest: {}", searchReq);
                     }
 
-                    searchResult = ldapConn.search(searchReq);
+                    SearchResult searchResult = ldapConn.search(searchReq);
 
                     if (DEBUG)
                     {
@@ -953,7 +924,7 @@ public class LDAPUserManager implements UserManager
                     {
                         if (searchResult.getSearchEntries().size() == 1)
                         {
-                            entry = searchResult.getSearchEntries().get(0);
+                            SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                             if (DEBUG)
                             {
@@ -968,7 +939,7 @@ public class LDAPUserManager implements UserManager
                                 DEBUGGER.debug("DeleteRequest: {}", deleteRequest);
                             }
                     
-                            ldapResult = ldapConn.delete(deleteRequest);
+                            LDAPResult ldapResult = ldapConn.delete(deleteRequest);
 
                             if (DEBUG)
                             {
@@ -1030,11 +1001,8 @@ public class LDAPUserManager implements UserManager
             DEBUGGER.debug("Search data: {}", searchData);
         }
 
-        Filter searchFilter = null;
         List<String[]> results = null;
-        SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
-        SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -1059,6 +1027,8 @@ public class LDAPUserManager implements UserManager
                 {
                     if (searchType != null)
                     {
+						Filter searchFilter = null;
+
                         switch (searchType)
                         {
                             case USERNAME:
@@ -1105,33 +1075,19 @@ public class LDAPUserManager implements UserManager
                         throw new UserManagementException("No valid search request type was provided. Cannot continue.");
                     }
 
-                    searchReq = new SearchRequest(
-                        authRepo.getRepositoryBaseDN(),
+                    SearchRequest searchReq = new SearchRequest(
+                        authRepo.getRepositoryUserBaseDN(),
                         SearchScope.SUB,
                         searchFilter,
                         authData.getCommonName(),
-                        authData.getUserId(),
-                        authData.getGivenName(),
-                        authData.getSurname(),
-                        authData.getDisplayName(),
-                        authData.getEmailAddr(),
-                        authData.getPagerNumber(),
-                        authData.getTelephoneNumber(),
-                        authData.getUserRole(),
-                        authData.getLockCount(),
-                        authData.getLastLogin(),
-                        authData.getExpiryDate(),
-                        authData.getIsSuspended(),
-                        authData.getOlrSetupReq(),
-                        authData.getOlrLocked(),
-                        authData.getTcAccepted());
+                        authData.getUserId());
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("searchRequest: {}", searchReq);
                     }
 
-                    searchResult = ldapConn.search(searchReq);
+                    SearchResult searchResult = ldapConn.search(searchReq);
 
                     if (DEBUG)
                     {
@@ -1146,21 +1102,7 @@ public class LDAPUserManager implements UserManager
                         {
                             String[] userData = new String[] {
                                     entry.getAttributeValue(authData.getCommonName()),
-                                    entry.getAttributeValue(authData.getUserId()),
-                                    entry.getAttributeValue(authData.getGivenName()),
-                                    entry.getAttributeValue(authData.getSurname()),
-                                    entry.getAttributeValue(authData.getDisplayName()),
-                                    entry.getAttributeValue(authData.getEmailAddr()),
-                                    entry.getAttributeValue(authData.getPagerNumber()),
-                                    entry.getAttributeValue(authData.getTelephoneNumber()),
-                                    entry.getAttributeValue(authData.getUserRole()).toUpperCase(),
-                                    entry.getAttributeValue(authData.getLockCount()),
-                                    entry.getAttributeValue(authData.getLastLogin()),
-                                    entry.getAttributeValue(authData.getExpiryDate()),
-                                    entry.getAttributeValue(authData.getIsSuspended()),
-                                    entry.getAttributeValue(authData.getOlrSetupReq()),
-                                    entry.getAttributeValue(authData.getOlrLocked()),
-                                    entry.getAttributeValue(authData.getTcAccepted())
+                                    entry.getAttributeValue(authData.getUserId())
                             };
 
                             if (DEBUG)
@@ -1277,7 +1219,8 @@ public class LDAPUserManager implements UserManager
                             authData.getIsSuspended(),
                             authData.getOlrSetupReq(),
                             authData.getOlrLocked(),
-                            authData.getTcAccepted());
+                            authData.getTcAccepted(),
+                            authData.getUserType());
 
                     if (DEBUG)
                     {
@@ -1320,6 +1263,7 @@ public class LDAPUserManager implements UserManager
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
+                            userAccount.add(entry.getAttributeValue(authData.getUserType()).toUpperCase());
 
                             if (DEBUG)
                             {
@@ -1370,23 +1314,21 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts(java.lang.String)
      */
     @Override
-    public synchronized List<String[]> listUserAccounts() throws UserManagementException
+    public synchronized List<String[]> listUserAccounts(final String userType) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#listUserAccounts(final String userType) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userType);
         }
 
-        Filter searchFilter = null;
         List<String[]> results = null;
-        SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
-        SearchResult searchResult = null;
         LDAPConnectionPool ldapPool = null;
 
         try
@@ -1409,16 +1351,17 @@ public class LDAPUserManager implements UserManager
 
                 if (ldapConn.isConnected())
                 {
-                    searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&(objectClass=" + authData.getObjectClass() + ")))");
+                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                            "(&(objectClass=" + authData.getObjectClass() + "))" +
+                            "(&(" + authData.getUserType + "=" + userType + ")))");
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("searchFilter: {}", searchFilter);
                     }
 
-                    searchReq = new SearchRequest(
-                        authRepo.getRepositoryBaseDN(),
+                    SearchRequest searchReq = new SearchRequest(
+                        authRepo.getRepositoryUserBase(),
                         SearchScope.SUB,
                         searchFilter,
                         authData.getCommonName(),
@@ -1430,7 +1373,7 @@ public class LDAPUserManager implements UserManager
                         DEBUGGER.debug("searchRequest: {}", searchReq);
                     }
 
-                    searchResult = ldapConn.search(searchReq);
+                    SearchResult searchResult = ldapConn.search(searchReq);
 
                     if (DEBUG)
                     {

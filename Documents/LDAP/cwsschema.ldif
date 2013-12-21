@@ -251,6 +251,18 @@ m-oid: 1.3.6.1.4.1.16316.999.3.2.20
 m-singlevalue: TRUE
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.5
 
+dn: m-oid=1.3.6.1.4.1.16316.999.3.2.21,ou=attributeTypes,cn=cws,ou=schema
+objectClass: metaTop
+objectClass: metaAttributeType
+objectClass: top
+m-collective: FALSE
+m-description: User Type
+m-name: cwsusertype
+m-noUserModification: FALSE
+m-oid: 1.3.6.1.4.1.16316.999.3.2.21
+m-singlevalue: TRUE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+
 dn: ou=comparators,cn=cws,ou=schema
 objectClass: organizationalUnit
 objectClass: top
@@ -333,7 +345,8 @@ m-may: uidNumber
 m-may: gidNumber
 m-may: homeDirectory
 m-may: loginShell
-m-may: cwsPublicKey
+m-may: cwspublickey
+m-may: cwsusertype
 m-name: cwsperson
 m-oid: 1.3.6.1.4.1.16316.999.1.2.32
 m-supobjectclass: inetorgperson

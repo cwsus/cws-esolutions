@@ -1,6 +1,6 @@
 version: 1
 
-dn: uid=khuntly,ou=developers,organizationalUnitName=RD,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+dn: uid=khuntly,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalPerson
 objectClass: person
 objectClass: cwsusperson
@@ -25,9 +25,10 @@ displayName: Kevin Huntly
 email: kmhuntly@gmail.com
 givenName: Kevin
 uid: khuntly
+cwsusertype: ADMIN
 userPassword:: e1NTSEF9aG5udjZWL1Jpdm5rVVhlR0M1M050cVVDT3o2ZjRsR3JBVHVxeGc9PQ=
 
-dn: uid=AppUser,ou=AppAdmins,organizationalUnitName=Service Accounts,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
+dn: uid=AppUser,organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalPerson
 objectClass: person
 objectClass: inetorgperson
