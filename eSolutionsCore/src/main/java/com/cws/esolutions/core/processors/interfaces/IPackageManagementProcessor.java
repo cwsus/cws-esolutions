@@ -33,8 +33,10 @@ import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.processors.dto.PackageManagementRequest;
 import com.cws.esolutions.core.processors.dto.PackageManagementResponse;
+import com.cws.esolutions.core.dao.processors.impl.PackageManagementDAOImpl;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO;
 import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.core.processors.exception.PackageManagementException;
@@ -53,6 +55,7 @@ public interface IPackageManagementProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final String CNAME = IPackageManagementProcessor.class.getName();
+    static final IPackageManagementDAO dao = new PackageManagementDAOImpl();
     static final IUserControlService userControl = new UserControlServiceImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAdminControlService adminControl = new AdminControlServiceImpl();

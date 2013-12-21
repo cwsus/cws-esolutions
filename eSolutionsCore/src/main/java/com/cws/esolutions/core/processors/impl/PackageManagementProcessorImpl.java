@@ -121,7 +121,7 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
 
                 try
                 {
-                    validator = appDAO.getApplicationData(packageGuid);
+                    validator = dao.getPackageData(packageGuid);
                 }
                 catch (SQLException sqx)
                 {
@@ -150,14 +150,14 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
                         DEBUGGER.debug("appDataList: {}", appDataList);
                     }
 
-                    boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+                    boolean isComplete = dao.addNewPackage(appDataList);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("isApplicationAdded: {}", isApplicationAdded);
+                        DEBUGGER.debug("isComplete: {}", isComplete);
                     }
 
-                    if (isApplicationAdded)
+                    if (isComplete)
                     {
                         response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     }
@@ -271,7 +271,6 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
             if (isUserAuthorized)
             {
                 // get the current application information
-                
             }
             else
             {
@@ -367,7 +366,7 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
 
             if ((isAdminAuthorized) && (isUserAuthorized))
             {
-                boolean isComplete = appDAO.deleteApplication(reqPackage.getPackageGuid());
+                boolean isComplete = dao.deleteApplication(reqPackage.getPackageGuid());
 
                 if (DEBUG)
                 {

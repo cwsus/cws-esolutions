@@ -17,7 +17,7 @@ package com.cws.esolutions.core.dao.processors.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.interfaces
- * File: ApplicationDataDAOImpl.java
+ * File: PackageManagementDAOImpl.java
  *
  * History
  *
@@ -33,20 +33,20 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
-import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
+import com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO;
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO
  */
-public class ApplicationDataDAOImpl implements IApplicationDataDAO
+public class PackageManagementDAOImpl implements IPackageManagementDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#addNewApplication(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#addNewPackage(java.util.List)
      */
     @Override
-    public synchronized boolean addNewApplication(final List<String> value) throws SQLException
+    public synchronized boolean addNewPackage(final List<String> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#addNewApplication(final List<String> value) throws SQLException";
-        
+        final String methodName = IApplicationDataDAO.CNAME + "#addNewPackage(final List<String> value) throws SQLException";
+
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
@@ -120,13 +120,13 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#updateApplication(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#updatePackage(java.util.List)
      */
     @Override
-    public synchronized boolean updateApplication(final List<String> value) throws SQLException
+    public synchronized boolean updatePackage(final List<String> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#updateApplication(final List<String> value) throws SQLException";
-        
+        final String methodName = IApplicationDataDAO.CNAME + "#updatePackage(final List<String> value) throws SQLException";
+
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
@@ -200,13 +200,13 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#deleteApplication(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#deletePackage(java.lang.String)
      */
     @Override
-    public synchronized boolean deleteApplication(final String value) throws SQLException
+    public synchronized boolean deletePackage(final String value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#deleteApplication(final String value) throws SQLException";
-        
+        final String methodName = IApplicationDataDAO.CNAME + "#deletePackage(final String value) throws SQLException";
+
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
@@ -265,12 +265,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationCount()
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#getPackageCount()
      */
     @Override
-    public synchronized int getApplicationCount() throws SQLException
+    public synchronized int getPackageCount() throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationCount() throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#getPackageCount() throws SQLException";
 
         if (DEBUG)
         {
@@ -349,12 +349,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#listInstalledApplications(int)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#listInstalledPackages(int)
      */
     @Override
-    public synchronized List<String[]> listInstalledApplications(final int startRow) throws SQLException
+    public synchronized List<String[]> listInstalledPackages(final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#listInstalledApplications(final int startRow) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#listInstalledPackages(final int startRow) throws SQLException";
 
         if (DEBUG)
         {
@@ -462,12 +462,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationData(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#getPackageData(java.lang.String)
      */
     @Override
-    public synchronized List<String> getApplicationData(final String value) throws SQLException
+    public synchronized List<String> getPackageData(final String value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getInstalledServer(final String value) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#getPackageData(final String value) throws SQLException";
 
         if (DEBUG)
         {
@@ -569,12 +569,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#getPackagesByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
+    public synchronized List<String[]> getPackagesByAttribute(final String value, final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationsByAttribute(final String value, final int startRow) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#getPackagesByAttribute(final String value, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
