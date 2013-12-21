@@ -82,7 +82,7 @@ public interface UserManager
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean addUserAccount(final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException;
+    boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException;
 
     /**
      * Adds a new user to the authentication system. This method is utilized

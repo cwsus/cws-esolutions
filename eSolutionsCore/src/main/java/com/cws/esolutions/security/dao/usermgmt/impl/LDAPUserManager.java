@@ -1025,10 +1025,10 @@ public class LDAPUserManager implements UserManager
 
                 if (ldapConn.isConnected())
                 {
+                    Filter searchFilter = null;
+
                     if (searchType != null)
                     {
-						Filter searchFilter = null;
-
                         switch (searchType)
                         {
                             case USERNAME:
@@ -1076,7 +1076,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     SearchRequest searchReq = new SearchRequest(
-                        authRepo.getRepositoryUserBaseDN(),
+                        authRepo.getRepositoryUserBase(),
                         SearchScope.SUB,
                         searchFilter,
                         authData.getCommonName(),
@@ -1353,7 +1353,7 @@ public class LDAPUserManager implements UserManager
                 {
                     Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
                             "(&(objectClass=" + authData.getObjectClass() + "))" +
-                            "(&(" + authData.getUserType + "=" + userType + ")))");
+                            "(&(" + authData.getUserType() + "=" + userType + ")))");
 
                     if (DEBUG)
                     {

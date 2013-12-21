@@ -35,7 +35,6 @@ import java.sql.SQLException;
 import java.sql.PreparedStatement;
 
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.dao.usermgmt.enums.UserType;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -162,19 +161,18 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List, java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException
+    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final String userDN, final List<String> createRequest, final String groupName) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", userDN);
             DEBUGGER.debug("Value: {}", createRequest);
-            DEBUGGER.debug("Value: {}", groupName);
         }
 
         Connection sqlConn = null;

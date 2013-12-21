@@ -50,6 +50,7 @@
         <publicKey>cwspublickey</publicKey>
         <pagerNumber>pager</pagerNumber>
         <telephoneNumber>telephoneNumber</telephoneNumber>
+        <userType>cwsusertype</userType>
     </auth-data>
 
     <auth-repo>
