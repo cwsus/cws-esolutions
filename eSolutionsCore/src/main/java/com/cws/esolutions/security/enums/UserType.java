@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.dao.usermgmt.enums;
+package com.cws.esolutions.security.enums;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.dao.usermgmt.enums
