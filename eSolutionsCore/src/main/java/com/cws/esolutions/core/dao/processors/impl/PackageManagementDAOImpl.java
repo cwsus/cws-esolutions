@@ -504,7 +504,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                             resultSet.getString(2), // PACKAGE_NAME
                             resultSet.getBigDecimal(3), // PACKAGE_VERSION
                             resultSet.getString(4), // PACKAGE_LOCATION
-                            resultSet.getString(5), // PACKAGE_INSTALLER
+                            resultSet.getString(5) // PACKAGE_INSTALLER
                         )
                     );
 
