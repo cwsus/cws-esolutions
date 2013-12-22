@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
@@ -136,21 +137,20 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
                 if ((validator == null) || (validator.size() == 0))
                 {
                     // ok, good platform. we can add the application in
-                    List<Object> appDataList = new ArrayList<Object>(
+                    List<Object> dataList = new ArrayList<Object>(
                             Arrays.asList(
                                     packageGuid,
                                     reqPackage.getPackageName(),
                                     reqPackage.getPackageVersion(),
-                                    reqPackage.getPackagePath(),
                                     reqPackage.getPackageLocation(),
                                     reqPackage.getPackageInstaller()));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("appDataList: {}", appDataList);
+                        DEBUGGER.debug("dataList: {}", dataList);
                     }
 
-                    boolean isComplete = dao.addNewPackage(appDataList);
+                    boolean isComplete = dao.addNewPackage(dataList);
 
                     if (DEBUG)
                     {
@@ -271,6 +271,35 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
             if (isUserAuthorized)
             {
                 // get the current application information
+				// ok, good platform. we can add the application in
+				List<Object> dataList = new ArrayList<Object>(
+					Arrays.asList(
+						reqPackage.getPackageGuid(),
+						reqPackage.getPackageName(),
+						reqPackage.getPackageVersion(),
+						reqPackage.getPackageLocation(),
+						reqPackage.getPackageInstaller()));
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("dataList: {}", dataList);
+				}
+
+				boolean isComplete = dao.addNewPackage(dataList);
+
+				if (DEBUG)
+				{
+					DEBUGGER.debug("isComplete: {}", isComplete);
+				}
+
+				if (isComplete)
+				{
+					response.setRequestStatus(CoreServicesStatus.SUCCESS);
+				}
+				else
+				{
+					response.setRequestStatus(CoreServicesStatus.FAILURE);
+				}
             }
             else
             {
@@ -480,21 +509,29 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
 
             if (isUserAuthorized)
             {
-                List<Object> packageData = dao.getPackageData(reqPackage.getPackageGuid());
+                List<Object> pkgData = dao.getPackageData(reqPackage.getPackageGuid());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Object>: {}", packageData);
+                    DEBUGGER.debug("List<Object>: {}", pkgData);
                 }
 
-                if ((packageData != null) && (packageData.size() != 0))
+                if ((pkgData != null) && (pkgData.size() != 0))
                 {
                     Package resPackage = new Package();
+                    resPackage.setPackageGuid((String) pkgData.get(0));
+					reqPackage.setPackageName((String) pkgData.get(1));
+					reqPackage.setPackageVersion((BigDecimal) pkgData.get(2));
+					reqPackage.setPackageLocation((String) pkgData.get(3));
+					reqPackage.setPackageInstaller((String) pkgData.get(4));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("Package: {}", resPackage);
                     }
+
+                    response.setPackageValue(resPackage);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
                 {
