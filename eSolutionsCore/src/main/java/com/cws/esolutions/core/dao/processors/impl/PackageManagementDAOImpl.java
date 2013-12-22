@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -71,19 +72,12 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, value.get(0)); // appGuid
-            stmt.setString(2, value.get(1)); // appName
-            stmt.setString(3, value.get(2)); // appVersion
-            stmt.setString(4, value.get(3)); // basePath
-            stmt.setString(5, value.get(4)); // scm path
-            stmt.setString(6, value.get(5)); // clusterName
-            stmt.setString(7, value.get(6)); // jvmName
-            stmt.setString(8, value.get(8)); // installPath
-            stmt.setString(9, value.get(8)); // logsDir
-            stmt.setString(10, value.get(9)); // pidDir
-            stmt.setString(11, value.get(10)); // projectGuid
-            stmt.setString(12, value.get(11)); // platformGuid
+            stmt = sqlConn.prepareCall("{CALL insertNewPackage(?, ?, ?, ?, ?)}");
+            stmt.setString(1, (String) value.get(0)); // PACKAGE_GUID
+            stmt.setString(2, (String) value.get(1)); // PACKAGE_NAME
+            stmt.setBigDecimal(3, (BigDecimal) value.get(2)); // PACKAGE_VERSION
+            stmt.setString(4, (String) value.get(3)); // PACKAGE_LOCATION
+            stmt.setString(5, (String) value.get(4)); // PACKAGE_INSTALLER
 
             if (DEBUG)
             {
@@ -151,19 +145,12 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, value.get(0)); // appGuid
-            stmt.setString(2, value.get(1)); // appName
-            stmt.setString(3, value.get(2)); // appVersion
-            stmt.setString(4, value.get(3)); // basePath
-            stmt.setString(5, value.get(4)); // scm path
-            stmt.setString(6, value.get(5)); // clusterName
-            stmt.setString(7, value.get(6)); // jvmName
-            stmt.setString(8, value.get(8)); // installPath
-            stmt.setString(9, value.get(8)); // logsDir
-            stmt.setString(10, value.get(9)); // pidDir
-            stmt.setString(11, value.get(10)); // projectGuid
-            stmt.setString(12, value.get(11)); // platformGuid
+            stmt = sqlConn.prepareCall("{CALL updatePackageData(?, ?, ?, ?, ?)}");
+            stmt.setString(1, (String) value.get(0)); // PACKAGE_GUID
+            stmt.setString(2, (String) value.get(1)); // PACKAGE_NAME
+            stmt.setBigDecimal(3, (BigDecimal) value.get(2)); // PACKAGE_VERSION
+            stmt.setString(4, (String) value.get(3)); // PACKAGE_LOCATION
+            stmt.setString(5, (String) value.get(4)); // PACKAGE_INSTALLER
 
             if (DEBUG)
             {
@@ -227,8 +214,8 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL removeApplicationData(?)}");
-            stmt.setString(1, value); // systemGuid
+            stmt = sqlConn.prepareCall("{CALL removePackageData(?)}");
+            stmt.setString(1, value); // PACKAGE_GUID
 
             if (DEBUG)
             {
@@ -292,7 +279,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getApplicationCount()}");
+            stmt = sqlConn.prepareCall("{CALL getPackageCount()}");
 
             if (DEBUG)
             {
@@ -378,7 +365,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listApplications(?)}");
+            stmt = sqlConn.prepareCall("{CALL listPackages(?)}");
             stmt.setInt(1, startRow);
 
             if (DEBUG)
@@ -404,10 +391,8 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // T1.APPLICATION_GUID
-                            resultSet.getString(2), // T1.APPLICATION_NAME
-                            resultSet.getString(3), // T2.PROJECT_GUID
-                            resultSet.getString(4), // T2.PROJECT_NAME
+                            resultSet.getString(1), // PACKAGE_GUID
+                            resultSet.getString(2), // PACKAGE_NAME
                         };
 
                         if (DEBUG)
@@ -490,7 +475,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
+            stmt = sqlConn.prepareCall("{CALL getPackageData(?)}");
             stmt.setString(1, value);
 
             if (DEBUG)
@@ -515,19 +500,11 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                     (
                         Arrays.asList
                         (
-                            resultSet.getString(1), // T1.APPLICATION_GUID
-                            resultSet.getString(2), // T1.APPLICATION_NAME
-                            resultSet.getString(3), // T1.APPLICATION_VERSION
-                            resultSet.getString(4), // T1.BASE_PATH
-                            resultSet.getString(5), // T1.SCM_PATH
-                            resultSet.getString(6), // T1.CLUSTER_NAME
-                            resultSet.getString(7), // T1.JVM_NAME
-                            resultSet.getString(8), // T1.INSTALL_PATH
-                            resultSet.getString(9), // T1.LOGS_DIRECTORY
-                            resultSet.getString(10), // T1.PID_DIRECTORY
-                            resultSet.getString(11), // T1.PLATFORM_GUID
-                            resultSet.getString(12), // T2.PROJECT_GUID
-                            resultSet.getString(13) // T2.PROJECT_NAME
+                            resultSet.getString(1), // PACKAGE_GUID
+                            resultSet.getString(2), // PACKAGE_NAME
+                            resultSet.getBigDecimal(3), // PACKAGE_VERSION
+                            resultSet.getString(4), // PACKAGE_LOCATION
+                            resultSet.getString(5), // PACKAGE_INSTALLER
                         )
                     );
 
@@ -625,10 +602,8 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // T1.APPLICATION_GUID
-                            resultSet.getString(2), // T1.APPLICATION_NAME
-                            resultSet.getString(3), // T2.PROJECT_GUID
-                            resultSet.getString(4), // T2.PROJECT_NAME
+                            resultSet.getString(1), // PACKAGE_GUID
+                            resultSet.getString(2), // PACKAGE_NAME
                         };
 
                         if (DEBUG)
