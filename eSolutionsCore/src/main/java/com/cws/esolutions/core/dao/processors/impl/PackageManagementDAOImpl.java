@@ -51,11 +51,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (String str : value)
-            {
-                DEBUGGER.debug(str);
-            }
+            DEBUGGER.debug("Value: {}", value);
         }
 
         Connection sqlConn = null;
@@ -124,11 +120,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (String str : value)
-            {
-                DEBUGGER.debug(str);
-            }
+            DEBUGGER.debug("Value: {}", value);
         }
 
         Connection sqlConn = null;
@@ -510,9 +502,9 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
 
                     if (DEBUG)
                     {
-                        for (String data : responseData)
+                        for (Object obj : responseData)
                         {
-                            DEBUGGER.debug("data: {}", data);
+                            DEBUGGER.debug("Value: {}", obj);
                         }
                     }
                 }

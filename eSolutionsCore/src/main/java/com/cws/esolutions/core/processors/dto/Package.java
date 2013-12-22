@@ -10,13 +10,6 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.core.processors.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.core.Constants;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
@@ -28,14 +21,24 @@ import com.cws.esolutions.core.Constants;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.core.Constants;
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IPackageManagementProcessor
+ */
 public class Package implements Serializable
 {
     private String packageGuid = null;
     private String packageName = null;
     private String packagePath = null;
-    private double packageVersion = 0.0;
     private String packageLocation = null;
     private String packageInstaller = null;
+    private BigDecimal packageVersion = null;
 
     private static final long serialVersionUID = 3855968441905035510L;
     private static final String CNAME = Package.class.getName();
@@ -83,9 +86,9 @@ public class Package implements Serializable
         this.packagePath = value;
     }
 
-    public final void setPackageVersion(final double value)
+    public final void setPackageVersion(final BigDecimal value)
     {
-        final String methodName = Package.CNAME + "#setPackageVersion(final double value)";
+        final String methodName = Package.CNAME + "#setPackageVersion(final BigDecimal value)";
 
         if (DEBUG)
         {
@@ -161,7 +164,7 @@ public class Package implements Serializable
         return this.packagePath;
     }
 
-    public final double getPackageVersion()
+    public final BigDecimal getPackageVersion()
     {
         final String methodName = Package.CNAME + "#getPackageVersion()";
 

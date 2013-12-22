@@ -31,25 +31,13 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.utils.MQUtils;
-import com.cws.esolutions.agent.dto.AgentRequest;
-import com.cws.esolutions.agent.dto.AgentResponse;
-import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Package;
-import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.PackageManagementRequest;
 import com.cws.esolutions.core.processors.dto.PackageManagementResponse;
@@ -117,7 +105,7 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
                     DEBUGGER.debug("packageGuid: {}", packageGuid);
                 }
 
-                List<String> validator = null;
+                List<Object> validator = null;
                 response = new PackageManagementResponse();
 
                 try
@@ -311,6 +299,12 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
             ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
             
             throw new PackageManagementException(ucsx.getMessage(), ucsx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new PackageManagementException(sqx.getMessage(), sqx);
         }
         finally
         {

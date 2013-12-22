@@ -36,5 +36,5 @@ package com.cws.esolutions.security.enums;
 public enum UserType
 {
     DEVELOPER,
-    ADMIN;
+    ENGINEER;
 }

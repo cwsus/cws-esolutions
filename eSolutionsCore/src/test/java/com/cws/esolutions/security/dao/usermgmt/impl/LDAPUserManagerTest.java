@@ -61,31 +61,7 @@ public class LDAPUserManagerTest
         }
     }
 
-    @Test
-    public void testAddAccountNoGroup()
-    {
-        List<String> list = new ArrayList<>(
-            Arrays.asList(
-                "testuser",
-                RandomStringUtils.randomAlphanumeric(64),
-                "USER",
-                "Test",
-                "User",
-                "test@test.com",
-                UUID.randomUUID().toString(),
-                "Test User"));
-
-        try
-        {
-            Assert.assertTrue(userManager.addUserAccount(null, list, null));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    public void testAddAccountWithGroup()
+    public void testAddAccount()
     {
         List<String> list = new ArrayList<>(
                 Arrays.asList(
@@ -100,7 +76,7 @@ public class LDAPUserManagerTest
 
         try
         {
-            Assert.assertTrue(userManager.addUserAccount(null, list, "esolutions"));
+            Assert.assertTrue(userManager.addUserAccount(null, list));
         }
         catch (UserManagementException umx)
         {

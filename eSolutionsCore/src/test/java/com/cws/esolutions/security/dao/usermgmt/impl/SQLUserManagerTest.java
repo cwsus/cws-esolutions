@@ -62,7 +62,7 @@ public class SQLUserManagerTest
     }
 
     @Test
-    public void testAddAccountNoGroup()
+    public void testAddAccount()
     {
         List<String> list = new ArrayList<>(
             Arrays.asList(
@@ -77,30 +77,7 @@ public class SQLUserManagerTest
 
         try
         {
-            Assert.assertTrue(userManager.addUserAccount(null, list, null));
-        }
-        catch (UserManagementException umx)
-        {
-            Assert.fail(umx.getMessage());
-        }
-    }
-
-    public void testAddAccountWithGroup()
-    {
-        List<String> list = new ArrayList<>(
-                Arrays.asList(
-                    "testuser",
-                    RandomStringUtils.randomAlphanumeric(64),
-                    "USER",
-                    "Test",
-                    "User",
-                    "test@test.com",
-                    UUID.randomUUID().toString(),
-                    "Test User"));
-
-        try
-        {
-            Assert.assertTrue(userManager.addUserAccount(null, list, "esolutions"));
+            Assert.assertTrue(userManager.addUserAccount(null, list));
         }
         catch (UserManagementException umx)
         {

@@ -191,54 +191,6 @@ m-oid: 1.3.6.1.4.1.16316.999.3.2.15
 m-singlevalue: TRUE
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 
-dn: m-oid=1.3.6.1.4.1.16316.999.3.2.16,ou=attributeTypes,cn=cws,ou=schema
-objectClass: metaTop
-objectClass: metaAttributeType
-objectClass: top
-m-collective: FALSE
-m-description: UID
-m-name: uidNumber
-m-noUserModification: FALSE
-m-oid: 1.3.6.1.4.1.16316.999.3.2.16
-m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
-
-dn: m-oid=1.3.6.1.4.1.16316.999.3.2.17,ou=attributeTypes,cn=cws,ou=schema
-objectClass: metaTop
-objectClass: metaAttributeType
-objectClass: top
-m-collective: FALSE
-m-description: GID
-m-name: gidNumber
-m-noUserModification: FALSE
-m-oid: 1.3.6.1.4.1.16316.999.3.2.17
-m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
-
-dn: m-oid=1.3.6.1.4.1.16316.999.3.2.18,ou=attributeTypes,cn=cws,ou=schema
-objectClass: metaTop
-objectClass: metaAttributeType
-objectClass: top
-m-collective: FALSE
-m-description: Home Directory
-m-name: homeDirectory
-m-noUserModification: FALSE
-m-oid: 1.3.6.1.4.1.16316.999.3.2.18
-m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
-
-dn: m-oid=1.3.6.1.4.1.16316.999.3.2.19,ou=attributeTypes,cn=cws,ou=schema
-objectClass: metaTop
-objectClass: metaAttributeType
-objectClass: top
-m-collective: FALSE
-m-description: Login Shell
-m-name: loginShell
-m-noUserModification: FALSE
-m-oid: 1.3.6.1.4.1.16316.999.3.2.19
-m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
-
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.20,ou=attributeTypes,cn=cws,ou=schema
 objectClass: metaTop
 objectClass: metaAttributeType
