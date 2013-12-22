@@ -392,7 +392,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                         String[] data = new String[]
                         {
                             resultSet.getString(1), // PACKAGE_GUID
-                            resultSet.getString(2), // PACKAGE_NAME
+                            resultSet.getString(2) // PACKAGE_NAME
                         };
 
                         if (DEBUG)
@@ -603,7 +603,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                         String[] data = new String[]
                         {
                             resultSet.getString(1), // PACKAGE_GUID
-                            resultSet.getString(2), // PACKAGE_NAME
+                            resultSet.getString(2) // PACKAGE_NAME
                         };
 
                         if (DEBUG)
