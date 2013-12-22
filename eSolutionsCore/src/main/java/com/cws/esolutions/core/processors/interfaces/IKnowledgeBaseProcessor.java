@@ -54,8 +54,8 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
  */
 public interface IKnowledgeBaseProcessor
 {
+    static final IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IKnowledgeBaseDAO kbaseDAO = new KnowledgeBaseDAOImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IUserControlService userControl = new UserControlServiceImpl();

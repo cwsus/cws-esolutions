@@ -121,7 +121,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 // user is authorized for request, continue
-                boolean requestComplete = kbaseDAO.doCreateArticle(insertList);
+                boolean requestComplete = dao.doCreateArticle(insertList);
 
                 if (DEBUG)
                 {
@@ -256,7 +256,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 }
 
                 // user is authorized for request, continue
-                boolean requestComplete = kbaseDAO.doUpdateArticle(dataList);
+                boolean requestComplete = dao.doUpdateArticle(dataList);
 
                 if (DEBUG)
                 {
@@ -373,7 +373,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                boolean isComplete = kbaseDAO.updateArticleStatus(article.getArticleId(), userAccount.getUsername(), article.getArticleStatus().name());
+                boolean isComplete = dao.updateArticleStatus(article.getArticleId(), userAccount.getUsername(), article.getArticleStatus().name());
 
                 if (DEBUG)
                 {
@@ -501,7 +501,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 DEBUGGER.debug("Article: {}", article);
             }
 
-            List<Object> responseList = kbaseDAO.retrieveArticle(article.getArticleId(), request.isReview());
+            List<Object> responseList = dao.retrieveArticle(article.getArticleId(), request.isReview());
 
             if (DEBUG)
             {
@@ -678,14 +678,14 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if (isServiceAuthorized)
             {
-                int count = kbaseDAO.getArticleCount(ArticleStatus.REVIEW.name());
+                int count = dao.getArticleCount(ArticleStatus.REVIEW.name());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("count: {}", count);
                 }
 
-                List<Object[]> responseList = kbaseDAO.searchPendingArticles(userAccount.getUsername(), request.getStartRow());
+                List<Object[]> responseList = dao.searchPendingArticles(userAccount.getUsername(), request.getStartRow());
 
                 if (DEBUG)
                 {
@@ -894,7 +894,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            List<Object[]> responseList = kbaseDAO.listTopArticles();
+            List<Object[]> responseList = dao.listTopArticles();
 
             if (DEBUG)
             {

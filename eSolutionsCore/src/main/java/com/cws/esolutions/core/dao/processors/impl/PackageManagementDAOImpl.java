@@ -43,9 +43,9 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#addNewPackage(java.util.List)
      */
     @Override
-    public synchronized boolean addNewPackage(final List<String> value) throws SQLException
+    public synchronized boolean addNewPackage(final List<Object> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#addNewPackage(final List<String> value) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#addNewPackage(final List<Object> value) throws SQLException";
 
         if (DEBUG)
         {
@@ -123,9 +123,9 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#updatePackage(java.util.List)
      */
     @Override
-    public synchronized boolean updatePackage(final List<String> value) throws SQLException
+    public synchronized boolean updatePackage(final List<Object> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#updatePackage(final List<String> value) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#updatePackage(final List<Object> value) throws SQLException";
 
         if (DEBUG)
         {
@@ -205,7 +205,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
     @Override
     public synchronized boolean deletePackage(final String value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#deletePackage(final String value) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#deletePackage(final String value) throws SQLException";
 
         if (DEBUG)
         {
@@ -270,7 +270,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
     @Override
     public synchronized int getPackageCount() throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getPackageCount() throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#getPackageCount() throws SQLException";
 
         if (DEBUG)
         {
@@ -354,7 +354,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
     @Override
     public synchronized List<String[]> listInstalledPackages(final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#listInstalledPackages(final int startRow) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#listInstalledPackages(final int startRow) throws SQLException";
 
         if (DEBUG)
         {
@@ -465,9 +465,9 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IPackageManagementDAO#getPackageData(java.lang.String)
      */
     @Override
-    public synchronized List<String> getPackageData(final String value) throws SQLException
+    public synchronized List<Object> getPackageData(final String value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getPackageData(final String value) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#getPackageData(final String value) throws SQLException";
 
         if (DEBUG)
         {
@@ -478,7 +478,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String> responseData = null;
+        List<Object> responseData = null;
 
         try
         {
@@ -511,7 +511,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
                 {
                     resultSet.first();
 
-                    responseData = new ArrayList<>
+                    responseData = new ArrayList<Object>
                     (
                         Arrays.asList
                         (
@@ -574,7 +574,7 @@ public class PackageManagementDAOImpl implements IPackageManagementDAO
     @Override
     public synchronized List<String[]> getPackagesByAttribute(final String value, final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getPackagesByAttribute(final String value, final int startRow) throws SQLException";
+        final String methodName = IPackageManagementDAO.CNAME + "#getPackagesByAttribute(final String value, final int startRow) throws SQLException";
 
         if (DEBUG)
         {

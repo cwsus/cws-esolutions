@@ -366,7 +366,7 @@ public class PackageManagementProcessorImpl implements IPackageManagementProcess
 
             if ((isAdminAuthorized) && (isUserAuthorized))
             {
-                boolean isComplete = dao.deleteApplication(reqPackage.getPackageGuid());
+                boolean isComplete = dao.deletePackage(reqPackage.getPackageGuid());
 
                 if (DEBUG)
                 {
