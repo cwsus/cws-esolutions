@@ -27,7 +27,6 @@ import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.dao.processors.impl.SiteSearchDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
@@ -35,7 +34,6 @@ import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
@@ -437,11 +435,6 @@ public class SearchProcessorImpl implements ISearchProcessor
         {
             switch (request.getSearchType())
             {
-                case PROJECT:
-                    IProjectDataDAO projectDao = new ProjectDataDAOImpl();
-                    resultsList = projectDao.getProjectsByAttribute(request.getSearchTerms(), request.getStartRow());
-
-                    break;
                 case PLATFORM:
                     IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
                     resultsList = platformDao.listPlatformsByAttribute(request.getSearchTerms(), request.getStartRow());

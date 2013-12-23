@@ -54,41 +54,6 @@ public interface IUserServiceInformationDAO
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
 
-    // project authorizations
-    boolean addProjectIdForUser(final String userGuid, final String projectGuid) throws SQLException;
-
-    /**
-     * Removes a service id from a particular user. Returns true if the service
-     * id was successfully removed, false under all other conditions.
-     *
-     * @param userGuid
-     * @param projectGuid
-     * @return boolean
-     * @throws SQLException
-     */
-    boolean removeProjectIdForUser(final String userGuid, final String projectGuid) throws SQLException;
-
-    /**
-     * Removes a service id from a particular user. Returns true if the service
-     * id was successfully removed, false under all other conditions.
-     *
-     * @param userGuid
-     * @param projectGuid
-     * @return boolean
-     * @throws SQLException
-     */
-    boolean verifyProjectForUser(final String userGuid, final String projectGuid) throws SQLException;
-
-    /**
-     * Obtains and returns a list of the provided user's available services.
-     * Typically, these are objects the user is authorized to access.
-     *
-     * @param userGuid
-     * @return List<String>
-     * @throws SQLException
-     */
-    List<String> returnUserAuthorizedProjects(final String userGuid) throws SQLException;
-
     // service authorizations
     /**
      * Allows an administrator to add access to a provided service for the given user account

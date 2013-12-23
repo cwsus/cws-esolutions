@@ -66,7 +66,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
     @Override
     public ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException
     {
-        final String methodName = IApplicationManagementProcessor.CNAME + "#modifyProjectData(final ApplicationManagementRequest request) throws ApplicationManagementException";
+        final String methodName = IApplicationManagementProcessor.CNAME + "#addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException";
 
         if (DEBUG)
         {
@@ -157,25 +157,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             platforms.add(targetPlatform.getPlatformGuid());
                         }
 
-                        Project targetProject = application.getProject();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Project: {}", targetProject);
-                        }
-
-                        List<String> isProjectValid = projectDAO.getProjectData(targetProject.getProjectGuid());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isProjectValid: {}", isProjectValid);
-                        }
-
-                        if ((isProjectValid == null) || (isProjectValid.size() == 0))
-                        {
-                            throw new ApplicationManagementException("Provided project does not exist in the asset datasource. Cannot add application.");
-                        }
-
                         // ok, good platform. we can add the application in
                         List<Object> appDataList = new ArrayList<Object>(
                                 Arrays.asList(
@@ -184,9 +165,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                         application.getApplicationVersion(),
                                         application.getInstallPath(),
                                         application.getPackageLocation(),
-                                        application.getClusterName(),
                                         application.getLogsDirectory(),
-                                        targetProject.getProjectGuid(),
                                         platforms.toString()));
 
                         if (DEBUG)
@@ -339,9 +318,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                 application.getApplicationVersion(),
                                 application.getInstallPath(),
                                 application.getPackageLocation(),
-                                application.getClusterName(),
                                 application.getLogsDirectory(),
-                                application.getProject().getProjectGuid(),
                                 application.getPlatforms().toString()));
 
                 if (DEBUG)
@@ -608,47 +585,21 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     for (String[] array : appData)
                     {
-                        // we're getting a full list here, and then we'll pull out as necessary
-                        boolean isUserAuthorizedForProject = userControl.isUserAuthorizedForProject(userAccount, array[2]); // T2.PROJECT_GUID
+                        Application app = new Application();
+                        app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
+                        app.setApplicationName(array[1]); // T1.APPLICATION_NAME
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("isUserAuthorizedForProject: {}", isUserAuthorizedForProject);
+                            DEBUGGER.debug("Application: {}", app);
                         }
 
-                        if (isUserAuthorizedForProject)
-                        {
-                            Project project = new Project();
-                            project.setProjectGuid(array[2]);
-                            project.setProjectName(array[3]);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Project: {}", project);
-                            }
-
-                            Application app = new Application();
-                            app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
-                            app.setApplicationName(array[1]); // T1.APPLICATION_NAME
-                            app.setProject(project);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Application: {}", app);
-                            }
-
-                            appList.add(app);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<Application>: {}", appList);
-                        }
+                        appList.add(app);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("applicationList: {}", appList);
+                        DEBUGGER.debug("List<Application>: {}", appList);
                     }
 
                     response.setApplicationList(appList);
@@ -772,15 +723,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if ((appData != null) && (appData.size() != 0))
                 {
-                    Project appProject = new Project();
-                    appProject.setProjectGuid((String) appData.get(11)); // T2.PROJECT_GUID
-                    appProject.setProjectName((String) appData.get(12)); // T2.PROJECT_NAME
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Project: {}", appProject);
-                    }
-
                     if (StringUtils.split((String) appData.get(10), ",").length >= 1) // T1.PLATFORM_GUID
                     {
                         if (DEBUG)
@@ -836,13 +778,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     // then put it all together
                     Application resApplication = new Application();
                     resApplication.setPlatforms(appPlatforms);
-                    resApplication.setProject(appProject);
                     resApplication.setApplicationGuid((String) appData.get(0)); // T1.APPLICATION_GUID
                     resApplication.setApplicationName((String) appData.get(1)); // T1.APPLICATION_NAME
                     resApplication.setApplicationVersion((double) appData.get(2)); // T1.APPLICATION_VERSION
                     resApplication.setInstallPath((String) appData.get(3)); // T1.BASE_PATH
                     resApplication.setPackageLocation((String) appData.get(4)); // T1.SCM_PATH
-                    resApplication.setClusterName((String) appData.get(5)); // T1.CLUSTER_NAME
                     resApplication.setLogsDirectory((String) appData.get(6)); // T1.INSTALL_PATH
 
                     if (DEBUG)
@@ -984,20 +924,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                     if ((appData != null) && (appData.size() != 0))
                     {
-                        Application resApplication = new Application();
-                        resApplication.setApplicationGuid((String) appData.get(0));
-                        resApplication.setApplicationName((String) appData.get(1));
-                        resApplication.setApplicationVersion((double) appData.get(2));
-                        resApplication.setInstallPath((String) appData.get(3));
-                        resApplication.setPackageLocation((String) appData.get(4));
-                        resApplication.setClusterName((String) appData.get(5));
-                        resApplication.setLogsDirectory((String) appData.get(6));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Application: {}", resApplication);
-                        }
-
                         FileManagerRequest fileRequest = new FileManagerRequest();
 
                         if (StringUtils.isEmpty(request.getRequestFile()))

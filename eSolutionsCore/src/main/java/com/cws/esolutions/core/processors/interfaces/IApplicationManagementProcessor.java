@@ -36,10 +36,8 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.impl.ProjectDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.dao.processors.interfaces.IProjectDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
@@ -64,7 +62,6 @@ public interface IApplicationManagementProcessor
 {
     static final IServerDataDAO serverDao = new ServerDataDAOImpl();
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IProjectDataDAO projectDAO = new ProjectDataDAOImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
     static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
