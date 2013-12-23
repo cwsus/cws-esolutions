@@ -128,7 +128,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -207,7 +207,7 @@ public class LDAPKeyManager implements KeyManager
                             "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getPublicKey());
@@ -370,7 +370,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -582,7 +582,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),

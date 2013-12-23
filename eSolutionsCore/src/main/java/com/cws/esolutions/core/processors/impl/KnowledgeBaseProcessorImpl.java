@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -510,25 +509,18 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             if ((responseList != null) && (responseList.size() != 0))
             {
-                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                }
-
                 article = new Article();
                 article.setPageHits((Integer) responseList.get(0));
                 article.setArticleId((String) responseList.get(1));
-                article.setCreateDate(sdf.format(new Date((Long) (responseList.get(2)))));
+                article.setCreateDate((Date) responseList.get(2));
                 article.setKeywords((String) responseList.get(4));
                 article.setTitle((String) responseList.get(5));
                 article.setSymptoms((String) responseList.get(6));
                 article.setCause((String) responseList.get(7));
                 article.setResolution((String) responseList.get(8));
                 article.setArticleStatus(ArticleStatus.valueOf((String) responseList.get(9)));
-                article.setReviewedOn((responseList.get(11) != null) ? sdf.format(new Date((Long) responseList.get(11))) : null);
-                article.setModifiedOn((responseList.get(12) != null) ? sdf.format(new Date((Long) responseList.get(12))) : null);
+                article.setReviewedOn((responseList.get(11) != null) ? (Date) responseList.get(11) : null);
+                article.setModifiedOn((responseList.get(12) != null) ? (Date) responseList.get(12) : null);
 
                 int x = 0;
                 List<String> accountList = new ArrayList<>(
@@ -696,19 +688,13 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
                 {
                     // build it here
                     List<Article> articleList = new ArrayList<>();
-                    SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                    }
 
                     for (Object[] data : responseList)
                     {
                         Article article = new Article();
                         article.setPageHits((Integer) data[0]);
                         article.setArticleId((String) data[1]);
-                        article.setCreateDate(sdf.format(new Date((Long) data[2])));
+                        article.setCreateDate((Date) data[2]);
                         article.setKeywords((String) data[4]);
                         article.setTitle((String) data[5]);
                         article.setSymptoms((String) data[6]);
@@ -905,19 +891,13 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
             {
                 // build it here
                 List<Article> articleList = new ArrayList<>();
-                SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-                }
 
                 for (Object[] data : responseList)
                 {
                     Article article = new Article();
                     article.setPageHits((Integer) data[0]);
                     article.setArticleId((String) data[1]);
-                    article.setCreateDate(sdf.format(new Date((Long) data[2])));
+                    article.setCreateDate((Date) data[2]);
                     article.setKeywords((String) data[4]);
                     article.setTitle((String) data[5]);
                     article.setSymptoms((String) data[6]);

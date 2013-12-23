@@ -108,14 +108,6 @@
                 <td>${application.applicationCluster}</td>
             </tr>
             <tr>
-                <td><label id="txtJvmName"><spring:message code="app.mgmt.application.jvm.name" /></label></td>
-                <td>${application.jvmName}</td>
-            </tr>
-            <tr>
-                <td><label id="txtPidDirectory"><spring:message code="app.mgmt.application.pid.directory" /></label></td>
-                <td>${application.pidDirectory}</td>
-            </tr>
-            <tr>
                 <td><label id="txtApplicationProject"><spring:message code="app.mgmt.application.project" /></label></td>
                 <td>
                     <a href="${pageContext.request.contextPath}/ui/service-management/project/${application.applicationProject.projectGuid}"

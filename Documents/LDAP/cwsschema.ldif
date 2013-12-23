@@ -265,15 +265,6 @@ objectClass: organizationalUnit
 objectClass: top
 ou: syntaxes
 
-dn: m-oid=1.3.6.1.4.1.16316.999.1.2.34,ou=objectClasses,cn=cws,ou=schema
-objectClass: metaTop
-objectClass: metaObjectclass
-objectClass: top
-m-may: cwsentity
-m-name: cwsusperson
-m-oid: 1.3.6.1.4.1.16316.999.1.2.34
-m-supobjectclass: cwsperson
-
 dn: m-oid=1.3.6.1.4.1.16316.999.1.2.32,ou=objectClasses,cn=cws,ou=schema
 objectClass: metaTop
 objectClass: metaObjectclass
@@ -293,13 +284,8 @@ m-may: cwsislocked
 m-may: email
 m-may: cwssipaddr
 m-may: cwsrole
-m-may: uidNumber
-m-may: gidNumber
-m-may: homeDirectory
-m-may: loginShell
 m-may: cwspublickey
 m-may: cwsusertype
 m-name: cwsperson
 m-oid: 1.3.6.1.4.1.16316.999.1.2.32
 m-supobjectclass: inetorgperson
-

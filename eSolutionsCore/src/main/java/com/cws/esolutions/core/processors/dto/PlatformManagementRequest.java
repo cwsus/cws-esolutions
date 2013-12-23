@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import org.slf4j.LoggerFactory;
-import java.lang.reflect.Field;
-
-import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
@@ -33,6 +24,22 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import org.slf4j.Logger;
+import java.io.Serializable;
+import org.slf4j.LoggerFactory;
+import java.lang.reflect.Field;
+
+import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
 public class PlatformManagementRequest implements Serializable
 {

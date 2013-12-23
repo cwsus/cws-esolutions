@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -367,12 +366,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             }
 
             List<ServiceMessage> svcMessages = new ArrayList<>();
-            SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SimpleDateFormat: {}", sdf);
-            }
 
             for (Object[] object : data)
             {
@@ -622,13 +615,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 response.setRequestStatus(CoreServicesStatus.FAILURE);
 
                 return response;
-            }
-
-            SimpleDateFormat sdf = new SimpleDateFormat(appConfig.getDateFormat());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SimpleDateFormat: {}", sdf);
             }
 
             ServiceMessage message = new ServiceMessage();

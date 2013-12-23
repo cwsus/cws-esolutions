@@ -9,7 +9,7 @@ CREATE TABLE `cwssec`.`usr_audit` (
     `usr_audit_role` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_applid` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_applname` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_timestamp` BIGINT NOT NULL,
+    `usr_audit_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `usr_audit_action` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_srcaddr` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_srchost` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,

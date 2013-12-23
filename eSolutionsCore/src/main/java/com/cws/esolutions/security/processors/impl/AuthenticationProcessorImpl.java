@@ -175,7 +175,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
             if (authAccount != null)
             {
-                List<Object> userData = authenticator.performLogon(authAccount.getGuid(), authAccount.getUsername(), password, request.getApplicationName());
+                List<Object> userData = authenticator.performLogon(authAccount.getGuid(), authAccount.getUsername(), password);
 
                 if (DEBUG)
                 {

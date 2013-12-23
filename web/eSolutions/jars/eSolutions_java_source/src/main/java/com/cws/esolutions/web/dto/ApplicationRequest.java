@@ -32,12 +32,12 @@ import com.cws.esolutions.core.processors.enums.DeploymentType;
  */
 public class ApplicationRequest implements Serializable
 {
+    private double version = 0.0;
     private String scmPath = null;
     private String jvmName = null;
     private String project = null;
     private String basePath = null;
     private String platform = null;
-    private String version = "0.0";
     private String logsPath = null;
     private String clusterName = null;
     private String installPath = null;
@@ -107,9 +107,9 @@ public class ApplicationRequest implements Serializable
         this.applicationBinary = value;
     }
 
-    public final void setVersion(final String value)
+    public final void setVersion(final double value)
     {
-        final String methodName = ApplicationRequest.CNAME + "#setVersion(final String value)";
+        final String methodName = ApplicationRequest.CNAME + "#setVersion(final double value)";
 
         if (DEBUG)
         {
@@ -302,7 +302,7 @@ public class ApplicationRequest implements Serializable
         return this.applicationBinary;
     }
 
-    public final String getVersion()
+    public final double getVersion()
     {
         final String methodName = ApplicationRequest.CNAME + "#getVersion()";
 

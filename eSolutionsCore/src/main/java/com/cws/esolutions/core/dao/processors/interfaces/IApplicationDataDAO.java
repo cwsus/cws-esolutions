@@ -79,7 +79,7 @@ public interface IApplicationDataDAO
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
      */
-    boolean addNewApplication(final List<String> applicationData) throws SQLException;
+    boolean addNewApplication(final List<Object> applicationData) throws SQLException;
 
     /**
      * Allows updates to be applied to an application in the asset management database. The
@@ -106,7 +106,7 @@ public interface IApplicationDataDAO
      * @return <code>true</code> if the data is successfully updated, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
      */
-    boolean updateApplication(final List<String> applicationData) throws SQLException;
+    boolean updateApplication(final List<Object> applicationData) throws SQLException;
 
     /**
      * Allows addition of a new application into the asset management database. The
@@ -165,7 +165,7 @@ public interface IApplicationDataDAO
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
      */
-    List<String> getApplicationData(final String appGuid) throws SQLException;
+    List<Object> getApplicationData(final String appGuid) throws SQLException;
 
     /**
      * Lists applications stored within the asset management database. This listing

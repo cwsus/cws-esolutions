@@ -1,32 +1,45 @@
 version: 1
 
-dn: uid=khuntly,organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: cwsusperson
-objectClass: cwsperson
-objectClass: inetorgperson
+dn: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
 objectClass: top
+objectClass: cwsperson
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
 cn: 74d9729b-7fb2-4fef-874b-c9ee5d7a5a95
 sn: Huntly
-cwsexpirydate: 12042009
+cwsexpirydate: 1392841991985
 cwsfailedpwdcount: 0
 cwsisolrlocked: false
 cwsisolrsetup: false
 cwsissuspended: false
 cwsistcaccepted: true
-cwslastlogin: 120110
-cwssecq1: this is a test of the emergency broadcast system
-cwssecq2: fark
-cwssecans1: aa3fb24858b101981e583e95bd537570e40f9ae88170148ab53d5a3699080fc1f3224fe00e0faabaac4b56a2de8ffcb7d0c4678f269f1e5cd4f63a67364e270c
-cwssecans2: d0ef01b871bc81a0d730a23e5578df4fdcc7d9a27d3e332d34dc19e6b045a08f7055944715a934991ecbc3680d4f3a1678218a9fa5a75e11ef0d732ecba8826a
+cwslastlogin: 1387558338548
+cwspublickey:: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwd3vvX4/GPNnXNFAB
+ KBflmN9dcNNojQ9TXHk1w/7abEgesJjpMGJlL41CCqSrsPD4hNr+aTrQ601HyIRDT2yqcJtruSK
+ EE4+byhy9cHUittvXFFPOoNfHtfXLQvemtVyAJb5vPaGWky6VEXqclHd1kDI8OK3XDys8JQCUc0
+ E9hN+0uqjfJNw56drNOSyO98bUDZ8hT8kAkDIMNlTYPr6LU515E3fF7zynFfyK3l6eQ3EMNJjWr
+ hjW8y+KFn+yXIll/0ZWox/4vIVFszbdTrwIOhJ4HQI9p+M1gBlav6I9YZZWkYi3AH6qOdNmrQSO
+ fCLuzTb/APZuZgiaWd7TqhFs+xS9GwlCWWe4riUUbY+89XQ3ts9xM8b4s7A9COPrrLCwwu2+c/X
+ D+uiBbugKF2DhCXjCB2MU9hzzjgl75cbpgwDmGwsKQZxOlZtJEPdce/fUhDQTu5i9uUo1enYVQx
+ wTxniQkWm8XDASb7NaXAs8tFL/sVc3KAnVsNVYTfzOp4PqLEhoGOriHuCRCEGd5frGY5PtzAfPn
+ rP0lW/YKcYIpem0zyUouKqClsgQDKg6QwBRpYQi8vJkVG+iCV08k7/aZ3s3DaaRokcVYwRVtvlD
+ eHHcBmeOtrnnklIi0Zyb8hZxdQh5Jxu6CJ754pZ9BN8/l2FnGOu3w70DGA7XJCqRHECAwEAAQ==
 cwsrole: SiteAdmin
+cwssecans1: DTfPFJ3IfBoqZ237AU4oI8dpQqmSWytEG1EVW1MaPPdp6QjoIzM4YuRgtn88T9bb
+ hj9LusRuZE10bNiDv53Bmw==
+cwssecans2: 5WaeXlxLEtDdFuPYLptE2xSrHQXWTJxqJuYE3ffGexq91W2kJqKJB7ycLeyTkCq4
+ 3QjQy5zjE9RjApnt0A2boQ==
+cwssecq1: What is your favourite car ?
+cwssecq2: What is your least favourite colour ?
+cwsusertype: ENGINEER
 displayName: Kevin Huntly
 email: kmhuntly@gmail.com
 givenName: Kevin
+pager: 716-341-5669
+telephoneNumber: 716-341-5669
 uid: khuntly
-cwsusertype: ADMIN
-userPassword:: e1NTSEF9aG5udjZWL1Jpdm5rVVhlR0M1M050cVVDT3o2ZjRsR3JBVHVxeGc9PQ=
+userPassword:: e1NTSEF9VkFvZmZyNXJUQWEyTGtzbTR6MWZGM2ZLL1h2emd0U05HemNyYkE9PQ==
 
 dn: uid=AppUser,organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalPerson

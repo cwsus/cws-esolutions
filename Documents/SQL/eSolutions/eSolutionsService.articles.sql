@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `esolutionssvc`.`articles`;
 CREATE TABLE `esolutionssvc`.`articles` (
     `kbase_page_hits` TINYINT NOT NULL default 0,
     `kbase_article_id` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_createdate` BIGINT NOT NULL,
+    `kbase_article_createdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `kbase_article_author` VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
     `kbase_article_keywords` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
     `kbase_article_title` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
@@ -15,8 +15,8 @@ CREATE TABLE `esolutionssvc`.`articles` (
     `kbase_article_resolution` TEXT NOT NULL,
     `kbase_article_status` VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
     `kbase_article_reviewedby` VARCHAR(45) CHARACTER SET UTF8,
-    `kbase_article_revieweddate` BIGINT,
-    `kbase_article_modifieddate` BIGINT,
+    `kbase_article_revieweddate` TIMESTAMP,
+    `kbase_article_modifieddate` TIMESTAMP,
     `kbase_article_modifiedby` VARCHAR(45) CHARACTER SET UTF8,
     PRIMARY KEY  (`kbase_article_id`),
     FULLTEXT KEY `articles` (`kbase_article_id`, `kbase_article_keywords`, `kbase_article_title`, `kbase_article_symptoms`, `kbase_article_cause`, `kbase_article_resolution`)

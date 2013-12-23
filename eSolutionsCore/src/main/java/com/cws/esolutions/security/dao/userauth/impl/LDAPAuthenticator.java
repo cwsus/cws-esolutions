@@ -36,7 +36,6 @@ import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SearchResult;
-import org.apache.commons.lang.StringUtils;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ModifyRequest;
@@ -60,16 +59,15 @@ public class LDAPAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException";
+        final String methodName = LDAPAuthenticator.CNAME + "#performLogon(final String guid, final String username, final String password) throws AuthenticatorException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", guid);
             DEBUGGER.debug("String: {}", username);
-            DEBUGGER.debug("String: {}", groupName);
         }
 
         LDAPConnection ldapConn = null;
@@ -160,41 +158,6 @@ public class LDAPAuthenticator implements Authenticator
                         if (DEBUG)
                         {
                             DEBUGGER.debug("BindResult: {}", bindResult);
-                        }
-
-                        // ensure the user exists in the requested application
-                        // i think we shouldnt necessarily require it but whatever
-                        if (StringUtils.isNotEmpty(groupName))
-                        {
-                            Filter memberFilter = Filter.create("(|(uniqueMember=" + entry.getDN() + ")" +
-                                    "(memberOf=" + groupName + authRepo.getRepositoryAppBase() + "))");
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Filter: {}", memberFilter);
-                            }
-
-                            SearchRequest memberSearch = new SearchRequest(
-                                    "cn=" + groupName + "," + authRepo.getRepositoryAppBase(),
-                                    SearchScope.SUB,
-                                    memberFilter);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchRequest: {}", memberSearch);
-                            }
-
-                            SearchResult groupSearch = ldapConn.search(memberSearch);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResult: {}", groupSearch);
-                            }
-
-                            if (groupSearch.getResultCode() != ResultCode.SUCCESS)
-                            {
-                                throw new AuthenticatorException("Group authentication was requested but the user is not associated with the group. Cannot continue");
-                            }
                         }
 
                         userAccount = new ArrayList<>();

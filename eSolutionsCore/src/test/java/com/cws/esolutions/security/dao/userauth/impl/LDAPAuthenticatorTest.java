@@ -60,7 +60,7 @@ public class LDAPAuthenticatorTest
     {
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", "khuntly", "VjNSoL1UNGTL9+keI+fSTLCWdwcovfGkfSN1EGRA2GKq+hb+rRukzA9uijcC5Qere3Irb+m6YY3731eWk1YHnw==", "esolutions"));
+            Assert.assertNotNull(authenticator.performLogon("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", "khuntly", "VjNSoL1UNGTL9+keI+fSTLCWdwcovfGkfSN1EGRA2GKq+hb+rRukzA9uijcC5Qere3Irb+m6YY3731eWk1YHnw=="));
         }
         catch (AuthenticatorException e)
         {

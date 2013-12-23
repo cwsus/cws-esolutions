@@ -3131,7 +3131,7 @@ public class ApplicationManagementController
                             if (StringUtils.isNotEmpty(resApplication.getScmPath()))
                             {
                                 // this is an scm build. make sure the version number was populated
-                                if ((StringUtils.isNotEmpty(request.getVersion())) && (!(StringUtils.equals(resApplication.getApplicationVersion(), request.getVersion()))) && (!(StringUtils.equals(request.getVersion(), "0.0"))))
+                                if ((request.getVersion() == 0.0) || (resApplication.getApplicationVersion() == request.getVersion()))
                                 {
                                     // good. at this point we're going to download the files and then
                                     // well, do something.. not really sure how this is gonna work out

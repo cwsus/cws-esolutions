@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
-import java.io.File;
-import java.util.List;
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.DeploymentType;
-import com.cws.esolutions.core.processors.enums.ApplicationManagementType;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
@@ -36,24 +25,37 @@ import com.cws.esolutions.core.processors.enums.ApplicationManagementType;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
+import java.util.List;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.core.Constants;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class Application implements Serializable
 {
-    private String scmPath = null;
-    private String jvmName = null;
-    private String basePath = null;
-    private String pidDirectory = null;
-    private boolean scmEnabled = false;
     private String applicationGuid = null;
     private String applicationName = null;
-    private File applicationBinary = null;
-    private String applicationCluster = null;
-    private String applicationVersion = "1.0";
-    private String applicationLogsPath = null;
-    private Project applicationProject = null;
-    private String applicationInstallPath = null;
-    private DeploymentType deploymentType = null;
-    private List<Platform> applicationPlatforms = null;
-    private ApplicationManagementType managementType = null;
+    private double applicationVersion = 1.0;
+    private String installPath = null;
+    private String clusterName = null;
+    private String packageLocation = null;
+    private String packageInstaller = null;
+    private String installerOptions = null;
+    private String logsDirectory = null;
+    private Project project = null;
+    private List<Platform> platforms = null;
+    private Date onlineDate = null;
+    private Date offlineDate = null;
 
     private static final String CNAME = Application.class.getName();
     private static final long serialVersionUID = -7939041322590386615L;
@@ -88,74 +90,9 @@ public class Application implements Serializable
         this.applicationName = value;
     }
 
-    public final void setBasePath(final String value)
+    public final void setApplicationVersion(final double value)
     {
-        final String methodName = Application.CNAME + "#setBasePath(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.basePath = value;
-    }
-
-    public final void setScmEnabled(final boolean value)
-    {
-        final String methodName = Application.CNAME + "#setScmEnabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.scmEnabled = value;
-    }
-
-    public final void setScmPath(final String value)
-    {
-        final String methodName = Application.CNAME + "#setScmPath(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.scmPath = value;
-    }
-
-    public final void setApplicationPlatforms(final List<Platform> value)
-    {
-        final String methodName = Application.CNAME + "#setApplicationPlatforms(final List<Platform> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.applicationPlatforms = value;
-    }
-
-    public final void setApplicationBinary(final File value)
-    {
-        final String methodName = Application.CNAME + "#setApplicationBinary(final File value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.applicationBinary = value;
-    }
-
-    public final void setApplicationVersion(final String value)
-    {
-        final String methodName = Application.CNAME + "#setApplicationVersion(final String value)";
+        final String methodName = Application.CNAME + "#setApplicationVersion(final double value)";
 
         if (DEBUG)
         {
@@ -166,9 +103,9 @@ public class Application implements Serializable
         this.applicationVersion = value;
     }
 
-    public final void setApplicationCluster(final String value)
+    public final void setInstallPath(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationCluster(final String value)";
+        final String methodName = Application.CNAME + "#setInstallPath(final String value)";
 
         if (DEBUG)
         {
@@ -176,12 +113,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationCluster = value;
+        this.installPath = value;
     }
 
-    public final void setApplicationLogsPath(final String value)
+    public final void setClusterName(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationLogsPath(final String value)";
+        final String methodName = Application.CNAME + "#setClusterName(final String value)";
 
         if (DEBUG)
         {
@@ -189,12 +126,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationLogsPath = value;
+        this.clusterName = value;
     }
 
-    public final void setApplicationProject(final Project value)
+    public final void setPackageLocation(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationProject(final Project value)";
+        final String methodName = Application.CNAME + "#setPackageLocation(final String value)";
 
         if (DEBUG)
         {
@@ -202,12 +139,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationProject = value;
+        this.packageLocation = value;
     }
 
-    public final void setApplicationInstallPath(final String value)
+    public final void setPackageInstaller(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationInstallPath(final String value)";
+        final String methodName = Application.CNAME + "#setPackageInstaller(final String value)";
 
         if (DEBUG)
         {
@@ -215,12 +152,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationInstallPath = value;
+        this.packageInstaller = value;
     }
 
-    public final void setPidDirectory(final String value)
+    public final void setInstallerOptions(final String value)
     {
-        final String methodName = Application.CNAME + "#setPidDirectory(final String value)";
+        final String methodName = Application.CNAME + "#setInstallerOptions(final String value)";
 
         if (DEBUG)
         {
@@ -228,12 +165,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.pidDirectory = value;
+        this.installerOptions = value;
     }
 
-    public final void setJvmName(final String value)
+    public final void setLogsDirectory(final String value)
     {
-        final String methodName = Application.CNAME + "#setJvmName(final String value)";
+        final String methodName = Application.CNAME + "#setLogsDirectory(final String value)";
 
         if (DEBUG)
         {
@@ -241,12 +178,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.jvmName = value;
+        this.logsDirectory = value;
     }
 
-    public final void setDeploymentType(final DeploymentType value)
+    public final void setProject(final Project value)
     {
-        final String methodName = Application.CNAME + "#setDeploymentType(final DeploymentType value)";
+        final String methodName = Application.CNAME + "#setProject(final Project value)";
 
         if (DEBUG)
         {
@@ -254,12 +191,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.deploymentType = value;
+        this.project = value;
     }
 
-    public final void setManagementType(final ApplicationManagementType value)
+    public final void setPlatforms(final List<Platform> value)
     {
-        final String methodName = Application.CNAME + "#setManagementType(final ApplicationManagementType value)";
+        final String methodName = Application.CNAME + "#setPlatforms(final List<Platform> value)";
 
         if (DEBUG)
         {
@@ -267,7 +204,33 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.managementType = value;
+        this.platforms = value;
+    }
+
+    public final void setOnlineDate(final Date value)
+    {
+        final String methodName = Application.CNAME + "#setOnlineDate(final Date value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.onlineDate = value;
+    }
+
+    public final void setOfflineDate(final Date value)
+    {
+        final String methodName = Application.CNAME + "#setOfflineDate(final Date value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.offlineDate = value;
     }
 
     public final String getApplicationGuid()
@@ -296,33 +259,7 @@ public class Application implements Serializable
         return this.applicationName;
     }
 
-    public final List<Platform> getApplicationPlatforms()
-    {
-        final String methodName = Application.CNAME + "#getApplicationPlatforms()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationPlatforms);
-        }
-
-        return this.applicationPlatforms;
-    }
-
-    public final File getApplicationBinary()
-    {
-        final String methodName = Application.CNAME + "#getApplicationBinary()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationBinary);
-        }
-
-        return this.applicationBinary;
-    }
-
-    public final String getApplicationVersion()
+    public final double getApplicationVersion()
     {
         final String methodName = Application.CNAME + "#getApplicationVersion()";
 
@@ -335,160 +272,134 @@ public class Application implements Serializable
         return this.applicationVersion;
     }
 
-    public final String getBasePath()
+    public final String getInstallPath()
     {
-        final String methodName = Application.CNAME + "#getBasePath()";
+        final String methodName = Application.CNAME + "#getInstallPath()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.basePath);
+            DEBUGGER.debug("Value: {}", this.installPath);
         }
 
-        return this.basePath;
+        return this.installPath;
     }
 
-    public final boolean getIsScmEnabled()
+    public final String getClusterName()
     {
-        final String methodName = Application.CNAME + "#getIsScmEnabled()";
+        final String methodName = Application.CNAME + "#getClusterName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.scmEnabled);
+            DEBUGGER.debug("Value: {}", this.clusterName);
         }
 
-        return this.scmEnabled;
+        return this.clusterName;
     }
 
-    public final boolean isScmEnabled()
+    public final String getPackageLocation()
     {
-        final String methodName = Application.CNAME + "#isScmEnabled(final boolean value)";
+        final String methodName = Application.CNAME + "#getPackageLocation()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.scmEnabled);
+            DEBUGGER.debug("Value: {}", this.packageLocation);
         }
 
-        return this.scmEnabled;
+        return this.packageLocation;
     }
 
-    public final String getScmPath()
+    public final String getPackageInstaller()
     {
-        final String methodName = Application.CNAME + "#getScmPath()";
+        final String methodName = Application.CNAME + "#getPackageInstaller()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.scmPath);
+            DEBUGGER.debug("Value: {}", this.packageInstaller);
         }
 
-        return this.scmPath;
+        return this.packageInstaller;
     }
 
-    public final String getApplicationCluster()
+    public final String getInstallerOptions()
     {
-        final String methodName = Application.CNAME + "#getApplicationCluster()";
+        final String methodName = Application.CNAME + "#getInstallerOptions()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationCluster);
+            DEBUGGER.debug("Value: {}", this.installerOptions);
         }
 
-        return this.applicationCluster;
+        return this.installerOptions;
     }
 
-    public final String getApplicationLogsPath()
+    public final String getLogsDirectory()
     {
-        final String methodName = Application.CNAME + "#getApplicationLogsPath()";
+        final String methodName = Application.CNAME + "#getLogsDirectory()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationLogsPath);
+            DEBUGGER.debug("Value: {}", this.logsDirectory);
         }
 
-        return this.applicationLogsPath;
+        return this.logsDirectory;
     }
 
-    public final Project getApplicationProject()
+    public final Project getProject()
     {
-        final String methodName = Application.CNAME + "#getApplicationProject()";
+        final String methodName = Application.CNAME + "#getProject()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationProject);
+            DEBUGGER.debug("Value: {}", this.project);
         }
 
-        return this.applicationProject;
+        return this.project;
     }
 
-    public final String getApplicationInstallPath()
+    public final List<Platform> getPlatforms()
     {
-        final String methodName = Application.CNAME + "#getApplicationInstallPath()";
+        final String methodName = Application.CNAME + "#getPlatforms()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationInstallPath);
+            DEBUGGER.debug("Value: {}", this.platforms);
         }
 
-        return this.applicationInstallPath;
+        return this.platforms;
     }
 
-    public final String getPidDirectory()
+    public final Date getOnlineDate(final Date value)
     {
-        final String methodName = Application.CNAME + "#getPidDirectory()";
+        final String methodName = Application.CNAME + "#getOnlineDate(final Date value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.pidDirectory);
+            DEBUGGER.debug("Value: {}", this.onlineDate);
         }
 
-        return this.pidDirectory;
+        return this.onlineDate;
     }
 
-    public final String getJvmName()
+    public final Date getOfflineDate(final Date value)
     {
-        final String methodName = Application.CNAME + "#getJvmName()";
+        final String methodName = Application.CNAME + "#getOfflineDate(final Date value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.jvmName);
+            DEBUGGER.debug("Value: {}", this.offlineDate);
         }
 
-        return this.jvmName;
-    }
-
-    public final DeploymentType getDeploymentType()
-    {
-        final String methodName = Application.CNAME + "#getDeploymentType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.deploymentType);
-        }
-
-        return this.deploymentType;
-    }
-
-    public final ApplicationManagementType getManagementType()
-    {
-        final String methodName = Application.CNAME + "#getManagementType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.managementType);
-        }
-
-        return this.managementType;
+        return this.offlineDate;
     }
 
     @Override

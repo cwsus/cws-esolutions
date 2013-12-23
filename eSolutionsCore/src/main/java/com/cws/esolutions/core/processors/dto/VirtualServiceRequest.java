@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: VirtualServiceResponse.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -25,16 +35,13 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.dto
- * File: VirtualServiceRequest.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
  */
 public class VirtualServiceRequest implements Serializable
 {

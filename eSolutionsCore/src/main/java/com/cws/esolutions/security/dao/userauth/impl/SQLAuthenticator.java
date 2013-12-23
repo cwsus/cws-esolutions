@@ -49,16 +49,15 @@ public class SQLAuthenticator implements Authenticator
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
-    public synchronized List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException
+    public synchronized List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException
     {
-        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String password, final String groupName) throws AuthenticatorException";
+        final String methodName = SQLAuthenticator.CNAME + "#performLogon(final String user, final String password) throws AuthenticatorException";
         
         if(DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("String: {}", guid);
             DEBUGGER.debug("String: {}", username);
-            DEBUGGER.debug("String: {}", groupName);
         }
 
         Connection sqlConn = null;

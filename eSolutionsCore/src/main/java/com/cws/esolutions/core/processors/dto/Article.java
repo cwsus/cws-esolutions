@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.enums.ArticleStatus;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
@@ -34,6 +25,23 @@ import com.cws.esolutions.core.processors.enums.ArticleStatus;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.processors.enums.ArticleStatus;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class Article implements Serializable
 {
     private int pageHits = 0;
@@ -42,9 +50,9 @@ public class Article implements Serializable
     private String keywords = null;
     private String symptoms = null;
     private String articleId = null;
-    private String createDate = null;
-    private String reviewedOn = null;
-    private String modifiedOn = null;
+    private Date createDate = null;
+    private Date reviewedOn = null;
+    private Date modifiedOn = null;
     private String resolution = null;
     private UserAccount author = null;
     private UserAccount modifiedBy = null;
@@ -84,9 +92,9 @@ public class Article implements Serializable
         this.articleId = value;
     }
 
-    public final void setCreateDate(final String value)
+    public final void setCreateDate(final Date value)
     {
-        final String methodName = Article.CNAME + "#setCreateDate(final String value)";
+        final String methodName = Article.CNAME + "#setCreateDate(final Date value)";
 
         if (DEBUG)
         {
@@ -201,9 +209,9 @@ public class Article implements Serializable
         this.reviewedBy = value;
     }
 
-    public final void setReviewedOn(final String value)
+    public final void setReviewedOn(final Date value)
     {
-        final String methodName = Article.CNAME + "#setReviewedOn(final String value)";
+        final String methodName = Article.CNAME + "#setReviewedOn(final Date value)";
 
         if (DEBUG)
         {
@@ -227,9 +235,9 @@ public class Article implements Serializable
         this.modifiedBy = value;
     }
 
-    public final void setModifiedOn(final String value)
+    public final void setModifiedOn(final Date value)
     {
-        final String methodName = Article.CNAME + "#setModifiedOn(final String value)";
+        final String methodName = Article.CNAME + "#setModifiedOn(final Date value)";
 
         if (DEBUG)
         {
@@ -266,7 +274,7 @@ public class Article implements Serializable
         return this.articleId;
     }
 
-    public final String getCreateDate()
+    public final Date getCreateDate()
     {
         final String methodName = Article.CNAME + "#getCreateDate()";
 
@@ -383,7 +391,7 @@ public class Article implements Serializable
         return this.reviewedBy;
     }
 
-    public final String getReviewedOn()
+    public final Date getReviewedOn()
     {
         final String methodName = Article.CNAME + "#getReviewedOn()";
 
@@ -409,7 +417,7 @@ public class Article implements Serializable
         return this.modifiedBy;
     }
 
-    public final String getModifiedOn()
+    public final Date getModifiedOn()
     {
         final String methodName = Article.CNAME + "#getModifiedOn()";
 

@@ -38,7 +38,6 @@ import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SearchResult;
 import com.unboundid.ldap.sdk.Modification;
-import org.apache.commons.lang.StringUtils;
 import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
@@ -1201,7 +1200,7 @@ public class LDAPUserManager implements UserManager
                     }
 
                     SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
+                            authRepo.getRepositoryUserBase(),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getCommonName(),

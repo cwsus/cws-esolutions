@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: DNSServiceRequest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
@@ -26,16 +36,13 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.dto
- * File: DNSServiceRequest.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
  */
 public class DNSServiceRequest implements Serializable
 {

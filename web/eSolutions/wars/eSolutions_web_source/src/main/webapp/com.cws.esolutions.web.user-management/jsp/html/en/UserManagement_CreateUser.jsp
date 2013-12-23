@@ -132,17 +132,15 @@
             </form:select>
             <form:errors path="role" cssClass="error" />
 
-            <%--
-            <label id="createUserUnit"><spring:message code="user.mgmt.user.dept" /></label>
-            <form:select path="dept" name="dept" id="dept">
-                <option><spring:message code="theme.option.select" /></option>
+            <label id="txtUserType"><spring:message code="user.mgmt.user.type" /></label>
+            <form:select path="userType" name="userType" id="userType">
+                <option value="<spring:message code='theme.option.select' />" selected="selected"><spring:message code='theme.option.select' /></option>
                 <option><spring:message code="theme.option.spacer" /></option>
-                <c:forEach var="dept" items="${selectableDepts}">
-                    <option value="${dept}">${dept}</option>
+                <c:forEach var="type" items="${userTypes}">
+                    <option value="${type}">${type}</option>
                 </c:forEach>
             </form:select>
-            <form:errors path="dept" cssClass="error" />
-            --%>
+            <form:errors path="userType" cssClass="error" />
 
             <label id="txtFirstName"><spring:message code="user.mgmt.user.givenname" /></label>
             <form:input path="givenName" type="text" size="20" value="" name="givenName" id="givenName" />

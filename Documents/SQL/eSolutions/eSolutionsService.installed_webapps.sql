@@ -18,8 +18,8 @@ CREATE TABLE `esolutionssvc`.`installed_webapps` (
     `server_version` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `entapp_description` TEXT CHARACTER SET UTF8,
     `pid_directory` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `web_online_date` DATETIME DEFAULT NULL,
-    `web_offline_date` DATETIME DEFAULT NULL,
+    `web_online_date` TIMESTAMP DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
+    `web_offline_date` TIMESTAMP,
     PRIMARY KEY (`web_code`),
     FULLTEXT KEY `webapps` (`web_code`,`webapp_name`,`server_version`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;

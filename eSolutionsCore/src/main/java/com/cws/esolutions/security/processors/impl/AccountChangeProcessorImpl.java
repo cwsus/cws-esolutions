@@ -113,8 +113,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 reqSecurity.getPassword(),
                                 userSalt,
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()),
-                        request.getApplicationName());
+                                secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 Map<String, Object> requestMap = new HashMap<>();
                 requestMap.put(authData.getEmailAddr(), userAccount.getEmailAddr());
@@ -253,8 +252,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 reqSecurity.getPassword(),
                                 userSalt,
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
-                                secBean.getConfigData().getSecurityConfig().getIterations()),
-                        request.getApplicationName());
+                                secBean.getConfigData().getSecurityConfig().getIterations()));
 
                 Map<String, Object> requestMap = new HashMap<>();
                 requestMap.put(authData.getTelephoneNumber(), userAccount.getTelephoneNumber());
@@ -413,8 +411,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                         // fails we'll get an exception and not process further. this might not be the
                         // best flow control, but it does exactly what we need where we need it.
                         authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(),
-                                PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-                                request.getApplicationName());
+                                PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt, secConfig.getAuthAlgorithm(), secConfig.getIterations()));
                     }
                 }
 
@@ -633,8 +630,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                     // best flow control, but it does exactly what we need where we need it.
                     authenticator.performLogon(userAccount.getGuid(), userAccount.getUsername(),
                             PasswordUtils.encryptText(reqSecurity.getPassword(), userSalt,
-                                    secConfig.getAuthAlgorithm(), secConfig.getIterations()),
-                            request.getApplicationName());
+                                    secConfig.getAuthAlgorithm(), secConfig.getIterations()));
 
                     // ok, thats out of the way. lets keep moving.
                     String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());

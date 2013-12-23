@@ -244,7 +244,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("ApplicationRequest: {}", request);
         }
 
-        if (StringUtils.equals(request.getVersion(), "0.0"))
+        if (request.getVersion() == 0.0)
         {
             errors.reject("version", this.messageApplicationVersionRequired);
         }

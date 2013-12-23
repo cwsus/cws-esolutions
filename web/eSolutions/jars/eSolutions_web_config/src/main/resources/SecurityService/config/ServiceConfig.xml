@@ -72,7 +72,6 @@
         <baseObjectClass>@baseObjectClass@</baseObjectClass>
         <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
         <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
-        <repositoryAppBase>@repositoryAppBase@</repositoryAppBase>
     </auth-repo>
 
     <key-config>

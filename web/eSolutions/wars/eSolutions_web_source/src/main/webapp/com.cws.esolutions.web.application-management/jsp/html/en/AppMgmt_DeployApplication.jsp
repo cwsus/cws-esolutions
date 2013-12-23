@@ -129,22 +129,28 @@
 
                     <label id="txtAppName"><spring:message code="app.mgmt.application.name" /></label>
                     ${application.applicationName}
+
                     <label id="txtAppVersion"><spring:message code="app.mgmt.application.version" /></label>
                     ${application.applicationVersion}
+
                     <label id="txtProjectName"><spring:message code="app.mgmt.application.project" /></label>
                     ${application.applicationProject.projectCode}
+
                     <label id="txtPlatformName"><spring:message code="app.mgmt.application.platform" /></label>
                     ${platform.platformName}
                     <c:if test="${not empty fn:trim(application.scmPath)}">
                         <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
                         ${application.scmPath}
                     </c:if>
+
                     <label id="txtDeploymentType"><spring:message code="app.mgmt.deployment.type" /></label>
                     <form:radiobutton path="deploymentType" value="web" /><spring:message code="app.mgmt.deployment.web" />
                     <form:radiobutton path="deploymentType" value="app" /><spring:message code="app.mgmt.deployment.app" />
+
                     <label id="txtScmVersion"><spring:message code="app.mgmt.new.version" /></label>
                     <form:input path="version" />
                     <form:errors path="version" />
+
                     <c:if test="${empty fn:trim(application.scmPath)}">
                         <script type="text/javascript">
                             <!--
@@ -154,6 +160,7 @@
                         <label id="txtFileName"><spring:message code="app.mgmt.select.file" /></label>
                         <input type="file" name="applicationBinary" id="applicationBinary" size="30" />
                     </c:if>
+
                     <br /><br />
                     <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
                     <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

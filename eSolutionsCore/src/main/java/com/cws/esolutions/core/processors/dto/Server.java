@@ -14,18 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
-import org.slf4j.Logger;
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import org.slf4j.LoggerFactory;
-
-import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
@@ -37,6 +25,26 @@ import com.cws.esolutions.core.processors.enums.NetworkPartition;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
+import org.slf4j.Logger;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import org.slf4j.LoggerFactory;
+
+import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.processors.enums.ServerType;
+import com.cws.esolutions.core.processors.enums.ServerStatus;
+import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class Server implements Serializable
 {
     private int cpuCount = 1; // has to be at least 1
@@ -45,6 +53,8 @@ public class Server implements Serializable
     private String osName = null;
     private String cpuType = null;
     private int installedMemory = 0; // in MB! 1GB = 1024 MB
+    private Date onlineDate = null;
+    private Date offlineDate = null;
     private String virtualId = null;
     private String serverGuid = null;
     private String natAddress = null;
@@ -467,6 +477,32 @@ public class Server implements Serializable
         this.datacenter = value;
     }
 
+    public final void setOnlineDate(final Date value)
+    {
+        final String methodName = Server.CNAME + "#setOnlineDate(final Date value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.onlineDate = value;
+    }
+
+    public final void setOfflineDate(final Date value)
+    {
+        final String methodName = Server.CNAME + "#setOfflineDate(final Date value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.offlineDate = value;
+    }
+
     public final String getServerGuid()
     {
         final String methodName = Server.CNAME + "#getServerGuid()";
@@ -855,6 +891,32 @@ public class Server implements Serializable
         }
 
         return this.datacenter;
+    }
+
+    public final Date getOnlineDate()
+    {
+        final String methodName = Server.CNAME + "#getOnlineDate()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.onlineDate);
+        }
+
+        return this.onlineDate;
+    }
+
+    public final Date getOfflineDate()
+    {
+        final String methodName = Server.CNAME + "#getOfflineDate()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.offlineDate);
+        }
+
+        return this.offlineDate;
     }
 
     @Override

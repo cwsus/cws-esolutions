@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `cwssec`.`usr_reset_data`;
 CREATE TABLE `cwssec`.`usr_reset_data` (
     `cn` VARCHAR(128) NOT NULL,
     `resetKey` VARCHAR(128) NOT NULL,
-    `createTime` BIGINT NOT NULL,
+    `createTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `smsCode` VARCHAR(8),
     PRIMARY KEY (`cn`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;

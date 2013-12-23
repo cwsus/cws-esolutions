@@ -63,7 +63,6 @@ public final class AuthRepo implements Serializable
     private String baseObjectClass = null;
     private String repositoryDriver = null;
     private String repositoryBaseDN = null;
-    private String repositoryAppBase = null;
     private String repositoryUserBase = null;
     private String repositoryAdminBase = null;
     private AuthRepositoryType repoType = null;
@@ -270,19 +269,6 @@ public final class AuthRepo implements Serializable
         }
         
         this.repositoryBaseDN = value;
-    }
-
-    public final void setRepositoryAppBase(final String value)
-    {
-        final String methodName = AuthRepo.CNAME + "#setRepositoryAppBase(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.repositoryAppBase = value;
     }
 
     public final void setRepositoryUserBase(final String value)
@@ -516,20 +502,6 @@ public final class AuthRepo implements Serializable
         }
         
         return this.repositoryBaseDN;
-    }
-
-    @XmlElement(name = "repositoryAppBase")
-    public final String getRepositoryAppBase()
-    {
-        final String methodName = AuthRepo.CNAME + "#getRepositoryAppBase()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repositoryAppBase);
-        }
-        
-        return this.repositoryAppBase;
     }
 
     @XmlElement(name = "repositoryUserBase")

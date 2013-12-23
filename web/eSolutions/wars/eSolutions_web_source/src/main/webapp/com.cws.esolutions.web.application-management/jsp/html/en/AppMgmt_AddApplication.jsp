@@ -147,15 +147,15 @@
             <label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label>
             <form:input path="applicationName" />
             <form:errors path="applicationName" cssClass="error" />
+
             <label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label>
             <form:input path="version" />
             <form:errors path="version" cssClass="error" />
+
             <label id="txtClusterName"><spring:message code="app.mgmt.application.cluster.name" /></label>
             <form:input path="clusterName" />
             <form:errors path="clusterName" cssClass="error" />
-            <label id="txtJvmName"><spring:message code="app.mgmt.application.jvm.name" /></label>
-            <form:input path="jvmName" />
-            <form:errors path="jvmName" cssClass="error" />
+
             <label id="txtApplicationProject"><spring:message code="app.mgmt.application.project" /></label>
             <c:choose>
                 <c:when test="${not empty projectListing}">
@@ -173,6 +173,7 @@
                 </c:otherwise>
             </c:choose>
             <form:errors path="project" cssClass="error" />
+
             <label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label>
             <c:choose>
                 <c:when test="${not empty platformListing}">
@@ -188,24 +189,27 @@
                 </c:otherwise>
             </c:choose>
             <form:errors path="platform" cssClass="error" />
+
             <label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label>
             <form:input path="basePath" />
             <form:errors path="basePath" cssClass="error" />
-            <label id="txtPidDir"><spring:message code="app.mgmt.application.pid.directory" /></label>
-            <form:input path="pidDirectory" />
-            <form:errors path="pidDirectory" cssClass="error" />
+
             <label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label>
             <form:input path="logsPath" />
             <form:errors path="logsPath" cssClass="error" />
+
             <label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label>
             <form:input path="installPath" />
             <form:errors path="installPath" cssClass="error" />
+
             <label id="txtIsScmEnabled"><spring:message code="app.mgmt.application.scm.enabled" /></label>
             <form:checkbox path="isScmEnabled" name="isScmEnabled" id="isScmEnabled" onclick="showScmData(this);" />
             <form:errors path="isScmEnabled" cssClass="error" />
+
             <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
             <form:input path="scmPath" />
             <form:errors path="scmPath" cssClass="error" />
+
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

@@ -932,7 +932,6 @@ public class ProjectManagementProcessorImpl implements IProjectManagementProcess
                                 Application app = new Application();
                                 app.setApplicationGuid(appData[0]);
                                 app.setApplicationName(appData[1]);
-                                app.setApplicationVersion(appData[2]);
 
                                 if (DEBUG)
                                 {

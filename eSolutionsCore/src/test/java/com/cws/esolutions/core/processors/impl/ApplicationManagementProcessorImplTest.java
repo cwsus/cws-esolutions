@@ -130,16 +130,13 @@ public class ApplicationManagementProcessorImplTest
             Application app = new Application();
             app.setApplicationGuid(UUID.randomUUID().toString());
             app.setApplicationName("eSolutions");
-            app.setApplicationPlatforms(platformList);
-            app.setApplicationVersion("1.0");
-            app.setApplicationCluster("eSolutions");
-            app.setApplicationLogsPath("/appvol/ATS70/eSolutions/applog");
-            app.setApplicationProject(project);
-            app.setApplicationInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
-            app.setPidDirectory("/appvol/ATS70/logs");
-            app.setScmPath("scm:git:git@github.com:cwsus/cws-esolutions.git");
-            app.setJvmName("eSolutions");
-            app.setBasePath("/appvol/ATS70/eSolutions");
+            app.setPlatforms(platformList);
+            app.setApplicationVersion(1.0);
+            app.setClusterName("eSolutions");
+            app.setLogsDirectory("/appvol/ATS70/eSolutions/applog");
+            app.setProject(project);
+            app.setInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
+            app.setPackageLocation("scm:git:git@github.com:cwsus/cws-esolutions.git");
 
             ApplicationManagementRequest request = new ApplicationManagementRequest();
             request.setApplication(app);

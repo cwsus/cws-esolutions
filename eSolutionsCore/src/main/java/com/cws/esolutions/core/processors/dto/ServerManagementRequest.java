@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.dto;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.dto
+ * File: ServerManagementRequest.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
@@ -26,16 +36,13 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.dto
- * File: ServerManagementRequest.java
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
  *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * @author khuntly
+ * @version 1.0
  */
 public class ServerManagementRequest implements Serializable
 {

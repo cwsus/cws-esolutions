@@ -35,11 +35,13 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
+import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
@@ -179,7 +181,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                 userAccount.getGivenName(),
                                 userAccount.getEmailAddr(),
                                 userGuid,
-                                userAccount.getDisplayName()));
+                                userAccount.getDisplayName(),
+                                (userAccount.getUserType() == null) ? UserType.DEVELOPER.name() : userAccount.getUserType().name()));
 
                     if (DEBUG)
                     {

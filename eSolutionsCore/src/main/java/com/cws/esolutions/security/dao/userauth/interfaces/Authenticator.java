@@ -71,7 +71,7 @@ public interface Authenticator
      * @return List<Object>
      * @throws AuthenticatorException
      */
-    List<Object> performLogon(final String guid, final String username, final String password, final String groupName) throws AuthenticatorException;
+    List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException;
 
     void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException;
 
