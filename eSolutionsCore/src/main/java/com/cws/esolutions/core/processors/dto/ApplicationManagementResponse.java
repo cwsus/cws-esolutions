@@ -47,9 +47,7 @@ public class ApplicationManagementResponse implements Serializable
     private byte[] fileData = null;
     private String currentPath = null;
     private Application appData = null;
-    private Project projectData = null;
     private List<String> fileList = null;
-    private List<Project> projectList = null;
     private CoreServicesStatus requestStatus = null;
     private List<Application> applicationList = null;
 
@@ -97,19 +95,6 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         this.appData = value;
-    }
-
-    public final void setProject(final Project value)
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setProject(final Project value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectData = value;
     }
 
     public final void setApplicationList(final List<Application> value)
@@ -164,19 +149,6 @@ public class ApplicationManagementResponse implements Serializable
         this.fileList = value;
     }
 
-    public final void setProjectList(final List<Project> value)
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#setProjectList(final List<Project> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectList = value;
-    }
-
     public final CoreServicesStatus getRequestStatus()
     {
         final String methodName = ApplicationManagementResponse.CNAME + "#getRequestStatus()";
@@ -216,19 +188,6 @@ public class ApplicationManagementResponse implements Serializable
         return this.appData;
     }
 
-    public final Project getProject()
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getProject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectData);
-        }
-
-        return this.projectData;
-    }
-
     public final List<Application> getApplicationList()
     {
         final String methodName = ApplicationManagementResponse.CNAME + "#getApplicationList()";
@@ -240,19 +199,6 @@ public class ApplicationManagementResponse implements Serializable
         }
 
         return this.applicationList;
-    }
-
-    public final List<Project> getProjectList()
-    {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getProjectList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectList);
-        }
-
-        return this.projectList;
     }
 
     public final byte[] getFileData()

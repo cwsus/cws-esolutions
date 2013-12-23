@@ -35,10 +35,8 @@ import com.cws.esolutions.web.dto.PlatformRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.web.validators.ProjectValidator;
 import com.cws.esolutions.web.validators.PlatformValidator;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
@@ -55,9 +53,7 @@ import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
@@ -65,16 +61,13 @@ import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
-import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
@@ -122,7 +115,6 @@ public class ServiceManagementController
     private String messagePlatformAddSuccess = null;
     private String messagePlatformAddFailure = null;
     private ApplicationServiceBean appConfig = null;
-    private ProjectValidator projectValidator = null;
     private String messageDatacenterAddSuccess = null;
     private String messageDatacenterAddFailure = null;
     private PlatformValidator platformValidator = null;
@@ -159,19 +151,6 @@ public class ServiceManagementController
         }
 
         this.platformValidator = value;
-    }
-
-    public final void setProjectValidator(final ProjectValidator value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setProjectValidator(final ProjectValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectValidator = value;
     }
 
     public final void setDatacenterValidator(final DatacenterValidator value)
@@ -239,19 +218,6 @@ public class ServiceManagementController
         this.addPlatformRedirect = value;
     }
 
-    public final void setAddProjectRedirect(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setAddProjectRedirect(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.addProjectRedirect = value;
-    }
-
     public final void setAddDatacenterRedirect(final String value)
     {
         final String methodName = ServiceManagementController.CNAME + "#setAddDatacenterRedirect(final String value)";
@@ -278,19 +244,6 @@ public class ServiceManagementController
         this.defaultPage = value;
     }
 
-    public final void setAddProjectPage(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setAddProjectPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.addProjectPage = value;
-    }
-
     public final void setSelectDmgrPage(final String value)
     {
         final String methodName = ServiceManagementController.CNAME + "#setSelectDmgrPage(final String value)";
@@ -315,19 +268,6 @@ public class ServiceManagementController
         }
 
         this.addPlatformPage = value;
-    }
-
-    public final void setViewProjectPage(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setViewProjectPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.viewProjectPage = value;
     }
 
     public final void setViewPlatformPage(final String value)
@@ -369,19 +309,6 @@ public class ServiceManagementController
         this.viewDatacenterPage = value;
     }
 
-    public final void setViewProjectsList(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setViewProjectsList(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.viewProjectsList = value;
-    }
-
     public final void setViewPlatformList(final String value)
     {
         final String methodName = ServiceManagementController.CNAME + "#setViewPlatformList(final String value)";
@@ -406,19 +333,6 @@ public class ServiceManagementController
         }
 
         this.addDatacenterPage = value;
-    }
-
-    public final void setProjectMgmt(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setProjectMgmt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectMgmt = value;
     }
 
     public final void setPlatformMgmt(final String value)
@@ -549,32 +463,6 @@ public class ServiceManagementController
         }
 
         this.messageDatacenterAddFailure = value;
-    }
-
-    public final void setMessageProjectAddSuccess(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setMessageProjectAddSuccess(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageProjectAddSuccess = value;
-    }
-
-    public final void setMessageProjectAddFailure(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setMessageProjectAddFailure(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageProjectAddFailure = value;
     }
 
     @RequestMapping(value = "/default", method = RequestMethod.GET)
@@ -1066,283 +954,6 @@ public class ServiceManagementController
         return mView;
     }
 
-    @RequestMapping(value = "/list-projects", method = RequestMethod.GET)
-    public final ModelAndView showProjectList()
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showProjectList()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (this.appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                ProjectManagementRequest request = new ProjectManagementRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.platformMgmt);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
-                }
-
-                ProjectManagementResponse response = projectMgr.listProjects(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Project> projectList = response.getProjectList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("projectList: {}", projectList);
-                    }
-
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", 1);
-                    mView.addObject("projectList", projectList);
-                    mView.setViewName(this.viewProjectsList);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView = new ModelAndView(new RedirectView());
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.addProjectRedirect);
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/list-projects/page/{page}", method = RequestMethod.GET)
-    public final ModelAndView showProjectList(@PathVariable("page") final int page)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showProjectList(@PathVariable(\"page\") final int page)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", page);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (this.appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                ProjectManagementRequest request = new ProjectManagementRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.platformMgmt);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setStartPage((page - 1) * this.recordsPerPage);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
-                }
-
-                ProjectManagementResponse response = projectMgr.listProjects(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Project> projectList = response.getProjectList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("projectList: {}", projectList);
-                    }
-
-                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
-                    mView.addObject("page", page);
-                    mView.addObject("projectList", projectList);
-                    mView.setViewName(this.viewProjectsList);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.defaultPage);
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
     @RequestMapping(value = "/list-datacenters", method = RequestMethod.GET)
     public final ModelAndView showDatacenterList()
     {
@@ -1612,152 +1223,6 @@ public class ServiceManagementController
             catch (DatacenterManagementException dmx)
             {
                 ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/project/{projectName}", method = RequestMethod.GET)
-    public final ModelAndView showProject(@PathVariable("projectName") final String projectName)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showProject(@PathVariable(\"projectName\") final String projectName)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("projectName: {}", projectName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (this.appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                Project reqProject = new Project();
-                reqProject.setProjectGuid(projectName);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Project: {}", reqProject);
-                }
-
-                // get a list of available servers
-                ProjectManagementRequest request = new ProjectManagementRequest();
-                request.setRequestInfo(reqInfo);
-                request.setUserAccount(userAccount);
-                request.setServiceId(this.projectMgmt);
-                request.setProject(reqProject);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
-                }
-
-                ProjectManagementResponse response = projectMgr.getProjectData(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    Project resProject = response.getProject();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Project: {}", resProject);
-                    }
-
-                    mView.addObject("project", resProject);
-                    mView.setViewName(this.viewProjectPage);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.setViewName(this.defaultPage);
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
@@ -2051,152 +1516,6 @@ public class ServiceManagementController
             {
                 ERROR_RECORDER.error(dmx.getMessage(), dmx);
 
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/add-project", method = RequestMethod.GET)
-    public final ModelAndView showAddProject()
-    {
-        final String methodName = ServiceManagementController.CNAME + "#showAddProject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (this.appConfig.getServices().get(this.serviceName))
-        {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                // search accounts
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setApplicationId(this.appConfig.getApplicationName());
-                request.setControlType(ControlType.SERVICES);
-                request.setRequestor(userAccount);
-                request.setIsLogonRequest(false);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
-                }
-
-                IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                AccountControlResponse response = processor.listUserAccounts(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AccountControlResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                {
-                    if ((response.getUserList() != null) && (response.getUserList().size() != 0))
-                    {
-                        List<UserAccount> userList = response.getUserList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<UserAccount> {}", userList);
-                        }
-
-                        mView.addObject("userList", userList);
-                        mView.addObject("statusList", ServiceStatus.values());
-                        mView.addObject("command", new ProjectRequest());
-                        mView.setViewName(this.addProjectPage);
-                    }
-                    else
-                    {
-                        mView.addObject("command", new UserAccount());
-                    }
-                }
-                else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject("command", new UserAccount());
-                }
-            }
-            catch (AccountControlException acx)
-            {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
-    
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
         }
@@ -3358,248 +2677,6 @@ public class ServiceManagementController
             catch (DatacenterManagementException dmx)
             {
                 ERROR_RECORDER.error(dmx.getMessage(), dmx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-        }
-        else
-        {
-            mView.setViewName(this.appConfig.getUnavailablePage());
-        }
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ModelAndView: {}", mView);
-        }
-
-        return mView;
-    }
-
-    @RequestMapping(value = "/add-project", method = RequestMethod.POST)
-    public final ModelAndView doAddProject(@ModelAttribute("request") final ProjectRequest request, final BindingResult bindResult)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#doAddProject(@ModelAttribute(\"request\") final ProjectRequest request, final BindingResult bindResult)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ProjectRequest: {}", request);
-            DEBUGGER.debug("BindingResult: {}", bindResult);
-        }
-
-        ModelAndView mView = new ModelAndView();
-
-        final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        final HttpServletRequest hRequest = requestAttributes.getRequest();
-        final HttpSession hSession = hRequest.getSession();
-        final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ServletRequestAttributes: {}", requestAttributes);
-            DEBUGGER.debug("HttpServletRequest: {}", hRequest);
-            DEBUGGER.debug("HttpSession: {}", hSession);
-            DEBUGGER.debug("Session ID: {}", hSession.getId());
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-
-            DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
-
-            while (sessionEnumeration.hasMoreElements())
-            {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
-
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
-            }
-
-            DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
-
-            while (requestEnumeration.hasMoreElements())
-            {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
-
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
-            }
-
-            DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
-
-            while (paramsEnumeration.hasMoreElements())
-            {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
-
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
-            }
-        }
-
-        if (this.appConfig.getServices().get(this.serviceName))
-        {
-            this.projectValidator.validate(request, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                try
-                {
-                    RequestHostInfo reqInfo = new RequestHostInfo();
-                    reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                    reqInfo.setHostName(hRequest.getRemoteHost());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                    }
-
-                    // search accounts
-                    AccountControlRequest accRequest = new AccountControlRequest();
-                    accRequest.setHostInfo(reqInfo);
-                    accRequest.setApplicationId(this.appConfig.getApplicationName());
-                    accRequest.setControlType(ControlType.SERVICES);
-                    accRequest.setRequestor(userAccount);
-                    accRequest.setIsLogonRequest(false);
-                    accRequest.setApplicationId(this.appConfig.getApplicationId());
-                    accRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlRequest: {}", request);
-                    }
-
-                    IAccountControlProcessor processor = new AccountControlProcessorImpl();
-                    AccountControlResponse response = processor.searchAccounts(accRequest);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("AccountControlResponse: {}", response);
-                    }
-
-                    if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                    {
-                        if ((response.getUserList() != null) && (response.getUserList().size() != 0))
-                        {
-                            List<UserAccount> userList = response.getUserList();
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("List<UserAccount> {}", userList);
-                            }
-
-                            mView.addObject("userList", userList);
-                            mView.addObject("statusList", ServiceStatus.values());
-                            mView.addObject("command", new ProjectRequest());
-                            mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-                            mView.setViewName(this.addProjectPage);
-                        }
-                        else
-                        {
-                            mView.setViewName(this.appConfig.getErrorResponsePage());
-                            return mView;
-                        }
-                    }
-                    else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
-                    {
-                        mView.setViewName(this.appConfig.getUnauthorizedPage());
-                    }
-                    else
-                    {
-                        mView.setViewName(this.appConfig.getErrorResponsePage());
-                        return mView;
-                    }
-                }
-                catch (AccountControlException acx)
-                {
-                    ERROR_RECORDER.error(acx.getMessage(), acx);
-        
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-                }
-            }
-
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                UserAccount primaryContact = new UserAccount();
-                primaryContact.setGuid(request.getPrimaryContact());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", primaryContact);
-                }
-
-                UserAccount secondaryContact = new UserAccount();
-                secondaryContact.setGuid(request.getPrimaryContact());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("UserAccount: {}", secondaryContact);
-                }
-
-                Project reqProject = new Project();
-                reqProject.setProjectName(request.getProjectName());
-                reqProject.setChangeQueue(request.getChangeQueue());
-                reqProject.setDevEmail(request.getDevEmail());
-                reqProject.setProdEmail(request.getProdEmail());
-                reqProject.setIncidentQueue(request.getIncidentQueue());
-                reqProject.setPrimaryContact(primaryContact);
-                reqProject.setSecondaryContact(secondaryContact);
-                reqProject.setProjectStatus(request.getProjectStatus());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Project: {}", reqProject);
-                }
-
-                ProjectManagementRequest projectRequest = new ProjectManagementRequest();
-                projectRequest.setRequestInfo(reqInfo);
-                projectRequest.setUserAccount(userAccount);
-                projectRequest.setServiceId(this.projectMgmt);
-                projectRequest.setProject(reqProject);
-                projectRequest.setApplicationId(this.appConfig.getApplicationId());
-                projectRequest.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", projectRequest);
-                }
-
-                ProjectManagementResponse projectResponse = projectMgr.addNewProject(projectRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", projectResponse);
-                }
-
-                if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    mView.addObject(Constants.RESPONSE_MESSAGE, this.messageProjectAddSuccess);
-                }
-                else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-                }
-                else
-                {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageProjectAddFailure);
-                }
-
-                mView.addObject("command", new Project());
-                mView.setViewName(this.addProjectPage);
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }

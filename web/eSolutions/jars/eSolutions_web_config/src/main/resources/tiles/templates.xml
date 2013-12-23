@@ -152,10 +152,6 @@
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - Select Deployment Manager" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_SelectDmgr.jsp" cascade="true" />
     </definition>
-    <definition name="ServiceMgmt_AddProject" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Project" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_AddProject.jsp" cascade="true" />
-    </definition>
     <definition name="ServiceMgmt_AddPlatform" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - Add Platform" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_AddPlatform.jsp" cascade="true" />
@@ -179,14 +175,6 @@
     <definition name="ServiceMgmt_ViewPlatform" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Platform" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_ViewPlatform.jsp" cascade="true" />
-    </definition>
-    <definition name="ServiceMgmt_ViewProjects" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Projects" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_ViewProjects.jsp" cascade="true" />
-    </definition>
-    <definition name="ServiceMgmt_ViewProject" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - Service Management - View Project" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.service-management/jsp/html/en/ServiceMgmt_ViewProject.jsp" cascade="true" />
     </definition>
 
     <!-- System Check -->

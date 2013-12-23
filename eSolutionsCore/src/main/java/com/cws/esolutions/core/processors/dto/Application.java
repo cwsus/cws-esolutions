@@ -43,19 +43,17 @@ import com.cws.esolutions.core.Constants;
  */
 public class Application implements Serializable
 {
+    private Date onlineDate = null;
+    private Date offlineDate = null;
+    private String installPath = null;
+    private String logsDirectory = null;
     private String applicationGuid = null;
     private String applicationName = null;
-    private double applicationVersion = 1.0;
-    private String installPath = null;
-    private String clusterName = null;
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
-    private String logsDirectory = null;
-    private Project project = null;
+    private double applicationVersion = 1.0;
     private List<Platform> platforms = null;
-    private Date onlineDate = null;
-    private Date offlineDate = null;
 
     private static final String CNAME = Application.class.getName();
     private static final long serialVersionUID = -7939041322590386615L;
@@ -116,19 +114,6 @@ public class Application implements Serializable
         this.installPath = value;
     }
 
-    public final void setClusterName(final String value)
-    {
-        final String methodName = Application.CNAME + "#setClusterName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.clusterName = value;
-    }
-
     public final void setPackageLocation(final String value)
     {
         final String methodName = Application.CNAME + "#setPackageLocation(final String value)";
@@ -179,19 +164,6 @@ public class Application implements Serializable
         }
 
         this.logsDirectory = value;
-    }
-
-    public final void setProject(final Project value)
-    {
-        final String methodName = Application.CNAME + "#setProject(final Project value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.project = value;
     }
 
     public final void setPlatforms(final List<Platform> value)
@@ -285,19 +257,6 @@ public class Application implements Serializable
         return this.installPath;
     }
 
-    public final String getClusterName()
-    {
-        final String methodName = Application.CNAME + "#getClusterName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.clusterName);
-        }
-
-        return this.clusterName;
-    }
-
     public final String getPackageLocation()
     {
         final String methodName = Application.CNAME + "#getPackageLocation()";
@@ -348,19 +307,6 @@ public class Application implements Serializable
         }
 
         return this.logsDirectory;
-    }
-
-    public final Project getProject()
-    {
-        final String methodName = Application.CNAME + "#getProject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.project);
-        }
-
-        return this.project;
     }
 
     public final List<Platform> getPlatforms()

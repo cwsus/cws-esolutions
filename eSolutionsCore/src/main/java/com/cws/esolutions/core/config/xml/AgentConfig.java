@@ -49,6 +49,8 @@ import com.cws.esolutions.core.config.enums.AgentListenerType;
 public final class AgentConfig implements Serializable
 {
     private int tcpPort = 0;
+    private String username = null;
+    private String password = null;
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
@@ -153,6 +155,32 @@ public final class AgentConfig implements Serializable
         }
 
         this.trustStoreType = value;
+    }
+
+    public final void setUsername(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setUsername(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.username = value;
+    }
+
+    public final void setPassword(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setPassword(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", value);
+        }
+
+        this.password = value;
     }
 
     @XmlElement(name = "listenerType")
@@ -265,6 +293,34 @@ public final class AgentConfig implements Serializable
         }
 
         return this.trustStoreType;
+    }
+
+    @XmlElement(name = "username")
+    public final String getUsername()
+    {
+        final String methodName = AgentConfig.CNAME + "#getUsername()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", this.username);
+        }
+
+        return this.username;
+    }
+
+    @XmlElement(name = "password")
+    public final String getPassword()
+    {
+        final String methodName = AgentConfig.CNAME + "#getPassword()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: ", this.password);
+        }
+
+        return this.password;
     }
 
     @Override

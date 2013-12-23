@@ -16,16 +16,6 @@
         <property name="messagePlatformWebServersRequired" value="svc.mgmt.platform.webservers.required" />
     </bean>
 
-    <bean id="projectRequestValidator" class="com.cws.esolutions.web.validators.ProjectValidator">
-        <property name="messageProjectStatusRequired" value="svc.mgmt.service.status.required" />
-        <property name="messageProjectNameRequired" value="svc.mgmt.service.name.required" />
-        <property name="messageDevEmailRequired" value="svc.mgmt.project.dev.email.required" />
-        <property name="messagePrdEmailRequired" value="svc.mgmt.project.prd.email.required" />
-        <property name="messageChangeQueueRequired" value="svc.mgmt.project.chg.queue.required" />
-        <property name="messageIncidentQueueRequired" value="svc.mgmt.project.inc.queue.required" />
-        <property name="messagePrimaryContactRequired" value="svc.mgmt.project.primary.contact.required" />
-    </bean>
-
     <bean id="datactrValidator" class="com.cws.esolutions.web.validators.DatacenterValidator">
         <property name="messageDatacenterNameRequired" value="svc.mgmt.service.name.required" />
         <property name="messageDatacenterStatusRequired" value="svc.mgmt.service.status.required" />
@@ -51,23 +41,16 @@
         <property name="datacenterValidator">
             <ref bean="datactrValidator" />
         </property>
-        <property name="projectValidator">
-            <ref bean="projectRequestValidator" />
-        </property>
         <property name="serviceName" value="svcMgmt" />
         <property name="systemMgmt" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
-        <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
         <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
         <property name="recordsPerPage" value="20" />
-        <property name="addProjectPage" value="ServiceMgmt_AddProject" />
         <property name="selectDmgrPage" value="ServiceMgmt_SelectDmgr" />
         <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
         <property name="addPlatformPage" value="ServiceMgmt_AddPlatform" />
-        <property name="viewProjectPage" value="ServiceMgmt_ViewProject" />
         <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
-        <property name="viewProjectsList" value="ServiceMgmt_ViewProjects" />
         <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
         <property name="viewDatacentersPage" value="ServiceMgmt_ViewDatacenters" />
         <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
@@ -75,13 +58,10 @@
         <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
         <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
         <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
-        <property name="addProjectRedirect" value="redirect:/ui/service-management/add-project" />
         <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
         <property name="messagePlatformAddSuccess" value="svc.mgmt.platform.add.success" />
         <property name="messagePlatformAddFailure" value="svc.mgmt.platform.add.failure" />
         <property name="messageDatacenterAddSuccess" value="svc.mgmt.datacenter.add.success" />
         <property name="messageDatacenterAddFailure" value="svc.mgmt.datacenter.add.failure" />
-        <property name="messageProjectAddSuccess" value="svc.mgmt.project.add.success" />
-        <property name="messageProjectAddFailure" value="svc.mgmt.project.add.failure" />
     </bean>
 </beans>
