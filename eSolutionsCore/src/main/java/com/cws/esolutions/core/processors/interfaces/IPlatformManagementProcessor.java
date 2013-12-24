@@ -41,15 +41,13 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -66,9 +64,8 @@ public interface IPlatformManagementProcessor
     static final IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final String CNAME = IPlatformManagementProcessor.class.getName();
-    static final IUserControlService userControl = new UserControlServiceImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService userControl = new AccessControlServiceImpl();
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();

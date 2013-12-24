@@ -42,12 +42,11 @@ import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -62,8 +61,7 @@ public interface ISystemCheckProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
-    static final IUserControlService userControl = new UserControlServiceImpl();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService userControl = new AccessControlServiceImpl();
 
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
