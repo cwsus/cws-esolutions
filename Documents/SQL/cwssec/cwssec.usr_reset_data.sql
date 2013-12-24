@@ -7,12 +7,12 @@ CREATE TABLE `cwssec`.`usr_reset_data` (
     `resetKey` VARCHAR(128) NOT NULL,
     `createTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     `smsCode` VARCHAR(8),
-    PRIMARY KEY (`cn`)
+    PRIMARY KEY (`cn`),
     CONSTRAINT `FK_LGN_GUID`
         FOREIGN KEY (`cn`)
         REFERENCES `cwssec`.`usr_lgn` (`CN`)
             ON DELETE CASCADE
-            ON UPDATE CASCADE,
+            ON UPDATE CASCADE
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 

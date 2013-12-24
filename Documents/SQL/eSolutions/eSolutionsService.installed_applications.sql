@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS `esolutionssvc`.`installed_applications`;
 CREATE TABLE `esolutionssvc`.`installed_applications` (
     `APPLICATION_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
     `APPLICATION_NAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `APPLICATION_VERSION` VARCHAR(10) CHARACTER SET UTF8 NOT NULL,
+    `APPLICATION_VERSION` DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
     `INSTALLATION_PATH` TEXT CHARACTER SET UTF8 NOT NULL, -- where do files get installed to ?
     `PACKAGE_LOCATION` TEXT CHARACTER SET UTF8, -- package location, either provided or scm'd or whatnot
     `PACKAGE_INSTALLER` TEXT CHARACTER SET UTF8, -- installer file for standalones
@@ -15,7 +15,7 @@ CREATE TABLE `esolutionssvc`.`installed_applications` (
     `APP_ONLINE_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), -- when did the app get added
     `APP_OFFLINE_DATE` TIMESTAMP,
     PRIMARY KEY (`APPLICATION_GUID`),
-    FULLTEXT KEY `IDX_APPLICATIONS` (`APPLICATION_NAME`, `CLUSTER_NAME`)
+    FULLTEXT KEY `IDX_APPLICATIONS` (`APPLICATION_NAME`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -36,11 +36,11 @@ CREATE PROCEDURE `esolutionssvc`.`getApplicationByAttribute`(
 BEGIN
     SELECT
         APPLICATION_GUID,
-        APPLICATION_NAME
-    MATCH (`APPLICATION_NAME`, `CLUSTER_NAME`)
+        APPLICATION_NAME,
+    MATCH (`APPLICATION_NAME`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`installed_applications`
-    WHERE MATCH (`APPLICATION_NAME`, `CLUSTER_NAME`)
+    WHERE MATCH (`APPLICATION_NAME`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE = '0000-00-00 00:00:00'
     LIMIT startRow, 20;
@@ -56,7 +56,7 @@ DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertNewApplication`$$
 CREATE PROCEDURE `esolutionssvc`.`insertNewApplication`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
-    IN appVersion VARCHAR(10),
+    IN appVersion DECIMAL(30, 2),
     IN installPath TEXT,
     IN packageLocation TEXT,
     IN packageInstaller TEXT,
@@ -72,7 +72,7 @@ BEGIN
     )
     VALUES
     (
-        appGuid, appName, appVersion, installPath
+        appGuid, appName, appVersion, installPath,
         packageLocation, packageInstaller, installerOptions,
         logsDirectory, platformGuid, NOW()
     );
@@ -90,7 +90,7 @@ DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateApplicationData`$$
 CREATE PROCEDURE `esolutionssvc`.`updateApplicationData`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
-    IN appVersion VARCHAR(10),
+    IN appVersion DECIMAL(30, 2),
     IN installPath TEXT,
     IN packageLocation TEXT,
     IN packageInstaller TEXT,
