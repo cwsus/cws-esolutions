@@ -72,7 +72,7 @@ public interface IAccountControlProcessor
     static final AuthData authData = svcBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
-    static final IAccessControlService adminControl = new AccessControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();

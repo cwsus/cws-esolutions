@@ -51,7 +51,7 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -94,7 +94,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -213,11 +213,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new ServerManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -284,7 +284,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -365,11 +365,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new ServerManagementException(acsx.getMessage(), acsx);
         }
         catch (SQLException sqx)
         {
@@ -447,7 +447,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -703,11 +703,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new ServerManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -779,7 +779,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1054,11 +1054,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new ServerManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -1130,7 +1130,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1396,11 +1396,11 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             throw new ServerManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ServerManagementException(ucsx.getMessage(), ucsx);
+            throw new ServerManagementException(acsx.getMessage(), acsx);
         }
         finally
         {

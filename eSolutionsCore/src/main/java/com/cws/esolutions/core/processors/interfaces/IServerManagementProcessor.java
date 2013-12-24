@@ -60,7 +60,7 @@ public interface IServerManagementProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
-    static final IAccessControlService userControl = new AccessControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();

@@ -12,6 +12,7 @@
 package com.cws.esolutions.web.validators;
 
 import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Application;
+import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -140,7 +142,7 @@ public class DeploymentValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = Application.class.isAssignableFrom(value);
+        final boolean isSupported = ApplicationManagementRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -165,68 +167,5 @@ public class DeploymentValidator implements Validator
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "deploymentType", this.messageDeploymentTypeRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationBinary", this.messageDeploymentFilesRequired);
-
-        final Application request = (Application) target;
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("ApplicationRequest: {}", request);
-        }
-
-        if (request.getApplicationBinary() != null)
-        {
-            MultipartFile binary = (MultipartFile) request.getApplicationBinary();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MultipartFile: {}", binary);
-            }
-
-            final File uploadedFile = FileUtils.getFile(binary.getOriginalFilename());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("File: {}", uploadedFile);
-            }
-
-            final String fileExt = StringUtils.substring(uploadedFile.getName(), uploadedFile.getName().lastIndexOf("."));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("fileExt: {}", fileExt);
-            }
-
-            switch (request.getDeploymentType())
-            {
-                case APP:
-                    for (String allowed : this.appConfig.getAllowedAppFileExtensions())
-                    {
-                        if (!(StringUtils.equals(fileExt, allowed)))
-                        {
-                            errors.reject("applicationBinary", this.messageBinaryInvalid);
-                        }
-
-                        break;
-                    }
-
-                    break;
-                case WEB:
-                    for (String allowed : this.appConfig.getAllowedWebFileExtensions())
-                    {
-                        if (!(StringUtils.equals(fileExt, allowed)))
-                        {
-                            errors.reject("applicationBinary", this.messageBinaryInvalid);
-                        }
-
-                        break;
-                    }
-
-                    break;
-                default:
-                    errors.reject("applicationBinary", this.messageBinaryInvalidForType);
-
-                    break;
-            }
-        }
     }
 }

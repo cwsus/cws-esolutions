@@ -36,14 +36,12 @@ import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -58,8 +56,7 @@ public interface IKnowledgeBaseProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IUserControlService userControl = new UserControlServiceImpl();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final String CNAME = IKnowledgeBaseProcessor.class.getName();

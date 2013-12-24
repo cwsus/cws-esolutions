@@ -40,12 +40,10 @@ import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -63,8 +61,7 @@ public interface IDNSServiceRequestProcessor
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
     static final DNSConfig dnsConfig = appBean.getConfigData().getDNSConfig();
-    static final IUserControlService userControl = new UserControlServiceImpl();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);

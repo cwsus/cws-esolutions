@@ -48,15 +48,12 @@ import javax.servlet.http.HttpServletResponse;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.access.control.enums.AdminControlType;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
+import com.cws.esolutions.security.services.enums.AdminControlType;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see javax.servlet.Filter
  */
@@ -291,8 +288,8 @@ public class RequestAuthorizationFilter implements Filter
 
                             if (StringUtils.startsWith(requestURI, adminURI))
                             {
-                                IAdminControlService adminControl = new AdminControlServiceImpl();
-                                boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+                                IAccessControlService accessControl = new AccessControlServiceImpl();
+                                boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
 
                                 if (DEBUG)
                                 {
@@ -323,8 +320,8 @@ public class RequestAuthorizationFilter implements Filter
                             if (StringUtils.startsWith(requestURI, key))
                             {
                                 // make sure the user is authorized for the service
-                                IUserControlService userControl = new UserControlServiceImpl();
-                                boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
+                                IAccessControlService accessControl = new AccessControlServiceImpl();
+                                boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
 
                                 if (DEBUG)
                                 {
@@ -345,17 +342,9 @@ public class RequestAuthorizationFilter implements Filter
                             }
                         }
                     }
-                    catch (AdminControlServiceException acsx)
+                    catch (AccessControlServiceException acsx)
                     {
                         ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-                        hResponse.sendRedirect(unauthorizedRedirect);
-                    
-                        return;
-                    }
-                    catch (UserControlServiceException ucsx)
-                    {
-                        ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
 
                         hResponse.sendRedirect(unauthorizedRedirect);
                     

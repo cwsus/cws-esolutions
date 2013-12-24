@@ -45,7 +45,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.dto.ApplicationRequest;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
@@ -57,18 +56,13 @@ import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
-import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
-import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
-import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
@@ -91,7 +85,6 @@ public class ApplicationManagementController
     private String applMgmt = null;
     private int recordsPerPage = 20; // default to 20
     private String addAppPage = null;
-    private String projectMgmt = null;
     private String serviceName = null;
     private String defaultPage = null;
     private String viewAppPage = null;
@@ -100,7 +93,6 @@ public class ApplicationManagementController
     private String deployAppPage = null;
     private String messageNoFileData = null;
     private String retrieveFilesPage = null;
-    private String addProjectRedirect = null;
     private String addPlatformRedirect = null;
     private String messageFileUploaded = null;
     private String viewApplicationsPage = null;
@@ -291,19 +283,6 @@ public class ApplicationManagementController
         this.applMgmt = value;
     }
 
-    public final void setProjectMgmt(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setProjectMgmt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectMgmt = value;
-    }
-
     public final void setPlatformMgmt(final String value)
     {
         final String methodName = ApplicationManagementController.CNAME + "#setPlatformMgmt(final String value)";
@@ -315,19 +294,6 @@ public class ApplicationManagementController
         }
 
         this.platformMgmt = value;
-    }
-
-    public final void setAddProjectRedirect(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setAddProjectRedirect(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.addProjectRedirect = value;
     }
 
     public final void setAddPlatformRedirect(final String value)
@@ -988,7 +954,6 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
         final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
 
         if (DEBUG)
@@ -1043,80 +1008,6 @@ public class ApplicationManagementController
             if (DEBUG)
             {
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            }
-
-            ProjectManagementRequest projectReq = new ProjectManagementRequest();
-            projectReq.setRequestInfo(reqInfo);
-            projectReq.setUserAccount(userAccount);
-            projectReq.setServiceId(this.projectMgmt);
-            projectReq.setApplicationId(this.appConfig.getApplicationId());
-            projectReq.setApplicationName(this.appConfig.getApplicationName());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("ProjectManagementRequest: {}", projectReq);
-            }
-
-            try
-            {
-                ProjectManagementResponse projectResponse = projectMgr.listProjects(projectReq);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", projectResponse);
-                }
-
-                if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Project> projects = projectResponse.getProjectList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("projects: {}", projects);
-                    }
-
-                    if ((projects != null) && (projects.size() != 0))
-                    {
-                        Map<String, String> projectListing = new HashMap<>();
-
-                        for (Project project : projects)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Project: {}", project);
-                            }
-
-                            projectListing.put(project.getProjectGuid(), project.getProjectName());
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("projectListing: {}", projectListing);
-                        }
-
-                        mView.addObject("projectListing", projectListing);
-                    }
-                }
-                else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView = new ModelAndView(new RedirectView());
-                    mView.setViewName(this.addProjectRedirect);
-
-                    return mView;
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                mView = new ModelAndView(new RedirectView());
-                mView.setViewName(this.addProjectRedirect);
-
-                return mView;
             }
 
             PlatformManagementRequest platformReq = new PlatformManagementRequest();
@@ -1462,7 +1353,7 @@ public class ApplicationManagementController
 
                     if (app != null)
                     {
-                        List<Platform> platformList = app.getApplicationPlatforms();
+                        List<Platform> platformList = app.getPlatforms();
 
                         if (DEBUG)
                         {
@@ -1666,7 +1557,7 @@ public class ApplicationManagementController
                 }
                 else
                 {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());;
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
             catch (PlatformManagementException pmx)
@@ -1826,7 +1717,7 @@ public class ApplicationManagementController
                         mView.addObject("application", appl);
                         mView.addObject("server", targetServer);
                         mView.addObject("platform", reqPlatform);
-                        mView.addObject("currentPath", appResponse.getApplication().getBasePath());
+                        mView.addObject("currentPath", appResponse.getApplication().getInstallPath());
                         mView.setViewName(this.retrieveFilesPage);
                     }
                 }
@@ -2229,7 +2120,7 @@ public class ApplicationManagementController
 
                     if (app != null)
                     {
-                        List<Platform> appPlatforms = app.getApplicationPlatforms();
+                        List<Platform> appPlatforms = app.getPlatforms();
 
                         if (DEBUG)
                         {
@@ -2666,7 +2557,6 @@ public class ApplicationManagementController
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
         final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
-        final IProjectManagementProcessor projectMgr = new ProjectManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -2746,27 +2636,14 @@ public class ApplicationManagementController
                     DEBUGGER.debug("Platform: {}", newPlatform);
                 }
 
-                Project newProject = new Project();
-                newProject.setProjectGuid(request.getProject());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Project: {}", newProject);
-                }
-
                 Application newApp = new Application();
                 newApp.setApplicationGuid(UUID.randomUUID().toString());
                 newApp.setApplicationName(request.getApplicationName());
-                newApp.setApplicationPlatforms(new ArrayList<>(Arrays.asList(newPlatform)));
+                newApp.setPlatforms(new ArrayList<>(Arrays.asList(newPlatform)));
                 newApp.setApplicationVersion(request.getVersion());
-                newApp.setApplicationCluster(request.getClusterName());
-                newApp.setApplicationLogsPath(request.getLogsPath());
-                newApp.setApplicationProject(newProject);
-                newApp.setApplicationInstallPath(request.getInstallPath());
-                newApp.setPidDirectory(request.getPidDirectory());
-                newApp.setScmPath(request.getScmPath());
-                newApp.setJvmName(request.getJvmName());
-                newApp.setBasePath(request.getBasePath());
+                newApp.setLogsDirectory(request.getLogsPath());
+                newApp.setInstallPath(request.getInstallPath());
+                newApp.setPackageLocation(request.getScmPath());
 
                 if (DEBUG)
                 {
@@ -2796,63 +2673,6 @@ public class ApplicationManagementController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // app added
-                    ProjectManagementRequest projectReq = new ProjectManagementRequest();
-                    projectReq.setRequestInfo(reqInfo);
-                    projectReq.setUserAccount(userAccount);
-                    projectReq.setServiceId(this.projectMgmt);
-                    projectReq.setApplicationId(this.appConfig.getApplicationId());
-                    projectReq.setApplicationName(this.appConfig.getApplicationName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ProjectManagementRequest: {}", projectReq);
-                    }
-
-                    ProjectManagementResponse projectResponse = projectMgr.listProjects(projectReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ProjectManagementResponse: {}", projectResponse);
-                    }
-
-                    if (projectResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Project> projects = projectResponse.getProjectList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("projects: {}", projects);
-                        }
-
-                        if ((projects != null) && (projects.size() != 0))
-                        {
-                            Map<String, String> projectListing = new HashMap<>();
-
-                            for (Project project : projects)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Project: {}", project);
-                                }
-
-                                projectListing.put(project.getProjectGuid(), project.getProjectName());
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("projectListing: {}", projectListing);
-                            }
-
-                            mView.addObject("projectListing", projectListing);
-                        }
-                    }
-                    else if (projectResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                    {
-                        mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                        return mView;
-                    }
-
                     PlatformManagementRequest platformReq = new PlatformManagementRequest();
                     platformReq.setRequestInfo(reqInfo);
                     platformReq.setServiceId(this.platformMgmt);
@@ -2926,12 +2746,6 @@ public class ApplicationManagementController
             catch (ApplicationManagementException amx)
             {
                 ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
@@ -3128,7 +2942,7 @@ public class ApplicationManagementController
                         if (resPlatform != null)
                         {
                             // excellent
-                            if (StringUtils.isNotEmpty(resApplication.getScmPath()))
+                            if (StringUtils.isNotEmpty(resApplication.getInstallPath()))
                             {
                                 // this is an scm build. make sure the version number was populated
                                 if ((request.getVersion() == 0.0) || (resApplication.getApplicationVersion() == request.getVersion()))

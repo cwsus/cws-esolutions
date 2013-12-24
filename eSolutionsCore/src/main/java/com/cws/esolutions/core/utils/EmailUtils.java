@@ -59,7 +59,7 @@ import org.apache.commons.lang.StringUtils;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.services.impl.userControl;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**

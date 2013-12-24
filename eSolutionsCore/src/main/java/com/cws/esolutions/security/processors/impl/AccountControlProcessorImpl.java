@@ -52,16 +52,16 @@ import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
+import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
  */
@@ -103,7 +103,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -262,7 +262,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(acx.getMessage(), acx);
         }
-        catch (AdminControlServiceException acx)
+        catch (AccessControlServiceException acx)
         {
             ERROR_RECORDER.error(acx.getMessage(), acx);
 
@@ -345,7 +345,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -373,7 +373,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 }
             }
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -450,7 +450,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -498,7 +498,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
             }
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -576,7 +576,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -637,7 +637,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
             }
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -715,7 +715,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -817,7 +817,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
             }
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -899,7 +899,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -983,7 +983,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(sqx.getMessage(), sqx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1066,7 +1066,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1209,7 +1209,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1289,7 +1289,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1359,7 +1359,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1435,7 +1435,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
             if (DEBUG)
             {
@@ -1525,7 +1525,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                 DEBUGGER.debug("AuditResponse: {}", response);
             }
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
@@ -1612,7 +1612,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (request.getControlType() != ControlType.SERVICES)
             {
-                isUserAuthorized = adminControl.adminControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
 
                 if (DEBUG)
                 {
@@ -1686,7 +1686,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             throw new AccountControlException(umx.getMessage(), umx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 

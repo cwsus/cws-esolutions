@@ -46,7 +46,7 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -91,7 +91,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -152,11 +152,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new MessagingServiceException(ucsx.getMessage(), ucsx);
+            throw new MessagingServiceException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -223,7 +223,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -281,11 +281,11 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
             throw new MessagingServiceException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new MessagingServiceException(ucsx.getMessage(), ucsx);
+            throw new MessagingServiceException(acsx.getMessage(), acsx);
         }
         finally
         {

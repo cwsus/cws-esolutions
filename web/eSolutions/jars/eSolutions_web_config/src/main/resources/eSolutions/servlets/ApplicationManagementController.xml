@@ -16,7 +16,6 @@
     <bean id="applicationValidatorBean" class="com.cws.esolutions.web.validators.ApplicationValidator">
         <property name="messageApplicationNameRequired" value="app.mgmt.app.name.required" />
         <property name="messageApplicationLogsPathRequired" value="app.mgmt.app.logs.required" />
-        <property name="messageApplicationProjectRequired" value="app.mgmt.app.project.required" />
         <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
         <property name="messageApplicationClusterRequired" value="app.mgmt.app.cluster.required" />
         <property name="messageApplicationPlatformRequired" value="app.mgmt.app.platform.required" />
@@ -54,7 +53,6 @@
             <ref bean="appConfig" />
         </property>
         <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
-        <property name="addProjectRedirect" value="redirect:/ui/service-management/add-project" />
         <property name="serviceName" value="appMgmt" />
         <property name="viewFilePage" value="AppMgmt_ViewFile" />
         <property name="addAppPage" value="AppMgmt_AddApplication" />
@@ -64,7 +62,6 @@
         <property name="deployAppPage" value="AppMgmt_DeployApplication" />
         <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
         <property name="applMgmt" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
-        <property name="projectMgmt" value="A0F3C71F-5FAF-45B4-AA34-9779F64D397E" />
         <property name="messageNoFileData" value="app.mgmt.no.file.data.received" />
         <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />

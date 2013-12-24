@@ -35,13 +35,11 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -53,8 +51,7 @@ import com.cws.esolutions.security.access.control.interfaces.IAdminControlServic
 public interface IMessagingProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final IUserControlService userControl = new UserControlServiceImpl();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();

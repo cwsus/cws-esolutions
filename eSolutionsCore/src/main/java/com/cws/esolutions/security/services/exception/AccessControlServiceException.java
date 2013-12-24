@@ -17,7 +17,7 @@ package com.cws.esolutions.security.services.exception;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.access.control.exception
- * File: UserControlServiceException.java
+ * File: accessControlServiceException.java
  *
  * History
  *

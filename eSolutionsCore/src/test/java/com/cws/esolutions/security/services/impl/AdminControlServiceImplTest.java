@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.access.control.impl;
+package com.cws.esolutions.security.services.impl;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.access.control.impl
- * File: EmailControlServiceImplTest.java
+ * Package: com.cws.esolutions.security.services.impl
+ * File: AdminControlServiceImplTest.java
  *
  * History
  *
@@ -37,16 +37,17 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.access.control.interfaces.IEmailControlService;
-import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 
-public class EmailControlServiceImplTest
+public class AdminControlServiceImplTest
 {
     private static UserAccount userAccount = null;
     private static RequestHostInfo hostInfo = null;
 
-    private static final IEmailControlService service = new EmailControlServiceImpl();
+    private static final IAccessControlService service = new AccessControlServiceImpl();
     
     @Before
     public void setUp()
@@ -99,15 +100,67 @@ public class EmailControlServiceImplTest
     }
 
     @Test
+    public void testAdminControlServiceUserAccount()
+    {
+        try
+        {
+            Assert.assertTrue(service.accessControlService(userAccount));
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            Assert.fail(acsx.getMessage());
+        }
+    }
+
+    @Test
+    public void testAdminControlServiceServiceAdmin()
+    {
+        try
+        {
+            Assert.assertTrue(service.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN));
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            Assert.fail(acsx.getMessage());
+        }
+    }
+
+    @Test
+    public void testAdminControlServiceUserAdmin()
+    {
+        try
+        {
+            Assert.assertTrue(service.accessControlService(userAccount, AdminControlType.USER_ADMIN));
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            Assert.fail(acsx.getMessage());
+        }
+    }
+
+    @Test
     public void testIsEmailAuthorized()
     {
         try
         {
             Assert.assertTrue(service.isEmailAuthorized("kmhuntly@gmail.com", new String[] { "caspersb-amta1.caspersbox.corp" }, false));
         }
-        catch (EmailControlServiceException ecsx)
+        catch (AccessControlServiceException ecsx)
         {
             Assert.fail(ecsx.getMessage());
+        }
+    }
+
+    @Test
+    public void testIsUserAuthorizedForService()
+    {
+        try
+        {
+            Assert.assertTrue(service.isUserAuthorizedForService(userAccount, "ef628254-e692-4029-8189-aedb9cf1e380"));
+        }
+        catch (AccessControlServiceException ucsx)
+        {
+            Assert.fail(ucsx.getMessage());
         }
     }
 

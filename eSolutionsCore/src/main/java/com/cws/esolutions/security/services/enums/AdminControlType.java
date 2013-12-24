@@ -17,7 +17,7 @@ package com.cws.esolutions.security.services.enums;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.access.control.enums
- * File: AdminControlType.java
+ * File: accessControlType.java
  *
  * History
  *

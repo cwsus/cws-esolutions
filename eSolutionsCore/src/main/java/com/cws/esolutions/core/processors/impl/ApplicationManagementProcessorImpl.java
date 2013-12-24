@@ -44,9 +44,8 @@ import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -90,7 +89,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
 
             if (DEBUG)
             {
@@ -98,7 +97,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             }
 
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -216,13 +215,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-        }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -294,7 +287,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
 
             if (DEBUG)
             {
@@ -302,7 +295,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             }
 
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -358,13 +351,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-        }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -436,7 +423,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount);
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
 
             if (DEBUG)
             {
@@ -444,7 +431,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             }
 
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -485,13 +472,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
-        }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
@@ -563,7 +544,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -632,11 +613,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -704,7 +685,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -816,11 +797,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             throw new ApplicationManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -891,7 +872,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -906,7 +887,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // need to authorize for project
-                boolean isAuthorizedForRequest = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                boolean isAuthorizedForRequest = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1021,13 +1002,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             }
                             else
                             {
-                                response.setApplication(resApplication);
+                                response.setApplication(application);
                                 response.setRequestStatus(CoreServicesStatus.FAILURE);
                             }
                         }
                         else
                         {
-                            response.setApplication(resApplication);
+                            response.setApplication(application);
                             response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
@@ -1053,11 +1034,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
         }
         catch (UtilityException ux)
         {
@@ -1137,7 +1118,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1158,11 +1139,11 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("ApplicationManagementResponse: {}", response);
             }
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new ApplicationManagementException(ucsx.getMessage(), ucsx);
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
         }
         finally
         {

@@ -40,7 +40,7 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -84,7 +84,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -174,11 +174,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             throw new SystemCheckException(ux.getMessage(), ux);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new SystemCheckException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -246,7 +246,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -338,11 +338,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             throw new SystemCheckException(ux.getMessage(), ux);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new SystemCheckException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -410,7 +410,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -502,11 +502,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             throw new SystemCheckException(ux.getMessage(), ux);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new SystemCheckException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -574,7 +574,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -665,11 +665,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             throw new SystemCheckException(ux.getMessage(), ux);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new SystemCheckException(ucsx.getMessage(), ucsx);
+            throw new SystemCheckException(acsx.getMessage(), acsx);
         }
         finally
         {

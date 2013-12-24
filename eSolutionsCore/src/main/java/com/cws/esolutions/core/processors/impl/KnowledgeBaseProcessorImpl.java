@@ -45,7 +45,7 @@ import com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -88,7 +88,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -153,11 +153,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
+            throw new KnowledgeBaseException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -222,7 +222,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -293,11 +293,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
+            throw new KnowledgeBaseException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -363,7 +363,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
         
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -410,11 +410,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
+            throw new KnowledgeBaseException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -661,7 +661,7 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -819,11 +819,11 @@ public class KnowledgeBaseProcessorImpl implements IKnowledgeBaseProcessor
 
             throw new KnowledgeBaseException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new KnowledgeBaseException(ucsx.getMessage(), ucsx);
+            throw new KnowledgeBaseException(acsx.getMessage(), acsx);
         }
         finally
         {

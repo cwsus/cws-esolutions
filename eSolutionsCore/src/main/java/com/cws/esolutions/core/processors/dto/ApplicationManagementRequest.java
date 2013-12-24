@@ -44,9 +44,7 @@ import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 public class ApplicationManagementRequest implements Serializable
 {
     private int startPage = 0;
-    private int timeoutValue = 0;
     private Server server = null;
-    private String jvmName = null;
     private String serviceId = null;
     private String requestFile = null;
     private String applicationId = null;
@@ -166,32 +164,6 @@ public class ApplicationManagementRequest implements Serializable
         this.application = value;
     }
 
-    public final void setTimeoutValue(final int value)
-    {
-        final String methodName = ApplicationManagementRequest.CNAME + "#setTimeoutValue(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.timeoutValue = value;
-    }
-
-    public final void setJvmName(final String value)
-    {
-        final String methodName = ApplicationManagementRequest.CNAME + "#setJvmName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.jvmName = value;
-    }
-
     public final void setServer(final Server value)
     {
         final String methodName = ApplicationManagementRequest.CNAME + "#setServer(final Server value)";
@@ -307,32 +279,6 @@ public class ApplicationManagementRequest implements Serializable
         }
 
         return this.application;
-    }
-
-    public final int getTimeoutValue()
-    {
-        final String methodName = ApplicationManagementRequest.CNAME + "#getTimeoutValue()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.timeoutValue);
-        }
-
-        return this.timeoutValue;
-    }
-
-    public final String getJvmName()
-    {
-        final String methodName = ApplicationManagementRequest.CNAME + "#getJvmName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.jvmName);
-        }
-
-        return this.jvmName;
     }
 
     public final Server getServer()

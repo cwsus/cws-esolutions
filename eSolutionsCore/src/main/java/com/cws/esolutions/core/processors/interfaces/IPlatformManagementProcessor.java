@@ -65,7 +65,7 @@ public interface IPlatformManagementProcessor
     static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
     static final String CNAME = IPlatformManagementProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final IAccessControlService userControl = new AccessControlServiceImpl();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();

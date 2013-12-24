@@ -51,7 +51,7 @@ import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -94,7 +94,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -211,11 +211,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             throw new PlatformManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(ucsx.getMessage(), ucsx);
+            throw new PlatformManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -282,7 +282,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -363,11 +363,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
             }
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new PlatformManagementException(ucsx.getMessage(), ucsx);
+            throw new PlatformManagementException(acsx.getMessage(), acsx);
         }
         catch (SQLException sqx)
         {
@@ -438,7 +438,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -504,11 +504,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             throw new PlatformManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(ucsx.getMessage(), ucsx);
+            throw new PlatformManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -575,7 +575,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -633,11 +633,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             throw new PlatformManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(ucsx.getMessage(), ucsx);
+            throw new PlatformManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -709,7 +709,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1108,11 +1108,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             throw new PlatformManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(ucsx.getMessage(), ucsx);
+            throw new PlatformManagementException(acsx.getMessage(), acsx);
         }
         finally
         {

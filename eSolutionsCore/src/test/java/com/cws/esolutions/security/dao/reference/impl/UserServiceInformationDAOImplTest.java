@@ -53,58 +53,6 @@ public class UserServiceInformationDAOImplTest
     }
 
     @Test
-    public void testAddProjectIdForUser()
-    {
-        try
-        {
-            Assert.assertTrue(userSvcDAO.addProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testVerifyProjectForUser()
-    {
-        try
-        {
-            Assert.assertTrue(userSvcDAO.verifyProjectForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testRemoveProjectIdForUser()
-    {
-        try
-        {
-            Assert.assertTrue(userSvcDAO.removeProjectIdForUser("guid", "AD94CBC0-A159-4B88-8422-F10F2CB991F3"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void testReturnUserAuthorizedProjects()
-    {
-        try
-        {
-            Assert.assertNotNull(userSvcDAO.returnUserAuthorizedProjects("guid"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
     public void testAddServiceToUser()
     {
         try

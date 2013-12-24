@@ -40,15 +40,13 @@ import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
-import com.cws.esolutions.security.access.control.impl.UserControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IUserControlService;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -68,9 +66,8 @@ public interface IApplicationManagementProcessor
     static final ResourceControllerBean resBean = appBean.getResourceBean();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IApplicationManagementProcessor.class.getName();
-    static final IUserControlService userControl = new UserControlServiceImpl();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();    
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
 

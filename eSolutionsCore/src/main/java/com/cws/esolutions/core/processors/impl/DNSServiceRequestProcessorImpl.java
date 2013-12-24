@@ -54,14 +54,13 @@ import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
-import com.cws.esolutions.security.access.control.enums.AdminControlType;
 import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.exception.AdminControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -409,8 +408,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -558,17 +557,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new DNSServiceException(acsx.getMessage(), acsx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-            throw new DNSServiceException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -636,8 +629,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -878,17 +871,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
             throw new DNSServiceException(acsx.getMessage(), acsx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-
-            throw new DNSServiceException(ucsx.getMessage(), ucsx);
         }
         catch (UtilityException ux)
         {
@@ -978,8 +965,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = adminControl.adminControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1006,17 +993,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             throw new DNSServiceException(sx.getMessage(), sx);
         }
-        catch (AdminControlServiceException acsx)
+        catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
             throw new DNSServiceException(acsx.getMessage(), acsx);
-        }
-        catch (UserControlServiceException ucsx)
-        {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
-            
-            throw new DNSServiceException(ucsx.getMessage(), ucsx);
         }
         finally
         {
@@ -1082,7 +1063,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -1284,11 +1265,11 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
 
             throw new DNSServiceException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new DNSServiceException(ucsx.getMessage(), ucsx);
+            throw new DNSServiceException(acsx.getMessage(), acsx);
         }
         finally
         {

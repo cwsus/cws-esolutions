@@ -42,7 +42,6 @@ import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Project;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.audit.dto.AuditEntry;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
@@ -50,19 +49,13 @@ import com.cws.esolutions.web.validators.UserAccountValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.enums.ModificationType;
-import com.cws.esolutions.core.processors.dto.ProjectManagementRequest;
-import com.cws.esolutions.core.processors.dto.ProjectManagementResponse;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.core.processors.impl.ProjectManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ProjectManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.core.processors.interfaces.IProjectManagementProcessor;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 /*
  * Project: eSolutions_java_source
@@ -83,7 +76,6 @@ public class UserManagementController
     private int recordsPerPage = 20; // default to 20
     private String serviceId = null;
     private String serviceName = null;
-    private String projectMgmt = null;
     private String viewUserPage = null;
     private String viewAuditPage = null;
     private String createUserPage = null;
@@ -91,7 +83,6 @@ public class UserManagementController
     private String messageAddUserFailed = null;
     private String messageAddUserSuccess = null;
     private UserAccountValidator validator = null;
-    private Object messageProjectLoadFailed = null;
     private String messageRoleChangeSuccess = null;
     private ApplicationServiceBean appConfig = null;
     private CoreConfigurationData coreConfig = null;
@@ -148,19 +139,6 @@ public class UserManagementController
         }
 
         this.serviceId = value;
-    }
-
-    public final void setProjectMgmt(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setProjectMgmt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectMgmt = value;
     }
 
     public final void setValidator(final UserAccountValidator value)
@@ -330,19 +308,6 @@ public class UserManagementController
         }
 
         this.messageRoleChangeSuccess = value;
-    }
-
-    public final void setMessageProjectLoadFailed(final String value)
-    {
-        final String methodName = UserManagementController.CNAME + "#setMessageProjectLoadFailed(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageProjectLoadFailed = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -709,7 +674,6 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IProjectManagementProcessor processor = new ProjectManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -755,68 +719,6 @@ public class UserManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            try
-            {
-                RequestHostInfo reqInfo = new RequestHostInfo();
-                reqInfo.setHostAddress(hRequest.getRemoteAddr());
-                reqInfo.setHostName(hRequest.getRemoteHost());
-                reqInfo.setSessionId(hSession.getId());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-                }
-
-                ProjectManagementRequest request = new ProjectManagementRequest();
-                request.setUserAccount(userAccount);
-                request.setRequestInfo(reqInfo);
-                request.setServiceId(this.projectMgmt);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementRequest: {}", request);
-                }
-
-                ProjectManagementResponse response = processor.listProjects(request);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ProjectManagementResponse: {}", response);
-                }
-
-                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                {
-                    List<Project> projectList = response.getProjectList();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<Project>: {}", projectList);
-                    }
-
-                    mView.addObject("projectList", projectList);
-                }
-                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                {
-                    mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                    return mView;
-                }
-                else
-                {
-                    mView.setViewName(this.appConfig.getErrorResponsePage());
-
-                    return mView;
-                }
-            }
-            catch (ProjectManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
-
-                mView.addObject(Constants.ERROR_RESPONSE, this.messageProjectLoadFailed);
-            }
-
             List<Role> availableRoles = new ArrayList<Role>();
 
             switch (userAccount.getRole())

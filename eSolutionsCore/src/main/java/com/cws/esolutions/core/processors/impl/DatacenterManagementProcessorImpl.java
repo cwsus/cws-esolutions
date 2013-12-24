@@ -36,7 +36,7 @@ import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -79,7 +79,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -160,11 +160,11 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
             throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new DatacenterManagementException(ucsx.getMessage(), ucsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -231,7 +231,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -287,11 +287,11 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
             throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new DatacenterManagementException(ucsx.getMessage(), ucsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -356,7 +356,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -422,11 +422,11 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
             throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new DatacenterManagementException(ucsx.getMessage(), ucsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -493,7 +493,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
         try
         {
-            boolean isServiceAuthorized = userControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -550,11 +550,11 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
             throw new DatacenterManagementException(sqx.getMessage(), sqx);
         }
-        catch (UserControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ucsx.getMessage(), ucsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new DatacenterManagementException(ucsx.getMessage(), ucsx);
+            throw new DatacenterManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
