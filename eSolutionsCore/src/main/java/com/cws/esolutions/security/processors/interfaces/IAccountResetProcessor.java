@@ -37,15 +37,15 @@ import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
-import com.cws.esolutions.security.access.control.impl.AdminControlServiceImpl;
 import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.access.control.interfaces.IAdminControlService;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
@@ -62,7 +62,7 @@ public interface IAccountResetProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final IAdminControlService adminControl = new AdminControlServiceImpl();
+    static final IAccessControlService adminControl = new AccessControlServiceImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
 

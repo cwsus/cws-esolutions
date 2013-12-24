@@ -59,9 +59,9 @@ import org.apache.commons.lang.StringUtils;
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.access.control.impl.EmailControlServiceImpl;
-import com.cws.esolutions.security.access.control.interfaces.IEmailControlService;
-import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
+import com.cws.esolutions.security.services.impl.userControl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -306,14 +306,6 @@ public final class EmailUtils
 
         try
         {
-            // set up the controller
-            IEmailControlService emailControl = new EmailControlServiceImpl();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("EmailControlServiceImpl: {}", emailControl);
-            }
-
             // Set up mail session
             mailSession = (authRequired) ? Session.getDefaultInstance(dataSource, new SMTPAuthenticator()) : Session.getDefaultInstance(dataSource);
 
@@ -357,6 +349,12 @@ public final class EmailUtils
                         if (mailMessages.length != 0)
                         {
                             emailMessages = new ArrayList<>();
+							IAccessControlService emailControl = new AccessControlServiceImpl();
+
+							if (DEBUG)
+							{
+								DEBUGGER.debug("AccessControlServiceImpl: {}", emailControl);
+							}
 
                             for (Message message : mailMessages)
                             {
@@ -512,11 +510,11 @@ public final class EmailUtils
 
             throw new MessagingException(mex.getMessage(), mex);
         }
-        catch (EmailControlServiceException ecsx)
+        catch (AccessControlServiceException acsx)
         {
-            ERROR_RECORDER.error(ecsx.getMessage(), ecsx);
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new MessagingException(ecsx.getMessage(), ecsx);
+            throw new MessagingException(acsx.getMessage(), acsx);
         }
         finally
         {

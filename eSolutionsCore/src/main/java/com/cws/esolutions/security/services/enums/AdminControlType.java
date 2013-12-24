@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.access.control.exception;
+package com.cws.esolutions.security.services.enums;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.access.control.exception
- * File: EmailControlServiceException.java
+ * Package: com.cws.esolutions.security.access.control.enums
+ * File: AdminControlType.java
  *
  * History
  *
@@ -25,26 +25,17 @@ package com.cws.esolutions.security.access.control.exception;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
- * @see com.cws.esolutions.security.exception.SecurityServiceException
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
  */
-public class EmailControlServiceException extends SecurityServiceException
+public enum AdminControlType
 {
-    private static final long serialVersionUID = -1245777962692294793L;
-
-    public EmailControlServiceException(final String message)
-    {
-        super(message);
-    }
-
-    public EmailControlServiceException(final Throwable throwable)
-    {
-        super(throwable);
-    }
-
-    public EmailControlServiceException(final String message, final Throwable throwable)
-    {
-        super(message, throwable);
-    }
+    USER_ADMIN,
+    SERVICE_ADMIN,
+    SERVICE_REQUEST;
 }

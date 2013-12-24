@@ -244,18 +244,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         {
                             userAccount.setServiceList(serviceList);
                         }
-
-                        List<String> authorizedProjects = svcInfo.returnUserAuthorizedProjects(userAccount.getGuid());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", authorizedProjects);
-                        }
-
-                        if ((authorizedProjects != null) && (authorizedProjects.size() != 0))
-                        {
-                            userAccount.setProjectList(authorizedProjects);
-                        }
                     }
 
                     // user not already logged in or concurrent auth is allowed

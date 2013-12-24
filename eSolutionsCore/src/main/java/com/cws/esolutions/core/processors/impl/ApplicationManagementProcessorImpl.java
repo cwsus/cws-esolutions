@@ -1015,7 +1015,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                                     response.setFileList(fileList);
                                 }
 
-                                response.setApplication(resApplication);
+                                response.setApplication(application);
                                 response.setCurrentPath(request.getRequestFile());
                                 response.setRequestStatus(CoreServicesStatus.SUCCESS);
                             }

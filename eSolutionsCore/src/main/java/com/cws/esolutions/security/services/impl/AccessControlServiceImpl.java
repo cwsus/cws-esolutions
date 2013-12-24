@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.access.control.impl;
+package com.cws.esolutions.security.services.impl;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.access.control.impl
- * File: EmailControlServiceImpl.java
+ * Package: com.cws.esolutions.security.services.impl
+ * File: AccessControlServiceImpl.java
  *
  * History
  *
@@ -31,26 +31,72 @@ import java.sql.SQLException;
 import java.net.UnknownHostException;
 import org.apache.commons.lang.StringUtils;
 
+import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
-import com.cws.esolutions.security.processors.enums.ModificationType;
+import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
-import com.cws.esolutions.security.access.control.interfaces.IEmailControlService;
-import com.cws.esolutions.security.access.control.exception.UserControlServiceException;
-import com.cws.esolutions.security.access.control.exception.EmailControlServiceException;
+import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
- * @see com.cws.esolutions.security.access.control.interfaces.IEmailControlService
+ * @see com.cws.esolutions.security.services.interfaces.IAccessControlService
  */
-public class EmailControlServiceImpl implements IEmailControlService
+public class AccessControlServiceImpl implements IAccessControlService
 {
     /**
-     * @see com.cws.esolutions.security.access.control.interfaces.IEmailControlService#isEmailAuthorized(java.lang.String, java.lang.String[], boolean)
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorizedForService(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
+     */
+    @Override
+    public boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException
+    {
+        final String methodName = IUserControlService.CNAME + "#isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws UserControlServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("serviceGuid: {}", serviceGuid);
+        }
+
+        boolean isUserAuthorized = false;
+
+        switch (userAccount.getRole())
+        {
+            case SITEADMIN:
+                isUserAuthorized = true;
+
+                break;
+            default:
+                try
+                {
+                    isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                    }
+                }
+                catch (SQLException sqx)
+                {
+                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+                    throw new UserControlServiceException(sqx.getMessage(), sqx);
+                }
+
+                break;
+        }
+
+        return isUserAuthorized;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isEmailAuthorized(java.lang.String, java.lang.String[], boolean)
      */
     @Override
     public boolean isEmailAuthorized(final String sender, final String[] sources, final boolean isException) throws EmailControlServiceException
@@ -160,7 +206,6 @@ public class EmailControlServiceImpl implements IEmailControlService
             request.setHostInfo(hostInfo);
             request.setUserAccount(searchUser);
             request.setControlType(ControlType.LOOKUP);
-            request.setModType(ModificationType.NONE);
             request.setSearchType(SearchRequestType.ALL);
             request.setIsLogonRequest(false);
 
@@ -221,6 +266,81 @@ public class EmailControlServiceImpl implements IEmailControlService
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new EmailControlServiceException(sqx.getMessage(), sqx);
+        }
+
+        return isAuthorized;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#adminControlService(com.cws.esolutions.security.dto.UserAccount)
+     */
+    @Override
+    public boolean adminControlService(final UserAccount userAccount)
+    {
+        final String methodName = IAdminControlService.CNAME + "#adminControlService(final UserAccount userAccount) throws AdminControlServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount", userAccount);
+        }
+
+        if (StringUtils.isNotEmpty(userAccount.getGuid()))
+        {
+            if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SITEADMIN))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.services.interfaces.IAdminControlService#adminControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.access.control.enums.AdminControlType)
+     */
+    @Override
+    public boolean adminControlService(final UserAccount userAccount, final AdminControlType controlType)
+    {
+        final String methodName = IAdminControlService.CNAME + "#adminControlService(final UserAccount userAccount, final AdminControlType controlType) throws AdminControlServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("AdminControlType", controlType);
+        }
+
+        boolean isAuthorized = false;
+
+        if (userAccount.getRole() == Role.SITEADMIN)
+        {
+            return true;
+        }
+
+        switch (controlType)
+        {
+            case SERVICE_ADMIN:
+                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SERVICEADMIN))
+                {
+                    isAuthorized = true;
+                }
+
+                break;
+            case SERVICE_REQUEST:
+                if (userAccount.getRole() == Role.ADMIN)
+                {
+                    isAuthorized = true;
+                }
+
+                break;
+            case USER_ADMIN:
+                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.USERADMIN))
+                {
+                    isAuthorized = true;
+                }
+
+                break;
         }
 
         return isAuthorized;

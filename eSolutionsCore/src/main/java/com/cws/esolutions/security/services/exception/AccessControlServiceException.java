@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.access.control.exception;
+package com.cws.esolutions.security.services.exception;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.access.control.exception
- * File: AdminControlServiceException.java
+ * File: UserControlServiceException.java
  *
  * History
  *
@@ -29,21 +29,21 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * @see com.cws.esolutions.security.exception.SecurityServiceException
  */
-public class AdminControlServiceException extends SecurityServiceException
+public class AccessControlServiceException extends SecurityServiceException
 {
-    private static final long serialVersionUID = -1764351939782522205L;
+    private static final long serialVersionUID = 1950481349510842592L;
 
-    public AdminControlServiceException(final String message)
+    public AccessControlServiceException(final String message)
     {
         super(message);
     }
 
-    public AdminControlServiceException(final Throwable throwable)
+    public AccessControlServiceException(final Throwable throwable)
     {
         super(throwable);
     }
 
-    public AdminControlServiceException(final String message, final Throwable throwable)
+    public AccessControlServiceException(final String message, final Throwable throwable)
     {
         super(message, throwable);
     }

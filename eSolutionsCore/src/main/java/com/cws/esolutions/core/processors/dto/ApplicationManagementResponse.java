@@ -46,8 +46,8 @@ public class ApplicationManagementResponse implements Serializable
     private int entryCount = 0;
     private byte[] fileData = null;
     private String currentPath = null;
-    private Application appData = null;
     private List<String> fileList = null;
+    private Application application = null;
     private CoreServicesStatus requestStatus = null;
     private List<Application> applicationList = null;
 
@@ -94,7 +94,7 @@ public class ApplicationManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appData = value;
+        this.application = value;
     }
 
     public final void setApplicationList(final List<Application> value)
@@ -177,15 +177,15 @@ public class ApplicationManagementResponse implements Serializable
 
     public final Application getApplication()
     {
-        final String methodName = ApplicationManagementResponse.CNAME + "#getAppData()";
+        final String methodName = ApplicationManagementResponse.CNAME + "#getApplication()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appData);
+            DEBUGGER.debug("Value: {}", this.application);
         }
 
-        return this.appData;
+        return this.application;
     }
 
     public final List<Application> getApplicationList()
