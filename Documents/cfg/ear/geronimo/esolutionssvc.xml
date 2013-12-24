@@ -27,12 +27,14 @@
                     <config-property-setting name="UserName">appuser</config-property-setting>
                     <config-property-setting name="ServerName">data.caspersbox.corp</config-property-setting>
                     <config-property-setting name="PortNumber">3306</config-property-setting>
-                    <config-property-setting name="CacheCallableStmts">true</config-property-setting>
+                    <config-property-setting name="useSSL">true</config-property-setting>
+                    <config-property-setting name="requireSSL">true</config-property-setting>
+                    <config-property-setting name="verifyServerCertificate">true</config-property-setting>
+                    <config-property-setting name="useConfigs">maxPerformance</config-property-setting>
                     <config-property-setting name="ConnectTimeout">10000</config-property-setting>
                     <config-property-setting name="SocketTimeout">10000</config-property-setting>
                     <config-property-setting name="ZeroDateTimeBehavior">convertToNull</config-property-setting>
                     <config-property-setting name="InitialTimeout">10000</config-property-setting>
-                    <config-property-setting name="CacheCallableStatements">true</config-property-setting>
                     <config-property-setting name="AutoReconnectForPools">true</config-property-setting>
                     <config-property-setting name="MaxReconnects">3</config-property-setting>
                     <config-property-setting name="Encoding">UTF-8</config-property-setting>

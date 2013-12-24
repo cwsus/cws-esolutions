@@ -28,7 +28,6 @@ INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('5C0B0A54-2456-45C9-A435-B485ED3
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('7CE2B9E8-9FCF-4096-9CAE-10961F50FA81', 'Search', 'search', 'Service ID for Search');
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E', 'SysMgmt', 'system-management', 'Service ID for System Management');
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('D1B5D088-32B3-4AA1-9FCF-822CB476B649', 'PlatformMgmt', 'service-management', 'Service ID for Platform Management');
-INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('A0F3C71F-5FAF-45B4-AA34-9779F64D397E', 'ProjectMgmt', 'service-management', 'Service ID for Project Management');
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('3F0D3FB5-56C9-4A90-B177-4E1593088DBF', 'SystemCheck', 'system-check', 'Service ID for System Checks');
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('AEB46994-57B4-4E92-90AA-A4046F60B830', 'UserMgmt', 'user-management', 'Service ID for User Management');
 INSERT INTO `cwssec`.`usr_lgn_services` VALUES ('0C1C5F83-3EDD-4635-9F1E-6A9B5383747E', 'DatacenterMgmt', 'service-management', 'Service ID for Datacenter Management');

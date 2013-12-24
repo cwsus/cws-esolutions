@@ -14,11 +14,9 @@ SOURCE ./eSolutionsService.articles.sql;
 SOURCE ./eSolutionsService.dns_service.sql;
 SOURCE ./eSolutionsService.installed_applications.sql;
 SOURCE ./eSolutionsService.installed_systems.sql;
-SOURCE ./eSolutionsService.installed_webapps.sql;
 SOURCE ./eSolutionsService.service_datacenters.sql;
 SOURCE ./eSolutionsService.service_messages.sql;
 SOURCE ./eSolutionsService.service_platforms.sql;
-SOURCE ./eSolutionsService.service_projects.sql;
 
 COMMIT;
 

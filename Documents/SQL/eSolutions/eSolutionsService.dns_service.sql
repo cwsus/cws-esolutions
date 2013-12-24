@@ -4,7 +4,6 @@
 DROP TABLE IF EXISTS `esolutionssvc`.`dns_service`;
 CREATE TABLE `esolutionssvc`.`dns_service` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `PROJECT_CODE` VARCHAR(255) CHARACTER SET UTF8 NOT NULL, -- required for all entries
     `ZONE_FILE` VARCHAR(128) CHARACTER SET UTF8 NOT NULL, -- required for all entries, this will act as a correlator for apex/sub
     `APEX_RECORD` BOOLEAN NOT NULL DEFAULT FALSE,
     `RR_ORIGIN` VARCHAR(126) CHARACTER SET UTF8 NOT NULL DEFAULT ".", -- required for all entries
@@ -28,11 +27,6 @@ CREATE TABLE `esolutionssvc`.`dns_service` (
     `SECONDARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- secondary target list, used for failover
     `TERTIARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- tertiary target list, used for failover
     PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_PROJECT_CODE`
-        FOREIGN KEY (`PROJECT_CODE`)
-        REFERENCES `esolutionssvc`.`service_projects` (`PROJECT_CODE`)
-            ON DELETE RESTRICT
-            ON UPDATE NO ACTION,
     FULLTEXT KEY `IDX_SEARCH` (`PROJECT_CODE`, `ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
@@ -51,7 +45,6 @@ CREATE PROCEDURE `esolutionssvc`.`getRecordByAttribute`(
 )
 BEGIN
     SELECT
-        PROJECT_CODE,
         ZONE_FILE,
         APEX_RECORD,
         RR_ORIGIN,
@@ -74,10 +67,10 @@ BEGIN
         RR_TARGET,
         SECONDARY_TARGET,
         TERTIARY_TARGET,
-    MATCH (`PROJECT_CODE`, `ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
+    MATCH (`ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`dns_service`
-    WHERE MATCH (`PROJECT_CODE`, `ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
+    WHERE MATCH (`ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     ORDER BY APEX_RECORD DESC, RR_ORIGIN ASC;
 END $$
@@ -90,7 +83,6 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertApex`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertApex`(
-    IN projectCode VARCHAR(255),
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN timeToLive INTEGER(12),
@@ -106,13 +98,13 @@ CREATE PROCEDURE `esolutionssvc`.`insertApex`(
 BEGIN
     INSERT INTO `esolutionssvc`.`dns_service`
     (
-        PROJECT_CODE, ZONE_FILE, APEX_RECORD, RR_ORIGIN, 
+        ZONE_FILE, APEX_RECORD, RR_ORIGIN, 
         RR_TIMETOLIVE, RR_HOSTNAME, RR_OWNER, RR_HOSTMASTER, 
         RR_SERIAL, RR_REFRESH, RR_RETRY, RR_EXPIRY, RR_CACHETIME
     )
     VALUES
     (
-        projectCode, zoneFile, true, origin, timeToLive,
+        zoneFile, true, origin, timeToLive,
         hostname, masterNameserver, hostmaster, serial,
         refresh, retry, expiry, cacheTime
     );
@@ -128,7 +120,6 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`insertRecord`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`insertRecord`(
-    IN projectCode VARCHAR(255),
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN hostname VARCHAR(126),
@@ -146,14 +137,14 @@ CREATE PROCEDURE `esolutionssvc`.`insertRecord`(
 BEGIN
     INSERT INTO `esolutionssvc`.`dns_service`
     (
-        PROJECT_CODE, ZONE_FILE, APEX_RECORD, RR_ORIGIN,
+        ZONE_FILE, APEX_RECORD, RR_ORIGIN,
         RR_HOSTNAME, RR_CLASS, RR_TYPE, RR_PORT, RR_WEIGHT,
         RR_SERVICE, RR_PROTOCOL, RR_PRIORITY, RR_TARGET,
         SECONDARY_TARGET, TERTIARY_TARGET
     )
     VALUES
     (
-        projectCode, zoneFile, false, origin,
+        zoneFile, false, origin,
         hostname, rrClass, rrType, portNumber,
         weight, service, protocol, priority, target,
         secondary, tertiary

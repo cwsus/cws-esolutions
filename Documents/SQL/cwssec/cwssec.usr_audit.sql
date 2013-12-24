@@ -13,6 +13,11 @@ CREATE TABLE `cwssec`.`usr_audit` (
     `usr_audit_action` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_srcaddr` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `usr_audit_srchost` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    CONSTRAINT `FK_LGN_GUID`
+        FOREIGN KEY (`usr_audit_userguid`)
+        REFERENCES `cwssec`.`usr_lgn` (`CN`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
     FULLTEXT KEY `audit_search` (`usr_audit_userid`, `usr_audit_userguid`, `usr_audit_role`, `usr_audit_srcaddr`, `usr_audit_srchost`, `usr_audit_action`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;

@@ -3,7 +3,7 @@
 
     <Resource name="jdbc/esolutionssvc" auth="Container" type="javax.sql.DataSource" closeMethod="close"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://@database.host.name@/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
+        url="jdbc:mysql://@database.host.name@/esolutionssvc?useConfigs=maxPerformance&amp;autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false" validationQuery="SELECT 1 FROM DUAL"
         validationInterval="30000" timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0" maxWait="10000"
         initialSize="0" removeAbandonedTimeout="60" removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
@@ -13,7 +13,7 @@
 
     <Resource name="jdbc/cwssec" auth="Container" type="javax.sql.DataSource" closeMethod="close"
         username="@database.user.name@" password="@database.user.password@" driverClassName="com.mysql.jdbc.Driver"
-        url="jdbc:mysql://@database.host.name@/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
+        url="jdbc:mysql://@database.host.name@/cwssec?useConfigs=maxPerformance&amp;autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull"
         testWhileIdle="true" testOnBorrow="true" testOnReturn="false" validationQuery="SELECT 1 FROM DUAL"
         validationInterval="30000" timeBetweenEvictionRunsMillis="5000" maxActive="100" minIdle="0" maxWait="10000"
         initialSize="0" removeAbandonedTimeout="60" removeAbandoned="true" logAbandoned="true" minEvictableIdleTimeMillis="30000"
