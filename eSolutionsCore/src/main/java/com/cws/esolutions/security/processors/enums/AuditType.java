@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.audit.enums;
+package com.cws.esolutions.security.processors.enums;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.enums
+ * Package: com.cws.esolutions.security.processors.enums
  * File: AuditType.java
  *
  * History

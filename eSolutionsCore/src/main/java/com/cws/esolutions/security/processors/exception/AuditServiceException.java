@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.audit.exception;
+package com.cws.esolutions.security.processors.exception;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.exception
+ * Package: com.cws.esolutions.security.processors.exception
  * File: AuditServiceException.java
  *
  * History

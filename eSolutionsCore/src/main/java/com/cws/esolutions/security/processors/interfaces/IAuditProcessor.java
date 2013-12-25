@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.audit.processors.interfaces;
+package com.cws.esolutions.security.processors.interfaces;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.interfaces
+ * Package: com.cws.esolutions.security.processors.interfaces
  * File: IAuditProcessor.java
  *
  * History
@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.AuditResponse;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.audit.impl.AuditDAOImpl;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

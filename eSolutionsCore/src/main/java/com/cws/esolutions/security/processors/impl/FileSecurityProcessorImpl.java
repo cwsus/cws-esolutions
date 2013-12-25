@@ -39,21 +39,21 @@ import java.security.SignatureException;
 import java.security.InvalidKeyException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.NoSuchAlgorithmException;
+
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor;
 /**
  * @see com.cws.esolutions.security.processors.interfaces.IFileSecurityProcessor
@@ -191,7 +191,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                     DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
 
-                IAuditProcessor auditor = new AuditProcessorImpl();
                 auditor.auditRequest(auditRequest);
             }
             catch (AuditServiceException asx)
@@ -327,7 +326,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                     DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
 
-                IAuditProcessor auditor = new AuditProcessorImpl();
                 auditor.auditRequest(auditRequest);
             }
             catch (AuditServiceException asx)
@@ -468,7 +466,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                     DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
 
-                IAuditProcessor auditor = new AuditProcessorImpl();
                 auditor.auditRequest(auditRequest);
             }
             catch (AuditServiceException asx)
@@ -598,7 +595,6 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
                     DEBUGGER.debug("AuditRequest: {}", auditRequest);
                 }
 
-                IAuditProcessor auditor = new AuditProcessorImpl();
                 auditor.auditRequest(auditRequest);
             }
             catch (AuditServiceException asx)

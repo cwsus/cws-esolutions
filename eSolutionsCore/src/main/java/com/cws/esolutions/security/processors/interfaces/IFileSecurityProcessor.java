@@ -35,10 +35,12 @@ import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.config.xml.FileSecurityConfig;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -50,6 +52,7 @@ import com.cws.esolutions.security.processors.exception.FileSecurityException;
  */
 public interface IFileSecurityProcessor
 {
+    static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IFileSecurityProcessor.class.getName();
     static final AuthData authData = secBean.getConfigData().getAuthData();
