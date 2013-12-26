@@ -32,8 +32,8 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;
 import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
 /**

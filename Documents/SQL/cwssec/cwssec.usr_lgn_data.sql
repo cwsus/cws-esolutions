@@ -1,40 +1,41 @@
 --
--- Definition of table `usr_lgn_data`
+-- Definition of table `LOGON_DATA`
 -- DATA TABLE
 --
-DROP TABLE IF EXISTS `cwssec`.`usr_lgn_data`;
-CREATE TABLE `usr_lgn_data` (
-    `usr_lgn_guid` VARCHAR(128) NOT NULL,
-    `userSalt` VARCHAR(128) NOT NULL,
-    `saltType` VARCHAR(15) DEFAULT NULL,
-    PRIMARY KEY (`userSalt`),
-    UNIQUE KEY `UNQ_SaltData` (`userSalt`) USING HASH,
+DROP TABLE IF EXISTS `CWSSEC`.`LOGON_DATA`;
+CREATE TABLE `LOGON_DATA` (
+    `CN` VARCHAR(128) NOT NULL,
+    `SALT` VARCHAR(128) NOT NULL,
+    `SALT_TYPE` VARCHAR(15) DEFAULT NULL,
+    PRIMARY KEY (`SALT`),
+    UNIQUE KEY `UNQ_SaltData` (`SALT`) USING HASH,
+    INDEX `IDX_LOGON_DATA` (`CN`, `SALT`, `SALT_TYPE`),
     CONSTRAINT `FK_LGN_GUID`
-        FOREIGN KEY (`usr_lgn_guid`)
-        REFERENCES `cwssec`.`usr_lgn` (`CN`)
+        FOREIGN KEY (`CN`)
+        REFERENCES `CWSSEC`.`USERS` (`CN`)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
-    KEY `IDX_SaltData` (`userSalt`,`saltType`) USING HASH
+    KEY `IDX_SaltData` (`SALT`,`SALT_TYPE`) USING HASH
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `cwssec`.`usr_lgn_data` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE `CWSSEC`.`LOGON_DATA` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `cwssec`.`addUserSalt`
+-- Definition of procedure `CWSSEC`.`addUserSalt`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`addUserSalt`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`addUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`addUserSalt`(
+CREATE PROCEDURE `CWSSEC`.`addUserSalt`(
     IN guid VARCHAR(100),
     IN salt VARCHAR(128),
     in sType VARCHAR(15)
 )
 BEGIN
-    INSERT INTO `cwssec`.`usr_lgn_data` (usr_lgn_guid, userSalt, saltType)
+    INSERT INTO `CWSSEC`.`LOGON_DATA` (CN, SALT, SALT_TYPE)
     VALUES (guid, salt, sType);
 
     COMMIT;
@@ -43,54 +44,54 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `cwssec`.`retrUserSalt`
+-- Definition of procedure `CWSSEC`.`retrUserSalt`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`retrUserSalt`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`retrUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`retrUserSalt`(
+CREATE PROCEDURE `CWSSEC`.`retrUserSalt`(
     IN guid VARCHAR(100),
     IN sType VARCHAR(15)
 )
 BEGIN
-    SELECT userSalt
-    FROM `cwssec`.`usr_lgn_data`
-    WHERE usr_lgn_guid = guid
-    AND saltType = sType;
+    SELECT SALT
+    FROM `CWSSEC`.`LOGON_DATA`
+    WHERE CN = guid
+    AND SALT_TYPE = sType;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
 --
--- Definition of procedure `cwssec`.`updateUserSalt`
+-- Definition of procedure `CWSSEC`.`updateUserSalt`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`updateUserSalt`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`updateUserSalt`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`updateUserSalt`(
+CREATE PROCEDURE `CWSSEC`.`updateUserSalt`(
     IN guid VARCHAR(100),
     IN saltValue VARCHAR(64),
     IN sType VARCHAR(15)
 )
 BEGIN
-    UPDATE `cwssec`.`usr_lgn_data`
-    SET userSalt = saltValue
-    WHERE usr_lgn_guid = guid
-    AND saltType = sType;
+    UPDATE `CWSSEC`.`LOGON_DATA`
+    SET SALT = saltValue
+    WHERE CN = guid
+    AND SALT_TYPE = sType;
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
 --
--- Definition of procedure `cwssec`.`removeUserData`
+-- Definition of procedure `CWSSEC`.`removeUserData`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`removeUserData`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`removeUserData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`removeUserData`(
+CREATE PROCEDURE `CWSSEC`.`removeUserData`(
     IN guid VARCHAR(100)
 )
 BEGIN
-    DELETE FROM `cwssec`.`usr_lgn_data`
-    WHERE usr_lgn_guid = guid;
+    DELETE FROM `CWSSEC`.`LOGON_DATA`
+    WHERE CN = guid;
     COMMIT;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

@@ -27,7 +27,7 @@
     </security-config>
 
     <auth-data>
-        <objectClass>cwsusperson</objectClass>
+        <objectClass>cwsperson</objectClass>
         <userId>uid</userId>
         <userPassword>userPassword</userPassword>
         <userRole>cwsrole</userRole>
@@ -69,7 +69,6 @@
         <trustStoreFile>trustStoreFile</trustStoreFile>
         <trustStorePass>trustStorePass</trustStorePass>
         <trustStoreType>trustStoreType</trustStoreType>
-        <baseObjectClass>@baseObjectClass@</baseObjectClass>
         <repositoryBaseDN>@repositoryBaseDN@</repositoryBaseDN>
         <repositoryUserBase>@repositoryUserBase@</repositoryUserBase>
     </auth-repo>

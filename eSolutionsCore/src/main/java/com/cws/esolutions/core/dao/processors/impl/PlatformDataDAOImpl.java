@@ -73,15 +73,14 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL addNewPlatform(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{ CALL addNewPlatform(?, ?, ?, ?, ?, ?, ?) }");
             stmt.setString(1, platformData.get(0)); // platform guid
             stmt.setString(2, platformData.get(1)); // platform name
             stmt.setString(3, platformData.get(2)); // platform region
-            stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
-            stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
-            stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
-            stmt.setString(7, platformData.get(6)); // status
-            stmt.setString(8, platformData.get(7)); // platform description
+            stmt.setString(4, platformData.get(3)); // partition
+            stmt.setString(5, platformData.get(4)); // status
+            stmt.setString(6, platformData.get(5)); // platform servers (list, could be null)
+            stmt.setString(7, platformData.get(6)); // platform description
 
             if (DEBUG)
             {
@@ -216,15 +215,14 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL updatePlatformDetail(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL updatePlatformDetail(?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, platformData.get(0)); // platform guid
             stmt.setString(2, platformData.get(1)); // platform name
             stmt.setString(3, platformData.get(2)); // platform region
-            stmt.setString(4, platformData.get(3)); // platform dmgr (single, could be null)
-            stmt.setString(5, platformData.get(4)); // platform appservers (list, could be null)
-            stmt.setString(6, platformData.get(5)); // platform webservers (list, could be null)
-            stmt.setString(7, platformData.get(6)); // status
-            stmt.setString(8, platformData.get(7)); // platform description
+            stmt.setString(4, platformData.get(3)); // partition
+            stmt.setString(5, platformData.get(4)); // status
+            stmt.setString(6, platformData.get(5)); // platform servers (list, could be null)
+            stmt.setString(7, platformData.get(6)); // platform description
 
             if (DEBUG)
             {
@@ -310,41 +308,13 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                 {
                     responseData = new ArrayList<Object>(
                             Arrays.asList(
-                                    resultSet.getString(1), // T1.PLATFORM_GUID
-                                    resultSet.getString(2), // T1.PLATFORM_NAME
-                                    resultSet.getString(3), // T1.PLATFORM_REGION
-                                    resultSet.getString(4), // T1.PLATFORM_APPSERVERS
-                                    resultSet.getString(5), // T1.PLATFORM_WEBSERVERS
-                                    resultSet.getString(6), // T1.PLATFORM_DESC
-                                    resultSet.getString(7), // T2.SYSTEM_GUID
-                                    resultSet.getString(8), // T2.SYSTEM_OSTYPE
-                                    resultSet.getString(9), // T2.SYSTEM_STATUS
-                                    resultSet.getString(10), // T2.NETWORK_PARTITION
-                                    resultSet.getString(11), // T2.DOMAIN_NAME
-                                    resultSet.getString(12), // T2.CPU_TYPE
-                                    resultSet.getInt(13), // T2.CPU_COUNT
-                                    resultSet.getString(14), // T2.SERVER_RACK
-                                    resultSet.getString(15), // T2.RACK_POSITION
-                                    resultSet.getString(16), // T2.SERVER_MODEL
-                                    resultSet.getString(17), // T2.SERIAL_NUMBER
-                                    resultSet.getInt(18), // T2.INSTALLED_MEMORY
-                                    resultSet.getString(19), // T2.OPER_IP
-                                    resultSet.getString(20), // T2.OPER_HOSTNAME
-                                    resultSet.getString(21), // T2.MGMT_IP
-                                    resultSet.getString(22), // T2.MGMT_HOSTNAME
-                                    resultSet.getString(23), // T2.BKUP_IP
-                                    resultSet.getString(24), // T2.BKUP_HOSTNAME
-                                    resultSet.getString(25), // T2.NAS_IP
-                                    resultSet.getString(26), // T2.NAS_HOSTNAME
-                                    resultSet.getString(27), // T2.NAT_ADDR
-                                    resultSet.getString(28), // T2.COMMENTS
-                                    resultSet.getString(29), // T2.ASSIGNED_ENGINEER
-                                    resultSet.getInt(30), // T2.DMGR_PORT
-                                    resultSet.getString(31), // T2.MGR_ENTRY
-                                    resultSet.getString(32), // T3.DATACENTER_GUID
-                                    resultSet.getString(33), // T3.DATACENTER_NAME
-                                    resultSet.getString(34), // T3.DATACENTER_STATUS
-                                    resultSet.getString(35))); // T3.DATACENTER_DESC
+                                    resultSet.getString(1), // PLATFORM_GUID
+                                    resultSet.getString(2), // PLATFORM_NAME
+                                    resultSet.getString(3), // PLATFORM_REGION
+                                    resultSet.getString(4), // PARTITION
+                                    resultSet.getString(5), // STATUS
+                                    resultSet.getString(6), // PLATFORM_SERVERS
+                                    resultSet.getString(7))); // PLATFORM_DESC
 
                     if (DEBUG)
                     {

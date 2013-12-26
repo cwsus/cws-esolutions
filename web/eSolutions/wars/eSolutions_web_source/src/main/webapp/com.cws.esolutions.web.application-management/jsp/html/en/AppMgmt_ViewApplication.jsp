@@ -104,17 +104,6 @@
                 <td>${application.applicationInstallPath}</td>
             </tr>
             <tr>
-                <td><label id="txtClusterName"><spring:message code="app.mgmt.application.cluster.name" /></label></td>
-                <td>${application.applicationCluster}</td>
-            </tr>
-            <tr>
-                <td><label id="txtApplicationProject"><spring:message code="app.mgmt.application.project" /></label></td>
-                <td>
-                    <a href="${pageContext.request.contextPath}/ui/service-management/project/${application.applicationProject.projectGuid}"
-                        title="${application.applicationProject.projectName}">${application.applicationProject.projectName}</a>
-                </td>
-            </tr>
-            <tr>
                 <td><label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label></td>
                 <td>
                     <c:forEach var="platform" items="${application.applicationPlatforms}">

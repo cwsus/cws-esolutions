@@ -25,21 +25,21 @@ import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore

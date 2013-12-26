@@ -78,7 +78,6 @@ public interface UserManager
      * @param userDN - The full, generated Distinguished Name for the new user account
      * @param createRequest - An <code>ArrayList<String></code> containing the actual user information,
      * such as username, first name, etc.
-     * @param groupName - If group authentication is in use, the group to assign the user must be provided.
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */

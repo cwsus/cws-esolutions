@@ -230,7 +230,7 @@ public class LDAPUserManager implements UserManager
                 {
                     // have a connection, create the user
                     List<Attribute> newAttributes = new ArrayList<>();
-                    newAttributes.add(new Attribute("objectClass", authRepo.getBaseObjectClass()));
+                    newAttributes.add(new Attribute("objectClass", authData.getObjectClass()));
                     newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
                     newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
                     newAttributes.add(new Attribute(authData.getUserRole(), createRequest.get(2)));

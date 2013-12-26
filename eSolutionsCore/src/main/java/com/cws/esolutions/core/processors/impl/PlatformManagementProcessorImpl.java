@@ -24,32 +24,21 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.ServerStatus;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
-import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
-import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
-import com.cws.esolutions.security.processors.exception.AccountControlException;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
-import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
@@ -113,7 +102,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                 try
                 {
-                    validator = platformDao.listPlatformsByAttribute(platform.getPlatformName(), request.getStartPage());
+                    validator = platformDao.listPlatformsByAttribute(platform.getName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -128,47 +117,30 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 if ((validator == null) || (validator.size() == 0))
                 {
                     // valid platform
-                    List<String> appServerList = new ArrayList<>();
-                    for (Server server : platform.getAppServers())
+                    List<String> serverList = new ArrayList<>();
+                    for (Server server : platform.getServers())
                     {
                         if (DEBUG)
                         {
                             DEBUGGER.debug("Server: {}", server);
                         }
 
-                        appServerList.add(server.getServerGuid());
+                        serverList.add(server.getServerGuid());
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("appServerList: {}", appServerList);
-                    }
-
-                    List<String> webServerList = new ArrayList<>();
-                    for (Server server : platform.getWebServers())
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", server);
-                        }
-
-                        webServerList.add(server.getServerGuid());
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("webServerList: {}", webServerList);
+                        DEBUGGER.debug("List<String>: {}", serverList);
                     }
 
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
-                                    platform.getPlatformName(),
-                                    platform.getPlatformRegion().name(),
-                                    platform.getPlatformDmgr().getServerGuid(),
-                                    appServerList.toString(),
-                                    webServerList.toString(),
+                                    platform.getName(),
+                                    platform.getRegion().name(),
+                                    platform.getPartition().name(),
                                     platform.getStatus().name(),
+                                    serverList.toString(),
                                     platform.getDescription()));
 
                     if (DEBUG)
@@ -291,47 +263,30 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String> appServerList = new ArrayList<>();
-                for (Server server : platform.getAppServers())
+                List<String> serverList = new ArrayList<>();
+                for (Server server : platform.getServers())
                 {
                     if (DEBUG)
                     {
                         DEBUGGER.debug("Server: {}", server);
                     }
 
-                    appServerList.add(server.getServerGuid());
+                    serverList.add(server.getServerGuid());
                 }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("appServerList: {}", appServerList);
-                }
-
-                List<String> webServerList = new ArrayList<>();
-                for (Server server : platform.getWebServers())
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", server);
-                    }
-
-                    webServerList.add(server.getServerGuid());
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("webServerList: {}", webServerList);
+                    DEBUGGER.debug("List<String>: {}", serverList);
                 }
 
                 List<String> insertData = new ArrayList<>(
                         Arrays.asList(
-                                platform.getPlatformGuid(),
-                                platform.getPlatformName(),
-                                platform.getPlatformRegion().name(),
-                                platform.getPlatformDmgr().getServerGuid(),
-                                appServerList.toString(),
-                                webServerList.toString(),
+                                platform.getGuid(),
+                                platform.getName(),
+                                platform.getRegion().name(),
+                                platform.getPartition().name(),
                                 platform.getStatus().name(),
+                                serverList.toString(),
                                 platform.getDescription()));
 
                 if (DEBUG)
@@ -468,8 +423,8 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     for (String[] data : platformData)
                     {
                         Platform platform = new Platform();
-                        platform.setPlatformGuid(data[0]);
-                        platform.setPlatformName(data[1]);
+                        platform.setGuid(data[0]);
+                        platform.setName(data[1]);
 
                         if (DEBUG)
                         {
@@ -584,7 +539,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String[]> platformData = platformDao.listPlatformsByAttribute(reqPlatform.getPlatformName(), request.getStartPage());
+                List<String[]> platformData = platformDao.listPlatformsByAttribute(reqPlatform.getName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -598,8 +553,8 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     for (String[] data : platformData)
                     {
                         Platform platform = new Platform();
-                        platform.setPlatformGuid(data[0]);
-                        platform.setPlatformName(data[1]);
+                        platform.setGuid(data[0]);
+                        platform.setName(data[1]);
 
                         if (DEBUG)
                         {
@@ -689,16 +644,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             DEBUGGER.debug("PlatformManagementRequest: {}", request);
         }
 
-        UserAccount svcAccount = null;
-        UserAccount searchAccount = null;
-        AccountControlRequest searchRequest = null;
-        AccountControlResponse searchResponse = null;
         PlatformManagementResponse response = new PlatformManagementResponse();
 
         final Platform platform = request.getPlatform();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
-        final IAccountControlProcessor acctControl = new AccountControlProcessorImpl();
 
         if (DEBUG)
         {
@@ -718,12 +668,11 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<Server> appServerList = null;
-                List<Server> webServerList = null;
+                List<Server> serverList = null;
 
                 if (platform != null)
                 {
-                    List<Object> platformData = platformDao.getPlatformData(platform.getPlatformGuid());
+                    List<Object> platformData = platformDao.getPlatformData(platform.getGuid());
 
                     if (DEBUG)
                     {
@@ -732,120 +681,20 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                     if ((platformData != null) && (platformData.size() != 0))
                     {
-                        DataCenter dataCenter = new DataCenter();
-                        dataCenter.setDatacenterGuid((String) platformData.get(31));
-                        dataCenter.setDatacenterName((String) platformData.get(32));
-                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf((String) platformData.get(33)));
-                        dataCenter.setDatacenterDesc((String) platformData.get(34));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DataCenter: {}", dataCenter);
-                        }
-
-                        Server dmgr = new Server();
-                        dmgr.setServerGuid((String) platformData.get(6)); // T2.SYSTEM_GUID
-                        dmgr.setOsName((String) platformData.get(7)); // T2.SYSTEM_OSTYPE
-                        dmgr.setServerStatus(ServerStatus.valueOf((String) platformData.get(8))); // T2.SYSTEM_STATUS
-                        dmgr.setServerRegion(ServiceRegion.valueOf((String) platformData.get(2))); // T1.PLATFORM_REGION
-                        dmgr.setNetworkPartition(NetworkPartition.valueOf((String) platformData.get(9))); // T2.NETWORK_PARTITION
-                        dmgr.setDatacenter(dataCenter); // datacenter as earlier obtained
-                        dmgr.setServerType(ServerType.DMGRSERVER);
-                        dmgr.setDomainName((String) platformData.get(10)); // T2.DOMAIN_NAME
-                        dmgr.setCpuType((String) platformData.get(11)); // T2.CPU_TYPE
-                        dmgr.setCpuCount((Integer) platformData.get(12)); // T2.CPU_COUNT
-                        dmgr.setServerRack((String) platformData.get(13)); // T2.SERVER_RACK
-                        dmgr.setRackPosition((String) platformData.get(14)); // T2.RACK_POSITION
-                        dmgr.setServerModel((String) platformData.get(15)); // T2.SERVER_MODEL
-                        dmgr.setSerialNumber((String) platformData.get(16)); // T2.SERIAL_NUMBER
-                        dmgr.setInstalledMemory((Integer) platformData.get(17)); // T2.INSTALLED_MEMORY
-                        dmgr.setOperIpAddress((String) platformData.get(18)); // T2.OPER_IP
-                        dmgr.setOperHostName((String) platformData.get(19)); // T2.OPER_HOSTNAME
-                        dmgr.setMgmtIpAddress((String) platformData.get(20)); // T2.MGMT_IP
-                        dmgr.setMgmtHostName((String) platformData.get(21)); // T2.MGMT_HOSTNAME
-                        dmgr.setBkIpAddress((String) platformData.get(22)); // T2.BKUP_IP
-                        dmgr.setBkHostName((String) platformData.get(23)); // T2.BKUP_HOSTNAME
-                        dmgr.setNasIpAddress((String) platformData.get(24)); // T2.NAS_IP
-                        dmgr.setNasHostName((String) platformData.get(25)); // T2.NAS_HOSTNAME
-                        dmgr.setNatAddress((String) platformData.get(26)); // T2.NAT_ADDR
-                        dmgr.setServerComments((String) platformData.get(27)); // T2.COMMENTS
-                        dmgr.setDmgrPort((Integer) platformData.get(29)); // T2.DMGR_PORT
-                        dmgr.setMgrUrl((String) platformData.get(30)); // T2.MGR_ENTRY
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", dmgr);
-                        }
-
-                        searchAccount = new UserAccount();
-                        searchAccount.setGuid((String) platformData.get(28));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", searchAccount);
-                        }
-
-                        svcAccount = new UserAccount();
-                        svcAccount.setUsername(serviceAccount.get(0));
-                        svcAccount.setGuid(serviceAccount.get(1));
-                        svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserAccount: {}", svcAccount);
-                        }
-
-                        searchRequest = new AccountControlRequest();
-                        searchRequest.setHostInfo(request.getRequestInfo());
-                        searchRequest.setUserAccount(searchAccount);
-                        searchRequest.setApplicationName(request.getApplicationName());
-                        searchRequest.setApplicationId(request.getApplicationId());
-                        searchRequest.setSearchType(SearchRequestType.GUID);
-                        searchRequest.setRequestor(svcAccount);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                        }
-
-                        try
-                        {
-                            searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                            }
-
-                            if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                            {
-                                dmgr.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                            }
-                        }
-                        catch (AccountControlException acx)
-                        {
-                            ERROR_RECORDER.error(acx.getMessage(), acx);
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Server: {}", dmgr);
-                        }
-
                         // appservers
-                        String appTmp = StringUtils.remove((String) platformData.get(3), "["); // T1.PLATFORM_APPSERVERS
-                        String platformApps = StringUtils.remove(appTmp, "]");
+                        String appTmp = StringUtils.remove((String) platformData.get(5), "["); // PLATFORM_SERVERS
+                        String platformServers = StringUtils.remove(appTmp, "]");
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("String: {}", platformApps);
+                            DEBUGGER.debug("String: {}", platformServers);
                         }
 
-                        if (platformApps.split(",").length >= 1)
+                        if (platformServers.split(",").length >= 1)
                         {
-                            appServerList = new ArrayList<>();
+                            serverList = new ArrayList<>();
 
-                            for (String serverGuid : platformApps.split(","))
+                            for (String serverGuid : platformServers.split(","))
                             {
                                 List<Object> serverData = serverDao.getInstalledServer(StringUtils.trim(serverGuid));
 
@@ -858,226 +707,32 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 {
                                     Server server = new Server();
                                     server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                    server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
                                     server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                    server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                    server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                    server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                    server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                    server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                    server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                    server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                    server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                    server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                    server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                    server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
                                     server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                    server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                    server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                    server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                    server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                    server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                    server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                    server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                    server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid((String) serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
 
                                     if (DEBUG)
                                     {
                                         DEBUGGER.debug("Server: {}", server);
                                     }
 
-                                    appServerList.add(server);
+                                    serverList.add(server);
                                 }
                             }
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("appServerList: {}", appServerList);
-                            }
-                        }
-
-                        // appservers
-                        String webTmp = StringUtils.remove((String) platformData.get(4), "["); // T1.PLATFORM_WEBSERVERS
-                        String platformWebs = StringUtils.remove(webTmp, "]");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("String: {}", platformWebs);
-                        }
-
-                        if (platformWebs.split(",").length >= 1)
-                        {
-                            webServerList = new ArrayList<>();
-
-                            for (String serverGuid : platformWebs.split(","))
-                            {
-                                List<Object> serverData = serverDao.getInstalledServer(StringUtils.trim(serverGuid));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("serverData: {}", serverData);
-                                }
-
-                                if ((serverData != null) && (serverData.size() != 0))
-                                {
-                                    Server server = new Server();
-                                    server.setServerGuid((String) serverData.get(0)); // SYSTEM_GUID
-                                    server.setOsName((String) serverData.get(1)); // SYSTEM_OSTYPE
-                                    server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
-                                    server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
-                                    server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                                    server.setDatacenter(dataCenter); // datacenter as earlier obtained
-                                    server.setServerType(ServerType.valueOf((String) serverData.get(6))); // SYSTEM_TYPE
-                                    server.setDomainName((String) serverData.get(7)); // DOMAIN_NAME
-                                    server.setCpuType((String) serverData.get(8)); // CPU_TYPE
-                                    server.setCpuCount((Integer) serverData.get(9)); // CPU_COUNT
-                                    server.setServerRack((String) serverData.get(10)); // SERVER_RACK
-                                    server.setRackPosition((String) serverData.get(11)); // RACK_POSITION
-                                    server.setServerModel((String) serverData.get(12)); // SERVER_MODEL
-                                    server.setSerialNumber((String) serverData.get(13)); // SERIAL_NUMBER
-                                    server.setInstalledMemory((Integer) serverData.get(14)); // INSTALLED_MEMORY
-                                    server.setOperIpAddress((String) serverData.get(15)); // OPER_IP
-                                    server.setOperHostName((String) serverData.get(16)); // OPER_HOSTNAME
-                                    server.setMgmtIpAddress((String) serverData.get(17)); // MGMT_IP
-                                    server.setMgmtHostName((String) serverData.get(18)); // MGMT_HOSTNAME
-                                    server.setBkIpAddress((String) serverData.get(19)); // BKUP_IP
-                                    server.setBkHostName((String) serverData.get(20)); // BKUP_HOSTNAME
-                                    server.setNasIpAddress((String) serverData.get(21)); // NAS_IP
-                                    server.setNasHostName((String) serverData.get(22)); // NAS_HOSTNAME
-                                    server.setNatAddress((String) serverData.get(23)); // NAT_ADDR
-                                    server.setServerComments((String) serverData.get(24)); // COMMENTS
-                                    server.setDmgrPort((Integer) serverData.get(28)); // DMGR_PORT
-                                    server.setOwningDmgr(platform.getPlatformDmgr()); // OWNING_DMGR
-                                    server.setMgrUrl((String) serverData.get(30)); // MGR_ENTRY
-
-                                    searchAccount = new UserAccount();
-                                    searchAccount.setGuid((String) serverData.get(25));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", searchAccount);
-                                    }
-
-                                    svcAccount = new UserAccount();
-                                    svcAccount.setUsername(serviceAccount.get(0));
-                                    svcAccount.setGuid(serviceAccount.get(1));
-                                    svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("UserAccount: {}", svcAccount);
-                                    }
-
-                                    searchRequest = new AccountControlRequest();
-                                    searchRequest.setHostInfo(request.getRequestInfo());
-                                    searchRequest.setUserAccount(searchAccount);
-                                    searchRequest.setApplicationName(request.getApplicationName());
-                                    searchRequest.setApplicationId(request.getApplicationId());
-                                    searchRequest.setSearchType(SearchRequestType.GUID);
-                                    searchRequest.setRequestor(svcAccount);
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("AccountControlRequest: {}", searchRequest);
-                                    }
-
-                                    try
-                                    {
-                                        searchResponse = acctControl.loadUserAccount(searchRequest);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("AccountControlResponse: {}", searchResponse);
-                                        }
-
-                                        if (searchResponse.getRequestStatus() == SecurityRequestStatus.SUCCESS)
-                                        {
-                                            server.setAssignedEngineer(searchResponse.getUserAccount()); // ASSIGNED_ENGINEER
-                                        }
-                                    }
-                                    catch (AccountControlException acx)
-                                    {
-                                        ERROR_RECORDER.error(acx.getMessage(), acx);
-                                    }
-
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("Server: {}", server);
-                                    }
-
-                                    webServerList.add(server);
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("webServerList: {}", webServerList);
+                                DEBUGGER.debug("serverList: {}", serverList);
                             }
                         }
 
                         Platform resPlatform = new Platform();
-                        resPlatform.setPlatformGuid((String) platformData.get(0));
-                        resPlatform.setPlatformName((String) platformData.get(1));
-                        resPlatform.setPlatformRegion(ServiceRegion.valueOf((String) platformData.get(2)));
+                        resPlatform.setGuid((String) platformData.get(0));
+                        resPlatform.setName((String) platformData.get(1));
+                        resPlatform.setRegion(ServiceRegion.valueOf((String) platformData.get(2)));
+                        resPlatform.setPartition(NetworkPartition.valueOf((String) platformData.get(3)));
+                        resPlatform.setStatus(ServiceStatus.valueOf((String) platformData.get(4)));
+                        resPlatform.setServers(serverList);
                         resPlatform.setDescription((String) platformData.get(6));
-                        resPlatform.setAppServers(appServerList);
-                        resPlatform.setWebServers(webServerList);
-                        resPlatform.setPlatformDmgr(dmgr);
 
                         if (DEBUG)
                         {

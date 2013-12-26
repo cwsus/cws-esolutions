@@ -34,9 +34,9 @@ import org.apache.commons.lang.StringUtils;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
@@ -275,7 +275,7 @@ public class AccessControlServiceImpl implements IAccessControlService
     }
 
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#IAccessControlService(com.cws.esolutions.security.dto.UserAccount)
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#accessControlService(com.cws.esolutions.security.dto.UserAccount)
      */
     @Override
     public boolean accessControlService(final UserAccount userAccount)
@@ -300,7 +300,7 @@ public class AccessControlServiceImpl implements IAccessControlService
     }
 
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#IAccessControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.services.enums.AdminControlType)
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#accessControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.services.enums.AdminControlType)
      */
     @Override
     public boolean accessControlService(final UserAccount userAccount, final AdminControlType controlType)

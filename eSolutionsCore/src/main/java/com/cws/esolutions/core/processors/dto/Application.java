@@ -43,16 +43,16 @@ import com.cws.esolutions.core.Constants;
  */
 public class Application implements Serializable
 {
+    private String name = null;
+    private String guid = null;
+    private double version = 1.0;
     private Date onlineDate = null;
     private Date offlineDate = null;
     private String installPath = null;
     private String logsDirectory = null;
-    private String applicationGuid = null;
-    private String applicationName = null;
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
-    private double applicationVersion = 1.0;
     private List<Platform> platforms = null;
 
     private static final String CNAME = Application.class.getName();
@@ -62,9 +62,9 @@ public class Application implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setApplicationGuid(final String value)
+    public final void setGuid(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationGuid(final String value)";
+        final String methodName = Application.CNAME + "#setGuid(final String value)";
 
         if (DEBUG)
         {
@@ -72,12 +72,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationGuid = value;
+        this.guid = value;
     }
 
-    public final void setApplicationName(final String value)
+    public final void setName(final String value)
     {
-        final String methodName = Application.CNAME + "#setApplicationName(final String value)";
+        final String methodName = Application.CNAME + "#setName(final String value)";
 
         if (DEBUG)
         {
@@ -85,12 +85,12 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationName = value;
+        this.name = value;
     }
 
-    public final void setApplicationVersion(final double value)
+    public final void setVersion(final double value)
     {
-        final String methodName = Application.CNAME + "#setApplicationVersion(final double value)";
+        final String methodName = Application.CNAME + "#setVersion(final double value)";
 
         if (DEBUG)
         {
@@ -98,7 +98,7 @@ public class Application implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applicationVersion = value;
+        this.version = value;
     }
 
     public final void setInstallPath(final String value)
@@ -205,43 +205,43 @@ public class Application implements Serializable
         this.offlineDate = value;
     }
 
-    public final String getApplicationGuid()
+    public final String getGuid()
     {
-        final String methodName = Application.CNAME + "#getApplicationGuid()";
+        final String methodName = Application.CNAME + "#getGuid()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationGuid);
+            DEBUGGER.debug("Value: {}", this.guid);
         }
 
-        return this.applicationGuid;
+        return this.guid;
     }
 
-    public final String getApplicationName()
+    public final String getName()
     {
-        final String methodName = Application.CNAME + "#getApplicationName()";
+        final String methodName = Application.CNAME + "#getName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationName);
+            DEBUGGER.debug("Value: {}", this.name);
         }
 
-        return this.applicationName;
+        return this.name;
     }
 
-    public final double getApplicationVersion()
+    public final double getVersion()
     {
-        final String methodName = Application.CNAME + "#getApplicationVersion()";
+        final String methodName = Application.CNAME + "#getVersion()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applicationVersion);
+            DEBUGGER.debug("Value: {}", this.version);
         }
 
-        return this.applicationVersion;
+        return this.version;
     }
 
     public final String getInstallPath()
@@ -324,7 +324,7 @@ public class Application implements Serializable
 
     public final Date getOnlineDate(final Date value)
     {
-        final String methodName = Application.CNAME + "#getOnlineDate(final Date value)";
+        final String methodName = Application.CNAME + "#getOnlineDate()";
 
         if (DEBUG)
         {
@@ -337,7 +337,7 @@ public class Application implements Serializable
 
     public final Date getOfflineDate(final Date value)
     {
-        final String methodName = Application.CNAME + "#getOfflineDate(final Date value)";
+        final String methodName = Application.CNAME + "#getOfflineDate()";
 
         if (DEBUG)
         {

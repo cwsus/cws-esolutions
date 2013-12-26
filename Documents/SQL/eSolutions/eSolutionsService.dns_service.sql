@@ -6,28 +6,28 @@ CREATE TABLE `esolutionssvc`.`dns_service` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `ZONE_FILE` VARCHAR(128) CHARACTER SET UTF8 NOT NULL, -- required for all entries, this will act as a correlator for apex/sub
     `APEX_RECORD` BOOLEAN NOT NULL DEFAULT FALSE,
-    `RR_ORIGIN` VARCHAR(126) CHARACTER SET UTF8 NOT NULL DEFAULT ".", -- required for all entries
-    `RR_TIMETOLIVE` INTEGER, -- required for apex records and srv records (we're going to re-use it)
-    `RR_HOSTNAME` VARCHAR(126) CHARACTER SET UTF8 NOT NULL, -- required for apex records - 63 per label, including TLD this is 126
-    `RR_OWNER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
-    `RR_HOSTMASTER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
-    `RR_SERIAL` INTEGER(11), -- required for apex records
-    `RR_REFRESH` INTEGER, -- required for apex records
-    `RR_RETRY` INTEGER, -- required for apex records
-    `RR_EXPIRY` INTEGER, -- required for apex records
-    `RR_CACHETIME` INTEGER, -- required for apex records
-    `RR_CLASS` VARCHAR(8) CHARACTER SET UTF8 NOT NULL DEFAULT "IN", -- required for all records
-    `RR_TYPE` VARCHAR(11) CHARACTER SET UTF8, -- required for all records
-    `RR_PORT` INTEGER(6), -- required for srv records
-    `RR_WEIGHT` INTEGER(3), -- required for srv and mx records
-    `RR_SERVICE` VARCHAR(10) CHARACTER SET UTF8, -- required for srv records
-    `RR_PROTOCOL` VARCHAR(6) CHARACTER SET UTF8, -- required for srv records
-    `RR_PRIORITY` INTEGER(3) DEFAULT 10, -- required for srv records
-    `RR_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- required for all records
+    `ORIGIN` VARCHAR(126) CHARACTER SET UTF8 NOT NULL DEFAULT ".", -- required for all entries
+    `TIMETOLIVE` INTEGER, -- required for apex records and srv records (we're going to re-use it)
+    `HOSTNAME` VARCHAR(126) CHARACTER SET UTF8 NOT NULL, -- required for apex records - 63 per label, including TLD this is 126
+    `OWNER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
+    `HOSTMASTER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
+    `SERIAL` INTEGER(11), -- required for apex records
+    `REFRESH` INTEGER, -- required for apex records
+    `RETRY` INTEGER, -- required for apex records
+    `EXPIRES` INTEGER, -- required for apex records
+    `CACHETIME` INTEGER, -- required for apex records
+    `CLASS_NAME` VARCHAR(8) CHARACTER SET UTF8 NOT NULL DEFAULT "IN", -- required for all records
+    `CLASS_TYPE` VARCHAR(11) CHARACTER SET UTF8, -- required for all records
+    `PORT` INTEGER(6), -- required for srv records
+    `WEIGHT` INTEGER(3), -- required for srv and mx records
+    `SERVICE` VARCHAR(10) CHARACTER SET UTF8, -- required for srv records
+    `PROTOCOL` VARCHAR(6) CHARACTER SET UTF8, -- required for srv records
+    `PRIORITY` INTEGER(3) DEFAULT 10, -- required for srv records
+    `PRIMARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- required for all records
     `SECONDARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- secondary target list, used for failover
     `TERTIARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- tertiary target list, used for failover
     PRIMARY KEY (`ID`),
-    FULLTEXT KEY `IDX_SEARCH` (`ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
+    FULLTEXT KEY `IDX_SEARCH` (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
 ALTER TABLE `esolutionssvc`.`dns_service` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
@@ -47,32 +47,32 @@ BEGIN
     SELECT
         ZONE_FILE,
         APEX_RECORD,
-        RR_ORIGIN,
-        RR_TIMETOLIVE,
-        RR_HOSTNAME,
-        RR_OWNER,
-        RR_HOSTMASTER,
-        RR_SERIAL,
-        RR_REFRESH,
-        RR_RETRY,
-        RR_EXPIRY,
-        RR_CACHETIME,
-        RR_CLASS,
-        RR_TYPE,
-        RR_PORT,
-        RR_WEIGHT,
-        RR_SERVICE,
-        RR_PROTOCOL,
-        RR_PRIORITY,
-        RR_TARGET,
+        ORIGIN,
+        TIMETOLIVE,
+        HOSTNAME,
+        OWNER,
+        HOSTMASTER,
+        SERIAL,
+        REFRESH,
+        RETRY,
+        EXPIRES,
+        CACHETIME,
+        CLASS_NAME,
+        CLASS_TYPE,
+        PORT,
+        WEIGHT,
+        SERVICE,
+        PROTOCOL,
+        PRIORITY,
+        PRIMARY_TARGET,
         SECONDARY_TARGET,
         TERTIARY_TARGET,
-    MATCH (`ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
+    MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`dns_service`
-    WHERE MATCH (`ZONE_FILE`, `RR_ORIGIN`, `RR_HOSTNAME`, `RR_OWNER`, `RR_TYPE`, `RR_SERVICE`, `RR_TARGET`)
+    WHERE MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName IN BOOLEAN MODE)
-    ORDER BY APEX_RECORD DESC, RR_ORIGIN ASC;
+    ORDER BY APEX_RECORD DESC, ORIGIN ASC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$ 
@@ -98,9 +98,9 @@ CREATE PROCEDURE `esolutionssvc`.`insertApex`(
 BEGIN
     INSERT INTO `esolutionssvc`.`dns_service`
     (
-        ZONE_FILE, APEX_RECORD, RR_ORIGIN, 
-        RR_TIMETOLIVE, RR_HOSTNAME, RR_OWNER, RR_HOSTMASTER, 
-        RR_SERIAL, RR_REFRESH, RR_RETRY, RR_EXPIRY, RR_CACHETIME
+        ZONE_FILE, APEX_RECORD, ORIGIN, 
+        TIMETOLIVE, HOSTNAME, OWNER, HOSTMASTER, 
+        SERIAL, REFRESH, RETRY, EXPIRES, CACHETIME
     )
     VALUES
     (
@@ -137,9 +137,9 @@ CREATE PROCEDURE `esolutionssvc`.`insertRecord`(
 BEGIN
     INSERT INTO `esolutionssvc`.`dns_service`
     (
-        ZONE_FILE, APEX_RECORD, RR_ORIGIN,
-        RR_HOSTNAME, RR_CLASS, RR_TYPE, RR_PORT, RR_WEIGHT,
-        RR_SERVICE, RR_PROTOCOL, RR_PRIORITY, RR_TARGET,
+        ZONE_FILE, APEX_RECORD, ORIGIN,
+        HOSTNAME, CLASS_NAME, CLASS_TYPE, PORT, WEIGHT,
+        SERVICE, PROTOCOL, PRIORITY, PRIMARY_TARGET,
         SECONDARY_TARGET, TERTIARY_TARGET
     )
     VALUES

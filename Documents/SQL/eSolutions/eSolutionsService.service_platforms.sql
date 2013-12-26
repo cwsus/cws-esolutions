@@ -3,22 +3,15 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`service_platforms`;
 CREATE TABLE `esolutionssvc`.`service_platforms` (
-    `PLATFORM_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
-    `PLATFORM_NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
-    `PLATFORM_REGION` VARCHAR(15) CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_DMGR` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_APPSERVERS` TEXT CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_WEBSERVERS` TEXT CHARACTER SET UTF8 NOT NULL,
-    `PLATFORM_STATUS` VARCHAR(50) CHARACTER SET UTF8 NOT NULL DEFAULT 'INACTIVE',
-    `PLATFORM_DESC` TEXT,
-    PRIMARY KEY (`PLATFORM_GUID`),
-    CONSTRAINT `UQ_PLATFORMS` UNIQUE (`PLATFORM_DMGR`),
-    FULLTEXT KEY `IDX_PLATFORMS` (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`),
-    CONSTRAINT `FK_DMGR_GUID`
-        FOREIGN KEY (`PLATFORM_DMGR`)
-        REFERENCES `esolutionssvc`.`installed_systems` (`SYSTEM_GUID`)
-            ON DELETE RESTRICT
-            ON UPDATE NO ACTION
+    `GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
+    `NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
+    `REGION` VARCHAR(15) CHARACTER SET UTF8 NOT NULL,
+    `NWPARTITION` VARCHAR(15) CHARACTER SET UTF8 NOT NULL,
+    `STATUS` VARCHAR(50) CHARACTER SET UTF8 NOT NULL DEFAULT 'INACTIVE',
+    `SERVERS` TEXT CHARACTER SET UTF8 NOT NULL,
+    `DESCRIPTION` TEXT,
+    PRIMARY KEY (`GUID`),
+    FULLTEXT KEY `IDX_PLATFORMS` (`NAME`, `REGION`, `NWPARTITION`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -38,14 +31,14 @@ CREATE PROCEDURE `esolutionssvc`.`getPlatformByAttribute`(
 )
 BEGIN
     SELECT
-        PLATFORM_GUID,
-        PLATFORM_NAME,
-    MATCH (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`)
+        GUID,
+        NAME,
+    MATCH (`NAME`, `REGION`, `NWPARTITION`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_platforms`
-    WHERE MATCH (`PLATFORM_NAME`, `PLATFORM_REGION`, `PLATFORM_DMGR`)
+    WHERE MATCH (`NAME`, `REGION`, `NWPARTITION`)
     AGAINST (+attributeName IN BOOLEAN MODE)
-    AND PLATFORM_STATUS = 'ACTIVE'
+    AND STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -57,20 +50,17 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewPlatform`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`addNewPlatform`(
-    IN platformGuid VARCHAR(128),
-    IN platformName VARCHAR(45),
-    IN platformRegion VARCHAR(45),
-    IN platformDmgr VARCHAR(128),
-    IN platformAppservers TEXT,
-    IN platformWebservers TEXT,
+    IN guid VARCHAR(128),
+    IN name VARCHAR(128),
+    IN region VARCHAR(15),
+    IN nwpartition VARCHAR(15),
     IN status VARCHAR(50),
-    IN platformDesc TEXT
+    IN servers TEXT,
+    IN description TEXT
 )
 BEGIN
-    INSERT INTO `esolutionssvc`.`service_platforms`
-    (PLATFORM_GUID, PLATFORM_NAME, PLATFORM_REGION, PLATFORM_DMGR, PLATFORM_APPSERVERS, PLATFORM_WEBSERVERS, PLATFORM_STATUS, PLATFORM_DESC)
-    VALUES
-    (platformGuid, platformName, platformRegion, platformDmgr, platformAppservers, platformWebservers, status, platformDesc);
+    INSERT INTO `esolutionssvc`.`service_platforms` (GUID, NAME, REGION, NWPARTITION, STATUS, SERVERS, DESCRIPTION)
+    VALUES (guid, name, region, nwpartition, status, servers, description);
 
     COMMIT;
 END $$
@@ -83,21 +73,23 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`updatePlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`updatePlatformData`(
-    IN platformGuid VARCHAR(128),
-    IN platformName VARCHAR(45),
-    IN platformRegion VARCHAR(45),
-    IN platformDmgr VARCHAR(45),
-    IN platformAppservers VARCHAR(45),
-    IN platformWebservers VARCHAR(50)
+    IN guid VARCHAR(128),
+    IN name VARCHAR(128),
+    IN region VARCHAR(15),
+    IN nwpartition VARCHAR(15),
+    IN status VARCHAR(50),
+    IN servers TEXT,
+    IN description TEXT
 )
 BEGIN
     UPDATE `esolutionssvc`.`service_platforms`
     SET
-        PLATFORM_NAME = platformName,
-        PLATFORM_REGION = platformRegion,
-        PLATFORM_DMGR = platformDmgr,
-        PLATFORM_APPSERVERS = platformAppservers,
-        PLATFORM_WEBSERVERS = platformWebservers
+        NAME = name,
+        REGION = region,
+        NWPARTITION = nwpartition,
+        STATUS = status,
+        SERVERS = servers,
+        DESCRIPTION = description
     WHERE PROJECT_GUID = platformGuid;
 
     COMMIT;
@@ -115,8 +107,8 @@ CREATE PROCEDURE `esolutionssvc`.`removePlatformData`(
 )
 BEGIN
     UPDATE `esolutionssvc`.`service_platforms`
-    SET PLATFORM_STATUS = 'INACTIVE'
-    WHERE PLATFORM_GUID = platformGuid;
+    SET STATUS = 'INACTIVE'
+    WHERE GUID = platformGuid;
 
     COMMIT;
 END $$
@@ -129,52 +121,20 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS `esolutionssvc`.`getPlatformData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `esolutionssvc`.`getPlatformData`(
-    IN platformGuid VARCHAR(128)
+    IN guid VARCHAR(128)
 )
 BEGIN
     SELECT
-        T1.PLATFORM_GUID,
-        T1.PLATFORM_NAME,
-        T1.PLATFORM_REGION,
-        T1.PLATFORM_APPSERVERS,
-        T1.PLATFORM_WEBSERVERS,
-        T1.PLATFORM_DESC,
-        T2.SYSTEM_GUID,
-        T2.SYSTEM_OSTYPE,
-        T2.SYSTEM_STATUS,
-        T2.NETWORK_PARTITION,
-        T2.DOMAIN_NAME,
-        T2.CPU_TYPE,
-        T2.CPU_COUNT,
-        T2.SERVER_RACK,
-        T2.RACK_POSITION,
-        T2.SERVER_MODEL,
-        T2.SERIAL_NUMBER,
-        T2.INSTALLED_MEMORY,
-        T2.OPER_IP,
-        T2.OPER_HOSTNAME,
-        T2.MGMT_IP,
-        T2.MGMT_HOSTNAME,
-        T2.BKUP_IP,
-        T2.BKUP_HOSTNAME,
-        T2.NAS_IP,
-        T2.NAS_HOSTNAME,
-        T2.NAT_ADDR,
-        T2.COMMENTS,
-        T2.ASSIGNED_ENGINEER,
-        T2.DMGR_PORT,
-        T2.MGR_ENTRY,
-        T3.DATACENTER_GUID,
-        T3.DATACENTER_NAME,
-        T3.DATACENTER_STATUS,
-        T3.DATACENTER_DESC
-    FROM `esolutionssvc`.`service_platforms` T1
-    INNER JOIN `esolutionssvc`.`installed_systems` T2
-    ON T1.PLATFORM_DMGR = T2.SYSTEM_GUID
-    INNER JOIN `esolutionssvc`.`service_datacenters` T3
-    ON T2.DATACENTER_GUID = T3.DATACENTER_GUID
-    WHERE PLATFORM_GUID = platformGuid
-    AND PLATFORM_STATUS = 'ACTIVE';
+        GUID,
+        NAME,
+        REGION,
+        NWPARTITION,
+        STATUS,
+        SERVERS,
+        DESCRIPTION
+    FROM `esolutionssvc`.`service_platforms`
+    WHERE GUID = guid
+    AND STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -189,7 +149,7 @@ CREATE PROCEDURE `esolutionssvc`.`getPlatformCount`(
 BEGIN
     SELECT COUNT(*)
     FROM `esolutionssvc`.`service_platforms`
-    WHERE PLATFORM_STATUS = 'ACTIVE';
+    WHERE STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -204,10 +164,10 @@ CREATE PROCEDURE `esolutionssvc`.`listPlatforms`(
 )
 BEGIN
     SELECT
-        PLATFORM_GUID,
-        PLATFORM_NAME
+        GUID,
+        NAME
     FROM `esolutionssvc`.`service_platforms`
-    WHERE PLATFORM_STATUS = 'ACTIVE'
+    WHERE STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

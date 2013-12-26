@@ -25,7 +25,6 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -37,10 +36,10 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
@@ -110,14 +109,13 @@ public class DatacenterManagementProcessorImplTest
     public void testAddNewDatacenter()
     {
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid(UUID.randomUUID().toString());
-        dataCenter.setDatacenterName(RandomStringUtils.randomAlphabetic(8));
-        dataCenter.setDatacenterStatus(ServiceStatus.ACTIVE);
-        dataCenter.setDatacenterDesc("Test DataCenter");
+        dataCenter.setName(RandomStringUtils.randomAlphabetic(8));
+        dataCenter.setStatus(ServiceStatus.ACTIVE);
+        dataCenter.setDescription("Test DataCenter");
 
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setDataCenter(dataCenter);
-        // request.setRequestInfo(hostInfo);
+        request.setRequestInfo(hostInfo);
         request.setServiceId(DatacenterManagementProcessorImplTest.serviceId);
         request.setUserAccount(userAccount);
 
@@ -157,7 +155,7 @@ public class DatacenterManagementProcessorImplTest
     public void testGetDatacenter()
     {
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setDatacenterGuid("4af213f1-a03c-4665-a28f-62922f82e5e5");
+        dataCenter.setGuid("4af213f1-a03c-4665-a28f-62922f82e5e5");
 
         DatacenterManagementRequest request = new DatacenterManagementRequest();
         request.setDataCenter(dataCenter);

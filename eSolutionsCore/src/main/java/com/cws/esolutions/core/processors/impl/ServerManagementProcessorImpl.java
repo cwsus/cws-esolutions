@@ -28,24 +28,23 @@ import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.core.processors.enums.ServiceStatus;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
@@ -147,7 +146,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                     requestServer.getServerStatus().name(),
                                     requestServer.getServerRegion().name(),
                                     requestServer.getNetworkPartition().name(),
-                                    requestServer.getDatacenter().getDatacenterGuid(),
+                                    requestServer.getDatacenter().getGuid(),
                                     requestServer.getServerType().name(),
                                     requestServer.getDomainName(),
                                     requestServer.getCpuType(),
@@ -311,7 +310,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 requestServer.getServerStatus().name(),
                                 requestServer.getServerRegion().name(),
                                 requestServer.getNetworkPartition().name(),
-                                requestServer.getDatacenter().getDatacenterGuid(),
+                                requestServer.getDatacenter().getGuid(),
                                 requestServer.getServerType().name(),
                                 requestServer.getDomainName(),
                                 requestServer.getCpuType(),
@@ -480,10 +479,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         if ((datacenter != null) && (datacenter.size() != 0))
                         {
                             DataCenter dataCenter = new DataCenter();
-                            dataCenter.setDatacenterGuid(datacenter.get(0));
-                            dataCenter.setDatacenterName(datacenter.get(1));
-                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                            dataCenter.setDatacenterDesc(datacenter.get(3));
+                            dataCenter.setGuid(datacenter.get(0));
+                            dataCenter.setName(datacenter.get(1));
 
                             if (DEBUG)
                             {
@@ -828,10 +825,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                             if ((datacenter != null) && (datacenter.size() != 0))
                             {
                                 DataCenter dataCenter = new DataCenter();
-                                dataCenter.setDatacenterGuid(datacenter.get(0));
-                                dataCenter.setDatacenterName(datacenter.get(1));
-                                dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                                dataCenter.setDatacenterDesc(datacenter.get(3));
+                                dataCenter.setGuid(datacenter.get(0));
+                                dataCenter.setName(datacenter.get(1));
 
                                 if (DEBUG)
                                 {
@@ -1160,10 +1155,8 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         if ((datacenter != null) && (datacenter.size() != 0))
                         {
                             DataCenter dataCenter = new DataCenter();
-                            dataCenter.setDatacenterGuid(datacenter.get(0));
-                            dataCenter.setDatacenterName(datacenter.get(1));
-                            dataCenter.setDatacenterStatus(ServiceStatus.valueOf(datacenter.get(2)));
-                            dataCenter.setDatacenterDesc(datacenter.get(3));
+                            dataCenter.setGuid(datacenter.get(0));
+                            dataCenter.setName(datacenter.get(1));
 
                             if (DEBUG)
                             {

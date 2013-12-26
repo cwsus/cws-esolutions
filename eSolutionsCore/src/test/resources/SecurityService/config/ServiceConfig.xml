@@ -26,7 +26,7 @@
     </security-config>
 
     <auth-data>
-        <objectClass>cwsusperson</objectClass>
+        <objectClass>cwsperson</objectClass>
         <userId>uid</userId>
         <userPassword>userPassword</userPassword>
         <userRole>cwsrole</userRole>
@@ -67,7 +67,7 @@
         <repositorySalt>repositorySalt</repositorySalt>
         <minConnections>minConnections</minConnections>
         <maxConnections>maxConnections</maxConnections>
-        <baseObjectClass>cwsusperson</baseObjectClass>
+        <baseObjectClass>inetorgperson</baseObjectClass>
         <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
         <repositoryAppBase>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</repositoryAppBase>

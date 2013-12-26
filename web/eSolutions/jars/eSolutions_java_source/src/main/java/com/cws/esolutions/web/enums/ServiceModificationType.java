@@ -24,6 +24,5 @@ package com.cws.esolutions.web.enums;
 public enum ServiceModificationType
 {
     DATACENTER,
-    PLATFORM,
-    PROJECT;
+    PLATFORM;
 }

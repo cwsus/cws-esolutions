@@ -35,13 +35,13 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
 import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

@@ -1,56 +1,57 @@
 --
--- Definition of table `cwssec`.`usr_audit`
+-- Definition of table `CWSSEC`.`AUDIT`
 --
-DROP TABLE IF EXISTS `cwssec`.`usr_audit`;
-CREATE TABLE `cwssec`.`usr_audit` (
-    `usr_audit_sessionid` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_userid` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_userguid` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_role` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_applid` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_applname` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    `usr_audit_action` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_srcaddr` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `usr_audit_srchost` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+DROP TABLE IF EXISTS `CWSSEC`.`AUDIT`;
+CREATE TABLE `CWSSEC`.`AUDIT` (
+    `SESSION_ID` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    `USERNAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `CN` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `ROLE` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `APPLICATION_ID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `APPLICATION_NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `REQUEST_TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    `ACTION` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `SOURCE_ADDRESS` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `SOURCE_HOSTNAME` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    INDEX `IDX_AUDIT` (`CN` ASC),
     CONSTRAINT `FK_LGN_GUID`
-        FOREIGN KEY (`usr_audit_userguid`)
-        REFERENCES `cwssec`.`usr_lgn` (`CN`)
+        FOREIGN KEY (`CN`)
+        REFERENCES `CWSSEC`.`USERS` (`CN`)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
-    FULLTEXT KEY `audit_search` (`usr_audit_userid`, `usr_audit_userguid`, `usr_audit_role`, `usr_audit_srcaddr`, `usr_audit_srchost`, `usr_audit_action`)
+    FULLTEXT KEY `FT_AUDIT` (`USERNAME`, `CN`, `ROLE`, `SOURCE_ADDRESS`, `SOURCE_HOSTNAME`, `ACTION`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `cwssec`.`usr_audit` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE `CWSSEC`.`AUDIT` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `cwssec`.`getAuditEntryByAttribute`
+-- Definition of procedure `CWSSEC`.`getAuditEntryByAttribute`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`getAuditEntryByAttribute`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditEntryByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`getAuditEntryByAttribute`(
+CREATE PROCEDURE `CWSSEC`.`getAuditEntryByAttribute`(
     IN attributeName VARCHAR(100)
 )
 BEGIN
     SELECT
-        usr_audit_sessionid,
-        usr_audit_userid,
-        usr_audit_userguid,
-        usr_audit_role,
-        usr_audit_applid,
-        usr_audit_applname,
-        usr_audit_timestamp,
-        usr_audit_action,
-        usr_audit_srcaddr,
-        usr_audit_srchost,
-    MATCH (`usr_audit_userid`, `usr_audit_userguid`, `usr_audit_role`, `usr_audit_srcaddr`, `usr_audit_srchost`, `usr_audit_action`)
+        SESSION_ID,
+        USERNAME,
+        CN,
+        ROLE,
+        APPLICATION_ID,
+        APPLICATION_NAME,
+        REQUEST_TIMESTAMP,
+        ACTION,
+        SOURCE_ADDRESS,
+        SOURCE_HOSTNAME,
+    MATCH (`USERNAME`, `CN`, `ROLE`, `SOURCE_ADDRESS`, `SOURCE_HOSTNAME`, `ACTION`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `cwssec`.`usr_audit`
-    WHERE MATCH (`usr_audit_userid`, `usr_audit_userguid`, `usr_audit_role`, `usr_audit_srcaddr`, `usr_audit_srchost`, `usr_audit_action`)
+    FROM `CWSSEC`.`AUDIT`
+    WHERE MATCH (`USERNAME`, `CN`, `ROLE`, `SOURCE_ADDRESS`, `SOURCE_HOSTNAME`, `ACTION`)
     AGAINST (+attributeName IN BOOLEAN MODE);
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -59,15 +60,15 @@ COMMIT$$
 --
 -- Definition of procedure `getAuditCount`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`getAuditCount`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`getAuditCount`(
+CREATE PROCEDURE `CWSSEC`.`getAuditCount`(
     IN userguid VARCHAR(128)
 )
 BEGIN
     SELECT COUNT(*)
-    FROM usr_audit
-    WHERE usr_audit_userguid = userguid;
+    FROM AUDIT
+    WHERE CN = userguid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -75,27 +76,27 @@ COMMIT$$
 --
 -- Definition of procedure `getAuditInterval`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`getAuditInterval`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`getAuditInterval`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`getAuditInterval`(
+CREATE PROCEDURE `CWSSEC`.`getAuditInterval`(
     IN userguid VARCHAR(128),
     IN startRow INT
 )
 BEGIN
     SELECT
-        usr_audit_sessionid,
-        usr_audit_userid,
-        usr_audit_userguid,
-        usr_audit_role,
-        usr_audit_applid,
-        usr_audit_applname,
-        usr_audit_timestamp,
-        usr_audit_action,
-        usr_audit_srcaddr,
-        usr_audit_srchost
-    FROM usr_audit
-    WHERE usr_audit_userguid = userguid
-    ORDER BY usr_audit_timestamp DESC
+        SESSION_ID,
+        USERNAME,
+        CN,
+        ROLE,
+        APPLICATION_ID,
+        APPLICATION_NAME,
+        REQUEST_TIMESTAMP,
+        ACTION,
+        SOURCE_ADDRESS,
+        SOURCE_HOSTNAME
+    FROM AUDIT
+    WHERE CN = userguid
+    ORDER BY REQUEST_TIMESTAMP DESC
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -104,9 +105,9 @@ COMMIT$$
 --
 -- Definition of procedure `insertAuditEntry`
 --
-DROP PROCEDURE IF EXISTS `cwssec`.`insertAuditEntry`$$
+DROP PROCEDURE IF EXISTS `CWSSEC`.`insertAuditEntry`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `cwssec`.`insertAuditEntry`(
+CREATE PROCEDURE `CWSSEC`.`insertAuditEntry`(
     IN usersessid VARCHAR(100),
     IN username VARCHAR(45),
     IN userguid VARCHAR(128),
@@ -118,8 +119,8 @@ CREATE PROCEDURE `cwssec`.`insertAuditEntry`(
     IN srchost VARCHAR(128)
 )
 BEGIN
-    INSERT INTO usr_audit (usr_audit_sessionid, usr_audit_userid, usr_audit_userguid, usr_audit_role, usr_audit_applid, usr_audit_applname, usr_audit_timestamp, usr_audit_action, usr_audit_srcaddr, usr_audit_srchost)
-    VALUES (usersessid, username, userguid, userrole, applid, applname, UNIX_TIMESTAMP(NOW()), useraction, srcaddr, srchost);
+    INSERT INTO AUDIT (SESSION_ID, USERNAME, CN, ROLE, APPLICATION_ID, APPLICATION_NAME, REQUEST_TIMESTAMP, ACTION, SOURCE_ADDRESS, SOURCE_HOSTNAME)
+    VALUES (usersessid, username, userguid, userrole, applid, applname, CURRENT_TIMESTAMP(), useraction, srcaddr, srchost);
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

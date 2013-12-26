@@ -42,9 +42,9 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  */
 public class DataCenter implements Serializable
 {
-    private String datacenterGuid = null;
-    private String datacenterName = null;
-    private String datacenterDesc = null;
+    private String guid = null;
+    private String name = null;
+    private String description = null;
     private ServiceStatus datacenterStatus = null;
 
     private static final String CNAME = DataCenter.class.getName();
@@ -54,9 +54,9 @@ public class DataCenter implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setDatacenterGuid(final String value)
+    public final void setGuid(final String value)
     {
-        final String methodName = DataCenter.CNAME + "#setDatacenterGuid(final String value)";
+        final String methodName = DataCenter.CNAME + "#setGuid(final String value)";
 
         if (DEBUG)
         {
@@ -64,12 +64,12 @@ public class DataCenter implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.datacenterGuid = value;
+        this.guid = value;
     }
 
-    public final void setDatacenterName(final String value)
+    public final void setName(final String value)
     {
-        final String methodName = DataCenter.CNAME + "#setDatacenterName(final String value)";
+        final String methodName = DataCenter.CNAME + "#setName(final String value)";
 
         if (DEBUG)
         {
@@ -77,12 +77,12 @@ public class DataCenter implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.datacenterName = value;
+        this.name = value;
     }
 
-    public final void setDatacenterDesc(final String value)
+    public final void setDescription(final String value)
     {
-        final String methodName = DataCenter.CNAME + "#setDatacenterDesc(final String value)";
+        final String methodName = DataCenter.CNAME + "#setDescription(final String value)";
 
         if (DEBUG)
         {
@@ -90,12 +90,12 @@ public class DataCenter implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.datacenterDesc = value;
+        this.description = value;
     }
 
-    public final void setDatacenterStatus(final ServiceStatus value)
+    public final void setStatus(final ServiceStatus value)
     {
-        final String methodName = DataCenter.CNAME + "#setDatacenterStatus(final ServiceStatus value)";
+        final String methodName = DataCenter.CNAME + "#setStatus(final ServiceStatus value)";
 
         if (DEBUG)
         {
@@ -106,48 +106,48 @@ public class DataCenter implements Serializable
         this.datacenterStatus = value;
     }
 
-    public final String getDatacenterGuid()
+    public final String getGuid()
     {
-        final String methodName = DataCenter.CNAME + "#getDatacenterGuid()";
+        final String methodName = DataCenter.CNAME + "#getGuid()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.datacenterGuid);
+            DEBUGGER.debug("Value: {}", this.guid);
         }
 
-        return this.datacenterGuid;
+        return this.guid;
     }
 
-    public final String getDatacenterName()
+    public final String getName()
     {
-        final String methodName = DataCenter.CNAME + "#getDatacenterName()";
+        final String methodName = DataCenter.CNAME + "#getName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.datacenterName);
+            DEBUGGER.debug("Value: {}", this.name);
         }
 
-        return this.datacenterName;
+        return this.name;
     }
 
-    public final String getDatacenterDesc()
+    public final String getDescription()
     {
-        final String methodName = DataCenter.CNAME + "#getDatacenterDesc()";
+        final String methodName = DataCenter.CNAME + "#getDescription()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.datacenterDesc);
+            DEBUGGER.debug("Value: {}", this.description);
         }
 
-        return this.datacenterDesc;
+        return this.description;
     }
 
-    public final ServiceStatus getDatacenterStatus()
+    public final ServiceStatus getStatus()
     {
-        final String methodName = DataCenter.CNAME + "#getDatacenterStatus()";
+        final String methodName = DataCenter.CNAME + "#getStatus()";
 
         if (DEBUG)
         {

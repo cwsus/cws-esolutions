@@ -4,22 +4,22 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`articles`;
 CREATE TABLE `esolutionssvc`.`articles` (
-    `kbase_page_hits` TINYINT NOT NULL default 0,
-    `kbase_article_id` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_createdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    `kbase_article_author` VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_keywords` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_title` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_symptoms` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_cause` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `kbase_article_resolution` TEXT NOT NULL,
-    `kbase_article_status` VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
-    `kbase_article_reviewedby` VARCHAR(45) CHARACTER SET UTF8,
-    `kbase_article_revieweddate` TIMESTAMP,
-    `kbase_article_modifieddate` TIMESTAMP,
-    `kbase_article_modifiedby` VARCHAR(45) CHARACTER SET UTF8,
-    PRIMARY KEY  (`kbase_article_id`),
-    FULLTEXT KEY `articles` (`kbase_article_id`, `kbase_article_keywords`, `kbase_article_title`, `kbase_article_symptoms`, `kbase_article_cause`, `kbase_article_resolution`)
+    `ID` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `HITS` TINYINT NOT NULL default 0,
+    `CREATE_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    `AUTHOR` VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
+    `KEYWORDS` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `TITLE` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `SYMPTOMS` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `CAUSE` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    `RESOLUTION` TEXT NOT NULL,
+    `STATUS` VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
+    `REVIEWED_BY` VARCHAR(45) CHARACTER SET UTF8,
+    `REVIEW_DATE` TIMESTAMP,
+    `MODIFIED_DATE` TIMESTAMP,
+    `MODIFIED_BY` VARCHAR(45) CHARACTER SET UTF8,
+    PRIMARY KEY  (`ID`),
+    FULLTEXT KEY `articles` (`ID`, `KEYWORDS`, `TITLE`, `SYMPTOMS`, `CAUSE`, `RESOLUTION`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -39,26 +39,26 @@ CREATE PROCEDURE `esolutionssvc`.`getArticleByAttribute`(
 )
 BEGIN
     SELECT
-        kbase_page_hits,
-        kbase_article_id,
-        kbase_article_createdate,
-        kbase_article_author,
-        kbase_article_keywords,
-        kbase_article_title,
-        kbase_article_symptoms,
-        kbase_article_cause,
-        kbase_article_resolution,
-        kbase_article_status,
-        kbase_article_reviewedby,
-        kbase_article_revieweddate,
-        kbase_article_modifieddate,
-        kbase_article_modifiedby,
-    MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution)
+        HITS,
+        ID,
+        CREATE_DATE,
+        AUTHOR,
+        KEYWORDS,
+        TITLE,
+        SYMPTOMS,
+        CAUSE,
+        RESOLUTION,
+        STATUS,
+        REVIEWED_BY,
+        REVIEW_DATE,
+        MODIFIED_DATE,
+        MODIFIED_BY,
+    MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`articles`
-    WHERE MATCH (kbase_article_id, kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause, kbase_article_resolution)
+    WHERE MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms IN BOOLEAN MODE)
-    AND kbase_article_status = 'APPROVED'
+    AND STATUS = 'APPROVED'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -73,23 +73,23 @@ CREATE PROCEDURE `esolutionssvc`.`retrTopArticles`(
 )
 BEGIN
     SELECT
-        kbase_page_hits,
-        kbase_article_id,
-        kbase_article_createdate,
-        kbase_article_author,
-        kbase_article_keywords,
-        kbase_article_title,
-        kbase_article_symptoms,
-        kbase_article_cause,
-        kbase_article_resolution,
-        kbase_article_status,
-        kbase_article_reviewedby,
-        kbase_article_revieweddate,
-        kbase_article_modifieddate,
-        kbase_article_modifiedby
+        HITS,
+        ID,
+        CREATE_DATE,
+        AUTHOR,
+        KEYWORDS,
+        TITLE,
+        SYMPTOMS,
+        CAUSE,
+        RESOLUTION,
+        STATUS,
+        REVIEWED_BY,
+        REVIEW_DATE,
+        MODIFIED_DATE,
+        MODIFIED_BY
     FROM `articles`
-    WHERE kbase_page_hits >= 10
-    AND kbase_article_status = 'APPROVED'
+    WHERE HITS >= 10
+    AND STATUS = 'APPROVED'
     LIMIT 15;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -108,48 +108,48 @@ BEGIN
     IF (isApproval)
     THEN
         SELECT
-            kbase_page_hits,
-            kbase_article_id,
-            kbase_article_createdate,
-            kbase_article_author,
-            kbase_article_keywords,
-            kbase_article_title,
-            kbase_article_symptoms,
-            kbase_article_cause,
-            kbase_article_resolution,
-            kbase_article_status,
-            kbase_article_reviewedby,
-            kbase_article_revieweddate,
-            kbase_article_modifieddate,
-            kbase_article_modifiedby
+            HITS,
+            ID,
+            CREATE_DATE,
+            AUTHOR,
+            KEYWORDS,
+            TITLE,
+            SYMPTOMS,
+            CAUSE,
+            RESOLUTION,
+            STATUS,
+            REVIEWED_BY,
+            REVIEW_DATE,
+            MODIFIED_DATE,
+            MODIFIED_BY
         FROM `articles`
-        WHERE kbase_article_id = articleId
-        AND kbase_article_status IN ('NEW', 'REVIEW');
+        WHERE ID = articleId
+        AND STATUS IN ('NEW', 'REVIEW');
     ELSE
         UPDATE `articles`
-        SET kbase_page_hits = kbase_page_hits + 1
-        WHERE kbase_article_id = articleId;
+        SET HITS = HITS + 1
+        WHERE ID = articleId;
 
         COMMIT;
 
         SELECT
-            kbase_page_hits,
-            kbase_article_id,
-            kbase_article_createdate,
-            kbase_article_author,
-            kbase_article_keywords,
-            kbase_article_title,
-            kbase_article_symptoms,
-            kbase_article_cause,
-            kbase_article_resolution,
-            kbase_article_status,
-            kbase_article_reviewedby,
-            kbase_article_revieweddate,
-            kbase_article_modifieddate,
-            kbase_article_modifiedby
+            HITS,
+            ID,
+            CREATE_DATE,
+            AUTHOR,
+            KEYWORDS,
+            TITLE,
+            SYMPTOMS,
+            CAUSE,
+            RESOLUTION,
+            STATUS,
+            REVIEWED_BY,
+            REVIEW_DATE,
+            MODIFIED_DATE,
+            MODIFIED_BY
         FROM `articles`
-        WHERE kbase_article_id = articleId
-        AND kbase_article_status = 'APPROVED';
+        WHERE ID = articleId
+        AND STATUS = 'APPROVED';
     END IF;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -172,9 +172,9 @@ CREATE PROCEDURE `esolutionssvc`.`addNewArticle`(
 BEGIN
     INSERT INTO `esolutionssvc`.`articles`
     (
-        kbase_page_hits, kbase_article_id, kbase_article_createdate, kbase_article_author,
-        kbase_article_keywords, kbase_article_title, kbase_article_symptoms, kbase_article_cause,
-        kbase_article_resolution, kbase_article_status
+        HITS, ID, CREATE_DATE, AUTHOR,
+        KEYWORDS, TITLE, SYMPTOMS, CAUSE,
+        RESOLUTION, STATUS
     )
     VALUES
     (
@@ -204,15 +204,15 @@ CREATE PROCEDURE `esolutionssvc`.`updateArticle`(
 BEGIN
     UPDATE `esolutionssvc`.`articles`
     SET
-        kbase_article_keywords = keywords,
-        kbase_article_title = title,
-        kbase_article_symptoms = symptoms,
-        kbase_article_cause = cause,
-        kbase_article_resolution = resolution,
-        kbase_article_modifiedby = modifiedBy,
-        kbase_article_modifieddate = UNIX_TIMESTAMP(),
-        kbase_article_status = 'NEW'
-    WHERE kbase_article_id = articleId;
+        KEYWORDS = keywords,
+        TITLE = title,
+        SYMPTOMS = symptoms,
+        CAUSE = cause,
+        RESOLUTION = resolution,
+        MODIFIED_BY = modifiedBy,
+        MODIFIED_DATE = UNIX_TIMESTAMP(),
+        STATUS = 'NEW'
+    WHERE ID = articleId;
 
     COMMIT;
 END $$
@@ -232,12 +232,12 @@ CREATE PROCEDURE `esolutionssvc`.`updateArticleStatus`(
 BEGIN
     UPDATE `esolutionssvc`.`articles`
     SET
-        kbase_article_status = articleStatus,
-        kbase_article_modifiedby = modifiedBy,
-        kbase_article_modifieddate = UNIX_TIMESTAMP(),
-        kbase_article_reviewedby = modifiedBy,
-        kbase_article_revieweddate = UNIX_TIMESTAMP()
-    WHERE kbase_article_id = articleId;
+        STATUS = articleStatus,
+        MODIFIED_BY = modifiedBy,
+        MODIFIED_DATE = UNIX_TIMESTAMP(),
+        REVIEWED_BY = modifiedBy,
+        REVIEW_DATE = UNIX_TIMESTAMP()
+    WHERE ID = articleId;
 
     COMMIT;
 END $$
@@ -255,8 +255,8 @@ CREATE PROCEDURE `esolutionssvc`.`getArticleCount`(
 BEGIN
     SELECT COUNT(*)
     FROM `esolutionssvc`.`articles`
-    WHERE kbase_article_status = reqType
-    AND kbase_article_author != requestorId;
+    WHERE STATUS = reqType
+    AND AUTHOR != requestorId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -272,24 +272,24 @@ CREATE PROCEDURE `esolutionssvc`.`retrPendingArticles`(
 )
 BEGIN
     SELECT
-        kbase_page_hits,
-        kbase_article_id,
-        kbase_article_createdate,
-        kbase_article_author,
-        kbase_article_keywords,
-        kbase_article_title,
-        kbase_article_symptoms,
-        kbase_article_cause,
-        kbase_article_resolution,
-        kbase_article_status,
-        kbase_article_reviewedby,
-        kbase_article_revieweddate,
-        kbase_article_modifieddate,
-        kbase_article_modifiedby
+        HITS,
+        ID,
+        CREATE_DATE,
+        AUTHOR,
+        KEYWORDS,
+        TITLE,
+        SYMPTOMS,
+        CAUSE,
+        RESOLUTION,
+        STATUS,
+        REVIEWED_BY,
+        REVIEW_DATE,
+        MODIFIED_DATE,
+        MODIFIED_BY
     FROM `esolutionssvc`.`articles`
-    WHERE kbase_article_status IN ('NEW', 'REJECTED', 'REVIEW')
-    AND kbase_article_author != requestorId
-    ORDER BY kbase_article_createdate DESC
+    WHERE STATUS IN ('NEW', 'REJECTED', 'REVIEW')
+    AND AUTHOR != requestorId
+    ORDER BY CREATE_DATE DESC
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

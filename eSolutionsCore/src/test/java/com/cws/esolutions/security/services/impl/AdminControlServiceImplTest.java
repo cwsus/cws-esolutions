@@ -34,9 +34,9 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;

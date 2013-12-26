@@ -67,19 +67,16 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL insertNewApplication(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, (String) value.get(0)); // appGuid
             stmt.setString(2, (String) value.get(1)); // appName
             stmt.setDouble(3, (double) value.get(2)); // appVersion
-            stmt.setString(4, (String) value.get(3)); // basePath
-            stmt.setString(5, (String) value.get(4)); // scm path
-            stmt.setString(6, (String) value.get(5)); // clusterName
-            stmt.setString(7, (String) value.get(6)); // jvmName
-            stmt.setString(8, (String) value.get(8)); // installPath
-            stmt.setString(9, (String) value.get(8)); // logsDir
-            stmt.setString(10, (String) value.get(9)); // pidDir
-            stmt.setString(11, (String) value.get(10)); // projectGuid
-            stmt.setString(12, (String) value.get(11)); // platformGuid
+            stmt.setString(4, (String) value.get(3)); // installPath
+            stmt.setString(5, (String) value.get(4)); // packageLocation
+            stmt.setString(6, (String) value.get(5)); // packageInstaller
+            stmt.setString(7, (String) value.get(6)); // installerOptions (can be null)
+            stmt.setString(8, (String) value.get(7)); // logsDirectory
+            stmt.setString(9, (String) value.get(8)); // platformGuid
 
             if (DEBUG)
             {
@@ -143,19 +140,16 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL updateApplicationData(?, ?, ?, ?, ?, ?, ?, ?, ?)}");
             stmt.setString(1, (String) value.get(0)); // appGuid
             stmt.setString(2, (String) value.get(1)); // appName
             stmt.setDouble(3, (double) value.get(2)); // appVersion
-            stmt.setString(4, (String) value.get(3)); // basePath
-            stmt.setString(5, (String) value.get(4)); // scm path
-            stmt.setString(6, (String) value.get(5)); // clusterName
-            stmt.setString(7, (String) value.get(6)); // jvmName
-            stmt.setString(8, (String) value.get(8)); // installPath
-            stmt.setString(9, (String) value.get(8)); // logsDir
-            stmt.setString(10, (String) value.get(9)); // pidDir
-            stmt.setString(11, (String) value.get(10)); // projectGuid
-            stmt.setString(12, (String) value.get(11)); // platformGuid
+            stmt.setString(4, (String) value.get(3)); // installPath
+            stmt.setString(5, (String) value.get(4)); // packageLocation
+            stmt.setString(6, (String) value.get(5)); // packageInstaller
+            stmt.setString(7, (String) value.get(6)); // installerOptions (can be null)
+            stmt.setString(8, (String) value.get(7)); // logsDirectory
+            stmt.setString(9, (String) value.get(8)); // platformGuid
 
             if (DEBUG)
             {
@@ -396,10 +390,8 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // T1.APPLICATION_GUID
-                            resultSet.getString(2), // T1.APPLICATION_NAME
-                            resultSet.getString(3), // T2.PROJECT_GUID
-                            resultSet.getString(4), // T2.PROJECT_NAME
+                            resultSet.getString(1), // APPLICATION_GUID
+                            resultSet.getString(2), // APPLICATION_NAME
                         };
 
                         if (DEBUG)
@@ -498,19 +490,16 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     (
                         Arrays.asList
                         (
-                            (String) resultSet.getString(1), // T1.APPLICATION_GUID
-                            (String) resultSet.getString(2), // T1.APPLICATION_NAME
-                            (double) resultSet.getDouble(3), // T1.APPLICATION_VERSION
-                            (String) resultSet.getString(4), // T1.BASE_PATH
-                            (String) resultSet.getString(5), // T1.SCM_PATH
-                            (String) resultSet.getString(6), // T1.CLUSTER_NAME
-                            (String) resultSet.getString(7), // T1.JVM_NAME
-                            (String) resultSet.getString(8), // T1.INSTALL_PATH
-                            (String) resultSet.getString(9), // T1.LOGS_DIRECTORY
-                            (String) resultSet.getString(10), // T1.PID_DIRECTORY
-                            (String) resultSet.getString(11), // T1.PLATFORM_GUID
-                            (String) resultSet.getString(12), // T2.PROJECT_GUID
-                            (String) resultSet.getString(13) // T2.PROJECT_NAME
+                            resultSet.getString(1), // APPLICATION_GUID
+                            resultSet.getString(2), // APPLICATION_NAME
+                            resultSet.getDouble(3), // APPLICATION_VERSION
+                            resultSet.getString(4), // INSTALLATION_PATH
+                            resultSet.getString(5), // PACKAGE_LOCATION
+                            resultSet.getString(6), // PACKAGE_INSTALLER
+                            resultSet.getString(7), // INSTALLER_OPTIONS
+                            resultSet.getString(8), // LOGS_DIRECTORY
+                            resultSet.getString(9), // PLATFORM_GUID
+                            resultSet.getString(10) // PLATFORM_NAME
                         )
                     );
 

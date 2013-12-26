@@ -43,17 +43,22 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.web.validators.UserAccountValidator;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.processors.enums.ModificationType;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
@@ -932,7 +937,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAuditProcessor processor = new AuditProcessorImpl();
 
         if (DEBUG)
         {
@@ -998,21 +1003,27 @@ public class UserManagementController
                     DEBUGGER.debug("UserAccount: {}", searchAccount);
                 }
 
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
+                AuditEntry entry = new AuditEntry();
+                entry.setUserAccount(searchAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                    DEBUGGER.debug("AuditEntry: {}", entry);
                 }
 
-                AccountControlResponse response = acctController.loadUserAudit(request);
+                AuditRequest request = new AuditRequest();
+                request.setUserAccount(userAccount);
+                request.setAuditEntry(entry);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setHostInfo(reqInfo);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", request);
+                }
+
+                AuditResponse response = processor.getAuditEntries(request);
 
                 if (DEBUG)
                 {
@@ -1021,7 +1032,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    List<AuditEntry> auditEntries = response.getAuditEntries();
+                    List<AuditEntry> auditEntries = response.getAuditList();
 
                     if (DEBUG)
                     {
@@ -1039,7 +1050,6 @@ public class UserManagementController
                         mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
                     }
 
-                    mView.addObject("userAccount", response.getUserAccount());
                     mView.setViewName(this.viewAuditPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
@@ -1055,9 +1065,9 @@ public class UserManagementController
                     return mView;
                 }
             }
-            catch (AccountControlException acx)
+            catch (AuditServiceException asx)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                ERROR_RECORDER.error(asx.getMessage(), asx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
 
@@ -1092,7 +1102,7 @@ public class UserManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IAccountControlProcessor acctController = new AccountControlProcessorImpl();
+        final IAuditProcessor processor = new AuditProcessorImpl();
 
         if (DEBUG)
         {
@@ -1158,22 +1168,28 @@ public class UserManagementController
                     DEBUGGER.debug("UserAccount: {}", searchAccount);
                 }
 
-                AccountControlRequest request = new AccountControlRequest();
-                request.setHostInfo(reqInfo);
-                request.setUserAccount(searchAccount);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setRequestor(userAccount);
-                request.setServiceId(this.serviceId);
-                request.setApplicationId(this.appConfig.getApplicationId());
-                request.setApplicationName(this.appConfig.getApplicationName());
-                request.setStartPage((page-1) * this.recordsPerPage);
+                AuditEntry entry = new AuditEntry();
+                entry.setUserAccount(searchAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("AccountControlRequest: {}", request);
+                    DEBUGGER.debug("AuditEntry: {}", entry);
                 }
 
-                AccountControlResponse response = acctController.loadUserAudit(request);
+                AuditRequest request = new AuditRequest();
+                request.setUserAccount(userAccount);
+                request.setAuditEntry(entry);
+                request.setStartRow(page);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setHostInfo(reqInfo);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", request);
+                }
+
+                AuditResponse response = processor.getAuditEntries(request);
 
                 if (DEBUG)
                 {
@@ -1182,7 +1198,7 @@ public class UserManagementController
 
                 if (response.getRequestStatus() == SecurityRequestStatus.SUCCESS)
                 {
-                    List<AuditEntry> auditEntries = response.getAuditEntries();
+                    List<AuditEntry> auditEntries = response.getAuditList();
 
                     if (DEBUG)
                     {
@@ -1194,14 +1210,13 @@ public class UserManagementController
                         mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                         mView.addObject("page", page);
                         mView.addObject("auditEntries", auditEntries);
-                        mView.addObject("userAccount", response.getUserAccount());
-                        mView.setViewName(this.viewAuditPage);
                     }
                     else
                     {
                         mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                        mView.setViewName(this.viewAuditPage);
                     }
+
+                    mView.setViewName(this.viewAuditPage);
                 }
                 else if (response.getRequestStatus() == SecurityRequestStatus.UNAUTHORIZED)
                 {
@@ -1216,9 +1231,9 @@ public class UserManagementController
                     return mView;
                 }
             }
-            catch (AccountControlException acx)
+            catch (AuditServiceException asx)
             {
-                ERROR_RECORDER.error(acx.getMessage(), acx);
+                ERROR_RECORDER.error(asx.getMessage(), asx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
 

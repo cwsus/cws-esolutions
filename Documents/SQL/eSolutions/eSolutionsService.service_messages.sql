@@ -3,19 +3,19 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`service_messages`;
 CREATE TABLE `esolutionssvc`.`service_messages` (
-    `svc_message_id` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `svc_message_title` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
-    `svc_message_txt` TEXT CHARACTER SET UTF8 NOT NULL,
-    `svc_message_author` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `svc_message_submitdate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `svc_message_active` BOOLEAN NOT NULL DEFAULT TRUE,
-    `svc_message_alert` BOOLEAN NOT NULL DEFAULT FALSE,
-    `svc_message_expires` BOOLEAN NOT NULL DEFAULT FALSE,
-    `svc_message_expirydate` TIMESTAMP,
-    `svc_message_modifiedon` TIMESTAMP,
-    `svc_message_modifiedby` VARCHAR(45) CHARACTER SET UTF8,
-    PRIMARY KEY (`svc_message_id`, `svc_message_title`), -- prevent the same message from being submitted twice (we hope)
-    FULLTEXT KEY `FTK_svcMessages` (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
+    `ID` VARCHAR(16) CHARACTER SET UTF8 NOT NULL,
+    `TITLE` VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
+    `MESSAGE` TEXT CHARACTER SET UTF8 NOT NULL,
+    `AUTHOR` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `SUBMIT_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `ACTIVE` BOOLEAN NOT NULL DEFAULT TRUE,
+    `ALERT` BOOLEAN NOT NULL DEFAULT FALSE,
+    `EXPIRES` BOOLEAN NOT NULL DEFAULT FALSE,
+    `EXPIRES_ON` TIMESTAMP,
+    `MODIFIED_ON` TIMESTAMP,
+    `MODIFIED_BY` VARCHAR(128) CHARACTER SET UTF8,
+    PRIMARY KEY (`ID`, `TITLE`), -- prevent the same message from being submitted twice (we hope)
+    FULLTEXT KEY `FTK_svcMessages` (`ID`, `TITLE`, `MESSAGE`, `AUTHOR`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -34,25 +34,25 @@ CREATE PROCEDURE `esolutionssvc`.`getMessagesByAttribute`(
 )
 BEGIN
     SELECT
-        svc_message_id,
-        svc_message_title,
-        svc_message_txt,
-        svc_message_author,
-        svc_message_submitdate,
-        svc_message_active,
-        svc_message_alert,
-        svc_message_expires,
-        svc_message_expirydate,
-        svc_message_modifiedon,
-        svc_message_modifiedby,
-    MATCH (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
+        ID,
+        TITLE,
+        MESSAGE,
+        AUTHOR,
+        SUBMIT_DATE,
+        ACTIVE ,
+        ALERT,
+        EXPIRES,
+        EXPIRES_ON,
+        MODIFIED_ON,
+        MODIFIED_BY,
+    MATCH (`ID`, `TITLE`, `MESSAGE`, `AUTHOR`)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_messages`
-    WHERE MATCH (`svc_message_id`, `svc_message_title`, `svc_message_txt`, `svc_message_author`)
+    WHERE MATCH (`ID`, `TITLE`, `MESSAGE`, `AUTHOR`)
     AGAINST (+searchTerms IN BOOLEAN MODE)
-    AND svc_message_active = TRUE
-    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
-    ORDER BY svc_message_id DESC;
+    AND ACTIVE  = TRUE
+    AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
+    ORDER BY ID DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -75,7 +75,7 @@ CREATE PROCEDURE `esolutionssvc`.`submitSvcMessage`(
 BEGIN
     INSERT INTO `esolutionssvc`.`service_messages`
     (
-        svc_message_id, svc_message_title, svc_message_txt, svc_message_author, svc_message_submitdate, svc_message_active, svc_message_alert, svc_message_expires, svc_message_expirydate
+        ID, TITLE, MESSAGE, AUTHOR, SUBMIT_DATE, ACTIVE , ALERT, EXPIRES, EXPIRES_ON
     )
     VALUES
     (
@@ -105,15 +105,15 @@ CREATE PROCEDURE `esolutionssvc`.`updateServiceMessage`(
 BEGIN
     UPDATE `esolutionssvc`.`service_messages`
     SET
-        svc_message_title = messageTitle,
-        svc_message_txt = messageText,
-        svc_message_active = active,
-        svc_message_alert = isAlert,
-        svc_message_expires = expiry,
-        svc_message_expirydate = expiryDate,
-        svc_message_modifiedon = NOW(),
-        svc_message_modifiedby = modifyAuthor
-    WHERE svc_message_id = messageId;
+        TITLE = messageTitle,
+        MESSAGE = messageText,
+        ACTIVE  = active,
+        ALERT = isAlert,
+        EXPIRES = expiry,
+        EXPIRES_ON = expiryDate,
+        MODIFIED_ON = NOW(),
+        MODIFIED_BY = modifyAuthor
+    WHERE ID = messageId;
 
     COMMIT;
 END $$
@@ -130,19 +130,19 @@ CREATE PROCEDURE `esolutionssvc`.`retrServiceMessage`(
 )
 BEGIN
     SELECT
-        svc_message_id,
-        svc_message_title,
-        svc_message_txt,
-        svc_message_author,
-        svc_message_submitdate,
-        svc_message_active,
-        svc_message_alert,
-        svc_message_expires,
-        svc_message_expirydate,
-        svc_message_modifiedon,
-        svc_message_modifiedby
+        ID,
+        TITLE,
+        MESSAGE,
+        AUTHOR,
+        SUBMIT_DATE,
+        ACTIVE ,
+        ALERT,
+        EXPIRES,
+        EXPIRES_ON,
+        MODIFIED_ON,
+        MODIFIED_BY
     FROM `esolutionssvc`.`service_messages`
-    WHERE svc_message_id = requestId;
+    WHERE ID = requestId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -157,22 +157,22 @@ CREATE PROCEDURE `esolutionssvc`.`retrServiceMessages`(
 )
 BEGIN
     SELECT
-        svc_message_id,
-        svc_message_title,
-        svc_message_txt,
-        svc_message_author,
-        svc_message_submitdate,
-        svc_message_active,
-        svc_message_alert,
-        svc_message_expires,
-        svc_message_expirydate,
-        svc_message_modifiedon,
-        svc_message_modifiedby
+        ID,
+        TITLE,
+        MESSAGE,
+        AUTHOR,
+        SUBMIT_DATE,
+        ACTIVE ,
+        ALERT,
+        EXPIRES,
+        EXPIRES_ON,
+        MODIFIED_ON,
+        MODIFIED_BY
     FROM `esolutionssvc`.`service_messages`
-    WHERE svc_message_active = TRUE
-    AND svc_message_alert = FALSE
-    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
-    ORDER BY svc_message_id DESC;
+    WHERE ACTIVE  = TRUE
+    AND ALERT = FALSE
+    AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
+    ORDER BY ID DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -186,22 +186,22 @@ CREATE PROCEDURE `esolutionssvc`.`retrAlertMessages`(
 )
 BEGIN
     SELECT
-        svc_message_id,
-        svc_message_title,
-        svc_message_txt,
-        svc_message_author,
-        svc_message_submitdate,
-        svc_message_active,
-        svc_message_alert,
-        svc_message_expires,
-        svc_message_expirydate,
-        svc_message_modifiedon,
-        svc_message_modifiedby
+        ID,
+        TITLE,
+        MESSAGE,
+        AUTHOR,
+        SUBMIT_DATE,
+        ACTIVE ,
+        ALERT,
+        EXPIRES,
+        EXPIRES_ON,
+        MODIFIED_ON,
+        MODIFIED_BY
     FROM `esolutionssvc`.`service_messages`
-    WHERE svc_message_active = TRUE
-    AND svc_message_alert = TRUE
-    AND (svc_message_expirydate > NOW() OR svc_message_expirydate = '0000-00-00 00:00:00' OR svc_message_expires = FALSE)
-    ORDER BY svc_message_id DESC;
+    WHERE ACTIVE  = TRUE
+    AND ALERT = TRUE
+    AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
+    ORDER BY ID DESC;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

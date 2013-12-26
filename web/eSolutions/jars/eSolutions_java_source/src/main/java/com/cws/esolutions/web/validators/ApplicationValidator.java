@@ -40,7 +40,6 @@ public class ApplicationValidator implements Validator
     private String messageApplicationNameRequired = null;
     private String messageApplicationClusterRequired = null;
     private String messageApplicationVersionRequired = null;
-    private String messageApplicationProjectRequired = null;
     private String messageApplicationLogsPathRequired = null;
     private String messageApplicationPlatformRequired = null;
     private String messageApplicationInstallPathRequired = null;
@@ -74,19 +73,6 @@ public class ApplicationValidator implements Validator
         }
 
         this.messageApplicationLogsPathRequired = value;
-    }
-
-    public final void setMessageApplicationProjectRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationProjectRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageApplicationProjectRequired = value;
     }
 
     public final void setMessageApplicationVersionRequired(final String value)
@@ -227,7 +213,6 @@ public class ApplicationValidator implements Validator
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "jvmName", this.messageJvmNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "project", this.messageApplicationProjectRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "basePath", this.messageBasePathRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platform", this.messageApplicationPlatformRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);

@@ -40,11 +40,11 @@ import com.cws.esolutions.core.processors.dto.SearchResult;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
@@ -1209,6 +1209,8 @@ public class SystemManagementController
                 // send back to page
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
                 mView.setViewName(this.addServerPage);
+
+                return mView;
             }
 
             try
@@ -1271,7 +1273,7 @@ public class SystemManagementController
                             request.setDomainName(owningDmgr.getDomainName());
                             request.setServerRegion(owningDmgr.getServerRegion());
                             request.setNetworkPartition(owningDmgr.getNetworkPartition());
-                            request.setDatacenter(owningDmgr.getDatacenter().getDatacenterGuid());
+                            request.setDatacenter(owningDmgr.getDatacenter().getGuid());
                         }
                         else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                         {
@@ -1397,7 +1399,7 @@ public class SystemManagementController
                 }
 
                 DataCenter datacenter = new DataCenter();
-                datacenter.setDatacenterGuid(request.getDatacenter());
+                datacenter.setGuid(request.getDatacenter());
 
                 if (DEBUG)
                 {

@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.audit.processors.impl;
+package com.cws.esolutions.security.processors.impl;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.audit.processors.impl
+ * Package: com.cws.esolutions.security.processors.processors.impl
  * File: AuditProcessorImplTest.java
  *
  * History
@@ -34,17 +34,17 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.AuditResponse;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.AuditResponse;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 
 public class AuditProcessorImplTest
 {

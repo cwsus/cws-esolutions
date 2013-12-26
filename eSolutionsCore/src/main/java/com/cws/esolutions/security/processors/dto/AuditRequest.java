@@ -30,6 +30,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
+import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -42,7 +43,11 @@ import com.cws.esolutions.security.SecurityConstants;
 public class AuditRequest implements Serializable
 {
     private int startRow = 0;
+    private String applicationId = null;
     private AuditEntry auditEntry = null;
+    private String applicationName = null;
+    private UserAccount userAccount = null;
+    private RequestHostInfo hostInfo = null;
 
     private static final String CNAME = AuditRequest.class.getName();
     private static final long serialVersionUID = 8332518266785977842L;
@@ -50,6 +55,58 @@ public class AuditRequest implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
+
+    public final void setHostInfo(final RequestHostInfo value)
+    {
+        final String methodName = AuditRequest.CNAME + "#setBaseDN(final RequestHostInfo value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.hostInfo = value;
+    }
+
+    public final void setUserAccount(final UserAccount value)
+    {
+        final String methodName = AuditRequest.CNAME + "#setLoginType(final UserAccount value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userAccount = value;
+    }
+
+    public final void setApplicationName(final String value)
+    {
+        final String methodName = AuditRequest.CNAME + "#setApplicationName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationName = value;
+    }
+
+    public final void setApplicationId(final String value)
+    {
+        final String methodName = AuditRequest.CNAME + "#setApplicationId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.applicationId = value;
+    }
 
     public final void setAuditEntry(final AuditEntry value)
     {
@@ -75,6 +132,58 @@ public class AuditRequest implements Serializable
         }
 
         this.startRow = value;
+    }
+
+    public final RequestHostInfo getHostInfo()
+    {
+        final String methodName = AuditRequest.CNAME + "#getHostInfo()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.hostInfo);
+        }
+
+        return this.hostInfo;
+    }
+
+    public final UserAccount getUserAccount()
+    {
+        final String methodName = AuditRequest.CNAME + "#getLoginType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userAccount);
+        }
+
+        return this.userAccount;
+    }
+
+    public final String getApplicationName()
+    {
+        final String methodName = AuditRequest.CNAME + "#getApplicationName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationName);
+        }
+
+        return this.applicationName;
+    }
+
+    public final String getApplicationId()
+    {
+        final String methodName = AuditRequest.CNAME + "#getApplicationId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.applicationId);
+        }
+
+        return this.applicationId;
     }
 
     public final AuditEntry getAuditEntry()

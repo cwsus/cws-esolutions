@@ -33,7 +33,7 @@ import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
  * Interface for the Application Data DAO layer. Allows access

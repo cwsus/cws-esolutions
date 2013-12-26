@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 

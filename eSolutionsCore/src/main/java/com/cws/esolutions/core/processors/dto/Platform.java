@@ -26,12 +26,16 @@ package com.cws.esolutions.core.processors.dto;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /**
@@ -44,14 +48,13 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  */
 public class Platform implements Serializable
 {
+    private String guid = null;
+    private String name = null;
     private String description = null;
-    private String platformGuid = null;
-    private String platformName = null;
-    private Server platformDmgr = null;
     private ServiceStatus status = null;
-    private List<Server> appServers = null;
-    private List<Server> webServers = null;
-    private ServiceRegion platformRegion = null;
+    private List<Server> servers = null;
+    private ServiceRegion region = null;
+    private NetworkPartition partition = null;
 
     private static final String CNAME = Platform.class.getName();
     private static final long serialVersionUID = -4382390818947300324L;
@@ -60,9 +63,9 @@ public class Platform implements Serializable
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setPlatformGuid(final String value)
+    public final void setGuid(final String value)
     {
-        final String methodName = Platform.CNAME + "#setPlatformGuid(final String value)";
+        final String methodName = Platform.CNAME + "#setGuid(final String value)";
 
         if (DEBUG)
         {
@@ -70,12 +73,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.platformGuid = value;
+        this.guid = value;
     }
 
-    public final void setPlatformName(final String value)
+    public final void setName(final String value)
     {
-        final String methodName = Platform.CNAME + "#setPlatformName(final String value)";
+        final String methodName = Platform.CNAME + "#setName(final String value)";
 
         if (DEBUG)
         {
@@ -83,7 +86,7 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.platformName = value;
+        this.name = value;
     }
 
     public final void setDescription(final String value)
@@ -112,9 +115,9 @@ public class Platform implements Serializable
         this.status = value;
     }
 
-    public final void setPlatformDmgr(final Server value)
+    public final void setServers(final List<Server> value)
     {
-        final String methodName = Platform.CNAME + "#setPlatformDmgr(final Server value)";
+        final String methodName = Platform.CNAME + "#setServers(final List<Server> value)";
 
         if (DEBUG)
         {
@@ -122,12 +125,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.platformDmgr = value;
+        this.servers = value;
     }
 
-    public final void setAppServers(final List<Server> value)
+    public final void setRegion(final ServiceRegion value)
     {
-        final String methodName = Platform.CNAME + "#setAppServers(final List<Server> value)";
+        final String methodName = Platform.CNAME + "#setRegion(final ServiceRegion value)";
 
         if (DEBUG)
         {
@@ -135,12 +138,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appServers = value;
+        this.region = value;
     }
 
-    public final void setWebServers(final List<Server> value)
+    public final void setPartition(final NetworkPartition value)
     {
-        final String methodName = Platform.CNAME + "#setWebServers(final List<Server> value)";
+        final String methodName = Platform.CNAME + "#setPartition(final NetworkPartition value)";
 
         if (DEBUG)
         {
@@ -148,46 +151,33 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.webServers = value;
+        this.partition = value;
     }
 
-    public final void setPlatformRegion(final ServiceRegion value)
+    public final String getGuid()
     {
-        final String methodName = Platform.CNAME + "#setPlatformRegion(final ServiceRegion value)";
+        final String methodName = Platform.CNAME + "#getGuid()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.guid);
         }
 
-        this.platformRegion = value;
+        return this.guid;
     }
 
-    public final String getPlatformGuid()
+    public final String getName()
     {
-        final String methodName = Platform.CNAME + "#getPlatformGuid()";
+        final String methodName = Platform.CNAME + "#getName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformGuid);
+            DEBUGGER.debug("Value: {}", this.name);
         }
 
-        return this.platformGuid;
-    }
-
-    public final String getPlatformName()
-    {
-        final String methodName = Platform.CNAME + "#getPlatformName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformName);
-        }
-
-        return this.platformName;
+        return this.name;
     }
 
     public final String getDescription()
@@ -216,56 +206,43 @@ public class Platform implements Serializable
         return this.status;
     }
 
-    public final Server getPlatformDmgr()
+    public final List<Server> getServers()
     {
-        final String methodName = Platform.CNAME + "#getPlatformDmgr()";
+        final String methodName = Platform.CNAME + "#getServers()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformDmgr);
+            DEBUGGER.debug("Value: {}", this.servers);
         }
 
-        return this.platformDmgr;
+        return this.servers;
     }
 
-    public final List<Server> getAppServers()
+    public final ServiceRegion getRegion()
     {
-        final String methodName = Platform.CNAME + "#getAppServers()";
+        final String methodName = Platform.CNAME + "#getRegion()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appServers);
+            DEBUGGER.debug("Value: {}", this.region);
         }
 
-        return this.appServers;
+        return this.region;
     }
 
-    public final List<Server> getWebServers()
+    public final NetworkPartition getPartition()
     {
-        final String methodName = Platform.CNAME + "#getWebServers()";
+        final String methodName = Platform.CNAME + "#getPartition()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.webServers);
+            DEBUGGER.debug("Value: {}", this.partition);
         }
 
-        return this.webServers;
-    }
-
-    public final ServiceRegion getPlatformRegion()
-    {
-        final String methodName = Platform.CNAME + "#getPlatformRegion()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformRegion);
-        }
-
-        return this.platformRegion;
+        return this.partition;
     }
 
     @Override

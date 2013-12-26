@@ -25,6 +25,7 @@ package com.cws.esolutions.security.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Test;
 import org.junit.After;
 import org.junit.Before;
@@ -59,9 +60,8 @@ public class PasswordUtilsTest
     @Test
     public void testCreateHash()
     {
-        // final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
-        final String salt = "xRZRoffAFA7jkzJJodHYFYo4gOMmrxgcEul0F7wzLIVNCOEkeZE6AivKMSIdAdyG";
-        final String pass = "G%pBoyPoQC4;Q%o&01/PeL?3-Y'y@kFM";
+        final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
+        final String pass = "answertwo";
 
         System.out.println(salt);
         System.out.println(PasswordUtils.encryptText(pass, salt, bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));

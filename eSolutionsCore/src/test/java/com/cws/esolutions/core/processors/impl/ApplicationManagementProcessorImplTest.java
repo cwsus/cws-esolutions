@@ -25,7 +25,6 @@ package com.cws.esolutions.core.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.UUID;
 import org.junit.Test;
 import java.util.List;
 import org.junit.After;
@@ -39,9 +38,9 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
@@ -109,7 +108,7 @@ public class ApplicationManagementProcessorImplTest
     @Test
     public void testAddNewApplication()
     {
-        String[] platforms = { "046119de-9dc0-406d-bf4f-32f32b199f5c", "3eedf26a-a789-4bbf-8ad7-b5f4bbfefe33", "7cc7cd82-aa87-4af8-a967-f2493cc7c095" };
+        String[] platforms = { "3343c126-1ade-4fa8-8518-51090eca4578", "83cc0da1-8af7-47bb-9532-7e4ad325a5a0", "cf6b138e-628f-4c80-b523-c63997dd32d8" };
 
         for (int x = 0; x < 3; x++)
         {
@@ -118,22 +117,23 @@ public class ApplicationManagementProcessorImplTest
             for (String str : platforms)
             {
                 Platform platform = new Platform();
-                platform.setPlatformGuid(str);
+                platform.setGuid(str);
 
                 platformList.add(platform);
             }
 
-            Application app = new Application();
-            app.setApplicationGuid(UUID.randomUUID().toString());
-            app.setApplicationName("eSolutions");
-            app.setPlatforms(platformList);
-            app.setApplicationVersion(1.0);
-            app.setLogsDirectory("/appvol/ATS70/eSolutions/applog");
-            app.setInstallPath("/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war");
-            app.setPackageLocation("scm:git:git@github.com:cwsus/cws-esolutions.git");
+            Application application = new Application();
+            application.setName("eSolutionsAgent");
+            application.setVersion(1.0);
+            application.setInstallPath("/opt/cws/eSolutions");
+            application.setPackageLocation("/installs/cws/eSolutionsAgent");
+            application.setPackageInstaller("install.sh");
+            application.setInstallerOptions(null);
+            application.setLogsDirectory("/opt/cws/eSolutions/logs");
+            application.setPlatforms(platformList);
 
             ApplicationManagementRequest request = new ApplicationManagementRequest();
-            request.setApplication(app);
+            request.setApplication(application);
             request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
             request.setRequestInfo(hostInfo);
             request.setUserAccount(userAccount);
@@ -155,7 +155,7 @@ public class ApplicationManagementProcessorImplTest
     public void testDeleteApplicationData()
     {
         Application app = new Application();
-        app.setApplicationGuid("6625fc8c-09ed-4579-a3d6-eb43d26b679f");
+        app.setGuid("6625fc8c-09ed-4579-a3d6-eb43d26b679f");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
@@ -199,7 +199,7 @@ public class ApplicationManagementProcessorImplTest
     public void testGetApplicationData()
     {
         Application app = new Application();
-        app.setApplicationGuid("073bfe73-b601-4c10-b7db-16b2a0c433ef");
+        app.setGuid("073bfe73-b601-4c10-b7db-16b2a0c433ef");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
@@ -223,7 +223,7 @@ public class ApplicationManagementProcessorImplTest
     public void testApplicationFileRequest()
     {
         Application app = new Application();
-        app.setApplicationGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
+        app.setGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
 
         Server server = new Server();
         server.setServerGuid("B75CCD70-FCB3-43B7-9667-357508DE2B75");
@@ -251,7 +251,7 @@ public class ApplicationManagementProcessorImplTest
     public void testApplicationFileRequestGetFile()
     {
         Application app = new Application();
-        app.setApplicationGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
+        app.setGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
 
         Server server = new Server();
         server.setServerGuid("B75CCD70-FCB3-43B7-9667-357508DE2B75");

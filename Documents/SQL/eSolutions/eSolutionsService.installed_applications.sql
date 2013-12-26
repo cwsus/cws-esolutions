@@ -3,9 +3,9 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`installed_applications`;
 CREATE TABLE `esolutionssvc`.`installed_applications` (
-    `APPLICATION_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
-    `APPLICATION_NAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
-    `APPLICATION_VERSION` DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
+    `GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
+    `NAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
+    `VERSION` DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
     `INSTALLATION_PATH` TEXT CHARACTER SET UTF8 NOT NULL, -- where do files get installed to ?
     `PACKAGE_LOCATION` TEXT CHARACTER SET UTF8, -- package location, either provided or scm'd or whatnot
     `PACKAGE_INSTALLER` TEXT CHARACTER SET UTF8, -- installer file for standalones
@@ -14,8 +14,8 @@ CREATE TABLE `esolutionssvc`.`installed_applications` (
     `PLATFORM_GUID` TEXT CHARACTER SET UTF8 NOT NULL, -- MULTIPLE platforms per app
     `APP_ONLINE_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), -- when did the app get added
     `APP_OFFLINE_DATE` TIMESTAMP,
-    PRIMARY KEY (`APPLICATION_GUID`),
-    FULLTEXT KEY `IDX_APPLICATIONS` (`APPLICATION_NAME`)
+    PRIMARY KEY (`GUID`),
+    FULLTEXT KEY `IDX_APPLICATIONS` (`NAME`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -35,12 +35,12 @@ CREATE PROCEDURE `esolutionssvc`.`getApplicationByAttribute`(
 )
 BEGIN
     SELECT
-        APPLICATION_GUID,
-        APPLICATION_NAME,
-    MATCH (`APPLICATION_NAME`)
+        GUID,
+        NAME,
+    MATCH (`NAME`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`installed_applications`
-    WHERE MATCH (`APPLICATION_NAME`)
+    WHERE MATCH (`NAME`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE = '0000-00-00 00:00:00'
     LIMIT startRow, 20;
@@ -62,19 +62,18 @@ CREATE PROCEDURE `esolutionssvc`.`insertNewApplication`(
     IN packageInstaller TEXT,
     IN installerOptions TEXT,
     IN logsDirectory TEXT,
-    IN platformGuid VARCHAR(128)
+    IN platformGuid TEXT
 )
 BEGIN
     INSERT INTO `esolutionssvc`.`installed_applications`
     (
-        APPLICATION_GUID, APPLICATION_NAME, APPLICATION_VERSION, INSTALLATION_PATH,
-        PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS, LOGS_DIRECTORY, PLATFORM_GUID
+        GUID, NAME, VERSION, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER,
+        INSTALLER_OPTIONS, LOGS_DIRECTORY, PLATFORM_GUID, APP_ONLINE_DATE
     )
     VALUES
     (
-        appGuid, appName, appVersion, installPath,
-        packageLocation, packageInstaller, installerOptions,
-        logsDirectory, platformGuid, NOW()
+        appGuid, appName, appVersion, installPath, packageLocation, packageInstaller,
+        installerOptions, logsDirectory, platformGuid, NOW()
     );
 
     COMMIT;
@@ -96,20 +95,20 @@ CREATE PROCEDURE `esolutionssvc`.`updateApplicationData`(
     IN packageInstaller TEXT,
     IN installerOptions TEXT,
     IN logsDirectory TEXT,
-    IN platformGuid VARCHAR(128)
+    IN platformGuid TEXT
 )
 BEGIN
     UPDATE `esolutionssvc`.`installed_applications`
     SET
-        APPLICATION_NAME = appName,
-        APPLICATION_VERSION = appVersion,
+        NAME = appName,
+        VERSION = appVersion,
         INSTALLATION_PATH = installPath,
         PACKAGE_LOCATION = packageLocation,
         PACKAGE_INSTALLER = packageInstaller,
         INSTALLER_OPTIONS = installerOptions,
         LOGS_DIRECTORY = logsDirectory,
         PLATFORM_GUID = platformGuid
-    WHERE APPLICATION_GUID = appGuid;
+    WHERE GUID = appGuid;
 
     COMMIT;
 END $$
@@ -127,7 +126,7 @@ CREATE PROCEDURE `esolutionssvc`.`removeApplicationData`(
 BEGIN
     UPDATE `esolutionssvc`.`installed_applications`
     SET APP_OFFLINE_DATE = NOW()
-    WHERE APPLICATION_GUID = appGuid;
+    WHERE GUID = appGuid;
 
     COMMIT;
 END $$
@@ -144,17 +143,20 @@ CREATE PROCEDURE `esolutionssvc`.`getApplicationData`(
 )
 BEGIN
     SELECT
-        APPLICATION_GUID,
-        APPLICATION_NAME,
-        APPLICATION_VERSION,
-        INSTALLATION_PATH,
-        PACKAGE_LOCATION,
-        PACKAGE_INSTALLER,
-        INSTALLER_OPTIONS,
-        LOGS_DIRECTORY,
-        PLATFORM_GUID
-    FROM `esolutionssvc`.`installed_applications`
-    WHERE APPLICATION_GUID = appGuid
+        T1.GUID,
+        T1.NAME,
+        T1.VERSION,
+        T1.INSTALLATION_PATH,
+        T1.PACKAGE_LOCATION,
+        T1.PACKAGE_INSTALLER,
+        T1.INSTALLER_OPTIONS,
+        T1.LOGS_DIRECTORY,
+        T2.GUID,
+        T2.NAME
+    FROM `esolutionssvc`.`installed_applications` T1
+    INNER JOIN `esolutionssvc`.`service_platforms` T2
+    ON T1.PLATFORM_GUID = T2.GUID
+    WHERE GUID = appGuid
     AND APP_OFFLINE_DATE = '0000-00-00 00:00:00';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -185,8 +187,8 @@ CREATE PROCEDURE `esolutionssvc`.`listApplications`(
 )
 BEGIN
     SELECT
-        APPLICATION_GUID,
-        APPLICATION_NAME
+        GUID,
+        NAME
     FROM `esolutionssvc`.`installed_applications`
     WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00'
     LIMIT startRow, 20;

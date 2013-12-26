@@ -50,23 +50,14 @@
             document.getElementById('execute').disabled = false;
             document.getElementById('platformName').focus();
         }
-        else if ((theForm.appServers) && (theForm.appServers.value == ''))
+        else if (theForm.platformServers.value == '')
         {
             clearText(theForm);
 
-            document.getElementById('validationError').innerHTML = 'Target application servers must be provided.';
-            document.getElementById('txtPlatformAppservers').style.color = '#FF0000';
+            document.getElementById('validationError').innerHTML = 'Target servers must be provided.';
+            document.getElementById('txtPlatformServers').style.color = '#FF0000';
             document.getElementById('execute').disabled = false;
-            document.getElementById('platformName').focus();
-        }
-        else if ((theForm.webServers) && (theForm.webServers.value == ''))
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'Target web servers must be provided.';
-            document.getElementById('txtPlatformWebservers').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('platformName').focus();
+            document.getElementById('platformServers').focus();
         }
         else
         {
@@ -81,8 +72,6 @@
     <ul>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/list-projects" title="<spring:message code='svc.mgmt.list.projects' />"><spring:message code="svc.mgmt.list.projects" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/add-project" title="<spring:message code='svc.mgmt.add.project' />"><spring:message code="svc.mgmt.add.project" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
     </ul>
 </div>
@@ -127,28 +116,12 @@
             </form:select>
             <form:errors path="status" cssClass="error" />
 
-            <label id="txtPlatformDmgr"><spring:message code="svc.mgmt.platform.dmgr" /></label>
-            ${command.platformDmgrName}
-            <label id="txtPlatformAppservers"><spring:message code="svc.mgmt.platform.appservers" /></label>
+            <label id="txtPlatformServers"><spring:message code="svc.mgmt.platform.servers" /></label>
             <c:choose>
-                <c:when test="${not empty appServerList}">
-                    <form:select path="appServers" multiple="true">
-                        <c:forEach var="appserver" items="${appServerList}">
-                            <form:option value="${appserver.serverGuid}" label="${appserver.operHostName}" />
-                        </c:forEach>
-                    </form:select>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/system-management/add-server" title="<spring:message code='system.mgmt.add.server' />"><spring:message code='system.mgmt.add.server' /></a>
-                </c:otherwise>
-            </c:choose>
-
-            <label id="txtPlatformWebservers"><spring:message code="svc.mgmt.platform.webservers" /></label>
-            <c:choose>
-                <c:when test="${not empty webServerList}">
-                    <form:select path="webServers" multiple="true">
-                        <c:forEach var="webserver" items="${webServerList}">
-                            <form:option value="${webserver.serverGuid}" label="${webserver.operHostName}" />
+                <c:when test="${not empty serverList}">
+                    <form:select path="servers" multiple="true">
+                        <c:forEach var="server" items="${serverList}">
+                            <form:option value="${server.serverGuid}" label="${server.operHostName}" />
                         </c:forEach>
                     </form:select>
                 </c:when>

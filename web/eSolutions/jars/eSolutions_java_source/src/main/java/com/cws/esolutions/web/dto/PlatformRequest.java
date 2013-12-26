@@ -34,11 +34,8 @@ public class PlatformRequest implements Serializable
 {
     private String description = null;
     private String platformName = null;
-    private String platformDmgr = null;
     private ServiceStatus status = null;
-    private String platformDmgrName = null;
-    private List<String> appServers = null;
-    private List<String> webServers = null;
+    private List<String> platformServers = null;
 
     private static final long serialVersionUID = 6181577121963540025L;
     private static final String CNAME = PlatformRequest.class.getName();
@@ -73,46 +70,7 @@ public class PlatformRequest implements Serializable
         this.status = value;
     }
 
-    public final void setPlatformDmgr(final String value)
-    {
-        final String methodName = PlatformRequest.CNAME + "#setPlatformDmgr(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platformDmgr = value;
-    }
-
-    public final void setPlatformDmgrName(final String value)
-    {
-        final String methodName = PlatformRequest.CNAME + "#setPlatformDmgrName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.platformDmgrName = value;
-    }
-
-    public final void setAppServers(final List<String> value)
-    {
-        final String methodName = PlatformRequest.CNAME + "#setAppServers(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.appServers = value;
-    }
-
-    public final void setWebServers(final List<String> value)
+    public final void setPlatformServers(final List<String> value)
     {
         final String methodName = PlatformRequest.CNAME + "#setWebServers(final List<String> value)";
 
@@ -122,7 +80,7 @@ public class PlatformRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.webServers = value;
+        this.platformServers = value;
     }
 
     public final void setDescription(final String value)
@@ -164,56 +122,17 @@ public class PlatformRequest implements Serializable
         return this.status;
     }
 
-    public final String getPlatformDmgr()
+    public final List<String> getPlatformServers()
     {
-        final String methodName = PlatformRequest.CNAME + "#getPlatformDmgr()";
+        final String methodName = PlatformRequest.CNAME + "#getPlatformServers()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformDmgr);
+            DEBUGGER.debug("Value: {}", this.platformServers);
         }
 
-        return this.platformDmgr;
-    }
-
-    public final String getPlatformDmgrName()
-    {
-        final String methodName = PlatformRequest.CNAME + "#getPlatformDmgrName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.platformDmgrName);
-        }
-
-        return this.platformDmgrName;
-    }
-
-    public final List<String> getAppServers()
-    {
-        final String methodName = PlatformRequest.CNAME + "#getPlatformDmgr()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appServers);
-        }
-
-        return this.appServers;
-    }
-
-    public final List<String> getWebServers()
-    {
-        final String methodName = PlatformRequest.CNAME + "#getWebServers()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.webServers);
-        }
-
-        return this.webServers;
+        return this.platformServers;
     }
 
     public final String getDescription()

@@ -12,8 +12,7 @@
     <bean id="platformRequestValidator" class="com.cws.esolutions.web.validators.PlatformValidator">
         <property name="messagePlatformStatusRequired" value="svc.mgmt.service.status.required" />
         <property name="messagePlatformNameRequired" value="svc.mgmt.service.name.required" />
-        <property name="messagePlatformAppServersRequired" value="svc.mgmt.platform.appservers.required" />
-        <property name="messagePlatformWebServersRequired" value="svc.mgmt.platform.webservers.required" />
+        <property name="messagePlatformServersRequired" value="svc.mgmt.platform.servers.required" />
     </bean>
 
     <bean id="datactrValidator" class="com.cws.esolutions.web.validators.DatacenterValidator">
@@ -47,7 +46,6 @@
         <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
         <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
         <property name="recordsPerPage" value="20" />
-        <property name="selectDmgrPage" value="ServiceMgmt_SelectDmgr" />
         <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
         <property name="addPlatformPage" value="ServiceMgmt_AddPlatform" />
         <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
@@ -55,7 +53,6 @@
         <property name="viewDatacentersPage" value="ServiceMgmt_ViewDatacenters" />
         <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
         <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
-        <property name="messageNoDmgrFound" value="svc.mgmt.platform.no.dmgr.found" />
         <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
         <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
         <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />

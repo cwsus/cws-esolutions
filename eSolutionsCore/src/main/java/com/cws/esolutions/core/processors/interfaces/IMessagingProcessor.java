@@ -35,11 +35,11 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

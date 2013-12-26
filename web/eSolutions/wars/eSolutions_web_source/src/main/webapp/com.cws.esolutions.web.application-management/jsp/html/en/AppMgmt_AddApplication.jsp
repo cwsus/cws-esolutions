@@ -67,15 +67,6 @@
             document.getElementById('execute').disabled = false;
             document.getElementById('applicationName').focus();
         }
-        else if (theForm.project.value == '')
-        {
-            clearText(theForm);
-
-            document.getElementById('validationError').innerHTML = 'The application must be associated with a project.';
-            document.getElementById('txtApplicationProject').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('applicationName').focus();
-        }
         else if (theForm.platform.value == '')
         {
             clearText(theForm);
@@ -152,28 +143,6 @@
             <form:input path="version" />
             <form:errors path="version" cssClass="error" />
 
-            <label id="txtClusterName"><spring:message code="app.mgmt.application.cluster.name" /></label>
-            <form:input path="clusterName" />
-            <form:errors path="clusterName" cssClass="error" />
-
-            <label id="txtApplicationProject"><spring:message code="app.mgmt.application.project" /></label>
-            <c:choose>
-                <c:when test="${not empty projectListing}">
-                    <form:select path="project" multiple="false">
-                        <option><spring:message code="theme.option.select" /></option>
-                        <option><spring:message code="theme.option.spacer" /></option>
-                        <c:forEach var="project" items="${projectListing}">
-                            <form:option value="${project.key}" label="${project.value}" />
-                        </c:forEach>
-                    </form:select>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/application-management/add-project"
-                        title="<spring:message code='select.request.add.project' />"><spring:message code='select.request.add.project' /></a>
-                </c:otherwise>
-            </c:choose>
-            <form:errors path="project" cssClass="error" />
-
             <label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label>
             <c:choose>
                 <c:when test="${not empty platformListing}">
@@ -184,8 +153,8 @@
                     </form:select>
                 </c:when>
                 <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/ui/application-management/add-project"
-                        title="<spring:message code='select.request.add.project' />"><spring:message code='select.request.add.project' /></a>
+                    <a href="${pageContext.request.contextPath}/ui/application-management/add-platform"
+                        title="<spring:message code='select.request.add.platform' />"><spring:message code='select.request.add.platform' /></a>
                 </c:otherwise>
             </c:choose>
             <form:errors path="platform" cssClass="error" />

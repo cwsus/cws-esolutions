@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
-import com.cws.esolutions.security.audit.enums.AuditType;
+import com.cws.esolutions.security.processors.enums.AuditType;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

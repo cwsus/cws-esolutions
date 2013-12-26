@@ -26,7 +26,6 @@ package com.cws.esolutions.core.processors.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
 import java.util.Arrays;
@@ -39,11 +38,12 @@ import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.core.processors.enums.NetworkPartition;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
@@ -111,112 +111,114 @@ public class PlatformManagementProcessorImplTest
     @Test
     public void testAddNewPlatform()
     {
-        Server dmgrServer = null;
-        List<Server> webServers = null;
-        List<Server> appServers = null;
-        Platform platform = new Platform();
+        List<String> devServers = new ArrayList<>(
+                Arrays.asList(
+                        "1c03d56a-a626-4efa-b7b1-9e6dbe9dba39",
+                        "8ed3305f-a7f1-46b2-aee1-f90590bd3818",
+                        "90542d9a-7dd8-449d-ada3-193872b93015",
+                        "d4d2cd32-b8e7-4083-8f05-ae16cb121094",
+                        "81b3e6fe-632f-4b5b-aff4-c643a8c50dce",
+                        "4a68a86b-2d13-44a3-9cb2-1fd2c55ebeee",
+                        "f625068e-f31a-43b1-8b14-87856f435d72",
+                        "04d180fd-b697-47d8-a43f-39844f78790f",
+                        "ad0487fe-d7fa-4692-bd70-adeaca80b248",
+                        "00dbf607-481c-4965-9b18-722ea2a52c9b",
+                        "e6f208a9-9f7c-47b0-aeb6-5b9fd5b53966",
+                        "2c7cf9d5-914c-41cb-9019-ba6c86370f70",
+                        "c5c8d1e7-aa15-46ca-b9b4-81048853d471",
+                        "607d5ceb-6957-49e5-a639-e7d74f45f4bf",
+                        "85ab3069-fd3c-4490-a4ba-0c59b7cebab2",
+                        "f9acb920-791a-42bb-b9ed-ee09610d2294",
+                        "71b68ab0-f750-4c82-88f1-e29d61624e6b"));
 
-        String[] devApps = { "f42c6cfa-09dc-4466-8d6b-f8dd3dc1b4cc", "0d069a14-6784-4062-a3a9-f15ae016fc14", "646e4092-e94a-441b-b8ae-e389db572f82", "dad6aea6-d6a9-4b0f-a344-75d04839483a" };
-        String[] devWebs = { "f21dba8a-1ad9-41f7-a649-c611efd877d0", "baad4160-2e13-4416-8a21-a4e2dcd20903", "935df58d-679a-4371-a849-0eaa0cf21c0b", "253ef6b2-4b55-4cd3-a70e-ad1d745031c5" };
+        List<String> qaServers = new ArrayList<>(
+                Arrays.asList(
+                        "582761a9-8697-4ce4-8a63-c4c7be4bdb97",
+                        "337f3482-0603-4dee-a1d3-085a1c9a0458",
+                        "56306b11-9473-444f-a830-b6a515a85031",
+                        "61137da6-4d67-4689-a6f8-abb4ba0d36b1",
+                        "12d1ecf4-adc3-4c30-80e2-73f51cd72e8c",
+                        "56e23728-e23d-4585-b65e-863727c2f028",
+                        "1fe5b7bb-9cdb-4170-a73f-4eccdc1ccf47",
+                        "86771cc3-21b4-4e82-9e5d-f1a94aa07439",
+                        "e4cf84f1-9403-4c30-99d9-d8155a4a3801",
+                        "3fdf1628-9cc7-47c7-a242-0171fb771d13",
+                        "af373ae5-8536-46e1-a8b7-137599962fdf",
+                        "70a0643b-7057-4347-9d78-df5b7fd2e99e",
+                        "ed91ea4a-8eb8-4260-8b79-98cbb76ebfd3",
+                        "4e7d09a1-3834-426f-aed5-ec473940b870",
+                        "f850a61c-e019-48e5-a22c-b51de7641ceb",
+                        "e3e2c870-7e9c-4746-8194-60ceec16c398",
+                        "00f3fbd2-6730-457e-9eec-c473a91e166a"));
 
-        String[] qaApps = { "b84641e3-7668-47ab-8b92-68ac46d2cdd7", "db1f7113-29da-4602-a495-97c3b756dc66", "7203c86d-3942-41d4-b153-1e58ffb82c5e", "8302e2ab-2d78-4e02-85ee-fff372e2ed13" };
-        String[] qaWebs = { "be004f67-4cdf-45d1-8cd7-aaa2afa5da0b", "4fbc14b1-d47f-4aa7-81db-ab014ba2d3da", "f4b1b42a-b309-4656-afc0-690ccacf176f", "5c6391f8-4d16-47f4-9b1d-3f2139354f26" };
-
-        String[] prdApps = { "b0f6450c-06dc-4461-9b6e-0bc9bef1ed53", "60f19ffe-6d2f-45ac-9e92-b98cdcb9579f", "07e1b4fe-2263-41d4-83d7-6bdc77bd48af", "0bf33b7b-b84e-46d5-90cd-ab554cf0298e" };
-        String[] prdWebs = { "b834950b-353e-4f44-8ea0-d1a9c12d6f5c", "6c061f27-fca8-44e4-a0f4-6190813e4c4b", "19728549-1f3f-47a5-af24-b8eeb8270219", "58e440ea-80b0-43c8-8b44-102c8203d6d9" };
+        List<String> prdServers = new ArrayList<>(
+                Arrays.asList(
+                        "fbcb8f0e-15c5-427d-92e8-174903d22839",
+                        "0ec50874-f333-442f-ac80-efe6af1ba142",
+                        "f905aef1-49e4-4b1d-ae0d-0214a6588a3f",
+                        "111c6993-85b7-4064-9069-607e0cdb4c57",
+                        "248bad12-2b90-45c5-b858-9685e11f0b10",
+                        "19942d3f-e585-42b4-b96b-0911b256c42c",
+                        "4265a88d-96ba-4ced-b206-3d270f39c2e5",
+                        "b4246ef7-d769-486d-94ba-dcd68807d51c",
+                        "e8e84447-e87c-4a62-af2c-412170b92171",
+                        "5ce9a68d-de39-45f0-a7d9-ccd3b30079ad",
+                        "4274b507-bedb-4ff7-90e0-2e557f3c2516",
+                        "90b6bfa5-9591-408d-a235-baea1541d98e",
+                        "e6e7907f-4818-4020-ad97-156e2f4a63da",
+                        "a8116127-3580-4e68-ba9d-3a13a87907fc",
+                        "b1b5d9d1-1480-4214-82fd-b2838b08c6f5",
+                        "b335e664-cce8-43f4-8156-5164573fac79",
+                        "bbf9ced2-2070-45eb-8675-18ed5b747db4"));
 
         for (int x = 0; x < 3; x++)
         {
-            platform.setPlatformGuid(UUID.randomUUID().toString());
-            platform.setPlatformName(RandomStringUtils.randomAlphabetic(8));
-            platform.setStatus(ServiceStatus.ACTIVE);
-            platform.setDescription("Test Platform");
+            List<Server> servers = new ArrayList<>();
+
+            Platform platform = new Platform();
 
             if (x == 0)
             {
-                dmgrServer = new Server();
-                dmgrServer.setServerGuid("7269ccd3-c867-40ec-a44a-89d1ebca8e16");
+                platform.setRegion(ServiceRegion.DEV);
 
-                platform.setPlatformRegion(ServiceRegion.DEV);
-
-                webServers = new ArrayList<>();
-
-                for (String str : devWebs)
+                for (String str : devServers)
                 {
                     Server server = new Server();
                     server.setServerGuid(str);
 
-                    webServers.add(server);
-                }
-
-                appServers = new ArrayList<>();
-
-                for (String str : devApps)
-                {
-                    Server server = new Server();
-                    server.setServerGuid(str);
-
-                    appServers.add(server);
+                    servers.add(server);
                 }
             }
             else if (x == 1)
             {
-                dmgrServer = new Server();
-                dmgrServer.setServerGuid("774307b5-5f8c-4dc3-9c71-06ea05df7da8");
+                platform.setRegion(ServiceRegion.QA);
 
-                platform.setPlatformRegion(ServiceRegion.QA);
-
-                webServers = new ArrayList<>();
-
-                for (String str : qaWebs)
+                for (String str : qaServers)
                 {
                     Server server = new Server();
                     server.setServerGuid(str);
 
-                    webServers.add(server);
-                }
-
-                appServers = new ArrayList<>();
-
-                for (String str : qaApps)
-                {
-                    Server server = new Server();
-                    server.setServerGuid(str);
-
-                    appServers.add(server);
+                    servers.add(server);
                 }
             }
             else if (x == 2)
             {
-                dmgrServer = new Server();
-                dmgrServer.setServerGuid("1d9c28ef-5d65-4251-a486-e2b6cf335911");
+                platform.setRegion(ServiceRegion.PRD);
 
-                platform.setPlatformRegion(ServiceRegion.PRD);
-
-                webServers = new ArrayList<>();
-
-                for (String str : prdWebs)
+                for (String str : prdServers)
                 {
                     Server server = new Server();
                     server.setServerGuid(str);
 
-                    webServers.add(server);
-                }
-
-                appServers = new ArrayList<>();
-
-                for (String str : prdApps)
-                {
-                    Server server = new Server();
-                    server.setServerGuid(str);
-
-                    appServers.add(server);
+                    servers.add(server);
                 }
             }
 
-            platform.setPlatformDmgr(dmgrServer);
-            platform.setAppServers(appServers);
-            platform.setWebServers(webServers);
+            platform.setName(RandomStringUtils.randomAlphabetic(8));
+            platform.setStatus(ServiceStatus.ACTIVE);
+            platform.setDescription("Test Platform");
+            platform.setPartition(NetworkPartition.DMZ);
+            platform.setServers(servers);
 
             PlatformManagementRequest request = new PlatformManagementRequest();
             request.setPlatform(platform);
@@ -261,7 +263,7 @@ public class PlatformManagementProcessorImplTest
     public void testListPlatformsByAttributeWithName()
     {
         Platform platform = new Platform();
-        platform.setPlatformName("BBFvgNHa");
+        platform.setName("BBFvgNHa");
 
         PlatformManagementRequest request = new PlatformManagementRequest();
         request.setRequestInfo(hostInfo);
@@ -289,7 +291,7 @@ public class PlatformManagementProcessorImplTest
         for (String str : platforms)
         {
             Platform platform = new Platform();
-            platform.setPlatformGuid(str);
+            platform.setGuid(str);
 
             PlatformManagementRequest request = new PlatformManagementRequest();
             request.setRequestInfo(hostInfo);

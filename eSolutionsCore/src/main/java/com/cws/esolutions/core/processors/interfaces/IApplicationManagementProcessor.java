@@ -36,17 +36,17 @@ import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
+import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
+import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
-import com.cws.esolutions.security.audit.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.audit.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 /**
  * Interface for the Application Data DAO layer. Allows access

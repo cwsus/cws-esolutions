@@ -35,6 +35,8 @@ import com.cws.esolutions.security.dao.audit.impl.AuditDAOImpl;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.dao.audit.interfaces.IAuditDAO;
+import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
+import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -48,6 +50,7 @@ public interface IAuditProcessor
 {
     static final IAuditDAO auditDAO = new AuditDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
+    static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
 
     static final String CNAME = IAuditProcessor.class.getName();

@@ -3,12 +3,12 @@
 --
 DROP TABLE IF EXISTS `esolutionssvc`.`service_datacenters`;
 CREATE TABLE `esolutionssvc`.`service_datacenters` (
-    `DATACENTER_GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `DATACENTER_NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
-    `DATACENTER_STATUS` VARCHAR(50) CHARACTER SET UTF8 NOT NULL DEFAULT 'INACTIVE',
-    `DATACENTER_DESC` TEXT CHARACTER SET UTF8,
-    PRIMARY KEY (`DATACENTER_GUID`),
-    FULLTEXT KEY `IDX_DATACENTERS` (`DATACENTER_GUID`, `DATACENTER_NAME`, `DATACENTER_STATUS`)
+    `GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `NAME` VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
+    `STATUS` VARCHAR(50) CHARACTER SET UTF8 NOT NULL DEFAULT 'INACTIVE',
+    `DESCRIPTION` TEXT CHARACTER SET UTF8,
+    PRIMARY KEY (`GUID`),
+    FULLTEXT KEY `IDX_DATACENTERS` (`GUID`, `NAME`, `STATUS`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -28,14 +28,14 @@ CREATE PROCEDURE `esolutionssvc`.`getDataCenterByAttribute`(
 )
 BEGIN
     SELECT
-        DATACENTER_GUID,
-        DATACENTER_NAME,
-        DATACENTER_STATUS,
-        DATACENTER_DESC,
-    MATCH (`DATACENTER_GUID`, `DATACENTER_NAME`, `DATACENTER_STATUS`)
+        GUID,
+        NAME,
+        STATUS,
+        DESCRIPTION,
+    MATCH (`GUID`, `NAME`, `STATUS`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM `esolutionssvc`.`service_datacenters`
-    WHERE MATCH (`DATACENTER_GUID`, `DATACENTER_NAME`, `DATACENTER_STATUS`)
+    WHERE MATCH (`GUID`, `NAME`, `STATUS`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     LIMIT startRow, 20;
 END $$
@@ -55,7 +55,7 @@ CREATE PROCEDURE `esolutionssvc`.`addNewDatacenter`(
 )
 BEGIN
     INSERT INTO `esolutionssvc`.`service_datacenters`
-    (DATACENTER_GUID, DATACENTER_NAME, DATACENTER_STATUS, DATACENTER_DESC)
+    (GUID, NAME, STATUS, DESCRIPTION)
     VALUES
     (datacenterGuid, datacenterName, datacenterStatus, datacenterDesc);
 
@@ -74,8 +74,8 @@ CREATE PROCEDURE `esolutionssvc`.`removeDataCenter`(
 )
 BEGIN
     UPDATE `esolutionssvc`.`service_datacenters`
-    SET DATACENTER_STATUS = 'INACTIVE'
-    WHERE DATACENTER_GUID = datacenterGuid;
+    SET STATUS = 'INACTIVE'
+    WHERE GUID = datacenterGuid;
 
     COMMIT;
 END $$
@@ -92,7 +92,7 @@ CREATE PROCEDURE `esolutionssvc`.`getDatacenterCount`(
 BEGIN
     SELECT COUNT(*)
     FROM `esolutionssvc`.`service_datacenters`
-    WHERE DATACENTER_STATUS = 'ACTIVE';
+    WHERE STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -107,12 +107,12 @@ CREATE PROCEDURE `esolutionssvc`.`listDataCenters`(
 )
 BEGIN
     SELECT
-        DATACENTER_GUID,
-        DATACENTER_NAME,
-        DATACENTER_STATUS,
-        DATACENTER_DESC
+        GUID,
+        NAME,
+        STATUS,
+        DESCRIPTION
     FROM `esolutionssvc`.`service_datacenters`
-    WHERE DATACENTER_STATUS = 'ACTIVE'
+    WHERE STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -128,13 +128,13 @@ CREATE PROCEDURE `esolutionssvc`.`retrDataCenter`(
 )
 BEGIN
     SELECT
-        DATACENTER_GUID,
-        DATACENTER_NAME,
-        DATACENTER_STATUS,
-        DATACENTER_DESC
+        GUID,
+        NAME,
+        STATUS,
+        DESCRIPTION
     FROM `esolutionssvc`.`service_datacenters`
-    WHERE DATACENTER_GUID = datacenterGuid
-    AND DATACENTER_STATUS = 'ACTIVE';
+    WHERE GUID = datacenterGuid
+    AND STATUS = 'ACTIVE';
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

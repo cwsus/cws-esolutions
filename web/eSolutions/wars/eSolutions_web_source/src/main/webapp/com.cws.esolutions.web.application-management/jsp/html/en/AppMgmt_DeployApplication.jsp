@@ -133,11 +133,9 @@
                     <label id="txtAppVersion"><spring:message code="app.mgmt.application.version" /></label>
                     ${application.applicationVersion}
 
-                    <label id="txtProjectName"><spring:message code="app.mgmt.application.project" /></label>
-                    ${application.applicationProject.projectCode}
-
                     <label id="txtPlatformName"><spring:message code="app.mgmt.application.platform" /></label>
                     ${platform.platformName}
+
                     <c:if test="${not empty fn:trim(application.scmPath)}">
                         <label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label>
                         ${application.scmPath}

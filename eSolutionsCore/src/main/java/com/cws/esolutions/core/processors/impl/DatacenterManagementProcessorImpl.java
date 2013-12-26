@@ -24,16 +24,16 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
 import com.cws.esolutions.core.processors.dto.DataCenter;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
 import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -98,7 +98,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                 try
                 {
-                    validator = datactrDAO.getDataCenterByAttribute(dataCenter.getDatacenterName(), request.getStartPage());
+                    validator = datactrDAO.getDataCenterByAttribute(dataCenter.getName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -116,9 +116,9 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
-                                    dataCenter.getDatacenterName(),
-                                    dataCenter.getDatacenterStatus().name(),
-                                    dataCenter.getDatacenterDesc()));
+                                    dataCenter.getName(),
+                                    dataCenter.getStatus().name(),
+                                    dataCenter.getDescription()));
 
                     if (DEBUG)
                     {
@@ -247,10 +247,10 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
 
                 List<String> insertData = new ArrayList<>(
                     Arrays.asList(
-                        dataCenter.getDatacenterGuid(),
-                        dataCenter.getDatacenterName(),
-                        dataCenter.getDatacenterStatus().name(),
-                        dataCenter.getDatacenterDesc()));
+                        dataCenter.getGuid(),
+                        dataCenter.getName(),
+                        dataCenter.getStatus().name(),
+                        dataCenter.getDescription()));
 
                 if (DEBUG)
                 {
@@ -388,10 +388,10 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                         }
 
                         DataCenter dataCenter = new DataCenter();
-                        dataCenter.setDatacenterGuid(data[0]);
-                        dataCenter.setDatacenterName(data[1]);
-                        dataCenter.setDatacenterStatus(ServiceStatus.valueOf(data[2]));
-                        dataCenter.setDatacenterDesc(data[3]);
+                        dataCenter.setGuid(data[0]);
+                        dataCenter.setName(data[1]);
+                        dataCenter.setStatus(ServiceStatus.valueOf(data[2]));
+                        dataCenter.setDescription(data[3]);
 
                         if (DEBUG)
                         {
@@ -504,7 +504,7 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
             {
                 if (dataCenter != null)
                 {
-                    List<String> data = datactrDAO.getDatacenter(dataCenter.getDatacenterGuid());
+                    List<String> data = datactrDAO.getDatacenter(dataCenter.getGuid());
 
                     if (DEBUG)
                     {
@@ -514,10 +514,10 @@ public class DatacenterManagementProcessorImpl implements IDatacenterManagementP
                     if ((data != null) && (data.size() != 0))
                     {
                         DataCenter datactr = new DataCenter();
-                        datactr.setDatacenterGuid(data.get(0));
-                        datactr.setDatacenterName(data.get(1));
-                        datactr.setDatacenterStatus(ServiceStatus.valueOf(data.get(2)));
-                        datactr.setDatacenterDesc(data.get(3));
+                        datactr.setGuid(data.get(0));
+                        datactr.setName(data.get(1));
+                        datactr.setStatus(ServiceStatus.valueOf(data.get(2)));
+                        datactr.setDescription(data.get(3));
 
                         if (DEBUG)
                         {

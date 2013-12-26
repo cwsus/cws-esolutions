@@ -61,7 +61,6 @@
             <tr>
                 <td><spring:message code="app.mgmt.application.name" /></td>
                 <td><spring:message code="app.mgmt.application.version" /></td>
-                <td><spring:message code="app.mgmt.application.project" /></td>
             </tr>
             <c:forEach var="application" items="${applicationList}">
                 <tr>
@@ -70,10 +69,6 @@
                             title="${application.applicationName}">${application.applicationName}</a>
                     </td>
                     <td>${application.applicationVersion}</td>
-                    <td>
-                        <a href="${pageContext.request.contextPath}/ui/service-management/project/${application.applicationProject.projectGuid}"
-                            title="${application.applicationProject.projectName}">${application.applicationProject.projectName}</a>
-                    </td>
                 </tr>
             </c:forEach>
         </table>

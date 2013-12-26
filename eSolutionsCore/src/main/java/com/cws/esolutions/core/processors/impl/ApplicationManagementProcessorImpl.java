@@ -31,18 +31,18 @@ import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
-import com.cws.esolutions.security.audit.dto.AuditEntry;
-import com.cws.esolutions.security.audit.enums.AuditType;
-import com.cws.esolutions.security.audit.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.security.audit.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.utils.exception.UtilityException;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.security.audit.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
+import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
@@ -106,7 +106,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((isAdminAuthorized) && (isUserAuthorized))
             {
-                String applGuid = (StringUtils.isNotEmpty(application.getApplicationGuid())) ? application.getApplicationGuid() : UUID.randomUUID().toString();
+                String applGuid = UUID.randomUUID().toString();
 
                 if (DEBUG)
                 {
@@ -148,24 +148,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             }
 
                             // make sure its a valid platform
-                            if (platformDao.getPlatformData(targetPlatform.getPlatformGuid()) == null)
+                            if (platformDao.getPlatformData(targetPlatform.getGuid()) == null)
                             {
                                 throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                             }
 
-                            platforms.add(targetPlatform.getPlatformGuid());
+                            platforms.add(targetPlatform.getGuid());
                         }
 
                         // ok, good platform. we can add the application in
                         List<Object> appDataList = new ArrayList<Object>(
                                 Arrays.asList(
                                         applGuid,
-                                        application.getApplicationName(),
-                                        application.getApplicationVersion(),
+                                        application.getName(),
+                                        application.getVersion(),
                                         application.getInstallPath(),
                                         application.getPackageLocation(),
+                                        application.getPackageInstaller(),
+                                        application.getInstallerOptions(),
                                         application.getLogsDirectory(),
-                                        platforms.toString()));
+                                        application.getPlatforms().toString()));
 
                         if (DEBUG)
                         {
@@ -306,11 +308,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             {
                 List<Object> appDataList = new ArrayList<Object>(
                         Arrays.asList(
-                                application.getApplicationGuid(),
-                                application.getApplicationName(),
-                                application.getApplicationVersion(),
+                                application.getGuid(),
+                                application.getName(),
+                                application.getVersion(),
                                 application.getInstallPath(),
                                 application.getPackageLocation(),
+                                application.getPackageInstaller(),
+                                application.getInstallerOptions(),
                                 application.getLogsDirectory(),
                                 application.getPlatforms().toString()));
 
@@ -440,7 +444,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if ((isAdminAuthorized) && (isUserAuthorized))
             {
-                boolean isComplete = appDAO.deleteApplication(application.getApplicationGuid());
+                boolean isComplete = appDAO.deleteApplication(application.getGuid());
 
                 if (DEBUG)
                 {
@@ -567,8 +571,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     for (String[] array : appData)
                     {
                         Application app = new Application();
-                        app.setApplicationGuid(array[0]); // T1.APPLICATION_GUID
-                        app.setApplicationName(array[1]); // T1.APPLICATION_NAME
+                        app.setGuid(array[0]); // T1.APPLICATION_GUID
+                        app.setName(array[1]); // T1.APPLICATION_NAME
 
                         if (DEBUG)
                         {
@@ -695,7 +699,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
             if (isUserAuthorized)
             {
                 List<Platform> appPlatforms = null;
-                List<Object> appData = appDAO.getApplicationData(application.getApplicationGuid());
+                List<Object> appData = appDAO.getApplicationData(application.getGuid());
 
                 if (DEBUG)
                 {
@@ -734,8 +738,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             if ((platformData != null) && (platformData.size() != 0))
                             {
                                 Platform platform = new Platform();
-                                platform.setPlatformGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
-                                platform.setPlatformName((String) platformData.get(1)); // T1.PLATFORM_NAME
+                                platform.setGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
+                                platform.setName((String) platformData.get(1)); // T1.PLATFORM_NAME
 
                                 if (DEBUG)
                                 {
@@ -759,9 +763,9 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     // then put it all together
                     Application resApplication = new Application();
                     resApplication.setPlatforms(appPlatforms);
-                    resApplication.setApplicationGuid((String) appData.get(0)); // T1.APPLICATION_GUID
-                    resApplication.setApplicationName((String) appData.get(1)); // T1.APPLICATION_NAME
-                    resApplication.setApplicationVersion((double) appData.get(2)); // T1.APPLICATION_VERSION
+                    resApplication.setGuid((String) appData.get(0)); // T1.APPLICATION_GUID
+                    resApplication.setName((String) appData.get(1)); // T1.APPLICATION_NAME
+                    resApplication.setVersion((double) appData.get(2)); // T1.APPLICATION_VERSION
                     resApplication.setInstallPath((String) appData.get(3)); // T1.BASE_PATH
                     resApplication.setPackageLocation((String) appData.get(4)); // T1.SCM_PATH
                     resApplication.setLogsDirectory((String) appData.get(6)); // T1.INSTALL_PATH
@@ -896,7 +900,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isAuthorizedForRequest)
                 {
-                    List<Object> appData = appDAO.getApplicationData(application.getApplicationGuid());
+                    List<Object> appData = appDAO.getApplicationData(application.getGuid());
 
                     if (DEBUG)
                     {

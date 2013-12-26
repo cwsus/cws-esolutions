@@ -35,7 +35,6 @@ public class ApplicationRequest implements Serializable
     private double version = 0.0;
     private String scmPath = null;
     private String jvmName = null;
-    private String project = null;
     private String basePath = null;
     private String platform = null;
     private String logsPath = null;
@@ -157,19 +156,6 @@ public class ApplicationRequest implements Serializable
         }
 
         this.logsPath = value;
-    }
-
-    public final void setProject(final String value)
-    {
-        final String methodName = ApplicationRequest.CNAME + "#setProject(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.project = value;
     }
 
     public final void setInstallPath(final String value)
@@ -352,19 +338,6 @@ public class ApplicationRequest implements Serializable
         }
 
         return this.logsPath;
-    }
-
-    public final String getProject()
-    {
-        final String methodName = ApplicationRequest.CNAME + "#getProject()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.project);
-        }
-
-        return this.project;
     }
 
     public final String getInstallPath()

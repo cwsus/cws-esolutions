@@ -67,7 +67,6 @@ public interface Authenticator
      * @param guid
      * @param username
      * @param password
-     * @param groupName
      * @return List<Object>
      * @throws AuthenticatorException
      */
