@@ -12,12 +12,16 @@
 package com.cws.esolutions.web.dto;
 
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.processors.enums.ServiceRegion;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
 /*
  * Project: eSolutions_java_source
@@ -35,6 +39,7 @@ public class PlatformRequest implements Serializable
     private String description = null;
     private String platformName = null;
     private ServiceStatus status = null;
+    private ServiceRegion region = null;
     private List<String> platformServers = null;
 
     private static final long serialVersionUID = 6181577121963540025L;
@@ -68,6 +73,19 @@ public class PlatformRequest implements Serializable
         }
 
         this.status = value;
+    }
+
+    public final void setRegion(final ServiceRegion value)
+    {
+        final String methodName = PlatformRequest.CNAME + "#setRegion(final ServiceRegion value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.region = value;
     }
 
     public final void setPlatformServers(final List<String> value)
@@ -120,6 +138,19 @@ public class PlatformRequest implements Serializable
         }
 
         return this.status;
+    }
+
+    public final ServiceRegion getRegion()
+    {
+        final String methodName = PlatformRequest.CNAME + "#getRegion()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.region);
+        }
+
+        return this.region;
     }
 
     public final List<String> getPlatformServers()

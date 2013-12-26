@@ -37,7 +37,6 @@ import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.web.validators.PlatformValidator;
-import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.web.validators.DatacenterValidator;
@@ -48,15 +47,12 @@ import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
-import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
-import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
 import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
 import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.ServerManagementException;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
@@ -81,7 +77,6 @@ public class ServiceManagementController
 {
     private int recordsPerPage = 20; // default to 20
     private String dcService = null;
-    private String systemMgmt = null;
     private String projectMgmt = null;
     private String serviceName = null;
     private String defaultPage = null;
@@ -317,19 +312,6 @@ public class ServiceManagementController
         }
 
         this.platformMgmt = value;
-    }
-
-    public final void setSystemMgmt(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setSystemMgmt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.systemMgmt = value;
     }
 
     public final void setRecordsPerPage(final int value)
@@ -1274,7 +1256,7 @@ public class ServiceManagementController
                 }
 
                 Platform reqPlatform = new Platform();
-                reqPlatform.setPlatformGuid(platformName);
+                reqPlatform.setGuid(platformName);
 
                 if (DEBUG)
                 {
@@ -1420,7 +1402,7 @@ public class ServiceManagementController
                 }
 
                 DataCenter reqDatacenter = new DataCenter();
-                reqDatacenter.setDatacenterGuid(datacenter);
+                reqDatacenter.setGuid(datacenter);
 
                 if (DEBUG)
                 {
@@ -1905,10 +1887,10 @@ public class ServiceManagementController
                 }
 
                 Platform platform = new Platform();
-                platform.setPlatformServers(appServers);
+                platform.setServers(appServers);
                 platform.setDescription(request.getDescription());
-                platform.setPlatformName(request.getPlatformName());
-                platform.setPlatformRegion(request.getPlatformRegion());
+                platform.setName(request.getPlatformName());
+                platform.setRegion(request.getRegion());
                 platform.setStatus(request.getStatus());
 
                 if (DEBUG)
@@ -1953,12 +1935,6 @@ public class ServiceManagementController
 
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.addPlatformRedirect);
-            }
-            catch (ServerManagementException smx)
-            {
-                ERROR_RECORDER.error(smx.getMessage(), smx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
             }
             catch (PlatformManagementException pmx)
             {

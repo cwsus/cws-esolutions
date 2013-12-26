@@ -868,7 +868,7 @@ public class ApplicationManagementController
                 }
 
                 Application reqApplication = new Application();
-                reqApplication.setApplicationGuid(request);
+                reqApplication.setGuid(request);
 
                 if (DEBUG)
                 {
@@ -1051,7 +1051,7 @@ public class ApplicationManagementController
                                 DEBUGGER.debug("Platform: {}", platform);
                             }
 
-                            platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
+                            platformListing.put(platform.getGuid(), platform.getName());
                         }
 
                         if (DEBUG)
@@ -1176,7 +1176,7 @@ public class ApplicationManagementController
                 }
 
                 Application reqApplication = new Application();
-                reqApplication.setApplicationGuid(application);
+                reqApplication.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -1315,7 +1315,7 @@ public class ApplicationManagementController
                 }
 
                 Application appl = new Application();
-                appl.setApplicationGuid(application);
+                appl.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -1484,7 +1484,7 @@ public class ApplicationManagementController
                 }
 
                 Application app = new Application();
-                app.setApplicationGuid(application);
+                app.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -1492,7 +1492,7 @@ public class ApplicationManagementController
                 }
 
                 Platform reqPlatform = new Platform();
-                reqPlatform.setPlatformGuid(platform);
+                reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
@@ -1530,18 +1530,15 @@ public class ApplicationManagementController
 
                     if (resPlatform != null)
                     {
-                        List<Server> webServerList = resPlatform.getWebServers();
-                        List<Server> appServerList = resPlatform.getAppServers();
+                        List<Server> servers = resPlatform.getServers();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("webServerList: {}", webServerList);
-                            DEBUGGER.debug("appServerList: {}", appServerList);
+                            DEBUGGER.debug("List<Server>: {}", servers);
                         }
 
                         mView.addObject("platform", resPlatform);
-                        mView.addObject("webServerList", webServerList);
-                        mView.addObject("appServerList", appServerList);
+                        mView.addObject("servers", servers);
                         mView.addObject("application", app);
                         mView.setViewName(this.retrieveFilesPage);
                     }
@@ -1658,7 +1655,7 @@ public class ApplicationManagementController
                 }
 
                 Platform reqPlatform = new Platform();
-                reqPlatform.setPlatformGuid(platform);
+                reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
@@ -1666,7 +1663,7 @@ public class ApplicationManagementController
                 }
 
                 Application appl = new Application();
-                appl.setApplicationGuid(application);
+                appl.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -1829,7 +1826,7 @@ public class ApplicationManagementController
                 }
 
                 Platform reqPlatform = new Platform();
-                reqPlatform.setPlatformGuid(platform);
+                reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
@@ -1845,7 +1842,7 @@ public class ApplicationManagementController
                 }
 
                 Application targetApp = new Application();
-                targetApp.setApplicationGuid(application);
+                targetApp.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -2082,7 +2079,7 @@ public class ApplicationManagementController
                 }
 
                 Application appl = new Application();
-                appl.setApplicationGuid(application);
+                appl.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -2260,7 +2257,7 @@ public class ApplicationManagementController
                 }
 
                 Application appl = new Application();
-                appl.setApplicationGuid(application);
+                appl.setGuid(application);
 
                 if (DEBUG)
                 {
@@ -2268,7 +2265,7 @@ public class ApplicationManagementController
                 }
 
                 Platform reqPlatform = new Platform();
-                reqPlatform.setPlatformGuid(platform);
+                reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
@@ -2629,7 +2626,7 @@ public class ApplicationManagementController
                 }
 
                 Platform newPlatform = new Platform();
-                newPlatform.setPlatformGuid(request.getPlatform());
+                newPlatform.setGuid(request.getPlatform());
 
                 if (DEBUG)
                 {
@@ -2637,10 +2634,10 @@ public class ApplicationManagementController
                 }
 
                 Application newApp = new Application();
-                newApp.setApplicationGuid(UUID.randomUUID().toString());
-                newApp.setApplicationName(request.getApplicationName());
+                newApp.setGuid(UUID.randomUUID().toString());
+                newApp.setName(request.getApplicationName());
                 newApp.setPlatforms(new ArrayList<>(Arrays.asList(newPlatform)));
-                newApp.setApplicationVersion(request.getVersion());
+                newApp.setVersion(request.getVersion());
                 newApp.setLogsDirectory(request.getLogsPath());
                 newApp.setInstallPath(request.getInstallPath());
                 newApp.setPackageLocation(request.getScmPath());
@@ -2712,7 +2709,7 @@ public class ApplicationManagementController
                                     DEBUGGER.debug("Platform: {}", platform);
                                 }
 
-                                platformListing.put(platform.getPlatformGuid(), platform.getPlatformName());
+                                platformListing.put(platform.getGuid(), platform.getName());
                             }
 
                             if (DEBUG)
@@ -2864,7 +2861,7 @@ public class ApplicationManagementController
                 }
 
                 Application reqApplication = new Application();
-                reqApplication.setApplicationGuid(request.getApplicationGuid());
+                reqApplication.setGuid(request.getApplicationGuid());
 
                 if (DEBUG)
                 {
@@ -2903,7 +2900,7 @@ public class ApplicationManagementController
 
                     // have the application, get the platform
                     Platform reqPlatform = new Platform();
-                    reqPlatform.setPlatformGuid(request.getPlatform());
+                    reqPlatform.setGuid(request.getPlatform());
 
                     if (DEBUG)
                     {
@@ -2945,7 +2942,7 @@ public class ApplicationManagementController
                             if (StringUtils.isNotEmpty(resApplication.getInstallPath()))
                             {
                                 // this is an scm build. make sure the version number was populated
-                                if ((request.getVersion() == 0.0) || (resApplication.getApplicationVersion() == request.getVersion()))
+                                if ((request.getVersion() == 0.0) || (resApplication.getVersion() == request.getVersion()))
                                 {
                                     // good. at this point we're going to download the files and then
                                     // well, do something.. not really sure how this is gonna work out
