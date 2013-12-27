@@ -246,53 +246,6 @@
             <xsd:element minOccurs="0" name="zoneData" type="xsd:anySimpleType" />
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:simpleType name="articleStatus">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="NEW" />
-            <xsd:enumeration value="APPROVED" />
-            <xsd:enumeration value="REJECTED" />
-            <xsd:enumeration value="DELETED" />
-            <xsd:enumeration value="REVIEW" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:complexType name="article">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="pageHits" type="xsd:int" />
-            <xsd:element minOccurs="0" name="title" type="xsd:string" />
-            <xsd:element minOccurs="0" name="cause" type="xsd:string" />
-            <xsd:element minOccurs="0" name="author" type="xsd:string" />
-            <xsd:element minOccurs="0" name="keywords" type="xsd:string" />
-            <xsd:element minOccurs="0" name="symptoms" type="xsd:string" />
-            <xsd:element minOccurs="0" name="articleId" type="xsd:string" />
-            <xsd:element minOccurs="0" name="createDate" type="xsd:string" />
-            <xsd:element minOccurs="0" name="reviewedOn" type="xsd:string" />
-            <xsd:element minOccurs="0" name="modifiedOn" type="xsd:string" />
-            <xsd:element minOccurs="0" name="modifiedBy" type="xsd:string" />
-            <xsd:element minOccurs="0" name="reviewedBy" type="xsd:string" />
-            <xsd:element minOccurs="0" name="resolution" type="xsd:string" />
-            <xsd:element minOccurs="0" name="authorEmail" type="xsd:string" />
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="articleStatus" nillable="true" type="articleStatus" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="knowledgeBaseRequest">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="article" nillable="true" type="article" />
-            <xsd:element minOccurs="0" name="serviceId" type="xsd:string" />
-            <xsd:element minOccurs="0" name="isReview" type="xsd:boolean" />
-            <xsd:element minOccurs="0" name="applicationId" type="xsd:string" />
-            <xsd:element minOccurs="0" name="applicationName" type="xsd:string" />
-            <xsd:element minOccurs="0" name="userAccount" type="userAccount" />
-            <xsd:element minOccurs="0" name="requestInfo" type="requestHostInfo" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="knowledgeBaseResponse">
-        <xsd:sequence>
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="article" nillable="true" type="article" />
-            <xsd:element minOccurs="0" name="response" type="xsd:string" />
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="articleList" nillable="true" type="article" />
-            <xsd:element minOccurs="0" name="requestStatus" type="coreServicesStatus" />
-        </xsd:sequence>
-    </xsd:complexType>
     <xsd:complexType name="searchResult">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="entryCount" type="xsd:int" />
@@ -324,12 +277,6 @@
     </xsd:complexType>
     <xsd:element name="AuthenticationException" type="AuthenticationException" />
     <xsd:complexType name="AuthenticationException">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="message" type="xsd:string" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="KnowledgeBaseException" type="KnowledgeBaseException" />
-    <xsd:complexType name="KnowledgeBaseException">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="message" type="xsd:string" />
         </xsd:sequence>
@@ -433,90 +380,6 @@
     </xsd:complexType>
     <xsd:element name="performSiteTransferResponse" type="performSiteTransferResponse" />
     <xsd:complexType name="performSiteTransferResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="addNewArticle" type="addNewArticle" />
-    <xsd:complexType name="addNewArticle">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="addNewArticleResponse" type="addNewArticleResponse" />
-    <xsd:complexType name="addNewArticleResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="updateArticle" type="updateArticle" />
-    <xsd:complexType name="updateArticle">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="updateArticleResponse" type="updateArticleResponse" />
-    <xsd:complexType name="updateArticleResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="updateArticleStatus" type="updateArticleStatus" />
-    <xsd:complexType name="updateArticleStatus">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="updateArticleStatusResponse" type="updateArticleStatusResponse" />
-    <xsd:complexType name="updateArticleStatusResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getArticle" type="getArticle" />
-    <xsd:complexType name="getArticle">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getArticleResponse" type="getArticleResponse" />
-    <xsd:complexType name="getArticleResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getPendingArticles" type="getPendingArticles" />
-    <xsd:complexType name="getPendingArticles">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getPendingArticlesResponse" type="getPendingArticlesResponse" />
-    <xsd:complexType name="getPendingArticlesResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getTopArticles" type="getTopArticles" />
-    <xsd:complexType name="getTopArticles">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="getTopArticlesResponse" type="getTopArticlesResponse" />
-    <xsd:complexType name="getTopArticlesResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doArticleSearch" type="doArticleSearch" />
-    <xsd:complexType name="doArticleSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doArticleSearchResponse" type="doArticleSearchResponse" />
-    <xsd:complexType name="doArticleSearchResponse">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="return" />
         </xsd:sequence>

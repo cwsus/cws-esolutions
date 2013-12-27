@@ -336,5 +336,46 @@ END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
+--
+-- Definition of procedure `getRetiredServers`
+--
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`getRetiredServers`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE PROCEDURE `esolutionssvc`.`getRetiredServers`(
+)
+BEGIN
+    SELECT GUID
+    FROM `esolutionssvc`.`installed_systems`
+    WHERE DELETE_DATE IS NOT NULL;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
+
+--
+-- Definition of procedure `getRetiredServers`
+--
+DROP PROCEDURE IF EXISTS `esolutionssvc`.`retireServer`$$
+/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
+CREATE PROCEDURE `esolutionssvc`.`retireServer`(
+    IN guid VARCHAR(128)
+)
+BEGIN
+    INSERT INTO esolutionssvc_hist.installed_systems
+    SELECT *
+    FROM esolutionssvc.installed_systems
+    WHERE GUID = guid
+    AND DELETE_DATE IS NOT NULL;
+
+    COMMIT;
+
+    DELETE FROM esolutionssvc.installed_systems
+    WHERE GUID = guid
+    AND DELETE_DATE IS NOT NULL;
+
+    COMMIT;
+END $$
+/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
+COMMIT$$
+
 DELIMITER ;
 COMMIT;

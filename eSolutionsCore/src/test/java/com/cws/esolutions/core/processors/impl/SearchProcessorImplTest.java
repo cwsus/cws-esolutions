@@ -120,24 +120,6 @@ public class SearchProcessorImplTest
     }
 
     @Test
-    public void doArticleSearch()
-    {
-        SearchRequest request = new SearchRequest();
-        request.setSearchTerms("testy");
-
-        try
-        {
-            SearchResponse response = processor.doArticleSearch(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (SearchRequestException srx)
-        {
-            Assert.fail(srx.getMessage());
-        }
-    }
-
-    @Test
     public void doServerSearch()
     {
         SearchRequest request = new SearchRequest();

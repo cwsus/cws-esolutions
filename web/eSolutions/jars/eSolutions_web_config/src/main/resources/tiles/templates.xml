@@ -93,32 +93,6 @@
         <put-attribute name="body"          value="/com.cws.esolutions.web.dnsservice/jsp/html/en/DNSService_ServiceLookup.jsp" cascade="true" />
     </definition>
 
-    <!-- KnowledgeBase -->
-    <definition name="KnowledgeBase_DefaultHandler" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_DefaultHandler.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_CreateArticle" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Create Article {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_CreateArticle.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_EditArticle" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Edit Article {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_EditArticle.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_ReviewSubmission" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Review Article {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_ReviewSubmission.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_ShowArticle" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - {0}" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_ShowArticle.jsp" cascade="true" />
-    </definition>
-    <definition name="KnowledgeBase_ShowPendingApprovals" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - KnowledgeBase - Pending Approvals" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.knowledgebase/jsp/html/en/KnowledgeBase_ShowPendingApprovals.jsp" cascade="true" />
-    </definition>
-
     <!-- Messaging -->
     <definition name="ServiceMessaging_SubmitMessage" extends="baseLayout">
         <put-attribute name="pageTitle"     value="eSolutions - Service Messaging - Submit Message" cascade="true" />

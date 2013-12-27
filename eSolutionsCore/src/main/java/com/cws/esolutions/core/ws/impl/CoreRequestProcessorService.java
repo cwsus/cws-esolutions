@@ -35,13 +35,10 @@ import com.cws.esolutions.core.processors.dto.SearchRequest;
 import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
-import com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest;
-import com.cws.esolutions.core.processors.dto.KnowledgeBaseResponse;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService;
-import com.cws.esolutions.core.processors.exception.KnowledgeBaseException;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 /**
@@ -254,179 +251,6 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#addNewArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "addNewArticle")
-    public KnowledgeBaseResponse addNewArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
-        }
-
-        KnowledgeBaseResponse response = kbase.addNewArticle(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "updateArticle")
-    public KnowledgeBaseResponse updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
-        }
-
-        KnowledgeBaseResponse response = kbase.updateArticle(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#updateArticleStatus(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "updateArticleStatus")
-    public KnowledgeBaseResponse updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#updateArticleStatus(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
-        }
-
-        KnowledgeBaseResponse response = kbase.updateArticleStatus(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getArticle(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "getArticle")
-    public KnowledgeBaseResponse getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#getArticle(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KnowledgeBaseRequest: ", request);
-        }
-
-        KnowledgeBaseResponse response = kbase.getArticle(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getPendingArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "getPendingArticles")
-    public KnowledgeBaseResponse getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#getPendingArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        KnowledgeBaseResponse response = kbase.getPendingArticles(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IKnowledgeBaseProcessor#getTopArticles(com.cws.esolutions.core.processors.dto.KnowledgeBaseRequest)
-     */
-    @Override
-    @WebMethod(operationName = "getTopArticles")
-    public KnowledgeBaseResponse getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#getTopArticles(final KnowledgeBaseRequest request) throws KnowledgeBaseException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        KnowledgeBaseResponse response = kbase.getTopArticles(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("KnowledgeBaseResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doArticleSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doArticleSearch")
-    public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doArticleSearch(final request request) throws SearchRequestException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("request: ", request);
-        }
-
-        SearchResponse response = searchSvc.doArticleSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServerSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
      */
     @Override
@@ -441,7 +265,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
             DEBUGGER.debug("request: ", request);
         }
 
-        SearchResponse response = searchSvc.doArticleSearch(request);
+        SearchResponse response = searchSvc.doServerSearch(request);
 
         if (DEBUG)
         {
@@ -466,7 +290,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
             DEBUGGER.debug("SearchRequest: ", request);
         }
 
-        SearchResponse response = searchSvc.doArticleSearch(request);
+        SearchResponse response = searchSvc.doMessageSearch(request);
 
         if (DEBUG)
         {

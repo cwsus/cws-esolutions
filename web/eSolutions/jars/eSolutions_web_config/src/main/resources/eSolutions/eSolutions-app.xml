@@ -106,7 +106,6 @@
             <list>
                 <value>classpath:nls/AppManagementServlet/AppManagementServlet</value>
                 <value>classpath:nls/DNSServiceServlet/DNSServiceServlet</value>
-                <value>classpath:nls/KnowledgeBaseServlet/KnowledgeBaseServlet</value>
                 <value>classpath:nls/LoginServlet/LoginServlet</value>
                 <value>classpath:nls/ServiceMessagingServlet/ServiceMessagingServlet</value>
                 <value>classpath:nls/OnlineResetServlet/OnlineResetServlet</value>

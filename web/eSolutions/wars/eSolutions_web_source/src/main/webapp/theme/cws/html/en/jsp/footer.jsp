@@ -49,8 +49,6 @@
                         <spring:message code='theme.navbar.login' /></a> | 
                 </c:otherwise>
             </c:choose>
-            <a href="${pageContext.request.contextPath}/ui/knowledgebase/default" title="<spring:message code='theme.navbar.help' />">
-                <spring:message code='theme.navbar.help' /></a>
             <script>
                 if ((window.location.pathname.search('login') == -1) && (window.location.pathname.search('common/default') == -1))
                 {

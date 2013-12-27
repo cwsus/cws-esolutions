@@ -40,7 +40,6 @@
     <import resource="classpath:/eSolutions/servlets/ApplicationManagementController.xml" />
     <import resource="classpath:/eSolutions/servlets/DNSServiceController.xml" />
     <import resource="classpath:/eSolutions/servlets/CommonController.xml" />
-    <import resource="classpath:/eSolutions/servlets/KnowledgeBaseController.xml" />
     <import resource="classpath:/eSolutions/servlets/LoginController.xml" />
     <import resource="classpath:/eSolutions/servlets/ServiceMessagingController.xml" />
     <import resource="classpath:/eSolutions/servlets/OnlineResetController.xml" />

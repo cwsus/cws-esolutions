@@ -865,4 +865,151 @@ public class ServerDataDAOImpl implements IServerDataDAO
 
         return isComplete;
     }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getRetiredServers()
+     */
+    @Override
+    public synchronized List<String> getRetiredServers() throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#getRetiredServers() throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<String> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL getRetiredServers()}");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<String>();
+
+                    while (resultSet.next())
+                    {
+                        responseData.add(resultSet.getString(1));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Value: {}", responseData);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#archiveServerData(java.lang.String)
+     */
+    @Override
+    public synchronized void archiveServerData(final String value) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#archiveServerData(final String value) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        Connection sqlConn = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL retireServer(?)}");
+            stmt.setString(1, value);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            stmt.execute();
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+    }
 }

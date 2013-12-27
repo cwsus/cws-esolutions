@@ -45,7 +45,6 @@
 <div id="sidebar">
     <h1><spring:message code="app.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/retrieve-files/application/${application.applicationGuid}" title="<spring:message code='app.mgmt.file.retrieval' />"><spring:message code="app.mgmt.file.retrieval" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}" title="<spring:message code='app.mgmt.deploy.application' />"><spring:message code="app.mgmt.deploy.application" /></a></li>
         <li><a onclick="confirmDelete('${application.applicationName}', '${application.applicationGuid}');" title="<spring:message code='app.mgmt.application.retire' />" style="cursor: pointer;"><spring:message code="app.mgmt.application.retire" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>

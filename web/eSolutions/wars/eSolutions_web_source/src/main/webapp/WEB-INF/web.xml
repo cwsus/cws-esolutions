@@ -251,6 +251,19 @@
         </jsp-property-group>
     </jsp-config>
 
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>JSP-NoAccess</web-resource-name>
+            <description>No access to JSP files</description>
+            <url-pattern>*.jsp</url-pattern>
+        </web-resource-collection>
+        <auth-constraint />
+        <user-data-constraint>
+            <description>Require SSL for ALL requests</description>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>

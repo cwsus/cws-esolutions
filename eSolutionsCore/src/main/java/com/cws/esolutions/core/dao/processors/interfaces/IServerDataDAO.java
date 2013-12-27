@@ -26,9 +26,13 @@ package com.cws.esolutions.core.dao.processors.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.slf4j.Logger;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
+
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
@@ -69,4 +73,8 @@ public interface IServerDataDAO
     List<String[]> getInstalledServers(final int startRow) throws SQLException;
 
     List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
+
+    List<String> getRetiredServers() throws SQLException;
+
+    void archiveServerData(final String value) throws SQLException;
 }

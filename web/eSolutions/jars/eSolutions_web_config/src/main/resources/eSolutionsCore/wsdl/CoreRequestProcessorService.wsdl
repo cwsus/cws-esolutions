@@ -17,18 +17,6 @@
     <wsdl:message name="doMessageSearch">
         <wsdl:part name="parameters" element="tns:doMessageSearch" />
     </wsdl:message>
-    <wsdl:message name="getPendingArticlesResponse">
-        <wsdl:part name="parameters" element="tns:getPendingArticlesResponse" />
-    </wsdl:message>
-    <wsdl:message name="getTopArticlesResponse">
-        <wsdl:part name="parameters" element="tns:getTopArticlesResponse" />
-    </wsdl:message>
-    <wsdl:message name="doArticleSearch">
-        <wsdl:part name="parameters" element="tns:doArticleSearch" />
-    </wsdl:message>
-    <wsdl:message name="updateArticle">
-        <wsdl:part name="parameters" element="tns:updateArticle" />
-    </wsdl:message>
     <wsdl:message name="performSiteTransferResponse">
         <wsdl:part name="parameters" element="tns:performSiteTransferResponse" />
     </wsdl:message>
@@ -37,12 +25,6 @@
     </wsdl:message>
     <wsdl:message name="doServerSearch">
         <wsdl:part name="parameters" element="tns:doServerSearch" />
-    </wsdl:message>
-    <wsdl:message name="updateArticleStatus">
-        <wsdl:part name="parameters" element="tns:updateArticleStatus" />
-    </wsdl:message>
-    <wsdl:message name="updateArticleResponse">
-        <wsdl:part name="parameters" element="tns:updateArticleResponse" />
     </wsdl:message>
     <wsdl:message name="verifyUserSecurityConfig">
         <wsdl:part name="parameters" element="tns:verifyUserSecurityConfig" />
@@ -56,15 +38,6 @@
     <wsdl:message name="pushNewService">
         <wsdl:part name="parameters" element="tns:pushNewService" />
     </wsdl:message>
-    <wsdl:message name="getArticleResponse">
-        <wsdl:part name="parameters" element="tns:getArticleResponse" />
-    </wsdl:message>
-    <wsdl:message name="getPendingArticles">
-        <wsdl:part name="parameters" element="tns:getPendingArticles" />
-    </wsdl:message>
-    <wsdl:message name="getTopArticles">
-        <wsdl:part name="parameters" element="tns:getTopArticles" />
-    </wsdl:message>
     <wsdl:message name="doServerSearchResponse">
         <wsdl:part name="parameters" element="tns:doServerSearchResponse" />
     </wsdl:message>
@@ -74,17 +47,11 @@
     <wsdl:message name="doSiteSearch">
         <wsdl:part name="parameters" element="tns:doSiteSearch" />
     </wsdl:message>
-    <wsdl:message name="getArticle">
-        <wsdl:part name="parameters" element="tns:getArticle" />
-    </wsdl:message>
     <wsdl:message name="getDataFromDatabaseResponse">
         <wsdl:part name="parameters" element="tns:getDataFromDatabaseResponse" />
     </wsdl:message>
     <wsdl:message name="processAgentLogon">
         <wsdl:part name="parameters" element="tns:processAgentLogon" />
-    </wsdl:message>
-    <wsdl:message name="doArticleSearchResponse">
-        <wsdl:part name="parameters" element="tns:doArticleSearchResponse" />
     </wsdl:message>
     <wsdl:message name="verifyUserSecurityConfigResponse">
         <wsdl:part name="parameters" element="tns:verifyUserSecurityConfigResponse" />
@@ -119,14 +86,8 @@
     <wsdl:message name="doSiteSearchResponse">
         <wsdl:part name="parameters" element="tns:doSiteSearchResponse" />
     </wsdl:message>
-    <wsdl:message name="KnowledgeBaseException">
-        <wsdl:part name="KnowledgeBaseException" element="tns:KnowledgeBaseException" />
-    </wsdl:message>
     <wsdl:message name="DNSServiceException">
         <wsdl:part name="DNSServiceException" element="tns:DNSServiceException" />
-    </wsdl:message>
-    <wsdl:message name="addNewArticleResponse">
-        <wsdl:part name="parameters" element="tns:addNewArticleResponse" />
     </wsdl:message>
     <wsdl:message name="pushNewServiceResponse">
         <wsdl:part name="parameters" element="tns:pushNewServiceResponse" />
@@ -134,14 +95,8 @@
     <wsdl:message name="obtainUserSecurityConfigResponse">
         <wsdl:part name="parameters" element="tns:obtainUserSecurityConfigResponse" />
     </wsdl:message>
-    <wsdl:message name="updateArticleStatusResponse">
-        <wsdl:part name="parameters" element="tns:updateArticleStatusResponse" />
-    </wsdl:message>
     <wsdl:message name="processAgentLogonResponse">
         <wsdl:part name="parameters" element="tns:processAgentLogonResponse" />
-    </wsdl:message>
-    <wsdl:message name="addNewArticle">
-        <wsdl:part name="parameters" element="tns:addNewArticle" />
     </wsdl:message>
 
     <wsdl:portType name="ICoreRequestProcessorService">
@@ -160,20 +115,10 @@
             <wsdl:output name="doSiteSearchResponse" message="tns:doSiteSearchResponse" />
             <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
         </wsdl:operation>
-        <wsdl:operation name="updateArticleStatus">
-            <wsdl:input name="updateArticleStatus" message="tns:updateArticleStatus" />
-            <wsdl:output name="updateArticleStatusResponse" message="tns:updateArticleStatusResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
-        </wsdl:operation>
         <wsdl:operation name="performLookup">
             <wsdl:input name="performLookup" message="tns:performLookup" />
             <wsdl:output name="performLookupResponse" message="tns:performLookupResponse" />
             <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
-        </wsdl:operation>
-        <wsdl:operation name="addNewArticle">
-            <wsdl:input name="addNewArticle" message="tns:addNewArticle" />
-            <wsdl:output name="addNewArticleResponse" message="tns:addNewArticleResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
         </wsdl:operation>
         <wsdl:operation name="pushNewService">
             <wsdl:input name="pushNewService" message="tns:pushNewService" />
@@ -184,11 +129,6 @@
             <wsdl:input name="doApplicationSearch" message="tns:doApplicationSearch" />
             <wsdl:output name="doApplicationSearchResponse" message="tns:doApplicationSearchResponse" />
             <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
-        <wsdl:operation name="getArticle">
-            <wsdl:input name="getArticle" message="tns:getArticle" />
-            <wsdl:output name="getArticleResponse" message="tns:getArticleResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
         </wsdl:operation>
         <wsdl:operation name="getDataFromDatabase">
             <wsdl:input name="getDataFromDatabase" message="tns:getDataFromDatabase" />
@@ -215,30 +155,10 @@
             <wsdl:output name="obtainUserSecurityConfigResponse" message="tns:obtainUserSecurityConfigResponse" />
             <wsdl:fault name="AuthenticationException" message="tns:AuthenticationException" />
         </wsdl:operation>
-        <wsdl:operation name="updateArticle">
-            <wsdl:input name="updateArticle" message="tns:updateArticle" />
-            <wsdl:output name="updateArticleResponse" message="tns:updateArticleResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
-        </wsdl:operation>
         <wsdl:operation name="doServerSearch">
             <wsdl:input name="doServerSearch" message="tns:doServerSearch" />
             <wsdl:output name="doServerSearchResponse" message="tns:doServerSearchResponse" />
             <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
-        <wsdl:operation name="doArticleSearch">
-            <wsdl:input name="doArticleSearch" message="tns:doArticleSearch" />
-            <wsdl:output name="doArticleSearchResponse" message="tns:doArticleSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
-        <wsdl:operation name="getPendingArticles">
-            <wsdl:input name="getPendingArticles" message="tns:getPendingArticles" />
-            <wsdl:output name="getPendingArticlesResponse" message="tns:getPendingArticlesResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
-        </wsdl:operation>
-        <wsdl:operation name="getTopArticles">
-            <wsdl:input name="getTopArticles" message="tns:getTopArticles" />
-            <wsdl:output name="getTopArticlesResponse" message="tns:getTopArticlesResponse" />
-            <wsdl:fault name="KnowledgeBaseException" message="tns:KnowledgeBaseException" />
         </wsdl:operation>
         <wsdl:operation name="createNewService">
             <wsdl:input name="createNewService" message="tns:createNewService" />
@@ -285,18 +205,6 @@
                 <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
-        <wsdl:operation name="addNewArticle">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="addNewArticle">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="addNewArticleResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
         <wsdl:operation name="performLookup">
             <soap:operation soapAction="" style="document" />
             <wsdl:input name="performLookup">
@@ -307,18 +215,6 @@
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
                 <soap:fault name="DNSServiceException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="updateArticleStatus">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="updateArticleStatus">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="updateArticleStatusResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="pushNewService">
@@ -355,18 +251,6 @@
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
                 <soap:fault name="DNSServiceException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getArticle">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="getArticle">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="getArticleResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="performSiteTransfer">
@@ -427,54 +311,6 @@
             </wsdl:output>
             <wsdl:fault name="SearchRequestException">
                 <soap:fault name="SearchRequestException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="updateArticle">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="updateArticle">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="updateArticleResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="doArticleSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doArticleSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doArticleSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getPendingArticles">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="getPendingArticles">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="getPendingArticlesResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="getTopArticles">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="getTopArticles">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="getTopArticlesResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="KnowledgeBaseException">
-                <soap:fault name="KnowledgeBaseException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="createNewService">

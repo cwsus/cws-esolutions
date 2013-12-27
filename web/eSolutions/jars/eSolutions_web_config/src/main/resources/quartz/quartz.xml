@@ -93,10 +93,10 @@
 
     <schedule>
         <job>
-            <name>CheckEmailMessagesJob</name>
+            <name>CheckEmailMessages</name>
             <group>eSolutions</group>
             <description>Check email messages</description>
-            <job-class>com.cws.esolutions.core.email.messaging.jobs.CheckEmailMessagesJob</job-class>
+            <job-class>com.cws.esolutions.core.email.messaging.jobs.CheckEmailMessages</job-class>
             <durability>false</durability>
             <recover>true</recover>
             <job-data-map>
@@ -135,10 +135,32 @@
             <cron>
                 <name>CheckEmailMessagesTrigger</name>
                 <group>eSolutions</group>
-                <job-name>CheckEmailMessagesJob</job-name>
+                <job-name>CheckEmailMessages</job-name>
                 <job-group>eSolutions</job-group>
                 <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
                 <cron-expression>10 0/5 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+    <schedule>
+        <job>
+            <name>ArchiveInstalledSystems</name>
+            <group>eSolutions</group>
+            <description>Check email messages</description>
+            <job-class>com.cws.esolutions.core.email.messaging.jobs.ArchiveInstalledSystems</job-class>
+            <durability>false</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>ArchiveInstalledSystemsTrigger</name>
+                <group>eSolutions</group>
+                <job-name>ArchiveInstalledSystems</job-name>
+                <job-group>eSolutions</job-group>
+                <misfire-instruction>MISFIRE_INSTRUCTION_SMART_POLICY</misfire-instruction>
+                <cron-expression>0 45 22 * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>

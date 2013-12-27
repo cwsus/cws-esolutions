@@ -72,15 +72,6 @@ public enum AuditType
     // emailing
     SENDEMAIL,
 
-    // knowledgebase
-    CREATEARTICLE,
-    UPDATEARTICLE,
-    DELETEARTICLE,
-    REJECTARTICLE,
-    APPROVEARTICLE,
-    SHOWARTICLE,
-    SHOWPENDING,
-
     // service messaging
     SHOWMESSAGES,
     LOADMESSAGE,

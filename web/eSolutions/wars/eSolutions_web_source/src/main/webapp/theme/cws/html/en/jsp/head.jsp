@@ -61,7 +61,7 @@
         <!--
             var timeout = ${pageContext.session.maxInactiveInterval} * 1000;
             var documentURI = window.location.pathname + window.location.search;
-            var ignoreURIs = new Array("/ui/login", "/ui/online-reset", "/ui/knowledgebase", "/ui/common/submit-contact");
+            var ignoreURIs = new Array("/ui/login", "/ui/online-reset", "/ui/common/submit-contact");
 
             for (var x = 0; x < ignoreURIs.length; x++)
             {

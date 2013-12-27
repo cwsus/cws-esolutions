@@ -55,10 +55,8 @@ public final class ApplicationConfig implements Serializable
     private String proxyConfig = null;
     private String nlsFileName = null;
     private String emailAliasId = null;
-    private String articlePrefix = null;
     private File fileRepositoryRoot = null;
     private String agentBundleSource = null;
-    private int articleIdentifierLength = 8; // default of 8
     private File serviceRootDirectory = null;
     private File archiveRootDirectory = null;
     private String virtualManagerClass = null;
@@ -224,32 +222,6 @@ public final class ApplicationConfig implements Serializable
         }
 
         this.agentBundleSource = value;
-    }
-
-    public final void setArticlePrefix(final String value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setArticlePrefix(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.articlePrefix = value;
-    }
-
-    public final void setArticleIdentifierLength(final int value)
-    {
-        final String methodName = ApplicationConfig.CNAME + "#setArticleIdentifierLength(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.articleIdentifierLength = value;
     }
 
     @XmlElement(name = "appName")
@@ -418,34 +390,6 @@ public final class ApplicationConfig implements Serializable
         }
         
         return this.agentBundleSource;
-    }
-
-    @XmlElement(name = "articlePrefix")
-    public final String getArticlePrefix()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getArticlePrefix()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.articlePrefix);
-        }
-
-        return this.articlePrefix;
-    }
-
-    @XmlElement(name = "articleIdentifierLength")
-    public final int getArticleIdentifierLength()
-    {
-        final String methodName = ApplicationConfig.CNAME + "#getArticleIdentifierLength()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.articleIdentifierLength);
-        }
-
-        return this.articleIdentifierLength;
     }
 
     @Override

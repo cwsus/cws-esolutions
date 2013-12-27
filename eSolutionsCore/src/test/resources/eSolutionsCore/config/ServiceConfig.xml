@@ -11,8 +11,6 @@
         <messageIdLength>16</messageIdLength>
         <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
-        <articleIdentifierLength>9</articleIdentifierLength>
-        <articlePrefix>KB-</articlePrefix>
     </application-config>
 
     <mail-config>

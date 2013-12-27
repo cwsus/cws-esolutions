@@ -32,11 +32,9 @@ import com.cws.esolutions.core.dao.processors.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.ISiteSearchDAO;
-import com.cws.esolutions.core.dao.processors.impl.KnowledgeBaseDAOImpl;
 import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 import com.cws.esolutions.core.dao.processors.impl.ApplicationDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.dao.processors.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
@@ -54,96 +52,6 @@ import com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO;
  */
 public class SearchProcessorImpl implements ISearchProcessor
 {
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doArticleSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    public SearchResponse doArticleSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ISearchProcessor.CNAME + "#doArticleSearch(final SearchRequest request) throws SearchRequestException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", request);
-        }
-
-        SearchResponse response = new SearchResponse();
-
-        try
-        {
-            IKnowledgeBaseDAO dao = new KnowledgeBaseDAOImpl();
-            List<Object[]> articleList = dao.getArticlesByAttribute(request.getSearchTerms(), request.getStartRow());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("articleList: {}", articleList);
-            }
-
-            if ((articleList != null) && (articleList.size() != 0))
-            {
-                List<SearchResult> responseList = new ArrayList<>();
-
-                for (Object[] data : articleList)
-                {
-                    if (DEBUG)
-                    {
-                        if (data != null)
-                        {
-                            for (Object str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-                    }
-
-                    if ((data != null) && (data.length >= 2))
-                    {
-                        SearchResult searchResult = new SearchResult();
-                        searchResult.setPath((String) data[1]);
-                        searchResult.setTitle((String) data[5]);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchResult: {}", searchResult);
-                        }
-
-                        responseList.add(searchResult);
-                    }
-                    else
-                    {
-                        throw new SearchRequestException("No results were located for the provided data");
-                    }
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("responseList: {}", responseList);
-                }
-
-                response.setResults(responseList);
-                response.setRequestStatus(CoreServicesStatus.SUCCESS);
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.FAILURE);
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("SearchResponse: {}", response);
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SearchRequestException(sqx.getMessage(), sqx);
-        }
-
-        return response;
-    }
-
     /**
      * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doMessageSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
      */
