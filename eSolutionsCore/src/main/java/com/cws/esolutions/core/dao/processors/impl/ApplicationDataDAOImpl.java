@@ -499,8 +499,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                             resultSet.getString(6), // PACKAGE_INSTALLER
                             resultSet.getString(7), // INSTALLER_OPTIONS
                             resultSet.getString(8), // LOGS_DIRECTORY
-                            resultSet.getString(9), // PLATFORM_GUID
-                            resultSet.getString(10) // PLATFORM_NAME
+                            resultSet.getString(9) // PLATFORM_GUID
                         )
                     );
 

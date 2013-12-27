@@ -42,7 +42,7 @@ BEGIN
     FROM `esolutionssvc`.`installed_applications`
     WHERE MATCH (`NAME`)
     AGAINST (+attributeName IN BOOLEAN MODE)
-    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    AND APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -125,7 +125,7 @@ CREATE PROCEDURE `esolutionssvc`.`removeApplicationData`(
 )
 BEGIN
     UPDATE `esolutionssvc`.`installed_applications`
-    SET APP_OFFLINE_DATE = NOW()
+    SET APP_OFFLINE_DATE = CURRENT_TIMESTAMP()
     WHERE GUID = appGuid;
 
     COMMIT;
@@ -143,21 +143,18 @@ CREATE PROCEDURE `esolutionssvc`.`getApplicationData`(
 )
 BEGIN
     SELECT
-        T1.GUID,
-        T1.NAME,
-        T1.VERSION,
-        T1.INSTALLATION_PATH,
-        T1.PACKAGE_LOCATION,
-        T1.PACKAGE_INSTALLER,
-        T1.INSTALLER_OPTIONS,
-        T1.LOGS_DIRECTORY,
-        T2.GUID,
-        T2.NAME
-    FROM `esolutionssvc`.`installed_applications` T1
-    INNER JOIN `esolutionssvc`.`service_platforms` T2
-    ON T1.PLATFORM_GUID = T2.GUID
+        GUID,
+        NAME,
+        VERSION,
+        INSTALLATION_PATH,
+        PACKAGE_LOCATION,
+        PACKAGE_INSTALLER,
+        INSTALLER_OPTIONS,
+        LOGS_DIRECTORY,
+        PLATFORM_GUID
+    FROM `esolutionssvc`.`installed_applications`
     WHERE GUID = appGuid
-    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    AND APP_OFFLINE_DATE IS NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -172,7 +169,7 @@ CREATE PROCEDURE `esolutionssvc`.`getApplicationCount`(
 BEGIN
     SELECT COUNT(*)
     FROM `esolutionssvc`.`installed_applications`
-    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    WHERE APP_OFFLINE_DATE IS NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -190,7 +187,7 @@ BEGIN
         GUID,
         NAME
     FROM `esolutionssvc`.`installed_applications`
-    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    WHERE APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

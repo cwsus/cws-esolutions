@@ -116,7 +116,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -187,7 +187,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -241,7 +241,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -297,7 +297,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -351,7 +351,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -407,7 +407,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -461,7 +461,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -512,7 +512,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -562,7 +562,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -612,7 +612,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -664,7 +664,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -717,7 +717,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -770,7 +770,7 @@ public class ServerManagementProcessorImplTest
             String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
             DataCenter dataCenter = new DataCenter();
-            dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+            dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
             Server server = new Server();
             server.setOsName("CentOS");
@@ -821,7 +821,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         for (int x = 0; x < 2; x++)
         {
@@ -874,7 +874,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         for (int x = 0; x < 2; x++)
         {
@@ -927,7 +927,7 @@ public class ServerManagementProcessorImplTest
         String name = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         for (int x = 0; x < 2; x++)
         {
@@ -979,7 +979,7 @@ public class ServerManagementProcessorImplTest
     {
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -1030,7 +1030,7 @@ public class ServerManagementProcessorImplTest
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -1081,7 +1081,7 @@ public class ServerManagementProcessorImplTest
         String hostname = RandomStringUtils.randomAlphanumeric(8).toLowerCase();
 
         DataCenter dataCenter = new DataCenter();
-        dataCenter.setGuid("c23198e3-401e-459c-a6a8-cb5215bfcbab");
+        dataCenter.setGuid("1fe90f9d-0ead-4caf-92f6-a64be1dcc6aa");
 
         Server server = new Server();
         server.setOsName("CentOS");
@@ -1126,6 +1126,7 @@ public class ServerManagementProcessorImplTest
         }
     }
 
+    /*
     @Test
     public void updateServerData()
     {
@@ -1209,6 +1210,7 @@ public class ServerManagementProcessorImplTest
             Assert.fail(smx.getMessage());
         }
     }
+    */
 
     @After
     public void tearDown()

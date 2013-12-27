@@ -708,14 +708,14 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if ((appData != null) && (appData.size() != 0))
                 {
-                    if (StringUtils.split((String) appData.get(10), ",").length >= 1) // T1.PLATFORM_GUID
+                    if (DEBUG)
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformList: {}", StringUtils.split((String) appData.get(10), ","));
-                        }
+                        DEBUGGER.debug("List<Object>: {}", appData);
+                    }
 
-                        String tmp = StringUtils.remove((String) appData.get(10), "[");
+                    if (StringUtils.split((String) appData.get(8), ",").length >= 1) // T1.PLATFORM_GUID
+                    {
+                        String tmp = StringUtils.remove((String) appData.get(8), "[");
                         String platformList = StringUtils.remove(tmp, "]");
 
                         if (DEBUG)
@@ -762,13 +762,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     // then put it all together
                     Application resApplication = new Application();
                     resApplication.setPlatforms(appPlatforms);
-                    resApplication.setGuid((String) appData.get(0)); // T1.APPLICATION_GUID
-                    resApplication.setName((String) appData.get(1)); // T1.APPLICATION_NAME
-                    resApplication.setVersion((double) appData.get(2)); // T1.APPLICATION_VERSION
-                    resApplication.setInstallPath((String) appData.get(3)); // T1.BASE_PATH
-                    resApplication.setPackageLocation((String) appData.get(4)); // T1.SCM_PATH
-                    resApplication.setLogsDirectory((String) appData.get(6)); // T1.INSTALL_PATH
-
+                    resApplication.setGuid((String) appData.get(0)); // GUID
+                    resApplication.setName((String) appData.get(1)); // NAME
+                    resApplication.setVersion((double) appData.get(2)); // VERSION
+                    resApplication.setInstallPath((String) appData.get(3)); // INSTALLATION_PATH
+                    resApplication.setPackageLocation((String) appData.get(4)); // PACKAGE_LOCATION
+                    resApplication.setPackageInstaller((String) appData.get(5)); // PACKAGE_INSTALLER
+                    resApplication.setInstallerOptions((String) appData.get(6)); // INSTALLER_OPTIONS
+                    resApplication.setLogsDirectory((String) appData.get(7)); // INSTALL_PATH
+                    
                     if (DEBUG)
                     {
                         DEBUGGER.debug("Application: {}", resApplication);

@@ -99,7 +99,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData("6625fc8c-09ed-4579-a3d6-eb43d26b679f"));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData("93128772-94b6-49b0-bac7-d16ef42a0794"));
         }
         catch (SQLException sqx)
         {

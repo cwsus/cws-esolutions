@@ -27,10 +27,8 @@
             <format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
         </tstamp>
 
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@baseObjectClass@" value="${baseObjectClass}" />
         <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryBaseDN@" value="${repositoryBaseDN}" />
         <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryUserBase@" value="${repositoryUserBase}" />
-        <replace file="${basedir}/target/classes/SecurityService/config/ServiceConfig.xml" token="@repositoryAppBase@" value="${repositoryAppBase}" />
 
         <exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
             <arg value="describe"/>

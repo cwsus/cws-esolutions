@@ -93,25 +93,25 @@
     <resource-config>
         <DataSourceManager>
             <dsName>SecurityDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://127.0.0.1:10936/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>junit</dsUser>
+            <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
             <salt>OITltocOUZjW</salt>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://127.0.0.1:10936/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>junit</dsUser>
+            <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
             <salt>OITltocOUZjW</salt>
         </DataSourceManager>
         <DataSourceManager>
             <dsName>SessionDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://127.0.0.1:10936/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>junit</dsUser>
+            <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
             <salt>OITltocOUZjW</salt>
         </DataSourceManager>

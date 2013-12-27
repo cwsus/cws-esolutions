@@ -35,7 +35,6 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.core.processors.dto.Platform;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
@@ -108,46 +107,43 @@ public class ApplicationManagementProcessorImplTest
     @Test
     public void testAddNewApplication()
     {
-        String[] platforms = { "3343c126-1ade-4fa8-8518-51090eca4578", "83cc0da1-8af7-47bb-9532-7e4ad325a5a0", "cf6b138e-628f-4c80-b523-c63997dd32d8" };
+        String[] platforms = { "17b33263-560e-4cbc-95eb-b78483d04bab", "8dde8b07-f028-480a-bc74-047da3637ef3", "affdb777-5f23-42ab-9af9-cab14fa7df19" };
 
-        for (int x = 0; x < 3; x++)
+        List<Platform> platformList = new ArrayList<>();
+
+        for (String str : platforms)
         {
-            List<Platform> platformList = new ArrayList<>();
+            Platform platform = new Platform();
+            platform.setGuid(str);
 
-            for (String str : platforms)
-            {
-                Platform platform = new Platform();
-                platform.setGuid(str);
+            platformList.add(platform);
+        }
 
-                platformList.add(platform);
-            }
+        Application application = new Application();
+        application.setName("eSolutionsAgent");
+        application.setVersion(1.0);
+        application.setInstallPath("/opt/cws/eSolutions");
+        application.setPackageLocation("/installs/cws/eSolutionsAgent");
+        application.setPackageInstaller("install.sh");
+        application.setInstallerOptions(null);
+        application.setLogsDirectory("/opt/cws/eSolutions/logs");
+        application.setPlatforms(platformList);
 
-            Application application = new Application();
-            application.setName("eSolutionsAgent");
-            application.setVersion(1.0);
-            application.setInstallPath("/opt/cws/eSolutions");
-            application.setPackageLocation("/installs/cws/eSolutionsAgent");
-            application.setPackageInstaller("install.sh");
-            application.setInstallerOptions(null);
-            application.setLogsDirectory("/opt/cws/eSolutions/logs");
-            application.setPlatforms(platformList);
+        ApplicationManagementRequest request = new ApplicationManagementRequest();
+        request.setApplication(application);
+        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
+        request.setRequestInfo(hostInfo);
+        request.setUserAccount(userAccount);
 
-            ApplicationManagementRequest request = new ApplicationManagementRequest();
-            request.setApplication(application);
-            request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
-            request.setRequestInfo(hostInfo);
-            request.setUserAccount(userAccount);
+        try
+        {
+            ApplicationManagementResponse response = processor.addNewApplication(request);
 
-            try
-            {
-                ApplicationManagementResponse response = processor.addNewApplication(request);
-
-                Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-            }
-            catch (ApplicationManagementException amx)
-            {
-                Assert.fail(amx.getMessage());
-            }
+            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
+        }
+        catch (ApplicationManagementException amx)
+        {
+            Assert.fail(amx.getMessage());
         }
     }
 
@@ -199,7 +195,7 @@ public class ApplicationManagementProcessorImplTest
     public void testGetApplicationData()
     {
         Application app = new Application();
-        app.setGuid("073bfe73-b601-4c10-b7db-16b2a0c433ef");
+        app.setGuid("93128772-94b6-49b0-bac7-d16ef42a0794");
 
         ApplicationManagementRequest request = new ApplicationManagementRequest();
         request.setApplication(app);
@@ -210,63 +206,6 @@ public class ApplicationManagementProcessorImplTest
         try
         {
             ApplicationManagementResponse response = processor.getApplicationData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ApplicationManagementException amx)
-        {
-            Assert.fail(amx.getMessage());
-        }
-    }
-
-    @Test
-    public void testApplicationFileRequest()
-    {
-        Application app = new Application();
-        app.setGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
-
-        Server server = new Server();
-        server.setServerGuid("B75CCD70-FCB3-43B7-9667-357508DE2B75");
-
-        ApplicationManagementRequest request = new ApplicationManagementRequest();
-        request.setApplication(app);
-        request.setServer(server);
-        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-
-        try
-        {
-            ApplicationManagementResponse response = processor.applicationFileRequest(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ApplicationManagementException amx)
-        {
-            Assert.fail(amx.getMessage());
-        }
-    }
-
-    @Test
-    public void testApplicationFileRequestGetFile()
-    {
-        Application app = new Application();
-        app.setGuid("b10edcea-23d8-4209-9d94-d5704e8e08bc");
-
-        Server server = new Server();
-        server.setServerGuid("B75CCD70-FCB3-43B7-9667-357508DE2B75");
-
-        ApplicationManagementRequest request = new ApplicationManagementRequest();
-        request.setApplication(app);
-        request.setServer(server);
-        request.setRequestFile("WEB-INF/web.xml");
-        request.setServiceId("96E4E53E-FE87-446C-AF03-0F5BC6527B9D");
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-
-        try
-        {
-            ApplicationManagementResponse response = processor.applicationFileRequest(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
