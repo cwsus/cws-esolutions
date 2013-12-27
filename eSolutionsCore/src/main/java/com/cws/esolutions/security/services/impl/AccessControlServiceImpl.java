@@ -133,7 +133,7 @@ public class AccessControlServiceImpl implements IAccessControlService
                 if (!(isException))
                 {
                     int errCount = 0;
-                    List<Object[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name(), 0);
+                    List<String[]> approvedSources = serverDAO.getServersByAttribute(ServerType.MAILSERVER.name(), 0);
 
                     if (DEBUG)
                     {

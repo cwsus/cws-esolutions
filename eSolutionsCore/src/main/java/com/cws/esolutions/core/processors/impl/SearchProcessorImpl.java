@@ -253,7 +253,7 @@ public class SearchProcessorImpl implements ISearchProcessor
         try
         {
             IServerDataDAO dao = new ServerDataDAOImpl();
-            List<Object[]> serverList = dao.getServersByAttribute(request.getSearchTerms(), request.getStartRow());
+            List<String[]> serverList = dao.getServersByAttribute(request.getSearchTerms(), request.getStartRow());
 
             if (DEBUG)
             {

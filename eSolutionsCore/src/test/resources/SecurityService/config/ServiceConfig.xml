@@ -48,6 +48,7 @@
         <tcAccepted>cwsistcaccepted</tcAccepted>
         <publicKey>cwspublickey</publicKey>
         <pagerNumber>pager</pagerNumber>
+        <userType>cwsusertype</userType>
         <telephoneNumber>telephoneNumber</telephoneNumber>
     </auth-data>
 

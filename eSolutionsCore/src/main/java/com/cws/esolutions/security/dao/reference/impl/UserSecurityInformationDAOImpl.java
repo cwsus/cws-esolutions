@@ -31,7 +31,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -56,7 +56,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -118,7 +118,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -180,7 +180,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         String saltValue = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -261,7 +261,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Object response = null;
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -336,7 +336,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -406,7 +406,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -471,7 +471,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<String[]> response = null;
 
         try
@@ -490,7 +490,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareStatement("{CALL listActiveResetRequests()");
+            stmt = sqlConn.prepareCall("{CALL listActiveResetRequests()");
 
             if (DEBUG)
             {
@@ -558,7 +558,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
         Connection sqlConn = null;
         ResultSet resultSet = null;
         List<String> resetData = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -636,7 +636,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -702,7 +702,7 @@ public class UserSecurityInformationDAOImpl implements IUserSecurityInformationD
 
         Connection sqlConn = null;
         boolean isVerified = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {

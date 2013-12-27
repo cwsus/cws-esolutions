@@ -32,7 +32,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -63,7 +63,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -177,7 +177,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -257,7 +257,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -348,7 +348,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -424,7 +424,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -495,7 +495,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<String[]> results = null;
 
         try
@@ -614,7 +614,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<String[]> results = null;
 
         try
@@ -733,7 +733,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object> userAccount = null;
 
         try
@@ -752,7 +752,7 @@ public class SQLUserManager implements UserManager
 
             if (DEBUG)
             {
-                DEBUGGER.debug("PreparedStatement: {}", stmt);
+                DEBUGGER.debug("CallableStatement: {}", stmt);
             }
 
             if (stmt.execute())
@@ -862,7 +862,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -942,7 +942,7 @@ public class SQLUserManager implements UserManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {

@@ -1125,9 +1125,9 @@ public class ServerManagementProcessorImplTest
             Assert.fail(smx.getMessage());
         }
     }
-/*
+
     @Test
-    public void modifyServer()
+    public void updateServerData()
     {
         Server server = new Server();
         server.setAssignedEngineer(userAccount);
@@ -1166,20 +1166,17 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public void removeServer()
+    public void listServersByAttribute()
     {
-        Server server = new Server();
-        server.setServerGuid("9EADCA3A-A1A3-4986-A71C-6FE8924C9443");
-
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setTargetServer(server);
+        request.setAttribute("DRN DEV");
 
         try
         {
-            ServerManagementResponse response = processor.updateServerData(request);
+            ServerManagementResponse response = processor.listServersByAttribute(request);
 
             Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
         }
@@ -1190,16 +1187,16 @@ public class ServerManagementProcessorImplTest
     }
 
     @Test
-    public void listServersWithDmgr()
+    public void getServerData()
     {
         Server server = new Server();
-        server.setServerGuid("cbddebc8-9bdb-4a6b-8c70-b39959ace0ce");
+        server.setServerGuid("85ab3069-fd3c-4490-a4ba-0c59b7cebab2");
 
         ServerManagementRequest request = new ServerManagementRequest();
         request.setRequestInfo(hostInfo);
         request.setUserAccount(userAccount);
         request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
+        request.setTargetServer(server);
 
         try
         {
@@ -1213,78 +1210,6 @@ public class ServerManagementProcessorImplTest
         }
     }
 
-    @Test
-    public void getServerInfo()
-    {
-        Server server = new Server();
-        server.setOperHostName("caspersb-aws1");
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.updateServerData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
-    public void getDmgrServerInfo()
-    {
-        Server server = new Server();
-        server.setServerGuid("40d13d8a-da67-4f95-a3ac-47954fc734c8");
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.updateServerData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-
-    @Test
-    public void getVmgrServerInfo()
-    {
-        Server server = new Server();
-        server.setServerGuid("3ce8a22f-637e-4efc-bd4d-740ccfd6acea");
-
-        ServerManagementRequest request = new ServerManagementRequest();
-        request.setRequestInfo(hostInfo);
-        request.setUserAccount(userAccount);
-        request.setServiceId("45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E");
-        request.setSourceServer(server);
-
-        try
-        {
-            ServerManagementResponse response = processor.updateServerData(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (ServerManagementException smx)
-        {
-            Assert.fail(smx.getMessage());
-        }
-    }
-*/
     @After
     public void tearDown()
     {

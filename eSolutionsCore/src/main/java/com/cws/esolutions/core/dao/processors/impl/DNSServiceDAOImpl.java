@@ -32,7 +32,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IDNSServiceDAO;
 /**
@@ -56,7 +56,7 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Vector<String>> response = null;
 
         try
@@ -174,7 +174,7 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {

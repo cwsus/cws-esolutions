@@ -31,6 +31,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IMessagingDAO;
 /**
@@ -568,9 +569,33 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
             }
 
             sqlConn.setAutoCommit(true);
+            StringBuilder sBuilder = new StringBuilder();
+
+            if (StringUtils.split(value, " ").length >= 2)
+            {
+                for (String str : StringUtils.split(value, " "))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Value: {}", str);
+                    }
+
+                    sBuilder.append("+" + str);
+                    sBuilder.append(" ");
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                }
+            }
+            else
+            {
+                sBuilder.append("+" + value);
+            }
 
             stmt = sqlConn.prepareCall("{CALL getMessagesByAttribute(?)}");
-            stmt.setString(1, value);
+            stmt.setString(1, sBuilder.toString().trim());
 
             if (DEBUG)
             {

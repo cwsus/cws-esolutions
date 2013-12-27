@@ -30,7 +30,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 /**
@@ -55,7 +55,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -127,7 +127,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -200,7 +200,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
         Connection sqlConn = null;
         boolean isComplete = false;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -291,7 +291,7 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<String> serviceList = null;
 
         try

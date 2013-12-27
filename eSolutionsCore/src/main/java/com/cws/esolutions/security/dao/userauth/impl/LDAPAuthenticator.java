@@ -56,7 +56,7 @@ public class LDAPAuthenticator implements Authenticator
     private static final String CNAME = LDAPAuthenticator.class.getName();
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException

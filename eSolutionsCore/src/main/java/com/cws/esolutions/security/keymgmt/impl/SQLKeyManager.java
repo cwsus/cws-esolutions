@@ -34,7 +34,7 @@ import java.security.PublicKey;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.security.KeyPairGenerator;
 import java.security.spec.X509EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
@@ -71,7 +71,7 @@ public class SQLKeyManager implements KeyManager
         Connection sqlConn = null;
         byte[] privKeyBytes = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -231,7 +231,7 @@ public class SQLKeyManager implements KeyManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -408,7 +408,7 @@ public class SQLKeyManager implements KeyManager
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {

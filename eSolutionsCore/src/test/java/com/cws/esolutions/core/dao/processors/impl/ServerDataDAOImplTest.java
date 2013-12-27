@@ -61,7 +61,7 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public void testAddNewServer()
+    public void addNewServer()
     {
         List<Object> data = new ArrayList<Object>
         (
@@ -100,6 +100,131 @@ public class ServerDataDAOImplTest
         try
         {
             Assert.assertTrue(ServerDataDAOImplTest.dao.addNewServer(data));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void modifyServerData()
+    {
+        List<Object> data = new ArrayList<Object>
+        (
+            Arrays.asList
+            (
+                UUID.randomUUID().toString(),
+                "CentOS",
+                ServiceStatus.ACTIVE.name(),
+                ServiceRegion.DEV.name(),
+                ServerType.APPSERVER.name(),
+                "caspersbox.com",
+                "AMD Athlon 1.0 GHz",
+                1,
+                "VPS",
+                RandomStringUtils.randomAlphanumeric(8).toUpperCase(),
+                512,
+                "127.0.0.1",
+                RandomStringUtils.randomAlphanumeric(8).toLowerCase(),
+                "127.0.0.1",
+                RandomStringUtils.randomAlphanumeric(8).toLowerCase(),
+                "127.0.0.1",
+                RandomStringUtils.randomAlphanumeric(8).toLowerCase(),
+                "127.0.0.1",
+                RandomStringUtils.randomAlphanumeric(8).toLowerCase(),
+                "Unconfigured",
+                "JUnit test",
+                "khuntly",
+                "Unconfigured",
+                0,
+                "Unconfigured",
+                "Unconfigured",
+                "Unconfigured"
+            )
+        );
+
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.modifyServerData("DMGRSERVER", data));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getServersByAttribute()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.getServersByAttribute("DMGRSERVER DEV", 0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void validateServerHostName()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.validateServerHostName("DMGRSERVER"));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getServerCount()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.getServerCount());
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getInstalledServers()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.getInstalledServers(0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getInstalledServer()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.getInstalledServer("DMGRSERVER"));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void removeExistingServer()
+    {
+        try
+        {
+            Assert.assertNotNull(ServerDataDAOImplTest.dao.removeExistingServer("DMGRSERVER"));
         }
         catch (SQLException sqx)
         {

@@ -727,7 +727,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                         for (String platformGuid : platformList.split(","))
                         {
-                            System.out.println(platformGuid);
                             List<Object> platformData = platformDao.getPlatformData(StringUtils.trim(platformGuid));
 
                             if (DEBUG)

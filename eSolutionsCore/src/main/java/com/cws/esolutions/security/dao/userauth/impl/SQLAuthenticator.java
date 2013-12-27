@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 
 import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
@@ -46,7 +46,7 @@ public class SQLAuthenticator implements Authenticator
     private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_SECURITYDS_MANAGER);
 
     /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
     public synchronized List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException
@@ -62,7 +62,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object> userAccount = null;
 
         try
@@ -205,7 +205,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -280,7 +280,7 @@ public class SQLAuthenticator implements Authenticator
         Connection sqlConn = null;
         ResultSet resultSet = null;
         boolean isAuthorized = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -371,7 +371,7 @@ public class SQLAuthenticator implements Authenticator
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<String> userSecurity = null;
 
         try

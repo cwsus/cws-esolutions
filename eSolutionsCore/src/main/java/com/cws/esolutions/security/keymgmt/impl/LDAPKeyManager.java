@@ -36,7 +36,7 @@ import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
-import java.sql.PreparedStatement;
+import java.sql.CallableStatement;
 import java.security.SecureRandom;
 import com.unboundid.ldap.sdk.Filter;
 import java.security.KeyPairGenerator;
@@ -89,7 +89,7 @@ public class LDAPKeyManager implements KeyManager
         ResultSet resultSet = null;
         byte[] privKeyBytes = null;
         Filter searchFilter = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
         SearchResultEntry entry = null;
@@ -331,7 +331,7 @@ public class LDAPKeyManager implements KeyManager
         boolean isComplete = false;
         ResultSet resultSet = null;
         Filter searchFilter = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
         SearchResultEntry entry = null;
@@ -543,7 +543,7 @@ public class LDAPKeyManager implements KeyManager
         ResultSet resultSet = null;
         Filter searchFilter = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         SearchRequest searchReq = null;
         LDAPConnection ldapConn = null;
         SearchResultEntry entry = null;

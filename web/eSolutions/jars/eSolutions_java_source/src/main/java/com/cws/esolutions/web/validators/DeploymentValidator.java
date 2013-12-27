@@ -11,21 +11,14 @@
  */
 package com.cws.esolutions.web.validators;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 /*
  * Project: eSolutions_java_source
@@ -41,9 +34,6 @@ import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 @Component
 public class DeploymentValidator implements Validator
 {
-    private String messageBinaryInvalid = null;
-    private ApplicationServiceBean appConfig = null;
-    private String messageBinaryInvalidForType = null;
     private String messageDeploymentTypeRequired = null;
     private String messageDeploymentFilesRequired = null;
     private String messageApplicationVersionRequired = null;
@@ -52,45 +42,6 @@ public class DeploymentValidator implements Validator
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-
-    public final void setAppConfig(final ApplicationServiceBean value)
-    {
-        final String methodName = DeploymentValidator.CNAME + "#setAppConfig(final ApplicationServiceBean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.appConfig = value;
-    }
-
-    public final void setMessageBinaryInvalid(final String value)
-    {
-        final String methodName = DeploymentValidator.CNAME + "#setMessageBinaryInvalid(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageBinaryInvalid = value;
-    }
-
-    public final void setMessageBinaryInvalidForType(final String value)
-    {
-        final String methodName = DeploymentValidator.CNAME + "#setMessageBinaryInvalidForType(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageBinaryInvalidForType = value;
-    }
 
     public final void setMessageDeploymentFilesRequired(final String value)
     {

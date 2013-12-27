@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.processors.interfaces.IKnowledgeBaseDAO;
@@ -59,7 +59,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -127,7 +127,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -199,7 +199,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         boolean isComplete = false;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
 
         try
         {
@@ -365,7 +365,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object> articleData = null;
 
         try
@@ -463,7 +463,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object[]> articleData = null;
 
         try
@@ -571,7 +571,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object[]> responseList = null;
 
         try
@@ -684,7 +684,7 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object[]> responseList = null;
 
         try
@@ -697,9 +697,33 @@ public class KnowledgeBaseDAOImpl implements IKnowledgeBaseDAO
             }
 
             sqlConn.setAutoCommit(true);
+            StringBuilder sBuilder = new StringBuilder();
+
+            if (StringUtils.split(attribute, " ").length >= 2)
+            {
+                for (String str : StringUtils.split(attribute, " "))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Value: {}", str);
+                    }
+
+                    sBuilder.append("+" + str);
+                    sBuilder.append(" ");
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                }
+            }
+            else
+            {
+                sBuilder.append("+" + attribute);
+            }
 
             stmt = sqlConn.prepareCall("{CALL getArticleByAttribute(?, ?)}");
-            stmt.setString(1, attribute);
+            stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
             if (DEBUG)

@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
+import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO;
 /**
@@ -274,7 +274,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
-        PreparedStatement stmt = null;
+        CallableStatement stmt = null;
         List<Object> responseData = null;
 
         try
@@ -579,9 +579,33 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
 
             sqlConn.setAutoCommit(true);
+            StringBuilder sBuilder = new StringBuilder();
+
+            if (StringUtils.split(value, " ").length >= 2)
+            {
+                for (String str : StringUtils.split(value, " "))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Value: {}", str);
+                    }
+
+                    sBuilder.append("+" + str);
+                    sBuilder.append(" ");
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                }
+            }
+            else
+            {
+                sBuilder.append("+" + value);
+            }
 
             stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?, ?)}");
-            stmt.setString(1, value);
+            stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
             if (DEBUG)

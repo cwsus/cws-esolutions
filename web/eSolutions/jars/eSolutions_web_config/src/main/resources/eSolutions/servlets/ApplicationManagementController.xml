@@ -26,8 +26,6 @@
     </bean>
 
     <bean id="deploymentValidatorBean" class="com.cws.esolutions.web.validators.DeploymentValidator">
-        <property name="messageBinaryInvalid" value="app.mgmt.binary.invalid.type" />
-        <property name="messageBinaryInvalidForType" value="app.mgmt.binary.not.valid.for.type" />
         <property name="messageDeploymentTypeRequired" value="app.mgmt.app.deployment.type.required" />
         <property name="messageDeploymentFilesRequired" value="app.mgmt.app.deployment.files.required" />
         <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />

@@ -66,11 +66,7 @@ public interface IServerDataDAO
 
     int validateServerHostName(final String hostName) throws SQLException;
 
-    List<Object[]> getServersForDmgr(final String dmgr) throws SQLException;
+    List<String[]> getInstalledServers(final int startRow) throws SQLException;
 
-    List<Object[]> getInstalledServers(final int startRow) throws SQLException;
-
-    List<Object[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
-
-    List<Object[]> getServersByAttributeWithRegion(final String attribute, final String region, final int startRow) throws SQLException;
+    List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
 }

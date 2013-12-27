@@ -589,28 +589,20 @@ public class SystemManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                Server server = new Server();
-                server.setServerType(ServerType.DMGRSERVER);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Server: {}", server);
-                }
-
                 ServerManagementRequest serviceReq = new ServerManagementRequest();
                 serviceReq.setRequestInfo(reqInfo);
                 serviceReq.setUserAccount(userAccount);
                 serviceReq.setServiceId(this.systemService);
-                serviceReq.setTargetServer(server);
                 serviceReq.setApplicationId(this.appConfig.getApplicationId());
                 serviceReq.setApplicationName(this.appConfig.getApplicationName());
+                serviceReq.setAttribute(ServerType.DMGRSERVER.name());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("ServerManagementRequest: {}", serviceReq);
                 }
 
-                ServerManagementResponse response = serverMgr.listServersByType(serviceReq);
+                ServerManagementResponse response = serverMgr.listServersByAttribute(serviceReq);
 
                 if (DEBUG)
                 {
@@ -784,14 +776,6 @@ public class SystemManagementController
                 }
                 else
                 {
-                    // maybe we have a hostname
-                    target.setOperHostName(serverGuid);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Server: {}", target);
-                    }
-
                     ServerManagementRequest hostRequest = new ServerManagementRequest();
                     hostRequest.setRequestInfo(reqInfo);
                     hostRequest.setUserAccount(userAccount);
@@ -799,13 +783,14 @@ public class SystemManagementController
                     hostRequest.setTargetServer(target);
                     hostRequest.setApplicationId(this.appConfig.getApplicationId());
                     hostRequest.setApplicationName(this.appConfig.getApplicationName());
+                    hostRequest.setAttribute(serverGuid);
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("ServerManagementRequest: {}", hostRequest);
                     }
 
-                    ServerManagementResponse hostResponse = serverMgr.listServersByType(hostRequest);
+                    ServerManagementResponse hostResponse = serverMgr.listServersByAttribute(hostRequest);
 
                     if (DEBUG)
                     {
@@ -1007,25 +992,17 @@ public class SystemManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            Server dmgrServer = new Server();
-            dmgrServer.setServerType(ServerType.DMGRSERVER);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("Server: {}", dmgrServer);
-            }
-
             ServerManagementRequest dmgrRequest = new ServerManagementRequest();
             dmgrRequest.setRequestInfo(reqInfo);
             dmgrRequest.setUserAccount(userAccount);
             dmgrRequest.setServiceId(this.systemService);
-            dmgrRequest.setTargetServer(dmgrServer);
             dmgrRequest.setApplicationId(this.appConfig.getApplicationId());
             dmgrRequest.setApplicationName(this.appConfig.getApplicationName());
+            dmgrRequest.setAttribute(ServerType.DMGRSERVER.name());
 
             try
             {
-                ServerManagementResponse dmgrResponse = processor.listServersByType(dmgrRequest);
+                ServerManagementResponse dmgrResponse = processor.listServersByAttribute(dmgrRequest);
 
                 if (DEBUG)
                 {
@@ -1283,25 +1260,17 @@ public class SystemManagementController
                         }
                         else
                         {
-                            Server dmServer = new Server();
-                            dmServer.setServerType(ServerType.DMGRSERVER);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Server: {}", dmServer);
-                            }
-
                             ServerManagementRequest dmRequest = new ServerManagementRequest();
                             dmRequest.setRequestInfo(reqInfo);
                             dmRequest.setUserAccount(userAccount);
                             dmRequest.setServiceId(this.systemService);
-                            dmRequest.setTargetServer(dmServer);
                             dmRequest.setApplicationId(this.appConfig.getApplicationId());
                             dmRequest.setApplicationName(this.appConfig.getApplicationName());
+                            dmRequest.setAttribute(ServerType.DMGRSERVER.name());
 
                             try
                             {
-                                ServerManagementResponse dmResponse = serverMgr.listServersByType(dmgrRequest);
+                                ServerManagementResponse dmResponse = serverMgr.listServersByAttribute(dmgrRequest);
 
                                 if (DEBUG)
                                 {
