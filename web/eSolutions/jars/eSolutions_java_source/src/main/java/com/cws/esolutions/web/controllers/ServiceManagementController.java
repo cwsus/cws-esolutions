@@ -76,7 +76,7 @@ import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProces
 public class ServiceManagementController
 {
     private int recordsPerPage = 20; // default to 20
-    private String dcService = null;
+    private String serviceId = null;
     private String projectMgmt = null;
     private String serviceName = null;
     private String defaultPage = null;
@@ -85,7 +85,6 @@ public class ServiceManagementController
     private String viewPlatformPage = null;
     private String viewPlatformList = null;
     private String addDatacenterPage = null;
-    private String addServerRedirect = null;
     private String viewDatacenterPage = null;
     private String viewDatacentersPage = null;
     private String addPlatformRedirect = null;
@@ -171,9 +170,9 @@ public class ServiceManagementController
         this.serviceName = value;
     }
 
-    public final void setDcService(final String value)
+    public final void setServiceId(final String value)
     {
-        final String methodName = ServiceManagementController.CNAME + "#setDcService(final String value)";
+        final String methodName = ServiceManagementController.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -181,7 +180,7 @@ public class ServiceManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.dcService = value;
+        this.serviceId = value;
     }
 
     public final void setAddPlatformRedirect(final String value)
@@ -338,19 +337,6 @@ public class ServiceManagementController
         }
 
         this.messageNoDatacenters = value;
-    }
-
-    public final void setAddServerRedirect(final String value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setAddServerRedirect(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.addServerRedirect = value;
     }
 
     public final void setMessagePlatformAddSuccess(final String value)
@@ -971,7 +957,7 @@ public class ServiceManagementController
                 DatacenterManagementRequest request = new DatacenterManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
-                request.setServiceId(this.dcService);
+                request.setServiceId(this.serviceId);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
 
@@ -1119,7 +1105,7 @@ public class ServiceManagementController
                 DatacenterManagementRequest request = new DatacenterManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
-                request.setServiceId(this.dcService);
+                request.setServiceId(this.serviceId);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setStartPage((page - 1) * this.recordsPerPage);
@@ -1413,7 +1399,7 @@ public class ServiceManagementController
                 DatacenterManagementRequest request = new DatacenterManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
-                request.setServiceId(this.dcService);
+                request.setServiceId(this.serviceId);
                 request.setDataCenter(reqDatacenter);
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
@@ -2043,7 +2029,7 @@ public class ServiceManagementController
                 DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
                 dcRequest.setDataCenter(request);
                 dcRequest.setRequestInfo(reqInfo);
-                dcRequest.setServiceId(this.dcService);
+                dcRequest.setServiceId(this.serviceId);
                 dcRequest.setUserAccount(userAccount);
                 dcRequest.setApplicationId(this.appConfig.getApplicationId());
                 dcRequest.setApplicationName(this.appConfig.getApplicationName());

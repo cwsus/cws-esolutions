@@ -41,10 +41,7 @@
             <ref bean="datactrValidator" />
         </property>
         <property name="serviceName" value="svcMgmt" />
-        <property name="systemMgmt" value="45F6BC9E-F45C-4E2E-B5BF-04F93C8F512E" />
-        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
-        <property name="dcService" value="0C1C5F83-3EDD-4635-9F1E-6A9B5383747E" />
-        <property name="addServerRedirect" value="redirect:/ui/system-management/add-server" />
+        <property name="serviceId" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="recordsPerPage" value="20" />
         <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
         <property name="addPlatformPage" value="ServiceMgmt_AddPlatform" />
