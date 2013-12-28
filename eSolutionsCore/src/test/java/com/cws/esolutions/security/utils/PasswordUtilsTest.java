@@ -59,8 +59,8 @@ public class PasswordUtilsTest
     @Test
     public void testCreateHash()
     {
-        final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
-        final String pass = "answertwo";
+        final String salt = "XVyxWFeK4BjExoS7vzqiFSYa4j3EQeHtynHxto3SueqCboIwDVI7q7lOMz8Rm8ej";
+        final String pass = "demo";
 
         System.out.println(salt);
         System.out.println(PasswordUtils.encryptText(pass, salt, bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));

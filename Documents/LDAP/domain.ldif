@@ -3,7 +3,7 @@ version: 1
 dn: dc=caspersbox,dc=com
 objectClass: domain
 objectClass: top
-dc: caspersbox
+dc: caspersbox,dc=com
 
 dn: organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organization
@@ -19,4 +19,3 @@ dn: organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbo
 objectClass: organizationalUnit
 objectClass: top
 organizationalUnitName: Service Accounts
-

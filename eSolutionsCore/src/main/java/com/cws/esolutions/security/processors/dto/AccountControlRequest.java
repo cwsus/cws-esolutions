@@ -31,7 +31,6 @@ import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
-import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
@@ -53,7 +52,6 @@ public class AccountControlRequest implements Serializable
     private boolean isReset = false;
     private String projectId = null;
     private String serviceId = null;
-    private UserType userType = null;
     private String applicationId = null;
     private UserAccount requestor = null;
     private String applicationName = null;
@@ -267,19 +265,6 @@ public class AccountControlRequest implements Serializable
         this.startPage = value;
     }
 
-    public final void setUserType(final UserType value)
-    {
-        final String methodName = AccountControlRequest.CNAME + "#setUserType(final UserType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userType = value;
-    }
-
     public final RequestHostInfo getHostInfo()
     {
         final String methodName = AccountControlRequest.CNAME + "#getHostInfo()";
@@ -472,19 +457,6 @@ public class AccountControlRequest implements Serializable
         }
 
         return this.startPage;
-    }
-
-    public final UserType getUserType()
-    {
-        final String methodName = AccountControlRequest.CNAME + "#getUserType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userType);
-        }
-
-        return this.userType;
     }
 
     @Override

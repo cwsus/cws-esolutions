@@ -40,7 +40,6 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
-import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityConstants;
@@ -179,8 +178,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                                 userAccount.getGivenName(),
                                 userAccount.getEmailAddr(),
                                 userGuid,
-                                userAccount.getDisplayName(),
-                                (userAccount.getUserType() == null) ? UserType.DEVELOPER.name() : userAccount.getUserType().name()));
+                                userAccount.getDisplayName()));
 
                     if (DEBUG)
                     {
@@ -1450,7 +1448,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                List<String[]> userList = userManager.listUserAccounts(request.getUserType().name());
+                List<String[]> userList = userManager.listUserAccounts();
 
                 if (DEBUG)
                 {

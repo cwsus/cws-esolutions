@@ -480,17 +480,16 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
     @Override
-    public synchronized List<String[]> listUserAccounts(final String userType) throws UserManagementException
+    public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#listUserAccounts(final String userType) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userType);
         }
 
         Connection sqlConn = null;

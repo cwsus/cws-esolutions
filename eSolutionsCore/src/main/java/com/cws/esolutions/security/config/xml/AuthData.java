@@ -49,7 +49,6 @@ public final class AuthData implements Serializable
 {
     private String userId = null;
     private String surname = null;
-    private String userType = null;
     private String memberOf = null;
     private String userRole = null;
     private String lockCount = null;
@@ -392,19 +391,6 @@ public final class AuthData implements Serializable
         this.telephoneNumber = value;
     }
 
-    public final void setUserType(final String value)
-    {
-        final String methodName = AuthData.CNAME + "#setUserType(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.userType = value;
-    }
-
     @XmlElement(name = "objectClass")
     public final String getObjectClass()
     {
@@ -739,20 +725,6 @@ public final class AuthData implements Serializable
         }
 
         return this.telephoneNumber;
-    }
-
-    @XmlElement(name = "userType")
-    public final String getUserType()
-    {
-        final String methodName = AuthData.CNAME + "#getUserType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userType);
-        }
-
-        return this.userType;
     }
 
     @Override

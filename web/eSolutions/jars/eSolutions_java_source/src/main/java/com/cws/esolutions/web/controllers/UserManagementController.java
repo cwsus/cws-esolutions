@@ -38,7 +38,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.core.utils.EmailUtils;
-import com.cws.esolutions.security.enums.UserType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.web.ApplicationServiceBean;
@@ -749,7 +748,6 @@ public class UserManagementController
                 DEBUGGER.debug("List<Role>: {}", availableRoles);
             }
 
-            mView.addObject("userTypes", UserType.values());
             mView.addObject("roles", availableRoles);
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.createUserPage);

@@ -122,8 +122,7 @@ public class LDAPAuthenticator implements Authenticator
                             authData.getIsSuspended(),
                             authData.getOlrSetupReq(),
                             authData.getOlrLocked(),
-                            authData.getTcAccepted(),
-                            authData.getUserType());
+                            authData.getTcAccepted());
 
                     if (DEBUG)
                     {
@@ -177,7 +176,6 @@ public class LDAPAuthenticator implements Authenticator
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
                         userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
-                        userAccount.add(entry.getAttributeValue(authData.getUserType()).toUpperCase());
 
                         if (DEBUG)
                         {

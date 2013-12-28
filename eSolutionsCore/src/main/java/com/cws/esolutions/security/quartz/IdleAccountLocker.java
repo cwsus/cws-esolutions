@@ -81,7 +81,7 @@ public class IdleAccountLocker implements Job
                 DEBUGGER.debug("UserManager: {}", manager);
             }
 
-            List<String[]> accounts = manager.listUserAccounts(null);
+            List<String[]> accounts = manager.listUserAccounts();
 
             if (DEBUG)
             {

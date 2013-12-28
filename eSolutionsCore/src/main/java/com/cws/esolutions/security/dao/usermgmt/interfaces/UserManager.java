@@ -183,5 +183,5 @@ public interface UserManager
      * @return List<String[]> - A list of all user accounts currently housed in the repository
      * @throws UserManagementException if an error occurs during processing
      */
-    List<String[]> listUserAccounts(final String userType) throws UserManagementException;
+    List<String[]> listUserAccounts() throws UserManagementException;
 }

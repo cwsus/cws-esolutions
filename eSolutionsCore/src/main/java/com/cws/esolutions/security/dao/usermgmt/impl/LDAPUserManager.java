@@ -239,7 +239,6 @@ public class LDAPUserManager implements UserManager
                     newAttributes.add(new Attribute(authData.getEmailAddr(), createRequest.get(5)));
                     newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
                     newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
-                    newAttributes.add(new Attribute(authData.getUserType(), createRequest.get(8)));
 
                     AddRequest addRequest = new AddRequest(userDN, newAttributes);
 
@@ -1218,8 +1217,7 @@ public class LDAPUserManager implements UserManager
                             authData.getIsSuspended(),
                             authData.getOlrSetupReq(),
                             authData.getOlrLocked(),
-                            authData.getTcAccepted(),
-                            authData.getUserType());
+                            authData.getTcAccepted());
 
                     if (DEBUG)
                     {
@@ -1262,7 +1260,6 @@ public class LDAPUserManager implements UserManager
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
                             userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
-                            userAccount.add(entry.getAttributeValue(authData.getUserType()).toUpperCase());
 
                             if (DEBUG)
                             {
@@ -1313,17 +1310,16 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts(java.lang.String)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#listUserAccounts()
      */
     @Override
-    public synchronized List<String[]> listUserAccounts(final String userType) throws UserManagementException
+    public synchronized List<String[]> listUserAccounts() throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#listUserAccounts(final String userType) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#listUserAccounts() throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userType);
         }
 
         List<String[]> results = null;
@@ -1351,8 +1347,7 @@ public class LDAPUserManager implements UserManager
                 if (ldapConn.isConnected())
                 {
                     Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&(objectClass=" + authData.getObjectClass() + "))" +
-                            "(&(" + authData.getUserType() + "=" + userType + ")))");
+                            "(&(objectClass=" + authData.getObjectClass() + ")))");
 
                     if (DEBUG)
                     {
