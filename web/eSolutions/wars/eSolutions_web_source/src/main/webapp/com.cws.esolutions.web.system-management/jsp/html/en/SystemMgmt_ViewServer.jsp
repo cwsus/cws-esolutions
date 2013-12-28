@@ -120,8 +120,8 @@
                 <td>${server.serverRegion}</td>
                 <td><label id="txtServerDatacenter"><spring:message code="system.mgmt.server.datacenter" /></label></td>
                 <td>
-                    <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${server.datacenter.datacenterGuid}"
-                        title="${server.datacenter.datacenterName}">${server.datacenter.datacenterName}</a>
+                    <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${server.datacenter.guid}"
+                        title="${server.datacenter.name}">${server.datacenter.name}</a>
                 </td>
             </tr>
             <c:if test="${not empty fn:trim(server.virtualId)}">

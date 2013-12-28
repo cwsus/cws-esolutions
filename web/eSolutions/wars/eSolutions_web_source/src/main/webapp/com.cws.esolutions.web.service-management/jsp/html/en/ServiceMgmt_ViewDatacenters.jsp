@@ -67,10 +67,10 @@
             <c:forEach var="datacenter" items="${datacenterList}">
                 <tr>
                     <td>
-                        <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${datacenter.datacenterGuid}"
-                            title="${datacenter.datacenterName}">${datacenter.datacenterName}</a>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${datacenter.guid}"
+                            title="${datacenter.name}">${datacenter.name}</a>
                     </td>
-                    <td>${datacenter.datacenterStatus}</td>
+                    <td>${datacenter.status}</td>
                 </tr>
             </c:forEach>
         </table>

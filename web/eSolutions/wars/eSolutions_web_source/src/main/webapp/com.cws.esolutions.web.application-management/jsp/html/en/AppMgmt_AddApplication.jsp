@@ -136,8 +136,8 @@
     <p>
         <form:form id="createNewApplication" name="createNewApplication" action="${pageContext.request.contextPath}/ui/application-management/add-application" method="post">
             <label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label>
-            <form:input path="applicationName" />
-            <form:errors path="applicationName" cssClass="error" />
+            <form:input path="name" />
+            <form:errors path="name" cssClass="error" />
 
             <label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label>
             <form:input path="version" />

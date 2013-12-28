@@ -30,7 +30,7 @@
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/modify-service/datacenter/${datacenter.datacenterGuid}" title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/service-management/modify-service/datacenter/${datacenter.guid}" title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
@@ -65,15 +65,15 @@
         <table id="viewDatacenter">
             <tr>
                 <td><label id="txtDatacenterName"><spring:message code="svc.mgmt.service.name" /></label></td>
-                <td>${datacenter.datacenterName}</td>
+                <td>${datacenter.name}</td>
             </tr>
             <tr>
                 <td><label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
-                <td id="dataCenterStatus" style="display: block;">${datacenter.datacenterStatus}</td>
+                <td id="dataCenterStatus" style="display: block;">${datacenter.status}</td>
             </tr>
             <tr>
                 <td><label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
-                <td>${datacenter.datacenterDesc}</td>
+                <td>${datacenter.description}</td>
             </tr>
         </table>
     </p>

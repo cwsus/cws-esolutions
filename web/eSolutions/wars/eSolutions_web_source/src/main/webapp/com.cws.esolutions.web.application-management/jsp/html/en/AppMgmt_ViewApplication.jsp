@@ -45,15 +45,15 @@
 <div id="sidebar">
     <h1><spring:message code="app.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.applicationGuid}" title="<spring:message code='app.mgmt.deploy.application' />"><spring:message code="app.mgmt.deploy.application" /></a></li>
-        <li><a onclick="confirmDelete('${application.applicationName}', '${application.applicationGuid}');" title="<spring:message code='app.mgmt.application.retire' />" style="cursor: pointer;"><spring:message code="app.mgmt.application.retire" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/application-management/deploy-application/application/${application.guid}" title="<spring:message code='app.mgmt.deploy.application' />"><spring:message code="app.mgmt.deploy.application" /></a></li>
+        <li><a onclick="confirmDelete('${application.name}', '${application.guid}');" title="<spring:message code='app.mgmt.application.retire' />" style="cursor: pointer;"><spring:message code="app.mgmt.application.retire" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/application-management/list-applications" title="<spring:message code='app.mgmt.list.applications' />"><spring:message code='app.mgmt.list.applications' /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/application-management/add-application" title="<spring:message code='app.mgmt.add.application' />"><spring:message code='app.mgmt.add.application' /></a></li>
     </ul>
 </div>
 
 <div id="main">
-    <h1><spring:message code="app.mgmt.view.application" arguments="${application.applicationName}" /></h1>
+    <h1><spring:message code="app.mgmt.view.application" arguments="${application.name}" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -78,11 +78,11 @@
         <table id="applicationDetail">
             <tr>
                 <td><label id="txtApplicationName"><spring:message code="app.mgmt.application.name" /></label></td>
-                <td>${application.applicationName}</td>
+                <td>${application.name}</td>
             </tr>
             <tr>
                 <td><label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label></td>
-                <td>${application.applicationVersion}</td>
+                <td>${application.version}</td>
             </tr>
             <c:if test="${not empty fn:trim(appl.scmPath)}">
                 <tr>
@@ -106,8 +106,8 @@
                 <td><label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label></td>
                 <td>
                     <c:forEach var="platform" items="${application.applicationPlatforms}">
-                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
-                            title="${platform.platformName}">${platform.platformName}</a>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.guid}"
+                            title="${platform.name}">${platform.name}</a>
                     </c:forEach>
                 </td>
             </tr>

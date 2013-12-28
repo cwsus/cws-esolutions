@@ -97,18 +97,21 @@
     <p>
         <form:form id="createNewDatacenter" name="createNewDatacenter" action="${pageContext.request.contextPath}/ui/service-management/submit-datacenter" method="post">
             <label id="txtDatacenterName"><spring:message code="svc.mgmt.service.name" /></label>
-            <form:input path="datacenterName" />
-            <form:errors path="datacenterName" cssClass="error" />
+            <form:input path="name" />
+            <form:errors path="name" cssClass="error" />
+
             <label id="txtDatacenterStatus"><spring:message code="svc.mgmt.service.status" /></label>
-            <form:select path="datacenterStatus" multiple="false">
+            <form:select path="status" multiple="false">
                 <option><spring:message code="theme.option.select" /></option>
                 <option><spring:message code="theme.option.spacer" /></option>
                 <form:options items="${statusList}" />
             </form:select>
-            <form:errors path="datacenterStatus" cssClass="error" />
+            <form:errors path="status" cssClass="error" />
+
             <label id="txtDatacenterDescription"><spring:message code="svc.mgmt.service.description" /></label>
-            <form:textarea path="datacenterDesc" />
-            <form:errors path="datacenterDesc" cssClass="error" />
+            <form:textarea path="description" />
+            <form:errors path="description" cssClass="error" />
+
             <br /><br />
             <input type="button" name="execute" value="<spring:message code='theme.button.submit.text' />" id="execute" class="submit" onclick="disableButton(this); validateForm(this.form, event);" />
             <input type="button" name="reset" value="<spring:message code='theme.button.reset.text' />" id="reset" class="submit" onclick="clearForm();" />

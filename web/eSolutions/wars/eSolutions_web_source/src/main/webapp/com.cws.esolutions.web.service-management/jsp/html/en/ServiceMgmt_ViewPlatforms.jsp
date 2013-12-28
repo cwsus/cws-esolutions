@@ -67,10 +67,10 @@
             <c:forEach var="platform" items="${platformList}">
                 <tr>
                     <td>
-                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.platformGuid}"
-                            title="${platform.platformName}">${platform.platformName}</a>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.guid}"
+                            title="${platform.name}">${platform.name}</a>
                     </td>
-                    <td>${platform.platformRegion}</td>
+                    <td>${platform.region}</td>
                 </tr>
             </c:forEach>
         </table>

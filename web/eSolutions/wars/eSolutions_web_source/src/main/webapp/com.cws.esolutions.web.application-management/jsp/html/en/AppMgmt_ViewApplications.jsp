@@ -65,10 +65,10 @@
             <c:forEach var="application" items="${applicationList}">
                 <tr>
                     <td>
-                        <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.applicationGuid}"
-                            title="${application.applicationName}">${application.applicationName}</a>
+                        <a href="${pageContext.request.contextPath}/ui/application-management/application/${application.guid}"
+                            title="${application.name}">${application.name}</a>
                     </td>
-                    <td>${application.applicationVersion}</td>
+                    <td>${application.version}</td>
                 </tr>
             </c:forEach>
         </table>

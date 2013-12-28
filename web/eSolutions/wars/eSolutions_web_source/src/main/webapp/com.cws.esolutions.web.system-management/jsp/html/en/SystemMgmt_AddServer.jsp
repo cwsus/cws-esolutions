@@ -308,7 +308,7 @@
                             <option><spring:message code="theme.option.select" /></option>
                             <option><spring:message code="theme.option.spacer" /></option>
                             <c:forEach var="dcObject" items="${datacenters}">
-                                <form:option value="${dcObject.datacenterGuid}" label="${dcObject.datacenterName}"/>
+                                <form:option value="${dcObject.guid}" label="${dcObject.name}"/>
                             </c:forEach>
                         </form:select>
                     </td>

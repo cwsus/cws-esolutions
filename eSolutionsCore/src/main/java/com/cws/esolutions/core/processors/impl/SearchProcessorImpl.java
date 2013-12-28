@@ -189,7 +189,7 @@ public class SearchProcessorImpl implements ISearchProcessor
                     {
                         SearchResult searchResult = new SearchResult();
                         searchResult.setPath((String) data[0]);
-                        searchResult.setTitle((String) data[16]); // proper ordinal for oper hostname
+                        searchResult.setTitle((String) data[3]); // proper ordinal for oper hostname
 
                         if (DEBUG)
                         {

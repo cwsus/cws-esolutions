@@ -102,11 +102,9 @@
 
     <p>
         <form:form id="submitPlatformData" name="submitPlatformData" action="${pageContext.request.contextPath}/ui/service-management/submit-platform" method="post">
-            <form:hidden path="platformDmgr" />
-
             <label id="txtPlatformName"><spring:message code="svc.mgmt.service.name" /></label>
-            <form:input path="platformName" />
-            <form:errors path="platformName" cssClass="error" />
+            <form:input path="name" />
+            <form:errors path="name" cssClass="error" />
 
             <label id="txtPlatformStatus"><spring:message code="svc.mgmt.service.status" /></label>
             <form:select path="status" multiple="false">

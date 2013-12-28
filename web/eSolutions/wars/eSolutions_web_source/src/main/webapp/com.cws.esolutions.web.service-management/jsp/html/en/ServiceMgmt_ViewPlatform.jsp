@@ -30,7 +30,7 @@
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/modify-service/platform/${platform.platformGuid}" title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/service-management/modify-service/platform/${platform.guid}" title="<spring:message code='svc.mgmt.update.service' />"><spring:message code="svc.mgmt.update.service" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters" title="<spring:message code='svc.mgmt.list.datacenters' />"><spring:message code="svc.mgmt.list.datacenters" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
         <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
@@ -39,7 +39,7 @@
 </div>
 
 <div id="main">
-    <h1><spring:message code="svc.mgmt.view.platform" arguments="${platform.platformName}" /></h1>
+    <h1><spring:message code="svc.mgmt.view.platform" arguments="${platform.name}" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -64,11 +64,11 @@
         <table id="platformDetail">
             <tr>
                 <td><label id="txtPlatformName"><spring:message code="svc.mgmt.service.name" /></label></td>
-                <td>${platform.platformName}</td>
+                <td>${platform.name}</td>
                 <td><label id="txtPlatformStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
                 <td>${platform.status}</td>
                 <td><label id="txtPlatformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
-                <td>${platform.platformRegion}</td>
+                <td>${platform.region}</td>
             </tr>
             <tr>
                 <td><label id="txtPlatformDescription"><spring:message code="svc.mgmt.service.description" /></label></td>
@@ -83,7 +83,7 @@
                 <td><spring:message code="system.mgmt.server.region" /></td>
             </tr>
             <tr>
-                <c:forEach var="server" items="${platform.platformServers}">
+                <c:forEach var="server" items="${platform.servers}">
                     <c:set var="appCount" value="${appCount + 1}" scope="page" />
 
                     <c:if test="${appCount eq 4}">
