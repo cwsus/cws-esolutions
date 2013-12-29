@@ -30,10 +30,8 @@ CREATE PROCEDURE `CWSSEC`.`addUserKeys`(
     IN privKey VARBINARY(4352)
 )
 BEGIN
-    INSERT INTO KEY_DATA
-    (CN, PRIVATE_KEY)
-    VALUES
-    (userGuid, privKey);
+    INSERT INTO KEY_DATA (CN, PRIVATE_KEY)
+    VALUES (userGuid, privKey);
 
     COMMIT;
 END $$

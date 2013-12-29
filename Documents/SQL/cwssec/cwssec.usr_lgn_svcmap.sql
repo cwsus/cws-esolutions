@@ -9,12 +9,12 @@ CREATE TABLE `CWSSEC`.`SERVICE_MAP` (
     PRIMARY KEY (`ID`),
     CONSTRAINT `FK_CN`
         FOREIGN KEY (`CN`)
-        REFERENCES `CWSSEC`.`usr_lgn` (`CN`)
+        REFERENCES `CWSSEC`.`USERS` (`CN`)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
     CONSTRAINT `FK_SVC_ID`
         FOREIGN KEY (`ID`)
-        REFERENCES `CWSSEC`.`usr_lgn_services` (`ID`)
+        REFERENCES `CWSSEC`.`USER_SERVICES` (`ID`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION,
     INDEX `IDX_USERS` (`CN`, `ID`),
@@ -37,10 +37,8 @@ CREATE PROCEDURE `CWSSEC`.`addServiceToUser`(
     IN serviceId VARCHAR(128)
 )
 BEGIN
-    INSERT INTO `CWSSEC`.`SERVICE_MAP`
-    (CN, ID)
-    VALUES
-    (guid, serviceId);
+    INSERT INTO `CWSSEC`.`SERVICE_MAP` (CN, ID)
+    VALUES (guid, serviceId);
 
     COMMIT;
 END $$
@@ -95,9 +93,9 @@ CREATE PROCEDURE `CWSSEC`.`retrAuthorizedServices`(
 BEGIN
     SELECT
         T1.ID,
-        T1.USR_SVC_SVCNAME
-    FROM USR_LGN_SERVICES T1
-    INNER JOIN USR_LGN_SVCMAP T2
+        T2.NAME
+    FROM SERVICE_MAP T1
+    INNER JOIN USER_SERVICES T2
     ON T1.ID = T2.ID
     WHERE CN = guid;
 END $$
@@ -113,7 +111,7 @@ CREATE PROCEDURE `CWSSEC`.`listServicesForUser`(
     IN guid VARCHAR(128)
 )
 BEGIN
-    SELECT usr_svc_svcid
+    SELECT ID
     FROM SERVICE_MAP
     WHERE cn = userGuid;
 END $$
