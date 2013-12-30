@@ -52,10 +52,8 @@ import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
 import com.cws.esolutions.core.processors.exception.SearchRequestException;
-import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.PlatformManagementException;
-import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
@@ -1548,7 +1546,6 @@ public class ServiceManagementController
 
         ModelAndView mView = new ModelAndView();
 
-        final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
@@ -1774,7 +1771,6 @@ public class ServiceManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
         final IPlatformManagementProcessor processor = new PlatformManagementProcessorImpl();
 
         if (DEBUG)

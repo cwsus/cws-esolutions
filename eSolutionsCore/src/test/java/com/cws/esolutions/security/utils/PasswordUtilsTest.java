@@ -59,7 +59,7 @@ public class PasswordUtilsTest
     @Test
     public void testCreateHash()
     {
-        final String salt = "juo7nUR09MpkU4EDegxx6fpVqstuYf6KNtQL9pj6UsenZJvyx04nmlESERQwhoA3";
+        final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
         final String pass = "*YKd6_N$A1hN~H+Qxz9N6GRX?5TNK$K9";
 
         System.out.println(salt);
@@ -84,8 +84,8 @@ public class PasswordUtilsTest
     @Test
     public void testDecryptText()
     {
-        Assert.assertEquals("TUX_t3st", PasswordUtils.decryptText("ivKO8kEZU3lOOgmdhp0PCgkn4FTs2yYr+XCbFpd7SRrUR1BjvOCTXpwEtFYcsjE6",
-                "VQNLG99rmhcij4lrWfJV3tahkUeWhVhD".length()));
+        Assert.assertEquals("=CiDTYN%Ay-3AfW#9NtSl%/xm8s+7mXv", PasswordUtils.decryptText("OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==",
+                "Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw".length()));
     }
 
     @After

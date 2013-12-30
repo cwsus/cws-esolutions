@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app id="eSolutions_web_source" version="3.0"
-    xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns="http://java.sun.com/xml/ns/javaee"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_3_0.xsd">
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
     <display-name>eSolutions_web_source</display-name>
     <description>eSolutions_web_source</description>
@@ -265,11 +265,12 @@
     </security-constraint>
 
     <session-config>
-        <cookie-config>
-            <secure>true</secure>
-            <http-only>true</http-only>
-        </cookie-config>
         <session-timeout>15</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>true</secure>
+            <max-age>15</max-age>
+        </cookie-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>
 </web-app>

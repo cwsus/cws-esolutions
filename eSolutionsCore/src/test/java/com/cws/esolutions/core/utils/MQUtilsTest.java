@@ -25,6 +25,9 @@ package com.cws.esolutions.core.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.Assert;
@@ -73,7 +76,12 @@ public class MQUtilsTest
 
         try
         {
-            Assert.assertNotNull(MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(), this.bean.getConfigData().getAgentConfig().getRequestQueue(), request));
+            String corr = MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
+                    new ArrayList<String>(Arrays.asList(this.bean.getConfigData().getAgentConfig().getUsername(),
+                            this.bean.getConfigData().getAgentConfig().getPassword(), this.bean.getConfigData().getAgentConfig().getSalt())),
+                    this.bean.getConfigData().getAgentConfig().getRequestQueue(), "N840B7LZZ8FLAM8", request);
+            System.out.println(corr);
+            Assert.assertNotNull(corr);
         }
         catch (UtilityException ux)
         {
@@ -86,7 +94,12 @@ public class MQUtilsTest
     {
         try
         {
-            Assert.assertNotNull(MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(), this.bean.getConfigData().getAgentConfig().getResponseQueue(), "5Np8bVEpOEhqMuKxqOvlGM7Zh8ASkqZddsjLyyV50OnsuNgMwBzS8SLDHGHQgZIe"));
+            Object object = MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
+                    new ArrayList<String>(Arrays.asList(this.bean.getConfigData().getAgentConfig().getUsername(),
+                            this.bean.getConfigData().getAgentConfig().getPassword(), this.bean.getConfigData().getAgentConfig().getSalt())),
+                    this.bean.getConfigData().getAgentConfig().getResponseQueue(), "0BxFKcZR6tSIkL02p4YHCvVKTM3zrcxfUuaiysEkuR0Xu26RiP728sooOG5lzN4a");
+            System.out.println(object);
+            Assert.assertNotNull(object);
         }
         catch (UtilityException ux)
         {

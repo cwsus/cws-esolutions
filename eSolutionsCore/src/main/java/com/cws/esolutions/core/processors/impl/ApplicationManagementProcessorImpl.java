@@ -935,30 +935,26 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             DEBUGGER.debug("AgentRequest: {}", agentRequest);
                         }
 
-                        switch (agentConfig.getListenerType())
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                                Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                                agentConfig.getRequestQueue(), server.getOperHostName(), agentRequest);
+
+                        if (DEBUG)
                         {
-                            case MQ:
-                                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(), agentRequest);
+                            DEBUGGER.debug("correlator: {}", correlator);
+                        }
 
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("correlator: {}", correlator);
-                                }
+                        if (StringUtils.isNotEmpty(correlator))
+                        {
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                                    Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                                    agentConfig.getRequestQueue(), correlator);
+                        }
+                        else
+                        {
+                            response.setRequestStatus(CoreServicesStatus.FAILURE);
 
-                                if (StringUtils.isNotEmpty(correlator))
-                                {
-                                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(), correlator);
-                                }
-                                else
-                                {
-                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                                    return response;
-                                }
-
-                                break;
-                            case TCP:
-                                break;
+                            return response;
                         }
 
                         if (DEBUG)

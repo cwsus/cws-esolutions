@@ -44,7 +44,6 @@ public class AgentRequest implements Serializable
     private String appName = null;
     private String projectId = null;
     private String serviceId = null;
-    private String hostname = null;
     private Object requestPayload = null;
 
     private static final String CNAME = AgentRequest.class.getName();
@@ -91,19 +90,6 @@ public class AgentRequest implements Serializable
         }
 
         this.serviceId = value;
-    }
-
-    public final void setHostname(final String value)
-    {
-        final String methodName = AgentRequest.CNAME + "#setHostname(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.hostname = value;
     }
 
     public final void setRequestPayload(final Object value)
@@ -156,19 +142,6 @@ public class AgentRequest implements Serializable
         }
 
         return this.serviceId;
-    }
-
-    public final String getHostname()
-    {
-        final String methodName = AgentRequest.CNAME + "#getHostname()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.hostname);
-        }
-
-        return this.hostname;
     }
 
     public final Object getRequestPayload()

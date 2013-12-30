@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.server.processors.impl;
+package com.cws.esolutions.agent.processors.impl;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.server.processors.impl
@@ -40,13 +40,13 @@ import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.impl.SystemManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
+import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 import com.cws.esolutions.agent.processors.impl.ApplicationManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
-import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
 /**
- * @see com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor
+ * @see com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor
  */
 public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 {

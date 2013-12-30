@@ -24,6 +24,7 @@ package com.cws.esolutions.core.utils;
  * kh05451 @ Jan 4, 2013 3:36:54 PM
  *     Created.
  */
+import java.util.List;
 import org.slf4j.Logger;
 import javax.jms.Session;
 import java.io.Serializable;
@@ -43,6 +44,7 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -68,13 +70,16 @@ public final class MQUtils
      * @return <code>String</code> - the JMS correlation ID associated with the message
      * @throws UtilityException if an error occurs while putting the message on the configured queue
      */
-    public static final synchronized String sendMqMessage(final String connName, final String requestQueue, final Serializable value) throws UtilityException
+    public static final synchronized String sendMqMessage(final String connName, final List<String> authData, final String requestQueue, final String targetHost, final Serializable value) throws UtilityException
     {
-        final String methodName = MQUtils.CNAME + "sendMqMessage(final String connName, final String requestQueue, final Serializable value) throws UtilityException";
+        final String methodName = MQUtils.CNAME + "sendMqMessage(final String connName, final List<String> authData, final String requestQueue, final String targetHost, final Serializable value) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", connName);
+            DEBUGGER.debug("Value: {}", requestQueue);
+            DEBUGGER.debug("Value: {}", targetHost);
             DEBUGGER.debug("Value: {}", value);
         }
 
@@ -112,8 +117,13 @@ public final class MQUtils
                 DEBUGGER.debug("ConnectionFactory: ", connFactory);
             }
 
+            if (connFactory == null)
+            {
+                throw new UtilityException("Unable to create connection factory for provided name");
+            }
+
             // Create a Connection
-            conn = connFactory.createConnection();
+            conn = connFactory.createConnection(authData.get(0), PasswordUtils.decryptText(authData.get(1), authData.get(2).length()));
             conn.start();
 
             if (DEBUG)
@@ -139,11 +149,13 @@ public final class MQUtils
                 catch (NamingException nx)
                 {
                     ERROR_RECORDER.error(nx.getMessage(), nx);
+
+                    throw new UtilityException(nx.getMessage(), nx);
                 }
             }
             else
             {
-                Destination destination = session.createQueue(requestQueue);
+                Destination destination = session.createTopic(requestQueue);
 
                 if (DEBUG)
                 {
@@ -167,6 +179,7 @@ public final class MQUtils
 
             ObjectMessage message = session.createObjectMessage(true);
             message.setJMSCorrelationID(correlationId);
+            message.setStringProperty("targetHost", targetHost);
 
             if (DEBUG)
             {
@@ -200,6 +213,7 @@ public final class MQUtils
 
                 if (!(conn == null))
                 {
+                    conn.stop();
                     conn.close();
                 }
             }
@@ -219,14 +233,16 @@ public final class MQUtils
      * @return Object - A serializable object as obtained from the MQ message
      * @throws UtilityException if an error occurs during the MQ get operation
      */
-    public static final synchronized Object getMqMessage(final String connName, final String responseQueue, final String messageId) throws UtilityException
+    public static final synchronized Object getMqMessage(final String connName, final List<String> authData, final String responseQueue, final String messageId) throws UtilityException
     {
-        final String methodName = MQUtils.CNAME + "getMqMessage(final String connName, final String responseQueue, final String messageId) throws UtilityException";
+        final String methodName = MQUtils.CNAME + "getMqMessage(final String connName, final List<String> authData, final String responseQueue, final String messageId) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("messageId: {}", messageId);
+            DEBUGGER.debug("Value: {}", connName);
+            DEBUGGER.debug("Value: {}", responseQueue);
+            DEBUGGER.debug("Value: {}", messageId);
         }
 
         Connection conn = null;
@@ -257,8 +273,13 @@ public final class MQUtils
                 DEBUGGER.debug("ConnectionFactory: ", connFactory);
             }
 
+            if (connFactory == null)
+            {
+                throw new UtilityException("Unable to create connection factory for provided name");
+            }
+
             // Create a Connection
-            conn = connFactory.createConnection();
+            conn = connFactory.createConnection(authData.get(0), PasswordUtils.decryptText(authData.get(1), authData.get(2).length()));
             conn.start();
 
             if (DEBUG)
@@ -274,15 +295,22 @@ public final class MQUtils
                 DEBUGGER.debug("Session: ", session);
             }
 
-            // TODO: FIX ME
-            try
+            if (envContext != null)
             {
-                consumer = session.createConsumer((Destination) envContext.lookup(responseQueue), "JMSCorrelationID='" + messageId + "'");
+                try
+                {
+                    consumer = session.createConsumer((Destination) envContext.lookup(responseQueue), "JMSCorrelationID='" + messageId + "'");
+                }
+                catch (NamingException nx)
+                {
+                    ERROR_RECORDER.error(nx.getMessage(), nx);
+
+                    throw new UtilityException(nx.getMessage(), nx);
+                }
             }
-            catch (NamingException nx)
+            else
             {
-                // we're probably not in a container
-                Destination destination = session.createQueue((String) envContext.lookup(responseQueue));
+                Destination destination = session.createQueue(responseQueue);
 
                 if (DEBUG)
                 {
@@ -317,12 +345,6 @@ public final class MQUtils
 
             throw new UtilityException(jx.getMessage(), jx);
         }
-        catch (NamingException nx)
-        {
-            ERROR_RECORDER.error(nx.getMessage(), nx);
-
-            throw new UtilityException(nx.getMessage(), nx);
-        }
         finally
         {
             try
@@ -335,6 +357,7 @@ public final class MQUtils
 
                 if (!(conn == null))
                 {
+                    conn.stop();
                     conn.close();
                 }
             }

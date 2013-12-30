@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -47,158 +48,34 @@ import com.cws.esolutions.agent.Constants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class ServerConfig implements Serializable
 {
-    private int backlogCount = 0;
-    private int portNumber = 10180; // default port if not configured
-    private String sslKeySalt = null;
-    private String sslProtocol = null;
-    private String serverClass = null;
+    private String salt = null;
+    private String username = null;
+    private String password = null;
     private String requestQueue = null;
     private String responseQueue = null;
-    private String transportType = null;
-    private boolean isSSLEnabled = false;
-    private String sslKeyDatabase = null;
-    private String sslKeyPassword = null;
-    private boolean isTCPDisabled = false;
-    private String listenAddress = "0.0.0.0"; // bind to all available addresses if not configured
+    private String connectionName = null;
 
     private static final String CNAME = ServerConfig.class.getName();
-    private static final long serialVersionUID = 3657200015017596527L;
+    private static final long serialVersionUID = 9144720470986353417L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setPortNumber(final int value)
+    public final void setConnectionName(final String value)
     {
-        final String methodName = ServerConfig.CNAME + "#setPortNumber(final String value)";
+        final String methodName = ServerConfig.CNAME + "#setConnectionName(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: ", value);
         }
-
-        this.portNumber = value;
+        
+        this.connectionName = value;
     }
 
-    public final void setBacklogCount(final int value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setBacklogCount(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.backlogCount = value;
-    }
-
-    public final void setSslKeySalt(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setSslKeySalt(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sslKeySalt = value;
-    }
-
-    public final void setListenAddress(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setListenAddress(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.listenAddress = value;
-    }
-
-    public final void setTransportType(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setTransportType(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.transportType = value;
-    }
-
-    public final void setSslProtocol(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setSslProtocol(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sslProtocol = value;
-    }
-
-    public final void setIsSSLEnabled(final boolean value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setIsSSLEnabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isSSLEnabled = value;
-    }
-
-    public final void setSslKeyDatabase(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setSslKeyDatabase(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sslKeyDatabase = value;
-    }
-
-    public final void setSslKeyPassword(final String value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setSslKeyPassword(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.sslKeyPassword = value;
-    }
-
-    public final void setIsTCPDisabled(final boolean value)
-    {
-        final String methodName = ServerConfig.CNAME + "#setIsTCPDisabled(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.isTCPDisabled = value;
-    }
-
-    public void setRequestQueue(final String value)
+    public final void setRequestQueue(final String value)
     {
         final String methodName = ServerConfig.CNAME + "#setRequestQueue(final String value)";
 
@@ -211,7 +88,7 @@ public final class ServerConfig implements Serializable
         this.requestQueue = value;
     }
 
-    public void setResponseQueue(final String value)
+    public final void setResponseQueue(final String value)
     {
         final String methodName = ServerConfig.CNAME + "#setResponseQueue(final String value)";
 
@@ -224,157 +101,55 @@ public final class ServerConfig implements Serializable
         this.responseQueue = value;
     }
 
-    public void setServerClass(final String value)
+    public final void setUsername(final String value)
     {
-        final String methodName = ServerConfig.CNAME + "#setServerClass(final String value)";
+        final String methodName = ServerConfig.CNAME + "#setUsername(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: ", value);
         }
-        
-        this.serverClass = value;
+
+        this.username = value;
     }
 
-    @XmlElement(name = "portNumber")
-    public final int getPortNumber()
+    public final void setPassword(final String value)
     {
-        final String methodName = ServerConfig.CNAME + "#getPortNumber()";
+        final String methodName = ServerConfig.CNAME + "#setPassword(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.portNumber);
         }
 
-        return this.portNumber;
+        this.password = value;
     }
 
-    @XmlElement(name = "backlog")
-    public final int getBacklogCount()
+    public final void setSalt(final String value)
     {
-        final String methodName = ServerConfig.CNAME + "#getBacklogCount()";
+        final String methodName = ServerConfig.CNAME + "#setSalt(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.backlogCount);
         }
 
-        return this.backlogCount;
+        this.salt = value;
     }
 
-    @XmlElement(name = "sslKeySalt")
-    public final String getSslKeySalt()
+    @XmlElement(name = "connectionName")
+    public final String getConnectionName()
     {
-        final String methodName = ServerConfig.CNAME + "#getSslKeySalt()";
+        final String methodName = ServerConfig.CNAME + "#getConnectionName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sslKeySalt);
+            DEBUGGER.debug("Value: ", this.connectionName);
         }
 
-        return this.sslKeySalt;
-    }
-
-    @XmlElement(name = "listenAddress")
-    public final String getListenAddress()
-    {
-        final String methodName = ServerConfig.CNAME + "#getListenAddress()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.listenAddress);
-        }
-
-        return this.listenAddress;
-    }
-
-    @XmlElement(name = "transportType")
-    public final String getTransportType()
-    {
-        final String methodName = ServerConfig.CNAME + "#getTransportType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.transportType);
-        }
-
-        return this.transportType;
-    }
-
-    @XmlElement(name = "sslEnabled")
-    public final boolean isSSLEnabled()
-    {
-        final String methodName = ServerConfig.CNAME + "#getIsSSLEnabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isSSLEnabled);
-        }
-
-        return this.isSSLEnabled;
-    }
-
-    @XmlElement(name = "sslKeystore")
-    public final String getSslKeyDatabase()
-    {
-        final String methodName = ServerConfig.CNAME + "#getSslKeyDatabase()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sslKeyDatabase);
-        }
-
-        return this.sslKeyDatabase;
-    }
-
-    @XmlElement(name = "sslKeyPassword")
-    public final String getSslKeyPassword()
-    {
-        final String methodName = ServerConfig.CNAME + "#getSslKeyPassword()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sslKeyPassword);
-        }
-
-        return this.sslKeyPassword;
-    }
-
-    @XmlElement(name = "sslProtocol")
-    public final String getSslProtocol()
-    {
-        final String methodName = ServerConfig.CNAME + "#getSslProtocol()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.sslProtocol);
-        }
-
-        return this.sslProtocol;
-    }
-
-    @XmlElement(name = "tcpEnabled")
-    public final boolean isTCPDisabled()
-    {
-        final String methodName = ServerConfig.CNAME + "#isTCPDisabled()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.isTCPDisabled);
-        }
-
-        return this.isTCPDisabled;
+        return this.connectionName;
     }
 
     @XmlElement(name = "requestQueue")
@@ -405,18 +180,44 @@ public final class ServerConfig implements Serializable
         return this.responseQueue;
     }
 
-    @XmlElement(name = "serverClass")
-    public final String getServerClass()
+    @XmlElement(name = "username")
+    public final String getUsername()
     {
-        final String methodName = ServerConfig.CNAME + "#getServerClass()";
+        final String methodName = ServerConfig.CNAME + "#getUsername()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.serverClass);
+            DEBUGGER.debug("Value: ", this.username);
         }
-        
-        return this.serverClass;
+
+        return this.username;
+    }
+
+    @XmlElement(name = "password")
+    public final String getPassword()
+    {
+        final String methodName = ServerConfig.CNAME + "#getPassword()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.password;
+    }
+
+    @XmlElement(name = "salt")
+    public final String getSalt()
+    {
+        final String methodName = ServerConfig.CNAME + "#getSalt()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.salt;
     }
 
     @Override
@@ -436,7 +237,7 @@ public final class ServerConfig implements Serializable
         {
             if (DEBUG)
             {
-                DEBUGGER.debug("field: {}", field);
+                DEBUGGER.debug("field: ", field);
             }
 
             if (!(field.getName().equals("methodName")) &&
@@ -464,7 +265,7 @@ public final class ServerConfig implements Serializable
 
         if (DEBUG)
         {
-            DEBUGGER.debug("sBuilder: {}", sBuilder);
+            DEBUGGER.debug("sBuilder: ", sBuilder);
         }
 
         return sBuilder.toString();

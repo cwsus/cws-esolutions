@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.server.interfaces;
+package com.cws.esolutions.agent.processors.interfaces;
 /*
  * Project: eSolutionsAgent
- * Package: com.cws.esolutions.agent.server.interfaces
- * File: AgentServer.java
+ * Package: com.cws.esolutions.agent.server.processors.interfaces
+ * File: IAgentRequestProcessor.java
  *
  * History
  *
@@ -29,6 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.dto.AgentRequest;
+import com.cws.esolutions.agent.dto.AgentResponse;
+import com.cws.esolutions.agent.exception.AgentException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -37,12 +40,13 @@ import com.cws.esolutions.agent.Constants;
  * @author khuntly
  * @version 1.0
  */
-public interface AgentServer
+public interface IAgentRequestProcessor
 {
-    static final String CNAME = AgentServer.class.getName();
+    static final String CNAME = IAgentRequestProcessor.class.getName();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger INFO_RECORDER = LoggerFactory.getLogger(Constants.INFO_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
+    AgentResponse processRequest(final AgentRequest request) throws AgentException;
 }

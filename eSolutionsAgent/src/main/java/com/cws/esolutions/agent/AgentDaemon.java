@@ -26,11 +26,16 @@ package com.cws.esolutions.agent;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -38,9 +43,9 @@ import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
 
 import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.server.MQServer;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
-import com.cws.esolutions.agent.server.factory.AgentServerFactory;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -57,7 +62,7 @@ public class AgentDaemon implements Daemon
     private static final String APP_CONFIG = "appConfig";
     private static final String CNAME = AgentDaemon.class.getName();
     private static final AgentBean agentBean = AgentBean.getInstance();
-    private static final String CURRENT_DIRECTORY = System.getProperty("user.dir");
+    private static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/";
 
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + AgentDaemon.CNAME);
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
@@ -127,6 +132,8 @@ public class AgentDaemon implements Daemon
                     DEBUGGER.debug("ConfigurationData: {}", configData);
                 }
 
+                agentBean.setOsType(System.getProperty("os.name"));
+                agentBean.setHostName(InetAddress.getLocalHost().getHostName());
                 agentBean.setConfigData(configData);
             }
             else
@@ -147,6 +154,12 @@ public class AgentDaemon implements Daemon
 
             throw new DaemonInitException(ax.getMessage(), ax);
         }
+        catch (UnknownHostException uhx)
+        {
+            ERROR_RECORDER.error(uhx.getMessage(), uhx);
+
+            throw new DaemonInitException(uhx.getMessage(), uhx);
+        }
     }
 
     @Override
@@ -161,7 +174,7 @@ public class AgentDaemon implements Daemon
 
         try
         {
-            this.thread = (Thread) AgentServerFactory.getAgentServer(agentBean.getConfigData().getServerConfig().getServerClass());
+            this.thread = (Thread) new MQServer();
             this.thread.start();
         }
         catch (Exception ex)

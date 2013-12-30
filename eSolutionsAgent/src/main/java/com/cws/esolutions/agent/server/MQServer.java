@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.agent.server.impl;
+package com.cws.esolutions.agent.server;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent
@@ -25,11 +25,13 @@ package com.cws.esolutions.agent.server.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import org.slf4j.Logger;
 import javax.jms.Session;
 import javax.jms.Message;
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import org.slf4j.LoggerFactory;
 import javax.jms.ObjectMessage;
 import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
@@ -40,17 +42,21 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.agent.AgentBean;
+import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
+import com.cws.esolutions.agent.utils.PasswordUtils;
 import com.cws.esolutions.agent.config.xml.ServerConfig;
 import com.cws.esolutions.agent.exception.AgentException;
-import com.cws.esolutions.agent.server.interfaces.AgentServer;
-import com.cws.esolutions.agent.server.processors.impl.AgentRequestProcessorImpl;
-import com.cws.esolutions.agent.server.processors.interfaces.IAgentRequestProcessor;
+import com.cws.esolutions.agent.processors.impl.AgentRequestProcessorImpl;
+import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 /**
- * @see com.cws.esolutions.agent.server.interfaces.AgentServer
+ * TODO: Add class information/description
+ *
+ * @author 35033355
+ * @version 1.0
  */
-public class MQServer extends Thread implements AgentServer, MessageListener, ExceptionListener
+public class MQServer extends Thread implements MessageListener, ExceptionListener
 {
     private Connection conn = null;
     private Session session = null;
@@ -60,14 +66,19 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     private MessageProducer producer = null;
     private ConnectionFactory connFactory = null;
 
+    private static final String CNAME = MQServer.class.getName();
     private static final AgentBean agentBean = AgentBean.getInstance();
     private static final IAgentRequestProcessor processor = new AgentRequestProcessorImpl();
     private static final ServerConfig serverConfig = agentBean.getConfigData().getServerConfig();
 
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
     @Override
     public void run()
     {
-        final String methodName = AgentServer.CNAME + "#run()";
+        final String methodName = MQServer.CNAME + "#run()";
 
         if (DEBUG)
         {
@@ -77,14 +88,15 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
         try
         {
             // always a tcp conn, i have yet to find an mq implementation that uses udp
-            this.connFactory = new ActiveMQConnectionFactory("tcp://" + serverConfig.getListenAddress() + ":" + serverConfig.getPortNumber());
+            this.connFactory = new ActiveMQConnectionFactory(serverConfig.getConnectionName());
 
             if (DEBUG)
             {
                 DEBUGGER.debug("ConnectionFactory: {}", this.connFactory);
             }
 
-            this.conn = this.connFactory.createConnection();
+            this.conn = this.connFactory.createConnection(serverConfig.getUsername(),
+                    PasswordUtils.decryptText(serverConfig.getPassword(), serverConfig.getSalt().length()));
             this.conn.start();
 
             if (DEBUG)
@@ -99,7 +111,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                 DEBUGGER.debug("Session: {}", this.session);
             }
 
-            this.request = this.session.createQueue(serverConfig.getRequestQueue());
+            this.request = this.session.createTopic(serverConfig.getRequestQueue());
 
             if (DEBUG)
             {
@@ -113,7 +125,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                 DEBUGGER.debug("Destination: {}", this.response);
             }
 
-            this.consumer = this.session.createConsumer(this.request);
+            this.consumer = this.session.createConsumer(this.request, "targetHost='" + agentBean.getHostName() + "'");
             this.consumer.setMessageListener(this);
 
             if (DEBUG)
@@ -137,7 +149,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     @Override
     public void onException(final JMSException exception)
     {
-        final String methodName = AgentServer.CNAME + "#onException(final JMSException exception)";
+        final String methodName = MQServer.CNAME + "#onException(final JMSException exception)";
         
         if (DEBUG)
         {
@@ -149,7 +161,7 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
     @Override
     public void onMessage(final Message message)
     {
-        final String methodName = AgentServer.CNAME + "#onMessage(final Message message)";
+        final String methodName = MQServer.CNAME + "#onMessage(final Message message)";
 
         if (DEBUG)
         {
@@ -178,26 +190,25 @@ public class MQServer extends Thread implements AgentServer, MessageListener, Ex
                 DEBUGGER.debug("agentRequest: ", agentRequest);
             }
 
-            if (StringUtils.equals(agentRequest.getHostname(), agentBean.getHostName()))
+            mqMessage.acknowledge();
+
+            AgentResponse agentResponse = processor.processRequest(agentRequest);
+
+            if (DEBUG)
             {
-                AgentResponse agentResponse = processor.processRequest(agentRequest);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AgentResponse: ", agentResponse);
-                }
-
-                ObjectMessage oMessage = this.session.createObjectMessage(true);
-                oMessage.setObject(agentResponse);
-                oMessage.setJMSCorrelationID(message.getJMSCorrelationID());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ObjectMessage: {}", oMessage);
-                }
-
-                this.producer.send(this.response, oMessage);
+                DEBUGGER.debug("AgentResponse: ", agentResponse);
             }
+
+            ObjectMessage oMessage = this.session.createObjectMessage(true);
+            oMessage.setObject(agentResponse);
+            oMessage.setJMSCorrelationID(message.getJMSCorrelationID());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ObjectMessage: {}", oMessage);
+            }
+
+            this.producer.send(this.response, oMessage);
         }
         catch (JMSException jx)
         {

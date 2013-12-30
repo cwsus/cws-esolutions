@@ -17,6 +17,9 @@ package com.cws.esolutions.core.processors.impl;
 /**
  * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
  */
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
@@ -104,7 +107,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setHostname(sourceServer.getOperHostName());
                 agentRequest.setAppName(appConfig.getAppName());
                 agentRequest.setRequestPayload(systemReq);
 
@@ -113,31 +115,26 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                switch (agentConfig.getListenerType())
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+
+                if (DEBUG)
                 {
-                    case MQ:
-                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("correlator: {}", correlator);
-                        }
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                            agentConfig.getRequestQueue(), correlator);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
 
-                        if (StringUtils.isNotEmpty(correlator))
-                        {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                            return response;
-                        }
-
-                        break;
-                    case TCP:
-                        break;
+                    return response;
                 }
 
                 if (DEBUG)
@@ -267,7 +264,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
-                agentRequest.setHostname(sourceServer.getOperHostName());
                 agentRequest.setAppName(appConfig.getAppName());
                 agentRequest.setRequestPayload(systemReq);
 
@@ -276,31 +272,26 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                switch (agentConfig.getListenerType())
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+
+                if (DEBUG)
                 {
-                    case MQ:
-                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("correlator: {}", correlator);
-                        }
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                            agentConfig.getRequestQueue(), correlator);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
 
-                        if (StringUtils.isNotEmpty(correlator))
-                        {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                            return response;
-                        }
-
-                        break;
-                    case TCP:
-                        break;
+                    return response;
                 }
 
                 if (DEBUG)
@@ -433,38 +424,32 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 AgentRequest agentRequest = new AgentRequest();
                 agentRequest.setAppName(appConfig.getAppName());
                 agentRequest.setRequestPayload(systemReq);
-                agentRequest.setHostname(sourceServer.getOperHostName());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                switch (agentConfig.getListenerType())
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+
+                if (DEBUG)
                 {
-                    case MQ:
-                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("correlator: {}", correlator);
-                        }
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                            agentConfig.getRequestQueue(), correlator);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
 
-                        if (StringUtils.isNotEmpty(correlator))
-                        {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                            return response;
-                        }
-
-                        break;
-                    case TCP:
-                        break;
+                    return response;
                 }
 
                 if (DEBUG)
@@ -596,38 +581,32 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 AgentRequest agentRequest = new AgentRequest();
                 agentRequest.setAppName(appConfig.getAppName());
                 agentRequest.setRequestPayload(systemReq);
-                agentRequest.setHostname(sourceServer.getOperHostName());
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                switch (agentConfig.getListenerType())
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+
+                if (DEBUG)
                 {
-                    case MQ:
-                        // always make the tcp conn to the oper hostname - thats where the agent should be listening
-                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), agentConfig.getRequestQueue(),  agentRequest);
+                    DEBUGGER.debug("correlator: {}", correlator);
+                }
 
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("correlator: {}", correlator);
-                        }
+                if (StringUtils.isNotEmpty(correlator))
+                {
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
+                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
+                            agentConfig.getRequestQueue(), correlator);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
 
-                        if (StringUtils.isNotEmpty(correlator))
-                        {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), agentConfig.getResponseQueue(),  correlator);
-                        }
-                        else
-                        {
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
-
-                            return response;
-                        }
-
-                        break;
-                    case TCP:
-                        break;
+                    return response;
                 }
 
                 if (DEBUG)

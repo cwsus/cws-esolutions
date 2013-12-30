@@ -3,7 +3,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <!-- eSolutionsCore loggers -->
     <appender name="esolutionssvc-audit" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/esolutionssvc-audit.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/esolutionssvc-audit.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -15,7 +15,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="esolutionssvc-info" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/esolutionssvc-info.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/esolutionssvc-info.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -27,14 +27,14 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="esolutionssvc-error" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/esolutionssvc-error.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/esolutionssvc-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="esolutionssvc-debug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/esolutionssvc-debug.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/esolutionssvc-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <param name="Threshold" value="DEBUG" />
         <layout class="org.apache.log4j.PatternLayout">
@@ -64,49 +64,49 @@
 
     <!-- third party appenders -->
     <appender name="apache-commons" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/apache-commons.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/apache-commons.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="quartz" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/quartz.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/quartz.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="virtualbox" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/virtualbox.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/virtualbox.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="yubico" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/yubico.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/yubico.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="expectj" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/expectj.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/expectj.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="j2ssh" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/j2ssh.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/j2ssh.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
         </layout>
     </appender>
     <appender name="xbill" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="C:/Temp/xbill.log" />
+        <param name="File" value="/opt/cws/eSolutions/log/xbill.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />

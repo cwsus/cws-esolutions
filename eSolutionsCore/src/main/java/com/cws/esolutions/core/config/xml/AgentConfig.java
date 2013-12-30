@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.config.enums.AgentListenerType;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,16 +47,12 @@ import com.cws.esolutions.core.config.enums.AgentListenerType;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AgentConfig implements Serializable
 {
-    private int tcpPort = 0;
+    private String salt = null;
     private String username = null;
     private String password = null;
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
-	private String trustStoreFile = null;
-	private String trustStorePass = null;
-	private String trustStoreType = null;
-	private AgentListenerType listenerType = null;
 
     private static final String CNAME = AgentConfig.class.getName();
     private static final long serialVersionUID = 9144720470986353417L;
@@ -65,19 +60,6 @@ public final class AgentConfig implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
-
-    public final void setListenerType(final AgentListenerType value)
-    {
-        final String methodName = AgentConfig.CNAME + "#setListenerType(final AgentListenerType value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
-        }
-
-        this.listenerType = value;
-    }
 
     public final void setConnectionName(final String value)
     {
@@ -90,19 +72,6 @@ public final class AgentConfig implements Serializable
         }
         
         this.connectionName = value;
-    }
-
-    public final void setTcpPort(final int value)
-    {
-        final String methodName = AgentConfig.CNAME + "#setTcpPort(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
-        }
-
-        this.tcpPort = value;
     }
 
     public final void setRequestQueue(final String value)
@@ -118,43 +87,17 @@ public final class AgentConfig implements Serializable
         this.requestQueue = value;
     }
 
-    public final void setTrustStoreFile(final String value)
+    public final void setResponseQueue(final String value)
     {
-        final String methodName = AgentConfig.CNAME + "#setTrustStoreFile(final String value)";
+        final String methodName = AgentConfig.CNAME + "#setResponseQueue(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: ", value);
         }
-
-        this.trustStoreFile = value;
-    }
-
-    public final void setTrustStorePass(final String value)
-    {
-        final String methodName = AgentConfig.CNAME + "#setTrustStorePass(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
-        }
-
-        this.trustStorePass = value;
-    }
-
-    public final void setTrustStoreType(final String value)
-    {
-        final String methodName = AgentConfig.CNAME + "#setTrustStoreType(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
-        }
-
-        this.trustStoreType = value;
+        
+        this.responseQueue = value;
     }
 
     public final void setUsername(final String value)
@@ -177,24 +120,21 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
         }
 
         this.password = value;
     }
 
-    @XmlElement(name = "listenerType")
-    public final AgentListenerType getListenerType()
+    public final void setSalt(final String value)
     {
-        final String methodName = AgentConfig.CNAME + "#getListenerType()";
+        final String methodName = AgentConfig.CNAME + "#setSalt(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.listenerType);
         }
 
-        return this.listenerType;
+        this.salt = value;
     }
 
     @XmlElement(name = "connectionName")
@@ -209,20 +149,6 @@ public final class AgentConfig implements Serializable
         }
 
         return this.connectionName;
-    }
-
-    @XmlElement(name = "tcpPort")
-    public final int getTcpPort()
-    {
-        final String methodName = AgentConfig.CNAME + "#getTcpPort()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.tcpPort);
-        }
-
-        return this.tcpPort;
     }
 
     @XmlElement(name = "requestQueue")
@@ -253,48 +179,6 @@ public final class AgentConfig implements Serializable
         return this.responseQueue;
     }
 
-    @XmlElement(name = "trustStoreFile")
-    public final String getTrustStoreFile()
-    {
-        final String methodName = AgentConfig.CNAME + "#getTrustStoreFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.trustStoreFile);
-        }
-
-        return this.trustStoreFile;
-    }
-
-    @XmlElement(name = "trustStorePass")
-    public final String getTrustStorePass()
-    {
-        final String methodName = AgentConfig.CNAME + "#getTrustStorePass()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.trustStorePass);
-        }
-
-        return this.trustStorePass;
-    }
-
-    @XmlElement(name = "trustStoreType")
-    public final String getTrustStoreType()
-    {
-        final String methodName = AgentConfig.CNAME + "#getTrustStoreType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.trustStoreType);
-        }
-
-        return this.trustStoreType;
-    }
-
     @XmlElement(name = "username")
     public final String getUsername()
     {
@@ -317,10 +201,22 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.password);
         }
 
         return this.password;
+    }
+
+    @XmlElement(name = "salt")
+    public final String getSalt()
+    {
+        final String methodName = AgentConfig.CNAME + "#getSalt()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
+
+        return this.salt;
     }
 
     @Override
