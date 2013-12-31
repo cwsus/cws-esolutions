@@ -113,8 +113,8 @@ public class DatacenterValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datacenterName", this.messageDatacenterNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datacenterStatus", this.messageDatacenterStatusRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "datacenterDesc", this.messageDatacenterDescriptionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageDatacenterNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageDatacenterStatusRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDatacenterDescriptionRequired);
     }
 }

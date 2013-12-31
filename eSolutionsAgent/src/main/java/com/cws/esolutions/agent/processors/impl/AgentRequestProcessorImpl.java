@@ -81,38 +81,6 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
                 ApplicationManagerResponse res = null;
                 ApplicationManagerRequest req = (ApplicationManagerRequest) payload;
 
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagerRequest: {}", req);
-                }
-
-                switch (req.getMgmtType())
-                {
-                    case APPSTATE:
-                        res = appManager.manageApplicationState(req);
-
-                        break;
-                    case DEPLOY:
-                        res = appManager.manageApplicationDeployment(req);
-
-                        break;
-                    case SERVERSTATE:
-                        res = appManager.manageServerState(req);
-
-                        break;
-                    default:
-                        throw new ApplicationManagerException("Invalid management request type provided.");
-                }
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ApplicationManagerResponse: {}", res);
-                }
-
-                response.setRequestStatus(res.getRequestStatus());
-                response.setResponse(res.getResponse());
-                response.setResponsePayload(res);
-
                 return response;
             }
             else if (payload instanceof SystemManagerRequest)
@@ -127,10 +95,6 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 
                 switch (req.getMgmtType())
                 {
-                    case INSTALLSFW:
-                        res = systemManagerProcessor.installSoftwarePackage(req);
-
-                        break;
                     case SYSTEMCHECK:
                         res = systemManagerProcessor.runSystemCheck(req);
 

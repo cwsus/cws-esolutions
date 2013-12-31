@@ -17,7 +17,7 @@ package com.cws.esolutions.agent.processors.dto;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.dto
- * File: ApplicationManagerRequest.java
+ * File: ApplicationManagerRequestManagerRequest.java
  *
  * History
  *
@@ -25,51 +25,38 @@ package com.cws.esolutions.agent.processors.dto;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.Constants;
-import com.cws.esolutions.agent.processors.enums.DeploymentType;
-import com.cws.esolutions.agent.processors.enums.StateManagementType;
-import com.cws.esolutions.agent.processors.enums.ApplicationManagementType;
 /**
- * Interface for the Application Data DAO layer. Allows access
+ * Interface for the ApplicationManagerRequest Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
- * application information.
+ * ApplicationManagerRequest information.
  *
  * @author khuntly
  * @version 1.0
  */
 public class ApplicationManagerRequest implements Serializable
 {
-    private int timeoutValue = 0;
-    private File appBinary = null;
-    private String jvmName = null;
-    private String applName = null;
-    private String processId = null;
-    private String targetFile = null;
-    private String targetServer = null;
-    private String rootDirectory = null;
-    private String deploymentFile = null;
-    private String targetDirectory = null;
-    private boolean forceOperation = false;
-    private DeploymentType deploymentType = null;
-    private StateManagementType stateMgmtType = null;
-    private ApplicationManagementType mgmtType = null;
+    private double version = 0.0;
+    private String installPath = null;
+    private String packageLocation = null;
+    private String packageInstaller = null;
+    private String installerOptions = null;
 
-    private static final long serialVersionUID = -6382475745170249113L;
     private static final String CNAME = ApplicationManagerRequest.class.getName();
+    private static final long serialVersionUID = -7939041322590386615L;
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setProcessId(final String value)
+    public final void setInstallPath(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setProcessId(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#setInstallPath(final String value)";
 
         if (DEBUG)
         {
@@ -77,12 +64,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.processId = value;
+        this.installPath = value;
     }
 
-    public final void setMgmtType(final ApplicationManagementType value)
+    public final void setPackageLocation(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setMgmtType(final ApplicationManagementType value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageLocation(final String value)";
 
         if (DEBUG)
         {
@@ -90,12 +77,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.mgmtType = value;
+        this.packageLocation = value;
     }
 
-    public final void setApplName(final String value)
+    public final void setVersion(final double value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setApplName(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageLocation(final double value)";
 
         if (DEBUG)
         {
@@ -103,12 +90,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applName = value;
+        this.version = value;
     }
 
-    public final void setAppBinary(final File value)
+    public final void setPackageInstaller(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setAppBinary(final File value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageInstaller(final String value)";
 
         if (DEBUG)
         {
@@ -116,12 +103,12 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.appBinary = value;
+        this.packageInstaller = value;
     }
 
-    public final void setTargetServer(final String value)
+    public final void setInstallerOptions(final String value)
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setTargetServer(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#setInstallerOptions(final String value)";
 
         if (DEBUG)
         {
@@ -129,306 +116,72 @@ public class ApplicationManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.targetServer = value;
+        this.installerOptions = value;
     }
 
-    public final void setRootDirectory(final String value)
+    public final String getInstallPath()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setRootDirectory(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#getInstallPath()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.installPath);
         }
 
-        this.rootDirectory = value;
+        return this.installPath;
     }
 
-    public final void setTargetDirectory(final String value)
+    public final String getPackageLocation()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setTargetDirectory(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageLocation()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.packageLocation);
         }
 
-        this.targetDirectory = value;
+        return this.packageLocation;
     }
 
-    public final void setTargetFile(final String value)
+    public final String getPackageInstaller()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setTargetFile(final String value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageInstaller()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.packageInstaller);
         }
 
-        this.targetFile = value;
+        return this.packageInstaller;
     }
 
-    public final void setStateMgmtType(final StateManagementType value)
+    public final String getInstallerOptions()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setAppRequestType(final StateManagementType value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#getInstallerOptions()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.installerOptions);
         }
 
-        this.stateMgmtType = value;
+        return this.installerOptions;
     }
 
-    public final void setDeploymentType(final DeploymentType value)
+    public final double getVersion()
     {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setAppRequestType(final DeploymentType value)";
+        final String methodName = ApplicationManagerRequest.CNAME + "#getVersion()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", this.version);
         }
 
-        this.deploymentType = value;
-    }
-
-    public final void setTimeoutValue(final int value)
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setTimeoutValue(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.timeoutValue = value;
-    }
-
-    public final void setJvmName(final String value)
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setJvmName(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.jvmName = value;
-    }
-
-    public final void setForceOperation(final boolean value)
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setForceOperation(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.forceOperation = value;
-    }
-
-    public final void setDeploymentFile(final String value)
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#setDeploymentFile(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.deploymentFile = value;
-    }
-
-    public final String getProcessId()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getProcessId()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.processId);
-        }
-
-        return this.processId;
-    }
-
-    public final ApplicationManagementType getMgmtType()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getMgmtType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.mgmtType);
-        }
-
-        return this.mgmtType;
-    }
-
-    public final String getApplName()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getApplName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.applName);
-        }
-
-        return this.applName;
-    }
-
-    public final File getAppBinary()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getAppBinary()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appBinary);
-        }
-
-        return this.appBinary;
-    }
-
-    public final String getTargetServer()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getTargetServer()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.targetServer);
-        }
-
-        return this.targetServer;
-    }
-
-    public final String getRootDirectory()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getRootDirectory()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.rootDirectory);
-        }
-
-        return this.rootDirectory;
-    }
-
-    public final String getTargetDirectory()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getTargetDirectory()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.targetDirectory);
-        }
-
-        return this.targetDirectory;
-    }
-
-    public final String getTargetFile()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getTargetFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.targetFile);
-        }
-
-        return this.targetFile;
-    }
-
-    public final StateManagementType getStateMgmtType()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getStateMgmtType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.stateMgmtType);
-        }
-
-        return this.stateMgmtType;
-    }
-
-    public final DeploymentType getDeploymentType()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getDeploymentType()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.deploymentType);
-        }
-
-        return this.deploymentType;
-    }
-
-    public final int getTimeoutValue()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getTimeoutValue()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.timeoutValue);
-        }
-
-        return this.timeoutValue;
-    }
-
-    public final String getJvmName()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getJvmName()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.jvmName);
-        }
-
-        return this.jvmName;
-    }
-
-    public final boolean forceOperation()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#forceOperation()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.forceOperation);
-        }
-
-        return this.forceOperation;
-    }
-
-    public final String getDeploymentFile()
-    {
-        final String methodName = ApplicationManagerRequest.CNAME + "#getDeploymentFile()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.deploymentFile);
-        }
-
-        return this.deploymentFile;
+        return this.version;
     }
 
     @Override

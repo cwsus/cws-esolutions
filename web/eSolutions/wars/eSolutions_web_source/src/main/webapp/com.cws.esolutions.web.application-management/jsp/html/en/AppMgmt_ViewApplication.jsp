@@ -84,23 +84,25 @@
                 <td><label id="txtApplicationVersion"><spring:message code="app.mgmt.application.version" /></label></td>
                 <td>${application.version}</td>
             </tr>
-            <c:if test="${not empty fn:trim(appl.scmPath)}">
-                <tr>
-                    <td><label id="txtScmPath"><spring:message code="app.mgmt.application.scm.path" /></label></td>
-                    <td>${application.scmPath}</td>
-                </tr>
-            </c:if>
             <tr>
-                <td><label id="txtBasePath"><spring:message code="app.mgmt.base.path" /></label></td>
-                <td>${application.basePath}</td>
+                <td><label id="txtPackageLocation"><spring:message code="app.mgmt.application.package.location" /></label></td>
+                <td>${application.packageLocation}</td>
+            </tr>
+            <tr>
+                <td><label id="txtPackageInstaller"><spring:message code="app.mgmt.application.package.installer" /></label></td>
+                <td>${application.packageInstaller}</td>
+            </tr>
+            <tr>
+                <td><label id="txtInstallerOptions"><spring:message code="app.mgmt.application.installer.options" /></label></td>
+                <td>${application.installerOptions}</td>
+            </tr>
+            <tr>
+                <td><label id="txtBasePath"><spring:message code="app.mgmt.install.path" /></label></td>
+                <td>${application.installPath}</td>
             </tr>
             <tr>
                 <td><label id="txtApplicationLogsPath"><spring:message code="app.mgmt.application.applogs.path" /></label></td>
-                <td>${application.applicationLogsPath}</td>
-            </tr>
-            <tr>
-                <td><label id="txtApplicationInstallPath"><spring:message code="app.mgmt.application.install.path" /></label></td>
-                <td>${application.applicationInstallPath}</td>
+                <td>${application.logsDirectory}</td>
             </tr>
             <tr>
                 <td><label id="txtApplicationPlatform"><spring:message code="app.mgmt.application.platform" /></label></td>

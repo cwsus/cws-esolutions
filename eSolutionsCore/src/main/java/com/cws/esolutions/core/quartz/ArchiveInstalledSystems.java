@@ -33,8 +33,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
+import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 /**
  * Archival process for installed systems that have been retired. This will
  * move those systems into the historical database and remove them from the

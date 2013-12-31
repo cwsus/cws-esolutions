@@ -113,8 +113,8 @@ public class PlatformValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformName", this.messagePlatformNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messagePlatformNameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messagePlatformStatusRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platformServers", this.messagePlatformServersRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "servers", this.messagePlatformServersRequired);
     }
 }

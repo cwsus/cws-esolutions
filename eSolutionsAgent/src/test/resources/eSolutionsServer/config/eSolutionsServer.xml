@@ -20,23 +20,6 @@
         <nlsFileName>nls.request_processing</nlsFileName>
     </application-config>
 
-    <jmx-config>
-        <jmxHandler>com.cws.esolutions.agent.jmx.impl.WebSphereJMXConnector</jmxHandler>
-        <mbeanHandler>com.cws.esolutions.agent.mbeans.impl.WebSphereServiceMBeanImpl</mbeanHandler>
-        <protocol>t3</protocol>
-        <serverName>192.168.10.251</serverName>
-        <portNumber>19024</portNumber>
-        <userConfig>/opt/cws/eSolutions/config/WebLogicConfig.properties</userConfig>
-        <keyConfig>/opt/cws/eSolutions/config/WebLogicKey.properties</keyConfig>
-        <nmPort>19024</nmPort>
-        <isSecure>false</isSecure>
-        <sslKeystore />
-        <keystorePass />
-        <sslTruststore />
-        <truststorePass />
-        <requestTimeout />
-    </jmx-config>
-
     <deployment-config>
         <deploymentActiveDirectory>/opt/eSolutions/deployments/active/</deploymentActiveDirectory>
         <deploymentArchiveDirectory>/opt/eSolutions/deployments/archive/</deploymentArchiveDirectory>
@@ -104,15 +87,4 @@
             <emailAddress>kmhuntly@gmail.com</emailAddress>
         </notificationAddress>
     </exception-config>
-
-    <resource-config>
-        <DataSourceManager>
-            <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://localhost/esolutions</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <username>appuser</username>
-            <password>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</password>
-            <salt>OITltocOUZjW</salt>
-        </DataSourceManager>
-    </resource-config>
 </configuration>

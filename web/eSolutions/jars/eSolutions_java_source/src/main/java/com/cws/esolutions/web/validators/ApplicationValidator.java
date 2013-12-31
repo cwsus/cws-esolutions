@@ -13,7 +13,6 @@ package com.cws.esolutions.web.validators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -33,12 +32,9 @@ import com.cws.esolutions.web.dto.ApplicationRequest;
  */
 public class ApplicationValidator implements Validator
 {
-    private String messageJvmNameRequired = null;
-    private String messageScmPathRequired = null;
-    private String messageBasePathRequired = null;
-    private String messagePidDirectoryRequired = null;
+    private String messagePackageLocationRequired = null;
     private String messageApplicationNameRequired = null;
-    private String messageApplicationClusterRequired = null;
+    private String messagePackageInstallerRequired = null;
     private String messageApplicationVersionRequired = null;
     private String messageApplicationLogsPathRequired = null;
     private String messageApplicationPlatformRequired = null;
@@ -88,19 +84,6 @@ public class ApplicationValidator implements Validator
         this.messageApplicationVersionRequired = value;
     }
 
-    public final void setMessageApplicationClusterRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationClusterRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageApplicationClusterRequired = value;
-    }
-
     public final void setMessageApplicationPlatformRequired(final String value)
     {
         final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationPlatformRequired(final String value)";
@@ -127,9 +110,9 @@ public class ApplicationValidator implements Validator
         this.messageApplicationInstallPathRequired = value;
     }
 
-    public final void setMessageJvmNameRequired(final String value)
+    public final void setMessagePackageLocationRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageJvmNameRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessagePackageLocationRequired(final String value)";
 
         if (DEBUG)
         {
@@ -137,12 +120,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageJvmNameRequired = value;
+        this.messagePackageLocationRequired = value;
     }
 
-    public final void setMessageBasePathRequired(final String value)
+    public final void setMessagePackageInstallerRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageBasePathRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessagePackageInstallerRequired(final String value)";
 
         if (DEBUG)
         {
@@ -150,33 +133,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageBasePathRequired = value;
-    }
-
-    public final void setMessagePidDirectoryRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessagePidDirectoryRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messagePidDirectoryRequired = value;
-    }
-
-    public final void setMessageScmPathRequired(final String value)
-    {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageScmPathRequired(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageScmPathRequired = value;
+        this.messagePackageInstallerRequired = value;
     }
 
     @Override
@@ -212,16 +169,14 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "jvmName", this.messageJvmNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "basePath", this.messageBasePathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platform", this.messageApplicationPlatformRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageApplicationNameRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsPath", this.messageApplicationLogsPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "clusterName", this.messageApplicationClusterRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageApplicationInstallPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "pidDirectory", this.messagePidDirectoryRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "applicationName", this.messageApplicationNameRequired);
-        
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsDirectory", this.messageApplicationLogsPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageLocation", this.messagePackageLocationRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageInstaller", this.messagePackageInstallerRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messageApplicationPlatformRequired);
+
         ApplicationRequest request = (ApplicationRequest) target;
 
         if (DEBUG)
@@ -232,11 +187,6 @@ public class ApplicationValidator implements Validator
         if (request.getVersion() == 0.0)
         {
             errors.reject("version", this.messageApplicationVersionRequired);
-        }
-
-        if ((request.isScmEnabled()) && (StringUtils.isEmpty(request.getScmPath())))
-        {
-            ValidationUtils.rejectIfEmptyOrWhitespace(errors, "scmPath", this.messageScmPathRequired);
         }
     }
 }

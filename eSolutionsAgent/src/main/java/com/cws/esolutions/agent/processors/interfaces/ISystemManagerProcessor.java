@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.Constants;
-import com.cws.esolutions.agent.config.xml.JMXConfig;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
 import com.cws.esolutions.agent.config.xml.ApplicationConfig;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
@@ -50,7 +49,6 @@ public interface ISystemManagerProcessor
 {
     static final AgentBean appBean = AgentBean.getInstance();
 
-    static final JMXConfig jmxConfig = appBean.getConfigData().getJmxConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
 
@@ -66,6 +64,4 @@ public interface ISystemManagerProcessor
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
 
     SystemManagerResponse runSystemCheck(final SystemManagerRequest request) throws SystemManagerException;
-
-    SystemManagerResponse installSoftwarePackage(final SystemManagerRequest request) throws SystemManagerException;
 }

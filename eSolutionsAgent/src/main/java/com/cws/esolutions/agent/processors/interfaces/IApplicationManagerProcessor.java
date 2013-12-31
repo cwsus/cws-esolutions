@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.Constants;
-import com.cws.esolutions.agent.config.xml.JMXConfig;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
 import com.cws.esolutions.agent.config.xml.ApplicationConfig;
 import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
@@ -50,7 +49,6 @@ public interface IApplicationManagerProcessor
 {
     static final AgentBean appBean = AgentBean.getInstance();
 
-    static final JMXConfig jmxConfig = appBean.getConfigData().getJmxConfig();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
 
@@ -64,14 +62,4 @@ public interface IApplicationManagerProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
-
-    /* appserver work **/
-    ApplicationManagerResponse manageServerState(final ApplicationManagerRequest request) throws ApplicationManagerException;
-
-    /* application work **/
-    // deploy/undeploy application(s)
-    ApplicationManagerResponse manageApplicationDeployment(final ApplicationManagerRequest request) throws ApplicationManagerException;
-
-    // start/stop (application ONLY)
-    ApplicationManagerResponse manageApplicationState(final ApplicationManagerRequest request) throws ApplicationManagerException;
 }

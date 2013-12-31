@@ -30,10 +30,10 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
+import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.security.services.enums.AdminControlType;
-import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;

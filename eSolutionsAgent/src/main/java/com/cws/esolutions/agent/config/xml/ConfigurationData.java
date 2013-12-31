@@ -47,7 +47,6 @@ import com.cws.esolutions.agent.Constants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class ConfigurationData implements Serializable
 {
-    private JMXConfig jmxConfig = null;
     private ServerConfig serverConfig = null;
     private ScriptConfig scriptConfig = null;
     private ApplicationConfig appConfig = null;
@@ -58,19 +57,6 @@ public final class ConfigurationData implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
-
-    public final void setJmxConfig(final JMXConfig value)
-    {
-        final String methodName = ConfigurationData.CNAME + "#setJmxConfig(final JMXConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.jmxConfig = value;
-    }
 
     public final void setAppConfig(final ApplicationConfig value)
     {
@@ -109,20 +95,6 @@ public final class ConfigurationData implements Serializable
         }
 
         this.serverConfig = value;
-    }
-
-    @XmlElement(name = "jmx-config")
-    public final JMXConfig getJmxConfig()
-    {
-        final String methodName = ConfigurationData.CNAME + "#getJmxConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.jmxConfig);
-        }
-
-        return this.jmxConfig;
     }
 
     @XmlElement(name = "application-config")

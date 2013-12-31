@@ -14,15 +14,13 @@
     </bean>
 
     <bean id="applicationValidatorBean" class="com.cws.esolutions.web.validators.ApplicationValidator">
-        <property name="messageApplicationNameRequired" value="app.mgmt.app.name.required" />
-        <property name="messageApplicationLogsPathRequired" value="app.mgmt.app.logs.required" />
-        <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
-        <property name="messageApplicationClusterRequired" value="app.mgmt.app.cluster.required" />
-        <property name="messageApplicationPlatformRequired" value="app.mgmt.app.platform.required" />
-        <property name="messageApplicationInstallPathRequired" value="app.mgmt.app.install.required" />
-        <property name="messageJvmNameRequired" value="app.mgmt.jvm.name.required" />
-        <property name="messageBasePathRequired" value="app.mgmt.base.path.required" />
-        <property name="messagePidDirectoryRequired" value="app.mgmt.pid.dir.required" />
+        <property name="messageNameRequired" value="app.mgmt.app.name.required" />
+        <property name="messageLogsPathRequired" value="app.mgmt.app.logs.required" />
+        <property name="messageVersionRequired" value="app.mgmt.app.version.required" />
+        <property name="messagePackageLocationRequired" value="app.mgmt.app.cluster.required" />
+        <property name="messagePlatformRequired" value="app.mgmt.app.platform.required" />
+        <property name="messageInstallPathRequired" value="app.mgmt.app.install.required" />
+        <property name="messagePackageInstallerRequired" value="app.mgmt.jvm.name.required" />
     </bean>
 
     <bean id="deploymentValidatorBean" class="com.cws.esolutions.web.validators.DeploymentValidator">

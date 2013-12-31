@@ -30,34 +30,34 @@
 
 <script>
 <!--
-    function validateForm(theForm)
+function validateForm(theForm)
+{
+    if (theForm.name.value == '')
     {
-        if (theForm.datacenterName.value == '')
-        {
-            document.getElementById('validationError').innerHTML = 'A name must be provided for the new datacenter.';
-            document.getElementById('txtDatacenterName').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('datacenterName').focus();
-        }
-        else if (theForm.datacenterStatus.value == '')
-        {
-            document.getElementById('validationError').innerHTML = 'A datacenter status must be provided.';
-            document.getElementById('txtDatacenterStatus').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('datacenterStatus').focus();
-        }
-        else if (theForm.datacenterDesc.value == '')
-        {
-            document.getElementById('validationError').innerHTML = 'A description of the datacenter must be provided.';
-            document.getElementById('txtDatacenterDescription').style.color = '#FF0000';
-            document.getElementById('execute').disabled = false;
-            document.getElementById('datacenterDesc').focus();
-        }
-        else
-        {
-            theForm.submit();
-        }
+        document.getElementById('validationError').innerHTML = 'A name must be provided for the new datacenter.';
+        document.getElementById('txtDatacenterName').style.color = '#FF0000';
+        document.getElementById('execute').disabled = false;
+        document.getElementById('name').focus();
     }
+    else if (theForm.status.value == '')
+    {
+        document.getElementById('validationError').innerHTML = 'A datacenter status must be provided.';
+        document.getElementById('txtDatacenterStatus').style.color = '#FF0000';
+        document.getElementById('execute').disabled = false;
+        document.getElementById('status').focus();
+    }
+    else if (theForm.description.value == '')
+    {
+        document.getElementById('validationError').innerHTML = 'A description of the datacenter must be provided.';
+        document.getElementById('txtDatacenterDescription').style.color = '#FF0000';
+        document.getElementById('execute').disabled = false;
+        document.getElementById('description').focus();
+    }
+    else
+    {
+        theForm.submit();
+    }
+}
 //-->
 </script>
 

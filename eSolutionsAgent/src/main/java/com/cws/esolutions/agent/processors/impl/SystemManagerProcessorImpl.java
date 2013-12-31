@@ -311,18 +311,4 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
         return response;
     }
-
-    @Override
-    public SystemManagerResponse installSoftwarePackage(final SystemManagerRequest request) throws SystemManagerException
-    {
-        final String methodName = ISystemManagerProcessor.CNAME + "#installSoftwarePackage(final SystemManagerRequest request) throws SystemManagerException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SystemManagerRequest: {}", request);
-        }
-
-        throw new SystemManagerException("Not implemented yet");
-    }
 }

@@ -75,7 +75,7 @@
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1:10936/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>
             <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>

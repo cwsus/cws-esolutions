@@ -269,7 +269,7 @@
         <cookie-config>
             <http-only>true</http-only>
             <secure>true</secure>
-            <max-age>15</max-age>
+            <max-age>900</max-age>
         </cookie-config>
         <tracking-mode>COOKIE</tracking-mode>
     </session-config>

@@ -35,17 +35,17 @@ import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
+import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
+import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
+import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
-import com.cws.esolutions.core.dao.processors.impl.ServerDataDAOImpl;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.dao.processors.impl.DatacenterDataDAOImpl;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.core.dao.processors.interfaces.IDatacenterDataDAO;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 /**
  * Interface for the Application Data DAO layer. Allows access

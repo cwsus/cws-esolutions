@@ -9,14 +9,14 @@ USE cwssec;
 --
 -- Source in all the sql scripts to build the tables
 --
-SOURCE ./cwssec/cwssec.usr_lgn.sql;
-SOURCE ./cwssec/cwssec.usr_lgn_data.sql;
-SOURCE ./cwssec/cwssec.usr_reset_data.sql;
-SOURCE ./cwssec/cwssec.usr_sec_ques.sql;
-SOURCE ./cwssec/cwssec.usr_audit.sql;
-SOURCE ./cwssec/cwssec.usr_key_data.sql;
-SOURCE ./cwssec/cwssec.usr_lgn_services.sql;
-SOURCE ./cwssec/cwssec.usr_lgn_svcmap.sql;
+SOURCE ./cwssec.audit.sql;
+SOURCE ./cwssec.key_data.sql;
+SOURCE ./cwssec.logon_data.sql;
+SOURCE ./cwssec.reset_data.sql;
+SOURCE ./cwssec.security_questions.sql;
+SOURCE ./cwssec.service_map.sql;
+SOURCE ./cwssec.user_services.sql;
+SOURCE ./cwssec.users.sql;
 
 COMMIT;
 

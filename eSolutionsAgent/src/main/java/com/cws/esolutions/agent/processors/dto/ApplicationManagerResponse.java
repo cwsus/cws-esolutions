@@ -43,7 +43,6 @@ import com.cws.esolutions.agent.enums.AgentStatus;
 public class ApplicationManagerResponse implements Serializable
 {
     private String response = null;
-    private Object responseData = null;
     private AgentStatus requestStatus = null;
 
     private static final long serialVersionUID = -9096097694538612637L;
@@ -79,19 +78,6 @@ public class ApplicationManagerResponse implements Serializable
         this.response = value;
     }
 
-    public final void setResponseData(final Object value)
-    {
-        final String methodName = ApplicationManagerResponse.CNAME + "#setResponseData(final Object value)";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.responseData = value;
-    }
-
     public final AgentStatus getRequestStatus()
     {
         final String methodName = ApplicationManagerResponse.CNAME + "#getRequestStatus()";
@@ -116,19 +102,6 @@ public class ApplicationManagerResponse implements Serializable
         }
 
         return this.response;
-    }
-
-    public final Object getResponseData()
-    {
-        final String methodName = ApplicationManagerResponse.CNAME + "#getResponseData()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.responseData);
-        }
-
-        return this.responseData;
     }
 
     @Override
