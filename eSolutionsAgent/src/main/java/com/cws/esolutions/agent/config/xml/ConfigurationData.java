@@ -49,7 +49,6 @@ public final class ConfigurationData implements Serializable
 {
     private ServerConfig serverConfig = null;
     private ScriptConfig scriptConfig = null;
-    private ApplicationConfig appConfig = null;
 
     private static final long serialVersionUID = -5174050371773232789L;
     private static final String CNAME = ConfigurationData.class.getName();
@@ -57,19 +56,6 @@ public final class ConfigurationData implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
-
-    public final void setAppConfig(final ApplicationConfig value)
-    {
-        final String methodName = ConfigurationData.CNAME + "#setAppConfig(final ApplicationConfig value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.appConfig = value;
-    }
 
     public final void setScriptConfig(final ScriptConfig value)
     {
@@ -95,20 +81,6 @@ public final class ConfigurationData implements Serializable
         }
 
         this.serverConfig = value;
-    }
-
-    @XmlElement(name = "application-config")
-    public final ApplicationConfig getAppConfig()
-    {
-        final String methodName = ConfigurationData.CNAME + "#getAppConfig()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.appConfig);
-        }
-
-        return this.appConfig;
     }
 
     @XmlElement(name = "script-config")

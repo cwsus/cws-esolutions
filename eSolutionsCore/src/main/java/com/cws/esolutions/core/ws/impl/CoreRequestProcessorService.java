@@ -31,8 +31,6 @@ import javax.jws.soap.SOAPBinding;
 import javax.jws.soap.SOAPBinding.Use;
 import javax.jws.soap.SOAPBinding.Style;
 
-import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
@@ -62,7 +60,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: ", request);
+            DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
         AuthenticationResponse response = authProcessor.processAgentLogon(request);
@@ -87,7 +85,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: ", request);
+            DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
         AuthenticationResponse response = authProcessor.obtainUserSecurityConfig(request);
@@ -112,7 +110,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthenticationRequest: ", request);
+            DEBUGGER.debug("AuthenticationRequest: {}", request);
         }
 
         AuthenticationResponse response = authProcessor.verifyUserSecurityConfig(request);
@@ -137,14 +135,14 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: ", request);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
         DNSServiceResponse response = dnsSvc.performLookup(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("DNSServiceResponse: ", response);
+            DEBUGGER.debug("DNSServiceResponse: {}", response);
         }
 
         return response;
@@ -162,14 +160,14 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: ", request);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
         DNSServiceResponse response = dnsSvc.performLookup(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("DNSServiceResponse: ", response);
+            DEBUGGER.debug("DNSServiceResponse: {}", response);
         }
 
         return response;
@@ -187,14 +185,14 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: ", request);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
         DNSServiceResponse response = dnsSvc.createNewService(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("DNSServiceResponse: ", response);
+            DEBUGGER.debug("DNSServiceResponse: {}", response);
         }
 
         return response;
@@ -212,7 +210,7 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: ", request);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
         DNSServiceResponse response = dnsSvc.pushNewService(request);
@@ -237,139 +235,14 @@ public class CoreRequestProcessorService implements ICoreRequestProcessorService
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: ", request);
+            DEBUGGER.debug("DNSServiceRequest: {}", request);
         }
 
         DNSServiceResponse response = dnsSvc.performSiteTransfer(request);
 
         if (DEBUG)
         {
-            DEBUGGER.debug("DNSServiceResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServerSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doServerSearch")
-    public SearchResponse doServerSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doServerSearch(final request request) throws SearchRequestException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("request: ", request);
-        }
-
-        SearchResponse response = searchSvc.doServerSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doMessageSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doMessageSearch")
-    public SearchResponse doMessageSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doMessageSearch(final SearchRequest request) throws SearchRequestException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: ", request);
-        }
-
-        SearchResponse response = searchSvc.doMessageSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doApplicationSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doApplicationSearch")
-    public SearchResponse doApplicationSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doApplicationSearch(final SearchRequest request) throws SearchRequestException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: ", request);
-        }
-
-        SearchResponse response = searchSvc.doApplicationSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doServiceSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doServiceSearch")
-    public SearchResponse doServiceSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doServiceSearch(final SearchRequest request) throws SearchRequestException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: ", request);
-        }
-
-        SearchResponse response = searchSvc.doServiceSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.ISearchProcessor#doSiteSearch(com.cws.esolutions.core.processors.dto.SearchRequest)
-     */
-    @Override
-    @WebMethod(operationName = "doSiteSearch")
-    public SearchResponse doSiteSearch(final SearchRequest request) throws SearchRequestException
-    {
-        final String methodName = ICoreRequestProcessorService.CNAME + "#doSiteSearch(final SearchRequest request) throws SearchRequestException";
-        
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: ", request);
-        }
-
-        SearchResponse response = searchSvc.doSiteSearch(request);
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("SearchResponse: ", response);
+            DEBUGGER.debug("DNSServiceResponse: {}", response);
         }
 
         return response;

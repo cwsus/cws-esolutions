@@ -25,7 +25,10 @@ package com.cws.esolutions.agent.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
+import java.util.Map;
 import org.slf4j.Logger;
+import java.util.HashMap;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
@@ -48,8 +51,7 @@ import com.cws.esolutions.agent.Constants;
 public final class ScriptConfig implements Serializable
 {
     private int scriptTimeout = 0;
-    private String netstatCmd = null;
-    private String processListCmd = null;
+    private Map<String, File> scripts = null;
     
     private static final String CNAME = ScriptConfig.class.getName();
     private static final long serialVersionUID = -190318672398494206L;
@@ -71,9 +73,9 @@ public final class ScriptConfig implements Serializable
         this.scriptTimeout = value;
     }
 
-    public final void setNetstatCmd(final String value)
+    public final void setScripts(final HashMap<String, File> value)
     {
-        final String methodName = ScriptConfig.CNAME + "#setNetstatCmd(final String value)";
+        final String methodName = ScriptConfig.CNAME + "#setScripts(final HashMap<String, File> value)";
 
         if (DEBUG)
         {
@@ -81,20 +83,7 @@ public final class ScriptConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.netstatCmd = value;
-    }
-
-    public final void setProcessListCmd(final String value)
-    {
-        final String methodName = ScriptConfig.CNAME + "#setProcessListCmd(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.netstatCmd = value;
+        this.scripts = value;
     }
 
     @XmlElement(name = "scriptTimeout")
@@ -111,32 +100,18 @@ public final class ScriptConfig implements Serializable
         return this.scriptTimeout;
     }
 
-    @XmlElement(name = "netstatCmd")
-    public final String getNetstatCmd()
+    @XmlElement(name = "scripts")
+    public final Map<String, File> getScripts()
     {
-        final String methodName = ScriptConfig.CNAME + "#getNetstatCmd()";
+        final String methodName = ScriptConfig.CNAME + "#getScripts()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.netstatCmd);
+            DEBUGGER.debug("Value: {}", this.scripts);
         }
 
-        return this.netstatCmd;
-    }
-
-    @XmlElement(name = "processListCmd")
-    public final String getProcessListCmd()
-    {
-        final String methodName = ScriptConfig.CNAME + "#getProcessListCmd()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.processListCmd);
-        }
-
-        return this.processListCmd;
+        return this.scripts;
     }
 
     @Override

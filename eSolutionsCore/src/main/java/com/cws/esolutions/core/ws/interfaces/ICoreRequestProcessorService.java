@@ -31,8 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.Constants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
@@ -50,11 +48,10 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
 @WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorService")
-public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, ISearchProcessor, IAuthenticationProcessor
+public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, IAuthenticationProcessor
 {
     static final String CNAME = ICoreRequestProcessorService.class.getName();
 
-    static final ISearchProcessor searchSvc = new SearchProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IDNSServiceRequestProcessor dnsSvc = new DNSServiceRequestProcessorImpl();
     static final IServerManagementProcessor sysMgr = new ServerManagementProcessorImpl();

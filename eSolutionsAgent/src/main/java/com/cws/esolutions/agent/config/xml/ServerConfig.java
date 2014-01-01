@@ -49,6 +49,7 @@ import com.cws.esolutions.agent.Constants;
 public final class ServerConfig implements Serializable
 {
     private String salt = null;
+	private int connectTimeout = 0;
     private String username = null;
     private String password = null;
     private String requestQueue = null;
@@ -73,6 +74,19 @@ public final class ServerConfig implements Serializable
         }
         
         this.connectionName = value;
+    }
+
+    public final void setConnectTimeout(final int value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setConnectTimeout(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.connectTimeout = value;
     }
 
     public final void setRequestQueue(final String value)
@@ -150,6 +164,20 @@ public final class ServerConfig implements Serializable
         }
 
         return this.connectionName;
+    }
+
+    @XmlElement(name = "connectTimeout")
+    public final int getConnectTimeout()
+    {
+        final String methodName = ServerConfig.CNAME + "#getConnectTimeout()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.connectTimeout);
+        }
+
+        return this.connectTimeout;
     }
 
     @XmlElement(name = "requestQueue")
