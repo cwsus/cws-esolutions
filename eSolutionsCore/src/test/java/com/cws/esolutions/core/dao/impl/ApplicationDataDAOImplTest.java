@@ -26,7 +26,6 @@ package com.cws.esolutions.core.dao.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import java.util.Arrays;
 import org.junit.Assert;
@@ -39,6 +38,7 @@ import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 
 public class ApplicationDataDAOImplTest
 {
+    private String guid = "828f58b4-55f8-473a-9d75-17ae6cad3f6b";
     private static final IApplicationDataDAO dao = new ApplicationDataDAOImpl();
 
     @Before
@@ -57,11 +57,11 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public void testAddNewApplication()
+    public void addNewApplication()
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                        UUID.randomUUID().toString(),
+                        guid,
                         "eSolutions",
                         "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
                         "CWS",
@@ -82,7 +82,32 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public void testListInstalledApplications()
+    public void updateApplication()
+    {
+        List<Object> appData = new ArrayList<Object>(
+                Arrays.asList(
+                        guid,
+                        "eSolutions",
+                        "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
+                        "CWS",
+                        "1.1",
+                        "/appvol/ATS70/eSolutions/applogs",
+                        "2aa547e9-3a6e-4720-95d9-6521c862ef2a",
+                        "/appvol/ATS70/eSolutions/eSolutions_web_source-1.0.war",
+                        "/appvol/ATS70/eSolutions/syslogs/"));
+
+        try
+        {
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addNewApplication(appData));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void listInstalledApplications()
     {
         try
         {
@@ -95,11 +120,11 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public void testGetApplicationData()
+    public void getApplicationData()
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData("93128772-94b6-49b0-bac7-d16ef42a0794"));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData(guid));
         }
         catch (SQLException sqx)
         {
@@ -108,11 +133,24 @@ public class ApplicationDataDAOImplTest
     }
 
     @Test
-    public void testGetApplicationsByAttributeAppName()
+    public void getApplicationsByAttribute()
     {
         try
         {
             Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationsByAttribute("eSolutions", 0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void deleteApplication()
+    {
+        try
+        {
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.deleteApplication(guid));
         }
         catch (SQLException sqx)
         {

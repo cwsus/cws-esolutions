@@ -35,7 +35,7 @@ import java.util.ArrayList;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
@@ -109,11 +109,11 @@ public class ApplicationManagementProcessorImplTest
     {
         String[] platforms = { "17b33263-560e-4cbc-95eb-b78483d04bab", "8dde8b07-f028-480a-bc74-047da3637ef3", "affdb777-5f23-42ab-9af9-cab14fa7df19" };
 
-        List<Platform> platformList = new ArrayList<>();
+        List<Service> platformList = new ArrayList<>();
 
         for (String str : platforms)
         {
-            Platform platform = new Platform();
+            Service platform = new Service();
             platform.setGuid(str);
 
             platformList.add(platform);

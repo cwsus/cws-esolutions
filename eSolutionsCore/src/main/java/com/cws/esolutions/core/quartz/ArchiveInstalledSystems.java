@@ -77,7 +77,7 @@ public class ArchiveInstalledSystems implements Job
             // this is NOT going to route through the processor.
             // its going to use the DAO directly
             IServerDataDAO dao = new ServerDataDAOImpl();
-            List<String> serverList = dao.getRetiredServers();
+            List<String[]> serverList = dao.getRetiredServers(0);
 
             if (DEBUG)
             {
@@ -86,16 +86,16 @@ public class ArchiveInstalledSystems implements Job
 
             if ((serverList != null) && (serverList.size() != 0))
             {
-                for (String guid : serverList)
+                for (String[] data : serverList)
                 {
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("guid: {}", guid);
+                        DEBUGGER.debug("data: {}", data);
                     }
 
                     try
                     {
-                        dao.archiveServerData(guid);
+                        dao.archiveServerData(data[0]);
                     }
                     catch (SQLException sqx)
                     {

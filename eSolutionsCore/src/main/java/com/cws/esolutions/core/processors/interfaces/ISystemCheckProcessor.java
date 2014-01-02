@@ -36,10 +36,10 @@ import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
+import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
-import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
+import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -59,7 +59,7 @@ public interface ISystemCheckProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IServerDataDAO serverDAO = new ServerDataDAOImpl();
-    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
+    static final IServiceDataDAO serviceDAO = new ServiceDataDAOImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();

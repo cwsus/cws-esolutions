@@ -17,7 +17,7 @@ package com.cws.esolutions.core.dao.interfaces;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.processors.interfaces
- * File: IDatacenterDataDAO.java
+ * File: IServiceDataDAO.java
  *
  * History
  *
@@ -42,29 +42,29 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
  * @author khuntly
  * @version 1.0
  */
-public interface IDatacenterDataDAO
+public interface IServiceDataDAO
 {
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final ResourceControllerBean resBean = appBean.getResourceBean();
 
-    static final String CNAME = IDatacenterDataDAO.class.getName();
+    static final String CNAME = IServiceDataDAO.class.getName();
     static final DataSource dataSource = resBean.getDataSource().get("ApplicationDataSource");
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    boolean addNewDatacenter(final List<String> serverData) throws SQLException;
+    boolean addNewService(final List<String> serverData) throws SQLException;
 
-    boolean updateDatacenter(final List<String> serverData) throws SQLException;
+    boolean updateServiceData(final List<String> serverData) throws SQLException;
 
-    boolean removeExistingDatacenter(final String serverGuid) throws SQLException;
+    boolean removeServiceData(final String serverGuid) throws SQLException;
 
-    int getDatacenterCount() throws SQLException;
+    int getServiceCount() throws SQLException;
 
-    List<String[]> getAvailableDataCenters(final int startRow) throws SQLException;
+    List<String[]> listServices(final int startRow) throws SQLException;
 
-    List<String[]> getDataCenterByAttribute(final String attribute, final int startRow) throws SQLException;
+    List<String[]> getServiceByAttribute(final String attribute, final int startRow) throws SQLException;
 
-    List<String> getDatacenter(final String attribute) throws SQLException;
+    List<String> getServiceData(final String attribute) throws SQLException;
 }

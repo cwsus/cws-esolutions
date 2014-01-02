@@ -33,32 +33,25 @@ import com.cws.esolutions.web.dto.ServerRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.processors.dto.Server;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.web.validators.ServerValidator;
-import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.core.processors.enums.ServerType;
-import com.cws.esolutions.core.processors.dto.SearchResult;
-import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
 import com.cws.esolutions.core.processors.dto.ServerManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServerManagementResponse;
-import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
-import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
-import com.cws.esolutions.core.processors.exception.SearchRequestException;
+import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
+import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServerManagementException;
+import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
-import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
-import com.cws.esolutions.core.processors.interfaces.IDatacenterManagementProcessor;
+import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.controllers
@@ -89,7 +82,6 @@ public class SystemManagementController
     private String messageAddServerSuccess = null;
     private ServerValidator serverValidator = null;
     private ApplicationServiceBean appConfig = null;
-    private SearchRequestValidator searchValidator = null;
 
     private static final String CNAME = SystemManagementController.class.getName();
     private static final String ADD_SERVER_REDIRECT = "redirect:/ui/system-management/add-server";
@@ -254,19 +246,6 @@ public class SystemManagementController
         this.serverValidator = value;
     }
 
-    public final void setSearchValidator(final SearchRequestValidator value)
-    {
-        final String methodName = SystemManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.searchValidator = value;
-    }
-
     public final void setAvailableDomains(final List<String> value)
     {
         final String methodName = SystemManagementController.CNAME + "#setAvailableDomains(final List<String> value)";
@@ -367,7 +346,7 @@ public class SystemManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("command", new SearchRequest());
+            mView.addObject("command", new Server());
             mView.setViewName(this.defaultPage);
         }
         else
@@ -401,7 +380,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+        IServerManagementProcessor processor = new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -459,20 +438,24 @@ public class SystemManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchRequest request = new SearchRequest();
-                request.setSearchTerms(terms);
-                request.setStartRow(page);
+                ServerManagementRequest request = new ServerManagementRequest();
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setAttribute(terms);
+                request.setRequestInfo(reqInfo);
+                request.setServiceId(this.systemService);
+                request.setUserAccount(userAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SearchRequest: {}", request);
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
                 }
 
-                SearchResponse response = searchProcessor.doServerSearch(request);
+                ServerManagementResponse response = processor.listServersByAttribute(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SearchResponse: {}", response);
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -480,8 +463,8 @@ public class SystemManagementController
                     mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", page);
                     mView.addObject("searchTerms", terms);
-                    mView.addObject(Constants.SEARCH_RESULTS, response.getResults());
-                    mView.addObject("command", new SearchRequest());
+                    mView.addObject(Constants.SEARCH_RESULTS, response.getServerList());
+                    mView.addObject("command", new Server());
                     mView.setViewName(this.defaultPage);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
@@ -497,9 +480,9 @@ public class SystemManagementController
                     return mView;
                 }
             }
-            catch (SearchRequestException srx)
+            catch (ServerManagementException smx)
             {
-                ERROR_RECORDER.error(srx.getMessage(), srx);
+                ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
 
@@ -936,7 +919,7 @@ public class SystemManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
-        final IDatacenterManagementProcessor dcProcessor = new DatacenterManagementProcessorImpl();
+        final IServiceManagementProcessor svcProcessor = new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1033,7 +1016,7 @@ public class SystemManagementController
             }
 
             // list datacenters
-            DatacenterManagementRequest dcRequest = new DatacenterManagementRequest();
+            ServiceManagementRequest dcRequest = new ServiceManagementRequest();
             dcRequest.setRequestInfo(reqInfo);
             dcRequest.setServiceId(this.dcService);
             dcRequest.setUserAccount(userAccount);
@@ -1047,7 +1030,7 @@ public class SystemManagementController
 
             try
             {
-                DatacenterManagementResponse dcResponse = dcProcessor.listDatacenters(dcRequest);
+                ServiceManagementResponse dcResponse = svcProcessor.listServices(dcRequest);
 
                 if (DEBUG)
                 {
@@ -1056,14 +1039,14 @@ public class SystemManagementController
 
                 if (dcResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<DataCenter> datacenters = dcResponse.getDatacenterList();
+                    List<Service> services = dcResponse.getServiceList();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<DataCenter>: {}", datacenters);
+                        DEBUGGER.debug("List<Service>: {}", services);
                     }
 
-                    mView.addObject("datacenters", datacenters);
+                    mView.addObject("datacenters", services);
                 }
                 else if (dcResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -1080,9 +1063,9 @@ public class SystemManagementController
                     return mView;
                 }
             }
-            catch (DatacenterManagementException dmx)
+            catch (ServiceManagementException smx)
             {
-                ERROR_RECORDER.error(dmx.getMessage(), dmx);
+                ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 // redirect to add datacenter
                 mView = new ModelAndView(new RedirectView());
@@ -1131,7 +1114,7 @@ public class SystemManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IServerManagementProcessor serverMgr = new ServerManagementProcessorImpl();
-        final IDatacenterManagementProcessor dcProcessor = new DatacenterManagementProcessorImpl();
+        final IServiceManagementProcessor dcProcessor = new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1250,7 +1233,7 @@ public class SystemManagementController
                             request.setDomainName(owningDmgr.getDomainName());
                             request.setServerRegion(owningDmgr.getServerRegion());
                             request.setNetworkPartition(owningDmgr.getNetworkPartition());
-                            request.setDatacenter(owningDmgr.getDatacenter().getGuid());
+                            request.setDatacenter(owningDmgr.getService().getGuid());
                         }
                         else if (dmgrResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                         {
@@ -1577,14 +1560,14 @@ public class SystemManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView doServerSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
+    public final ModelAndView doServerSearch(@ModelAttribute("request") final Server server, final BindingResult bindResult)
     {
-        final String methodName = SystemManagementController.CNAME + "#doServerSearch(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult bindResult)";
+        final String methodName = SystemManagementController.CNAME + "#doServerSearch(@ModelAttribute(\"request\") final Server server, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", request);
+            DEBUGGER.debug("Value: {}", server);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -1594,7 +1577,7 @@ public class SystemManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final ISearchProcessor processor = new SearchProcessorImpl();
+        final IServerManagementProcessor processor = new ServerManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1640,20 +1623,6 @@ public class SystemManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            this.searchValidator.validate(request, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new SearchRequest());
-                mView.setViewName(this.defaultPage);
-
-                return mView;
-            }
-
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -1666,26 +1635,34 @@ public class SystemManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchResponse response = processor.doServerSearch(request);
+                ServerManagementRequest request = new ServerManagementRequest();
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setAttribute(server.getOperHostName());
+                request.setRequestInfo(reqInfo);
+                request.setServiceId(this.systemService);
+                request.setUserAccount(userAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SearchResponse: {}", response);
+                    DEBUGGER.debug("ServerManagementRequest: {}", request);
+                }
+
+                ServerManagementResponse response = processor.listServersByAttribute(request);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ServerManagementResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<SearchResult> serverList = response.getResults();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("List<Server>: {}", serverList);
-                    }
-
                     mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", 1);
-                    mView.addObject("searchTerms", request.getSearchTerms());
-                    mView.addObject(Constants.SEARCH_RESULTS, serverList);
+                    mView.addObject("searchTerms", server.getOperHostName());
+                    mView.addObject(Constants.SEARCH_RESULTS, response.getServerList());
+                    mView.addObject("command", new Server());
+                    mView.setViewName(this.defaultPage);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -1693,15 +1670,16 @@ public class SystemManagementController
 
                     return mView;
                 }
+                else
+                {
+                    mView.setViewName(this.appConfig.getErrorResponsePage());
 
-                // regardless of what happens we still allow the user to
-                // make the request
-                mView.addObject("command", new SearchRequest());
-                mView.setViewName(this.defaultPage);
+                    return mView;
+                }
             }
-            catch (SearchRequestException srx)
+            catch (ServerManagementException smx)
             {
-                ERROR_RECORDER.error(srx.getMessage(), srx);
+                ERROR_RECORDER.error(smx.getMessage(), smx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
 

@@ -53,7 +53,7 @@ public class Application implements Serializable
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
-    private List<Platform> platforms = null;
+    private List<Service> platforms = null;
 
     private static final String CNAME = Application.class.getName();
     private static final long serialVersionUID = -7939041322590386615L;
@@ -166,9 +166,9 @@ public class Application implements Serializable
         this.logsDirectory = value;
     }
 
-    public final void setPlatforms(final List<Platform> value)
+    public final void setPlatforms(final List<Service> value)
     {
-        final String methodName = Application.CNAME + "#setPlatforms(final List<Platform> value)";
+        final String methodName = Application.CNAME + "#setPlatforms(final List<Service> value)";
 
         if (DEBUG)
         {
@@ -309,7 +309,7 @@ public class Application implements Serializable
         return this.logsDirectory;
     }
 
-    public final List<Platform> getPlatforms()
+    public final List<Service> getPlatforms()
     {
         final String methodName = Application.CNAME + "#getPlatforms()";
 

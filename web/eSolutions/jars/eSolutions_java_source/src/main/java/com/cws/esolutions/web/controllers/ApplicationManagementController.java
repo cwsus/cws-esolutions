@@ -45,24 +45,18 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.dto.ApplicationRequest;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.Application;
-import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.web.validators.DeploymentValidator;
 import com.cws.esolutions.web.validators.ApplicationValidator;
-import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
-import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
-import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.PlatformManagementException;
+import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
@@ -104,7 +98,6 @@ public class ApplicationManagementController
     private String messageApplicationRetired = null;
     private String messageNoApplicationsFound = null;
     private String messageNoAppVersionProvided = null;
-    private SearchRequestValidator searchValidator = null;
     private DeploymentValidator deploymentValidator = null;
     private ApplicationValidator applicationValidator = null;
 
@@ -138,19 +131,6 @@ public class ApplicationManagementController
         }
 
         this.deploymentValidator = value;
-    }
-
-    public final void setSearchValidator(final SearchRequestValidator value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.searchValidator = value;
     }
 
     public final void setAppConfig(final ApplicationServiceBean value)
@@ -500,7 +480,7 @@ public class ApplicationManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("command", new SearchRequest());
+            mView.addObject("command", new Application());
             mView.setViewName(this.defaultPage);
         }
         else
@@ -534,7 +514,7 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
+        final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -592,45 +572,57 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchRequest request = new SearchRequest();
-                request.setSearchTerms(terms);
-                request.setStartRow(page);
+                Application application = new Application();
+                application.setName(terms);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Application: {}", application);
+                }
+
+                ApplicationManagementRequest request = new ApplicationManagementRequest();
+                request.setApplication(application);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setRequestInfo(reqInfo);
+                request.setServiceId(this.applMgmt);
+                request.setUserAccount(userAccount);
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("SearchRequest: {}", request);
                 }
 
-                SearchResponse searchRes = searchProcessor.doApplicationSearch(request);
+                ApplicationManagementResponse response = processor.listApplications(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SearchResponse: {}", searchRes);
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
                 }
 
-                if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    mView.addObject("pages", (int) Math.ceil(searchRes.getEntryCount() * 1.0 / this.recordsPerPage));
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", page);
                     mView.addObject("searchTerms", terms);
-                    mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
-                    mView.addObject("command", new SearchRequest());
+                    mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
+                    mView.addObject("command", new Application());
                     mView.setViewName(this.defaultPage);
                 }
-                else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
                     mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
-                    mView.addObject("command", new SearchRequest());
+                    mView.addObject("command", new Application());
                     mView.setViewName(this.defaultPage);
                 }
             }
-            catch (SearchRequestException srx)
+            catch (ApplicationManagementException amx)
             {
-                ERROR_RECORDER.error(srx.getMessage(), srx);
+                ERROR_RECORDER.error(amx.getMessage(), amx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
@@ -1010,7 +1002,7 @@ public class ApplicationManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            PlatformManagementRequest platformReq = new PlatformManagementRequest();
+            ServiceManagementRequest platformReq = new ServiceManagementRequest();
             platformReq.setRequestInfo(reqInfo);
             platformReq.setServiceId(this.platformMgmt);
             platformReq.setUserAccount(userAccount);
@@ -1019,21 +1011,21 @@ public class ApplicationManagementController
 
             if (DEBUG)
             {
-                DEBUGGER.debug("PlatformManagementRequest: {}", platformReq);
+                DEBUGGER.debug("ServiceManagementRequest: {}", platformReq);
             }
 
             try
             {
-                PlatformManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
+                ServiceManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                 }
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Platform> platformList = platformResponse.getPlatformList();
+                    List<Service> platformList = platformResponse.getPlatformList();
 
                     if (DEBUG)
                     {
@@ -1044,11 +1036,11 @@ public class ApplicationManagementController
                     {
                         Map<String, String> platformListing = new HashMap<>();
 
-                        for (Platform platform : platformList)
+                        for (Service platform : platformList)
                         {
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Platform: {}", platform);
+                                DEBUGGER.debug("Service: {}", platform);
                             }
 
                             platformListing.put(platform.getGuid(), platform.getName());
@@ -1076,7 +1068,7 @@ public class ApplicationManagementController
                     return mView;
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.addPlatformRedirect);
@@ -1353,7 +1345,7 @@ public class ApplicationManagementController
 
                     if (app != null)
                     {
-                        List<Platform> platformList = app.getPlatforms();
+                        List<Service> platformList = app.getPlatforms();
 
                         if (DEBUG)
                         {
@@ -1491,15 +1483,15 @@ public class ApplicationManagementController
                     DEBUGGER.debug("Application: {}", app);
                 }
 
-                Platform reqPlatform = new Platform();
+                Service reqPlatform = new Service();
                 reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", reqPlatform);
+                    DEBUGGER.debug("Service: {}", reqPlatform);
                 }
 
-                PlatformManagementRequest platformRequest = new PlatformManagementRequest();
+                ServiceManagementRequest platformRequest = new ServiceManagementRequest();
                 platformRequest.setUserAccount(userAccount);
                 platformRequest.setRequestInfo(reqInfo);
                 platformRequest.setServiceId(this.platformMgmt);
@@ -1509,23 +1501,23 @@ public class ApplicationManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", platformRequest);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                 }
 
-                PlatformManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                 }
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    Platform resPlatform = platformResponse.getPlatformData();
+                    Service resPlatform = platformResponse.getPlatformData();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Platform: {}", resPlatform);
+                        DEBUGGER.debug("Service: {}", resPlatform);
                     }
 
                     if (resPlatform != null)
@@ -1557,7 +1549,7 @@ public class ApplicationManagementController
                     mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -1654,12 +1646,12 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                Platform reqPlatform = new Platform();
+                Service reqPlatform = new Service();
                 reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", reqPlatform);
+                    DEBUGGER.debug("Service: {}", reqPlatform);
                 }
 
                 Application appl = new Application();
@@ -1825,12 +1817,12 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                Platform reqPlatform = new Platform();
+                Service reqPlatform = new Service();
                 reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", reqPlatform);
+                    DEBUGGER.debug("Service: {}", reqPlatform);
                 }
 
                 Server targetServer = new Server();
@@ -2117,11 +2109,11 @@ public class ApplicationManagementController
 
                     if (app != null)
                     {
-                        List<Platform> appPlatforms = app.getPlatforms();
+                        List<Service> appPlatforms = app.getPlatforms();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Platform: {}", appPlatforms);
+                            DEBUGGER.debug("Service: {}", appPlatforms);
                         }
 
                         if ((appPlatforms != null) && (appPlatforms.size() != 0))
@@ -2264,15 +2256,15 @@ public class ApplicationManagementController
                     DEBUGGER.debug("Application: {}", appl);
                 }
 
-                Platform reqPlatform = new Platform();
+                Service reqPlatform = new Service();
                 reqPlatform.setGuid(platform);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", reqPlatform);
+                    DEBUGGER.debug("Service: {}", reqPlatform);
                 }
 
-                PlatformManagementRequest platformRequest = new PlatformManagementRequest();
+                ServiceManagementRequest platformRequest = new ServiceManagementRequest();
                 platformRequest.setUserAccount(userAccount);
                 platformRequest.setRequestInfo(reqInfo);
                 platformRequest.setServiceId(this.platformMgmt);
@@ -2282,23 +2274,23 @@ public class ApplicationManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", platformRequest);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                 }
 
-                PlatformManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                 }
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    Platform resPlatform = platformResponse.getPlatformData();
+                    Service resPlatform = platformResponse.getPlatformData();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Platform: {}", resPlatform);
+                        DEBUGGER.debug("Service: {}", resPlatform);
                     }
 
                     if (resPlatform != null)
@@ -2371,7 +2363,7 @@ public class ApplicationManagementController
                     mView.setViewName(this.appConfig.getErrorResponsePage());
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -2398,14 +2390,14 @@ public class ApplicationManagementController
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public final ModelAndView submitApplicationSearch(@ModelAttribute("request") final SearchRequest request, final BindingResult bindResult)
+    public final ModelAndView submitApplicationSearch(@ModelAttribute("application") final Application application, final BindingResult bindResult)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"request\") final SearchRequest request, final BindingResult bindResult)";
+        final String methodName = ApplicationManagementController.CNAME + "#submitApplicationSearch(@ModelAttribute(\"application\") final Application application, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SearchRequest: {}", request);
+            DEBUGGER.debug("SearchRequest: {}", application);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -2414,8 +2406,8 @@ public class ApplicationManagementController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
+        final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -2461,20 +2453,6 @@ public class ApplicationManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            this.searchValidator.validate(request, bindResult);
-
-            if (bindResult.hasErrors())
-            {
-                // validation failed
-                ERROR_RECORDER.error("Errors: {}", bindResult.getAllErrors());
-
-                mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageValidationFailed());
-                mView.addObject("command", new SearchRequest());
-                mView.setViewName(this.defaultPage);
-
-                return mView;
-            }
-
             try
             {
                 RequestHostInfo reqInfo = new RequestHostInfo();
@@ -2487,36 +2465,49 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                SearchResponse searchRes = searchProcessor.doApplicationSearch(request);
+                ApplicationManagementRequest request = new ApplicationManagementRequest();
+                request.setApplication(application);
+                request.setApplicationId(this.appConfig.getApplicationId());
+                request.setApplicationName(this.appConfig.getApplicationName());
+                request.setRequestInfo(reqInfo);
+                request.setServiceId(this.applMgmt);
+                request.setUserAccount(userAccount);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SearchResponse: {}", searchRes);
+                    DEBUGGER.debug("SearchRequest: {}", request);
                 }
 
-                if (searchRes.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                ApplicationManagementResponse response = processor.listApplications(request);
+
+                if (DEBUG)
                 {
-                    mView.addObject("pages", (int) Math.ceil(searchRes.getEntryCount() * 1.0 / this.recordsPerPage));
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                }
+
+                if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
+                {
+                    mView.addObject("pages", (int) Math.ceil(response.getEntryCount() * 1.0 / this.recordsPerPage));
                     mView.addObject("page", 1);
-                    mView.addObject("searchTerms", request.getSearchTerms());
-                    mView.addObject(Constants.SEARCH_RESULTS, searchRes.getResults());
-                    mView.addObject("command", new SearchRequest());
+                    mView.addObject("searchTerms", application.getName());
+                    mView.addObject(Constants.SEARCH_RESULTS, response.getApplicationList());
+                    mView.addObject("command", new Application());
                     mView.setViewName(this.defaultPage);
                 }
-                else if (searchRes.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
+                else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
                     mView.setViewName(this.appConfig.getUnauthorizedPage());
                 }
                 else
                 {
-                    mView.addObject(Constants.ERROR_RESPONSE, this.messageNoApplicationsFound);
-                    mView.addObject("command", new SearchRequest());
+                    mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageNoSearchResults());
+                    mView.addObject("command", new Application());
                     mView.setViewName(this.defaultPage);
                 }
             }
-            catch (SearchRequestException srx)
+            catch (ApplicationManagementException amx)
             {
-                ERROR_RECORDER.error(srx.getMessage(), srx);
+                ERROR_RECORDER.error(amx.getMessage(), amx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
@@ -2625,12 +2616,12 @@ public class ApplicationManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                Platform newPlatform = new Platform();
+                Service newPlatform = new Service();
                 newPlatform.setGuid(request.getPlatform());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", newPlatform);
+                    DEBUGGER.debug("Service: {}", newPlatform);
                 }
 
                 Application newApp = new Application();
@@ -2670,7 +2661,7 @@ public class ApplicationManagementController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // app added
-                    PlatformManagementRequest platformReq = new PlatformManagementRequest();
+                    ServiceManagementRequest platformReq = new ServiceManagementRequest();
                     platformReq.setRequestInfo(reqInfo);
                     platformReq.setServiceId(this.platformMgmt);
                     platformReq.setUserAccount(userAccount);
@@ -2679,19 +2670,19 @@ public class ApplicationManagementController
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PlatformManagementRequest: {}", platformReq);
+                        DEBUGGER.debug("ServiceManagementRequest: {}", platformReq);
                     }
 
-                    PlatformManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
+                    ServiceManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                        DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                     }
 
                     if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        List<Platform> platformList = platformResponse.getPlatformList();
+                        List<Service> platformList = platformResponse.getPlatformList();
 
                         if (DEBUG)
                         {
@@ -2702,11 +2693,11 @@ public class ApplicationManagementController
                         {
                             Map<String, String> platformListing = new HashMap<>();
 
-                            for (Platform platform : platformList)
+                            for (Service platform : platformList)
                             {
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Platform: {}", platform);
+                                    DEBUGGER.debug("Service: {}", platform);
                                 }
 
                                 platformListing.put(platform.getGuid(), platform.getName());
@@ -2746,7 +2737,7 @@ public class ApplicationManagementController
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -2899,15 +2890,15 @@ public class ApplicationManagementController
                     }
 
                     // have the application, get the platform
-                    Platform reqPlatform = new Platform();
+                    Service reqPlatform = new Service();
                     reqPlatform.setGuid(request.getPlatform());
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Platform: {}", reqPlatform);
+                        DEBUGGER.debug("Service: {}", reqPlatform);
                     }
 
-                    PlatformManagementRequest platformRequest = new PlatformManagementRequest();
+                    ServiceManagementRequest platformRequest = new ServiceManagementRequest();
                     platformRequest.setUserAccount(userAccount);
                     platformRequest.setRequestInfo(reqInfo);
                     platformRequest.setServiceId(this.platformMgmt);
@@ -2917,23 +2908,23 @@ public class ApplicationManagementController
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PlatformManagementRequest: {}", platformRequest);
+                        DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                     }
 
-                    PlatformManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                    ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                        DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                     }
 
                     if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        Platform resPlatform = platformResponse.getPlatformData();
+                        Service resPlatform = platformResponse.getPlatformData();
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Platform: {}", resPlatform);
+                            DEBUGGER.debug("Service: {}", resPlatform);
                         }
 
                         if (resPlatform != null)
@@ -3037,7 +3028,7 @@ public class ApplicationManagementController
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 

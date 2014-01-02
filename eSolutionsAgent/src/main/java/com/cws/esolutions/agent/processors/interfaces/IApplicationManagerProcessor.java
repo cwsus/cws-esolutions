@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
-import com.cws.esolutions.agent.config.xml.ApplicationConfig;
 import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
 import com.cws.esolutions.agent.processors.dto.ApplicationManagerResponse;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
@@ -49,14 +48,11 @@ public interface IApplicationManagerProcessor
 {
     static final AgentBean appBean = AgentBean.getInstance();
 
-    static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
 
     static final byte buffer[] = new byte[1024];
     static final String CNAME = IApplicationManagerProcessor.class.getName();
-    static final int CONNECT_TIMEOUT = appConfig.getConnectTimeout();
-    static final int SCRIPT_TIMEOUT = scriptConfig.getScriptTimeout();
-    static final File SCRIPT_SRC_DIR = appConfig.getServiceRootDirectory();
+    static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

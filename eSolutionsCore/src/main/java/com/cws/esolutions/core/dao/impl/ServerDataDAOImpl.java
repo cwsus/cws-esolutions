@@ -867,95 +867,6 @@ public class ServerDataDAOImpl implements IServerDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getRetiredServers()
-     */
-    @Override
-    public synchronized List<String> getRetiredServers() throws SQLException
-    {
-        final String methodName = IServerDataDAO.CNAME + "#getRetiredServers() throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        List<String> responseData = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-
-            stmt = sqlConn.prepareCall("{CALL getRetiredServers()}");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(stmt.toString());
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.beforeFirst();
-                    responseData = new ArrayList<String>();
-
-                    while (resultSet.next())
-                    {
-                        responseData.add(resultSet.getString(1));
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Value: {}", responseData);
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return responseData;
-    }
-
-    /**
      * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#archiveServerData(java.lang.String)
      */
     @Override
@@ -1011,5 +922,243 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 sqlConn.close();
             }
         }
+    }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getRetiredServers(java.lang.int)
+     */
+    @Override
+    public synchronized List<String[]> getRetiredServers(final int startRow) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#getRetiredServers(final int startRow) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", startRow);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<String[]> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{CALL retrRetiredServers(?)}");
+            stmt.setInt(1, startRow);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.beforeFirst();
+                    responseData = new ArrayList<String[]>();
+
+                    while (resultSet.next())
+                    {
+                        String[] serverData = new String[]
+                        {
+                                resultSet.getString(1), // T1.SYSTEM_GUID
+                                resultSet.getString(2), // T1.SYSTEM_REGION
+                                resultSet.getString(3), // T1.NETWORK_PARTITION
+                                resultSet.getString(4), // T1.OPER_HOSTNAME
+                                resultSet.getString(5), // T1.OWNING_DMGR
+                                resultSet.getString(6), // T2.GUID
+                                resultSet.getString(7) // T2.NAME
+                        };
+
+                        if (DEBUG)
+                        {
+                            for (Object obj : serverData)
+                            {
+                                DEBUGGER.debug("Value: {}", obj);
+                            }
+                        }
+
+                        responseData.add(serverData);
+                    }
+
+                    if (DEBUG)
+                    {
+                        for (Object[] objArr : responseData)
+                        {
+                            for (Object obj : objArr)
+                            {
+                                DEBUGGER.debug("Value: {}", obj);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getRetiredServer(java.lang.String)
+     */
+    @Override
+    public synchronized List<Object> getRetiredServer(final String attribute) throws SQLException
+    {
+        final String methodName = IServerDataDAO.CNAME + "#getRetiredServer(final String attribute) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("attribute: {}", attribute);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<Object> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // we dont know what we have here - it could be a guid or it could be a hostname
+            // most commonly it'll be a guid, but we're going to search anyway
+            stmt = sqlConn.prepareCall("{ CALL retrRetiredServer(?) }");
+            stmt.setString(1, attribute);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    responseData = new ArrayList<Object>(
+                            Arrays.asList(
+                                    resultSet.getString(1), // T1.SYSTEM_GUID
+                                    resultSet.getString(2), // T1.SYSTEM_OSTYPE
+                                    resultSet.getString(3), // T1.SYSTEM_STATUS
+                                    resultSet.getString(4), // T1.SYSTEM_REGION
+                                    resultSet.getString(5), // T1.NETWORK_PARTITION
+                                    resultSet.getString(6), // T1.SYSTEM_TYPE
+                                    resultSet.getString(7), // T1.DOMAIN_NAME
+                                    resultSet.getString(8), // T1.CPU_TYPE
+                                    resultSet.getInt(9), // T1.CPU_COUNT
+                                    resultSet.getString(10), // T1.SERVER_RACK
+                                    resultSet.getString(11), // T1.RACK_POSITION
+                                    resultSet.getString(12), // T1.SERVER_MODEL
+                                    resultSet.getString(13), // T1.SERIAL_NUMBER
+                                    resultSet.getInt(14), // T1.INSTALLED_MEMORY
+                                    resultSet.getString(15), // T1.OPER_IP
+                                    resultSet.getString(16), // T1.OPER_HOSTNAME
+                                    resultSet.getString(17), // T1.MGMT_IP
+                                    resultSet.getString(18), // T1.MGMT_HOSTNAME
+                                    resultSet.getString(19), // T1.BKUP_IP
+                                    resultSet.getString(20), // T1.BKUP_HOSTNAME
+                                    resultSet.getString(21), // T1.NAS_IP
+                                    resultSet.getString(22), // T1.NAS_HOSTNAME
+                                    resultSet.getString(23), // T1.NAT_ADDR
+                                    resultSet.getString(24), // T1.COMMENTS
+                                    resultSet.getString(25), // T1.ASSIGNED_ENGINEER
+                                    resultSet.getTimestamp(26), // T1.ADD_DATE
+                                    resultSet.getTimestamp(27), // T1.DELETE_DATE
+                                    resultSet.getInt(28), // T1.DMGR_PORT
+                                    resultSet.getString(29), // T1.OWNING_DMGR
+                                    resultSet.getString(30), // T1.MGR_ENTRY
+                                    resultSet.getString(31), // T2.GUID
+                                    resultSet.getString(32))); // T2.NAME
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseData: {}", responseData);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
     }
 }

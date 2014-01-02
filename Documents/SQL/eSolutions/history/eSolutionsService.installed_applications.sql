@@ -1,8 +1,8 @@
 --
--- Definition of table `esolutionssvc_hist`.`installed_applications`
+-- Definition of table `esolutionssvc_history`.`installed_applications`
 --
-DROP TABLE IF EXISTS `esolutionssvc_hist`.`installed_applications`;
-CREATE TABLE `esolutionssvc_hist`.`installed_applications` (
+DROP TABLE IF EXISTS `esolutionssvc_history`.`installed_applications`;
+CREATE TABLE `esolutionssvc_history`.`installed_applications` (
     `GUID` VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
     `NAME` VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     `VERSION` DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
@@ -19,17 +19,17 @@ CREATE TABLE `esolutionssvc_hist`.`installed_applications` (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `esolutionssvc_hist`.`installed_applications` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE `esolutionssvc_history`.`installed_applications` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`getApplicationByAttribute`
+-- Definition of procedure `esolutionssvc_history`.`getApplicationByAttribute`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getApplicationByAttribute`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getApplicationByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getApplicationByAttribute`(
+CREATE PROCEDURE `esolutionssvc_history`.`getApplicationByAttribute`(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -39,21 +39,21 @@ BEGIN
         NAME,
     MATCH (`NAME`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `esolutionssvc_hist`.`installed_applications`
+    FROM `esolutionssvc_history`.`installed_applications`
     WHERE MATCH (`NAME`)
     AGAINST (+attributeName IN BOOLEAN MODE)
-    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    AND APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`insertNewApplication`
+-- Definition of procedure `esolutionssvc_history`.`insertNewApplication`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`insertNewApplication`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`insertNewApplication`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`insertNewApplication`(
+CREATE PROCEDURE `esolutionssvc_history`.`insertNewApplication`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -65,7 +65,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`insertNewApplication`(
     IN platformGuid TEXT
 )
 BEGIN
-    INSERT INTO `esolutionssvc_hist`.`installed_applications`
+    INSERT INTO `esolutionssvc_history`.`installed_applications`
     (
         GUID, NAME, VERSION, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER,
         INSTALLER_OPTIONS, LOGS_DIRECTORY, PLATFORM_GUID, APP_ONLINE_DATE
@@ -82,11 +82,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`updateApplicationData`
+-- Definition of procedure `esolutionssvc_history`.`updateApplicationData`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`updateApplicationData`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`updateApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`updateApplicationData`(
+CREATE PROCEDURE `esolutionssvc_history`.`updateApplicationData`(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -98,7 +98,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`updateApplicationData`(
     IN platformGuid TEXT
 )
 BEGIN
-    UPDATE `esolutionssvc_hist`.`installed_applications`
+    UPDATE `esolutionssvc_history`.`installed_applications`
     SET
         NAME = appName,
         VERSION = appVersion,
@@ -116,16 +116,16 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`removeApplicationData`
+-- Definition of procedure `esolutionssvc_history`.`removeApplicationData`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`removeApplicationData`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`removeApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`removeApplicationData`(
+CREATE PROCEDURE `esolutionssvc_history`.`removeApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE `esolutionssvc_hist`.`installed_applications`
-    SET APP_OFFLINE_DATE = NOW()
+    UPDATE `esolutionssvc_history`.`installed_applications`
+    SET APP_OFFLINE_DATE = CURRENT_TIMESTAMP()
     WHERE GUID = appGuid;
 
     COMMIT;
@@ -134,30 +134,27 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`getApplicationData`
+-- Definition of procedure `esolutionssvc_history`.`getApplicationData`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getApplicationData`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getApplicationData`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getApplicationData`(
+CREATE PROCEDURE `esolutionssvc_history`.`getApplicationData`(
     IN appGuid VARCHAR(128)
 )
 BEGIN
     SELECT
-        T1.GUID,
-        T1.NAME,
-        T1.VERSION,
-        T1.INSTALLATION_PATH,
-        T1.PACKAGE_LOCATION,
-        T1.PACKAGE_INSTALLER,
-        T1.INSTALLER_OPTIONS,
-        T1.LOGS_DIRECTORY,
-        T2.GUID,
-        T2.NAME
-    FROM `esolutionssvc_hist`.`installed_applications` T1
-    INNER JOIN `esolutionssvc_hist`.`service_platforms` T2
-    ON T1.PLATFORM_GUID = T2.GUID
+        GUID,
+        NAME,
+        VERSION,
+        INSTALLATION_PATH,
+        PACKAGE_LOCATION,
+        PACKAGE_INSTALLER,
+        INSTALLER_OPTIONS,
+        LOGS_DIRECTORY,
+        PLATFORM_GUID
+    FROM `esolutionssvc_history`.`installed_applications`
     WHERE GUID = appGuid
-    AND APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    AND APP_OFFLINE_DATE IS NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -165,32 +162,32 @@ COMMIT$$
 --
 -- Definition of procedure `getApplicationCount`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getApplicationCount`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getApplicationCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getApplicationCount`(
+CREATE PROCEDURE `esolutionssvc_history`.`getApplicationCount`(
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `esolutionssvc_hist`.`installed_applications`
-    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00';
+    FROM `esolutionssvc_history`.`installed_applications`
+    WHERE APP_OFFLINE_DATE IS NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`listApplications`
+-- Definition of procedure `esolutionssvc_history`.`listApplications`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`listApplications`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`listApplications`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`listApplications`(
+CREATE PROCEDURE `esolutionssvc_history`.`listApplications`(
     IN startRow INT
 )
 BEGIN
     SELECT
         GUID,
         NAME
-    FROM `esolutionssvc_hist`.`installed_applications`
-    WHERE APP_OFFLINE_DATE = '0000-00-00 00:00:00'
+    FROM `esolutionssvc_history`.`installed_applications`
+    WHERE APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

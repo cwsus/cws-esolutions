@@ -1,9 +1,9 @@
 --
--- Definition of table `esolutionssvc_hist`.`articles`
+-- Definition of table `esolutionssvc_history`.`articles`
 -- DATA TABLE
 --
-DROP TABLE IF EXISTS `esolutionssvc_hist`.`articles`;
-CREATE TABLE `esolutionssvc_hist`.`articles` (
+DROP TABLE IF EXISTS `esolutionssvc_history`.`articles`;
+CREATE TABLE `esolutionssvc_history`.`articles` (
     `ID` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
     `HITS` TINYINT NOT NULL default 0,
     `CREATE_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
@@ -23,17 +23,17 @@ CREATE TABLE `esolutionssvc_hist`.`articles` (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `esolutionssvc_hist`.`articles` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE `esolutionssvc_history`.`articles` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`getArticleByAttribute`
+-- Definition of procedure `esolutionssvc_history`.`getArticleByAttribute`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getArticleByAttribute`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getArticleByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getArticleByAttribute`(
+CREATE PROCEDURE `esolutionssvc_history`.`getArticleByAttribute`(
     IN searchTerms VARCHAR(100),
     IN startRow INT
 )
@@ -55,7 +55,7 @@ BEGIN
         MODIFIED_BY,
     MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
-    FROM `esolutionssvc_hist`.`articles`
+    FROM `esolutionssvc_history`.`articles`
     WHERE MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND STATUS = 'APPROVED'
@@ -65,11 +65,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`retrTopArticles`
+-- Definition of procedure `esolutionssvc_history`.`retrTopArticles`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`retrTopArticles`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`retrTopArticles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`retrTopArticles`(
+CREATE PROCEDURE `esolutionssvc_history`.`retrTopArticles`(
 )
 BEGIN
     SELECT
@@ -96,9 +96,9 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`retrArticle`
+-- Definition of procedure `esolutionssvc_history`.`retrArticle`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`retrArticle`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`retrArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE `retrArticle`(
     IN articleId VARCHAR(100),
@@ -156,11 +156,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`addNewArticle`
+-- Definition of procedure `esolutionssvc_history`.`addNewArticle`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`addNewArticle`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`addNewArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`addNewArticle`(
+CREATE PROCEDURE `esolutionssvc_history`.`addNewArticle`(
     IN articleId VARCHAR(45),
     IN author VARCHAR(45),
     IN keywords VARCHAR(100),
@@ -170,7 +170,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`addNewArticle`(
     IN resolution TEXT
 )
 BEGIN
-    INSERT INTO `esolutionssvc_hist`.`articles`
+    INSERT INTO `esolutionssvc_history`.`articles`
     (
         HITS, ID, CREATE_DATE, AUTHOR,
         KEYWORDS, TITLE, SYMPTOMS, CAUSE,
@@ -188,11 +188,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`updateArticle`
+-- Definition of procedure `esolutionssvc_history`.`updateArticle`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`updateArticle`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`updateArticle`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`updateArticle`(
+CREATE PROCEDURE `esolutionssvc_history`.`updateArticle`(
     IN articleId VARCHAR(45),
     IN keywords VARCHAR(100),
     IN title VARCHAR(100),
@@ -202,7 +202,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`updateArticle`(
     IN modifiedBy VARCHAR(45)
 )
 BEGIN
-    UPDATE `esolutionssvc_hist`.`articles`
+    UPDATE `esolutionssvc_history`.`articles`
     SET
         KEYWORDS = keywords,
         TITLE = title,
@@ -220,17 +220,17 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`updateArticleStatus`
+-- Definition of procedure `esolutionssvc_history`.`updateArticleStatus`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`updateArticleStatus`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`updateArticleStatus`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`updateArticleStatus`(
+CREATE PROCEDURE `esolutionssvc_history`.`updateArticleStatus`(
     IN articleId VARCHAR(45),
     IN modifiedBy VARCHAR(45),
     IN articleStatus VARCHAR(15)
 )
 BEGIN
-    UPDATE `esolutionssvc_hist`.`articles`
+    UPDATE `esolutionssvc_history`.`articles`
     SET
         STATUS = articleStatus,
         MODIFIED_BY = modifiedBy,
@@ -247,14 +247,14 @@ COMMIT$$
 --
 -- Definition of procedure `getArticleCount`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getArticleCount`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getArticleCount`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getArticleCount`(
+CREATE PROCEDURE `esolutionssvc_history`.`getArticleCount`(
     IN reqType VARCHAR(45)
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `esolutionssvc_hist`.`articles`
+    FROM `esolutionssvc_history`.`articles`
     WHERE STATUS = reqType
     AND AUTHOR != requestorId;
 END $$
@@ -262,11 +262,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`retrPendingArticles`
+-- Definition of procedure `esolutionssvc_history`.`retrPendingArticles`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`retrPendingArticles`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`retrPendingArticles`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`retrPendingArticles`(
+CREATE PROCEDURE `esolutionssvc_history`.`retrPendingArticles`(
     IN requestorId VARCHAR(100),
     IN startRow INT
 )
@@ -286,7 +286,7 @@ BEGIN
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
-    FROM `esolutionssvc_hist`.`articles`
+    FROM `esolutionssvc_history`.`articles`
     WHERE STATUS IN ('NEW', 'REJECTED', 'REVIEW')
     AND AUTHOR != requestorId
     ORDER BY CREATE_DATE DESC

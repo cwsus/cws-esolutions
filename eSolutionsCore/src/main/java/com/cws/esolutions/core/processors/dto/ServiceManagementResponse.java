@@ -17,7 +17,7 @@ package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
- * File: DatacenterManagementResponse.java
+ * File: ServiceManagementResponse.java
  *
  * History
  *
@@ -41,15 +41,15 @@ import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
  * @author khuntly
  * @version 1.0
  */
-public class DatacenterManagementResponse implements Serializable
+public class ServiceManagementResponse implements Serializable
 {
     private int entryCount = 0;
-    private DataCenter dataCenter = null;
-    private List<DataCenter> datacenterList = null;
+    private Service service = null;
+    private List<Service> serviceList = null;
     private CoreServicesStatus requestStatus = null;
 
-    private static final long serialVersionUID = -9183689118275739366L;
-    private static final String CNAME = DatacenterManagementResponse.class.getName();
+    private static final long serialVersionUID = -4054815151986531024L;
+    private static final String CNAME = ServiceManagementResponse.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -57,7 +57,7 @@ public class DatacenterManagementResponse implements Serializable
 
     public final void setRequestStatus(final CoreServicesStatus value)
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
+        final String methodName = ServiceManagementResponse.CNAME + "#setRequestStatus(final CoreServicesStatus value)";
 
         if (DEBUG)
         {
@@ -70,7 +70,7 @@ public class DatacenterManagementResponse implements Serializable
 
     public final void setEntryCount(final int value)
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#setEntryCount(final int value)";
+        final String methodName = ServiceManagementResponse.CNAME + "#setEntryCount(final int value)";
 
         if (DEBUG)
         {
@@ -81,9 +81,9 @@ public class DatacenterManagementResponse implements Serializable
         this.entryCount = value;
     }
 
-    public final void setDataCenter(final DataCenter value)
+    public final void setService(final Service value)
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#setDataCenter(final DataCenter value)";
+        final String methodName = ServiceManagementResponse.CNAME + "#setService(final Service value)";
 
         if (DEBUG)
         {
@@ -91,12 +91,12 @@ public class DatacenterManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.dataCenter = value;
+        this.service = value;
     }
 
-    public final void setDatacenterList(final List<DataCenter> value)
+    public final void setServiceList(final List<Service> value)
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#setDatacenterList(final List<DataCenter> value)";
+        final String methodName = ServiceManagementResponse.CNAME + "#setServiceList(final List<Service> value)";
 
         if (DEBUG)
         {
@@ -104,12 +104,12 @@ public class DatacenterManagementResponse implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.datacenterList = value;
+        this.serviceList = value;
     }
 
     public final CoreServicesStatus getRequestStatus()
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#getRequestStatus()";
+        final String methodName = ServiceManagementResponse.CNAME + "#getRequestStatus()";
 
         if (DEBUG)
         {
@@ -122,7 +122,7 @@ public class DatacenterManagementResponse implements Serializable
 
     public final int getEntryCount()
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#getEntryCount()";
+        final String methodName = ServiceManagementResponse.CNAME + "#getEntryCount()";
 
         if (DEBUG)
         {
@@ -133,36 +133,36 @@ public class DatacenterManagementResponse implements Serializable
         return this.entryCount;
     }
 
-    public final DataCenter getDataCenter()
+    public final Service getService()
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#getDataCenter()";
+        final String methodName = ServiceManagementResponse.CNAME + "#getService()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dataCenter);
+            DEBUGGER.debug("Value: {}", this.service);
         }
 
-        return this.dataCenter;
+        return this.service;
     }
 
-    public final List<DataCenter> getDatacenterList()
+    public final List<Service> getServiceList()
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#getDatacenterList()";
+        final String methodName = ServiceManagementResponse.CNAME + "#getServiceList()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.datacenterList);
+            DEBUGGER.debug("Value: {}", this.serviceList);
         }
 
-        return this.datacenterList;
+        return this.serviceList;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = DatacenterManagementResponse.CNAME + "#toString()";
+        final String methodName = ServiceManagementResponse.CNAME + "#toString()";
 
         if (DEBUG)
         {

@@ -17,7 +17,7 @@ package com.cws.esolutions.core.processors.dto;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.dto
- * File: Platform.java
+ * File: ServiceManagementRequest.java
  *
  * History
  *
@@ -25,19 +25,14 @@ package com.cws.esolutions.core.processors.dto;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
-
 import org.slf4j.Logger;
-
 import java.io.Serializable;
+import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
-import org.slf4j.LoggerFactory;
-
 import com.cws.esolutions.core.Constants;
-import com.cws.esolutions.core.processors.enums.NetworkPartition;
-import com.cws.esolutions.core.processors.enums.ServiceRegion;
-import com.cws.esolutions.core.processors.enums.ServiceStatus;
+import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -46,26 +41,26 @@ import com.cws.esolutions.core.processors.enums.ServiceStatus;
  * @author khuntly
  * @version 1.0
  */
-public class Platform implements Serializable
+public class ServiceManagementRequest implements Serializable
 {
-    private String guid = null;
-    private String name = null;
-    private String description = null;
-    private ServiceStatus status = null;
-    private List<Server> servers = null;
-    private ServiceRegion region = null;
-    private NetworkPartition partition = null;
+    private int startPage = 0;
+    private String serviceId = null;
+    private Service service = null;
+    private String applicationId = null;
+    private String applicationName = null;
+    private UserAccount userAccount = null;
+    private RequestHostInfo requestInfo = null;
 
-    private static final String CNAME = Platform.class.getName();
-    private static final long serialVersionUID = -4382390818947300324L;
+    private static final long serialVersionUID = 4295514963025114615L;
+    private static final String CNAME = ServiceManagementRequest.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
 
-    public final void setGuid(final String value)
+    public final void setUserAccount(final UserAccount value)
     {
-        final String methodName = Platform.CNAME + "#setGuid(final String value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setUserAccount(final UserAccount value)";
 
         if (DEBUG)
         {
@@ -73,12 +68,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.guid = value;
+        this.userAccount = value;
     }
 
-    public final void setName(final String value)
+    public final void setRequestInfo(final RequestHostInfo value)
     {
-        final String methodName = Platform.CNAME + "#setName(final String value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setRequestInfo(final RequestHostInfo value)";
 
         if (DEBUG)
         {
@@ -86,12 +81,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.name = value;
+        this.requestInfo = value;
     }
 
-    public final void setDescription(final String value)
+    public final void setServiceId(final String value)
     {
-        final String methodName = Platform.CNAME + "#setDescription(final String value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -99,12 +94,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.description = value;
+        this.serviceId = value;
     }
 
-    public final void setStatus(final ServiceStatus value)
+    public final void setApplicationName(final String value)
     {
-        final String methodName = Platform.CNAME + "#setStatus(final ServiceStatus value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setApplicationName(final String value)";
 
         if (DEBUG)
         {
@@ -112,12 +107,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.status = value;
+        this.applicationName = value;
     }
 
-    public final void setServers(final List<Server> value)
+    public final void setApplicationId(final String value)
     {
-        final String methodName = Platform.CNAME + "#setServers(final List<Server> value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setApplicationId(final String value)";
 
         if (DEBUG)
         {
@@ -125,12 +120,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.servers = value;
+        this.applicationId = value;
     }
 
-    public final void setRegion(final ServiceRegion value)
+    public final void setStartPage(final int value)
     {
-        final String methodName = Platform.CNAME + "#setRegion(final ServiceRegion value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setStartPage(final int value)";
 
         if (DEBUG)
         {
@@ -138,12 +133,12 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.region = value;
+        this.startPage = value;
     }
 
-    public final void setPartition(final NetworkPartition value)
+    public final void setService(final Service value)
     {
-        final String methodName = Platform.CNAME + "#setPartition(final NetworkPartition value)";
+        final String methodName = ServiceManagementRequest.CNAME + "#setService(final Service value)";
 
         if (DEBUG)
         {
@@ -151,104 +146,104 @@ public class Platform implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.partition = value;
+        this.service = value;
     }
 
-    public final String getGuid()
+    public final UserAccount getUserAccount()
     {
-        final String methodName = Platform.CNAME + "#getGuid()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getUserAccount()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.guid);
+            DEBUGGER.debug("Value: {}", this.userAccount);
         }
 
-        return this.guid;
+        return this.userAccount;
     }
 
-    public final String getName()
+    public final RequestHostInfo getRequestInfo()
     {
-        final String methodName = Platform.CNAME + "#getName()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getRequestInfo()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.name);
+            DEBUGGER.debug("Value: {}", this.requestInfo);
         }
 
-        return this.name;
+        return this.requestInfo;
     }
 
-    public final String getDescription()
+    public final String getServiceId()
     {
-        final String methodName = Platform.CNAME + "#getDescription()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getServiceId()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.description);
+            DEBUGGER.debug("Value: {}", this.serviceId);
         }
 
-        return this.description;
+        return this.serviceId;
     }
 
-    public final ServiceStatus getStatus()
+    public final String getApplicationName()
     {
-        final String methodName = Platform.CNAME + "#getStatus()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getApplicationName()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.status);
+            DEBUGGER.debug("Value: {}", this.applicationName);
         }
 
-        return this.status;
+        return this.applicationName;
     }
 
-    public final List<Server> getServers()
+    public final String getApplicationId()
     {
-        final String methodName = Platform.CNAME + "#getServers()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getApplicationId()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.servers);
+            DEBUGGER.debug("Value: {}", this.applicationId);
         }
 
-        return this.servers;
+        return this.applicationId;
     }
 
-    public final ServiceRegion getRegion()
+    public final int getStartPage()
     {
-        final String methodName = Platform.CNAME + "#getRegion()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getStartPage()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.region);
+            DEBUGGER.debug("Value: {}", this.startPage);
         }
 
-        return this.region;
+        return this.startPage;
     }
 
-    public final NetworkPartition getPartition()
+    public final Service getService()
     {
-        final String methodName = Platform.CNAME + "#getPartition()";
+        final String methodName = ServiceManagementRequest.CNAME + "#getService()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.partition);
+            DEBUGGER.debug("Value: {}", this.service);
         }
 
-        return this.partition;
+        return this.service;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = Platform.CNAME + "#toString()";
+        final String methodName = ServiceManagementRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {

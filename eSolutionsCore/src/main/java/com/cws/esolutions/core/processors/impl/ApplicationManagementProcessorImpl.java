@@ -30,7 +30,7 @@ import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.Application;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
@@ -140,15 +140,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                     {
                         List<String> platforms = new ArrayList<>();
 
-                        for (Platform targetPlatform : application.getPlatforms())
+                        for (Service targetPlatform : application.getPlatforms())
                         {
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Platform: {}", targetPlatform);
+                                DEBUGGER.debug("Service: {}", targetPlatform);
                             }
 
                             // make sure its a valid platform
-                            if (platformDao.getPlatformData(targetPlatform.getGuid()) == null)
+                            if (serviceDao.getServiceData(targetPlatform.getGuid()) == null)
                             {
                                 throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                             }
@@ -698,7 +698,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (isUserAuthorized)
             {
-                List<Platform> appPlatforms = null;
+                List<Service> appPlatforms = null;
                 List<Object> appData = appDAO.getApplicationData(application.getGuid());
 
                 if (DEBUG)
@@ -727,7 +727,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                         for (String platformGuid : platformList.split(","))
                         {
-                            List<Object> platformData = platformDao.getPlatformData(StringUtils.trim(platformGuid));
+                            List<String> platformData = serviceDao.getServiceData(StringUtils.trim(platformGuid));
 
                             if (DEBUG)
                             {
@@ -736,13 +736,13 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                             if ((platformData != null) && (platformData.size() != 0))
                             {
-                                Platform platform = new Platform();
-                                platform.setGuid((String) platformData.get(0)); // T1.PLATFORM_GUID
-                                platform.setName((String) platformData.get(1)); // T1.PLATFORM_NAME
+                                Service platform = new Service();
+                                platform.setGuid(platformData.get(0)); // T1.PLATFORM_GUID
+                                platform.setName(platformData.get(1)); // T1.PLATFORM_NAME
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Platform: {}", platform);
+                                    DEBUGGER.debug("Service: {}", platform);
                                 }
 
                                 appPlatforms.add(platform);
@@ -755,7 +755,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("List<Platform>: {}", appPlatforms);
+                            DEBUGGER.debug("List<Service>: {}", appPlatforms);
                         }
                     }
 

@@ -74,7 +74,9 @@ public interface IServerDataDAO
 
     List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
 
-    List<String> getRetiredServers() throws SQLException;
+    List<String[]> getRetiredServers(final int startRow) throws SQLException;
+
+    List<Object> getRetiredServer(final String guid) throws SQLException;
 
     void archiveServerData(final String value) throws SQLException;
 }

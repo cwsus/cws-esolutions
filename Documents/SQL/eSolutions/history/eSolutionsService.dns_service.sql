@@ -1,8 +1,8 @@
 --
--- Definition of table `esolutionssvc_hist`.`dns_service`
+-- Definition of table `esolutionssvc_history`.`dns_service`
 --
-DROP TABLE IF EXISTS `esolutionssvc_hist`.`dns_service`;
-CREATE TABLE `esolutionssvc_hist`.`dns_service` (
+DROP TABLE IF EXISTS `esolutionssvc_history`.`dns_service`;
+CREATE TABLE `esolutionssvc_history`.`dns_service` (
     `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
     `ZONE_FILE` VARCHAR(128) CHARACTER SET UTF8 NOT NULL, -- required for all entries, this will act as a correlator for apex/sub
     `APEX_RECORD` BOOLEAN NOT NULL DEFAULT FALSE,
@@ -30,17 +30,17 @@ CREATE TABLE `esolutionssvc_hist`.`dns_service` (
     FULLTEXT KEY `IDX_SEARCH` (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
-ALTER TABLE `esolutionssvc_hist`.`dns_service` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE `esolutionssvc_history`.`dns_service` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`getRecordByAttribute`
+-- Definition of procedure `esolutionssvc_history`.`getRecordByAttribute`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`getRecordByAttribute`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getRecordByAttribute`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`getRecordByAttribute`(
+CREATE PROCEDURE `esolutionssvc_history`.`getRecordByAttribute`(
     IN attributeName VARCHAR(126)
 )
 BEGIN
@@ -69,7 +69,7 @@ BEGIN
         TERTIARY_TARGET,
     MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `esolutionssvc_hist`.`dns_service`
+    FROM `esolutionssvc_history`.`dns_service`
     WHERE MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
     AGAINST (+attributeName IN BOOLEAN MODE)
     ORDER BY APEX_RECORD DESC, ORIGIN ASC;
@@ -78,11 +78,11 @@ END $$
 COMMIT$$ 
 
 --
--- Definition of procedure `esolutionssvc_hist`.`insertApex`
+-- Definition of procedure `esolutionssvc_history`.`insertApex`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`insertApex`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`insertApex`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`insertApex`(
+CREATE PROCEDURE `esolutionssvc_history`.`insertApex`(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN timeToLive INTEGER(12),
@@ -96,7 +96,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`insertApex`(
     IN cacheTime INTEGER(12)
 )
 BEGIN
-    INSERT INTO `esolutionssvc_hist`.`dns_service`
+    INSERT INTO `esolutionssvc_history`.`dns_service`
     (
         ZONE_FILE, APEX_RECORD, ORIGIN, 
         TIMETOLIVE, HOSTNAME, OWNER, HOSTMASTER, 
@@ -115,11 +115,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_hist`.`insertRecord`
+-- Definition of procedure `esolutionssvc_history`.`insertRecord`
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_hist`.`insertRecord`$$
+DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`insertRecord`$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_hist`.`insertRecord`(
+CREATE PROCEDURE `esolutionssvc_history`.`insertRecord`(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN hostname VARCHAR(126),
@@ -135,7 +135,7 @@ CREATE PROCEDURE `esolutionssvc_hist`.`insertRecord`(
     IN tertiary VARCHAR(255)
 )
 BEGIN
-    INSERT INTO `esolutionssvc_hist`.`dns_service`
+    INSERT INTO `esolutionssvc_history`.`dns_service`
     (
         ZONE_FILE, APEX_RECORD, ORIGIN,
         HOSTNAME, CLASS_NAME, CLASS_TYPE, PORT, WEIGHT,

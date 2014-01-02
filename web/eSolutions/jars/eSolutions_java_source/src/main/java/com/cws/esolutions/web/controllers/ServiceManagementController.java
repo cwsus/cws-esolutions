@@ -34,26 +34,19 @@ import com.cws.esolutions.web.dto.PlatformRequest;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.dto.DataCenter;
 import com.cws.esolutions.web.validators.PlatformValidator;
-import com.cws.esolutions.core.processors.dto.SearchRequest;
-import com.cws.esolutions.core.processors.dto.SearchResponse;
 import com.cws.esolutions.web.validators.DatacenterValidator;
 import com.cws.esolutions.core.processors.enums.ServiceStatus;
-import com.cws.esolutions.web.validators.SearchRequestValidator;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.core.processors.enums.SearchRequestType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.impl.SearchProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.ISearchProcessor;
-import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementRequest;
 import com.cws.esolutions.core.processors.dto.DatacenterManagementResponse;
-import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
-import com.cws.esolutions.core.processors.exception.PlatformManagementException;
+import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.impl.DatacenterManagementProcessorImpl;
 import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.DatacenterManagementException;
@@ -94,7 +87,6 @@ public class ServiceManagementController
     private String messageDatacenterAddSuccess = null;
     private String messageDatacenterAddFailure = null;
     private PlatformValidator platformValidator = null;
-    private SearchRequestValidator searchValidator = null;
     private DatacenterValidator datacenterValidator = null;
     
     private static final String CNAME = ServiceManagementController.class.getName();
@@ -140,19 +132,6 @@ public class ServiceManagementController
         }
 
         this.datacenterValidator = value;
-    }
-
-    public final void setSearchValidator(final SearchRequestValidator value)
-    {
-        final String methodName = ServiceManagementController.CNAME + "#setSearchValidator(final ServerValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.searchValidator = value;
     }
 
     public final void setServiceName(final String value)
@@ -450,8 +429,6 @@ public class ServiceManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            mView.addObject("searchTypes", SearchRequestType.values());
-            mView.addObject("command", new SearchRequest());
             mView.setViewName(this.defaultPage);
         }
         else
@@ -486,7 +463,6 @@ public class ServiceManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final ISearchProcessor searchProcessor = new SearchProcessorImpl();
 
         if (DEBUG)
         {
@@ -676,7 +652,7 @@ public class ServiceManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                PlatformManagementRequest request = new PlatformManagementRequest();
+                ServiceManagementRequest request = new ServiceManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.platformMgmt);
@@ -685,19 +661,19 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", request);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", request);
                 }
 
-                PlatformManagementResponse response = platformMgr.listPlatforms(request);
+                ServiceManagementResponse response = platformMgr.listPlatforms(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", response);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Platform> platformList = response.getPlatformList();
+                    List<Service> platformList = response.getPlatformList();
 
                     if (DEBUG)
                     {
@@ -720,7 +696,7 @@ public class ServiceManagementController
                     mView.setViewName(this.addPlatformRedirect);
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -814,7 +790,7 @@ public class ServiceManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                PlatformManagementRequest request = new PlatformManagementRequest();
+                ServiceManagementRequest request = new ServiceManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.platformMgmt);
@@ -824,19 +800,19 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", request);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", request);
                 }
 
-                PlatformManagementResponse response = platformMgr.listPlatforms(request);
+                ServiceManagementResponse response = platformMgr.listPlatforms(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", response);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Platform> platformList = response.getPlatformList();
+                    List<Service> platformList = response.getPlatformList();
 
                     if (DEBUG)
                     {
@@ -858,7 +834,7 @@ public class ServiceManagementController
                     mView.setViewName(this.defaultPage);
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -1239,16 +1215,16 @@ public class ServiceManagementController
                     DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                 }
 
-                Platform reqPlatform = new Platform();
+                Service reqPlatform = new Service();
                 reqPlatform.setGuid(platformName);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", reqPlatform);
+                    DEBUGGER.debug("Service: {}", reqPlatform);
                 }
 
                 // get a list of available servers
-                PlatformManagementRequest request = new PlatformManagementRequest();
+                ServiceManagementRequest request = new ServiceManagementRequest();
                 request.setRequestInfo(reqInfo);
                 request.setUserAccount(userAccount);
                 request.setServiceId(this.projectMgmt);
@@ -1258,23 +1234,23 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", request);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", request);
                 }
 
-                PlatformManagementResponse response = platformMgr.getPlatformData(request);
+                ServiceManagementResponse response = platformMgr.getPlatformData(request);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", response);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", response);
                 }
 
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    Platform resPlatform = response.getPlatformData();
+                    Service resPlatform = response.getPlatformData();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Platform: {}", resPlatform);
+                        DEBUGGER.debug("Service: {}", resPlatform);
                     }
 
                     mView.addObject("platform", resPlatform);
@@ -1290,7 +1266,7 @@ public class ServiceManagementController
                     mView.setViewName(this.defaultPage);
                 }
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
@@ -1868,7 +1844,7 @@ public class ServiceManagementController
                     DEBUGGER.debug("List<Server>: {}", appServers);
                 }
 
-                Platform platform = new Platform();
+                Service platform = new Service();
                 platform.setServers(appServers);
                 platform.setDescription(request.getDescription());
                 platform.setName(request.getPlatformName());
@@ -1877,10 +1853,10 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Platform: {}", platform);
+                    DEBUGGER.debug("Service: {}", platform);
                 }
 
-                PlatformManagementRequest platformRequest = new PlatformManagementRequest();
+                ServiceManagementRequest platformRequest = new ServiceManagementRequest();
                 platformRequest.setPlatform(platform);
                 platformRequest.setRequestInfo(reqInfo);
                 platformRequest.setServiceId(this.platformMgmt);
@@ -1890,14 +1866,14 @@ public class ServiceManagementController
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementRequest: {}", platformRequest);
+                    DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                 }
 
-                PlatformManagementResponse platformResponse = processor.addNewPlatform(platformRequest);
+                ServiceManagementResponse platformResponse = processor.addNewPlatform(platformRequest);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("PlatformManagementResponse: {}", platformResponse);
+                    DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
                 }
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
@@ -1918,7 +1894,7 @@ public class ServiceManagementController
                 mView = new ModelAndView(new RedirectView());
                 mView.setViewName(this.addPlatformRedirect);
             }
-            catch (PlatformManagementException pmx)
+            catch (ServiceManagementException pmx)
             {
                 ERROR_RECORDER.error(pmx.getMessage(), pmx);
 

@@ -26,7 +26,6 @@ package com.cws.esolutions.core.dao.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.UUID;
 import org.junit.Test;
 import java.util.Arrays;
 import org.junit.Assert;
@@ -43,6 +42,7 @@ import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 
 public class ServerDataDAOImplTest
 {
+    private String guid = "77adebf4-a7b7-4aea-8dbd-a54bc0b5897f";
     private static final IServerDataDAO dao = new ServerDataDAOImpl();
 
     @Before
@@ -67,7 +67,7 @@ public class ServerDataDAOImplTest
         (
             Arrays.asList
             (
-                UUID.randomUUID().toString(),
+                guid,
                 "CentOS",
                 ServiceStatus.ACTIVE.name(),
                 ServiceRegion.DEV.name(),
@@ -99,7 +99,7 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(ServerDataDAOImplTest.dao.addNewServer(data));
+            Assert.assertTrue(dao.addNewServer(data));
         }
         catch (SQLException sqx)
         {
@@ -114,7 +114,7 @@ public class ServerDataDAOImplTest
         (
             Arrays.asList
             (
-                UUID.randomUUID().toString(),
+                guid,
                 "CentOS",
                 ServiceStatus.ACTIVE.name(),
                 ServiceRegion.DEV.name(),
@@ -146,59 +146,7 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.modifyServerData("DMGRSERVER", data));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void getServersByAttribute()
-    {
-        try
-        {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.getServersByAttribute("DMGRSERVER DEV", 0));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void validateServerHostName()
-    {
-        try
-        {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.validateServerHostName("DMGRSERVER"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void getServerCount()
-    {
-        try
-        {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.getServerCount());
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void getInstalledServers()
-    {
-        try
-        {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.getInstalledServers(0));
+            Assert.assertNotNull(dao.modifyServerData("DMGRSERVER", data));
         }
         catch (SQLException sqx)
         {
@@ -211,7 +159,59 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.getInstalledServer("DMGRSERVER"));
+            Assert.assertNotNull(dao.getInstalledServer("DMGRSERVER"));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void validateServerHostName()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.validateServerHostName("DMGRSERVER"));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getInstalledServers()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getInstalledServers(0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getServersByAttribute()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getServersByAttribute("DMGRSERVER DEV", 0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getServerCount()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getServerCount());
         }
         catch (SQLException sqx)
         {
@@ -224,7 +224,46 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ServerDataDAOImplTest.dao.removeExistingServer("DMGRSERVER"));
+            Assert.assertNotNull(dao.removeExistingServer(guid));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void archiveServerData()
+    {
+        try
+        {
+            dao.archiveServerData(guid);
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getRetiredServers()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getRetiredServers(0));
+        }
+        catch (SQLException sqx)
+        {
+            Assert.fail(sqx.getMessage());
+        }
+    }
+
+    @Test
+    public void getRetiredServer()
+    {
+        try
+        {
+            Assert.assertNotNull(dao.getRetiredServer(guid));
         }
         catch (SQLException sqx)
         {

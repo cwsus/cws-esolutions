@@ -34,27 +34,27 @@ import java.sql.SQLException;
 import java.sql.CallableStatement;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.dao.interfaces.IPlatformDataDAO;
+import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 /**
- * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO
+ * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO
  */
-public class PlatformDataDAOImpl implements IPlatformDataDAO
+public class ServiceDataDAOImpl implements IServiceDataDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#addNewPlatform(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#addNewService(java.util.List)
      */
     @Override
-    public synchronized boolean addNewPlatform(final List<String> platformData) throws SQLException
+    public synchronized boolean addNewService(final List<String> data) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#addNewPlatform(final List<String> platformData) throws SQLException";
-
+        final String methodName = IServiceDataDAO.CNAME + "#addNewService(final List<String> data) throws SQLException";
+        
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
 
-            for (String str : platformData)
+            for (Object str : data)
             {
-                DEBUGGER.debug(str);
+                DEBUGGER.debug("Value: {}", str);
             }
         }
 
@@ -73,14 +73,16 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL addNewPlatform(?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, platformData.get(0)); // platform guid
-            stmt.setString(2, platformData.get(1)); // platform name
-            stmt.setString(3, platformData.get(2)); // platform region
-            stmt.setString(4, platformData.get(3)); // partition
-            stmt.setString(5, platformData.get(4)); // status
-            stmt.setString(6, platformData.get(5)); // platform servers (list, could be null)
-            stmt.setString(7, platformData.get(6)); // platform description
+            stmt = sqlConn.prepareCall("{CALL addNewService(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, data.get(0)); // guid
+            stmt.setString(2, data.get(1)); // serviceType
+            stmt.setString(3, data.get(2)); // name
+            stmt.setString(4, data.get(3)); // region
+            stmt.setString(5, data.get(4)); // nwpartition
+            stmt.setString(6, data.get(5)); // status
+            stmt.setString(7, data.get(6)); // servers
+            stmt.setString(8, data.get(7)); // description
+            
 
             if (DEBUG)
             {
@@ -117,17 +119,21 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#deletePlatform(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#updateServiceData(java.util.List)
      */
     @Override
-    public synchronized boolean deletePlatform(final String platformGuid) throws SQLException
+    public synchronized boolean updateServiceData(final List<String> data) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#deletePlatform(final String platformGuid) throws SQLException";
-
+        final String methodName = IServiceDataDAO.CNAME + "#updateServiceData(final List<String> data) throws SQLException";
+        
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug(platformGuid);
+
+            for (Object str : data)
+            {
+                DEBUGGER.debug("Value: {}", str);
+            }
         }
 
         Connection sqlConn = null;
@@ -145,8 +151,15 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL removePlatformData(?)}");
-            stmt.setString(1, platformGuid);
+            stmt = sqlConn.prepareCall("{CALL updateServiceData(?, ?, ?, ?, ?, ?, ?, ?)}");
+            stmt.setString(1, data.get(0)); // guid
+            stmt.setString(2, data.get(1)); // serviceType
+            stmt.setString(3, data.get(2)); // name
+            stmt.setString(4, data.get(3)); // region
+            stmt.setString(5, data.get(4)); // nwpartition
+            stmt.setString(6, data.get(5)); // status
+            stmt.setString(7, data.get(6)); // servers
+            stmt.setString(8, data.get(7)); // description
 
             if (DEBUG)
             {
@@ -183,21 +196,17 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#updatePlatformData(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#removeServiceData(java.lang.String)
      */
     @Override
-    public synchronized boolean updatePlatformData(final List<String> platformData) throws SQLException
+    public synchronized boolean removeServiceData(final String datacenter) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#updatePlatformData(final List<String> platformData) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#removeServiceData(final String datacenter) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-
-            for (String str : platformData)
-            {
-                DEBUGGER.debug(str);
-            }
+            DEBUGGER.debug("Value: {}", datacenter);
         }
 
         Connection sqlConn = null;
@@ -215,14 +224,8 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL updatePlatformDetail(?, ?, ?, ?, ?, ?, ?)}");
-            stmt.setString(1, platformData.get(0)); // platform guid
-            stmt.setString(2, platformData.get(1)); // platform name
-            stmt.setString(3, platformData.get(2)); // platform region
-            stmt.setString(4, platformData.get(3)); // partition
-            stmt.setString(5, platformData.get(4)); // status
-            stmt.setString(6, platformData.get(5)); // platform servers (list, could be null)
-            stmt.setString(7, platformData.get(6)); // platform description
+            stmt = sqlConn.prepareCall("{CALL removeServiceData(?)}");
+            stmt.setString(1, datacenter);
 
             if (DEBUG)
             {
@@ -259,107 +262,12 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#getPlatformData(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceCount()
      */
     @Override
-    public synchronized List<Object> getPlatformData(final String platformGuid) throws SQLException
+    public synchronized int getServiceCount() throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#getPlatformData(final String platformGuid) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(platformGuid);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        List<Object> responseData = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("SQL Connection is not an instance of Connection or is null");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getPlatformData(?)}");
-            stmt.setString(1, platformGuid);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(stmt.toString());
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    responseData = new ArrayList<Object>(
-                            Arrays.asList(
-                                    resultSet.getString(1), // PLATFORM_GUID
-                                    resultSet.getString(2), // PLATFORM_NAME
-                                    resultSet.getString(3), // PLATFORM_REGION
-                                    resultSet.getString(4), // PARTITION
-                                    resultSet.getString(5), // STATUS
-                                    resultSet.getString(6), // PLATFORM_SERVERS
-                                    resultSet.getString(7))); // PLATFORM_DESC
-
-                    if (DEBUG)
-                    {
-                        for (Object obj : responseData)
-                        {
-                            DEBUGGER.debug("Value: {}", obj);
-                        }
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((!(sqlConn == null) && (!(sqlConn.isClosed()))))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return responseData;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#getPlatformCount()
-     */
-    @Override
-    public synchronized int getPlatformCount() throws SQLException
-    {
-        final String methodName = IPlatformDataDAO.CNAME + "#getPlatformCount() throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#getServiceCount() throws SQLException";
 
         if (DEBUG)
         {
@@ -381,7 +289,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
 
             sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{ CALL getPlatformCount() }");
+            stmt = sqlConn.prepareCall("{ CALL getServiceCount() }");
 
             if (DEBUG)
             {
@@ -445,12 +353,12 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#listAvailablePlatforms(int)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#listServices(int)
      */
     @Override
-    public synchronized List<String[]> listAvailablePlatforms(final int startRow) throws SQLException
+    public synchronized List<String[]> listServices(final int startRow) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#listAvailablePlatforms(final int startRow) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#listServices(final int startRow) throws SQLException";
 
         if (DEBUG)
         {
@@ -461,7 +369,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> platformList = null;
+        List<String[]> responseData = null;
 
         try
         {
@@ -474,7 +382,7 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listPlatforms(?)}");
+            stmt = sqlConn.prepareCall("{CALL listServices(?)}");
             stmt.setInt(1, startRow);
 
             if (DEBUG)
@@ -494,30 +402,23 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    platformList = new ArrayList<>();
+                    responseData = new ArrayList<>();
 
                     while (resultSet.next())
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // PLATFORM_GUID
-                            resultSet.getString(2) // PLATFORM_NAME
+                                resultSet.getString(1), // GUID
+                                resultSet.getString(2), // SERVICE_TYPE
+                                resultSet.getString(3), // NAME
                         };
 
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        platformList.add(data);
+                        responseData.add(data);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("List<String>: {}", responseData);
                     }
                 }
             }
@@ -546,28 +447,27 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
         }
 
-        return platformList;
+        return responseData;
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IPlatformDataDAO#listPlatformsByAttribute(java.lang.String, int)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> listPlatformsByAttribute(final String value, final int startRow) throws SQLException
+    public synchronized List<String[]> getServiceByAttribute(final String attribute, final int startRow) throws SQLException
     {
-        final String methodName = IPlatformDataDAO.CNAME + "#listPlatformsByAttribute(final String value, final int startRow) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#getServiceByAttribute(final String attribute, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
             DEBUGGER.debug("Value: {}", startRow);
         }
 
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> platformList = null;
+        List<String[]> responseData = null;
 
         try
         {
@@ -581,9 +481,9 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             sqlConn.setAutoCommit(true);
             StringBuilder sBuilder = new StringBuilder();
 
-            if (StringUtils.split(value, " ").length >= 2)
+            if (StringUtils.split(attribute, " ").length >= 2)
             {
-                for (String str : StringUtils.split(value, " "))
+                for (String str : StringUtils.split(attribute, " "))
                 {
                     if (DEBUG)
                     {
@@ -601,10 +501,10 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
             else
             {
-                sBuilder.append("+" + value);
+                sBuilder.append("+" + attribute);
             }
 
-            stmt = sqlConn.prepareCall("{CALL getPlatformByAttribute(?, ?)}");
+            stmt = sqlConn.prepareCall("{CALL getServiceByAttribute(?, ?)}");
             stmt.setString(1, sBuilder.toString().trim());
             stmt.setInt(2, startRow);
 
@@ -625,30 +525,23 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    platformList = new ArrayList<>();
+                    responseData = new ArrayList<>();
 
                     while (resultSet.next())
                     {
                         String[] data = new String[]
                         {
-                            resultSet.getString(1), // PLATFORM_GUID
-                            resultSet.getString(2) // PLATFORM_NAME
+                                resultSet.getString(1), // GUID
+                                resultSet.getString(2), // SERVICE_TYPE
+                                resultSet.getString(3), // NAME
                         };
 
-                        if (DEBUG)
-                        {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug("data: {}", str);
-                            }
-                        }
-
-                        platformList.add(data);
+                        responseData.add(data);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("List<String>: {}", responseData);
                     }
                 }
             }
@@ -677,6 +570,103 @@ public class PlatformDataDAOImpl implements IPlatformDataDAO
             }
         }
 
-        return platformList;
+        return responseData;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceData(java.lang.String)
+     */
+    @Override
+    public synchronized List<String> getServiceData(final String attribute) throws SQLException
+    {
+        final String methodName = IServiceDataDAO.CNAME + "#getServiceData(final String attribute) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("attribute: {}", attribute);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<String> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            // we dont know what we have here - it could be a guid or it could be a hostname
+            // most commonly it'll be a guid, but we're going to search anyway
+            stmt = sqlConn.prepareCall("{ CALL getServiceData(?) }");
+            stmt.setString(1, attribute);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("stmt: {}", stmt);
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    responseData = new ArrayList<>(
+                            Arrays.asList(
+                                    resultSet.getString(1), // SERVICE_TYPE
+                                    resultSet.getString(2), // NAME
+                                    resultSet.getString(3), // REGION
+                                    resultSet.getString(4), // NWPARTITION
+                                    resultSet.getString(5), // STATUS
+                                    resultSet.getString(6), // SERVERS
+                                    resultSet.getString(7))); // DESCRIPTION
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("responseData: {}", responseData);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
     }
 }

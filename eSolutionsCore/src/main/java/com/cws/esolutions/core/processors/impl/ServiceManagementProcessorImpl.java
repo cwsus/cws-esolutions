@@ -15,7 +15,7 @@
  */
 package com.cws.esolutions.core.processors.impl;
 /**
- * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor
+ * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
  */
 import java.util.UUID;
 import java.util.List;
@@ -26,7 +26,8 @@ import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.Platform;
+import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.core.processors.enums.ServiceRegion;
@@ -35,11 +36,11 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.enums.NetworkPartition;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
-import com.cws.esolutions.core.processors.exception.PlatformManagementException;
-import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
+import com.cws.esolutions.core.processors.exception.ServiceManagementException;
+import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /*
  * Project: eSolutionsCore
@@ -52,31 +53,31 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-public class PlatformManagementProcessorImpl implements IPlatformManagementProcessor
+public class ServiceManagementProcessorImpl implements IServiceManagementProcessor
 {
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#addNewPlatform(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#addNewService(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
-    public PlatformManagementResponse addNewPlatform(final PlatformManagementRequest request) throws PlatformManagementException
+    public ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException
     {
-        final String methodName = IPlatformManagementProcessor.CNAME + "#addNewPlatform(final PlatformManagementRequest request) throws PlatformManagementException";
+        final String methodName = IServiceManagementProcessor.CNAME + "#addNewService(final ServiceManagementRequest request) throws ServiceManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
         }
 
-        PlatformManagementResponse response = new PlatformManagementResponse();
+        ServiceManagementResponse response = new ServiceManagementResponse();
 
-        final Platform platform = request.getPlatform();
+        final Service service = request.getService();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Platform: {}", platform);
+            DEBUGGER.debug("Service: {}", service);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -92,9 +93,9 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                if (platform == null)
+                if (service == null)
                 {
-                    throw new PlatformManagementException("No platform was provided. Cannot continue.");
+                    throw new ServiceManagementException("No platform was provided. Cannot continue.");
                 }
 
                 // make sure all the platform data is there
@@ -102,7 +103,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                 try
                 {
-                    validator = platformDao.listPlatformsByAttribute(platform.getName(), request.getStartPage());
+                    validator = serviceDao.getServiceByAttribute(service.getName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -118,7 +119,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                 {
                     // valid platform
                     List<String> serverList = new ArrayList<>();
-                    for (Server server : platform.getServers())
+                    for (Server server : service.getServers())
                     {
                         if (DEBUG)
                         {
@@ -136,12 +137,12 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
                                     UUID.randomUUID().toString(),
-                                    platform.getName(),
-                                    platform.getRegion().name(),
-                                    platform.getPartition().name(),
-                                    platform.getStatus().name(),
+                                    service.getName(),
+                                    service.getRegion().name(),
+                                    service.getPartition().name(),
+                                    service.getStatus().name(),
                                     serverList.toString(),
-                                    platform.getDescription()));
+                                    service.getDescription()));
 
                     if (DEBUG)
                     {
@@ -151,7 +152,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                         }
                     }
 
-                    boolean isComplete = platformDao.addNewPlatform(insertData);
+                    boolean isComplete = serviceDao.addNewService(insertData);
 
                     if (DEBUG)
                     {
@@ -181,13 +182,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new PlatformManagementException(sqx.getMessage(), sqx);
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
         catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(acsx.getMessage(), acsx);
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -226,28 +227,28 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#updatePlatformData(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#updateServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
-    public PlatformManagementResponse updatePlatformData(final PlatformManagementRequest request) throws PlatformManagementException
+    public ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
-        final String methodName = IPlatformManagementProcessor.CNAME + "#updatePlatformData(final PlatformManagementRequest request) throws PlatformManagementException";
+        final String methodName = IServiceManagementProcessor.CNAME + "#updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
         }
 
-        PlatformManagementResponse response = new PlatformManagementResponse();
+        ServiceManagementResponse response = new ServiceManagementResponse();
 
-        final Platform platform = request.getPlatform();
+        final Service service = request.getService();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Platform: {}", platform);
+            DEBUGGER.debug("Service: {}", service);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -264,7 +265,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             if (isServiceAuthorized)
             {
                 List<String> serverList = new ArrayList<>();
-                for (Server server : platform.getServers())
+                for (Server server : service.getServers())
                 {
                     if (DEBUG)
                     {
@@ -281,13 +282,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
                 List<String> insertData = new ArrayList<>(
                         Arrays.asList(
-                                platform.getGuid(),
-                                platform.getName(),
-                                platform.getRegion().name(),
-                                platform.getPartition().name(),
-                                platform.getStatus().name(),
+                                service.getGuid(),
+                                service.getName(),
+                                service.getRegion().name(),
+                                service.getPartition().name(),
+                                service.getStatus().name(),
                                 serverList.toString(),
-                                platform.getDescription()));
+                                service.getDescription()));
 
                 if (DEBUG)
                 {
@@ -297,7 +298,7 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                     }
                 }
 
-                boolean isComplete = platformDao.updatePlatformData(insertData);
+                boolean isComplete = serviceDao.updateServiceData(insertData);
 
                 if (DEBUG)
                 {
@@ -322,13 +323,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-            throw new PlatformManagementException(acsx.getMessage(), acsx);
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new PlatformManagementException(sqx.getMessage(), sqx);
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
         finally
         {
@@ -367,20 +368,127 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#listPlatforms(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#removeServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
-    public PlatformManagementResponse listPlatforms(final PlatformManagementRequest request) throws PlatformManagementException
+    public ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
-        final String methodName = IPlatformManagementProcessor.CNAME + "#listPlatforms(final PlatformManagementRequest request) throws PlatformManagementException";
+        final String methodName = IServiceManagementProcessor.CNAME + "#removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
         }
 
-        PlatformManagementResponse response = new PlatformManagementResponse();
+        ServiceManagementResponse response = new ServiceManagementResponse();
+
+        final Service service = request.getService();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+            }
+
+            if (isServiceAuthorized)
+            {
+                boolean isComplete = serviceDao.removeServiceData(service.getGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.UPDATEPLATFORM);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServices(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     */
+    @Override
+    public ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException
+    {
+        final String methodName = IServiceManagementProcessor.CNAME + "#listServices(final ServiceManagementRequest request) throws ServiceManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+        }
+
+        ServiceManagementResponse response = new ServiceManagementResponse();
 
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
@@ -402,45 +510,46 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                int count = platformDao.getPlatformCount();
+                int count = serviceDao.getServiceCount();
 
                 if (DEBUG)
                 {
                     DEBUGGER.debug("count: {}", count);
                 }
 
-                List<String[]> platformData = platformDao.listAvailablePlatforms(request.getStartPage());
+                List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("platformData: {}", platformData);
+                    DEBUGGER.debug("serviceData: {}", serviceData);
                 }
 
-                if ((platformData != null) && (platformData.size() != 0))
+                if ((serviceData != null) && (serviceData.size() != 0))
                 {
-                    List<Platform> platformList = new ArrayList<>();
+                    List<Service> serviceList = new ArrayList<>();
 
-                    for (String[] data : platformData)
+                    for (String[] data : serviceData)
                     {
-                        Platform platform = new Platform();
-                        platform.setGuid(data[0]);
-                        platform.setName(data[1]);
+                        Service service = new Service();
+                        service.setGuid(data[0]);
+                        service.setType(ServiceType.valueOf(data[1]));
+                        service.setName(data[2]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Platform: {}", platform);
+                            DEBUGGER.debug("Service: {}", service);
                         }
 
-                        platformList.add(platform);
+                        serviceList.add(service);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
                     response.setEntryCount(count);
-                    response.setPlatformList(platformList);
+                    response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
@@ -457,13 +566,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new PlatformManagementException(sqx.getMessage(), sqx);
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
         catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(acsx.getMessage(), acsx);
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -502,28 +611,28 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#listPlatformsByAttribute(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceByAttribute(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
-    public PlatformManagementResponse listPlatformsByAttribute(final PlatformManagementRequest request) throws PlatformManagementException
+    public ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException
     {
-        final String methodName = IPlatformManagementProcessor.CNAME + "#listPlatformsByAttribute(final PlatformManagementRequest request) throws PlatformManagementException";
+        final String methodName = IServiceManagementProcessor.CNAME + "#getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
         }
 
-        PlatformManagementResponse response = new PlatformManagementResponse();
+        ServiceManagementResponse response = new ServiceManagementResponse();
 
-        final Platform reqPlatform = request.getPlatform();
+        final Service service = request.getService();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Platform: {}", reqPlatform);
+            DEBUGGER.debug("Service: {}", service);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -539,37 +648,38 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
 
             if (isServiceAuthorized)
             {
-                List<String[]> platformData = platformDao.listPlatformsByAttribute(reqPlatform.getName(), request.getStartPage());
+                List<String[]> serviceData = serviceDao.getServiceByAttribute(service.getName(), request.getStartPage());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("platformData: {}", platformData);
+                    DEBUGGER.debug("serviceData: {}", serviceData);
                 }
 
-                if ((platformData != null) && (platformData.size() != 0))
+                if ((serviceData != null) && (serviceData.size() != 0))
                 {
-                    List<Platform> platformList = new ArrayList<>();
+                    List<Service> serviceList = new ArrayList<>();
 
-                    for (String[] data : platformData)
+                    for (String[] data : serviceData)
                     {
-                        Platform platform = new Platform();
-                        platform.setGuid(data[0]);
-                        platform.setName(data[1]);
+                        Service resService = new Service();
+                        service.setGuid(data[0]);
+                        service.setType(ServiceType.valueOf(data[1]));
+                        service.setName(data[2]);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("Platform: {}", platform);
+                            DEBUGGER.debug("Service: {}", resService);
                         }
 
-                        platformList.add(platform);
+                        serviceList.add(resService);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("platformList: {}", platformList);
+                        DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
-                    response.setPlatformList(platformList);
+                    response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
                 else
@@ -586,13 +696,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new PlatformManagementException(sqx.getMessage(), sqx);
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
         catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(acsx.getMessage(), acsx);
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
         finally
         {
@@ -631,28 +741,28 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor#getPlatformData(com.cws.esolutions.core.processors.dto.PlatformManagementRequest)
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceData(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
-    public PlatformManagementResponse getPlatformData(final PlatformManagementRequest request) throws PlatformManagementException
+    public ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException
     {
-        final String methodName = IPlatformManagementProcessor.CNAME + "#getPlatformData(final PlatformManagementRequest request) throws PlatformManagementException";
+        final String methodName = IServiceManagementProcessor.CNAME + "#getServiceData(final ServiceManagementRequest request) throws ServiceManagementException";
         
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("PlatformManagementRequest: {}", request);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
         }
 
-        PlatformManagementResponse response = new PlatformManagementResponse();
+        ServiceManagementResponse response = new ServiceManagementResponse();
 
-        final Platform platform = request.getPlatform();
+        final Service service = request.getService();
         final UserAccount userAccount = request.getUserAccount();
         final RequestHostInfo reqInfo = request.getRequestInfo();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Platform: {}", platform);
+            DEBUGGER.debug("Service: {}", service);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
         }
@@ -670,19 +780,18 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
             {
                 List<Server> serverList = null;
 
-                if (platform != null)
+                List<String> serviceData = serviceDao.getServiceData(service.getGuid());
+
+                if (DEBUG)
                 {
-                    List<Object> platformData = platformDao.getPlatformData(platform.getGuid());
+                    DEBUGGER.debug("serviceData: {}", serviceData);
+                }
 
-                    if (DEBUG)
+                if ((serviceData != null) && (serviceData.size() != 0))
+                {
+                    if (ServiceType.valueOf(serviceData.get(0)) == ServiceType.PLATFORM)
                     {
-                        DEBUGGER.debug("platformData: {}", platformData);
-                    }
-
-                    if ((platformData != null) && (platformData.size() != 0))
-                    {
-                        // appservers
-                        String appTmp = StringUtils.remove((String) platformData.get(5), "["); // PLATFORM_SERVERS
+                        String appTmp = StringUtils.remove((String) serviceData.get(5), "["); // PLATFORM_SERVERS
                         String platformServers = StringUtils.remove(appTmp, "]");
 
                         if (DEBUG)
@@ -724,28 +833,25 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
                                 DEBUGGER.debug("serverList: {}", serverList);
                             }
                         }
-
-                        Platform resPlatform = new Platform();
-                        resPlatform.setGuid((String) platformData.get(0));
-                        resPlatform.setName((String) platformData.get(1));
-                        resPlatform.setRegion(ServiceRegion.valueOf((String) platformData.get(2)));
-                        resPlatform.setPartition(NetworkPartition.valueOf((String) platformData.get(3)));
-                        resPlatform.setStatus(ServiceStatus.valueOf((String) platformData.get(4)));
-                        resPlatform.setServers(serverList);
-                        resPlatform.setDescription((String) platformData.get(6));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Platform: {}", resPlatform);
-                        }
-
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                        response.setPlatformData(resPlatform);
                     }
-                    else
+
+                    Service resService = new Service();
+                    resService.setGuid(service.getGuid());
+                    resService.setType(ServiceType.valueOf(serviceData.get(0)));
+                    resService.setName(serviceData.get(1));
+                    resService.setRegion(ServiceRegion.valueOf((String) serviceData.get(2)));
+                    resService.setPartition(NetworkPartition.valueOf(serviceData.get(3)));
+                    resService.setServers(serverList);
+                    resService.setStatus(ServiceStatus.valueOf((String) serviceData.get(4)));
+                    resService.setDescription(serviceData.get(6));
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(CoreServicesStatus.FAILURE);
+                        DEBUGGER.debug("Service: {}", resService);
                     }
+
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    response.setService(resService);
                 }
                 else
                 {
@@ -761,13 +867,13 @@ public class PlatformManagementProcessorImpl implements IPlatformManagementProce
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new PlatformManagementException(sqx.getMessage(), sqx);
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
         }
         catch (AccessControlServiceException acsx)
         {
             ERROR_RECORDER.error(acsx.getMessage(), acsx);
             
-            throw new PlatformManagementException(acsx.getMessage(), acsx);
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
         }
         finally
         {

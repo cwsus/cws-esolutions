@@ -75,7 +75,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
             switch (request.getRequestType())
             {
                 case NETSTAT:
-                    sourceFile = new File(scriptConfig.getNetstatCmd());
+                    sourceFile = scriptConfig.getScripts().get("netstat");
 
                     if (DEBUG)
                     {
@@ -104,7 +104,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                     cmdRequest.setCommand(commandList);
                     cmdRequest.setPrintOutput(true);
                     cmdRequest.setPrintError(true);
-                    cmdRequest.setTimeout(SCRIPT_TIMEOUT);
+                    cmdRequest.setTimeout(ISystemManagerProcessor.CONNECT_TIMEOUT);
 
                     if (DEBUG)
                     {
@@ -168,13 +168,13 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         InetSocketAddress socketAddress = new InetSocketAddress(targetServer, targetPort);
 
                         socket = new Socket();
-                        socket.setSoTimeout(appBean.getConfigData().getAppConfig().getConnectTimeout());
+                        socket.setSoTimeout(ISystemManagerProcessor.CONNECT_TIMEOUT);
                         socket.setSoLinger(false, 0);
                         socket.setKeepAlive(false);
 
                         try
                         {
-                            socket.connect(socketAddress, appBean.getConfigData().getAppConfig().getConnectTimeout());
+                            socket.connect(socketAddress, ISystemManagerProcessor.CONNECT_TIMEOUT);
 
                             if (socket.isConnected())
                             {
@@ -202,7 +202,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
                     break;
                 case PROCESSLIST:
-                    sourceFile = new File(scriptConfig.getProcessListCmd());
+                    sourceFile = scriptConfig.getScripts().get("processList");
 
                     if (DEBUG)
                     {
@@ -231,7 +231,7 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                     cmdRequest.setCommand(commandList);
                     cmdRequest.setPrintOutput(true);
                     cmdRequest.setPrintError(true);
-                    cmdRequest.setTimeout(SCRIPT_TIMEOUT);
+                    cmdRequest.setTimeout(ISystemManagerProcessor.CONNECT_TIMEOUT);
 
                     if (DEBUG)
                     {

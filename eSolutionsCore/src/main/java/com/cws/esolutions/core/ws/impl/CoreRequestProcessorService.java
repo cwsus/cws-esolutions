@@ -37,7 +37,6 @@ import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService;
-import com.cws.esolutions.core.processors.exception.SearchRequestException;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 /**
  * @see com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService

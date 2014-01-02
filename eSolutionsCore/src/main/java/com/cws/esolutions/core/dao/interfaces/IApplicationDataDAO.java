@@ -71,7 +71,7 @@ public interface IApplicationDataDAO
      * 9. Logs Directory - Where application logs can be found on the filesystem. Can be relative
      *    to the base path as above, or located elsewhere.
      * 10. PID Directory - Where the PID will live for this application. Cannot be blank.
-     * 11. Platform GUID - The platform(s) this application is associated with. This
+     * 11. Service GUID - The platform(s) this application is associated with. This
      *     drives deployment processing.
      *
      * @param applicationData - The information to store for the application, as outlined above.
@@ -97,7 +97,7 @@ public interface IApplicationDataDAO
      * 9. Logs Directory - Where application logs can be found on the filesystem. Can be relative
      *    to the base path as above, or located elsewhere.
      * 10. PID Directory - Where the PID will live for this application. Cannot be blank.
-     * 11. Platform GUID - The platform(s) this application is associated with. This
+     * 11. Service GUID - The platform(s) this application is associated with. This
      *     drives deployment processing.
      *
      * @param applicationData - The information to update for the application, as outlined above.
@@ -123,7 +123,7 @@ public interface IApplicationDataDAO
      * 9. Logs Directory - Where application logs can be found on the filesystem. Can be relative
      *    to the base path as above, or located elsewhere.
      * 10. PID Directory - Where the PID will live for this application. Cannot be blank.
-     * 11. Platform GUID - The platform(s) this application is associated with. This
+     * 11. Service GUID - The platform(s) this application is associated with. This
      *     drives deployment processing.
      *
      * @param appGuid - The information to update for the application, as outlined above.

@@ -21,7 +21,7 @@ import com.cws.esolutions.core.exception.CoreServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.exception
- * File: ProjectManagementException.java
+ * File: ServiceManagementException.java
  *
  * History
  *
@@ -29,21 +29,21 @@ import com.cws.esolutions.core.exception.CoreServiceException;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-public class ProjectManagementException extends CoreServiceException
+public class ServiceManagementException extends CoreServiceException
 {
-    private static final long serialVersionUID = -8996778465248503694L;
+    private static final long serialVersionUID = 4059137757894563242L;
 
-    public ProjectManagementException(final String message)
+    public ServiceManagementException(final String message)
     {
         super(message);
     }
 
-    public ProjectManagementException(final Throwable throwable)
+    public ServiceManagementException(final Throwable throwable)
     {
         super(throwable);
     }
 
-    public ProjectManagementException(final String message, final Throwable throwable)
+    public ServiceManagementException(final String message, final Throwable throwable)
     {
         super(message, throwable);
     }

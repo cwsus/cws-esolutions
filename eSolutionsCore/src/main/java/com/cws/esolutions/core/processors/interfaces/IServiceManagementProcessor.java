@@ -35,19 +35,17 @@ import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
+import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.dao.impl.PlatformDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
-import com.cws.esolutions.core.dao.impl.DatacenterDataDAOImpl;
-import com.cws.esolutions.core.dao.interfaces.IPlatformDataDAO;
-import com.cws.esolutions.core.dao.interfaces.IDatacenterDataDAO;
+import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
-import com.cws.esolutions.core.processors.dto.PlatformManagementRequest;
-import com.cws.esolutions.core.processors.dto.PlatformManagementResponse;
+import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
+import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.core.processors.exception.PlatformManagementException;
+import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -56,14 +54,13 @@ import com.cws.esolutions.core.processors.exception.PlatformManagementException;
  * @author khuntly
  * @version 1.0
  */
-public interface IPlatformManagementProcessor
+public interface IServiceManagementProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IServerDataDAO serverDao = new ServerDataDAOImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final IPlatformDataDAO platformDao = new PlatformDataDAOImpl();
-    static final IDatacenterDataDAO datactrDAO = new DatacenterDataDAOImpl();
-    static final String CNAME = IPlatformManagementProcessor.class.getName();
+    static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
+    static final String CNAME = IServiceManagementProcessor.class.getName();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
@@ -77,13 +74,15 @@ public interface IPlatformManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
 
-    PlatformManagementResponse addNewPlatform(final PlatformManagementRequest request) throws PlatformManagementException;
+    ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException;
 
-    PlatformManagementResponse updatePlatformData(final PlatformManagementRequest request) throws PlatformManagementException;
+    ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
-    PlatformManagementResponse listPlatforms(final PlatformManagementRequest request) throws PlatformManagementException;
+    ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
-    PlatformManagementResponse listPlatformsByAttribute(final PlatformManagementRequest request) throws PlatformManagementException;
+    ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException;
 
-    PlatformManagementResponse getPlatformData(final PlatformManagementRequest request) throws PlatformManagementException;
+    ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException;
+
+    ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 }

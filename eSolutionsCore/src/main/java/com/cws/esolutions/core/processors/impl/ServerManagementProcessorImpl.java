@@ -28,7 +28,7 @@ import com.cws.esolutions.agent.Constants;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.Server;
-import com.cws.esolutions.core.processors.dto.DataCenter;
+import com.cws.esolutions.core.processors.dto.Service;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.ServerStatus;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -148,7 +148,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 requestServer.getServerStatus().name(),
                                 requestServer.getServerRegion().name(),
                                 requestServer.getNetworkPartition().name(),
-                                requestServer.getDatacenter().getGuid(),
+                                requestServer.getService().getGuid(),
                                 requestServer.getServerType().name(),
                                 requestServer.getDomainName(),
                                 requestServer.getCpuType(),
@@ -307,7 +307,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                                 requestServer.getServerStatus().name(),
                                 requestServer.getServerRegion().name(),
                                 requestServer.getNetworkPartition().name(),
-                                requestServer.getDatacenter().getGuid(),
+                                requestServer.getService().getGuid(),
                                 requestServer.getServerType().name(),
                                 requestServer.getDomainName(),
                                 requestServer.getCpuType(),
@@ -594,13 +594,13 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                     if ((serverData != null) && (serverData.size() != 0))
                     {
-                        DataCenter dataCenter = new DataCenter();
-                        dataCenter.setGuid((String) serverData.get(30));
-                        dataCenter.setName((String) serverData.get(31));
+                        Service service = new Service();
+                        service.setGuid((String) serverData.get(30));
+                        service.setName((String) serverData.get(31));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("DataCenter: {}", dataCenter);
+                            DEBUGGER.debug("Service: {}", service);
                         }
 
                         Server server = new Server();
@@ -609,7 +609,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         server.setServerStatus(ServerStatus.valueOf((String) serverData.get(2))); // SYSTEM_STATUS
                         server.setServerRegion(ServiceRegion.valueOf((String) serverData.get(3))); // SYSTEM_REGION
                         server.setNetworkPartition(NetworkPartition.valueOf((String) serverData.get(4))); // NETWORK_PARTITION
-                        server.setDatacenter(dataCenter); // datacenter as earlier obtained
+                        server.setService(service); // datacenter as earlier obtained
                         server.setServerType(ServerType.valueOf((String) serverData.get(5))); // SYSTEM_TYPE
                         server.setDomainName((String) serverData.get(6)); // DOMAIN_NAME
                         server.setCpuType((String) serverData.get(7)); // CPU_TYPE

@@ -54,6 +54,7 @@ public class Server implements Serializable
     private String cpuType = null;
     private int installedMemory = 0; // in MB! 1GB = 1024 MB
     private Date onlineDate = null;
+    private Service service = null;
     private Date offlineDate = null;
     private String virtualId = null;
     private String serverGuid = null;
@@ -72,7 +73,6 @@ public class Server implements Serializable
     private String nasIpAddress = null;
     private String operIpAddress = null;
     private String mgmtIpAddress = null;
-    private DataCenter datacenter = null;
     private String serverComments = null;
     private ServerType serverType = null;
     private ServerStatus serverStatus = null;
@@ -464,9 +464,9 @@ public class Server implements Serializable
         this.networkPartition = value;
     }
 
-    public final void setDatacenter(final DataCenter value)
+    public final void setService(final Service value)
     {
-        final String methodName = Server.CNAME + "#setDatacenter(final DataCenter value)";
+        final String methodName = Server.CNAME + "#setService(final Service value)";
 
         if (DEBUG)
         {
@@ -474,7 +474,7 @@ public class Server implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.datacenter = value;
+        this.service = value;
     }
 
     public final void setOnlineDate(final Date value)
@@ -880,17 +880,17 @@ public class Server implements Serializable
         return this.networkPartition;
     }
 
-    public final DataCenter getDatacenter()
+    public final Service getService()
     {
-        final String methodName = Server.CNAME + "#getDatacenter()";
+        final String methodName = Server.CNAME + "#getService()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.datacenter);
+            DEBUGGER.debug("Value: {}", this.service);
         }
 
-        return this.datacenter;
+        return this.service;
     }
 
     public final Date getOnlineDate()
