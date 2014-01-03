@@ -25,7 +25,9 @@ package com.cws.esolutions.core;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Map;
 import org.slf4j.Logger;
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,9 @@ public class CoreServiceBean
 {
     private String osType = null;
     private String hostName = null;
+    private Object authDataSource = null;
     private CoreConfigurationData configData = null;
+    private Map<String, DataSource> dataSource = null;
     private ResourceControllerBean resourceBean = null;
 
     private static CoreServiceBean instance = null;
@@ -94,6 +98,32 @@ public class CoreServiceBean
         }
 
         this.configData = value;
+    }
+
+    public final void setAuthDataSource(final Object value)
+    {
+        final String methodName = CoreServiceBean.CNAME + "#setAuthDataSource(final Object value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.authDataSource = value;
+    }
+
+    public final void setDataSource(final Map<String, DataSource> value)
+    {
+        final String methodName = CoreServiceBean.CNAME + "#setDataSource(final Map<String, DataSource> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dataSource = value;
     }
 
     public final void setResourceBean(final ResourceControllerBean value)
@@ -180,6 +210,32 @@ public class CoreServiceBean
         }
 
         return this.resourceBean;
+    }
+
+    public final Object getAuthDataSource()
+    {
+        final String methodName = CoreServiceBean.CNAME + "#getAuthDataSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.authDataSource);
+        }
+
+        return this.authDataSource;
+    }
+
+    public final Map<String, DataSource> getDataSource()
+    {
+        final String methodName = CoreServiceBean.CNAME + "#getDataSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.dataSource);
+        }
+
+        return this.dataSource;
     }
 
     /**

@@ -30,12 +30,9 @@
         <property name="serviceId" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="recordsPerPage" value="20" />
         <property name="defaultPage" value="ServiceMgmt_DefaultHandler" />
-        <property name="addPlatformPage" value="ServiceMgmt_AddPlatform" />
-        <property name="viewPlatformPage" value="ServiceMgmt_ViewPlatform" />
-        <property name="viewPlatformList" value="ServiceMgmt_ViewPlatforms" />
-        <property name="viewDatacentersPage" value="ServiceMgmt_ViewDatacenters" />
-        <property name="viewDatacenterPage" value="ServiceMgmt_ViewDatacenter" />
-        <property name="addDatacenterPage" value="ServiceMgmt_AddDatacenter" />
+        <property name="addServicePage" value="ServiceMgmt_AddService" />
+        <property name="viewServicePage" value="ServiceMgmt_ViewService" />
+        <property name="viewServiceList" value="ServiceMgmt_ViewServices" />
         <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
         <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
         <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />

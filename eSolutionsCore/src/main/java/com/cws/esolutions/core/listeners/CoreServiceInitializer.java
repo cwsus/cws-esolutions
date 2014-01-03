@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.listeners;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.listeners
+ * File: CoreServiceInitializer.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.net.URL;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -29,17 +39,6 @@ import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.controllers.ResourceControllerBean;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.listeners
- * File: CoreServiceInitializer.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -51,6 +50,7 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
 public class CoreServiceInitializer
 {
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
     public static void initializeService(final String secConfig, final String logConfig) throws CoreServiceException
     {
@@ -59,7 +59,6 @@ public class CoreServiceInitializer
         Unmarshaller marshaller = null;
         CoreConfigurationData configData = null;
 
-        final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
         final ClassLoader classLoader = CoreServiceInitializer.class.getClassLoader();
 
         try
@@ -85,12 +84,12 @@ public class CoreServiceInitializer
             marshaller = context.createUnmarshaller();
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-            appBean.setConfigData(configData);
-            appBean.setResourceBean(resBean);
+            CoreServiceInitializer.appBean.setConfigData(configData);
+            CoreServiceInitializer.appBean.setResourceBean(CoreServiceInitializer.resBean);
 
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
-                ResourceController.configureAndCreateDataConnection(mgr, resBean);
+                ResourceController.configureAndCreateDataConnection(mgr, CoreServiceInitializer.resBean);
             }
         }
         catch (JAXBException jx)
@@ -109,8 +108,6 @@ public class CoreServiceInitializer
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         CoreConfigurationData configData = null;
-
-        final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
         try
         {
@@ -135,12 +132,12 @@ public class CoreServiceInitializer
             marshaller = context.createUnmarshaller();
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-            appBean.setConfigData(configData);
-            appBean.setResourceBean(resBean);
+            CoreServiceInitializer.appBean.setConfigData(configData);
+            CoreServiceInitializer.appBean.setResourceBean(CoreServiceInitializer.resBean);
 
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
-                ResourceController.configureAndCreateDataConnection(mgr, resBean);
+                ResourceController.configureAndCreateDataConnection(mgr, CoreServiceInitializer.resBean);
             }
         }
         catch (JAXBException jx)

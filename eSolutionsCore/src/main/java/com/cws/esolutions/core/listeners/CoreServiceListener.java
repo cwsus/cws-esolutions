@@ -61,6 +61,7 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
 public class CoreServiceListener implements ServletContextListener
 {
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
+    private static final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSAPP_FILE = "eSolutionsCoreConfig";
@@ -82,7 +83,6 @@ public class CoreServiceListener implements ServletContextListener
 
         final ServletContext sContext = contextEvent.getServletContext();
         final ClassLoader classLoader = CoreServiceListener.class.getClassLoader();
-        final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
         if (DEBUG)
         {
@@ -126,8 +126,8 @@ public class CoreServiceListener implements ServletContextListener
                     marshaller = context.createUnmarshaller();
                     configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
-                    appBean.setConfigData(configData);
-                    appBean.setResourceBean(resBean);
+                    CoreServiceListener.appBean.setConfigData(configData);
+                    CoreServiceListener.appBean.setResourceBean(CoreServiceListener.resBean);
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
@@ -138,7 +138,7 @@ public class CoreServiceListener implements ServletContextListener
                         dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
-                    resBean.setDataSource(dsMap);
+                    CoreServiceListener.resBean.setDataSource(dsMap);
                 }
             }
             else
