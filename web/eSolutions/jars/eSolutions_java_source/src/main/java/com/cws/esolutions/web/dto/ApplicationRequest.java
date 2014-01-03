@@ -17,7 +17,7 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.enums.DeploymentType;
 /*
  * Project: eSolutions_java_source

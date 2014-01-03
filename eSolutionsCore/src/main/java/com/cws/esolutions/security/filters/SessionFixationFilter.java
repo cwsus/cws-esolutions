@@ -41,7 +41,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * @see javax.servlet.Filter
  */
@@ -49,7 +49,7 @@ public class SessionFixationFilter implements Filter
 {
     private static final String CNAME = SessionFixationFilter.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     @Override

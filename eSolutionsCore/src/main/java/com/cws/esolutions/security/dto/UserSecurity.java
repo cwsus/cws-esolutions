@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -53,7 +53,7 @@ public class UserSecurity implements Serializable
     private static final String CNAME = UserSecurity.class.getName();
     private static final long serialVersionUID = -1253092123530982249L;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setUserSalt(final String value)

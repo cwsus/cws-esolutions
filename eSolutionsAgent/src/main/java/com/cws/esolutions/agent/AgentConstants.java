@@ -17,7 +17,7 @@ package com.cws.esolutions.agent;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent
- * File: Constants.java
+ * File: AgentConstants.java
  *
  * History
  *
@@ -33,7 +33,7 @@ package com.cws.esolutions.agent;
  * @author khuntly
  * @version 1.0
  */
-public class Constants
+public class AgentConstants
 {
     /* Logging constants */
     public static final String DEBUGGER = "AGENT_DEBUGGER";

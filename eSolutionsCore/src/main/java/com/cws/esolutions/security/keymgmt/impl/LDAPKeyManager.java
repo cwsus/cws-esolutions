@@ -57,7 +57,6 @@ import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import java.security.spec.InvalidKeySpecException;
 
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 /**
@@ -66,7 +65,7 @@ import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 public class LDAPKeyManager implements KeyManager
 {
     private static final String CNAME = LDAPKeyManager.class.getName();
-    private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
+    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
@@ -98,7 +97,7 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
             if (DEBUG)
@@ -340,7 +339,7 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
             if (DEBUG)
@@ -552,7 +551,7 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
             if (DEBUG)

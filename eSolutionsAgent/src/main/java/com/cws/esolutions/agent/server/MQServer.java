@@ -17,7 +17,7 @@ package com.cws.esolutions.agent.server;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent
- * File: Constants.java
+ * File: AgentConstants.java
  *
  * History
  *
@@ -42,7 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import com.cws.esolutions.agent.AgentBean;
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.utils.PasswordUtils;
@@ -71,9 +71,9 @@ public class MQServer extends Thread implements MessageListener, ExceptionListen
     private static final IAgentRequestProcessor processor = new AgentRequestProcessorImpl();
     private static final ServerConfig serverConfig = agentBean.getConfigData().getServerConfig();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
     @Override
     public void run()

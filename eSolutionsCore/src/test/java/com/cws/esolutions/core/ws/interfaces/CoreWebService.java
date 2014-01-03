@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import javax.xml.ws.Endpoint;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.ws.impl.CoreRequestProcessorService;
@@ -42,9 +42,9 @@ public class CoreWebService
 
     private static final String CNAME = CoreWebService.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     public CoreWebService()
     {

@@ -26,10 +26,7 @@ package com.cws.esolutions.security.listeners;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
-import java.util.Map;
 import org.slf4j.Logger;
-import java.util.HashMap;
-import javax.sql.DataSource;
 import javax.naming.Context;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
@@ -43,12 +40,9 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.dao.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -62,9 +56,9 @@ public class SecurityServiceListener implements ServletContextListener
     private static final String INIT_SYSLOGGING_FILE = "SecurityServiceLogger";
     private static final String CNAME = SecurityServiceListener.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     @Override
     public void contextInitialized(final ServletContextEvent sContextEvent)
@@ -81,10 +75,8 @@ public class SecurityServiceListener implements ServletContextListener
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         SecurityConfigurationData configData = null;
-        Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = sContextEvent.getServletContext();
-        final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
         final ClassLoader classLoader = SecurityServiceListener.class.getClassLoader();
 
         if (DEBUG)
@@ -129,20 +121,14 @@ public class SecurityServiceListener implements ServletContextListener
                     marshaller = context.createUnmarshaller();
                     configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
-                    svcBean.setConfigData(configData);
-                    svcBean.setResourceBean(resBean);
+                    SecurityServiceListener.svcBean.setConfigData(configData);
 
                     Context initContext = new InitialContext();
-                    Context envContext = (Context) initContext.lookup(SecurityConstants.DS_CONTEXT);
+                    Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                    ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), true, resBean);
+                    DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), true, SecurityServiceListener.svcBean);
 
-                    for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
-                    {
-                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
-                    }
-
-                    resBean.setDataSource(dsMap);
+                    SecurityServiceListener.svcBean.setAuthDataSource(envContext.lookup(SecurityServiceConstants.INIT_AUDITDS_MANAGER));
                 }
                 else
                 {
@@ -166,10 +152,6 @@ public class SecurityServiceListener implements ServletContextListener
         {
             ERROR_RECORDER.error(jx.getMessage(), jx);
         }
-        catch (CoreServiceException csx)
-        {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
-        }
     }
 
     @Override
@@ -183,20 +165,18 @@ public class SecurityServiceListener implements ServletContextListener
             DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
         }
 
-        final SecurityConfigurationData configData = svcBean.getConfigData();
-
         if (DEBUG)
         {
-            DEBUGGER.debug("SecurityConfigurationData: {}", configData);
+            DEBUGGER.debug("SecurityConfigurationData: {}", SecurityServiceListener.svcBean.getConfigData());
         }
 
         try
         {
-            ResourceController.closeAuthConnection(configData.getAuthRepo(), true, svcBean.getResourceBean());
+            DAOInitializer.closeAuthConnection(SecurityServiceListener.svcBean.getConfigData().getAuthRepo(), true, svcBean);
         }
-        catch (CoreServiceException csx)
+        catch (SecurityServiceException ssx)
         {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
         }
     }
 }

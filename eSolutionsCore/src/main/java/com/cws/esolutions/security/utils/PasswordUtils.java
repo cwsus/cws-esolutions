@@ -38,7 +38,7 @@ import javax.crypto.IllegalBlockSizeException;
 import org.apache.commons.codec.binary.Base64;
 import java.security.NoSuchAlgorithmException;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -51,8 +51,8 @@ public final class PasswordUtils
 {
     private static final String CNAME = PasswordUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public static final String encryptText(final String plainText, final String salt) throws SecurityException

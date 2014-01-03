@@ -26,6 +26,7 @@ package com.cws.esolutions.core.utils;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 
@@ -67,5 +68,11 @@ public class NetworkUtilsTest
     {
         Assert.assertTrue(NetworkUtils.isHostValid("localhost"));
         Assert.assertFalse(NetworkUtils.isHostValid("notlocalhost"));
+    }
+
+    @After
+    public void tearDown()
+    {
+        CoreServiceInitializer.shutdown();
     }
 }

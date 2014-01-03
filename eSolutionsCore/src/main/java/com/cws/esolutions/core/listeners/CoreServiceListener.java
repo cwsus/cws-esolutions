@@ -33,12 +33,11 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.listeners
@@ -61,16 +60,15 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
 public class CoreServiceListener implements ServletContextListener
 {
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    private static final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
 
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String INIT_SYSAPP_FILE = "eSolutionsCoreConfig";
     private static final String CNAME = CoreServiceListener.class.getName();
     private static final String INIT_SYSLOGGING_FILE = "eSolutionsCoreLogger";
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     @Override
     public void contextInitialized(final ServletContextEvent contextEvent)
@@ -127,7 +125,6 @@ public class CoreServiceListener implements ServletContextListener
                     configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
                     CoreServiceListener.appBean.setConfigData(configData);
-                    CoreServiceListener.appBean.setResourceBean(CoreServiceListener.resBean);
 
                     // set up the resource connections
                     Context initContext = new InitialContext();
@@ -138,7 +135,7 @@ public class CoreServiceListener implements ServletContextListener
                         dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
-                    CoreServiceListener.resBean.setDataSource(dsMap);
+                    CoreServiceListener.appBean.setDataSource(dsMap);
                 }
             }
             else

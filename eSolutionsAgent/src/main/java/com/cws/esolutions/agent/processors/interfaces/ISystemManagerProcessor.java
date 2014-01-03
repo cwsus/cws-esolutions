@@ -25,13 +25,11 @@ package com.cws.esolutions.agent.processors.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentBean;
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
@@ -54,10 +52,10 @@ public interface ISystemManagerProcessor
     static final String CNAME = ISystemManagerProcessor.class.getName();
     static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
+    static final Logger WARN_RECORDER = LoggerFactory.getLogger(AgentConstants.WARN_LOGGER + CNAME);
 
     SystemManagerResponse runSystemCheck(final SystemManagerRequest request) throws SystemManagerException;
 }

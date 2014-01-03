@@ -268,5 +268,6 @@ public class AccountControlProcessorImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

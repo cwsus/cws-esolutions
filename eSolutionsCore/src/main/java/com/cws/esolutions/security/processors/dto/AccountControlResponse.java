@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 /**
@@ -57,9 +57,9 @@ public class AccountControlResponse implements Serializable
     private static final long serialVersionUID = 7424992844092841578L;
     private static final String CNAME = AccountControlResponse.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     public final void setRequestStatus(final SecurityRequestStatus value)
     {
@@ -276,7 +276,7 @@ public class AccountControlResponse implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + SecurityConstants.LINE_BREAK + "{" + SecurityConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -297,7 +297,7 @@ public class AccountControlResponse implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

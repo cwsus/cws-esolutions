@@ -26,6 +26,7 @@ package com.cws.esolutions.core.dao.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import java.sql.SQLException;
@@ -63,5 +64,11 @@ public class DNSServiceDAOImplTest
         {
             Assert.fail(sqx.getMessage());
         }
+    }
+
+    @After
+    public void tearDown()
+    {
+        CoreServiceInitializer.shutdown();
     }
 }

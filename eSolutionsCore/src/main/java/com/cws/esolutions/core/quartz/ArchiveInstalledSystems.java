@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 /**
@@ -47,9 +47,9 @@ public class ArchiveInstalledSystems implements Job
 {
     private static final String CNAME = ArchiveInstalledSystems.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ArchiveInstalledSystems.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + ArchiveInstalledSystems.CNAME);
 
     public ArchiveInstalledSystems()
     {

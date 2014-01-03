@@ -34,24 +34,19 @@ import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.impl.FileManagerProcessorImpl;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerResponse;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.impl.SystemManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
-import com.cws.esolutions.agent.processors.impl.ApplicationManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
-import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor
  */
 public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 {
     private static final ISystemManagerProcessor systemManagerProcessor = new SystemManagerProcessorImpl();
-    private static final IApplicationManagerProcessor appManager = new ApplicationManagerProcessorImpl();
     private static final IFileManagerProcessor fileManager = new FileManagerProcessorImpl();
 
     @Override
@@ -76,14 +71,7 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
                 DEBUGGER.debug("Payload: {}", payload);
             }
 
-            if (payload instanceof ApplicationManagerRequest)
-            {
-                ApplicationManagerResponse res = null;
-                ApplicationManagerRequest req = (ApplicationManagerRequest) payload;
-
-                return response;
-            }
-            else if (payload instanceof SystemManagerRequest)
+            if (payload instanceof SystemManagerRequest)
             {
                 SystemManagerResponse res = null;
                 SystemManagerRequest req = (SystemManagerRequest) payload;

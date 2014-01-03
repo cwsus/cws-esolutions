@@ -1216,5 +1216,6 @@ public class ServerManagementProcessorImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

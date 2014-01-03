@@ -219,5 +219,6 @@ public class ApplicationManagementProcessorImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

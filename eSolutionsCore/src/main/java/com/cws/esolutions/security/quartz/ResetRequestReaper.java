@@ -34,7 +34,7 @@ import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
@@ -44,10 +44,10 @@ public class ResetRequestReaper implements Job
 {
     private static final String CNAME = ResetRequestReaper.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + ResetRequestReaper.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + ResetRequestReaper.CNAME);
 
     public ResetRequestReaper()
     {

@@ -56,7 +56,7 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
@@ -75,9 +75,9 @@ public final class EmailUtils
     private static final String INIT_DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = EmailUtils.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * eSolutionsCore

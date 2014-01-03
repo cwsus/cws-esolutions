@@ -34,7 +34,6 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
@@ -43,7 +42,7 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 public class SQLAuthenticator implements Authenticator
 {
     private static final String CNAME = SQLAuthenticator.class.getName();
-    private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_SECURITYDS_MANAGER);
+    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
      * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#performLogon(java.lang.String, java.lang.String, java.lang.String)

@@ -25,12 +25,12 @@ package com.cws.esolutions.core.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.junit.Test;
+import org.junit.After;
+import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Assert;
+import java.util.ArrayList;
 
 import com.cws.esolutions.core.utils.MQUtils;
 import com.cws.esolutions.core.CoreServiceBean;
@@ -105,5 +105,11 @@ public class MQUtilsTest
         {
             Assert.fail(ux.getMessage());
         }
+    }
+
+    @After
+    public void tearDown()
+    {
+        CoreServiceInitializer.shutdown();
     }
 }

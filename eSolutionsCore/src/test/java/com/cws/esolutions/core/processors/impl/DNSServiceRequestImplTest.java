@@ -503,5 +503,6 @@ public class DNSServiceRequestImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

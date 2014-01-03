@@ -80,7 +80,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -210,7 +210,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -313,7 +313,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -480,7 +480,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -610,7 +610,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -740,7 +740,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -877,7 +877,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -1005,7 +1005,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -1172,7 +1172,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -1328,7 +1328,7 @@ public class LDAPUserManager implements UserManager
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {

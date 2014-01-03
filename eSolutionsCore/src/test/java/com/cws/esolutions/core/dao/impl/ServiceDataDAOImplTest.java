@@ -27,6 +27,7 @@ package com.cws.esolutions.core.dao.impl;
  */
 import java.util.List;
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import java.util.Arrays;
@@ -247,5 +248,11 @@ public class ServiceDataDAOImplTest
         {
             Assert.fail(sqx.getMessage());
         }
+    }
+
+    @After
+    public void tearDown()
+    {
+        CoreServiceInitializer.shutdown();
     }
 }

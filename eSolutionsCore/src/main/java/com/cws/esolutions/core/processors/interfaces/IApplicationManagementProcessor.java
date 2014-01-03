@@ -29,7 +29,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.security.SecurityServiceBean;
@@ -40,7 +40,6 @@ import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 import com.cws.esolutions.core.dao.impl.ApplicationDataDAOImpl;
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
@@ -63,7 +62,6 @@ public interface IApplicationManagementProcessor
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
     static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
-    static final ResourceControllerBean resBean = appBean.getResourceBean();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IApplicationManagementProcessor.class.getName();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
@@ -73,10 +71,10 @@ public interface IApplicationManagementProcessor
 
     static final int CONNECT_TIMEOUT = appConfig.getConnectTimeout();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
 
     ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;
 

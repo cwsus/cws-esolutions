@@ -197,5 +197,6 @@ public class FileSecurityProcessorImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

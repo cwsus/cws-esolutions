@@ -39,7 +39,7 @@ import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
@@ -82,7 +82,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount authUser = request.getUserAccount();
         final UserSecurity authSec = request.getUserSecurity();
-        final int maxAttempts = (secConfig.getMaxAttempts() != 0) ? secConfig.getMaxAttempts() : SecurityConstants.DEF_AUTH_MAX_ATTEMPTS;
+        final int maxAttempts = (secConfig.getMaxAttempts() != 0) ? secConfig.getMaxAttempts() : SecurityServiceConstants.DEF_AUTH_MAX_ATTEMPTS;
 
         if (DEBUG)
         {

@@ -143,8 +143,9 @@ public class OracleVBoxManagerTest
     }
 
     @After
-    public static void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

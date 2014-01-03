@@ -184,5 +184,6 @@ public class SystemCheckProcessorImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

@@ -41,7 +41,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 
-import com.cws.esolutions.security.SecurityConstants;
 import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 /**
@@ -50,7 +49,7 @@ import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 public class SQLKeyManager implements KeyManager
 {
     private static final String CNAME = SQLKeyManager.class.getName();
-    private static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
+    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
      * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)

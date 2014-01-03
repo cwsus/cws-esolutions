@@ -30,11 +30,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -48,13 +47,12 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final ResourceControllerBean resBean = svcBean.getResourceBean();
     static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final AuthData authData = svcBean.getConfigData().getAuthData();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + UserManager.class.getName());
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + UserManager.class.getName());
 
     /**
      * Validates new user uniqueness by ensuring that the provided GUID and username

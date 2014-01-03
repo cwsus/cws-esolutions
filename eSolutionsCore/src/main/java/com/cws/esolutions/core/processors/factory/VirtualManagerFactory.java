@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -42,9 +42,9 @@ public class VirtualManagerFactory
 {
     private static VirtualServiceManager virtualSvcMgr = null;
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
     private static final String CNAME = VirtualServiceManager.class.getName();
 

@@ -26,6 +26,8 @@ package com.cws.esolutions.core.listeners;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
@@ -33,12 +35,12 @@ import org.apache.log4j.helpers.Loader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.dao.DAOInitializer;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.core.controllers.ResourceController;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -49,8 +51,12 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
  */
 public class CoreServiceInitializer
 {
+    private static final String CNAME = CoreServiceInitializer.class.getName();
     private static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    private static final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
+
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     public static void initializeService(final String secConfig, final String logConfig) throws CoreServiceException
     {
@@ -85,11 +91,10 @@ public class CoreServiceInitializer
             configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
 
             CoreServiceInitializer.appBean.setConfigData(configData);
-            CoreServiceInitializer.appBean.setResourceBean(CoreServiceInitializer.resBean);
 
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
-                ResourceController.configureAndCreateDataConnection(mgr, CoreServiceInitializer.resBean);
+                DAOInitializer.configureAndCreateDataConnection(mgr, CoreServiceInitializer.appBean);
             }
         }
         catch (JAXBException jx)
@@ -102,51 +107,25 @@ public class CoreServiceInitializer
         }
     }
 
-    public static void initializeService(final String secConfig, final String logConfig, final ClassLoader classLoader) throws CoreServiceException
+    public static void shutdown()
     {
-        URL xmlURL = null;
-        JAXBContext context = null;
-        Unmarshaller marshaller = null;
-        CoreConfigurationData configData = null;
+        final String methodName = CoreServiceInitializer.CNAME + "#shutdown()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+        }
 
         try
         {
-            if (StringUtils.isEmpty(logConfig))
+            for (DataSourceManager mgr : CoreServiceInitializer.appBean.getConfigData().getResourceConfig().getDsManager())
             {
-                System.err.println("Logging configuration not found. No logging enabled !");
+                DAOInitializer.closeDataConnection(mgr, false, CoreServiceInitializer.appBean);
             }
-            else
-            {
-                // Load logging
-                DOMConfigurator.configure(Loader.getResource(logConfig));
-            }
-
-            xmlURL = classLoader.getResource(secConfig);
-
-            if (xmlURL == null)
-            {
-                throw new CoreServiceException("Failed to load service configuration.");
-            }
-
-            context = JAXBContext.newInstance(CoreConfigurationData.class);
-            marshaller = context.createUnmarshaller();
-            configData = (CoreConfigurationData) marshaller.unmarshal(xmlURL);
-
-            CoreServiceInitializer.appBean.setConfigData(configData);
-            CoreServiceInitializer.appBean.setResourceBean(CoreServiceInitializer.resBean);
-
-            for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
-            {
-                ResourceController.configureAndCreateDataConnection(mgr, CoreServiceInitializer.resBean);
-            }
-        }
-        catch (JAXBException jx)
-        {
-            throw new CoreServiceException(jx.getMessage(), jx);
         }
         catch (CoreServiceException csx)
         {
-            throw new CoreServiceException(csx.getMessage(), csx);
+            ERROR_RECORDER.error(csx.getMessage(), csx);
         }
     }
 }

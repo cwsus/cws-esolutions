@@ -28,7 +28,7 @@ package com.cws.esolutions.security.dao.usermgmt.factory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -44,9 +44,9 @@ public class UserManagerFactory
 
     private static final String CNAME = UserManagerFactory.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     public static final UserManager getUserManager(final String className)
     {

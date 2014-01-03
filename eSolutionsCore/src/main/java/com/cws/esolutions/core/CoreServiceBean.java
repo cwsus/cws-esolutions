@@ -32,7 +32,6 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -45,18 +44,16 @@ public class CoreServiceBean
 {
     private String osType = null;
     private String hostName = null;
-    private Object authDataSource = null;
     private CoreConfigurationData configData = null;
     private Map<String, DataSource> dataSource = null;
-    private ResourceControllerBean resourceBean = null;
 
     private static CoreServiceBean instance = null;
 
     private static final String CNAME = CoreServiceBean.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
 
     /**
      * Returns a static instance of this bean
@@ -100,19 +97,6 @@ public class CoreServiceBean
         this.configData = value;
     }
 
-    public final void setAuthDataSource(final Object value)
-    {
-        final String methodName = CoreServiceBean.CNAME + "#setAuthDataSource(final Object value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.authDataSource = value;
-    }
-
     public final void setDataSource(final Map<String, DataSource> value)
     {
         final String methodName = CoreServiceBean.CNAME + "#setDataSource(final Map<String, DataSource> value)";
@@ -124,19 +108,6 @@ public class CoreServiceBean
         }
 
         this.dataSource = value;
-    }
-
-    public final void setResourceBean(final ResourceControllerBean value)
-    {
-        final String methodName = CoreServiceBean.CNAME + "#setResourceBean(final ResourceControllerBean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.resourceBean = value;
     }
 
     /**
@@ -197,32 +168,6 @@ public class CoreServiceBean
         }
 
         return this.configData;
-    }
-
-    public final ResourceControllerBean getResourceBean()
-    {
-        final String methodName = CoreServiceBean.CNAME + "#getResourceBean()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resourceBean);
-        }
-
-        return this.resourceBean;
-    }
-
-    public final Object getAuthDataSource()
-    {
-        final String methodName = CoreServiceBean.CNAME + "#getAuthDataSource()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.authDataSource);
-        }
-
-        return this.authDataSource;
     }
 
     public final Map<String, DataSource> getDataSource()
@@ -287,7 +232,7 @@ public class CoreServiceBean
         }
 
         final StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + Constants.LINE_BREAK + "{" + Constants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + CoreServiceConstants.LINE_BREAK + "{" + CoreServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -308,7 +253,7 @@ public class CoreServiceBean
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + Constants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + CoreServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

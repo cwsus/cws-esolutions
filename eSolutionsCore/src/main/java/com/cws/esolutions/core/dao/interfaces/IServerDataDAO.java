@@ -26,18 +26,13 @@ package com.cws.esolutions.core.dao.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-
 import org.slf4j.Logger;
-
 import javax.sql.DataSource;
-
 import java.sql.SQLException;
-
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -49,13 +44,12 @@ import com.cws.esolutions.core.controllers.ResourceControllerBean;
 public interface IServerDataDAO
 {
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final ResourceControllerBean resBean = appBean.getResourceBean();
 
     static final String CNAME = IServerDataDAO.class.getName();
-    static final DataSource dataSource = resBean.getDataSource().get("ApplicationDataSource");
+    static final DataSource dataSource = appBean.getDataSource().get("ApplicationDataSource");
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     boolean addNewServer(final List<Object> serverData) throws SQLException;

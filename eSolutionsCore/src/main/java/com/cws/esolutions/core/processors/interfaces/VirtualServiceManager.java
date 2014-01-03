@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
@@ -49,9 +49,9 @@ public interface VirtualServiceManager
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
 
     // loggers
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + VirtualServiceManager.class.getName());
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + VirtualServiceManager.class.getName());
 
     VirtualServiceResponse listVirtualMachines(final VirtualServiceRequest request) throws VirtualServiceException;
 

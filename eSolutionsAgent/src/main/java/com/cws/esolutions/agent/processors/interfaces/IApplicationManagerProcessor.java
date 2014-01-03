@@ -25,17 +25,12 @@ package com.cws.esolutions.agent.processors.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentBean;
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
-import com.cws.esolutions.agent.processors.dto.ApplicationManagerResponse;
-import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -54,8 +49,8 @@ public interface IApplicationManagerProcessor
     static final String CNAME = IApplicationManagerProcessor.class.getName();
     static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(Constants.WARN_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
+    static final Logger WARN_RECORDER = LoggerFactory.getLogger(AgentConstants.WARN_LOGGER + CNAME);
 }

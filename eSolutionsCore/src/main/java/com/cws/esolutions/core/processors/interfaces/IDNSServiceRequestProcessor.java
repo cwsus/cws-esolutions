@@ -28,7 +28,7 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.config.xml.DNSConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
@@ -64,10 +64,10 @@ public interface IDNSServiceRequestProcessor
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger INFO_RECORDER = LoggerFactory.getLogger(Constants.INFO_LOGGER + CNAME);
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger INFO_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.INFO_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Performs a simple DNS lookup for the given service name of the provided

@@ -26,13 +26,10 @@ package com.cws.esolutions.security.dao;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import java.util.Map;
 import org.slf4j.Logger;
-import java.util.HashMap;
 import java.io.IOException;
 import java.util.Properties;
 import javax.naming.Context;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
@@ -42,7 +39,6 @@ import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
 import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
-import org.apache.commons.lang.StringUtils;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
 import java.security.GeneralSecurityException;
@@ -51,11 +47,11 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -69,26 +65,26 @@ public class DAOInitializer
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = DAOInitializer.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ResourceController.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + DAOInitializer.CNAME);
 
     /**
      * @param authRepo - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param resBean - The <code>ResourceControllerBean</code> that holds the connection
-     * @throws CoreServiceException if an exception occurs opening the connection
+     * @param bean - The <code>SecurityServiceBean</code> that holds the connection
+     * @throws SecurityServiceException if an exception occurs opening the connection
      */
-    public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException
+    public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException";
+        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("AuthRepo: {}", authRepo);
             DEBUGGER.debug("isContainer: {}", isContainer);
-            DEBUGGER.debug("ResourceControllerBean: {}", resBean);
+            DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
 
         int minConnections = 1;
@@ -191,7 +187,7 @@ public class DAOInitializer
 
                                 if (!(connPool.isClosed()))
                                 {
-                                    resBean.setAuthDataSource(connPool);
+                                    bean.setAuthDataSource(connPool);
                                 }
                                 else
                                 {
@@ -217,19 +213,19 @@ public class DAOInitializer
                 {
                     ERROR_RECORDER.error(lx.getMessage(), lx);
 
-                    throw new CoreServiceException(lx.getMessage(), lx);
+                    throw new SecurityServiceException(lx.getMessage(), lx);
                 }
                 catch (IOException iox)
                 {
                     ERROR_RECORDER.error(iox.getMessage(), iox);
 
-                    throw new CoreServiceException(iox.getMessage(), iox);
+                    throw new SecurityServiceException(iox.getMessage(), iox);
                 }
                 catch (GeneralSecurityException gsx)
                 {
                     ERROR_RECORDER.error(gsx.getMessage(), gsx);
 
-                    throw new CoreServiceException(gsx.getMessage(), gsx);
+                    throw new SecurityServiceException(gsx.getMessage(), gsx);
                 }
                 finally
                 {
@@ -253,13 +249,13 @@ public class DAOInitializer
                         Context initContext = new InitialContext();
                         Context envContext = (Context) initContext.lookup(DAOInitializer.DS_CONTEXT);
 
-                        resBean.setAuthDataSource(envContext.lookup(authRepo.getRepositoryHost()));
+                        bean.setAuthDataSource(envContext.lookup(authRepo.getRepositoryHost()));
                     }
                     catch (NamingException nx)
                     {
                         ERROR_RECORDER.error(nx.getMessage(), nx);
 
-                        throw new CoreServiceException(nx.getMessage(), nx);
+                        throw new SecurityServiceException(nx.getMessage(), nx);
                     }
                 }
                 else
@@ -272,31 +268,31 @@ public class DAOInitializer
                             authRepo.getRepositoryPass(),
                             authRepo.getRepositorySalt().length()));
 
-                    resBean.setAuthDataSource(dataSource);
+                    bean.setAuthDataSource(dataSource);
                 }
 
                 break;
             default:
-                throw new CoreServiceException("Unhandled ResourceType");
+                throw new SecurityServiceException("Unhandled ResourceType");
         }
     }
 
     /**
      * @param authRepo - The <code>AuthRepo</code> object containing connection information
      * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
-     * @param resBean - The <code>ResourceControllerBean</code> that holds the connection
-     * @throws CoreServiceException if an exception occurs closing the connection
+     * @param bean - The <code>SecurityServiceBean</code> that holds the connection
+     * @throws SecurityServiceException if an exception occurs closing the connection
      */
-    public synchronized static void closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException
+    public synchronized static void closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final ResourceControllerBean resBean) throws CoreServiceException";
+        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("AuthRepo: {}", authRepo);
             DEBUGGER.debug("isContainer: {}", isContainer);
-            DEBUGGER.debug("ResourceControllerBean: {}", resBean);
+            DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
 
         try
@@ -304,7 +300,7 @@ public class DAOInitializer
             switch (authRepo.getRepoType())
             {
                 case LDAP:
-                    LDAPConnectionPool ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+                    LDAPConnectionPool ldapPool = (LDAPConnectionPool) bean.getAuthDataSource();
 
                     if (DEBUG)
                     {
@@ -321,7 +317,7 @@ public class DAOInitializer
                     // the isContainer only matters here
                     if (!(isContainer))
                     {
-                        BasicDataSource dataSource = (BasicDataSource) resBean.getAuthDataSource();
+                        BasicDataSource dataSource = (BasicDataSource) bean.getAuthDataSource();
 
                         if (DEBUG)
                         {
@@ -336,7 +332,7 @@ public class DAOInitializer
 
                     break;
                 default:
-                    throw new CoreServiceException("Unhandled ResourceType");
+                    throw new SecurityServiceException("Unhandled ResourceType");
             }
         }
         catch (SQLException sqx)

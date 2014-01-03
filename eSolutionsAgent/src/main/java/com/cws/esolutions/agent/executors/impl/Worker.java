@@ -30,7 +30,7 @@ import java.io.IOException;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
 
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,9 +48,9 @@ public class Worker extends Thread
 
     private static final String CNAME = Worker.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + Worker.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + Worker.CNAME);
 
     public Worker(final ProcessBuilder value)
     {

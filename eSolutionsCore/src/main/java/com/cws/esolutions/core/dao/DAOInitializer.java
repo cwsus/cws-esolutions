@@ -28,21 +28,17 @@ package com.cws.esolutions.core.dao;
 import java.util.Map;
 import org.slf4j.Logger;
 import java.util.HashMap;
-import java.io.IOException;
-import java.util.Properties;
 import javax.naming.Context;
 import javax.sql.DataSource;
 import java.sql.SQLException;
-import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import org.apache.commons.lang.StringUtils;
-import java.security.GeneralSecurityException;
 import org.apache.commons.dbcp.BasicDataSource;
-import com.unboundid.util.ssl.TrustStoreTrustManager;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
@@ -59,9 +55,9 @@ public class DAOInitializer
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = DAOInitializer.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + ResourceController.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + DAOInitializer.CNAME);
 
     /**
      * Sets up an application datasource connection
@@ -71,18 +67,18 @@ public class DAOInitializer
      * @param resBean - The resource bean to store datasources into
      * @throws CoreServiceException if an error is thrown during processing
      */
-    public synchronized static void configureAndCreateDataConnection(final DataSourceManager dsManager, final ResourceControllerBean resBean) throws CoreServiceException
+    public synchronized static void configureAndCreateDataConnection(final DataSourceManager dsManager, final CoreServiceBean bean) throws CoreServiceException
     {
-        final String methodName = DAOInitializer.CNAME + "#configureAndCreateDataConnection(final DataSourceManager dsManager, final ResourceControllerBean resBean) throws CoreServiceException";
+        final String methodName = DAOInitializer.CNAME + "#configureAndCreateDataConnection(final DataSourceManager dsManager, final CoreServiceBean bean) throws CoreServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("DataSourceManager: {}", dsManager);
-            DEBUGGER.debug("ResourceControllerBean: {}", resBean);
+            DEBUGGER.debug("ResourceControllerBean: {}", bean);
         }
 
-        Map<String, DataSource> dsMap = resBean.getDataSource();
+        Map<String, DataSource> dsMap = bean.getDataSource();
 
         if (DEBUG)
         {
@@ -145,6 +141,61 @@ public class DAOInitializer
             }
         }
 
-        resBean.setDataSource(dsMap);
+        bean.setDataSource(dsMap);
+    }
+
+    /**
+     * @param dsManager - The <code>AuthRepo</code> object containing connection information
+     * @param isContainer - A <code>boolean</code> flag indicating if this is in a container
+     * @param bean - The <code>SecurityServiceBean</code> that holds the connection
+     * @throws CoreServiceException if an exception occurs closing the connection
+     */
+    public synchronized static void closeDataConnection(final DataSourceManager dsManager, final boolean isContainer, final CoreServiceBean bean) throws CoreServiceException
+    {
+        String methodName = DAOInitializer.CNAME + "#closeDataConnection(final DataSourceManager dsManager, final boolean isContainer, final CoreServiceBean bean) throws CoreServiceException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("DataSourceManager: {}", dsManager);
+            DEBUGGER.debug("CoreServiceBean: {}", bean);
+        }
+
+        try
+        {
+            if (!(isContainer))
+            {
+                Map<String, DataSource> datasources = bean.getDataSource();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Map<String, DataSource>: {}", datasources);
+                }
+
+                for (String key : datasources.keySet())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Key: {}", key);
+                    }
+
+                    BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    if ((dataSource != null ) && (!(dataSource.isClosed())))
+                    {
+                        dataSource.close();
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        }
     }
 }

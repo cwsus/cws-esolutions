@@ -31,9 +31,8 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -46,13 +45,12 @@ public interface IAuditDAO
 {
     static final String CNAME = IAuditDAO.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final ResourceControllerBean resBean = svcBean.getResourceBean();
-    static final DataSource dataSource = resBean.getDataSource().get(SecurityConstants.INIT_AUDITDS_MANAGER);
+    static final DataSource dataSource = svcBean.getAuditDataSource();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityConstants.AUDIT_LOGGER + CNAME);
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    static final Logger AUDIT_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.AUDIT_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
 

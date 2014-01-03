@@ -32,7 +32,7 @@ import java.sql.SQLException;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -87,8 +87,8 @@ public class AuditProcessorImpl implements IAuditProcessor
                 case LOGON:
                     auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
-                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_userguid
-                    auditList.add(SecurityConstants.NOT_SET); // usr_audit_role
+                    auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_userguid
+                    auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action

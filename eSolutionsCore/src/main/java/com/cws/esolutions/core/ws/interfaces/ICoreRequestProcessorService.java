@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import javax.jws.WebService;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.processors.impl.ServerManagementProcessorImpl;
 import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
@@ -57,7 +57,7 @@ public interface ICoreRequestProcessorService extends IDNSServiceRequestProcesso
     static final IServerManagementProcessor sysMgr = new ServerManagementProcessorImpl();
     static final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 }

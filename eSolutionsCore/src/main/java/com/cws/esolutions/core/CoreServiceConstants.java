@@ -17,7 +17,7 @@ package com.cws.esolutions.core;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core
- * File: Constants.java
+ * File: CoreServiceConstants.java
  *
  * History
  *
@@ -33,7 +33,7 @@ package com.cws.esolutions.core;
  * @author khuntly
  * @version 1.0
  */
-public class Constants
+public class CoreServiceConstants
 {
     /* Logging constants */
     public static final String DEBUGGER = "CORE_DEBUGGER";

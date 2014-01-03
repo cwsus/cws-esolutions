@@ -42,7 +42,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.daemon.DaemonContext;
 import org.apache.commons.daemon.DaemonInitException;
 
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.server.MQServer;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
@@ -64,8 +64,8 @@ public class AgentDaemon implements Daemon
     private static final AgentBean agentBean = AgentBean.getInstance();
     private static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/";
 
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + AgentDaemon.CNAME);
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + AgentDaemon.CNAME);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public AgentDaemon()

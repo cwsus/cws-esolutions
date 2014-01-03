@@ -168,5 +168,6 @@ public class AdminControlServiceImplTest
     public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
+        CoreServiceInitializer.shutdown();
     }
 }

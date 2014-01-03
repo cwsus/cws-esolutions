@@ -71,7 +71,7 @@ import com.sshtools.j2ssh.authentication.PasswordAuthenticationClient;
 import com.sshtools.j2ssh.authentication.PublicKeyAuthenticationClient;
 import com.sshtools.j2ssh.authentication.AuthenticationProtocolException;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.ProxyConfig;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.utils.exception.UtilityException;
@@ -97,9 +97,9 @@ public final class NetworkUtils
     private static final String KEYFILE = "userKeyFile";
     private static final String ACCOUNT = "userAccount";
     private static final String PASSWORD = "userPassword";
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
 
     /**
      * Creates an SSH connection to a target host and then executes an SCP
@@ -626,7 +626,7 @@ public final class NetworkUtils
 
                                     while ((line = bReader.readLine()) != null)
                                     {
-                                        sBuilder.append(line + Constants.LINE_BREAK);
+                                        sBuilder.append(line + CoreServiceConstants.LINE_BREAK);
                                     }
 
                                     bReader.close();

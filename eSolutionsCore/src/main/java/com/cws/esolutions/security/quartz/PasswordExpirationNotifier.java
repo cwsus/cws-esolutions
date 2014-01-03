@@ -38,7 +38,7 @@ import org.quartz.JobExecutionContext;
 
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.core.config.xml.MailConfig;
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -55,9 +55,9 @@ public class PasswordExpirationNotifier implements Job
     private static final String CNAME = PasswordExpirationNotifier.class.getName();
     private static final SecurityServiceBean bean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + PasswordExpirationNotifier.CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + PasswordExpirationNotifier.CNAME);
 
     public PasswordExpirationNotifier()
     {

@@ -28,7 +28,7 @@ package com.cws.esolutions.agent.executors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.agent.Constants;
+import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandRequest;
 import com.cws.esolutions.agent.executors.dto.ExecuteCommandResponse;
 import com.cws.esolutions.agent.executors.exception.ExecuteCommandException;
@@ -44,9 +44,9 @@ public interface IExecuteRequestCommand
 {
     static final String CNAME = IExecuteRequestCommand.class.getName();
 
-    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
     ExecuteCommandResponse executeCommand(final ExecuteCommandRequest request) throws ExecuteCommandException;
 }

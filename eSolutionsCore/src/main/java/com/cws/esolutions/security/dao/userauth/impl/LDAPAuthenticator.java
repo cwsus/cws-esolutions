@@ -76,7 +76,7 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -240,7 +240,7 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -367,7 +367,7 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {
@@ -488,7 +488,7 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
-            ldapPool = (LDAPConnectionPool) resBean.getAuthDataSource();
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
             {

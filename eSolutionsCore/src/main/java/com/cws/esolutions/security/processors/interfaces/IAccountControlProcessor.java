@@ -29,7 +29,7 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.AuthRepo;
@@ -80,10 +80,10 @@ public interface IAccountControlProcessor
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     
-    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityConstants.WARN_LOGGER + CNAME);
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.WARN_LOGGER + CNAME);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;
 

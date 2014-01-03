@@ -27,6 +27,7 @@ package com.cws.esolutions.core.utils;
  */
 import java.util.Map;
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Assert;
 import java.util.Arrays;
@@ -155,4 +156,10 @@ public class EmailUtilsTest
         }
     }
     */
+
+    @After
+    public void tearDown()
+    {
+        CoreServiceInitializer.shutdown();
+    }
 }

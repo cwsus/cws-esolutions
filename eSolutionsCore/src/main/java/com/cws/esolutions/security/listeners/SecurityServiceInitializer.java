@@ -27,6 +27,7 @@ package com.cws.esolutions.security.listeners;
  */
 import java.net.URL;
 import org.slf4j.Logger;
+import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -34,13 +35,12 @@ import javax.xml.bind.JAXBException;
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.commons.dbcp.BasicDataSource;
 
-import com.cws.esolutions.security.SecurityConstants;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.dao.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.core.config.xml.DataSourceManager;
-import com.cws.esolutions.core.controllers.ResourceController;
-import com.cws.esolutions.core.exception.CoreServiceException;
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -56,9 +56,9 @@ public class SecurityServiceInitializer
     private static final String CNAME = SecurityServiceInitializer.class.getName();
     private static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER + CNAME);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     public static void initializeService(final String secConfig, final String logConfig) throws SecurityServiceException
     {
@@ -67,7 +67,6 @@ public class SecurityServiceInitializer
         Unmarshaller marshaller = null;
         SecurityConfigurationData configData = null;
 
-        final ResourceControllerBean resBean = ResourceControllerBean.getInstance();
         final ClassLoader classLoader = SecurityServiceInitializer.class.getClassLoader();
 
         try
@@ -94,22 +93,49 @@ public class SecurityServiceInitializer
             configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
             svcBean.setConfigData(configData);
-            svcBean.setResourceBean(resBean);
 
-            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, resBean);
+            DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), false, SecurityServiceInitializer.svcBean);
 
-            for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
+            StringBuilder sBuilder = new StringBuilder()
+                .append("connectTimeout=" + configData.getResourceConfig().getDsManager().get(0).getConnectTimeout() + ";")
+                .append("socketTimeout=" + configData.getResourceConfig().getDsManager().get(0).getConnectTimeout() + ";")
+                .append("autoReconnect=" + configData.getResourceConfig().getDsManager().get(0).getAutoReconnect() + ";")
+                .append("zeroDateTimeBehavior=convertToNull");
+
+            if (DEBUG)
             {
-                ResourceController.configureAndCreateDataConnection(mgr, resBean);
+                DEBUGGER.debug("StringBuilder: {}", sBuilder);
             }
+
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(configData.getResourceConfig().getDsManager().get(0).getDriver());
+            dataSource.setUrl(configData.getResourceConfig().getDsManager().get(0).getDataSource());
+            dataSource.setUsername(configData.getResourceConfig().getDsManager().get(0).getDsUser());
+            dataSource.setConnectionProperties(sBuilder.toString());
+            
+            // handle both encrypted and non-encrypted passwords
+            // prefer encrypted
+            if (StringUtils.isNotEmpty(configData.getResourceConfig().getDsManager().get(0).getSalt()))
+            {
+                dataSource.setPassword(PasswordUtils.decryptText(
+                        configData.getResourceConfig().getDsManager().get(0).getDsPass(),
+                        configData.getResourceConfig().getDsManager().get(0).getSalt().length()));
+            }
+            else
+            {
+                dataSource.setPassword(configData.getResourceConfig().getDsManager().get(0).getDsPass());
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("BasicDataSource: {}", dataSource);
+            }
+
+            SecurityServiceInitializer.svcBean.setAuditDataSource(dataSource);
         }
         catch (JAXBException jx)
         {
             throw new SecurityServiceException(jx.getMessage(), jx);
-        }
-        catch (CoreServiceException csx)
-        {
-            throw new SecurityServiceException(csx.getMessage(), csx);
         }
     }
 
@@ -131,63 +157,27 @@ public class SecurityServiceInitializer
 
         try
         {
-            ResourceController.closeAuthConnection(configData.getAuthRepo(), false, svcBean.getResourceBean());
-        }
-        catch (CoreServiceException csx)
-        {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
-        }
-    }
+            DAOInitializer.closeAuthConnection(configData.getAuthRepo(), false, svcBean);
 
-    public static void initializeService(final String secConfig, final String logConfig, final ClassLoader classLoader) throws SecurityServiceException
-    {
-        URL xmlURL = null;
-        JAXBContext context = null;
-        Unmarshaller marshaller = null;
-        SecurityConfigurationData configData = null;
+            BasicDataSource dataSource = (BasicDataSource) svcBean.getAuditDataSource();
 
-        final ResourceControllerBean resBean = svcBean.getResourceBean();
-
-        try
-        {
-            if (StringUtils.isEmpty(logConfig))
+            if (DEBUG)
             {
-                System.err.println("Logging configuration not found. No logging enabled !");
-            }
-            else
-            {
-                // Load logging
-                DOMConfigurator.configure(Loader.getResource(logConfig));
+                DEBUGGER.debug("BasicDataSource: {}", dataSource);
             }
 
-            xmlURL = classLoader.getResource(secConfig);
-
-            if (xmlURL == null)
+            if ((dataSource != null ) && (!(dataSource.isClosed())))
             {
-                throw new SecurityServiceException("Failed to load service configuration.");
-            }
-
-            context = JAXBContext.newInstance(SecurityConfigurationData.class);
-            marshaller = context.createUnmarshaller();
-            configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
-
-            svcBean.setConfigData(configData);
-            svcBean.setResourceBean(resBean);
-
-            ResourceController.configureAndCreateAuthConnection(configData.getAuthRepo(), false, resBean);
-
-            for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
-            {
-                ResourceController.configureAndCreateDataConnection(mgr, resBean);
+                dataSource.close();
             }
         }
-        catch (JAXBException jx)
+        catch (SQLException sqx)
         {
-            throw new SecurityServiceException(jx.getMessage(), jx);
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }
-        catch (CoreServiceException csx)
+        catch (SecurityServiceException ssx)
         {
-            throw new SecurityServiceException(csx.getMessage(), csx);
+            ERROR_RECORDER.error(ssx.getMessage(), ssx);
         }
     }
 }

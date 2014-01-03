@@ -17,10 +17,10 @@ package com.cws.esolutions.security;
 
 import org.slf4j.Logger;
 import java.io.Serializable;
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.controllers.ResourceControllerBean;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /*
  * Project: eSolutionsCore
@@ -35,7 +35,8 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
  */
 public class SecurityServiceBean implements Serializable
 {
-    private ResourceControllerBean resourceBean = null;
+    private Object authDataSource = null;
+    private DataSource auditDataSource = null;
     private SecurityConfigurationData configData = null;
 
     private static SecurityServiceBean instance = null;
@@ -43,9 +44,9 @@ public class SecurityServiceBean implements Serializable
     private static final long serialVersionUID = -2801382473833987974L;
     private static final String CNAME = SecurityServiceBean.class.getName();
 
-    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityConstants.DEBUGGER);
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityConstants.ERROR_LOGGER);
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
 
     /**
      * Returns a static instance of this bean
@@ -83,9 +84,9 @@ public class SecurityServiceBean implements Serializable
         this.configData = value;
     }
 
-    public final void setResourceBean(final ResourceControllerBean value)
+    public final void setAuthDataSource(final Object value)
     {
-        final String methodName = SecurityServiceBean.CNAME + "#setResourceBean(final ResourceControllerBean value)";
+        final String methodName = SecurityServiceBean.CNAME + "#setAuthDataSource(final Object value)";
 
         if (DEBUG)
         {
@@ -93,7 +94,20 @@ public class SecurityServiceBean implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.resourceBean = value;
+        this.authDataSource = value;
+    }
+
+    public final void setAuditDataSource(final DataSource value)
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#setAuditDataSource(final DataSource value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.auditDataSource = value;
     }
 
     public final SecurityConfigurationData getConfigData()
@@ -109,17 +123,30 @@ public class SecurityServiceBean implements Serializable
         return this.configData;
     }
 
-    public final ResourceControllerBean getResourceBean()
+    public final Object getAuthDataSource()
     {
-        final String methodName = SecurityServiceBean.CNAME + "#getResourceBean()";
+        final String methodName = SecurityServiceBean.CNAME + "#getAuthDataSource()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.resourceBean);
+            DEBUGGER.debug("Value: {}", this.authDataSource);
         }
 
-        return this.resourceBean;
+        return this.authDataSource;
+    }
+
+    public final DataSource getAuditDataSource()
+    {
+        final String methodName = SecurityServiceBean.CNAME + "#getAuditDataSource()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.auditDataSource);
+        }
+
+        return this.auditDataSource;
     }
 
     @Override
@@ -133,7 +160,7 @@ public class SecurityServiceBean implements Serializable
         }
 
         StringBuilder sBuilder = new StringBuilder()
-            .append("[" + this.getClass().getName() + "]" + SecurityConstants.LINE_BREAK + "{" + SecurityConstants.LINE_BREAK);
+            .append("[" + this.getClass().getName() + "]" + SecurityServiceConstants.LINE_BREAK + "{" + SecurityServiceConstants.LINE_BREAK);
 
         for (Field field : this.getClass().getDeclaredFields())
         {
@@ -154,7 +181,7 @@ public class SecurityServiceBean implements Serializable
                 {
                     if (field.get(this) != null)
                     {
-                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityConstants.LINE_BREAK);
+                        sBuilder.append("\t" + field.getName() + " --> " + field.get(this) + SecurityServiceConstants.LINE_BREAK);
                     }
                 }
                 catch (IllegalAccessException iax)

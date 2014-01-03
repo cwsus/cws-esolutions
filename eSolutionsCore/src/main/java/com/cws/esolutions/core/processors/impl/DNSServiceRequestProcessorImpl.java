@@ -39,7 +39,7 @@ import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.core.Constants;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.utils.NetworkUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
@@ -693,8 +693,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         record.getRecordProtocol(),
                                         String.valueOf(record.getRecordPriority()),
                                         record.getPrimaryAddress().toString(),
-                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : Constants.NOT_SET,
-                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : Constants.NOT_SET));
+                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : CoreServiceConstants.NOT_SET,
+                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : CoreServiceConstants.NOT_SET));
                         if (DEBUG)
                         {
                             DEBUGGER.debug("dnsRecord: {}", dnsRecord);
@@ -735,8 +735,8 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                         record.getRecordProtocol(),
                                         String.valueOf(record.getRecordPriority()),
                                         record.getPrimaryAddress().toString(),
-                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : Constants.NOT_SET,
-                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : Constants.NOT_SET));
+                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : CoreServiceConstants.NOT_SET,
+                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : CoreServiceConstants.NOT_SET));
 
                         if (DEBUG)
                         {
@@ -763,7 +763,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     // been created for presentation/approval to the requestor
                     if (entry.getZoneData() != null)
                     {
-                        File zoneFile = FileUtils.getFile(Constants.TMP_DIR, entry.getFileName());
+                        File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
 
                         if (DEBUG)
                         {
@@ -793,10 +793,10 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 }
 
                                 final Properties authProps = new Properties();
-                                authProps.put(Constants.ACCOUNT, sshConfig.getSshAccount());
-                                authProps.put(Constants.PASSWORD, sshConfig.getSshPassword());
-                                authProps.put(Constants.SALT, sshConfig.getSshSalt());
-                                authProps.put(Constants.KEYFILE, sshConfig.getSshKey());
+                                authProps.put(CoreServiceConstants.ACCOUNT, sshConfig.getSshAccount());
+                                authProps.put(CoreServiceConstants.PASSWORD, sshConfig.getSshPassword());
+                                authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
+                                authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
 
                                 NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
