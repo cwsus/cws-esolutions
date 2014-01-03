@@ -26,24 +26,26 @@ package com.cws.esolutions.agent.processors.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import java.util.List;
 import java.net.Socket;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.PrintWriter;
+import java.io.BufferedWriter;
 import java.net.SocketException;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import org.apache.commons.exec.CommandLine;
+import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.ExecuteWatchdog;
+import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.exec.ExecuteStreamHandler;
+import org.apache.commons.io.output.ByteArrayOutputStream;
+import org.apache.commons.exec.DefaultExecuteResultHandler;
 
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.executors.dto.ExecuteCommandRequest;
-import com.cws.esolutions.agent.executors.dto.ExecuteCommandResponse;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
-import com.cws.esolutions.agent.executors.impl.ExecuteRequestCommandImpl;
-import com.cws.esolutions.agent.executors.exception.ExecuteCommandException;
-import com.cws.esolutions.agent.executors.interfaces.IExecuteRequestCommand;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 /**
@@ -62,13 +64,18 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
             DEBUGGER.debug("SystemManagerRequest: {}", request);
         }
 
+        int exitCode = -1;
         Socket socket = null;
         File sourceFile = null;
-        List<String> commandList = null;
-        ExecuteCommandRequest cmdRequest = null;
-        ExecuteCommandResponse cmdResponse = null;
+        CommandLine command = null;
+        BufferedWriter writer = null;
+        ExecuteStreamHandler streamHandler = null;
+        ByteArrayOutputStream outputStream = null;
         SystemManagerResponse response = new SystemManagerResponse();
-        IExecuteRequestCommand execCommand = new ExecuteRequestCommandImpl();
+
+        final DefaultExecutor executor = new DefaultExecutor();
+        final ExecuteWatchdog watchdog = new ExecuteWatchdog(CONNECT_TIMEOUT * 1000);
+        final DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
 
         try
         {
@@ -79,62 +86,63 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("scriptFile: {}", sourceFile);
+                        DEBUGGER.debug("sourceFile: {}", sourceFile);
                     }
 
                     if (!(sourceFile.canExecute()))
                     {
-                        sourceFile.setExecutable(true);
+                        throw new SystemManagerException("Script file either does not exist or cannot be executed. Cannot continue.");
                     }
 
-                    commandList = new ArrayList<>();
-                    commandList.add(sourceFile.toString());
+                    command = CommandLine.parse(sourceFile.getAbsolutePath());
 
                     if (request.getPortNumber() != 0)
                     {
-                        commandList.add(String.valueOf(request.getPortNumber()));
+                        command.addArgument(String.valueOf(request.getPortNumber()), true);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("commandList: {}", commandList);
+                        DEBUGGER.debug("CommandLine: {}", command);
                     }
 
-                    cmdRequest = new ExecuteCommandRequest();
-                    cmdRequest.setCommand(commandList);
-                    cmdRequest.setPrintOutput(true);
-                    cmdRequest.setPrintError(true);
-                    cmdRequest.setTimeout(ISystemManagerProcessor.CONNECT_TIMEOUT);
+                    outputStream = new ByteArrayOutputStream();
+                    streamHandler = new PumpStreamHandler(outputStream);
+
+                    executor.setWatchdog(watchdog);
+                    executor.setStreamHandler(streamHandler);
+                    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ExecuteStreamHandler: {}", streamHandler);
+                        DEBUGGER.debug("ExecuteWatchdog: {}", watchdog);
+                        DEBUGGER.debug("DefaultExecuteResultHandler: {}", resultHandler);
+                        DEBUGGER.debug("DefaultExecutor: {}", executor);
+                    }
+
+                    executor.execute(command, resultHandler);
+
+                    resultHandler.waitFor();
+                    exitCode = resultHandler.getExitValue();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ExecuteCommandRequest: {}", cmdRequest);
+                        DEBUGGER.debug("exitCode: {}", exitCode);
                     }
 
-                    cmdResponse = execCommand.executeCommand(cmdRequest);
+                    writer = new BufferedWriter(new FileWriter(LOGS_DIRECTORY + "/" + sourceFile.getName() + ".log"));
+                    writer.write(outputStream.toString());
+                    writer.flush();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ExecuteCommandResponse: {}", cmdResponse);
-                    }
+                    response.setResponseData(outputStream.toString());
 
-                    if (cmdResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                    if (executor.isFailure(exitCode))
                     {
-                        if ((cmdResponse.getErrorStream().length() != 0) || (cmdResponse.getOutputStream().length() == 0))
-                        {
-                            response.setRequestStatus(AgentStatus.FAILURE);
-                            response.setResponseData("Command request failed. Error response: " + cmdResponse.getErrorStream().toString());
-                        }
-                        else
-                        {
-                            response.setRequestStatus(AgentStatus.SUCCESS);
-                            response.setResponseData(cmdResponse.getOutputStream().toString());
-                        }
+                        response.setRequestStatus(AgentStatus.FAILURE);
                     }
                     else
                     {
-                        response.setRequestStatus(AgentStatus.FAILURE);
-                        response.setResponseData("Command request failed. Error response: " + cmdResponse.getResponse());
+                        response.setRequestStatus(AgentStatus.SUCCESS);
                     }
 
                     break;
@@ -176,22 +184,18 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                         {
                             socket.connect(socketAddress, ISystemManagerProcessor.CONNECT_TIMEOUT);
 
-                            if (socket.isConnected())
-                            {
-                                PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
-
-                                pWriter.println(TERMINATE_TELNET + CRLF);
-
-                                pWriter.flush();
-                                pWriter.close();
-
-                                response.setRequestStatus(AgentStatus.SUCCESS);
-                                response.setResponseData("Telnet connection to " + targetServer + " on port " + request.getPortNumber() + " successful.");
-                            }
-                            else
+                            if (!(socket.isConnected()))
                             {
                                 throw new ConnectException("Failed to connect to host " + targetServer + " on port " + request.getPortNumber());
                             }
+
+                            PrintWriter pWriter = new PrintWriter(socket.getOutputStream(), true);
+                            pWriter.println(TERMINATE_TELNET + CRLF);
+                            pWriter.flush();
+                            pWriter.close();
+
+                            response.setRequestStatus(AgentStatus.SUCCESS);
+                            response.setResponseData("Telnet connection to " + targetServer + " on port " + request.getPortNumber() + " successful.");
                         }
                         catch (ConnectException cx)
                         {
@@ -206,62 +210,63 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("scriptFile: {}", sourceFile);
+                        DEBUGGER.debug("sourceFile: {}", sourceFile);
                     }
 
                     if (!(sourceFile.canExecute()))
                     {
-                        sourceFile.setExecutable(true);
+                        throw new SystemManagerException("Script file either does not exist or cannot be executed. Cannot continue.");
                     }
 
-                    commandList = new ArrayList<>();
-                    commandList.add(sourceFile.toString());
+                    command = CommandLine.parse(sourceFile.getAbsolutePath());
 
                     if (request.getPortNumber() != 0)
                     {
-                        commandList.add(request.getProcessName());
+                        command.addArgument(String.valueOf(request.getPortNumber()), true);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("commandList: {}", commandList);
+                        DEBUGGER.debug("CommandLine: {}", command);
                     }
 
-                    cmdRequest = new ExecuteCommandRequest();
-                    cmdRequest.setCommand(commandList);
-                    cmdRequest.setPrintOutput(true);
-                    cmdRequest.setPrintError(true);
-                    cmdRequest.setTimeout(ISystemManagerProcessor.CONNECT_TIMEOUT);
+                    outputStream = new ByteArrayOutputStream();
+                    streamHandler = new PumpStreamHandler(outputStream);
+
+                    executor.setWatchdog(watchdog);
+                    executor.setStreamHandler(streamHandler);
+                    
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("ExecuteStreamHandler: {}", streamHandler);
+                        DEBUGGER.debug("ExecuteWatchdog: {}", watchdog);
+                        DEBUGGER.debug("DefaultExecuteResultHandler: {}", resultHandler);
+                        DEBUGGER.debug("DefaultExecutor: {}", executor);
+                    }
+
+                    executor.execute(command, resultHandler);
+
+                    resultHandler.waitFor();
+                    exitCode = resultHandler.getExitValue();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("ExecuteCommandRequest: {}", cmdRequest);
+                        DEBUGGER.debug("exitCode: {}", exitCode);
                     }
 
-                    cmdResponse = execCommand.executeCommand(cmdRequest);
+                    writer = new BufferedWriter(new FileWriter(LOGS_DIRECTORY + "/" + sourceFile.getName() + ".log"));
+                    writer.write(outputStream.toString());
+                    writer.flush();
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ExecuteCommandResponse: {}", cmdResponse);
-                    }
+                    response.setResponseData(outputStream.toString());
 
-                    if (cmdResponse.getRequestStatus() == AgentStatus.SUCCESS)
+                    if (executor.isFailure(exitCode))
                     {
-                        if ((cmdResponse.getErrorStream().length() != 0) || (cmdResponse.getOutputStream().length() == 0))
-                        {
-                            response.setRequestStatus(AgentStatus.FAILURE);
-                            response.setResponseData("Command request failed. Error response: " + cmdResponse.getErrorStream().toString());
-                        }
-                        else
-                        {
-                            response.setRequestStatus(AgentStatus.SUCCESS);
-                            response.setResponseData(cmdResponse.getOutputStream().toString());
-                        }
+                        response.setRequestStatus(AgentStatus.FAILURE);
                     }
                     else
                     {
-                        response.setRequestStatus(AgentStatus.FAILURE);
-                        response.setResponseData("Command request failed. Error response: " + cmdResponse.getResponse());
+                        response.setRequestStatus(AgentStatus.SUCCESS);
                     }
 
                     break;
@@ -269,12 +274,6 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
                     // unknown operation
                     throw new SystemManagerException("No valid operation was specified");
             }
-        }
-        catch (ExecuteCommandException ecx)
-        {
-            ERROR_RECORDER.error(ecx.getMessage(), ecx);
-
-            throw new SystemManagerException(ecx.getMessage(), ecx);
         }
         catch (UnknownHostException uhx)
         {
@@ -294,10 +293,21 @@ public class SystemManagerProcessorImpl implements ISystemManagerProcessor
 
             throw new SystemManagerException(iox.getMessage(), iox);
         }
+        catch (InterruptedException ix)
+        {
+            ERROR_RECORDER.error(ix.getMessage(), ix);
+
+            throw new SystemManagerException(ix.getMessage(), ix);
+        }
         finally
         {
             try
             {
+                if (writer != null)
+                {
+                    writer.close();
+                }
+
                 if ((socket != null) && (!(socket.isClosed())))
                 {
                     socket.close();

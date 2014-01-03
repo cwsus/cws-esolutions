@@ -357,7 +357,7 @@ public class ServerValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         final boolean isSupported = ServerRequest.class.isAssignableFrom(value);

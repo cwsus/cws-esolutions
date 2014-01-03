@@ -39,7 +39,6 @@ public class AgentConstants
     public static final String DEBUGGER = "AGENT_DEBUGGER";
     public static final String WARN_LOGGER = "WARN_RECORDER.";
     public static final String INFO_LOGGER = "INFO_RECORDER.";
-    public static final String AUDIT_LOGGER = "AUDIT_RECORDER.";
     public static final String ERROR_LOGGER = "ERROR_RECORDER.";
 
     /* Initialization Constants */
@@ -49,4 +48,5 @@ public class AgentConstants
     public static final String NOT_SET = "Unconfigured";
     public static final String TMP_DIR = System.getProperty("java.io.tmpdir");
     public static final String LINE_BREAK = System.getProperty("line.separator");
+    public static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/";
 }

@@ -56,37 +56,68 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
 
         try
         {
-            if ((FileUtils.getFile(request.getRequestFile()).exists()) && (FileUtils.getFile(request.getRequestFile()).canRead()))
+            if (!(FileUtils.getFile(request.getRequestFile()).canRead()))
             {
-                if (FileUtils.getFile(request.getRequestFile()).isDirectory())
+                throw new FileManagerException("Unable to read the requested file.");
+            }
+                
+            if (FileUtils.getFile(request.getRequestFile()).isDirectory())
+            {
+                // list
+                File[] fileList = FileUtils.getFile(request.getRequestFile()).listFiles();
+
+                if ((fileList != null) && (fileList.length != 0))
                 {
-                    // list
-                    File[] fileList = FileUtils.getFile(request.getRequestFile()).listFiles();
+                    List<String> fileData = new ArrayList<>();
 
-                    if ((fileList != null) && (fileList.length != 0))
+                    for (File file : fileList)
                     {
-                        List<String> fileData = new ArrayList<>();
-
-                        for (File file : fileList)
+                        if (DEBUG)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("File: {}", file);
-                            }
-
-                            fileData.add(file.getName());
+                            DEBUGGER.debug("File: {}", file);
                         }
 
-                        response.setDirListing(fileData);
-                        response.setFilePath(request.getRequestFile());
-                        response.setRequestStatus(AgentStatus.SUCCESS);
-                        response.setResponse("Successfully listed directory contents for " + request.getRequestFile());
+                        fileData.add(file.getName());
                     }
-                    else
+
+                    response.setDirListing(fileData);
+                    response.setFilePath(request.getRequestFile());
+                    response.setRequestStatus(AgentStatus.SUCCESS);
+                }
+                else
+                {
+                    response.setRequestStatus(AgentStatus.FAILURE);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("FileManagerResponse: {}", response);
+                }
+            }
+            else
+            {
+                // file
+                File retrievableFile = FileUtils.getFile(request.getRequestFile());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("File: {}", retrievableFile);
+                }
+
+                if ((retrievableFile.exists()) && (retrievableFile.canRead()))
+                {
+                    byte[] fileBytes = FileUtils.readFileToByteArray(retrievableFile);
+
+                    if (DEBUG)
                     {
-                        response.setRequestStatus(AgentStatus.FAILURE);
-                        response.setResponse("No content was found in the provided directory: " + request.getRequestFile());
+                        DEBUGGER.debug("File data: {}", fileBytes);
                     }
+
+                    response.setChecksum(FileUtils.checksumCRC32(retrievableFile));
+                    response.setFileData(fileBytes);
+                    response.setFileName(retrievableFile.getName());
+                    response.setFilePath(retrievableFile.getPath());
+                    response.setRequestStatus(AgentStatus.SUCCESS);
 
                     if (DEBUG)
                     {
@@ -95,45 +126,8 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                 }
                 else
                 {
-                    // file
-                    File retrievableFile = FileUtils.getFile(request.getRequestFile());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("File: {}", retrievableFile);
-                    }
-
-                    if ((retrievableFile.exists()) && (retrievableFile.canRead()))
-                    {
-                        byte[] fileBytes = FileUtils.readFileToByteArray(retrievableFile);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("File data: {}", fileBytes);
-                        }
-
-                        response.setChecksum(FileUtils.checksumCRC32(retrievableFile));
-                        response.setFileData(fileBytes);
-                        response.setFileName(retrievableFile.getName());
-                        response.setFilePath(retrievableFile.getPath());
-                        response.setRequestStatus(AgentStatus.SUCCESS);
-                        response.setResponse("Successfully retrieved file: " + retrievableFile);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("FileManagerResponse: {}", response);
-                        }
-                    }
-                    else
-                    {
-                        response.setRequestStatus(AgentStatus.FAILURE);
-                        response.setResponse("The file requested does not exist or cannot be read in the path specified.");
-                    }
+                    response.setRequestStatus(AgentStatus.FAILURE);
                 }
-            }
-            else
-            {
-                throw new FileManagerException("No data was found for root directory " + request.getRequestFile());
             }
         }
         catch (IOException iox)
@@ -154,7 +148,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("FileManagerRequest: ", request);
+            DEBUGGER.debug("FileManagerRequest: {}", request);
         }
 
         FileManagerResponse response = new FileManagerResponse();
@@ -219,12 +213,10 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                 if (failedFiles.size() != 0)
                 {
                     response.setRequestStatus(AgentStatus.FAILURE);
-                    response.setResponse("The following files failed to deploy properly: " + failedFiles.toString() + ".");
                 }
                 else
                 {
                     response.setRequestStatus(AgentStatus.SUCCESS);
-                    response.setResponse("Successfully deployed provided files.");
                 }
             }
             else
@@ -258,7 +250,6 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                     {
                         // match
                         response.setRequestStatus(AgentStatus.SUCCESS);
-                        response.setResponse("File deployment performed successfully");
                     }
                     else
                     {
@@ -291,7 +282,7 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("FileManagerRequest: ", request);
+            DEBUGGER.debug("FileManagerRequest: {}", request);
         }
 
         FileManagerResponse response = new FileManagerResponse();
@@ -351,12 +342,10 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
             if (failedFiles.size() != 0)
             {
                 response.setRequestStatus(AgentStatus.FAILURE);
-                response.setResponse("Failed to delete the following files: " + failedFiles.toString());
             }
             else
             {
                 response.setRequestStatus(AgentStatus.SUCCESS);
-                response.setResponse("Successfully removed the provided files.");
             }
         }
         else
@@ -373,12 +362,10 @@ public class FileManagerProcessorImpl implements IFileManagerProcessor
                 if (!(isFileDeleted))
                 {
                     response.setRequestStatus(AgentStatus.FAILURE);
-                    response.setResponse("Failed to delete the requested file");
                 }
                 else
                 {
                     response.setRequestStatus(AgentStatus.SUCCESS);
-                    response.setResponse("Successfully deleted the requested file");
                 }
             }
             else

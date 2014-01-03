@@ -88,7 +88,7 @@ public class ServiceValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         final boolean isSupported = Service.class.isAssignableFrom(value);

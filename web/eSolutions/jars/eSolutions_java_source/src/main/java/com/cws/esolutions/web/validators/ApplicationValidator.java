@@ -137,17 +137,17 @@ public class ApplicationValidator implements Validator
     }
 
     @Override
-    public final boolean supports(final Class<?> target)
+    public final boolean supports(final Class<?> value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#supports(final Class<?> target)";
+        final String methodName = ApplicationValidator.CNAME + "#supports(final Class<?> value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: ", target);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(target);
+        final boolean isSupported = ApplicationRequest.class.isAssignableFrom(value);
 
         if (DEBUG)
         {

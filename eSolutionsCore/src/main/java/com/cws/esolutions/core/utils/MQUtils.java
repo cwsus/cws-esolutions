@@ -114,7 +114,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ConnectionFactory: ", connFactory);
+                DEBUGGER.debug("ConnectionFactory: {}", connFactory);
             }
 
             if (connFactory == null)
@@ -128,7 +128,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Connection: ", conn);
+                DEBUGGER.debug("Connection: {}", conn);
             }
 
             // Create a Session
@@ -136,7 +136,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Session: ", session);
+                DEBUGGER.debug("Session: {}", session);
             }
 
             // Create a MessageProducer from the Session to the Topic or Queue
@@ -159,7 +159,7 @@ public final class MQUtils
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Destination: ", destination);
+                    DEBUGGER.debug("Destination: {}", destination);
                 }
 
                 producer = session.createProducer(destination);
@@ -190,7 +190,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ObjectMessage: ", message);
+                DEBUGGER.debug("ObjectMessage: {}", message);
             }
 
             producer.send(message);
@@ -213,8 +213,8 @@ public final class MQUtils
 
                 if (!(conn == null))
                 {
-                    conn.stop();
                     conn.close();
+                    conn.stop();
                 }
             }
             catch (JMSException jx)
@@ -233,15 +233,16 @@ public final class MQUtils
      * @return Object - A serializable object as obtained from the MQ message
      * @throws UtilityException if an error occurs during the MQ get operation
      */
-    public static final synchronized Object getMqMessage(final String connName, final List<String> authData, final String responseQueue, final String messageId) throws UtilityException
+    public static final synchronized Object getMqMessage(final String connName, final List<String> authData, final String responseQueue, final long timeout, final String messageId) throws UtilityException
     {
-        final String methodName = MQUtils.CNAME + "getMqMessage(final String connName, final List<String> authData, final String responseQueue, final String messageId) throws UtilityException";
+        final String methodName = MQUtils.CNAME + "getMqMessage(final String connName, final List<String> authData, final String responseQueue, final long timeout, final String messageId) throws UtilityException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", connName);
             DEBUGGER.debug("Value: {}", responseQueue);
+            DEBUGGER.debug("Value: {}", timeout);
             DEBUGGER.debug("Value: {}", messageId);
         }
 
@@ -249,7 +250,6 @@ public final class MQUtils
         Session session = null;
         Object response = null;
         Context envContext = null;
-        InitialContext initCtx = null;
         MessageConsumer consumer = null;
         ConnectionFactory connFactory = null;
 
@@ -257,7 +257,7 @@ public final class MQUtils
         {
             try
             {
-                initCtx = new InitialContext();
+                InitialContext initCtx = new InitialContext();
                 envContext = (Context) initCtx.lookup(MQUtils.INIT_CONTEXT);
 
                 connFactory = (ConnectionFactory) envContext.lookup(connName);
@@ -270,7 +270,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ConnectionFactory: ", connFactory);
+                DEBUGGER.debug("ConnectionFactory: {}", connFactory);
             }
 
             if (connFactory == null)
@@ -284,7 +284,7 @@ public final class MQUtils
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Connection: ", conn);
+                DEBUGGER.debug("Connection: {}", conn);
             }
 
             // Create a Session
@@ -292,7 +292,7 @@ public final class MQUtils
             
             if (DEBUG)
             {
-                DEBUGGER.debug("Session: ", session);
+                DEBUGGER.debug("Session: {}", session);
             }
 
             if (envContext != null)
@@ -325,14 +325,20 @@ public final class MQUtils
                 DEBUGGER.debug("MessageConsumer: {}", consumer);
             }
 
-            ObjectMessage message = (ObjectMessage) consumer.receive();
+            ObjectMessage message = (ObjectMessage) consumer.receive(timeout);
 
             if (DEBUG)
             {
                 DEBUGGER.debug("ObjectMessage: {}", message);
             }
 
+            if (message == null)
+            {
+                throw new UtilityException("Failed to retrieve message within the timeout specified.");
+            }
+
             response = message.getObject();
+            message.acknowledge();
 
             if (DEBUG)
             {
@@ -357,8 +363,8 @@ public final class MQUtils
 
                 if (!(conn == null))
                 {
-                    conn.stop();
                     conn.close();
+                    conn.stop();
                 }
             }
             catch (JMSException jx)

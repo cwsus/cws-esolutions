@@ -78,7 +78,7 @@ public class LDAPKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         String userDN = null;
@@ -322,7 +322,7 @@ public class LDAPKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         String userDN = null;
@@ -534,7 +534,7 @@ public class LDAPKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         String userDN = null;

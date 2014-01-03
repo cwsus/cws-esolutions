@@ -946,9 +946,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                         if (StringUtils.isNotEmpty(correlator))
                         {
-                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                                    Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                                    agentConfig.getRequestQueue(), correlator);
+                            agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                                    new ArrayList<String>(
+                                            Arrays.asList(
+                                                    agentConfig.getUsername(),
+                                                    agentConfig.getPassword(),
+                                                    agentConfig.getSalt())),
+                                                    agentConfig.getRequestQueue(),
+                                                    agentConfig.getTimeout(),
+                                                    correlator);
                         }
                         else
                         {

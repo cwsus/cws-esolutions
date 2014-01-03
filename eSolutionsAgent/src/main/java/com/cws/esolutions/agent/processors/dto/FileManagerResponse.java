@@ -47,7 +47,6 @@ public class FileManagerResponse implements Serializable
     private byte[] fileData = null;
     private String fileName = null;
     private String filePath = null;
-    private String response = null;
     private List<String> dirListing = null;
     private AgentStatus requestStatus = null;
 
@@ -69,19 +68,6 @@ public class FileManagerResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = FileManagerResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
-        }
-
-        this.response = value;
     }
 
     public final void setFileData(final byte[] value)
@@ -160,19 +146,6 @@ public class FileManagerResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = FileManagerResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.response);
-        }
-
-        return this.response;
     }
 
     public final byte[] getFileData()

@@ -74,7 +74,7 @@ public class SystemCheckValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         final boolean isSupported = SystemCheckRequest.class.isAssignableFrom(value);

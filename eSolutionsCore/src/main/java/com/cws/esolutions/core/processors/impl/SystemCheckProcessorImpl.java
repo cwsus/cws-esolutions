@@ -68,7 +68,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SystemCheckRequest: ", request);
+            DEBUGGER.debug("SystemCheckRequest: {}", request);
         }
 
         AgentResponse agentResponse = null;
@@ -126,9 +126,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (StringUtils.isNotEmpty(correlator))
                 {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                            agentConfig.getRequestQueue(), correlator);
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                            new ArrayList<String>(
+                                    Arrays.asList(
+                                            agentConfig.getUsername(),
+                                            agentConfig.getPassword(),
+                                            agentConfig.getSalt())),
+                                            agentConfig.getRequestQueue(),
+                                            agentConfig.getTimeout(),
+                                            correlator);
                 }
                 else
                 {
@@ -152,7 +158,6 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponse(systemRes.getResponse());
                     response.setResponseObject(systemRes.getResponseData());
                 }
                 else
@@ -224,7 +229,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("ServerManagementRequest: ", request);
+            DEBUGGER.debug("SystemCheckRequest: {}", request);
         }
 
         AgentResponse agentResponse = null;
@@ -283,9 +288,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (StringUtils.isNotEmpty(correlator))
                 {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                            agentConfig.getRequestQueue(), correlator);
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                            new ArrayList<String>(
+                                    Arrays.asList(
+                                            agentConfig.getUsername(),
+                                            agentConfig.getPassword(),
+                                            agentConfig.getSalt())),
+                                            agentConfig.getRequestQueue(),
+                                            agentConfig.getTimeout(),
+                                            correlator);
                 }
                 else
                 {
@@ -309,12 +320,10 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponse(systemRes.getResponse());
                     response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
@@ -382,7 +391,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SystemCheckResponse: ", request);
+            DEBUGGER.debug("SystemCheckResponse: {}", request);
         }
 
         AgentResponse agentResponse = null;
@@ -441,9 +450,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (StringUtils.isNotEmpty(correlator))
                 {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                            agentConfig.getRequestQueue(), correlator);
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                            new ArrayList<String>(
+                                    Arrays.asList(
+                                            agentConfig.getUsername(),
+                                            agentConfig.getPassword(),
+                                            agentConfig.getSalt())),
+                                            agentConfig.getRequestQueue(),
+                                            agentConfig.getTimeout(),
+                                            correlator);
                 }
                 else
                 {
@@ -467,12 +482,10 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponse(systemRes.getResponse());
                     response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }
@@ -540,7 +553,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("SystemCheckResponse: ", request);
+            DEBUGGER.debug("SystemCheckResponse: {}", request);
         }
 
         AgentResponse agentResponse = null;
@@ -598,9 +611,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (StringUtils.isNotEmpty(correlator))
                 {
-                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                            Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                            agentConfig.getRequestQueue(), correlator);
+                    agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
+                            new ArrayList<String>(
+                                    Arrays.asList(
+                                            agentConfig.getUsername(),
+                                            agentConfig.getPassword(),
+                                            agentConfig.getSalt())),
+                                            agentConfig.getRequestQueue(),
+                                            agentConfig.getTimeout(),
+                                            correlator);
                 }
                 else
                 {
@@ -624,12 +643,10 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
-                    response.setResponse(systemRes.getResponse());
                     response.setResponseObject(systemRes.getResponseData());
                 }
                 else
                 {
-                    response.setResponse(agentResponse.getResponse());
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
             }

@@ -42,7 +42,6 @@ import com.cws.esolutions.agent.enums.AgentStatus;
  */
 public class SystemManagerResponse implements Serializable
 {
-    private String response = null;
     private Object requestData = null;
     private AgentStatus requestStatus = null;
 
@@ -64,19 +63,6 @@ public class SystemManagerResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = SystemManagerResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.response = value;
     }
 
     public final void setResponseData(final Object value)
@@ -103,19 +89,6 @@ public class SystemManagerResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = SystemManagerResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.response);
-        }
-
-        return this.response;
     }
 
     public final Object getResponseData()

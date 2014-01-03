@@ -389,7 +389,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNServiceRequest: " + request);
+            DEBUGGER.debug("DNSServiceRequest: {}" + request);
         }
 
         DNSServiceResponse response = new DNSServiceResponse();
@@ -610,7 +610,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNServiceRequest: " + request);
+            DEBUGGER.debug("DNSServiceRequest: {}" + request);
         }
 
         DNSServiceResponse response = new DNSServiceResponse();
@@ -948,7 +948,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNServiceRequest: " + request);
+            DEBUGGER.debug("DNSServiceRequest: {}" + request);
         }
 
         DNSServiceResponse response = new DNSServiceResponse();

@@ -26,25 +26,40 @@ package com.cws.esolutions.agent;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
+
+import javax.jms.Session;
+import javax.jms.Connection;
+
+import java.net.InetAddress;
+
+import javax.jms.Destination;
+import javax.jms.JMSException;
+
 import org.slf4j.LoggerFactory;
 
+import javax.jms.MessageProducer;
+import javax.jms.MessageConsumer;
 import javax.xml.bind.JAXBContext;
+import javax.jms.ConnectionFactory;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
+
+import java.net.UnknownHostException;
 
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.daemon.DaemonContext;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.commons.daemon.DaemonInitException;
 
 import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.server.MQServer;
-import com.cws.esolutions.agent.exception.AgentException;
+import com.cws.esolutions.agent.mq.MQMessageHandler;
+import com.cws.esolutions.agent.utils.PasswordUtils;
+import com.cws.esolutions.agent.mq.MQExceptionHandler;
+import com.cws.esolutions.agent.config.enums.OSType;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -56,13 +71,19 @@ import com.cws.esolutions.agent.config.xml.ConfigurationData;
  */
 public class AgentDaemon implements Daemon
 {
-    private Thread thread = null;
+    private int exitCode = -1;
+    private Connection conn = null;
+    private Session session = null;
+    private Destination request = null;
+    private Destination response = null;
+    private MessageConsumer consumer = null;
+    private MessageProducer producer = null;
+    private ConnectionFactory connFactory = null;
 
     private static final String LOG_CONFIG = "logConfig";
     private static final String APP_CONFIG = "appConfig";
     private static final String CNAME = AgentDaemon.class.getName();
     private static final AgentBean agentBean = AgentBean.getInstance();
-    private static final String CURRENT_DIRECTORY = System.getProperty("user.dir") + "/";
 
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + AgentDaemon.CNAME);
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
@@ -72,28 +93,48 @@ public class AgentDaemon implements Daemon
     {
         if (StringUtils.isBlank(System.getProperty("LOG_ROOT")))
         {
-            File logDir = new File(AgentDaemon.CURRENT_DIRECTORY + "/logs");
+            File logDir = new File(AgentConstants.CURRENT_DIRECTORY + "/logs");
 
             logDir.mkdirs();
 
-            System.setProperty("LOG_ROOT", AgentDaemon.CURRENT_DIRECTORY + "/logs");
+            System.setProperty("LOG_ROOT", AgentConstants.CURRENT_DIRECTORY + "/logs");
         }
 
-        DOMConfigurator.configure(AgentDaemon.CURRENT_DIRECTORY + System.getProperty(AgentDaemon.LOG_CONFIG));
+        DOMConfigurator.configure(AgentConstants.CURRENT_DIRECTORY + System.getProperty(AgentDaemon.LOG_CONFIG));
     }
 
     public static void main(final String[] args)
     {
         AgentDaemon daemon = new AgentDaemon();
 
+        if (args.length != 1)
+        {
+            AgentDaemon.usage();
+
+            return;
+        }
+
         try
         {
-            daemon.init(null);
-            daemon.start();
+            if (StringUtils.equals("start", args[0]))
+            {
+                daemon.init(null);
+                daemon.start();
+            }
+            else if (StringUtils.equals("stop", args[0]))
+            {
+                daemon.stop();
+            }
+            else
+            {
+                AgentDaemon.usage();
+            }
         }
-        catch (Exception ex)
+        catch (DaemonInitException dix)
         {
-            ex.printStackTrace();
+            ERROR_RECORDER.error(dix.getMessage(), dix);
+
+            System.exit(-1);
         }
     }
 
@@ -111,7 +152,7 @@ public class AgentDaemon implements Daemon
         JAXBContext context = null;
         Unmarshaller marshaller = null;
 
-        final File xmlFile = new File(AgentDaemon.CURRENT_DIRECTORY + System.getProperty(AgentDaemon.APP_CONFIG));
+        final File xmlFile = new File(AgentConstants.CURRENT_DIRECTORY + System.getProperty(AgentDaemon.APP_CONFIG));
 
         if (DEBUG)
         {
@@ -120,45 +161,57 @@ public class AgentDaemon implements Daemon
 
         try
         {
-            if (xmlFile.canRead())
+            if (!(xmlFile.canRead()))
             {
-                // set the app configuration
-                context = JAXBContext.newInstance(ConfigurationData.class);
-                marshaller = context.createUnmarshaller();
-                ConfigurationData configData = (ConfigurationData) marshaller.unmarshal(xmlFile);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("ConfigurationData: {}", configData);
-                }
-
-                agentBean.setOsType(System.getProperty("os.name"));
-                agentBean.setHostName(InetAddress.getLocalHost().getHostName());
-                agentBean.setConfigData(configData);
+                throw new DaemonInitException("No configuration file was located. Shutting down !");
             }
-            else
+
+            // set the app configuration
+            context = JAXBContext.newInstance(ConfigurationData.class);
+            marshaller = context.createUnmarshaller();
+            ConfigurationData configData = (ConfigurationData) marshaller.unmarshal(xmlFile);
+
+            if (DEBUG)
             {
-                // no xml url
-                throw new AgentException("No configuration file was located. Shutting down !");
+                DEBUGGER.debug("ConfigurationData: {}", configData);
             }
+
+            String osName = System.getProperty("os.name").toLowerCase();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("osName: {}", osName);
+            }
+
+            if (osName.indexOf("win") >= 0)
+            {
+                AgentDaemon.agentBean.setOsType(OSType.WINDOWS);
+            }
+            else if (osName.indexOf("mac") >= 0)
+            {
+                AgentDaemon.agentBean.setOsType(OSType.MAC);
+            }
+            else if ((osName.indexOf("nix") >= 0) || (osName.indexOf("sunos") >= 0) || (osName.indexOf("aix") >= 0))
+            {
+                AgentDaemon.agentBean.setOsType(OSType.UNIX);
+            }
+
+            AgentDaemon.agentBean.setHostName(InetAddress.getLocalHost().getHostName());
+            AgentDaemon.agentBean.setConfigData(configData);
         }
         catch (JAXBException jx)
         {
             ERROR_RECORDER.error(jx.getMessage(), jx);
 
-            throw new DaemonInitException(jx.getMessage(), jx);
-        }
-        catch (AgentException ax)
-        {
-            ERROR_RECORDER.error(ax.getMessage(), ax);
-
-            throw new DaemonInitException(ax.getMessage(), ax);
+            this.exitCode = 1;
+            stop();
         }
         catch (UnknownHostException uhx)
         {
             ERROR_RECORDER.error(uhx.getMessage(), uhx);
 
-            throw new DaemonInitException(uhx.getMessage(), uhx);
+            this.exitCode = 1;
+            stop();
         }
     }
 
@@ -174,16 +227,73 @@ public class AgentDaemon implements Daemon
 
         try
         {
-            this.thread = (Thread) new MQServer();
-            this.thread.start();
+            this.connFactory = new ActiveMQConnectionFactory(AgentDaemon.agentBean.getConfigData().getServerConfig().getConnectionName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ConnectionFactory: {}", connFactory);
+            }
+
+            this.conn = connFactory.createConnection(AgentDaemon.agentBean.getConfigData().getServerConfig().getUsername(),
+                    PasswordUtils.decryptText(AgentDaemon.agentBean.getConfigData().getServerConfig().getPassword(),
+                            AgentDaemon.agentBean.getConfigData().getServerConfig().getSalt().length()));
+            this.conn.setExceptionListener(new MQExceptionHandler());
+            this.conn.setClientID(AgentDaemon.agentBean.getConfigData().getServerConfig().getClientId());
+            this.conn.start();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", conn);
+            }
+
+            this.session = this.conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Session: {}", this.session);
+            }
+
+            this.request = this.session.createTopic(AgentDaemon.agentBean.getConfigData().getServerConfig().getRequestQueue());
+            this.response = this.session.createQueue(AgentDaemon.agentBean.getConfigData().getServerConfig().getResponseQueue());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Destination: {}", request);
+                DEBUGGER.debug("Destination: {}", response);
+            }
+
+            this.consumer = this.session.createConsumer(this.request, "targetHost='" + AgentDaemon.agentBean.getHostName() + "'");
+            this.consumer.setMessageListener(new MQMessageHandler());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessageConsumer: {}", this.consumer);
+            }
+
+            this.producer = this.session.createProducer(this.response);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("MessageProducer: {}", this.producer);
+            }
+
+            AgentDaemon.agentBean.setResponseQueue(this.response);
+            AgentDaemon.agentBean.setSession(this.session);
+            AgentDaemon.agentBean.setProducer(this.producer);
         }
-        catch (Exception ex)
+        catch (SecurityException sx)
         {
-            ERROR_RECORDER.error(ex.getMessage(), ex);
+            ERROR_RECORDER.error(sx.getMessage(), sx);
 
-            System.err.println("Failed to start service: " + ex.getMessage());
+            this.exitCode = 1;
+            stop();
+        }
+        catch (JMSException jx)
+        {
+            ERROR_RECORDER.error(jx.getMessage(), jx);
 
-            System.exit(1);
+            this.exitCode = 1;
+            stop();
         }
     }
 
@@ -197,22 +307,40 @@ public class AgentDaemon implements Daemon
             DEBUGGER.debug(methodName);
         }
 
+        final MessageProducer producer = AgentDaemon.agentBean.getProducer();
+        final Session session = AgentDaemon.agentBean.getSession();
+
         try
         {
-            agentBean.setStopServer(true);
+            if (producer != null)
+            {
+                AgentDaemon.agentBean.getProducer().close();
+            }
 
-            this.thread.interrupt();
+            if (session != null)
+            {
+                AgentDaemon.agentBean.getSession().close();
+            }
 
-            System.exit(0);
+            if (this.consumer != null)
+            {
+                this.consumer.close();
+            }
+
+            if (this.conn != null)
+            {
+                this.conn.close();
+                this.conn.stop();
+            }
         }
-        catch (Exception ex)
+        catch (JMSException jx)
         {
-            ERROR_RECORDER.error(ex.getMessage(), ex);
+            ERROR_RECORDER.error(jx.getMessage(), jx);
 
-            System.err.println("Failed to stop service: " + ex.getMessage());
-
-            System.exit(1);
+            this.exitCode = 1;
         }
+
+        destroy();
     }
 
     @Override
@@ -224,5 +352,20 @@ public class AgentDaemon implements Daemon
         {
             DEBUGGER.debug(methodName);
         }
+
+        this.conn = null;
+        this.session = null;
+        this.request = null;
+        this.response = null;
+        this.consumer = null;
+        this.producer = null;
+        this.connFactory = null;
+
+        System.exit(exitCode);
+    }
+
+    private static final void usage()
+    {
+        System.out.println("usage");
     }
 }

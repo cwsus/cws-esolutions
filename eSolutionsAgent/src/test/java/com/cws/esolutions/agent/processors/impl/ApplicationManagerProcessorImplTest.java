@@ -26,38 +26,52 @@ package com.cws.esolutions.agent.processors.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.junit.Test;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 
 import com.cws.esolutions.agent.AgentDaemon;
+import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
+import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
+import com.cws.esolutions.agent.processors.interfaces.IApplicationManagerProcessor;
 
 public class ApplicationManagerProcessorImplTest
 {
+    private static final IApplicationManagerProcessor processor = new ApplicationManagerProcessorImpl();
+
     @Before
     public void setUp()
     {
-        System.setProperty("LOG_ROOT", "C:/temp");
-        System.setProperty("appConfig", "/src/main/resources/eSolutionsServer/config/eSolutionsServer.xml");
-        System.setProperty("logConfig", "/src/main/resources/logging/logging.xml");
+        System.setProperty("appConfig", "/src/test/resources/eSolutionsServer.xml");
+        System.setProperty("logConfig", "/src/test/resources/logging/logging.xml");
         
-        AgentDaemon.main(new String[] {"start"});
+        AgentDaemon.main(new String[] { "start" });
     }
 
     @Test
-    public final void testManageServerState()
+    public final void installApplication()
     {
-        Assert.fail("Not yet implemented"); // TODO
+        ApplicationManagerRequest request = new ApplicationManagerRequest();
+        request.setInstallPath("C:/opt/gpmextract");
+        request.setPackageInstaller("C:/Temp/gpmextract/install.bat");
+        request.setInstallerOptions(null);
+        request.setPackageLocation("C:/temp/gpmextract/gpmextract.zip");
+        request.setVersion(1.0);
+        request.setPackageName("gpmextract");
+
+        try
+        {
+            processor.installApplication(request);
+        }
+        catch (ApplicationManagerException amx)
+        {
+            Assert.fail(amx.getMessage());
+        }
     }
 
-    @Test
-    public final void testManageApplicationDeployment()
+    @After
+    public final void tearDown()
     {
-        Assert.fail("Not yet implemented"); // TODO
-    }
-
-    @Test
-    public final void testManageApplicationState()
-    {
-        Assert.fail("Not yet implemented"); // TODO
+        // AgentDaemon.main(new String[] { "stop" });
     }
 }

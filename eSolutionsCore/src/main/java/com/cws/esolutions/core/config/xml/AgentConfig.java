@@ -47,9 +47,11 @@ import com.cws.esolutions.core.CoreServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class AgentConfig implements Serializable
 {
+    private long timeout = 0;
     private String salt = null;
     private String username = null;
     private String password = null;
+    private String clientId = null;
     private String requestQueue = null;
     private String responseQueue = null;
     private String connectionName = null;
@@ -68,10 +70,23 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.connectionName = value;
+    }
+
+    public final void setClientId(final String value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setClientId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.clientId = value;
     }
 
     public final void setRequestQueue(final String value)
@@ -81,7 +96,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.requestQueue = value;
@@ -94,7 +109,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.responseQueue = value;
@@ -107,7 +122,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.username = value;
@@ -137,6 +152,19 @@ public final class AgentConfig implements Serializable
         this.salt = value;
     }
 
+    public final void setTimeout(final long value)
+    {
+        final String methodName = AgentConfig.CNAME + "#setSalt(final long value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.timeout = value;
+    }
+
     @XmlElement(name = "connectionName")
     public final String getConnectionName()
     {
@@ -145,10 +173,24 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.connectionName);
+            DEBUGGER.debug("Value: {}", this.connectionName);
         }
 
         return this.connectionName;
+    }
+
+    @XmlElement(name = "clientId")
+    public final String getClientId()
+    {
+        final String methodName = AgentConfig.CNAME + "#getClientId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.clientId);
+        }
+
+        return this.clientId;
     }
 
     @XmlElement(name = "requestQueue")
@@ -159,7 +201,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.requestQueue);
+            DEBUGGER.debug("Value: {}", this.requestQueue);
         }
         
         return this.requestQueue;
@@ -173,7 +215,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.responseQueue);
+            DEBUGGER.debug("Value: {}", this.responseQueue);
         }
         
         return this.responseQueue;
@@ -187,7 +229,7 @@ public final class AgentConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.username);
+            DEBUGGER.debug("Value: {}", this.username);
         }
 
         return this.username;
@@ -219,6 +261,20 @@ public final class AgentConfig implements Serializable
         return this.salt;
     }
 
+    @XmlElement(name = "timeout")
+    public final long getTimeout()
+    {
+        final String methodName = AgentConfig.CNAME + "#getTimeout()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.timeout);
+        }
+
+        return this.timeout;
+    }
+
     @Override
     public final String toString()
     {
@@ -236,7 +292,7 @@ public final class AgentConfig implements Serializable
         {
             if (DEBUG)
             {
-                DEBUGGER.debug("field: ", field);
+                DEBUGGER.debug("field: {}", field);
             }
 
             if (!(field.getName().equals("methodName")) &&
@@ -264,7 +320,7 @@ public final class AgentConfig implements Serializable
 
         if (DEBUG)
         {
-            DEBUGGER.debug("sBuilder: ", sBuilder);
+            DEBUGGER.debug("sBuilder: {}", sBuilder);
         }
 
         return sBuilder.toString();

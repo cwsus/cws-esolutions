@@ -123,17 +123,17 @@ public class UserAccountValidator implements Validator
     }
 
     @Override
-    public final boolean supports(final Class<?> target)
+    public final boolean supports(final Class<?> value)
     {
-        final String methodName = UserAccountValidator.CNAME + "#supports(final Class<?> target)";
+        final String methodName = UserAccountValidator.CNAME + "#supports(final Class<?> value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Class: ", target);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = UserAccount.class.isAssignableFrom(target);
+        final boolean isSupported = UserAccount.class.isAssignableFrom(value);
 
         if (DEBUG)
         {

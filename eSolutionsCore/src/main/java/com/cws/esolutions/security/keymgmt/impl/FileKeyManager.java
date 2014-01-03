@@ -65,7 +65,7 @@ public class FileKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         KeyPair keyPair = null;
@@ -170,7 +170,7 @@ public class FileKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         boolean isComplete = false;
@@ -278,7 +278,7 @@ public class FileKeyManager implements KeyManager
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("KeyManagementRequest: ", guid);
+            DEBUGGER.debug("Value: {}", guid);
         }
         
         boolean isComplete = false;

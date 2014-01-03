@@ -90,7 +90,7 @@ public class DeploymentValidator implements Validator
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         final boolean isSupported = ApplicationManagementRequest.class.isAssignableFrom(value);

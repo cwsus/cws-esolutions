@@ -87,11 +87,11 @@ public class CoreWebService
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Endpoint: ", endPoint);
+                DEBUGGER.debug("Endpoint: {}", endPoint);
             }
 
             System.out.println("Web Service Published using JAX-WS EndPoint Server...");
-            System.out.println("WS-URL: " + this.serviceURL);
+            System.out.println("WS-URL: {}" + this.serviceURL);
 
             while (endPoint.isPublished())
             {

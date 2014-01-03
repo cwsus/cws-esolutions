@@ -96,8 +96,11 @@ public class MQUtilsTest
         {
             Object object = MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
                     new ArrayList<String>(Arrays.asList(this.bean.getConfigData().getAgentConfig().getUsername(),
-                            this.bean.getConfigData().getAgentConfig().getPassword(), this.bean.getConfigData().getAgentConfig().getSalt())),
-                    this.bean.getConfigData().getAgentConfig().getResponseQueue(), "0BxFKcZR6tSIkL02p4YHCvVKTM3zrcxfUuaiysEkuR0Xu26RiP728sooOG5lzN4a");
+                            this.bean.getConfigData().getAgentConfig().getPassword(),
+                            this.bean.getConfigData().getAgentConfig().getSalt())),
+                            this.bean.getConfigData().getAgentConfig().getResponseQueue(),
+                            this.bean.getConfigData().getAgentConfig().getTimeout(),
+                            "6mUhCACmfS47lysyKfkPlg56g3p92W6Q7CcAq1julEST3NLpSpV20EL3WycSh3mi");
             System.out.println(object);
             Assert.assertNotNull(object);
         }

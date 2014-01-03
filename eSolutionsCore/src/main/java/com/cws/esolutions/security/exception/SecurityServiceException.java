@@ -47,8 +47,8 @@ public class SecurityServiceException extends Exception
         super(message, throwable);
     }
 
-    public SecurityServiceException(@SuppressWarnings("unused") final ResultCode code, final String message, final Throwable throwable)
+    public SecurityServiceException(final ResultCode code, final String message, final Throwable throwable)
     {
-        super(message, throwable);
+        super(message + " : " + code, throwable);
     }
 }

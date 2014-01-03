@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
+import com.cws.esolutions.agent.processors.dto.ApplicationManagerRequest;
+import com.cws.esolutions.agent.processors.dto.ApplicationManagerResponse;
+import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,9 +51,12 @@ public interface IApplicationManagerProcessor
     static final byte buffer[] = new byte[1024];
     static final String CNAME = IApplicationManagerProcessor.class.getName();
     static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
+    static final String LOGS_DIRECTORY = System.getProperty("LOG_ROOT") + "/" + scriptConfig.getLogsDirectory();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(AgentConstants.WARN_LOGGER + CNAME);
+
+    ApplicationManagerResponse installApplication(final ApplicationManagerRequest request) throws ApplicationManagerException;
 }

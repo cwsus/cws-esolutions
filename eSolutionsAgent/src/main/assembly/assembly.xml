@@ -18,25 +18,28 @@
     </dependencySets>
     <fileSets>
         <fileSet>
-            <directory>src/main/scripts/config</directory>
+            <directory>src/main/scripts</directory>
             <includes>
                 <include>**/*</include>
             </includes>
-            <outputDirectory>config</outputDirectory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
         <fileSet>
-            <directory>src/main/scripts/bin</directory>
+            <directory>src/main/resources</directory>
             <includes>
-                <include>**/*</include>
+                <include>**/LICENSE-2.0.txt</include>
             </includes>
-            <outputDirectory>bin</outputDirectory>
+            <outputDirectory>/</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>src/main/resources</directory>
             <includes>
                 <include>**/*</include>
             </includes>
-            <outputDirectory>config</outputDirectory>
+            <excludes>
+                <exclude>**/LICENSE-2.0.txt</exclude>
+            </excludes>
+            <outputDirectory>etc</outputDirectory>
         </fileSet>
         <fileSet>
             <directory>target</directory>

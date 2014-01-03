@@ -97,7 +97,7 @@ public class CheckEmailMessages implements Job
             {
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Key: " + key + ", Value: {}", jobDataMap.get(key));
+                    DEBUGGER.debug("Key: " + key + ", Value: ", jobDataMap.get(key));
                 }
 
                 props.put(key, jobDataMap.get(key));

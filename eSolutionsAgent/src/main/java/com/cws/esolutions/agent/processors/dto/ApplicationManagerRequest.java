@@ -43,6 +43,7 @@ public class ApplicationManagerRequest implements Serializable
 {
     private double version = 0.0;
     private String installPath = null;
+    private String packageName = null;
     private String packageLocation = null;
     private String packageInstaller = null;
     private String installerOptions = null;
@@ -53,6 +54,19 @@ public class ApplicationManagerRequest implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+
+    public final void setPackageName(final String value)
+    {
+        final String methodName = ApplicationManagerRequest.CNAME + "#setPackageName(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.packageName = value;
+    }
 
     public final void setInstallPath(final String value)
     {
@@ -117,6 +131,19 @@ public class ApplicationManagerRequest implements Serializable
         }
 
         this.installerOptions = value;
+    }
+
+    public final String getPackageName()
+    {
+        final String methodName = ApplicationManagerRequest.CNAME + "#getPackageName()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.packageName);
+        }
+
+        return this.packageName;
     }
 
     public final String getInstallPath()

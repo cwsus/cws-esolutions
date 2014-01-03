@@ -49,6 +49,7 @@ import com.cws.esolutions.agent.AgentConstants;
 public final class ServerConfig implements Serializable
 {
     private String salt = null;
+    private String clientId = null;
 	private int connectTimeout = 0;
     private String username = null;
     private String password = null;
@@ -70,10 +71,23 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.connectionName = value;
+    }
+
+    public final void setClientId(final String value)
+    {
+        final String methodName = ServerConfig.CNAME + "#setClientId(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+        
+        this.clientId = value;
     }
 
     public final void setConnectTimeout(final int value)
@@ -96,7 +110,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.requestQueue = value;
@@ -109,7 +123,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
         
         this.responseQueue = value;
@@ -122,7 +136,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", value);
+            DEBUGGER.debug("Value: {}", value);
         }
 
         this.username = value;
@@ -160,10 +174,24 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.connectionName);
+            DEBUGGER.debug("Value: {}", this.connectionName);
         }
 
         return this.connectionName;
+    }
+
+    @XmlElement(name = "clientId")
+    public final String getClientId()
+    {
+        final String methodName = ServerConfig.CNAME + "#getClientId()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.clientId);
+        }
+
+        return this.clientId;
     }
 
     @XmlElement(name = "connectTimeout")
@@ -188,7 +216,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.requestQueue);
+            DEBUGGER.debug("Value: {}", this.requestQueue);
         }
         
         return this.requestQueue;
@@ -202,7 +230,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.responseQueue);
+            DEBUGGER.debug("Value: {}", this.responseQueue);
         }
         
         return this.responseQueue;
@@ -216,7 +244,7 @@ public final class ServerConfig implements Serializable
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", this.username);
+            DEBUGGER.debug("Value: {}", this.username);
         }
 
         return this.username;
@@ -263,11 +291,6 @@ public final class ServerConfig implements Serializable
 
         for (Field field : this.getClass().getDeclaredFields())
         {
-            if (DEBUG)
-            {
-                DEBUGGER.debug("field: ", field);
-            }
-
             if (!(field.getName().equals("methodName")) &&
                     (!(field.getName().equals("CNAME"))) &&
                     (!(field.getName().equals("DEBUGGER"))) &&
@@ -290,11 +313,6 @@ public final class ServerConfig implements Serializable
         }
 
         sBuilder.append('}');
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("sBuilder: ", sBuilder);
-        }
 
         return sBuilder.toString();
     }

@@ -51,6 +51,7 @@ import com.cws.esolutions.agent.AgentConstants;
 public final class ScriptConfig implements Serializable
 {
     private int scriptTimeout = 0;
+    private String logsDirectory = null;
     private Map<String, File> scripts = null;
     
     private static final String CNAME = ScriptConfig.class.getName();
@@ -59,6 +60,19 @@ public final class ScriptConfig implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
+
+    public final void setLogsDirectory(final String value)
+    {
+        final String methodName = ScriptConfig.CNAME + "#setLogsDirectory(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.logsDirectory = value;
+    }
 
     public final void setScriptTimeout(final int value)
     {
@@ -112,6 +126,20 @@ public final class ScriptConfig implements Serializable
         }
 
         return this.scripts;
+    }
+
+    @XmlElement(name = "logsDirectory")
+    public final String getLogsDirectory()
+    {
+        final String methodName = ScriptConfig.CNAME + "#getLogsDirectory()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.logsDirectory);
+        }
+
+        return this.logsDirectory;
     }
 
     @Override

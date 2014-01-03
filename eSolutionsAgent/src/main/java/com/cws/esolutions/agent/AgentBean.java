@@ -26,9 +26,13 @@ package com.cws.esolutions.agent;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import org.slf4j.Logger;
+import javax.jms.Session;
+import javax.jms.Destination;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import javax.jms.MessageProducer;
 
+import com.cws.esolutions.agent.config.enums.OSType;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -40,9 +44,11 @@ import com.cws.esolutions.agent.config.xml.ConfigurationData;
  */
 public class AgentBean
 {
-    private String osType = null;
+    private OSType osType = null;
     private String hostName = null;
-    private boolean stopServer = false;
+    private Session session = null;
+    private MessageProducer producer = null;
+    private Destination responseQueue = null;
     private ConfigurationData configData = null;
 
     private static AgentBean instance = null;
@@ -102,9 +108,9 @@ public class AgentBean
      * @param value - The system-provided Operating System name that the service
      * is running on
      */
-    public final void setOsType(final String value)
+    public final void setOsType(final OSType value)
     {
-        final String methodName = AgentBean.CNAME + "#setOsType(final String value)";
+        final String methodName = AgentBean.CNAME + "#setOsType(final OSType value)";
 
         if (DEBUG)
         {
@@ -135,9 +141,9 @@ public class AgentBean
         this.hostName = value;
     }
 
-    public final void setStopServer(final boolean value)
+    public final void setSession(final Session value)
     {
-        final String methodName = AgentBean.CNAME + "#setStopServer(final boolean value)";
+        final String methodName = AgentBean.CNAME + "#setSession(final Session value)";
 
         if (DEBUG)
         {
@@ -145,7 +151,33 @@ public class AgentBean
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.stopServer = value;
+        this.session = value;
+    }
+
+    public final void setProducer(final MessageProducer value)
+    {
+        final String methodName = AgentBean.CNAME + "#setProducer(final MessageProducer value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.producer = value;
+    }
+
+    public final void setResponseQueue(final Destination value)
+    {
+        final String methodName = AgentBean.CNAME + "#setResponseQueue(final Destination value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.responseQueue = value;
     }
 
     /*
@@ -172,10 +204,10 @@ public class AgentBean
      * Returns the string representation of the system-provided Operating
      * System name.
      *
-     * @return String - The string representation of the system-provided
+     * @return OSType - The string representation of the system-provided
      * Operating System name.
      */
-    public final String getOsType()
+    public final OSType getOsType()
     {
         final String methodName = AgentBean.CNAME + "#getOsType()";
 
@@ -206,17 +238,43 @@ public class AgentBean
         return this.hostName;
     }
 
-    public final boolean getStopServer()
+    public final Session getSession()
     {
-        final String methodName = AgentBean.CNAME + "#getStopServer()";
+        final String methodName = AgentBean.CNAME + "#getSession()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.stopServer);
+            DEBUGGER.debug("Value: {}", this.session);
         }
 
-        return this.stopServer;
+        return this.session;
+    }
+
+    public final MessageProducer getProducer()
+    {
+        final String methodName = AgentBean.CNAME + "#getProducer()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.producer);
+        }
+
+        return this.producer;
+    }
+
+    public final Destination getResponseQueue()
+    {
+        final String methodName = AgentBean.CNAME + "#getResponseQueue()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.responseQueue);
+        }
+
+        return this.responseQueue;
     }
 
     @Override

@@ -272,7 +272,7 @@ public class DNSServiceDAOImpl implements IDNSServiceDAO
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: ", serviceName);
+            DEBUGGER.debug("Value: {}", serviceName);
         }
 
         return false;

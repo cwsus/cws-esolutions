@@ -97,7 +97,6 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
                 }
 
                 response.setRequestStatus(res.getRequestStatus());
-                response.setResponse(res.getResponse());
                 response.setResponsePayload(res);
 
                 return response;
@@ -120,7 +119,6 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
                 }
 
                 response.setRequestStatus(res.getRequestStatus());
-                response.setResponse(res.getResponse());
                 response.setResponsePayload(res);
 
                 return response;

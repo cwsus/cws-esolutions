@@ -42,7 +42,6 @@ import com.cws.esolutions.agent.enums.AgentStatus;
  */
 public class AgentResponse implements Serializable
 {
-    private String response = null;
     private Object responsePayload = null;
     private AgentStatus requestStatus = null;
 
@@ -64,19 +63,6 @@ public class AgentResponse implements Serializable
         }
 
         this.requestStatus = value;
-    }
-
-    public final void setResponse(final String value)
-    {
-        final String methodName = AgentResponse.CNAME + "#setResponse(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(value);
-        }
-
-        this.response = value;
     }
 
     public final void setResponsePayload(final Object value)
@@ -103,19 +89,6 @@ public class AgentResponse implements Serializable
         }
 
         return this.requestStatus;
-    }
-
-    public final String getResponse()
-    {
-        final String methodName = AgentResponse.CNAME + "#getResponse()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug(this.response);
-        }
-
-        return this.response;
     }
 
     public final Object getResponsePayload()

@@ -51,6 +51,7 @@ public interface ISystemManagerProcessor
     static final byte buffer[] = new byte[1024];
     static final String CNAME = ISystemManagerProcessor.class.getName();
     static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
+    static final String LOGS_DIRECTORY = System.getProperty("LOG_ROOT") + scriptConfig.getLogsDirectory();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
