@@ -36,7 +36,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.core.config.xml.DataSourceManager;
+import com.cws.esolutions.security.config.xml.DataSourceManager;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

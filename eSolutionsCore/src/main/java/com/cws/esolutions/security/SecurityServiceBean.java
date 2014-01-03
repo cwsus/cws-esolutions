@@ -15,6 +15,7 @@
  */
 package com.cws.esolutions.security;
 
+import java.util.Map;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import javax.sql.DataSource;
@@ -36,7 +37,7 @@ import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 public class SecurityServiceBean implements Serializable
 {
     private Object authDataSource = null;
-    private DataSource auditDataSource = null;
+    private Map<String, DataSource> dataSources = null;
     private SecurityConfigurationData configData = null;
 
     private static SecurityServiceBean instance = null;
@@ -97,9 +98,9 @@ public class SecurityServiceBean implements Serializable
         this.authDataSource = value;
     }
 
-    public final void setAuditDataSource(final DataSource value)
+    public final void setDataSources(final Map<String, DataSource> value)
     {
-        final String methodName = SecurityServiceBean.CNAME + "#setAuditDataSource(final DataSource value)";
+        final String methodName = SecurityServiceBean.CNAME + "#setDataSources(final Map<String, DataSource> value)";
 
         if (DEBUG)
         {
@@ -107,7 +108,7 @@ public class SecurityServiceBean implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.auditDataSource = value;
+        this.dataSources = value;
     }
 
     public final SecurityConfigurationData getConfigData()
@@ -136,17 +137,17 @@ public class SecurityServiceBean implements Serializable
         return this.authDataSource;
     }
 
-    public final DataSource getAuditDataSource()
+    public final Map<String, DataSource> getDataSources()
     {
-        final String methodName = SecurityServiceBean.CNAME + "#getAuditDataSource()";
+        final String methodName = SecurityServiceBean.CNAME + "#getDataSources()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.auditDataSource);
+            DEBUGGER.debug("Value: {}", this.dataSources);
         }
 
-        return this.auditDataSource;
+        return this.dataSources;
     }
 
     @Override

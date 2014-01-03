@@ -46,7 +46,7 @@ public interface IUserServiceInformationDAO
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     static final String CNAME = IUserServiceInformationDAO.class.getName();
-    static final DataSource dataSource = svcBean.getAuditDataSource();
+    static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

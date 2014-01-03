@@ -26,7 +26,11 @@ package com.cws.esolutions.core.listeners;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
+import java.util.Map;
 import org.slf4j.Logger;
+import java.util.HashMap;
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
@@ -34,10 +38,11 @@ import javax.xml.bind.JAXBException;
 import org.apache.log4j.helpers.Loader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
+import org.apache.commons.dbcp.BasicDataSource;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.dao.DAOInitializer;
+import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
@@ -92,10 +97,55 @@ public class CoreServiceInitializer
 
             CoreServiceInitializer.appBean.setConfigData(configData);
 
+            Map<String, DataSource> dsMap = CoreServiceInitializer.appBean.getDataSources();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("dsMap: {}", dsMap);
+            }
+
+            if (dsMap == null)
+            {
+                dsMap = new HashMap<>();
+            }
+
             for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
-                DAOInitializer.configureAndCreateDataConnection(mgr, CoreServiceInitializer.appBean);
+                if (!(dsMap.containsKey(mgr.getDsName())))
+                {
+                    StringBuilder sBuilder = new StringBuilder()
+                        .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
+                        .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
+                        .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
+                        .append("zeroDateTimeBehavior=convertToNull");
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                    }
+
+                    BasicDataSource dataSource = new BasicDataSource();
+                    dataSource.setDriverClassName(mgr.getDriver());
+                    dataSource.setUrl(mgr.getDataSource());
+                    dataSource.setUsername(mgr.getDsUser());
+                    dataSource.setConnectionProperties(sBuilder.toString());
+                    dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    dsMap.put(mgr.getDsName(), dataSource);
+                }
             }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("dsMap: {}", dsMap);
+            }
+
+            CoreServiceInitializer.appBean.setDataSources(dsMap);
         }
         catch (JAXBException jx)
         {
@@ -116,16 +166,33 @@ public class CoreServiceInitializer
             DEBUGGER.debug(methodName);
         }
 
+        final Map<String, DataSource> datasources = CoreServiceInitializer.appBean.getDataSources();
+
         try
         {
-            for (DataSourceManager mgr : CoreServiceInitializer.appBean.getConfigData().getResourceConfig().getDsManager())
+            for (String key : datasources.keySet())
             {
-                DAOInitializer.closeDataConnection(mgr, false, CoreServiceInitializer.appBean);
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Key: {}", key);
+                }
+
+                BasicDataSource dataSource = (BasicDataSource) datasources.get(key);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                }
+
+                if ((dataSource != null ) && (!(dataSource.isClosed())))
+                {
+                    dataSource.close();
+                }
             }
         }
-        catch (CoreServiceException csx)
+        catch (SQLException sqx)
         {
-            ERROR_RECORDER.error(csx.getMessage(), csx);
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
         }
     }
 }

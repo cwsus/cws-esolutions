@@ -77,7 +77,6 @@ public class CoreServiceListener implements ServletContextListener
         JAXBContext context = null;
         Unmarshaller marshaller = null;
         CoreConfigurationData configData = null;
-        Map<String, DataSource> dsMap = new HashMap<>();
 
         final ServletContext sContext = contextEvent.getServletContext();
         final ClassLoader classLoader = CoreServiceListener.class.getClassLoader();
@@ -130,12 +129,14 @@ public class CoreServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(CoreServiceListener.DS_CONTEXT);
 
+                    Map<String, DataSource> dsMap = new HashMap<>();
+
                     for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
                     {
                         dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
                     }
 
-                    CoreServiceListener.appBean.setDataSource(dsMap);
+                    CoreServiceListener.appBean.setDataSources(dsMap);
                 }
             }
             else

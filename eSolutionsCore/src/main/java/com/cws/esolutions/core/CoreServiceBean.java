@@ -45,7 +45,7 @@ public class CoreServiceBean
     private String osType = null;
     private String hostName = null;
     private CoreConfigurationData configData = null;
-    private Map<String, DataSource> dataSource = null;
+    private Map<String, DataSource> dataSources = null;
 
     private static CoreServiceBean instance = null;
 
@@ -97,9 +97,9 @@ public class CoreServiceBean
         this.configData = value;
     }
 
-    public final void setDataSource(final Map<String, DataSource> value)
+    public final void setDataSources(final Map<String, DataSource> value)
     {
-        final String methodName = CoreServiceBean.CNAME + "#setDataSource(final Map<String, DataSource> value)";
+        final String methodName = CoreServiceBean.CNAME + "#setDataSources(final Map<String, DataSource> value)";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class CoreServiceBean
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.dataSource = value;
+        this.dataSources = value;
     }
 
     /**
@@ -170,17 +170,17 @@ public class CoreServiceBean
         return this.configData;
     }
 
-    public final Map<String, DataSource> getDataSource()
+    public final Map<String, DataSource> getDataSources()
     {
-        final String methodName = CoreServiceBean.CNAME + "#getDataSource()";
+        final String methodName = CoreServiceBean.CNAME + "#getDataSources()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.dataSource);
+            DEBUGGER.debug("Value: {}", this.dataSources);
         }
 
-        return this.dataSource;
+        return this.dataSources;
     }
 
     /**

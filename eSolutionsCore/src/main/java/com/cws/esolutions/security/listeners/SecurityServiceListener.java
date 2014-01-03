@@ -26,7 +26,10 @@ package com.cws.esolutions.security.listeners;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
+import java.util.Map;
 import org.slf4j.Logger;
+import java.util.HashMap;
+import javax.sql.DataSource;
 import javax.naming.Context;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
@@ -40,9 +43,10 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -128,7 +132,14 @@ public class SecurityServiceListener implements ServletContextListener
 
                     DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), true, SecurityServiceListener.svcBean);
 
-                    SecurityServiceListener.svcBean.setAuthDataSource(envContext.lookup(SecurityServiceConstants.INIT_AUDITDS_MANAGER));
+                    Map<String, DataSource> dsMap = new HashMap<>();
+
+                    for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
+                    {
+                        dsMap.put(mgr.getDsName(), (DataSource) envContext.lookup(mgr.getDataSource()));
+                    }
+
+                    SecurityServiceListener.svcBean.setDataSources(dsMap);
                 }
                 else
                 {

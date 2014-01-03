@@ -43,7 +43,7 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public class SQLUserManager implements UserManager
 {
     private static final String CNAME = SQLUserManager.class.getName();
-    private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
+    static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
 
     /**
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#validateUserAccount(java.lang.String, java.lang.String)

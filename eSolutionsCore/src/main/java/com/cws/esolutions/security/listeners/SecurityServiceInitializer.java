@@ -26,7 +26,10 @@ package com.cws.esolutions.security.listeners;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.net.URL;
+import java.util.Map;
 import org.slf4j.Logger;
+import java.util.HashMap;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import javax.xml.bind.JAXBContext;
@@ -37,10 +40,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
 import org.apache.commons.dbcp.BasicDataSource;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 /**
@@ -92,46 +96,59 @@ public class SecurityServiceInitializer
             marshaller = context.createUnmarshaller();
             configData = (SecurityConfigurationData) marshaller.unmarshal(xmlURL);
 
-            svcBean.setConfigData(configData);
+            SecurityServiceInitializer.svcBean.setConfigData(configData);
 
             DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), false, SecurityServiceInitializer.svcBean);
 
-            StringBuilder sBuilder = new StringBuilder()
-                .append("connectTimeout=" + configData.getResourceConfig().getDsManager().get(0).getConnectTimeout() + ";")
-                .append("socketTimeout=" + configData.getResourceConfig().getDsManager().get(0).getConnectTimeout() + ";")
-                .append("autoReconnect=" + configData.getResourceConfig().getDsManager().get(0).getAutoReconnect() + ";")
-                .append("zeroDateTimeBehavior=convertToNull");
+            Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
             if (DEBUG)
             {
-                DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                DEBUGGER.debug("dsMap: {}", dsMap);
             }
 
-            BasicDataSource dataSource = new BasicDataSource();
-            dataSource.setDriverClassName(configData.getResourceConfig().getDsManager().get(0).getDriver());
-            dataSource.setUrl(configData.getResourceConfig().getDsManager().get(0).getDataSource());
-            dataSource.setUsername(configData.getResourceConfig().getDsManager().get(0).getDsUser());
-            dataSource.setConnectionProperties(sBuilder.toString());
-            
-            // handle both encrypted and non-encrypted passwords
-            // prefer encrypted
-            if (StringUtils.isNotEmpty(configData.getResourceConfig().getDsManager().get(0).getSalt()))
+            if (dsMap == null)
             {
-                dataSource.setPassword(PasswordUtils.decryptText(
-                        configData.getResourceConfig().getDsManager().get(0).getDsPass(),
-                        configData.getResourceConfig().getDsManager().get(0).getSalt().length()));
+                dsMap = new HashMap<>();
             }
-            else
+
+            for (DataSourceManager mgr : configData.getResourceConfig().getDsManager())
             {
-                dataSource.setPassword(configData.getResourceConfig().getDsManager().get(0).getDsPass());
+                if (!(dsMap.containsKey(mgr.getDsName())))
+                {
+                    StringBuilder sBuilder = new StringBuilder()
+                        .append("connectTimeout=" + mgr.getConnectTimeout() + ";")
+                        .append("socketTimeout=" + mgr.getConnectTimeout() + ";")
+                        .append("autoReconnect=" + mgr.getAutoReconnect() + ";")
+                        .append("zeroDateTimeBehavior=convertToNull");
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("StringBuilder: {}", sBuilder);
+                    }
+
+                    BasicDataSource dataSource = new BasicDataSource();
+                    dataSource.setDriverClassName(mgr.getDriver());
+                    dataSource.setUrl(mgr.getDataSource());
+                    dataSource.setUsername(mgr.getDsUser());
+                    dataSource.setConnectionProperties(sBuilder.toString());
+                    dataSource.setPassword(PasswordUtils.decryptText(mgr.getDsPass(), mgr.getSalt().length()));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    dsMap.put(mgr.getDsName(), dataSource);
+                }
             }
 
             if (DEBUG)
             {
-                DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                DEBUGGER.debug("dsMap: {}", dsMap);
             }
 
-            SecurityServiceInitializer.svcBean.setAuditDataSource(dataSource);
+            SecurityServiceInitializer.svcBean.setDataSources(dsMap);
         }
         catch (JAXBException jx)
         {
@@ -149,6 +166,7 @@ public class SecurityServiceInitializer
         }
 
         final SecurityConfigurationData configData = svcBean.getConfigData();
+        Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
         if (DEBUG)
         {
@@ -159,16 +177,27 @@ public class SecurityServiceInitializer
         {
             DAOInitializer.closeAuthConnection(configData.getAuthRepo(), false, svcBean);
 
-            BasicDataSource dataSource = (BasicDataSource) svcBean.getAuditDataSource();
-
-            if (DEBUG)
+            if (dsMap != null)
             {
-                DEBUGGER.debug("BasicDataSource: {}", dataSource);
-            }
+                for (String key : dsMap.keySet())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Key: {}", key);
+                    }
 
-            if ((dataSource != null ) && (!(dataSource.isClosed())))
-            {
-                dataSource.close();
+                    BasicDataSource dataSource = (BasicDataSource) dsMap.get(key);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("BasicDataSource: {}", dataSource);
+                    }
+
+                    if ((dataSource != null ) && (!(dataSource.isClosed())))
+                    {
+                        dataSource.close();
+                    }
+                }
             }
         }
         catch (SQLException sqx)

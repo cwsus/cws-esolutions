@@ -54,7 +54,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <configFile>/opt/cws/eSolutions/config/ldapConfig.properties</configFile>
+        <configFile>/opt/cws/eSolutions/etc/ldapConfig.properties</configFile>
         <isSecure>isSecure</isSecure>
         <trustStoreFile>trustStoreFile</trustStoreFile>
         <trustStorePass>trustStorePass</trustStorePass>
@@ -101,14 +101,6 @@
         </DataSourceManager>
         <DataSourceManager>
             <dsName>AuditDataSource</dsName>
-            <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
-            <driver>com.mysql.jdbc.Driver</driver>
-            <dsUser>appuser</dsUser>
-            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
-            <salt>OITltocOUZjW</salt>
-        </DataSourceManager>
-        <DataSourceManager>
-            <dsName>SessionDataSource</dsName>
             <datasource>jdbc:mysql://127.0.0.1/cwssec?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
             <driver>com.mysql.jdbc.Driver</driver>
             <dsUser>appuser</dsUser>

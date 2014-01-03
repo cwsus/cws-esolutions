@@ -45,7 +45,7 @@ import com.cws.esolutions.core.CoreServiceBean;
 public interface IDNSServiceDAO
 {
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final DataSource dataSource = appBean.getDataSource().get("ApplicationDataSource");
+    static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
     static final String CNAME = IDNSServiceDAO.class.getName();
 

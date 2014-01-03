@@ -46,7 +46,7 @@ public interface IServiceDataDAO
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
 
     static final String CNAME = IServiceDataDAO.class.getName();
-    static final DataSource dataSource = appBean.getDataSource().get("ApplicationDataSource");
+    static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
