@@ -9,7 +9,7 @@
  * the materials be disclosed to third parties without the
  * express written authorization of CaspersBox Web Services, N.A.
  */
-package com.cws.us.esolutions.ui;
+package com.cws.esolutions.android.ui;
 
 import org.slf4j.Logger;
 import android.os.Bundle;
@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.content.Intent;
 import org.slf4j.LoggerFactory;
 
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 /**
  * eSolutions-app

@@ -9,7 +9,7 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions.ui;
+package com.cws.esolutions.android.ui;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.net.UnknownHostException;
 import android.text.method.LinkMovementMethod;
 
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.audit.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;

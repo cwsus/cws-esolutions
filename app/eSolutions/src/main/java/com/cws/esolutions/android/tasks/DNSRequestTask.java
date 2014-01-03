@@ -9,7 +9,7 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions.tasks;
+package com.cws.esolutions.android.tasks;
 
 import java.util.List;
 import org.slf4j.Logger;
@@ -23,8 +23,8 @@ import android.net.NetworkInfo;
 import android.content.Context;
 import android.net.ConnectivityManager;
 
-import com.cws.us.esolutions.ui.R;
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.android.ui.R;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.core.processors.dto.DNSEntry;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;

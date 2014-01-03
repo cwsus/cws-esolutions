@@ -9,7 +9,7 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions.tasks;
+package com.cws.esolutions.android.tasks;
 
 import java.util.List;
 import java.util.Arrays;
@@ -34,8 +34,8 @@ import org.ksoap2.serialization.SoapPrimitive;
 import org.apache.commons.lang.RandomStringUtils;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 
-import com.cws.us.esolutions.ui.R;
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.android.ui.R;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;

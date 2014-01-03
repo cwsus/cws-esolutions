@@ -9,10 +9,10 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions;
+package com.cws.esolutions.android;
 /**
  * eSolutions
- * com.cws.esolutions.core
+ * com.cws.esolutions.android
  * Constants.java
  *
  * TODO: Add class description

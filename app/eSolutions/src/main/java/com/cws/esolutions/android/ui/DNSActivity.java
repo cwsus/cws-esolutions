@@ -9,7 +9,7 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions.ui;
+package com.cws.esolutions.android.ui;
 
 import org.slf4j.Logger;
 import android.view.Menu;
@@ -24,9 +24,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.view.inputmethod.InputMethodManager;
 
-import com.cws.us.esolutions.Constants;
-import com.cws.us.esolutions.tasks.DNSRequestTask;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.android.tasks.DNSRequestTask;
 /**
  * eSolutions
  * com.cws.esolutions.core.ui

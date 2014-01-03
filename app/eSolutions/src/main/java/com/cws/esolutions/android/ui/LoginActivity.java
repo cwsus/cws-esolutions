@@ -9,7 +9,7 @@
  * disclosed to third parties without the express written
  * authorization of CWS N.A.
  */
-package com.cws.us.esolutions.ui;
+package com.cws.esolutions.android.ui;
 
 import java.util.List;
 import java.util.Arrays;
@@ -27,9 +27,9 @@ import org.apache.commons.lang.StringUtils;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import com.cws.us.esolutions.Constants;
+import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.us.esolutions.tasks.UserAuthenticationTask;
+import com.cws.esolutions.android.tasks.UserAuthenticationTask;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 /**
