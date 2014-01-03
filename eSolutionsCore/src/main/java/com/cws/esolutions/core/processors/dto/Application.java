@@ -322,7 +322,7 @@ public class Application implements Serializable
         return this.platforms;
     }
 
-    public final Date getOnlineDate(final Date value)
+    public final Date getOnlineDate()
     {
         final String methodName = Application.CNAME + "#getOnlineDate()";
 
@@ -335,7 +335,7 @@ public class Application implements Serializable
         return this.onlineDate;
     }
 
-    public final Date getOfflineDate(final Date value)
+    public final Date getOfflineDate()
     {
         final String methodName = Application.CNAME + "#getOfflineDate()";
 

@@ -68,7 +68,7 @@ public class ServerDataDAOImplTest
         (
             Arrays.asList
             (
-                guid,
+                this.guid,
                 "CentOS",
                 ServiceStatus.ACTIVE.name(),
                 ServiceRegion.DEV.name(),
@@ -115,7 +115,7 @@ public class ServerDataDAOImplTest
         (
             Arrays.asList
             (
-                guid,
+                this.guid,
                 "CentOS",
                 ServiceStatus.ACTIVE.name(),
                 ServiceRegion.DEV.name(),
@@ -225,7 +225,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.removeExistingServer(guid));
+            Assert.assertNotNull(dao.removeExistingServer(this.guid));
         }
         catch (SQLException sqx)
         {
@@ -238,7 +238,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            dao.archiveServerData(guid);
+            dao.archiveServerData(this.guid);
         }
         catch (SQLException sqx)
         {
@@ -264,7 +264,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getRetiredServer(guid));
+            Assert.assertNotNull(dao.getRetiredServer(this.guid));
         }
         catch (SQLException sqx)
         {

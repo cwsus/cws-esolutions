@@ -12,7 +12,7 @@
  *
  * eSolutions_web_source
  * com.cws.us.esolutions.service-management/jsp/html/en
- * ServiceMgmt_ViewPlatforms.jsp
+ * ServiceMgmt_ViewServices.jsp
  *
  * $Id$
  * $Author$
@@ -30,14 +30,12 @@
 <div id="sidebar">
     <h1><spring:message code="svc.mgmt.header" /></h1>
     <ul>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/add-datacenter" title="<spring:message code='svc.mgmt.add.datacenter' />"><spring:message code="svc.mgmt.add.datacenter" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/list-platforms" title="<spring:message code='svc.mgmt.list.platforms' />"><spring:message code="svc.mgmt.list.platforms" /></a></li>
-        <li><a href="${pageContext.request.contextPath}/ui/service-management/add-platform" title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a></li>
+        <li><a href="${pageContext.request.contextPath}/ui/service-management/add-service" title="<spring:message code='svc.mgmt.add.platform' />"><spring:message code="svc.mgmt.add.platform" /></a></li>
     </ul>
 </div>
 
 <div id="main">
-    <h1><spring:message code="svc.mgmt.list.datacenters" /></h1>
+    <h1><spring:message code="svc.mgmt.list.platforms" /></h1>
 
     <c:if test="${not empty fn:trim(messageResponse)}">
         <p id="info">${messageResponse}</p>
@@ -59,18 +57,18 @@
     </c:if>
 
     <p>
-        <table id="viewDatacenterList">
+        <table id="viewPlatformList">
             <tr>
-                <td><label id="datacenterName"><spring:message code="svc.mgmt.service.name" /></label></td>
-                <td><label id="datacenterStatus"><spring:message code="svc.mgmt.service.status" /></label></td>
+                <td><label id="platformName"><spring:message code="svc.mgmt.service.name" /></label></td>
+                <td><label id="platformRegion"><spring:message code="svc.mgmt.platform.region" /></label></td>
             </tr>
-            <c:forEach var="datacenter" items="${datacenterList}">
+            <c:forEach var="platform" items="${platformList}">
                 <tr>
                     <td>
-                        <a href="${pageContext.request.contextPath}/ui/service-management/datacenter/${datacenter.guid}"
-                            title="${datacenter.name}">${datacenter.name}</a>
+                        <a href="${pageContext.request.contextPath}/ui/service-management/platform/${platform.guid}"
+                            title="${platform.name}">${platform.name}</a>
                     </td>
-                    <td>${datacenter.status}</td>
+                    <td>${platform.region}</td>
                 </tr>
             </c:forEach>
         </table>
@@ -88,7 +86,7 @@
                             </c:when>
                             <c:otherwise>
                                 <td>
-                                    <a href="${pageContext.request.contextPath}/ui/service-management/list-datacenters/page/${i}"
+                                    <a href="${pageContext.request.contextPath}/ui/service-management/list-platforms/page/${i}"
                                         title="{i}">${i}</a>
                                 </td>
                             </c:otherwise>

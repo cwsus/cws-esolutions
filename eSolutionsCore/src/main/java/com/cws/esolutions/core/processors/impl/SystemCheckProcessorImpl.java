@@ -74,13 +74,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         AgentResponse agentResponse = null;
         SystemCheckResponse response = new SystemCheckResponse();
 
-        final Server sourceServer = request.getSourceServer();
+        final Server server = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -115,9 +115,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        agentConfig.getUsername(),
+                                        agentConfig.getPassword(),
+                                        agentConfig.getSalt())),
+                                        agentConfig.getRequestQueue(),
+                                        server.getOperHostName(),
+                                        agentRequest);
 
                 if (DEBUG)
                 {
@@ -127,7 +133,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 if (StringUtils.isNotEmpty(correlator))
                 {
                     agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<String>(
+                            new ArrayList<>(
                                     Arrays.asList(
                                             agentConfig.getUsername(),
                                             agentConfig.getPassword(),
@@ -235,13 +241,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         AgentResponse agentResponse = null;
         SystemCheckResponse response = new SystemCheckResponse();
 
-        final Server sourceServer = request.getSourceServer();
+        final Server server = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -277,9 +283,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        agentConfig.getUsername(),
+                                        agentConfig.getPassword(),
+                                        agentConfig.getSalt())),
+                                        agentConfig.getRequestQueue(),
+                                        server.getOperHostName(),
+                                        agentRequest);
 
                 if (DEBUG)
                 {
@@ -289,7 +301,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 if (StringUtils.isNotEmpty(correlator))
                 {
                     agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<String>(
+                            new ArrayList<>(
                                     Arrays.asList(
                                             agentConfig.getUsername(),
                                             agentConfig.getPassword(),
@@ -397,13 +409,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         AgentResponse agentResponse = null;
         SystemCheckResponse response = new SystemCheckResponse();
 
-        final Server sourceServer = request.getSourceServer();
+        final Server server = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -439,9 +451,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        agentConfig.getUsername(),
+                                        agentConfig.getPassword(),
+                                        agentConfig.getSalt())),
+                                        agentConfig.getRequestQueue(),
+                                        server.getOperHostName(),
+                                        agentRequest);
 
                 if (DEBUG)
                 {
@@ -451,7 +469,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 if (StringUtils.isNotEmpty(correlator))
                 {
                     agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<String>(
+                            new ArrayList<>(
                                     Arrays.asList(
                                             agentConfig.getUsername(),
                                             agentConfig.getPassword(),
@@ -559,13 +577,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
         AgentResponse agentResponse = null;
         SystemCheckResponse response = new SystemCheckResponse();
 
-        final Server sourceServer = request.getSourceServer();
+        final Server server = request.getSourceServer();
         final RequestHostInfo reqInfo = request.getRequestInfo();
         final UserAccount userAccount = request.getUserAccount();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("Server: {}", sourceServer);
+            DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
         }
@@ -600,9 +618,15 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                     DEBUGGER.debug("AgentRequest: {}", agentRequest);
                 }
 
-                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                        Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                        agentConfig.getRequestQueue(), sourceServer.getOperHostName(), agentRequest);
+                String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                        new ArrayList<>(
+                                Arrays.asList(
+                                        agentConfig.getUsername(),
+                                        agentConfig.getPassword(),
+                                        agentConfig.getSalt())),
+                                        agentConfig.getRequestQueue(),
+                                        server.getOperHostName(),
+                                        agentRequest);
 
                 if (DEBUG)
                 {
@@ -612,7 +636,7 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
                 if (StringUtils.isNotEmpty(correlator))
                 {
                     agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                            new ArrayList<String>(
+                            new ArrayList<>(
                                     Arrays.asList(
                                             agentConfig.getUsername(),
                                             agentConfig.getPassword(),

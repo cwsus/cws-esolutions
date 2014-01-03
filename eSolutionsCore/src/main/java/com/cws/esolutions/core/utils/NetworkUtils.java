@@ -299,9 +299,9 @@ public final class NetworkUtils
     }
 
 
-    public static final synchronized void executeSftpTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
+    public static final synchronized void executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSftpTransfer(final Properties sshProps, final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
+        final String methodName = CNAME + "#executeSftpTransfer(final Properties authProps, final List<File> sourceFile, final String targetFile, final String targetHost, final boolean isUpload) throws UtilityException";
 
         if (DEBUG)
         {
@@ -496,9 +496,9 @@ public final class NetworkUtils
      * @param commandList - The list of commands to execute on the remote host. 
      * @throws UtilityException - If an error occurs processing SSH keys or file transfer operations
      */
-    public static final synchronized StringBuilder executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException
+    public static final synchronized StringBuilder executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException
     {
-        final String methodName = CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> secList, List<String> commandList) throws UtilityException";
+        final String methodName = CNAME + "#executeSshConnection(final Properties sshProps, final Properties authProps, final String targetHost, final List<String> commandList) throws UtilityException";
 
         if (DEBUG)
         {

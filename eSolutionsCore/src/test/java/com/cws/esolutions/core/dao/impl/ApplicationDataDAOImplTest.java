@@ -62,7 +62,7 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                        guid,
+                        this.guid,
                         "eSolutions",
                         "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
                         "CWS",
@@ -87,7 +87,7 @@ public class ApplicationDataDAOImplTest
     {
         List<Object> appData = new ArrayList<Object>(
                 Arrays.asList(
-                        guid,
+                        this.guid,
                         "eSolutions",
                         "c0b20624-0a0c-4cf6-a8dc-62efc5a46e18",
                         "CWS",
@@ -125,7 +125,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData(guid));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData(this.guid));
         }
         catch (SQLException sqx)
         {
@@ -151,7 +151,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.deleteApplication(guid));
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.deleteApplication(this.guid));
         }
         catch (SQLException sqx)
         {

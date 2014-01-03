@@ -30,7 +30,6 @@ import org.slf4j.Logger;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
@@ -62,9 +61,9 @@ public class ArchiveInstalledSystems implements Job
     }
 
     @Override
-    public void execute(final JobExecutionContext jec) throws JobExecutionException
+    public void execute(final JobExecutionContext jec)
     {
-        final String methodName = ArchiveInstalledSystems.CNAME + "#execute(final JobExecutionContext jec) throws JobExecutionException";
+        final String methodName = ArchiveInstalledSystems.CNAME + "#execute(final JobExecutionContext jec)";
 
         if (DEBUG)
         {

@@ -935,9 +935,15 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             DEBUGGER.debug("AgentRequest: {}", agentRequest);
                         }
 
-                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(), new ArrayList<String>(
-                                Arrays.asList(agentConfig.getUsername(), agentConfig.getPassword(), agentConfig.getSalt())),
-                                agentConfig.getRequestQueue(), server.getOperHostName(), agentRequest);
+                        String correlator = MQUtils.sendMqMessage(agentConfig.getConnectionName(),
+                                new ArrayList<>(
+                                        Arrays.asList(
+                                                agentConfig.getUsername(),
+                                                agentConfig.getPassword(),
+                                                agentConfig.getSalt())),
+                                                agentConfig.getRequestQueue(),
+                                                server.getOperHostName(),
+                                                agentRequest);
 
                         if (DEBUG)
                         {
@@ -947,7 +953,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         if (StringUtils.isNotEmpty(correlator))
                         {
                             agentResponse = (AgentResponse) MQUtils.getMqMessage(agentConfig.getConnectionName(),
-                                    new ArrayList<String>(
+                                    new ArrayList<>(
                                             Arrays.asList(
                                                     agentConfig.getUsername(),
                                                     agentConfig.getPassword(),
