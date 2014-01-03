@@ -82,6 +82,8 @@ public interface IServiceManagementProcessor
 
     ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException;
+
     ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException;
 
     ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException;

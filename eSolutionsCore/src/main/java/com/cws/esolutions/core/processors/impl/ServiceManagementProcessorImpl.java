@@ -611,6 +611,147 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
     }
 
     /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#listServicesByType(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
+     */
+    @Override
+    public ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException
+    {
+        final String methodName = IServiceManagementProcessor.CNAME + "#listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServiceManagementRequest: {}", request);
+        }
+
+        ServiceManagementResponse response = new ServiceManagementResponse();
+
+        final Service service = request.getService();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Service: {}", service);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+            }
+
+            if (isServiceAuthorized)
+            {
+                int count = serviceDao.getServiceCount();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("count: {}", count);
+                }
+
+                List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serviceData: {}", serviceData);
+                }
+
+                if ((serviceData != null) && (serviceData.size() != 0))
+                {
+                    List<Service> serviceList = new ArrayList<>();
+
+                    for (String[] data : serviceData)
+                    {
+                        if (ServiceType.valueOf(data[1]) == service.getType())
+                        {
+                            Service resService = new Service();
+                            resService.setGuid(data[0]);
+                            resService.setType(ServiceType.valueOf(data[1]));
+                            resService.setName(data[2]);
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("Service: {}", resService);
+                            }
+
+                            serviceList.add(resService);
+                        }
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("serviceList: {}", serviceList);
+                    }
+
+                    response.setEntryCount(count);
+                    response.setServiceList(serviceList);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServiceManagementException(sqx.getMessage(), sqx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new ServiceManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTPLATFORMS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
      * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor#getServiceByAttribute(com.cws.esolutions.core.processors.dto.ServiceManagementRequest)
      */
     @Override
@@ -791,7 +932,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     if (ServiceType.valueOf(serviceData.get(0)) == ServiceType.PLATFORM)
                     {
-                        String appTmp = StringUtils.remove((String) serviceData.get(5), "["); // PLATFORM_SERVERS
+                        String appTmp = StringUtils.remove(serviceData.get(5), "["); // PLATFORM_SERVERS
                         String platformServers = StringUtils.remove(appTmp, "]");
 
                         if (DEBUG)
@@ -839,10 +980,10 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                     resService.setGuid(service.getGuid());
                     resService.setType(ServiceType.valueOf(serviceData.get(0)));
                     resService.setName(serviceData.get(1));
-                    resService.setRegion(ServiceRegion.valueOf((String) serviceData.get(2)));
+                    resService.setRegion(ServiceRegion.valueOf(serviceData.get(2)));
                     resService.setPartition(NetworkPartition.valueOf(serviceData.get(3)));
                     resService.setServers(serverList);
-                    resService.setStatus(ServiceStatus.valueOf((String) serviceData.get(4)));
+                    resService.setStatus(ServiceStatus.valueOf(serviceData.get(4)));
                     resService.setDescription(serviceData.get(6));
 
                     if (DEBUG)

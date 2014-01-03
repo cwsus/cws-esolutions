@@ -19,27 +19,9 @@
         <property name="messagePackageInstallerRequired" value="app.mgmt.jvm.name.required" />
     </bean>
 
-    <bean id="deploymentValidatorBean" class="com.cws.esolutions.web.validators.DeploymentValidator">
-        <property name="messageDeploymentTypeRequired" value="app.mgmt.app.deployment.type.required" />
-        <property name="messageDeploymentFilesRequired" value="app.mgmt.app.deployment.files.required" />
-        <property name="messageApplicationVersionRequired" value="app.mgmt.app.version.required" />
-    </bean>
-
-    <bean id="searchRequestValidator" class="com.cws.esolutions.web.validators.SearchRequestValidator">
-        <property name="appConfig">
-            <ref bean="appConfig" />
-        </property>
-    </bean>
-
     <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
         <property name="applicationValidator">
             <ref bean="applicationValidatorBean" />
-        </property>
-        <property name="deploymentValidator">
-            <ref bean="deploymentValidatorBean" />
-        </property>
-        <property name="searchValidator">
-            <ref bean="searchRequestValidator" />
         </property>
         <property name="appConfig">
             <ref bean="appConfig" />

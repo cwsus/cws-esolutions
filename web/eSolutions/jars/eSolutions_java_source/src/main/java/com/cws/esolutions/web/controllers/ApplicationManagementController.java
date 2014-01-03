@@ -16,17 +16,24 @@ import java.util.Map;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
+
 import javax.servlet.http.HttpSession;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
@@ -51,14 +58,15 @@ import com.cws.esolutions.web.validators.DeploymentValidator;
 import com.cws.esolutions.web.validators.ApplicationValidator;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.core.processors.enums.ServiceType;
 import com.cws.esolutions.core.processors.dto.ServiceManagementRequest;
 import com.cws.esolutions.core.processors.dto.ServiceManagementResponse;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementRequest;
 import com.cws.esolutions.core.processors.dto.ApplicationManagementResponse;
-import com.cws.esolutions.core.processors.impl.PlatformManagementProcessorImpl;
+import com.cws.esolutions.core.processors.impl.ServiceManagementProcessorImpl;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
+import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 import com.cws.esolutions.core.processors.impl.ApplicationManagementProcessorImpl;
-import com.cws.esolutions.core.processors.interfaces.IPlatformManagementProcessor;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
 /*
@@ -445,7 +453,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -456,7 +464,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -467,7 +475,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -525,7 +533,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -536,7 +544,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -547,7 +555,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -667,7 +675,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -678,7 +686,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -689,7 +697,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -812,7 +820,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -823,7 +831,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -834,7 +842,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -946,7 +954,7 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
+        final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -957,7 +965,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -968,7 +976,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -979,7 +987,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1002,12 +1010,21 @@ public class ApplicationManagementController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
+            Service platform = new Service();
+            platform.setType(ServiceType.PLATFORM);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Service: {}", platform);
+            }
+
             ServiceManagementRequest platformReq = new ServiceManagementRequest();
             platformReq.setRequestInfo(reqInfo);
             platformReq.setServiceId(this.platformMgmt);
             platformReq.setUserAccount(userAccount);
             platformReq.setApplicationId(this.appConfig.getApplicationId());
             platformReq.setApplicationName(this.appConfig.getApplicationName());
+            platformReq.setService(platform);
 
             if (DEBUG)
             {
@@ -1016,7 +1033,7 @@ public class ApplicationManagementController
 
             try
             {
-                ServiceManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
+                ServiceManagementResponse platformResponse = processor.listServicesByType(platformReq);
 
                 if (DEBUG)
                 {
@@ -1025,7 +1042,7 @@ public class ApplicationManagementController
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    List<Service> platformList = platformResponse.getPlatformList();
+                    List<Service> platformList = platformResponse.getServiceList();
 
                     if (DEBUG)
                     {
@@ -1036,14 +1053,14 @@ public class ApplicationManagementController
                     {
                         Map<String, String> platformListing = new HashMap<>();
 
-                        for (Service platform : platformList)
+                        for (Service resPlatform : platformList)
                         {
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("Service: {}", platform);
+                                DEBUGGER.debug("Service: {}", resPlatform);
                             }
 
-                            platformListing.put(platform.getGuid(), platform.getName());
+                            platformListing.put(resPlatform.getGuid(), resPlatform.getName());
                         }
 
                         if (DEBUG)
@@ -1120,7 +1137,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1131,7 +1148,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1142,7 +1159,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1258,7 +1275,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1269,7 +1286,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1280,7 +1297,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1416,7 +1433,7 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
+        final IServiceManagementProcessor processor = new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -1427,7 +1444,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1438,7 +1455,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1449,7 +1466,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1495,7 +1512,7 @@ public class ApplicationManagementController
                 platformRequest.setUserAccount(userAccount);
                 platformRequest.setRequestInfo(reqInfo);
                 platformRequest.setServiceId(this.platformMgmt);
-                platformRequest.setPlatform(reqPlatform);
+                platformRequest.setService(reqPlatform);
                 platformRequest.setApplicationId(this.appConfig.getApplicationId());
                 platformRequest.setApplicationName(this.appConfig.getApplicationName());
 
@@ -1504,7 +1521,7 @@ public class ApplicationManagementController
                     DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                 }
 
-                ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                ServiceManagementResponse platformResponse = processor.getServiceData(platformRequest);
 
                 if (DEBUG)
                 {
@@ -1513,7 +1530,7 @@ public class ApplicationManagementController
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    Service resPlatform = platformResponse.getPlatformData();
+                    Service resPlatform = platformResponse.getService();
 
                     if (DEBUG)
                     {
@@ -1598,7 +1615,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1609,7 +1626,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1620,7 +1637,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -1769,7 +1786,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -1780,7 +1797,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -1791,7 +1808,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2022,7 +2039,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2033,7 +2050,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2044,7 +2061,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2188,7 +2205,7 @@ public class ApplicationManagementController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
+        final IServiceManagementProcessor platformMgr = new ServiceManagementProcessorImpl();
         final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
 
         if (DEBUG)
@@ -2200,7 +2217,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2211,7 +2228,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2222,7 +2239,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2268,7 +2285,7 @@ public class ApplicationManagementController
                 platformRequest.setUserAccount(userAccount);
                 platformRequest.setRequestInfo(reqInfo);
                 platformRequest.setServiceId(this.platformMgmt);
-                platformRequest.setPlatform(reqPlatform);
+                platformRequest.setService(reqPlatform);
                 platformRequest.setApplicationId(this.appConfig.getApplicationId());
                 platformRequest.setApplicationName(this.appConfig.getApplicationName());
 
@@ -2277,7 +2294,7 @@ public class ApplicationManagementController
                     DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                 }
 
-                ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                ServiceManagementResponse platformResponse = platformMgr.getServiceData(platformRequest);
 
                 if (DEBUG)
                 {
@@ -2286,7 +2303,7 @@ public class ApplicationManagementController
 
                 if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
-                    Service resPlatform = platformResponse.getPlatformData();
+                    Service resPlatform = platformResponse.getService();
 
                     if (DEBUG)
                     {
@@ -2418,7 +2435,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2429,7 +2446,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2440,7 +2457,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2544,7 +2561,6 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor processor = new ApplicationManagementProcessorImpl();
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -2555,7 +2571,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2566,7 +2582,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2577,7 +2593,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2661,66 +2677,10 @@ public class ApplicationManagementController
                 if (response.getRequestStatus() == CoreServicesStatus.SUCCESS)
                 {
                     // app added
-                    ServiceManagementRequest platformReq = new ServiceManagementRequest();
-                    platformReq.setRequestInfo(reqInfo);
-                    platformReq.setServiceId(this.platformMgmt);
-                    platformReq.setUserAccount(userAccount);
-                    platformReq.setApplicationId(this.appConfig.getApplicationId());
-                    platformReq.setApplicationName(this.appConfig.getApplicationName());
 
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceManagementRequest: {}", platformReq);
-                    }
-
-                    ServiceManagementResponse platformResponse = platformMgr.listPlatforms(platformReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("ServiceManagementResponse: {}", platformResponse);
-                    }
-
-                    if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-                    {
-                        List<Service> platformList = platformResponse.getPlatformList();
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformList: {}", platformList);
-                        }
-
-                        if ((platformList != null) && (platformList.size() != 0))
-                        {
-                            Map<String, String> platformListing = new HashMap<>();
-
-                            for (Service platform : platformList)
-                            {
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Service: {}", platform);
-                                }
-
-                                platformListing.put(platform.getGuid(), platform.getName());
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("platformListing: {}", platformListing);
-                            }
-
-                            mView.addObject("platformListing", platformListing);
-                        }
-                    }
-                    else if (platformResponse.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
-                    {
-                        mView.setViewName(this.appConfig.getUnauthorizedPage());
-
-                        return mView;
-                    }
-
+                    mView = new ModelAndView(new RedirectView());
                     mView.addObject(Constants.RESPONSE_MESSAGE, this.messageApplicationAdded);
-                    mView.addObject("command", new ApplicationRequest());
-                    mView.setViewName(this.addAppPage);
+                    mView.setViewName(this.addApplicationRedirect);
                 }
                 else if (response.getRequestStatus() == CoreServicesStatus.UNAUTHORIZED)
                 {
@@ -2734,12 +2694,6 @@ public class ApplicationManagementController
             catch (ApplicationManagementException amx)
             {
                 ERROR_RECORDER.error(amx.getMessage(), amx);
-
-                mView.setViewName(this.appConfig.getErrorResponsePage());
-            }
-            catch (ServiceManagementException pmx)
-            {
-                ERROR_RECORDER.error(pmx.getMessage(), pmx);
 
                 mView.setViewName(this.appConfig.getErrorResponsePage());
             }
@@ -2776,7 +2730,7 @@ public class ApplicationManagementController
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
         final IApplicationManagementProcessor appMgr = new ApplicationManagementProcessorImpl();
-        final IPlatformManagementProcessor platformMgr = new PlatformManagementProcessorImpl();
+        final IServiceManagementProcessor platformMgr = new ServiceManagementProcessorImpl();
 
         if (DEBUG)
         {
@@ -2787,7 +2741,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
@@ -2798,7 +2752,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
@@ -2809,7 +2763,7 @@ public class ApplicationManagementController
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
@@ -2902,7 +2856,7 @@ public class ApplicationManagementController
                     platformRequest.setUserAccount(userAccount);
                     platformRequest.setRequestInfo(reqInfo);
                     platformRequest.setServiceId(this.platformMgmt);
-                    platformRequest.setPlatform(reqPlatform);
+                    platformRequest.setService(reqPlatform);
                     platformRequest.setApplicationId(this.appConfig.getApplicationId());
                     platformRequest.setApplicationName(this.appConfig.getApplicationName());
 
@@ -2911,7 +2865,7 @@ public class ApplicationManagementController
                         DEBUGGER.debug("ServiceManagementRequest: {}", platformRequest);
                     }
 
-                    ServiceManagementResponse platformResponse = platformMgr.getPlatformData(platformRequest);
+                    ServiceManagementResponse platformResponse = platformMgr.getServiceData(platformRequest);
 
                     if (DEBUG)
                     {
@@ -2920,7 +2874,7 @@ public class ApplicationManagementController
 
                     if (platformResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
                     {
-                        Service resPlatform = platformResponse.getPlatformData();
+                        Service resPlatform = platformResponse.getService();
 
                         if (DEBUG)
                         {

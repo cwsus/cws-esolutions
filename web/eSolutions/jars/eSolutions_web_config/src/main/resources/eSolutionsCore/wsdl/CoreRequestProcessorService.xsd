@@ -246,28 +246,6 @@
             <xsd:element minOccurs="0" name="zoneData" type="xsd:anySimpleType" />
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:complexType name="searchResult">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="entryCount" type="xsd:int" />
-            <xsd:element minOccurs="0" name="path" type="xsd:string" />
-            <xsd:element minOccurs="0" name="title" type="xsd:string" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="searchRequest">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="startPage" type="xsd:int" />
-            <xsd:element minOccurs="0" name="searchLimit" type="xsd:int" />
-            <xsd:element minOccurs="0" name="searchTerms" type="xsd:string" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:complexType name="searchResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="entryCount" type="xsd:int" />
-            <xsd:element minOccurs="0" name="response" type="xsd:string" />
-            <xsd:element maxOccurs="unbounded" minOccurs="0" name="results" nillable="true" type="searchResult" />
-            <xsd:element minOccurs="0" name="requestStatus" type="coreServicesStatus" />
-        </xsd:sequence>
-    </xsd:complexType>
 
     <xsd:element name="DNSServiceException" type="DNSServiceException" />
     <xsd:complexType name="DNSServiceException">
@@ -277,12 +255,6 @@
     </xsd:complexType>
     <xsd:element name="AuthenticationException" type="AuthenticationException" />
     <xsd:complexType name="AuthenticationException">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="message" type="xsd:string" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="SearchRequestException" type="SearchRequestException" />
-    <xsd:complexType name="SearchRequestException">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="message" type="xsd:string" />
         </xsd:sequence>
@@ -380,66 +352,6 @@
     </xsd:complexType>
     <xsd:element name="performSiteTransferResponse" type="performSiteTransferResponse" />
     <xsd:complexType name="performSiteTransferResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doServerSearch" type="doServerSearch" />
-    <xsd:complexType name="doServerSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doServerSearchResponse" type="doServerSearchResponse" />
-    <xsd:complexType name="doServerSearchResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doMessageSearch" type="doMessageSearch" />
-    <xsd:complexType name="doMessageSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doMessageSearchResponse" type="doMessageSearchResponse" />
-    <xsd:complexType name="doMessageSearchResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doApplicationSearch" type="doApplicationSearch" />
-    <xsd:complexType name="doApplicationSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doApplicationSearchResponse" type="doApplicationSearchResponse" />
-    <xsd:complexType name="doApplicationSearchResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doServiceSearch" type="doServiceSearch" />
-    <xsd:complexType name="doServiceSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doServiceSearchResponse" type="doServiceSearchResponse" />
-    <xsd:complexType name="doServiceSearchResponse">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="return" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doSiteSearch" type="doSiteSearch" />
-    <xsd:complexType name="doSiteSearch">
-        <xsd:sequence>
-            <xsd:element minOccurs="0" name="request" />
-        </xsd:sequence>
-    </xsd:complexType>
-    <xsd:element name="doSiteSearchResponse" type="doSiteSearchResponse" />
-    <xsd:complexType name="doSiteSearchResponse">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="return" />
         </xsd:sequence>

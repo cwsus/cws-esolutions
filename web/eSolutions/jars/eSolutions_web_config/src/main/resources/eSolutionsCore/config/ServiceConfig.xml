@@ -14,14 +14,12 @@
     </application-config>
 
     <agent-config>
-        <listenerType>MQ</listenerType>
-        <tcpPort /> <!-- if listener type is tcp, specify port here -->
-        <connectionName>tcp://192.168.10.53:61616</connectionName>
-        <requestQueue>CWS.REQUEST.QUEUE</requestQueue>
+        <connectionName>tcp://127.0.0.1:61616</connectionName>
+        <requestQueue>CWS.REQUEST.TOPIC</requestQueue>
         <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
-        <trustStoreFile /> <!-- we always talk to the agent over an ssl conn. path to trust store here -->
-        <trustStorePass /> <!-- password to unlock truststore -->
-        <trustStoreType />
+        <username>cwsmq</username>
+        <password>FwrC6ATgxYq1EyT6Lt3wdhpexGr/iR6BvmIJvxyV+FwfDxU5TKiDaBXyXZCXRM5IJ9BS33RSi2Bv27LL+0OyFw==</password>
+        <salt>6Sp04NLgGRCzvN6TblJNtQaYVFTe4dVUYx6v18CO3dZNJbU7JAbl00IGavYelRz1</salt>
     </agent-config>
 
     <proxy-config>

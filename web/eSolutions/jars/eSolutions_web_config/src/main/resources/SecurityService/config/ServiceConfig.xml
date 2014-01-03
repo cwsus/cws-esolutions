@@ -55,7 +55,7 @@
 
     <auth-repo>
         <repoType>LDAP</repoType>
-        <configFile>/opt/cws/eSolutions/config/ldapConfig.properties</configFile>
+        <configFile>/opt/cws/eSolutions/etc/ldapConfig.properties</configFile>
         <repositoryHost>repositoryHost</repositoryHost>
         <repositoryPort>repositoryPort</repositoryPort>
         <repositoryConnTimeout>repositoryConnTimeout</repositoryConnTimeout>

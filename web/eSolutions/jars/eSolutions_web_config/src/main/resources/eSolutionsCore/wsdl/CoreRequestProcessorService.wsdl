@@ -14,17 +14,8 @@
     <wsdl:message name="performSiteTransfer">
         <wsdl:part name="parameters" element="tns:performSiteTransfer" />
     </wsdl:message>
-    <wsdl:message name="doMessageSearch">
-        <wsdl:part name="parameters" element="tns:doMessageSearch" />
-    </wsdl:message>
     <wsdl:message name="performSiteTransferResponse">
         <wsdl:part name="parameters" element="tns:performSiteTransferResponse" />
-    </wsdl:message>
-    <wsdl:message name="doMessageSearchResponse">
-        <wsdl:part name="parameters" element="tns:doMessageSearchResponse" />
-    </wsdl:message>
-    <wsdl:message name="doServerSearch">
-        <wsdl:part name="parameters" element="tns:doServerSearch" />
     </wsdl:message>
     <wsdl:message name="verifyUserSecurityConfig">
         <wsdl:part name="parameters" element="tns:verifyUserSecurityConfig" />
@@ -32,20 +23,8 @@
     <wsdl:message name="performLookup">
         <wsdl:part name="parameters" element="tns:performLookup" />
     </wsdl:message>
-    <wsdl:message name="doApplicationSearch">
-        <wsdl:part name="parameters" element="tns:doApplicationSearch" />
-    </wsdl:message>
     <wsdl:message name="pushNewService">
         <wsdl:part name="parameters" element="tns:pushNewService" />
-    </wsdl:message>
-    <wsdl:message name="doServerSearchResponse">
-        <wsdl:part name="parameters" element="tns:doServerSearchResponse" />
-    </wsdl:message>
-    <wsdl:message name="doServiceSearch">
-        <wsdl:part name="parameters" element="tns:doServiceSearch" />
-    </wsdl:message>
-    <wsdl:message name="doSiteSearch">
-        <wsdl:part name="parameters" element="tns:doSiteSearch" />
     </wsdl:message>
     <wsdl:message name="getDataFromDatabaseResponse">
         <wsdl:part name="parameters" element="tns:getDataFromDatabaseResponse" />
@@ -58,9 +37,6 @@
     </wsdl:message>
     <wsdl:message name="performLookupResponse">
         <wsdl:part name="parameters" element="tns:performLookupResponse" />
-    </wsdl:message>
-    <wsdl:message name="doApplicationSearchResponse">
-        <wsdl:part name="parameters" element="tns:doApplicationSearchResponse" />
     </wsdl:message>
     <wsdl:message name="AuthenticationException">
         <wsdl:part name="AuthenticationException" element="tns:AuthenticationException" />
@@ -77,15 +53,6 @@
     <wsdl:message name="obtainUserSecurityConfig">
         <wsdl:part name="parameters" element="tns:obtainUserSecurityConfig" />
     </wsdl:message>
-    <wsdl:message name="SearchRequestException">
-        <wsdl:part name="SearchRequestException" element="tns:SearchRequestException" />
-    </wsdl:message>
-    <wsdl:message name="doServiceSearchResponse">
-        <wsdl:part name="parameters" element="tns:doServiceSearchResponse" />
-    </wsdl:message>
-    <wsdl:message name="doSiteSearchResponse">
-        <wsdl:part name="parameters" element="tns:doSiteSearchResponse" />
-    </wsdl:message>
     <wsdl:message name="DNSServiceException">
         <wsdl:part name="DNSServiceException" element="tns:DNSServiceException" />
     </wsdl:message>
@@ -100,21 +67,6 @@
     </wsdl:message>
 
     <wsdl:portType name="ICoreRequestProcessorService">
-        <wsdl:operation name="doMessageSearch">
-            <wsdl:input name="doMessageSearch" message="tns:doMessageSearch" />
-            <wsdl:output name="doMessageSearchResponse" message="tns:doMessageSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
-        <wsdl:operation name="doServiceSearch">
-            <wsdl:input name="doServiceSearch" message="tns:doServiceSearch" />
-            <wsdl:output name="doServiceSearchResponse" message="tns:doServiceSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
-        <wsdl:operation name="doSiteSearch">
-            <wsdl:input name="doSiteSearch" message="tns:doSiteSearch" />
-            <wsdl:output name="doSiteSearchResponse" message="tns:doSiteSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
         <wsdl:operation name="performLookup">
             <wsdl:input name="performLookup" message="tns:performLookup" />
             <wsdl:output name="performLookupResponse" message="tns:performLookupResponse" />
@@ -124,11 +76,6 @@
             <wsdl:input name="pushNewService" message="tns:pushNewService" />
             <wsdl:output name="pushNewServiceResponse" message="tns:pushNewServiceResponse" />
             <wsdl:fault name="DNSServiceException" message="tns:DNSServiceException" />
-        </wsdl:operation>
-        <wsdl:operation name="doApplicationSearch">
-            <wsdl:input name="doApplicationSearch" message="tns:doApplicationSearch" />
-            <wsdl:output name="doApplicationSearchResponse" message="tns:doApplicationSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
         </wsdl:operation>
         <wsdl:operation name="getDataFromDatabase">
             <wsdl:input name="getDataFromDatabase" message="tns:getDataFromDatabase" />
@@ -155,11 +102,6 @@
             <wsdl:output name="obtainUserSecurityConfigResponse" message="tns:obtainUserSecurityConfigResponse" />
             <wsdl:fault name="AuthenticationException" message="tns:AuthenticationException" />
         </wsdl:operation>
-        <wsdl:operation name="doServerSearch">
-            <wsdl:input name="doServerSearch" message="tns:doServerSearch" />
-            <wsdl:output name="doServerSearchResponse" message="tns:doServerSearchResponse" />
-            <wsdl:fault name="SearchRequestException" message="tns:SearchRequestException" />
-        </wsdl:operation>
         <wsdl:operation name="createNewService">
             <wsdl:input name="createNewService" message="tns:createNewService" />
             <wsdl:output name="createNewServiceResponse" message="tns:createNewServiceResponse" />
@@ -169,42 +111,6 @@
 
     <wsdl:binding name="CoreRequestProcessorServiceSoapBinding" type="tns:ICoreRequestProcessorService">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
-        <wsdl:operation name="doMessageSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doMessageSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doMessageSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="doServiceSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doServiceSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doServiceSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="doSiteSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doSiteSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doSiteSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
         <wsdl:operation name="performLookup">
             <soap:operation soapAction="" style="document" />
             <wsdl:input name="performLookup">
@@ -227,18 +133,6 @@
             </wsdl:output>
             <wsdl:fault name="DNSServiceException">
                 <soap:fault name="DNSServiceException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="doApplicationSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doApplicationSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doApplicationSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="getDataFromDatabase">
@@ -299,18 +193,6 @@
             </wsdl:output>
             <wsdl:fault name="AuthenticationException">
                 <soap:fault name="AuthenticationException" use="literal" />
-            </wsdl:fault>
-        </wsdl:operation>
-        <wsdl:operation name="doServerSearch">
-            <soap:operation soapAction="" style="document" />
-            <wsdl:input name="doServerSearch">
-                <soap:body use="literal" />
-            </wsdl:input>
-            <wsdl:output name="doServerSearchResponse">
-                <soap:body use="literal" />
-            </wsdl:output>
-            <wsdl:fault name="SearchRequestException">
-                <soap:fault name="SearchRequestException" use="literal" />
             </wsdl:fault>
         </wsdl:operation>
         <wsdl:operation name="createNewService">

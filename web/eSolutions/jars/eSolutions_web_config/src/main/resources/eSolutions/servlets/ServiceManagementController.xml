@@ -9,36 +9,22 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <bean id="platformRequestValidator" class="com.cws.esolutions.web.validators.PlatformValidator">
-        <property name="messagePlatformStatusRequired" value="svc.mgmt.service.status.required" />
-        <property name="messagePlatformNameRequired" value="svc.mgmt.service.name.required" />
-        <property name="messagePlatformServersRequired" value="svc.mgmt.platform.servers.required" />
-    </bean>
-
-    <bean id="datactrValidator" class="com.cws.esolutions.web.validators.DatacenterValidator">
-        <property name="messageDatacenterNameRequired" value="svc.mgmt.service.name.required" />
-        <property name="messageDatacenterStatusRequired" value="svc.mgmt.service.status.required" />
-        <property name="messageDatacenterDescriptionRequired" value="svc.mgmt.datacenter.description.required" />
-    </bean>
-
-    <bean id="searchRequestValidator" class="com.cws.esolutions.web.validators.SearchRequestValidator">
-        <property name="appConfig">
-            <ref bean="appConfig" />
-        </property>
+    <bean id="serviceRequestValidator" class="com.cws.esolutions.web.validators.ServiceValidator">
+        <property name="messageNameRequired" value="svc.mgmt.name.required" />
+        <property name="messageTypeRequired" value="svc.mgmt.type.required" />
+        <property name="messageDescriptionRequired" value="svc.mgmt.description.required" />
+        <property name="messageStatusRequired" value="svc.mgmt.status.required" />
+        <property name="messageRegionRequired" value="svc.mgmt.region.required" />
+        <property name="messagePartitionRequired" value="svc.mgmt.partition.required" />
+        <property name="messageServersRequired" value="svc.mgmt.platform.servers.required" />
     </bean>
 
     <bean id="serviceManagementController" class="com.cws.esolutions.web.controllers.ServiceManagementController">
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="searchValidator">
-            <ref bean="searchRequestValidator" />
-        </property>
-        <property name="platformValidator">
-            <ref bean="platformRequestValidator" />
-        </property>
-        <property name="datacenterValidator">
-            <ref bean="datactrValidator" />
+        <property name="serviceValidator">
+            <ref bean="serviceRequestValidator" />
         </property>
         <property name="serviceName" value="svcMgmt" />
         <property name="serviceId" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />

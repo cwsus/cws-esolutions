@@ -18,11 +18,11 @@ import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
-import com.cws.esolutions.core.processors.dto.DataCenter;
+import com.cws.esolutions.core.processors.dto.Service;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
- * File: DatacenterValidator.java
+ * File: ServiceValidator.java
  *
  * History
  *
@@ -30,20 +30,20 @@ import com.cws.esolutions.core.processors.dto.DataCenter;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-public class DatacenterValidator implements Validator
+public class ServiceValidator implements Validator
 {
     private String messageDatacenterNameRequired = null;
     private String messageDatacenterStatusRequired = null;
     private String messageDatacenterDescriptionRequired = null;
 
-    private static final String CNAME = DatacenterValidator.class.getName();
+    private static final String CNAME = ServiceValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setMessageDatacenterNameRequired(final String value)
     {
-        final String methodName = DatacenterValidator.CNAME + "#setMessageDatacenterNameRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageDatacenterNameRequired(final String value)";
 
         if (DEBUG)
         {
@@ -56,7 +56,7 @@ public class DatacenterValidator implements Validator
 
     public final void setMessageDatacenterStatusRequired(final String value)
     {
-        final String methodName = DatacenterValidator.CNAME + "#setMessageArticleCauseRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageArticleCauseRequired(final String value)";
 
         if (DEBUG)
         {
@@ -69,7 +69,7 @@ public class DatacenterValidator implements Validator
 
     public final void setMessageDatacenterDescriptionRequired(final String value)
     {
-        final String methodName = DatacenterValidator.CNAME + "#setMessageDatacenterDescriptionRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageDatacenterDescriptionRequired(final String value)";
 
         if (DEBUG)
         {
@@ -83,7 +83,7 @@ public class DatacenterValidator implements Validator
     @Override
     public final boolean supports(final Class<?> value)
     {
-        final String methodName = DatacenterValidator.CNAME + "#supports(final Class<?> value)";
+        final String methodName = ServiceValidator.CNAME + "#supports(final Class<?> value)";
 
         if (DEBUG)
         {
@@ -91,7 +91,7 @@ public class DatacenterValidator implements Validator
             DEBUGGER.debug("Value: ", value);
         }
 
-        final boolean isSupported = DataCenter.class.isAssignableFrom(value);
+        final boolean isSupported = Service.class.isAssignableFrom(value);
 
         if (DEBUG)
         {
@@ -104,7 +104,7 @@ public class DatacenterValidator implements Validator
     @Override
     public final void validate(final Object target, final Errors errors)
     {
-        final String methodName = DatacenterValidator.CNAME + "#validate(final Object target, final Errors errors)";
+        final String methodName = ServiceValidator.CNAME + "#validate(final Object target, final Errors errors)";
 
         if (DEBUG)
         {
