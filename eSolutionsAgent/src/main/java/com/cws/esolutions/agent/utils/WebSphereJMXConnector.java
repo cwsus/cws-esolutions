@@ -25,7 +25,9 @@ package com.cws.esolutions.agent.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import org.slf4j.Logger;
 import java.util.Properties;
+import org.slf4j.LoggerFactory;
 import com.ibm.websphere.management.AdminClient;
 import com.ibm.websphere.management.AdminClientFactory;
 import com.ibm.websphere.management.exception.ConnectorException;
@@ -38,6 +40,10 @@ import com.cws.esolutions.agent.config.xml.JMXConfig;
 public final class WebSphereJMXConnector
 {
     private static final String CNAME = WebSphereJMXConnector.class.getName();
+
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
     @Override
     public static final AdminClient getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws ConnectorException

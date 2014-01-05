@@ -25,9 +25,11 @@ package com.cws.esolutions.agent.utils;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import org.slf4j.Logger;
 import java.io.IOException;
 import java.util.Hashtable;
 import javax.naming.Context;
+import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXServiceURL;
@@ -46,6 +48,10 @@ public final class WebLogicJMXConnector
     private static final String CNAME = WebLogicJMXConnector.class.getName();
     private static final String PROTOCOL_PACKAGES = "weblogic.management.remote";
 
+    private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
+    private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
+    private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
+
     public static final JMXConnector getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException
     {
         final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException";
@@ -62,13 +68,13 @@ public final class WebLogicJMXConnector
 			Hashtable<String, Object> jmxTable = new Hashtable<String, Object>();
             jmxTable.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, PROTOCOL_PACKAGES);
 
-            if (!(jmxConfig.getIsSecure()))
+            if (jmxConfig.getIsSecure())
             {
-                UsernameAndPassword authInfo = new UsernameAndPassword(
-                    UserConfigFileManager.getUsernameAndPassword(
+                UsernameAndPassword authInfo = new UsernameAndPassword();
+                authInfo = UserConfigFileManager.getUsernameAndPassword(
                         jmxConfig.getUserConfig(),
 					    jmxConfig.getKeyConfig(),
-                        "weblogic.management"));
+                        "weblogic.management");
 
                 if (DEBUG)
                 {
