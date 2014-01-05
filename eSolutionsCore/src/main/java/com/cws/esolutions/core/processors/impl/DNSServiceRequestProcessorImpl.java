@@ -798,7 +798,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                                 authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
                                 authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
 
-                                NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
+                                NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
 
                                 List<String[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
 

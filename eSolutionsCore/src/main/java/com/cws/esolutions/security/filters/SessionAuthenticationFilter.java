@@ -64,7 +64,6 @@ public class SessionAuthenticationFilter implements Filter
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    private static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.WARN_LOGGER + CNAME);
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     @Override
@@ -84,7 +83,7 @@ public class SessionAuthenticationFilter implements Filter
         {
             if (filterConfig.getInitParameter(SessionAuthenticationFilter.FILTER_CONFIG_PARAM_NAME) == null)
             {
-                WARN_RECORDER.warn("Filter configuration not found. Using default !");
+                ERROR_RECORDER.error("Filter configuration not found. Using default !");
 
                 rBundle = ResourceBundle.getBundle(SessionAuthenticationFilter.FILTER_CONFIG_FILE_NAME);
             }
