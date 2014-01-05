@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.keymgmt.factory;
+package com.cws.esolutions.security.dao.keymgmt.factory;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.keymgmt.factory
+ * Package: com.cws.esolutions.security.dao.keymgmt.factory
  * File: KeyManagementFactory.java
  *
  * History
@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
