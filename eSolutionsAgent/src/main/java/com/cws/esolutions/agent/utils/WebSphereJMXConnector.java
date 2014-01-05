@@ -30,17 +30,19 @@ import com.ibm.websphere.management.AdminClient;
 import com.ibm.websphere.management.AdminClientFactory;
 import com.ibm.websphere.management.exception.ConnectorException;
 
+import com.cws.esolutions.agent.AgentConstants;
+import com.cws.esolutions.agent.config.xml.JMXConfig;
 /**
  * @see com.cws.esolutions.agent.jmx.interfaces.JMXConnection
  */
-public static final class WebSphereJMXConnector
+public final class WebSphereJMXConnector
 {
     private static final String CNAME = WebSphereJMXConnector.class.getName();
 
     @Override
-    public static final AdminClient getJMXConnector(final String mbeanName) throws ConnectorException
+    public static final AdminClient getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws ConnectorException
     {
-        final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final String mbeanName) throws ConnectorException";
+        final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws ConnectorException";
 
         if (DEBUG)
         {

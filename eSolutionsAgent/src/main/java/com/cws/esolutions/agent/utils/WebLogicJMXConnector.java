@@ -35,17 +35,20 @@ import weblogic.security.UsernameAndPassword;
 import weblogic.deploy.api.tools.SessionHelper;
 import weblogic.security.UserConfigFileManager;
 import javax.management.remote.JMXConnectorFactory;
+
+import com.cws.esolutions.agent.AgentConstants;
+import com.cws.esolutions.agent.config.xml.JMXConfig;
 /**
  * @see com.cws.esolutions.agent.jmx.interfaces.JMXConnection
  */
-public static final class WebLogicJMXConnector
+public final class WebLogicJMXConnector
 {
     private static final String CNAME = WebLogicJMXConnector.class.getName();
     private static final String PROTOCOL_PACKAGES = "weblogic.management.remote";
 
-    public static final JMXConnector getJMXConnector(final String mbeanName) throws IOException, MalformedURLException
+    public static final JMXConnector getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException
     {
-        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName) throws IOException, MalformedURLException";
+        final String methodName = WebLogicJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws IOException, MalformedURLException";
 
         if (DEBUG)
         {
@@ -105,7 +108,7 @@ public static final class WebLogicJMXConnector
         {
             ERROR_RECORDER.error(mx.getMessage(), mx);
 
-            throw new MalformedURLException(mx.getMessage(), mx);
+            throw new MalformedURLException(mx.getMessage());
         }
         catch (IOException iox)
         {
