@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.keymgmt.interfaces;
+package com.cws.esolutions.security.dao.keymgmt.interfaces;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.keymgmt.interfaces
+ * Package: com.cws.esolutions.security.dao.keymgmt.interfaces
  * File: KeyManager.java
  *
  * History
@@ -29,13 +29,13 @@ import org.slf4j.Logger;
 import java.security.KeyPair;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
+import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;

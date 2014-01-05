@@ -29,18 +29,18 @@ package com.cws.esolutions.security.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.FileSecurityConfig;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
-import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
+import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Interface for the Application Data DAO layer. Allows access

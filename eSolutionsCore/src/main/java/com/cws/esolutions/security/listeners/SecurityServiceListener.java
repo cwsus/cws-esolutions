@@ -43,8 +43,8 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.security.dao.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.utils.DAOInitializer;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.DataSourceManager;
 import com.cws.esolutions.security.exception.SecurityServiceException;

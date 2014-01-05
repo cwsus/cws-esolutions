@@ -9,20 +9,12 @@
     <distributable />
 
     <context-param>
-        <param-name>webmaster</param-name>
-        <param-value>admins@caspersbox.com</param-value>
-    </context-param>
-    <context-param>
-        <param-name>applicationName</param-name>
-        <param-value>esolutions</param-value>
-    </context-param>
-    <context-param>
         <param-name>eSolutionsCoreConfig</param-name>
         <param-value>eSolutionsCore/config/ServiceConfig.xml</param-value>
     </context-param>
     <context-param>
         <param-name>eSolutionsCoreLogger</param-name>
-        <param-value>eSolutionsCore/config/logging.xml</param-value>
+        <param-value>eSolutionsCore/logging/logging.xml</param-value>
     </context-param>
     <context-param>
         <param-name>SecurityServiceConfig</param-name>
@@ -30,11 +22,11 @@
     </context-param>
     <context-param>
         <param-name>SecurityServiceLogger</param-name>
-        <param-value>SecurityService/config/logging.xml</param-value>
+        <param-value>SecurityService/logging/logging.xml</param-value>
     </context-param>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath:/eSolutions/eSolutions-app.xml</param-value>
+        <param-value>classpath:eSolutions/eSolutions-app.xml</param-value>
     </context-param>
     <context-param>
         <param-name>quartz:config-file</param-name>
@@ -88,7 +80,7 @@
         <filter-class>com.cws.esolutions.security.filters.SSLEnforcementFilter</filter-class>
         <init-param>
             <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/SSLEnforcementFilter</param-value>
+            <param-value>SecurityService/filters/SSLEnforcementFilter</param-value>
         </init-param>
     </filter>
     <filter id="SessionAuthenticationFilter">
@@ -98,7 +90,7 @@
         <filter-class>com.cws.esolutions.security.filters.SessionAuthenticationFilter</filter-class>
         <init-param>
             <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/SessionAuthenticationFilter</param-value>
+            <param-value>SecurityService/filters/SessionAuthenticationFilter</param-value>
         </init-param>
     </filter>
     <filter id="RequestAuthorizationFilter">
@@ -108,7 +100,7 @@
         <filter-class>com.cws.esolutions.security.filters.RequestAuthorizationFilter</filter-class>
         <init-param>
             <param-name>filter-config</param-name>
-            <param-value>SecurityService/config/RequestAuthorizationFilter</param-value>
+            <param-value>SecurityService/filters/RequestAuthorizationFilter</param-value>
         </init-param>
     </filter>
     <filter id="SpringEncodingFilter">
@@ -145,7 +137,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:/eSolutions/controller_config.xml</param-value>
+            <param-value>classpath:eSolutions/controller_config.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>
@@ -159,7 +151,7 @@
         </init-param>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:/eSolutions/webservice_config.xml</param-value>
+            <param-value>classpath:eSolutions/webservice_config.xml</param-value>
         </init-param>
         <load-on-startup>2</load-on-startup>
     </servlet>

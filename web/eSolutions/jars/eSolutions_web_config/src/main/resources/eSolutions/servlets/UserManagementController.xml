@@ -9,7 +9,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <import resource="classpath:/eSolutions/mailTemplates/UserManagement.xml" />
+    <import resource="classpath:eSolutions/mailTemplates/UserManagement.xml" />
 
     <bean id="accountValidator" class="com.cws.esolutions.web.validators.UserAccountValidator">
         <property name="messageUsernameRequired" value="user.mgmt.user.name.required" />

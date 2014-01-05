@@ -10,5 +10,5 @@
 
     <context:annotation-config />
 
-    <import resource="classpath:/eSolutions/servlets/CoreRequestProcessorService.xml" />
+    <import resource="classpath:eSolutions/servlets/CoreRequestProcessorService.xml" />
 </beans>

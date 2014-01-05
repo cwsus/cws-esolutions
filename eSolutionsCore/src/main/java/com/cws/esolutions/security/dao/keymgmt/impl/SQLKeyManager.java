@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.keymgmt.impl;
+package com.cws.esolutions.security.dao.keymgmt.impl;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.keymgmt.impl
+ * Package: com.cws.esolutions.security.dao.keymgmt.impl
  * File: SQLKeyManager.java
  *
  * History
@@ -41,10 +41,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
- * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager
+ * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager
  */
 public class SQLKeyManager implements KeyManager
 {
@@ -52,7 +52,7 @@ public class SQLKeyManager implements KeyManager
     private static final DataSource dataSource = (DataSource) svcBean.getAuthDataSource();
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#returnKeys(java.lang.String)
      */
     @Override
     public synchronized KeyPair returnKeys(final String guid) throws KeyManagementException
@@ -215,7 +215,7 @@ public class SQLKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#createKeys(java.lang.String)
      */
     @Override
     public synchronized boolean createKeys(final String guid) throws KeyManagementException
@@ -392,7 +392,7 @@ public class SQLKeyManager implements KeyManager
     }
 
     /**
-     * @see com.cws.esolutions.security.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
+     * @see com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager#removeKeys(java.lang.String)
      */
     @Override
     public synchronized boolean removeKeys(final String guid) throws KeyManagementException

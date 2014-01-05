@@ -42,8 +42,8 @@ import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -54,7 +54,6 @@ import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -194,16 +193,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                     if (isUserCreated)
                     {
-                        // generate a key for the user
-                        try
-                        {
-                            keyManager.createKeys(userGuid);
-                        }
-                        catch (KeyManagementException kmx)
-                        {
-                            ERROR_RECORDER.error(kmx.getMessage(), kmx);
-                        }
-
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
 
                         // assign services (if any)

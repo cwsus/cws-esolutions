@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.dao;
+package com.cws.esolutions.security.utils;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.dao
+ * Package: com.cws.esolutions.security.utils
  * File: DAOInitializer.java
  *
  * History
@@ -47,10 +47,10 @@ import com.unboundid.ldap.sdk.LDAPConnectionPool;
 import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -60,7 +60,7 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  * @author khuntly
  * @version 1.0
  */
-public class DAOInitializer
+public final class DAOInitializer
 {
     private static final String DS_CONTEXT = "java:comp/env/";
     private static final String CNAME = DAOInitializer.class.getName();

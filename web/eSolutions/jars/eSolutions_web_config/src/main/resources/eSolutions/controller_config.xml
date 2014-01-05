@@ -27,7 +27,7 @@
     <bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
         <property name="definitions">
             <list>
-                <value>classpath:/tiles/templates.xml</value>
+                <value>classpath:tiles/templates.xml</value>
             </list>
         </property>
     </bean>
@@ -37,15 +37,15 @@
     </bean>
 
     <!-- import controllers -->
-    <import resource="classpath:/eSolutions/servlets/ApplicationManagementController.xml" />
-    <import resource="classpath:/eSolutions/servlets/DNSServiceController.xml" />
-    <import resource="classpath:/eSolutions/servlets/CommonController.xml" />
-    <import resource="classpath:/eSolutions/servlets/LoginController.xml" />
-    <import resource="classpath:/eSolutions/servlets/ServiceMessagingController.xml" />
-    <import resource="classpath:/eSolutions/servlets/OnlineResetController.xml" />
-    <import resource="classpath:/eSolutions/servlets/ServiceManagementController.xml" />
-    <import resource="classpath:/eSolutions/servlets/SystemCheckController.xml" />    
-    <import resource="classpath:/eSolutions/servlets/SystemManagementController.xml" />
-    <import resource="classpath:/eSolutions/servlets/UserAccountController.xml" />
-    <import resource="classpath:/eSolutions/servlets/UserManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/ApplicationManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/DNSServiceController.xml" />
+    <import resource="classpath:eSolutions/servlets/CommonController.xml" />
+    <import resource="classpath:eSolutions/servlets/LoginController.xml" />
+    <import resource="classpath:eSolutions/servlets/ServiceMessagingController.xml" />
+    <import resource="classpath:eSolutions/servlets/OnlineResetController.xml" />
+    <import resource="classpath:eSolutions/servlets/ServiceManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    
+    <import resource="classpath:eSolutions/servlets/SystemManagementController.xml" />
+    <import resource="classpath:eSolutions/servlets/UserAccountController.xml" />
+    <import resource="classpath:eSolutions/servlets/UserManagementController.xml" />
 </beans>

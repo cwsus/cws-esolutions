@@ -17,7 +17,7 @@
         </property>
         <property name="arguments">
             <list>
-                <value>classpath:logging/logging.xml</value>
+                <value>classpath:eSolutions/logging/logging.xml</value>
             </list>
         </property>
     </bean>
