@@ -80,7 +80,6 @@ public interface IAuthenticationProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.WARN_LOGGER + CNAME);
 
     /**
      * Performs agent authentication and validation for access to application.

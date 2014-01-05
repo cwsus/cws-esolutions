@@ -45,6 +45,7 @@ import com.cws.esolutions.agent.config.xml.JMXConfig;
  */
 public final class WebLogicJMXConnector
 {
+    private static final String JNDI_ROOT= "/jndi/";
     private static final String CNAME = WebLogicJMXConnector.class.getName();
     private static final String PROTOCOL_PACKAGES = "weblogic.management.remote";
 
@@ -66,7 +67,7 @@ public final class WebLogicJMXConnector
         try
         {
 			Hashtable<String, Object> jmxTable = new Hashtable<String, Object>();
-            jmxTable.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, PROTOCOL_PACKAGES);
+            jmxTable.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, WebLogicJMXConnector.PROTOCOL_PACKAGES);
 
             if (jmxConfig.getIsSecure())
             {
@@ -90,8 +91,9 @@ public final class WebLogicJMXConnector
                 DEBUGGER.debug("jmxTable: {}", jmxTable);
             }
 
-            JMXServiceURL jmxServiceURL = new JMXServiceURL(jmxConfig.getProtocol(), jmxConfig.getServerName(),
-											  jmxConfig.getNmPort(), JNDI_ROOT + mbeanName);
+            JMXServiceURL jmxServiceURL = new JMXServiceURL(jmxConfig.getProtocol(),
+                jmxConfig.getServerName(), jmxConfig.getNmPort(),
+                WebLogicJMXConnector.JNDI_ROOT + mbeanName);
 
             if (DEBUG)
             {

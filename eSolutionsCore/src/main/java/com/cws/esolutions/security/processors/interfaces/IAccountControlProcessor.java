@@ -82,7 +82,6 @@ public interface IAccountControlProcessor
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.WARN_LOGGER + CNAME);
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
     AccountControlResponse createNewUser(final AccountControlRequest request) throws AccountControlException;

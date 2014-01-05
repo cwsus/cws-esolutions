@@ -64,7 +64,6 @@ public interface IFileSecurityProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
-    static final Logger WARN_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.WARN_LOGGER + CNAME);
 
     FileSecurityResponse signFile(final FileSecurityRequest request) throws FileSecurityException;
 

@@ -45,7 +45,6 @@ public final class WebSphereJMXConnector
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
 
-    @Override
     public static final AdminClient getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws ConnectorException
     {
         final String methodName = WebSphereJMXConnector.CNAME + "#getJMXConnector(final String mbeanName, final JMXConfig jmxConfig) throws ConnectorException";
