@@ -17,7 +17,7 @@
     <bean id="coreRequestProcessorService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean">
         <property name="serviceInterface" value="com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService" />
         <property name="wsdlDocumentUrl" value="classpath:/eSolutionsCore/wsdl/CoreRequestProcessorService.wsdl" />
-        <property name="namespaceUri" value="http://esolutions.caspersbox.corp/s?q=esolutions" />
+        <property name="namespaceUri" value="http://esolutions.caspersbox.com/s?q=esolutions" />
         <property name="serviceName" value="CoreRequestProcessorService" />
         <property name="portName" value="CoreRequestProcessorServicePort" />
     </bean>

@@ -17,6 +17,8 @@
         <property name="messagePlatformRequired" value="app.mgmt.app.platform.required" />
         <property name="messageInstallPathRequired" value="app.mgmt.app.install.required" />
         <property name="messagePackageInstallerRequired" value="app.mgmt.jvm.name.required" />
+        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
+        <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">
@@ -26,8 +28,8 @@
         <property name="appConfig">
             <ref bean="appConfig" />
         </property>
-        <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
         <property name="serviceName" value="appMgmt" />
+        <property name="serviceId" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
         <property name="viewFilePage" value="AppMgmt_ViewFile" />
         <property name="addAppPage" value="AppMgmt_AddApplication" />
         <property name="defaultPage" value="AppMgmt_DefaultHandler" />
@@ -35,16 +37,11 @@
         <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
         <property name="deployAppPage" value="AppMgmt_DeployApplication" />
         <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
-        <property name="applMgmt" value="96E4E53E-FE87-446C-AF03-0F5BC6527B9D" />
         <property name="messageNoFileData" value="app.mgmt.no.file.data.received" />
-        <property name="platformMgmt" value="D1B5D088-32B3-4AA1-9FCF-822CB476B649" />
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />
         <property name="messageNoApplicationsFound" value="app.mgmt.no.applications" />
-        <property name="messageNoBinaryProvided" value="app.mgmt.application.no.files" />
-        <property name="messageFileUploaded" value="app.mgmt.application.file.uploaded" />
         <property name="messageApplicationRetired" value="app.mgmt.application.retired" />
-        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
-        <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
+        <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
         <property name="addApplicationRedirect" value="redirect:/ui/application-management/add-application" />
     </bean>
 </beans>

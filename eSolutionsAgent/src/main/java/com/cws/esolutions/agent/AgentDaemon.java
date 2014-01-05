@@ -26,28 +26,20 @@ package com.cws.esolutions.agent;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
-
 import org.slf4j.Logger;
-
 import javax.jms.Session;
 import javax.jms.Connection;
-
 import java.net.InetAddress;
-
 import javax.jms.Destination;
 import javax.jms.JMSException;
-
 import org.slf4j.LoggerFactory;
-
 import javax.jms.MessageProducer;
 import javax.jms.MessageConsumer;
 import javax.xml.bind.JAXBContext;
 import javax.jms.ConnectionFactory;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.JAXBException;
-
 import java.net.UnknownHostException;
-
 import org.apache.commons.daemon.Daemon;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.xml.DOMConfigurator;
@@ -58,8 +50,8 @@ import org.apache.commons.daemon.DaemonInitException;
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.mq.MQMessageHandler;
 import com.cws.esolutions.agent.utils.PasswordUtils;
-import com.cws.esolutions.agent.mq.MQExceptionHandler;
 import com.cws.esolutions.agent.config.enums.OSType;
+import com.cws.esolutions.agent.mq.MQExceptionHandler;
 import com.cws.esolutions.agent.config.xml.ConfigurationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -218,7 +210,7 @@ public class AgentDaemon implements Daemon
     @Override
     public void start()
     {
-        final String methodName = AgentDaemon.CNAME + "#start() throws Exception";
+        final String methodName = AgentDaemon.CNAME + "#start()";
 
         if (DEBUG)
         {
