@@ -45,7 +45,7 @@ import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcesso
  * @author khuntly
  * @version 1.0
  */
-@WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
+@WebService(targetNamespace = "http://esolutions.caspersbox.com/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorService")
 public interface ICoreRequestProcessorService extends IDNSServiceRequestProcessor, IAuthenticationProcessor

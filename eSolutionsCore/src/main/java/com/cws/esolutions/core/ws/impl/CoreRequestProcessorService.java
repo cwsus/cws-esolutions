@@ -41,7 +41,7 @@ import com.cws.esolutions.security.processors.exception.AuthenticationException;
 /**
  * @see com.cws.esolutions.core.ws.interfaces.ICoreRequestProcessorService
  */
-@WebService(targetNamespace = "http://esolutions.caspersbox.corp/s?q=esolutions",
+@WebService(targetNamespace = "http://esolutions.caspersbox.com/s?q=esolutions",
     portName = "CoreRequestProcessorServicePort",
     serviceName = "CoreRequestProcessorService")
 @SOAPBinding(style = Style.DOCUMENT, use = Use.LITERAL)

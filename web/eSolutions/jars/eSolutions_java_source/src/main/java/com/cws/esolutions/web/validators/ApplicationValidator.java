@@ -32,22 +32,22 @@ import com.cws.esolutions.web.dto.ApplicationRequest;
  */
 public class ApplicationValidator implements Validator
 {
+    private String messageNameRequired = null;
+    private String messageVersionRequired = null;
+    private String messageLogsPathRequired = null;
+    private String messagePlatformRequired = null;
+    private String messageInstallPathRequired = null;
     private String messagePackageLocationRequired = null;
-    private String messageApplicationNameRequired = null;
     private String messagePackageInstallerRequired = null;
-    private String messageApplicationVersionRequired = null;
-    private String messageApplicationLogsPathRequired = null;
-    private String messageApplicationPlatformRequired = null;
-    private String messageApplicationInstallPathRequired = null;
 
     private static final String CNAME = ApplicationValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setMessageApplicationNameRequired(final String value)
+    public final void setMessageNameRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationNameRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessageNameRequired(final String value)";
 
         if (DEBUG)
         {
@@ -55,12 +55,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationNameRequired = value;
+        this.messageNameRequired = value;
     }
 
-    public final void setMessageApplicationLogsPathRequired(final String value)
+    public final void setMessageLogsPathRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationLogsPathRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessageLogsPathRequired(final String value)";
 
         if (DEBUG)
         {
@@ -68,12 +68,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationLogsPathRequired = value;
+        this.messageLogsPathRequired = value;
     }
 
-    public final void setMessageApplicationVersionRequired(final String value)
+    public final void setMessageVersionRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationVersionRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessageVersionRequired(final String value)";
 
         if (DEBUG)
         {
@@ -81,12 +81,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationVersionRequired = value;
+        this.messageVersionRequired = value;
     }
 
-    public final void setMessageApplicationPlatformRequired(final String value)
+    public final void setMessagePlatformRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationPlatformRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessagePlatformRequired(final String value)";
 
         if (DEBUG)
         {
@@ -94,12 +94,12 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationPlatformRequired = value;
+        this.messagePlatformRequired = value;
     }
 
-    public final void setMessageApplicationInstallPathRequired(final String value)
+    public final void setMessageInstallPathRequired(final String value)
     {
-        final String methodName = ApplicationValidator.CNAME + "#setMessageApplicationInstallPathRequired(final String value)";
+        final String methodName = ApplicationValidator.CNAME + "#setMessageInstallPathRequired(final String value)";
 
         if (DEBUG)
         {
@@ -107,7 +107,7 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageApplicationInstallPathRequired = value;
+        this.messageInstallPathRequired = value;
     }
 
     public final void setMessagePackageLocationRequired(final String value)
@@ -169,13 +169,13 @@ public class ApplicationValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageApplicationNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageApplicationVersionRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageApplicationInstallPathRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsDirectory", this.messageApplicationLogsPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "version", this.messageVersionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "installPath", this.messageInstallPathRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "logsDirectory", this.messageLogsPathRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageLocation", this.messagePackageLocationRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "packageInstaller", this.messagePackageInstallerRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messageApplicationPlatformRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "platforms", this.messagePlatformRequired);
 
         ApplicationRequest request = (ApplicationRequest) target;
 
@@ -186,7 +186,7 @@ public class ApplicationValidator implements Validator
 
         if (request.getVersion() == 0.0)
         {
-            errors.reject("version", this.messageApplicationVersionRequired);
+            errors.reject("version", this.messageVersionRequired);
         }
     }
 }
