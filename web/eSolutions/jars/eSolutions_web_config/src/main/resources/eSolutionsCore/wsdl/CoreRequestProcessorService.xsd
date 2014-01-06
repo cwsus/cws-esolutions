@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xsd:schema xmlns="http://esolutions.caspersbox.corp/s?q=esolutions"
+<xsd:schema xmlns="http://esolutions.caspersbox.com/s?q=esolutions"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     attributeFormDefault="unqualified"
     elementFormDefault="unqualified"
-    targetNamespace="http://esolutions.caspersbox.corp/s?q=esolutions">
+    targetNamespace="http://esolutions.caspersbox.com/s?q=esolutions">
 
     <xsd:complexType name="requestHostInfo">
         <xsd:sequence>
@@ -49,58 +49,6 @@
             <xsd:element minOccurs="0" name="resetRequestId" type="xsd:string" />
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:simpleType name="loginType">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="SECCONFIG" />
-            <xsd:enumeration value="USERNAME" />
-            <xsd:enumeration value="PASSWORD" />
-            <xsd:enumeration value="OTP" />
-            <xsd:enumeration value="COMBINED" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="authenticationType">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="LOGIN" />
-            <xsd:enumeration value="SECURITY" />
-            <xsd:enumeration value="LOGOFF" />
-            <xsd:enumeration value="RESET" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="role">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="USER" />
-            <xsd:enumeration value="ADMIN" />
-            <xsd:enumeration value="SITEADMIN" />
-            <xsd:enumeration value="USERADMIN" />
-            <xsd:enumeration value="SERVICEADMIN" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="loginStatus">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="SUCCESS" />
-            <xsd:enumeration value="RESET" />
-            <xsd:enumeration value="FAILURE" />
-            <xsd:enumeration value="LOCKOUT" />
-            <xsd:enumeration value="SUSPENDED" />
-            <xsd:enumeration value="SESSION_EXISTS" />
-            <xsd:enumeration value="EXPIRED" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="securityRequestStatus">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="SUCCESS" />
-            <xsd:enumeration value="FAILURE" />
-            <xsd:enumeration value="UNAUTHORIZED" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="coreServicesStatus">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="SUCCESS" />
-            <xsd:enumeration value="FAILURE" />
-            <xsd:enumeration value="EXCEPTION" />
-            <xsd:enumeration value="UNAUTHORIZED" />
-        </xsd:restriction>
-    </xsd:simpleType>
     <xsd:complexType name="authenticationRequest">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="count" type="xsd:int" />
@@ -125,60 +73,6 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="requestStatus" nillable="true" type="securityRequestStatus" />
         </xsd:sequence>
     </xsd:complexType>
-    <xsd:simpleType name="serviceRegion">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="DEV" />
-            <xsd:enumeration value="INT" />
-            <xsd:enumeration value="SIT" />
-            <xsd:enumeration value="QA" />
-            <xsd:enumeration value="STG" />
-            <xsd:enumeration value="PRD" />
-            <xsd:enumeration value="DR" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="dnsRecordType">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="A" />
-            <xsd:enumeration value="AAAA" />
-            <xsd:enumeration value="AFSDB" />
-            <xsd:enumeration value="CERT" />
-            <xsd:enumeration value="CNAME" />
-            <xsd:enumeration value="DHCID" />
-            <xsd:enumeration value="DLV" />
-            <xsd:enumeration value="DNAME" />
-            <xsd:enumeration value="DNSKEY" />
-            <xsd:enumeration value="DS" />
-            <xsd:enumeration value="HIP" />
-            <xsd:enumeration value="IPSECKEY" />
-            <xsd:enumeration value="KEY" />
-            <xsd:enumeration value="LOC" />
-            <xsd:enumeration value="MX" />
-            <xsd:enumeration value="NAPTR" />
-            <xsd:enumeration value="NS" />
-            <xsd:enumeration value="NSEC" />
-            <xsd:enumeration value="NSEC3" />
-            <xsd:enumeration value="NSEC3PARAM" />
-            <xsd:enumeration value="PTR" />
-            <xsd:enumeration value="RRSIG" />
-            <xsd:enumeration value="RP" />
-            <xsd:enumeration value="SIG" />
-            <xsd:enumeration value="SOA" />
-            <xsd:enumeration value="SPF" />
-            <xsd:enumeration value="SRV" />
-            <xsd:enumeration value="SSHFP" />
-            <xsd:enumeration value="TA" />
-            <xsd:enumeration value="TXT" />
-        </xsd:restriction>
-    </xsd:simpleType>
-    <xsd:simpleType name="dnsRequestType">
-        <xsd:restriction base="xsd:string">
-            <xsd:enumeration value="ADD" />
-            <xsd:enumeration value="DELETE" />
-            <xsd:enumeration value="DEPLOY" />
-            <xsd:enumeration value="FAILOVER" />
-            <xsd:enumeration value="LOOKUP" />
-        </xsd:restriction>
-    </xsd:simpleType>
     <xsd:complexType name="dnsEntry">
         <xsd:sequence>
             <xsd:element minOccurs="0" name="apex" type="xsd:string" />
@@ -247,6 +141,113 @@
         </xsd:sequence>
     </xsd:complexType>
 
+    <xsd:simpleType name="loginType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SECCONFIG" />
+            <xsd:enumeration value="USERNAME" />
+            <xsd:enumeration value="PASSWORD" />
+            <xsd:enumeration value="OTP" />
+            <xsd:enumeration value="COMBINED" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="authenticationType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="LOGIN" />
+            <xsd:enumeration value="SECURITY" />
+            <xsd:enumeration value="LOGOFF" />
+            <xsd:enumeration value="RESET" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="role">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="USER" />
+            <xsd:enumeration value="ADMIN" />
+            <xsd:enumeration value="SITEADMIN" />
+            <xsd:enumeration value="USERADMIN" />
+            <xsd:enumeration value="SERVICEADMIN" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="loginStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUCCESS" />
+            <xsd:enumeration value="RESET" />
+            <xsd:enumeration value="FAILURE" />
+            <xsd:enumeration value="LOCKOUT" />
+            <xsd:enumeration value="SUSPENDED" />
+            <xsd:enumeration value="SESSION_EXISTS" />
+            <xsd:enumeration value="EXPIRED" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="securityRequestStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUCCESS" />
+            <xsd:enumeration value="FAILURE" />
+            <xsd:enumeration value="UNAUTHORIZED" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="coreServicesStatus">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="SUCCESS" />
+            <xsd:enumeration value="FAILURE" />
+            <xsd:enumeration value="EXCEPTION" />
+            <xsd:enumeration value="UNAUTHORIZED" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="serviceRegion">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="DEV" />
+            <xsd:enumeration value="INT" />
+            <xsd:enumeration value="SIT" />
+            <xsd:enumeration value="QA" />
+            <xsd:enumeration value="STG" />
+            <xsd:enumeration value="PRD" />
+            <xsd:enumeration value="DR" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="dnsRecordType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="A" />
+            <xsd:enumeration value="AAAA" />
+            <xsd:enumeration value="AFSDB" />
+            <xsd:enumeration value="CERT" />
+            <xsd:enumeration value="CNAME" />
+            <xsd:enumeration value="DHCID" />
+            <xsd:enumeration value="DLV" />
+            <xsd:enumeration value="DNAME" />
+            <xsd:enumeration value="DNSKEY" />
+            <xsd:enumeration value="DS" />
+            <xsd:enumeration value="HIP" />
+            <xsd:enumeration value="IPSECKEY" />
+            <xsd:enumeration value="KEY" />
+            <xsd:enumeration value="LOC" />
+            <xsd:enumeration value="MX" />
+            <xsd:enumeration value="NAPTR" />
+            <xsd:enumeration value="NS" />
+            <xsd:enumeration value="NSEC" />
+            <xsd:enumeration value="NSEC3" />
+            <xsd:enumeration value="NSEC3PARAM" />
+            <xsd:enumeration value="PTR" />
+            <xsd:enumeration value="RRSIG" />
+            <xsd:enumeration value="RP" />
+            <xsd:enumeration value="SIG" />
+            <xsd:enumeration value="SOA" />
+            <xsd:enumeration value="SPF" />
+            <xsd:enumeration value="SRV" />
+            <xsd:enumeration value="SSHFP" />
+            <xsd:enumeration value="TA" />
+            <xsd:enumeration value="TXT" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    <xsd:simpleType name="dnsRequestType">
+        <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ADD" />
+            <xsd:enumeration value="DELETE" />
+            <xsd:enumeration value="DEPLOY" />
+            <xsd:enumeration value="FAILOVER" />
+            <xsd:enumeration value="LOOKUP" />
+        </xsd:restriction>
+    </xsd:simpleType>
+
     <xsd:element name="DNSServiceException" type="DNSServiceException" />
     <xsd:complexType name="DNSServiceException">
         <xsd:sequence>
@@ -259,7 +260,6 @@
             <xsd:element minOccurs="0" name="message" type="xsd:string" />
         </xsd:sequence>
     </xsd:complexType>
-
     <xsd:element name="processAgentLogon" type="processAgentLogon" />
     <xsd:complexType name="processAgentLogon">
         <xsd:sequence>

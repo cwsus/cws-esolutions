@@ -17,8 +17,6 @@
         <property name="messagePlatformRequired" value="app.mgmt.app.platform.required" />
         <property name="messageInstallPathRequired" value="app.mgmt.app.install.required" />
         <property name="messagePackageInstallerRequired" value="app.mgmt.jvm.name.required" />
-        <property name="messageNoPlatformAssigned" value="app.mgmt.no.assigned.platform" />
-        <property name="messageNoAppVersionProvided" value="app.mgmt.no.app.version.provided" />
     </bean>
 
     <bean id="applicationManagementController" class="com.cws.esolutions.web.controllers.ApplicationManagementController">

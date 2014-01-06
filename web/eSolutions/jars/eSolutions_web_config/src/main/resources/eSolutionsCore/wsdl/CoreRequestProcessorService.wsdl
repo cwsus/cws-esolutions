@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions name="CoreRequestProcessorService"
-    targetNamespace="http://esolutions.caspersbox.corp/s?q=esolutions"
+    targetNamespace="http://esolutions.caspersbox.com/s?q=esolutions"
     xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
-    xmlns:tns="http://esolutions.caspersbox.corp/s?q=esolutions"
+    xmlns:tns="http://esolutions.caspersbox.com/s?q=esolutions"
     xmlns:xsd="http://www.w3.org/2001/XMLSchema"
     xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     <wsdl:types>
@@ -211,7 +211,7 @@
 
     <wsdl:service name="CoreRequestProcessorService">
         <wsdl:port name="CoreRequestProcessorServicePort" binding="tns:CoreRequestProcessorServiceSoapBinding">
-            <soap:address location="https://esolutions.caspersbox.corp:10944/eSolutions/ws/CoreRequestProcessorService" />
+            <soap:address location="https://esolutions.caspersbox.com:10944/eSolutions/ws/CoreRequestProcessorService" />
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>
