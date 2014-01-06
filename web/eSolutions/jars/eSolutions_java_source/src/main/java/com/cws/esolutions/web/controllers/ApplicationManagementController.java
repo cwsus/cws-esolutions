@@ -76,7 +76,7 @@ import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProce
 @RequestMapping("/application-management")
 public class ApplicationManagementController
 {
-    private String applMgmt = null;
+    private String serviceId = null;
     private int recordsPerPage = 20; // default to 20
     private String addAppPage = null;
     private String serviceName = null;
@@ -236,9 +236,9 @@ public class ApplicationManagementController
         this.retrieveFilesPage = value;
     }
 
-    public final void setApplMgmt(final String value)
+    public final void setServiceId(final String value)
     {
-        final String methodName = ApplicationManagementController.CNAME + "#setApplMgmt(final String value)";
+        final String methodName = ApplicationManagementController.CNAME + "#setServiceId(final String value)";
 
         if (DEBUG)
         {
@@ -246,7 +246,7 @@ public class ApplicationManagementController
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.applMgmt = value;
+        this.serviceId = value;
     }
 
     public final void setAddPlatformRedirect(final String value)
@@ -558,7 +558,7 @@ public class ApplicationManagementController
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setRequestInfo(reqInfo);
-                request.setServiceId(this.applMgmt);
+                request.setServiceId(this.serviceId);
                 request.setUserAccount(userAccount);
 
                 if (DEBUG)
@@ -689,7 +689,7 @@ public class ApplicationManagementController
 
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
                 appRequest.setRequestInfo(reqInfo);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setUserAccount(userAccount);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
                 appRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -844,7 +844,7 @@ public class ApplicationManagementController
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setApplication(reqApplication);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
                 appRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -1161,7 +1161,7 @@ public class ApplicationManagementController
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setApplication(reqApplication);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
                 appRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -1300,7 +1300,7 @@ public class ApplicationManagementController
                 appRequest.setApplication(appl);
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
                 appRequest.setApplicationName(this.appConfig.getApplicationName());
 
@@ -1656,7 +1656,7 @@ public class ApplicationManagementController
                 appRequest.setApplication(appl);
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setServer(targetServer);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
                 appRequest.setApplicationName(this.appConfig.getApplicationName());
@@ -1827,7 +1827,7 @@ public class ApplicationManagementController
                 appRequest.setApplication(targetApp);
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setServer(targetServer);
                 appRequest.setRequestFile(vpath);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
@@ -2052,7 +2052,7 @@ public class ApplicationManagementController
                 request.setApplicationId(this.appConfig.getApplicationId());
                 request.setApplicationName(this.appConfig.getApplicationName());
                 request.setRequestInfo(reqInfo);
-                request.setServiceId(this.applMgmt);
+                request.setServiceId(this.serviceId);
                 request.setUserAccount(userAccount);
 
                 if (DEBUG)
@@ -2221,7 +2221,7 @@ public class ApplicationManagementController
 
                 ApplicationManagementRequest appRequest = new ApplicationManagementRequest();
                 appRequest.setApplication(newApp);
-                appRequest.setServiceId(this.applMgmt);
+                appRequest.setServiceId(this.serviceId);
                 appRequest.setRequestInfo(reqInfo);
                 appRequest.setUserAccount(userAccount);
                 appRequest.setApplicationId(this.appConfig.getApplicationId());
