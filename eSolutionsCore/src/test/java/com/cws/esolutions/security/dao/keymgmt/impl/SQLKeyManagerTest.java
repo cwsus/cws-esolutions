@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.keymgmt.impl;
+package com.cws.esolutions.security.dao.keymgmt.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.keymgmt.impl
@@ -35,10 +35,10 @@ import java.util.ArrayList;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 
 public class SQLKeyManagerTest
 {

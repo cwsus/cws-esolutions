@@ -11,7 +11,6 @@
  */
 package com.cws.esolutions.web.controllers;
 
-import java.io.File;
 import java.util.Map;
 import java.util.List;
 import java.util.UUID;
@@ -24,13 +23,11 @@ import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.io.IOUtils;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -84,20 +81,16 @@ public class ApplicationManagementController
     private String viewAppPage = null;
     private String viewFilePage = null;
     private String platformMgmt = null;
-    private String deployAppPage = null;
     private String messageNoFileData = null;
     private String retrieveFilesPage = null;
     private String addPlatformRedirect = null;
-    private String messageFileUploaded = null;
     private String viewApplicationsPage = null;
     private String addApplicationRedirect = null;
-    private String messageNoBinaryProvided = null;
     private String messageApplicationAdded = null;
     private ApplicationServiceBean appConfig = null;
     private String messageNoPlatformAssigned = null;
     private String messageApplicationRetired = null;
     private String messageNoApplicationsFound = null;
-    private String messageNoAppVersionProvided = null;
     private ApplicationValidator applicationValidator = null;
 
     private static final String CNAME = ApplicationManagementController.class.getName();
@@ -210,19 +203,6 @@ public class ApplicationManagementController
         this.viewFilePage = value;
     }
 
-    public final void setDeployAppPage(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setDeployAppPage(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.deployAppPage = value;
-    }
-
     public final void setRetrieveFilesPage(final String value)
     {
         final String methodName = ApplicationManagementController.CNAME + "#setRetrieveFilesPage(final String value)";
@@ -327,45 +307,6 @@ public class ApplicationManagementController
         this.messageApplicationAdded = value;
     }
 
-    public final void setMessageFileUploaded(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setMessageFileUploaded(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageFileUploaded = value;
-    }
-
-    public final void setMessageNoBinaryProvided(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setMessageNoBinaryProvided(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageNoBinaryProvided = value;
-    }
-
-    public final void setMessageNoAppVersionProvided(final String value)
-    {
-        final String methodName = ApplicationManagementController.CNAME + "#setMessageNoAppVersionProvided(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.messageNoAppVersionProvided = value;
-    }
-
     public final void setMessageApplicationRetired(final String value)
     {
         final String methodName = ApplicationManagementController.CNAME + "#setMessageApplicationRetired(final String value)";
@@ -422,10 +363,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -433,10 +374,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -444,10 +385,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -502,10 +443,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -513,10 +454,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -524,10 +465,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -644,10 +585,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -655,10 +596,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -666,10 +607,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -789,10 +730,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -800,10 +741,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -811,10 +752,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -934,10 +875,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -945,10 +886,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -956,10 +897,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -1106,10 +1047,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -1117,10 +1058,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -1128,10 +1069,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -1244,10 +1185,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -1255,10 +1196,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -1266,10 +1207,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -1413,10 +1354,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -1424,10 +1365,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -1435,10 +1376,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -1584,10 +1525,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -1595,10 +1536,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -1606,10 +1547,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -1755,10 +1696,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -1766,10 +1707,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -1777,10 +1718,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -2004,10 +1945,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -2015,10 +1956,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -2026,10 +1967,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -2140,10 +2081,10 @@ public class ApplicationManagementController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -2151,10 +2092,10 @@ public class ApplicationManagementController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -2162,10 +2103,10 @@ public class ApplicationManagementController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 

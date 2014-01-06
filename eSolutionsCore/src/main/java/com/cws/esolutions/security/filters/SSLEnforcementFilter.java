@@ -159,10 +159,10 @@ public class SSLEnforcementFilter implements Filter
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -170,10 +170,10 @@ public class SSLEnforcementFilter implements Filter
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -181,10 +181,10 @@ public class SSLEnforcementFilter implements Filter
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 

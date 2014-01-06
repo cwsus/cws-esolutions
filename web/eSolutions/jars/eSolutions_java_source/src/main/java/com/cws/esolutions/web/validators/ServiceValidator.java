@@ -32,18 +32,18 @@ import com.cws.esolutions.core.processors.dto.Service;
  */
 public class ServiceValidator implements Validator
 {
-    private String messageDatacenterNameRequired = null;
-    private String messageDatacenterStatusRequired = null;
-    private String messageDatacenterDescriptionRequired = null;
+    private String messageNameRequired = null;
+    private String messageStatusRequired = null;
+    private String messageDescriptionRequired = null;
 
     private static final String CNAME = ServiceValidator.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    public final void setMessageDatacenterNameRequired(final String value)
+    public final void setMessageNameRequired(final String value)
     {
-        final String methodName = ServiceValidator.CNAME + "#setMessageDatacenterNameRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageNameRequired(final String value)";
 
         if (DEBUG)
         {
@@ -51,12 +51,12 @@ public class ServiceValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageDatacenterNameRequired = value;
+        this.messageNameRequired = value;
     }
 
-    public final void setMessageDatacenterStatusRequired(final String value)
+    public final void setMessageStatusRequired(final String value)
     {
-        final String methodName = ServiceValidator.CNAME + "#setMessageArticleCauseRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageStatusRequired(final String value)";
 
         if (DEBUG)
         {
@@ -64,12 +64,12 @@ public class ServiceValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageDatacenterStatusRequired = value;
+        this.messageStatusRequired = value;
     }
 
-    public final void setMessageDatacenterDescriptionRequired(final String value)
+    public final void setMessageDescriptionRequired(final String value)
     {
-        final String methodName = ServiceValidator.CNAME + "#setMessageDatacenterDescriptionRequired(final String value)";
+        final String methodName = ServiceValidator.CNAME + "#setMessageDescriptionRequired(final String value)";
 
         if (DEBUG)
         {
@@ -77,7 +77,7 @@ public class ServiceValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.messageDatacenterDescriptionRequired = value;
+        this.messageDescriptionRequired = value;
     }
 
     @Override
@@ -113,8 +113,8 @@ public class ServiceValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageDatacenterNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageDatacenterStatusRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDatacenterDescriptionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageStatusRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDescriptionRequired);
     }
 }

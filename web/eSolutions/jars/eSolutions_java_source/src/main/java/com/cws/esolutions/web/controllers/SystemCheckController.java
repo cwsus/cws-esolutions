@@ -172,15 +172,15 @@ public class SystemCheckController
         this.appConfig = value;
     }
 
-    @RequestMapping(value = "/remote-date/server/{value}", method = RequestMethod.GET)
-    public final ModelAndView showRemoteDate(@PathVariable("value") final String value)
+    @RequestMapping(value = "/remote-date/server/{guid}", method = RequestMethod.GET)
+    public final ModelAndView showRemoteDate(@PathVariable("guid") final String guid)
     {
-        final String methodName = SystemCheckController.CNAME + "#showRemoteDate(@PathVariable(\"value\") final String value)";
+        final String methodName = SystemCheckController.CNAME + "#showRemoteDate(@PathVariable(\"guid\") final String guid)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -204,10 +204,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -215,10 +215,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -226,10 +226,10 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -248,7 +248,7 @@ public class SystemCheckController
                 }
 
                 Server server = new Server();
-                server.setServerGuid(value);
+                server.setServerGuid(guid);
 
                 if (DEBUG)
                 {
@@ -317,15 +317,15 @@ public class SystemCheckController
         return mView;
     }
 
-    @RequestMapping(value = "/telnet/server/{value}", method = RequestMethod.GET)
-    public final ModelAndView showTestTelnet(@PathVariable("value") final String value)
+    @RequestMapping(value = "/telnet/server/{guid}", method = RequestMethod.GET)
+    public final ModelAndView showTestTelnet(@PathVariable("guid") final String guid)
     {
-        final String methodName = SystemCheckController.CNAME + "#showTestTelnet(@PathVariable(\"value\") final String value)";
+        final String methodName = SystemCheckController.CNAME + "#showTestTelnet(@PathVariable(\"guid\") final String guid)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -348,10 +348,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -359,10 +359,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -370,10 +370,10 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -390,7 +390,7 @@ public class SystemCheckController
             }
 
             Server server = new Server();
-            server.setServerGuid(value);
+            server.setServerGuid(guid);
 
             if (DEBUG)
             {
@@ -414,15 +414,15 @@ public class SystemCheckController
         return mView;
     }
 
-    @RequestMapping(value = "/netstat/server/{value}", method = RequestMethod.GET)
-    public final ModelAndView showNetstat(@PathVariable("value") final String value)
+    @RequestMapping(value = "/netstat/server/{guid}", method = RequestMethod.GET)
+    public final ModelAndView showNetstat(@PathVariable("guid") final String guid)
     {
-        final String methodName = SystemCheckController.CNAME + "#showNetstat(@PathVariable(\"value\") final String value)";
+        final String methodName = SystemCheckController.CNAME + "#showNetstat(@PathVariable(\"guid\") final String guid)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -445,10 +445,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -456,10 +456,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -467,17 +467,17 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
             Server server = new Server();
-            server.setServerGuid(value);
+            server.setServerGuid(guid);
 
             if (DEBUG)
             {
@@ -503,15 +503,15 @@ public class SystemCheckController
         return mView;
     }
 
-    @RequestMapping(value = "/list-processes/server/{value}", method = RequestMethod.GET)
-    public final ModelAndView showListProcesses(@PathVariable("value") final String value)
+    @RequestMapping(value = "/list-processes/server/{guid}", method = RequestMethod.GET)
+    public final ModelAndView showListProcesses(@PathVariable("guid") final String guid)
     {
-        final String methodName = SystemCheckController.CNAME + "#showListProcesses(@PathVariable(\"value\") final String value)";
+        final String methodName = SystemCheckController.CNAME + "#showListProcesses(@PathVariable(\"guid\") final String guid)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
+            DEBUGGER.debug("Value: {}", guid);
         }
 
         ModelAndView mView = new ModelAndView();
@@ -534,10 +534,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -545,10 +545,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -556,17 +556,17 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
             Server server = new Server();
-            server.setServerGuid(value);
+            server.setServerGuid(guid);
 
             if (DEBUG)
             {
@@ -624,10 +624,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -635,10 +635,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -646,10 +646,10 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -764,10 +764,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -775,10 +775,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -786,10 +786,10 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
@@ -910,10 +910,10 @@ public class SystemCheckController
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String sessionElement = sessionEnumeration.nextElement();
-                Object sessionValue = hSession.getAttribute(sessionElement);
+                String element = sessionEnumeration.nextElement();
+                Object value = hSession.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + sessionElement + "; Value: " + sessionValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
@@ -921,10 +921,10 @@ public class SystemCheckController
 
             while (requestEnumeration.hasMoreElements())
             {
-                String requestElement = requestEnumeration.nextElement();
-                Object requestValue = hRequest.getAttribute(requestElement);
+                String element = requestEnumeration.nextElement();
+                Object value = hRequest.getAttribute(element);
 
-                DEBUGGER.debug("Attribute: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
@@ -932,10 +932,10 @@ public class SystemCheckController
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String requestElement = paramsEnumeration.nextElement();
-                Object requestValue = hRequest.getParameter(requestElement);
+                String element = paramsEnumeration.nextElement();
+                Object value = hRequest.getParameter(element);
 
-                DEBUGGER.debug("Parameter: " + requestElement + "; Value: " + requestValue);
+                DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 

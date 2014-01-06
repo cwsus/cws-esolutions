@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.keymgmt.impl;
+package com.cws.esolutions.security.dao.keymgmt.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.security.keymgmt.impl
- * File: LDAPKeyManagerTest.java
+ * File: FileKeyManagerTest.java
  *
  * History
  *
@@ -35,16 +35,17 @@ import java.util.ArrayList;
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
-import com.cws.esolutions.security.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.security.keymgmt.factory.KeyManagementFactory;
-import com.cws.esolutions.security.keymgmt.exception.KeyManagementException;
+import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 
-public class LDAPKeyManagerTest
+public class FileKeyManagerTest
 {
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
+
+    private static final KeyManager keyManager = new SQLKeyManager();
 
     @Before
     public void setUp()
@@ -97,8 +98,6 @@ public class LDAPKeyManagerTest
     @Test
     public void testCreateKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
             Assert.assertTrue(keyManager.createKeys(userAccount.getGuid()));
@@ -112,8 +111,6 @@ public class LDAPKeyManagerTest
     @Test
     public void testReturnKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
             Assert.assertNotNull(keyManager.returnKeys(userAccount.getGuid()));
@@ -127,8 +124,6 @@ public class LDAPKeyManagerTest
     @Test
     public void testDeleteKeys()
     {
-        KeyManager keyManager = KeyManagementFactory.getKeyManager("com.cws.esolutions.security.keymgmt.impl.LDAPKeyManager");
-
         try
         {
             Assert.assertTrue(keyManager.removeKeys(userAccount.getGuid()));
