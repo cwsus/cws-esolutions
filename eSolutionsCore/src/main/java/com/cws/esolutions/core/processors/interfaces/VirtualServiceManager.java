@@ -28,8 +28,8 @@ package com.cws.esolutions.core.processors.interfaces;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
 import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;

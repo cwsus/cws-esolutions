@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: OracleVBoxManager.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
 import java.util.HashMap;
@@ -38,16 +46,8 @@ import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
 import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
 import com.cws.esolutions.core.processors.exception.VirtualServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: OracleVBoxManager.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.VirtualServiceManager
  */
 public class OracleVBoxManager implements VirtualServiceManager
 {

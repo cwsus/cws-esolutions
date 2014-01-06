@@ -30,8 +30,8 @@ import java.io.Serializable;
 import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.enums.ServiceCheckType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.agent.processors.enums.StateManagementType;

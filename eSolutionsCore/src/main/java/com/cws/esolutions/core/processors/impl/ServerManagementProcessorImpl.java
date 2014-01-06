@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ServerManagementProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
 import java.util.List;
@@ -51,16 +59,8 @@ import com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: ServerManagementProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor
  */
 public class ServerManagementProcessorImpl implements IServerManagementProcessor
 {

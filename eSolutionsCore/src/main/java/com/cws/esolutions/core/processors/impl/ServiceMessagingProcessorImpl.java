@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ServiceMessagingProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.Date;
 import java.util.List;
@@ -47,16 +55,8 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: ServiceMessagingProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor
  */
 public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 {

@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: PlatformManagementProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.UUID;
 import java.util.List;
@@ -42,16 +50,8 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ServiceManagementException;
 import com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: PlatformManagementProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IServiceManagementProcessor
  */
 public class ServiceManagementProcessorImpl implements IServiceManagementProcessor
 {

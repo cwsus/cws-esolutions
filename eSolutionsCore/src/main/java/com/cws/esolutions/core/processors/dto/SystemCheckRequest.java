@@ -30,8 +30,8 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 /**
  * Interface for the Application Data DAO layer. Allows access

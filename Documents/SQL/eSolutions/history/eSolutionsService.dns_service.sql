@@ -1,46 +1,46 @@
 --
--- Definition of table `esolutionssvc_history`.`dns_service`
+-- Definition of table esolutionssvc_history.dns_service
 --
-DROP TABLE IF EXISTS `esolutionssvc_history`.`dns_service`;
-CREATE TABLE `esolutionssvc_history`.`dns_service` (
-    `ID` INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
-    `ZONE_FILE` VARCHAR(128) CHARACTER SET UTF8 NOT NULL, -- required for all entries, this will act as a correlator for apex/sub
-    `APEX_RECORD` BOOLEAN NOT NULL DEFAULT FALSE,
-    `ORIGIN` VARCHAR(126) CHARACTER SET UTF8 NOT NULL DEFAULT ".", -- required for all entries
-    `TIMETOLIVE` INTEGER, -- required for apex records and srv records (we're going to re-use it)
-    `HOSTNAME` VARCHAR(126) CHARACTER SET UTF8 NOT NULL, -- required for apex records - 63 per label, including TLD this is 126
-    `OWNER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
-    `HOSTMASTER` VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
-    `SERIAL` INTEGER(11), -- required for apex records
-    `REFRESH` INTEGER, -- required for apex records
-    `RETRY` INTEGER, -- required for apex records
-    `EXPIRES` INTEGER, -- required for apex records
-    `CACHETIME` INTEGER, -- required for apex records
-    `CLASS_NAME` VARCHAR(8) CHARACTER SET UTF8 NOT NULL DEFAULT "IN", -- required for all records
-    `CLASS_TYPE` VARCHAR(11) CHARACTER SET UTF8, -- required for all records
-    `PORT` INTEGER(6), -- required for srv records
-    `WEIGHT` INTEGER(3), -- required for srv and mx records
-    `SERVICE` VARCHAR(10) CHARACTER SET UTF8, -- required for srv records
-    `PROTOCOL` VARCHAR(6) CHARACTER SET UTF8, -- required for srv records
-    `PRIORITY` INTEGER(3) DEFAULT 10, -- required for srv records
-    `PRIMARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- required for all records
-    `SECONDARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- secondary target list, used for failover
-    `TERTIARY_TARGET` VARCHAR(255) CHARACTER SET UTF8, -- tertiary target list, used for failover
-    PRIMARY KEY (`ID`),
-    FULLTEXT KEY `IDX_SEARCH` (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
+DROP TABLE IF EXISTS esolutionssvc_history.dns_service;
+CREATE TABLE esolutionssvc_history.dns_service (
+    ID INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
+    ZONE_FILE VARCHAR(128) CHARACTER SET UTF8 NOT NULL, -- required for all entries, this will act as a correlator for apex/sub
+    APEX_RECORD BOOLEAN NOT NULL DEFAULT FALSE,
+    ORIGIN VARCHAR(126) CHARACTER SET UTF8 NOT NULL DEFAULT ".", -- required for all entries
+    TIMETOLIVE INTEGER, -- required for apex records and srv records (we're going to re-use it)
+    HOSTNAME VARCHAR(126) CHARACTER SET UTF8 NOT NULL, -- required for apex records - 63 per label, including TLD this is 126
+    OWNER VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
+    HOSTMASTER VARCHAR(255) CHARACTER SET UTF8, -- required for apex records
+    SERIAL INTEGER(11), -- required for apex records
+    REFRESH INTEGER, -- required for apex records
+    RETRY INTEGER, -- required for apex records
+    EXPIRES INTEGER, -- required for apex records
+    CACHETIME INTEGER, -- required for apex records
+    CLASS_NAME VARCHAR(8) CHARACTER SET UTF8 NOT NULL DEFAULT "IN", -- required for all records
+    CLASS_TYPE VARCHAR(11) CHARACTER SET UTF8, -- required for all records
+    PORT INTEGER(6), -- required for srv records
+    WEIGHT INTEGER(3), -- required for srv and mx records
+    SERVICE VARCHAR(10) CHARACTER SET UTF8, -- required for srv records
+    PROTOCOL VARCHAR(6) CHARACTER SET UTF8, -- required for srv records
+    PRIORITY INTEGER(3) DEFAULT 10, -- required for srv records
+    PRIMARY_TARGET VARCHAR(255) CHARACTER SET UTF8, -- required for all records
+    SECONDARY_TARGET VARCHAR(255) CHARACTER SET UTF8, -- secondary target list, used for failover
+    TERTIARY_TARGET VARCHAR(255) CHARACTER SET UTF8, -- tertiary target list, used for failover
+    PRIMARY KEY (ID),
+    FULLTEXT KEY IDX_SEARCH (ZONE_FILE, ORIGIN, HOSTNAME, OWNER, CLASS_TYPE, SERVICE, PRIMARY_TARGET)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 
-ALTER TABLE `esolutionssvc_history`.`dns_service` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE esolutionssvc_history.dns_service CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `esolutionssvc_history`.`getRecordByAttribute`
+-- Definition of procedure esolutionssvc_history.getRecordByAttribute
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`getRecordByAttribute`$$
+DROP PROCEDURE IF EXISTS esolutionssvc_history.getRecordByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_history`.`getRecordByAttribute`(
+CREATE PROCEDURE esolutionssvc_history.getRecordByAttribute(
     IN attributeName VARCHAR(126)
 )
 BEGIN
@@ -67,10 +67,10 @@ BEGIN
         PRIMARY_TARGET,
         SECONDARY_TARGET,
         TERTIARY_TARGET,
-    MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
+    MATCH (ZONE_FILE, ORIGIN, HOSTNAME, OWNER, CLASS_TYPE, SERVICE, PRIMARY_TARGET)
     AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM `esolutionssvc_history`.`dns_service`
-    WHERE MATCH (`ZONE_FILE`, `ORIGIN`, `HOSTNAME`, `OWNER`, `CLASS_TYPE`, `SERVICE`, `PRIMARY_TARGET`)
+    FROM esolutionssvc_history.dns_service
+    WHERE MATCH (ZONE_FILE, ORIGIN, HOSTNAME, OWNER, CLASS_TYPE, SERVICE, PRIMARY_TARGET)
     AGAINST (+attributeName IN BOOLEAN MODE)
     ORDER BY APEX_RECORD DESC, ORIGIN ASC;
 END $$
@@ -78,11 +78,11 @@ END $$
 COMMIT$$ 
 
 --
--- Definition of procedure `esolutionssvc_history`.`insertApex`
+-- Definition of procedure esolutionssvc_history.insertApex
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`insertApex`$$
+DROP PROCEDURE IF EXISTS esolutionssvc_history.insertApex$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_history`.`insertApex`(
+CREATE PROCEDURE esolutionssvc_history.insertApex(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN timeToLive INTEGER(12),
@@ -96,7 +96,7 @@ CREATE PROCEDURE `esolutionssvc_history`.`insertApex`(
     IN cacheTime INTEGER(12)
 )
 BEGIN
-    INSERT INTO `esolutionssvc_history`.`dns_service`
+    INSERT INTO esolutionssvc_history.dns_service
     (
         ZONE_FILE, APEX_RECORD, ORIGIN, 
         TIMETOLIVE, HOSTNAME, OWNER, HOSTMASTER, 
@@ -115,11 +115,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc_history`.`insertRecord`
+-- Definition of procedure esolutionssvc_history.insertRecord
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc_history`.`insertRecord`$$
+DROP PROCEDURE IF EXISTS esolutionssvc_history.insertRecord$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc_history`.`insertRecord`(
+CREATE PROCEDURE esolutionssvc_history.insertRecord(
     IN zoneFile VARCHAR(128),
     IN origin VARCHAR(126),
     IN hostname VARCHAR(126),
@@ -135,7 +135,7 @@ CREATE PROCEDURE `esolutionssvc_history`.`insertRecord`(
     IN tertiary VARCHAR(255)
 )
 BEGIN
-    INSERT INTO `esolutionssvc_history`.`dns_service`
+    INSERT INTO esolutionssvc_history.dns_service
     (
         ZONE_FILE, APEX_RECORD, ORIGIN,
         HOSTNAME, CLASS_NAME, CLASS_TYPE, PORT, WEIGHT,

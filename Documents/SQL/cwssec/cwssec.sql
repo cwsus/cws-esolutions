@@ -24,7 +24,7 @@ COMMIT;
 -- add privileges
 --
 GRANT SELECT,INSERT,UPDATE,DELETE,EXECUTE ON cwssec.* TO 'appuser'@'localhost' IDENTIFIED BY PASSWORD '*ED66694310AF846C68C9FC3D430B30594837998D';
-GRANT SELECT ON `mysql`.`proc` TO 'appuser'@'localhost';
+GRANT SELECT ON mysql.proc TO 'appuser'@'localhost';
 
 FLUSH PRIVILEGES;
 COMMIT;

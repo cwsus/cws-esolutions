@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: SystemCheckProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.ArrayList;
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
@@ -37,23 +44,14 @@ import com.cws.esolutions.core.processors.dto.SystemCheckRequest;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.dto.SystemCheckResponse;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
-import com.cws.esolutions.agent.processors.enums.SystemManagementType;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.core.processors.exception.SystemCheckException;
 import com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: SystemCheckProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.ISystemCheckProcessor
  */
 public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 {
@@ -96,14 +94,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (isServiceAuthorized)
             {
-                SystemManagerRequest systemReq = new SystemManagerRequest();
-                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.NETSTAT);
                 systemReq.setPortNumber(request.getPortNumber());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerRequest: {}", request);
+                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
@@ -156,11 +153,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
@@ -263,15 +260,14 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (isServiceAuthorized)
             {
-                SystemManagerRequest systemReq = new SystemManagerRequest();
-                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.TELNET);
                 systemReq.setPortNumber(request.getPortNumber());
-                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
+                systemReq.setTargetHost(request.getTargetServer().getOperHostName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerRequest: {}", request);
+                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
@@ -324,11 +320,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
@@ -431,15 +427,13 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (isServiceAuthorized)
             {
-                SystemManagerRequest systemReq = new SystemManagerRequest();
-                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.REMOTEDATE);
                 systemReq.setPortNumber(request.getPortNumber());
-                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerRequest: {}", request);
+                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
@@ -492,11 +486,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));
@@ -599,14 +593,12 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
             if (isServiceAuthorized)
             {
-                SystemManagerRequest systemReq = new SystemManagerRequest();
-                systemReq.setMgmtType(SystemManagementType.SYSTEMCHECK);
+                ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.PROCESSLIST);
-                systemReq.setTargetServer(request.getTargetServer().getOperHostName());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerRequest: {}", request);
+                    DEBUGGER.debug("ServiceCheckRequest: {}", request);
                 }
 
                 AgentRequest agentRequest = new AgentRequest();
@@ -659,11 +651,11 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
                 if (agentResponse.getRequestStatus() == AgentStatus.SUCCESS)
                 {
-                    SystemManagerResponse systemRes = (SystemManagerResponse) agentResponse.getResponsePayload();
+                    ServiceCheckResponse systemRes = (ServiceCheckResponse) agentResponse.getResponsePayload();
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("SystemManagerResponse: {}", systemRes);
+                        DEBUGGER.debug("ServiceCheckResponse: {}", systemRes);
                     }
 
                     response.setRequestStatus(CoreServicesStatus.valueOf(systemRes.getRequestStatus().name()));

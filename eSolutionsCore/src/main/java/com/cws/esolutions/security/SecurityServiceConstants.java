@@ -25,6 +25,14 @@ package com.cws.esolutions.security;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  * Kevin Huntly         12/05/2008 13:36:09             Added method to process change requests
  */
+/**
+ * Interface for the Application Data DAO layer. Allows access
+ * into the asset management database to obtain, modify and remove
+ * application information.
+ *
+ * @author khuntly
+ * @version 1.0
+ */
 public class SecurityServiceConstants
 {
     /**

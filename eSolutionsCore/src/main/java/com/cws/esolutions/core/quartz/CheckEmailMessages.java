@@ -38,8 +38,8 @@ import java.io.LineNumberReader;
 import javax.mail.MessagingException;
 import org.quartz.JobExecutionContext;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.utils.EmailUtils;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
 import com.cws.esolutions.security.utils.PasswordUtils;
 /**

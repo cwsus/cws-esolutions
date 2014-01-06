@@ -1,43 +1,43 @@
 ﻿--
--- Definition of table `CWSSEC`.`SERVICE_MAP`
+-- Definition of table CWSSEC.SERVICE_MAP
 -- REFERENCE TABLE
 --
-DROP TABLE IF EXISTS `CWSSEC`.`SERVICE_MAP`;
-CREATE TABLE `CWSSEC`.`SERVICE_MAP` (
-    `CN` VARCHAR(128) NOT NULL,
-    `ID` VARCHAR(128) NOT NULL,
-    PRIMARY KEY (`ID`),
-    CONSTRAINT `FK_CN`
-        FOREIGN KEY (`CN`)
-        REFERENCES `CWSSEC`.`USERS` (`CN`)
+DROP TABLE IF EXISTS CWSSEC.SERVICE_MAP;
+CREATE TABLE CWSSEC.SERVICE_MAP (
+    CN VARCHAR(128) NOT NULL,
+    ID VARCHAR(128) NOT NULL,
+    PRIMARY KEY (ID),
+    CONSTRAINT FK_CN
+        FOREIGN KEY (CN)
+        REFERENCES CWSSEC.USERS (CN)
             ON DELETE CASCADE
             ON UPDATE CASCADE,
-    CONSTRAINT `FK_SVC_ID`
-        FOREIGN KEY (`ID`)
-        REFERENCES `CWSSEC`.`USER_SERVICES` (`ID`)
+    CONSTRAINT FK_SVC_ID
+        FOREIGN KEY (ID)
+        REFERENCES CWSSEC.USER_SERVICES (ID)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION,
-    INDEX `IDX_USERS` (`CN`, `ID`),
-    FULLTEXT KEY `FT_SERVICEMAP` (`CN`, `ID`)
+    INDEX IDX_USERS (CN, ID),
+    FULLTEXT KEY FT_SERVICEMAP (CN, ID)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `CWSSEC`.`SERVICE_MAP` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE CWSSEC.SERVICE_MAP CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `CWSSEC`.`addServiceToUser`
+-- Definition of procedure CWSSEC.addServiceToUser
 --
-DROP PROCEDURE IF EXISTS `CWSSEC`.`addServiceToUser` $$
+DROP PROCEDURE IF EXISTS CWSSEC.addServiceToUser $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `CWSSEC`.`addServiceToUser`(
+CREATE PROCEDURE CWSSEC.addServiceToUser(
     IN guid VARCHAR(128),
     IN serviceId VARCHAR(128)
 )
 BEGIN
-    INSERT INTO `CWSSEC`.`SERVICE_MAP` (CN, ID)
+    INSERT INTO CWSSEC.SERVICE_MAP (CN, ID)
     VALUES (guid, serviceId);
 
     COMMIT;
@@ -46,16 +46,16 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `CWSSEC`.`removeServiceFromUser`
+-- Definition of procedure CWSSEC.removeServiceFromUser
 --
-DROP PROCEDURE IF EXISTS `CWSSEC`.`removeServiceFromUser` $$
+DROP PROCEDURE IF EXISTS CWSSEC.removeServiceFromUser $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `CWSSEC`.`removeServiceFromUser`(
+CREATE PROCEDURE CWSSEC.removeServiceFromUser(
     IN guid VARCHAR(128),
     IN serviceId VARCHAR(128)
 )
 BEGIN
-    DELETE FROM `CWSSEC`.`SERVICE_MAP`
+    DELETE FROM CWSSEC.SERVICE_MAP
     WHERE CN = guid
     AND ID = serviceId;
 
@@ -65,17 +65,17 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `CWSSEC`.`isUserAuthorizedForService`
+-- Definition of procedure CWSSEC.isUserAuthorizedForService
 --
-DROP PROCEDURE IF EXISTS `CWSSEC`.`isUserAuthorizedForService` $$
+DROP PROCEDURE IF EXISTS CWSSEC.isUserAuthorizedForService $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `CWSSEC`.`isUserAuthorizedForService`(
+CREATE PROCEDURE CWSSEC.isUserAuthorizedForService(
     IN guid VARCHAR(128),
     IN serviceId VARCHAR(128)
 )
 BEGIN
     SELECT COUNT(ID)
-    FROM `CWSSEC`.`SERVICE_MAP`
+    FROM CWSSEC.SERVICE_MAP
     WHERE CN = guid
     AND ID = serviceId;
 END $$
@@ -83,11 +83,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `CWSSEC`.`retrAuthorizedServices`
+-- Definition of procedure CWSSEC.retrAuthorizedServices
 --
-DROP PROCEDURE IF EXISTS `CWSSEC`.`retrAuthorizedServices` $$
+DROP PROCEDURE IF EXISTS CWSSEC.retrAuthorizedServices $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `CWSSEC`.`retrAuthorizedServices`(
+CREATE PROCEDURE CWSSEC.retrAuthorizedServices(
     IN guid VARCHAR(128)
 )
 BEGIN
@@ -103,11 +103,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `CWSSEC`.`listServicesForUser`
+-- Definition of procedure CWSSEC.listServicesForUser
 --
-DROP PROCEDURE IF EXISTS `CWSSEC`.`listServicesForUser` $$
+DROP PROCEDURE IF EXISTS CWSSEC.listServicesForUser $$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `CWSSEC`.`listServicesForUser`(
+CREATE PROCEDURE CWSSEC.listServicesForUser(
     IN guid VARCHAR(128)
 )
 BEGIN

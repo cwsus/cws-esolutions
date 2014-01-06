@@ -33,12 +33,9 @@
         <property name="addServicePage" value="ServiceMgmt_AddService" />
         <property name="viewServicePage" value="ServiceMgmt_ViewService" />
         <property name="viewServiceList" value="ServiceMgmt_ViewServices" />
-        <property name="messageNoDatacenters" value="svc.mgmt.datacenter.no.datacenters" />
-        <property name="addPlatformRedirect" value="redirect:/ui/service-management/add-platform" />
-        <property name="addDatacenterRedirect" value="redirect:/ui/service-management/add-datacenter" />
-        <property name="messagePlatformAddSuccess" value="svc.mgmt.platform.add.success" />
-        <property name="messagePlatformAddFailure" value="svc.mgmt.platform.add.failure" />
-        <property name="messageDatacenterAddSuccess" value="svc.mgmt.datacenter.add.success" />
-        <property name="messageDatacenterAddFailure" value="svc.mgmt.datacenter.add.failure" />
+        <property name="messageNoServicesFound" value="svc.mgmt.no.services" />
+        <property name="addServiceRedirect" value="redirect:/ui/service-management/add-service" />
+        <property name="messageServiceAddSuccess" value="svc.mgmt.datacenter.add.success" />
+        <property name="messageServiceAddFailure" value="svc.mgmt.datacenter.add.failure" />
     </bean>
 </beans>

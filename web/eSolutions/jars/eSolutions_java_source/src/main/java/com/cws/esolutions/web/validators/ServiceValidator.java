@@ -19,6 +19,7 @@ import org.springframework.validation.ValidationUtils;
 
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.processors.dto.Service;
+import com.cws.esolutions.core.processors.enums.ServiceType;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -33,7 +34,11 @@ import com.cws.esolutions.core.processors.dto.Service;
 public class ServiceValidator implements Validator
 {
     private String messageNameRequired = null;
+    private String messageTypeRequired = null;
     private String messageStatusRequired = null;
+    private String messageRegionRequired = null;
+    private String messageServersRequired = null;
+    private String messagePartitionRequired = null;
     private String messageDescriptionRequired = null;
 
     private static final String CNAME = ServiceValidator.class.getName();
@@ -80,6 +85,58 @@ public class ServiceValidator implements Validator
         this.messageDescriptionRequired = value;
     }
 
+    public final void setMessageRegionRequired(final String value)
+    {
+        final String methodName = ServiceValidator.CNAME + "#setMessageRegionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageRegionRequired = value;
+    }
+
+    public final void setMessageServersRequired(final String value)
+    {
+        final String methodName = ServiceValidator.CNAME + "#setMessageServersRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageServersRequired = value;
+    }
+
+    public final void setMessagePartitionRequired(final String value)
+    {
+        final String methodName = ServiceValidator.CNAME + "#setMessagePartitionRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messagePartitionRequired = value;
+    }
+
+    public final void setMessageTypeRequired(final String value)
+    {
+        final String methodName = ServiceValidator.CNAME + "#setMessageTypeRequired(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messageTypeRequired = value;
+    }
+
     @Override
     public final boolean supports(final Class<?> value)
     {
@@ -113,8 +170,23 @@ public class ServiceValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
+        final Service service = (Service) target;
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Service: {}", service);
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", this.messageNameRequired);
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageStatusRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "type", this.messageTypeRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "description", this.messageDescriptionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "status", this.messageStatusRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "region", this.messageRegionRequired);
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "partition", this.messagePartitionRequired);
+
+        if ((service.getType() == ServiceType.PLATFORM) && ((service.getServers() == null) || (service.getServers().size() == 0)))
+        {
+            errors.rejectValue("servers", this.messageServersRequired);
+        }
     }
 }

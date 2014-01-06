@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.exception;
-/**
- * @see com.cws.esolutions.core.exception.CoreServiceException
- */
-import com.cws.esolutions.core.exception.CoreServiceException;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.exception
@@ -28,6 +24,10 @@ import com.cws.esolutions.core.exception.CoreServiceException;
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
+import com.cws.esolutions.core.exception.CoreServiceException;
+/**
+ * @see com.cws.esolutions.core.exception.CoreServiceException
  */
 public class ServiceManagementException extends CoreServiceException
 {

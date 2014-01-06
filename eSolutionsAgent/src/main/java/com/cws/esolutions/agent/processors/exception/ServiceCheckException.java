@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.exception;
+package com.cws.esolutions.agent.processors.exception;
 /*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.exception
- * File: FileHandlerException.java
+ * Project: eSolutionsAgent
+ * Package: com.cws.esolutions.agent.processors.exception
+ * File: ServiceCheckException.java
  *
  * History
  *
@@ -25,25 +25,25 @@ package com.cws.esolutions.core.processors.exception;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import com.cws.esolutions.core.exception.CoreServiceException;
+import com.cws.esolutions.agent.exception.AgentException;
 /**
- * @see com.cws.esolutions.core.exception.CoreServiceException
+ * @see com.cws.esolutions.agent.exception.AgentException
  */
-public class FileHandlerException extends CoreServiceException
+public class ServiceCheckException extends AgentException
 {
-    private static final long serialVersionUID = -7112480254009579206L;
+    private static final long serialVersionUID = -4601288917122989459L;
 
-    public FileHandlerException(final String message)
+    public ServiceCheckException(final String message)
     {
         super(message);
     }
 
-    public FileHandlerException(final Throwable throwable)
+    public ServiceCheckException(final Throwable throwable)
     {
         super(throwable);
     }
 
-    public FileHandlerException(final String message, final Throwable throwable)
+    public ServiceCheckException(final String message, final Throwable throwable)
     {
         super(message, throwable);
     }

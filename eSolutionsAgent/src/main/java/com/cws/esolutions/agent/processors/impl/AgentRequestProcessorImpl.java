@@ -31,14 +31,19 @@ import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.exception.AgentException;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.impl.FileManagerProcessorImpl;
+import com.cws.esolutions.agent.processors.impl.ServiceCheckProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
 import com.cws.esolutions.agent.processors.impl.SystemManagerProcessorImpl;
+import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
+import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
 import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 /**
@@ -48,6 +53,7 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 {
     private static final ISystemManagerProcessor systemManagerProcessor = new SystemManagerProcessorImpl();
     private static final IFileManagerProcessor fileManager = new FileManagerProcessorImpl();
+    private static final IServiceCheckProcessor svcCheck = new ServiceCheckProcessorImpl();
 
     @Override
     public final AgentResponse processRequest(final AgentRequest request) throws AgentException
@@ -71,29 +77,20 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
                 DEBUGGER.debug("Payload: {}", payload);
             }
 
-            if (payload instanceof SystemManagerRequest)
+            if (payload instanceof ServiceCheckRequest)
             {
-                SystemManagerResponse res = null;
-                SystemManagerRequest req = (SystemManagerRequest) payload;
+                ServiceCheckRequest req = (ServiceCheckRequest) payload;
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerRequest: {}", req);
+                    DEBUGGER.debug("ServiceCheckRequest: {}", req);
                 }
 
-                switch (req.getMgmtType())
-                {
-                    case SYSTEMCHECK:
-                        res = systemManagerProcessor.runSystemCheck(req);
-
-                        break;
-                    default:
-                        throw new SystemManagerException("Invalid management request type provided.");
-                }
+                ServiceCheckResponse res = svcCheck.runSystemCheck(req);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("SystemManagerResponse: {}", res);
+                    DEBUGGER.debug("ServiceCheckResponse: {}", res);
                 }
 
                 response.setRequestStatus(res.getRequestStatus());
@@ -152,6 +149,15 @@ public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 
             response.setRequestStatus(AgentStatus.FAILURE);
             response.setResponsePayload(fmx);
+
+            return response;
+        }
+        catch (ServiceCheckException scx)
+        {
+            ERROR_RECORDER.error(scx.getMessage(), scx);
+
+            response.setRequestStatus(AgentStatus.FAILURE);
+            response.setResponsePayload(scx);
 
             return response;
         }
