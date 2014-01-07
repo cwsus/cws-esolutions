@@ -17,7 +17,7 @@ package com.cws.esolutions.agent.processors.interfaces;
 /*
  * Project: eSolutionsAgent
  * Package: com.cws.esolutions.agent.processors.interfaces
- * File: ISystemManagerProcessor.java
+ * File: IServiceCheckProcessor.java
  *
  * History
  *
@@ -31,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.agent.AgentBean;
 import com.cws.esolutions.agent.AgentConstants;
 import com.cws.esolutions.agent.config.xml.ScriptConfig;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
+import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -39,14 +42,14 @@ import com.cws.esolutions.agent.config.xml.ScriptConfig;
  * @author khuntly
  * @version 1.0
  */
-public interface ISystemManagerProcessor
+public interface IServiceCheckProcessor
 {
     static final AgentBean appBean = AgentBean.getInstance();
 
     static final ScriptConfig scriptConfig = appBean.getConfigData().getScriptConfig();
 
     static final byte buffer[] = new byte[1024];
-    static final String CNAME = ISystemManagerProcessor.class.getName();
+    static final String CNAME = IServiceCheckProcessor.class.getName();
     static final int CONNECT_TIMEOUT = scriptConfig.getScriptTimeout();
     static final String LOGS_DIRECTORY = System.getProperty("LOG_ROOT") + scriptConfig.getLogsDirectory();
 
@@ -54,4 +57,6 @@ public interface ISystemManagerProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(AgentConstants.WARN_LOGGER + CNAME);
+
+    ServiceCheckResponse runSystemCheck(final ServiceCheckRequest request) throws ServiceCheckException;
 }

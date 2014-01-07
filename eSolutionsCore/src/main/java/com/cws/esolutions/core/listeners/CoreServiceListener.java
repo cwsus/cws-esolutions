@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.listeners;
-
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.listeners
+ * File: CoreServiceListener.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.net.URL;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -33,22 +43,11 @@ import javax.servlet.ServletContextEvent;
 import org.apache.log4j.xml.DOMConfigurator;
 import javax.servlet.ServletContextListener;
 
-import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.CoreServiceBean;
+import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.DataSourceManager;
 import com.cws.esolutions.core.exception.CoreServiceException;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.listeners
- * File: CoreServiceListener.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

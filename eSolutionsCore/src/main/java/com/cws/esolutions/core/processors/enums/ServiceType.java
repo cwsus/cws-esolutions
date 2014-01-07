@@ -21,7 +21,6 @@ package com.cws.esolutions.core.processors.enums;
  * ----------------------------------------------------------------------------
  * 35033355              Jan 2, 2014                         Created.
  */
-
 /**
  * TODO: Add class information/description
  *

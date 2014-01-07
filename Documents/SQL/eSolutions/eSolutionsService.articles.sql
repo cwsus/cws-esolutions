@@ -1,39 +1,39 @@
 --
--- Definition of table `esolutionssvc`.`articles`
+-- Definition of table esolutionssvc.articles
 -- DATA TABLE
 --
-DROP TABLE IF EXISTS `esolutionssvc`.`articles`;
-CREATE TABLE `esolutionssvc`.`articles` (
-    `ID` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `HITS` TINYINT NOT NULL default 0,
-    `CREATE_DATE` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    `AUTHOR` VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
-    `KEYWORDS` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `TITLE` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `SYMPTOMS` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `CAUSE` VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
-    `RESOLUTION` TEXT NOT NULL,
-    `STATUS` VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
-    `REVIEWED_BY` VARCHAR(45) CHARACTER SET UTF8,
-    `REVIEW_DATE` TIMESTAMP,
-    `MODIFIED_DATE` TIMESTAMP,
-    `MODIFIED_BY` VARCHAR(45) CHARACTER SET UTF8,
-    PRIMARY KEY  (`ID`),
-    FULLTEXT KEY `articles` (`ID`, `KEYWORDS`, `TITLE`, `SYMPTOMS`, `CAUSE`, `RESOLUTION`)
+DROP TABLE IF EXISTS esolutionssvc.articles;
+CREATE TABLE esolutionssvc.articles (
+    ID VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    HITS TINYINT NOT NULL default 0,
+    CREATE_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    AUTHOR VARCHAR(45) CHARACTER SET UTF8 NOT NULL default '',
+    KEYWORDS VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    TITLE VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    SYMPTOMS VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    CAUSE VARCHAR(100) CHARACTER SET UTF8 NOT NULL default '',
+    RESOLUTION TEXT NOT NULL,
+    STATUS VARCHAR(15) CHARACTER SET UTF8 NOT NULL DEFAULT 'NEW',
+    REVIEWED_BY VARCHAR(45) CHARACTER SET UTF8,
+    REVIEW_DATE TIMESTAMP,
+    MODIFIED_DATE TIMESTAMP,
+    MODIFIED_BY VARCHAR(45) CHARACTER SET UTF8,
+    PRIMARY KEY  (ID),
+    FULLTEXT KEY articles (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE `esolutionssvc`.`articles` CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE esolutionssvc.articles CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure `esolutionssvc`.`getArticleByAttribute`
+-- Definition of procedure esolutionssvc.getArticleByAttribute
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleByAttribute`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.getArticleByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`getArticleByAttribute`(
+CREATE PROCEDURE esolutionssvc.getArticleByAttribute(
     IN searchTerms VARCHAR(100),
     IN startRow INT
 )
@@ -55,7 +55,7 @@ BEGIN
         MODIFIED_BY,
     MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
-    FROM `esolutionssvc`.`articles`
+    FROM esolutionssvc.articles
     WHERE MATCH (ID, KEYWORDS, TITLE, SYMPTOMS, CAUSE, RESOLUTION)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND STATUS = 'APPROVED'
@@ -65,11 +65,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`retrTopArticles`
+-- Definition of procedure esolutionssvc.retrTopArticles
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrTopArticles`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.retrTopArticles$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`retrTopArticles`(
+CREATE PROCEDURE esolutionssvc.retrTopArticles(
 )
 BEGIN
     SELECT
@@ -87,7 +87,7 @@ BEGIN
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
-    FROM `articles`
+    FROM articles
     WHERE HITS >= 10
     AND STATUS = 'APPROVED'
     LIMIT 15;
@@ -96,11 +96,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`retrArticle`
+-- Definition of procedure esolutionssvc.retrArticle
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrArticle`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.retrArticle$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `retrArticle`(
+CREATE PROCEDURE retrArticle(
     IN articleId VARCHAR(100),
     IN isApproval BOOLEAN
 )
@@ -122,11 +122,11 @@ BEGIN
             REVIEW_DATE,
             MODIFIED_DATE,
             MODIFIED_BY
-        FROM `articles`
+        FROM articles
         WHERE ID = articleId
         AND STATUS IN ('NEW', 'REVIEW');
     ELSE
-        UPDATE `articles`
+        UPDATE articles
         SET HITS = HITS + 1
         WHERE ID = articleId;
 
@@ -147,7 +147,7 @@ BEGIN
             REVIEW_DATE,
             MODIFIED_DATE,
             MODIFIED_BY
-        FROM `articles`
+        FROM articles
         WHERE ID = articleId
         AND STATUS = 'APPROVED';
     END IF;
@@ -156,11 +156,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`addNewArticle`
+-- Definition of procedure esolutionssvc.addNewArticle
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`addNewArticle`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.addNewArticle$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`addNewArticle`(
+CREATE PROCEDURE esolutionssvc.addNewArticle(
     IN articleId VARCHAR(45),
     IN author VARCHAR(45),
     IN keywords VARCHAR(100),
@@ -170,7 +170,7 @@ CREATE PROCEDURE `esolutionssvc`.`addNewArticle`(
     IN resolution TEXT
 )
 BEGIN
-    INSERT INTO `esolutionssvc`.`articles`
+    INSERT INTO esolutionssvc.articles
     (
         HITS, ID, CREATE_DATE, AUTHOR,
         KEYWORDS, TITLE, SYMPTOMS, CAUSE,
@@ -188,11 +188,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`updateArticle`
+-- Definition of procedure esolutionssvc.updateArticle
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateArticle`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.updateArticle$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`updateArticle`(
+CREATE PROCEDURE esolutionssvc.updateArticle(
     IN articleId VARCHAR(45),
     IN keywords VARCHAR(100),
     IN title VARCHAR(100),
@@ -202,7 +202,7 @@ CREATE PROCEDURE `esolutionssvc`.`updateArticle`(
     IN modifiedBy VARCHAR(45)
 )
 BEGIN
-    UPDATE `esolutionssvc`.`articles`
+    UPDATE esolutionssvc.articles
     SET
         KEYWORDS = keywords,
         TITLE = title,
@@ -220,17 +220,17 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`updateArticleStatus`
+-- Definition of procedure esolutionssvc.updateArticleStatus
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`updateArticleStatus`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.updateArticleStatus$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`updateArticleStatus`(
+CREATE PROCEDURE esolutionssvc.updateArticleStatus(
     IN articleId VARCHAR(45),
     IN modifiedBy VARCHAR(45),
     IN articleStatus VARCHAR(15)
 )
 BEGIN
-    UPDATE `esolutionssvc`.`articles`
+    UPDATE esolutionssvc.articles
     SET
         STATUS = articleStatus,
         MODIFIED_BY = modifiedBy,
@@ -245,16 +245,16 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `getArticleCount`
+-- Definition of procedure getArticleCount
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`getArticleCount`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.getArticleCount$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`getArticleCount`(
+CREATE PROCEDURE esolutionssvc.getArticleCount(
     IN reqType VARCHAR(45)
 )
 BEGIN
     SELECT COUNT(*)
-    FROM `esolutionssvc`.`articles`
+    FROM esolutionssvc.articles
     WHERE STATUS = reqType
     AND AUTHOR != requestorId;
 END $$
@@ -262,11 +262,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure `esolutionssvc`.`retrPendingArticles`
+-- Definition of procedure esolutionssvc.retrPendingArticles
 --
-DROP PROCEDURE IF EXISTS `esolutionssvc`.`retrPendingArticles`$$
+DROP PROCEDURE IF EXISTS esolutionssvc.retrPendingArticles$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE `esolutionssvc`.`retrPendingArticles`(
+CREATE PROCEDURE esolutionssvc.retrPendingArticles(
     IN requestorId VARCHAR(100),
     IN startRow INT
 )
@@ -286,7 +286,7 @@ BEGIN
         REVIEW_DATE,
         MODIFIED_DATE,
         MODIFIED_BY
-    FROM `esolutionssvc`.`articles`
+    FROM esolutionssvc.articles
     WHERE STATUS IN ('NEW', 'REJECTED', 'REVIEW')
     AND AUTHOR != requestorId
     ORDER BY CREATE_DATE DESC

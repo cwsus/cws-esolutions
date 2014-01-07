@@ -33,7 +33,6 @@
         <property name="defaultPage" value="AppMgmt_DefaultHandler" />
         <property name="viewAppPage" value="AppMgmt_ViewApplication" />
         <property name="retrieveFilesPage" value="AppMgmt_RetrieveFiles" />
-        <property name="deployAppPage" value="AppMgmt_DeployApplication" />
         <property name="viewApplicationsPage" value="AppMgmt_ViewApplications" />
         <property name="messageNoFileData" value="app.mgmt.no.file.data.received" />
         <property name="messageApplicationAdded" value="app.mgmt.application.added" />

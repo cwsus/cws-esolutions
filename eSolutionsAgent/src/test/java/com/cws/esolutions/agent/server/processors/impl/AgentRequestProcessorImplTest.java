@@ -43,8 +43,7 @@ import com.cws.esolutions.agent.dto.AgentResponse;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.processors.enums.SystemManagementType;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
 
 public class AgentRequestProcessorImplTest
 {
@@ -59,16 +58,14 @@ public class AgentRequestProcessorImplTest
     }
 
     @Test
-    public final void testSystemManagementSystemCheckNetstat()
+    public final void runSystemCheckNetstat()
     {
-        SystemManagerRequest sysRequest = new SystemManagerRequest();
-        sysRequest.setMgmtType(SystemManagementType.SYSTEMCHECK);
-        sysRequest.setRequestType(SystemCheckType.NETSTAT);
-        sysRequest.setPortNumber(8181);
+        ServiceCheckRequest sRequest = new ServiceCheckRequest();
+        sRequest.setRequestType(SystemCheckType.NETSTAT);
 
         AgentRequest request = new AgentRequest();
         request.setAppName("esolutions");
-        request.setRequestPayload(sysRequest);
+        request.setRequestPayload(sRequest);
 
         try
         {

@@ -32,8 +32,8 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.SecurityServiceBean;
+import com.cws.esolutions.security.SecurityServiceConstants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove

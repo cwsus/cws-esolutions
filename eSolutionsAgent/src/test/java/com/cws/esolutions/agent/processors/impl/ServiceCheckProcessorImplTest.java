@@ -32,15 +32,14 @@ import org.junit.Assert;
 import com.cws.esolutions.agent.AgentDaemon;
 import com.cws.esolutions.agent.enums.AgentStatus;
 import com.cws.esolutions.agent.processors.enums.SystemCheckType;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
-import com.cws.esolutions.agent.processors.enums.SystemManagementType;
-import com.cws.esolutions.agent.processors.exception.SystemManagerException;
-import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
+import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
+import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
+import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
 
-public class SystemManagementImplTest
+public class ServiceCheckProcessorImplTest
 {
-    private static final ISystemManagerProcessor systemMgr = new SystemManagerProcessorImpl();
+    private static final IServiceCheckProcessor processor = new ServiceCheckProcessorImpl();
 
     @Before
     public void setUp()
@@ -55,19 +54,16 @@ public class SystemManagementImplTest
     @Test
     public final void testRunSystemCheckNetstatNoPort()
     {
-        SystemManagerRequest request = new SystemManagerRequest();
-        request.setInstallAgent(false);
-        request.setMgmtType(SystemManagementType.SYSTEMCHECK);
+        ServiceCheckRequest request = new ServiceCheckRequest();
         request.setRequestType(SystemCheckType.NETSTAT);
-        request.setTargetServer("localhost");
 
         try
         {
-            SystemManagerResponse response = systemMgr.runSystemCheck(request);
+            ServiceCheckResponse response = processor.runSystemCheck(request);
 
             Assert.assertEquals(AgentStatus.SUCCESS, response.getRequestStatus());
         }
-        catch (SystemManagerException smx)
+        catch (ServiceCheckException smx)
         {
             Assert.fail(smx.getMessage());
         }
@@ -76,20 +72,17 @@ public class SystemManagementImplTest
     @Test
     public final void testRunSystemCheckNetstatWithPort()
     {
-        SystemManagerRequest request = new SystemManagerRequest();
-        request.setInstallAgent(false);
-        request.setMgmtType(SystemManagementType.SYSTEMCHECK);
+        ServiceCheckRequest request = new ServiceCheckRequest();
         request.setRequestType(SystemCheckType.NETSTAT);
         request.setPortNumber(8080);
-        request.setTargetServer("localhost");
 
         try
         {
-            SystemManagerResponse response = systemMgr.runSystemCheck(request);
+            ServiceCheckResponse response = processor.runSystemCheck(request);
 
             Assert.assertEquals(AgentStatus.SUCCESS, response.getRequestStatus());
         }
-        catch (SystemManagerException smx)
+        catch (ServiceCheckException smx)
         {
             Assert.fail(smx.getMessage());
         }
@@ -98,19 +91,16 @@ public class SystemManagementImplTest
     @Test
     public final void testRunSystemCheckRemoteDate()
     {
-        SystemManagerRequest request = new SystemManagerRequest();
-        request.setInstallAgent(false);
-        request.setMgmtType(SystemManagementType.SYSTEMCHECK);
+        ServiceCheckRequest request = new ServiceCheckRequest();
         request.setRequestType(SystemCheckType.REMOTEDATE);
-        request.setTargetServer("localhost");
 
         try
         {
-            SystemManagerResponse response = systemMgr.runSystemCheck(request);
+            ServiceCheckResponse response = processor.runSystemCheck(request);
 
             Assert.assertEquals(AgentStatus.SUCCESS, response.getRequestStatus());
         }
-        catch (SystemManagerException smx)
+        catch (ServiceCheckException smx)
         {
             Assert.fail(smx.getMessage());
         }
@@ -119,20 +109,18 @@ public class SystemManagementImplTest
     @Test
     public final void testRunSystemCheckTelnetWithHostname()
     {
-        SystemManagerRequest request = new SystemManagerRequest();
-        request.setInstallAgent(false);
-        request.setMgmtType(SystemManagementType.SYSTEMCHECK);
+        ServiceCheckRequest request = new ServiceCheckRequest();
         request.setRequestType(SystemCheckType.TELNET);
         request.setPortNumber(8080);
-        request.setTargetServer("chibcarray.us.hsbc");
+        request.setTargetHost("chibcarray.us.hsbc");
 
         try
         {
-            SystemManagerResponse response = systemMgr.runSystemCheck(request);
+            ServiceCheckResponse response = processor.runSystemCheck(request);
 
             Assert.assertEquals(AgentStatus.SUCCESS, response.getRequestStatus());
         }
-        catch (SystemManagerException smx)
+        catch (ServiceCheckException smx)
         {
             Assert.fail(smx.getMessage());
         }
@@ -141,20 +129,18 @@ public class SystemManagementImplTest
     @Test
     public final void testRunSystemCheckTelnetWithIpAddress()
     {
-        SystemManagerRequest request = new SystemManagerRequest();
-        request.setInstallAgent(false);
-        request.setMgmtType(SystemManagementType.SYSTEMCHECK);
+        ServiceCheckRequest request = new ServiceCheckRequest();
         request.setRequestType(SystemCheckType.TELNET);
         request.setPortNumber(8080);
-        request.setTargetServer("161.130.41.93");
+        request.setTargetHost("161.130.41.93");
 
         try
         {
-            SystemManagerResponse response = systemMgr.runSystemCheck(request);
+            ServiceCheckResponse response = processor.runSystemCheck(request);
 
             Assert.assertEquals(AgentStatus.SUCCESS, response.getRequestStatus());
         }
-        catch (SystemManagerException smx)
+        catch (ServiceCheckException smx)
         {
             Assert.fail(smx.getMessage());
         }

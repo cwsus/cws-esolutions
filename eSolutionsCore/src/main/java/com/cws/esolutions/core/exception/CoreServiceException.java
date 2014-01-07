@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @see java.lang.Exception
- */
 package com.cws.esolutions.core.exception;
 /*
  * Project: eSolutionsCore
@@ -33,6 +30,7 @@ package com.cws.esolutions.core.exception;
  * into the asset management database to obtain, modify and remove
  * application information.
  *
+ * @see java.lang.Exception
  * @author khuntly
  * @version 1.0
  */

@@ -37,7 +37,6 @@ import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.agent.dto.AgentRequest;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.core.utils.exception.UtilityException;
-import com.cws.esolutions.agent.processors.enums.SystemCheckType;
 import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
 import com.cws.esolutions.agent.processors.enums.SystemManagementType;
 
@@ -64,10 +63,7 @@ public class MQUtilsTest
     public void testSendMqMessage()
     {
         SystemManagerRequest system = new SystemManagerRequest();
-        system.setInstallAgent(false);
         system.setMgmtType(SystemManagementType.SYSTEMCHECK);
-        system.setRequestType(SystemCheckType.REMOTEDATE);
-        system.setTargetServer("localhost");
 
         AgentRequest request = new AgentRequest();
         request.setAppName("eSolutions");

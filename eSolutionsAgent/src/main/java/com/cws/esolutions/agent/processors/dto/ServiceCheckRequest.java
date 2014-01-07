@@ -31,9 +31,8 @@ import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.agent.AgentConstants;
-import com.cws.esolutions.agent.processors.enums.StateManagementType;
-import com.cws.esolutions.agent.processors.enums.ServiceOperationType;
-import com.cws.esolutions.agent.processors.enums.SystemManagementType;
+import com.cws.esolutions.agent.processors.enums.SystemCheckType;
+import com.cws.esolutions.agent.processors.enums.ListOperationType;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -42,23 +41,25 @@ import com.cws.esolutions.agent.processors.enums.SystemManagementType;
  * @author khuntly
  * @version 1.0
  */
-public class SystemManagerRequest implements Serializable
+public class ServiceCheckRequest implements Serializable
 {
+    private int portNumber = 0;
+    private String targetHost = null;
     private String processName = null;
-    private SystemManagementType mgmtType = null;
-    private ServiceOperationType serviceType = null;
-    private StateManagementType stateMgmtType = null;
+    private String extTargetDir = null;
+    private SystemCheckType requestType = null;
+    private ListOperationType listOperationType = null;
 
-    private static final long serialVersionUID = 2750044850950337356L;
-    private static final String CNAME = SystemManagerRequest.class.getName();
+    private static final long serialVersionUID = 9161223960598973053L;
+    private static final String CNAME = ServiceCheckRequest.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(AgentConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(AgentConstants.ERROR_LOGGER);
 
-    public final void setMgmtType(final SystemManagementType value)
+    public final void setRequestType(final SystemCheckType value)
     {
-        final String methodName = SystemManagerRequest.CNAME + "#setMgmtType(final SystemManagementType value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setRequestType(final SystemCheckType value)";
 
         if (DEBUG)
         {
@@ -66,12 +67,12 @@ public class SystemManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.mgmtType = value;
+        this.requestType = value;
     }
 
-    public final void setServiceType(final ServiceOperationType value)
+    public final void setTargetHost(final String value)
     {
-        final String methodName = SystemManagerRequest.CNAME + "#setServiceType(final ServiceOperationType value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setTargetHost(final String value)";
 
         if (DEBUG)
         {
@@ -79,12 +80,25 @@ public class SystemManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.serviceType = value;
+        this.targetHost = value;
+    }
+
+    public final void setPortNumber(final int value)
+    {
+        final String methodName = ServiceCheckRequest.CNAME + "#setPortNumber(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.portNumber = value;
     }
 
     public final void setProcessName(final String value)
     {
-        final String methodName = SystemManagerRequest.CNAME + "#setProcessName(final String value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setProcessName(final String value)";
 
         if (DEBUG)
         {
@@ -95,9 +109,9 @@ public class SystemManagerRequest implements Serializable
         this.processName = value;
     }
 
-    public final void setStateMgmtType(final StateManagementType value)
+    public final void setExtTargetDir(final String value)
     {
-        final String methodName = SystemManagerRequest.CNAME + "#setStateMgmtType(final StateManagementType value)";
+        final String methodName = ServiceCheckRequest.CNAME + "#setExtTargetDir(final String value)";
 
         if (DEBUG)
         {
@@ -105,38 +119,64 @@ public class SystemManagerRequest implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.stateMgmtType = value;
+        this.extTargetDir = value;
     }
 
-    public final SystemManagementType getMgmtType()
+    public final void setListOperationType(final ListOperationType value)
     {
-        final String methodName = SystemManagerRequest.CNAME + "#getMgmtType()";
+        final String methodName = ServiceCheckRequest.CNAME + "#setListOperationType(final ListOperationType value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.mgmtType);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.mgmtType;
+        this.listOperationType = value;
     }
 
-    public final ServiceOperationType getServiceType()
+    public final SystemCheckType getRequestType()
     {
-        final String methodName = SystemManagerRequest.CNAME + "#getServiceType()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getRequestType()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceType);
+            DEBUGGER.debug("Value: {}", this.requestType);
         }
 
-        return this.serviceType;
+        return this.requestType;
+    }
+
+    public final String getTargetHost()
+    {
+        final String methodName = ServiceCheckRequest.CNAME + "#getTargetHost()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.targetHost);
+        }
+
+        return this.targetHost;
+    }
+
+    public final int getPortNumber()
+    {
+        final String methodName = ServiceCheckRequest.CNAME + "#getPortNumber()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.portNumber);
+        }
+
+        return this.portNumber;
     }
 
     public final String getProcessName()
     {
-        final String methodName = SystemManagerRequest.CNAME + "#getProcessName()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getProcessName()";
 
         if (DEBUG)
         {
@@ -147,23 +187,36 @@ public class SystemManagerRequest implements Serializable
         return this.processName;
     }
 
-    public final StateManagementType getStateMgmtType()
+    public final String getExtTargetDir()
     {
-        final String methodName = SystemManagerRequest.CNAME + "#getStateMgmtType()";
+        final String methodName = ServiceCheckRequest.CNAME + "#getExtTargetDir()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.stateMgmtType);
+            DEBUGGER.debug("Value: {}", this.extTargetDir);
         }
 
-        return this.stateMgmtType;
+        return this.extTargetDir;
+    }
+
+    public final ListOperationType getListOperationType()
+    {
+        final String methodName = ServiceCheckRequest.CNAME + "#getListOperationType()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.listOperationType);
+        }
+
+        return this.listOperationType;
     }
 
     @Override
     public final String toString()
     {
-        final String methodName = SystemManagerRequest.CNAME + "#toString()";
+        final String methodName = ServiceCheckRequest.CNAME + "#toString()";
 
         if (DEBUG)
         {

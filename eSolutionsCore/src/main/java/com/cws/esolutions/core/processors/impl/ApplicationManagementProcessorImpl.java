@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 package com.cws.esolutions.core.processors.impl;
-/**
- * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor
+/*
+ * Project: eSolutionsCore
+ * Package: com.cws.esolutions.core.processors.impl
+ * File: ApplicationManagementProcessorImpl.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
 import java.util.UUID;
@@ -46,16 +54,8 @@ import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.ApplicationManagementException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 import com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor;
-/*
- * Project: eSolutionsCore
- * Package: com.cws.esolutions.core.processors.impl
- * File: ApplicationManagementProcessorImpl.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+/**
+ * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor
  */
 public class ApplicationManagementProcessorImpl implements IApplicationManagementProcessor
 {
