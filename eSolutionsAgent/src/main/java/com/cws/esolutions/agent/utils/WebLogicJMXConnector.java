@@ -34,7 +34,6 @@ import java.net.MalformedURLException;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXServiceURL;
 import weblogic.security.UsernameAndPassword;
-import weblogic.deploy.api.tools.SessionHelper;
 import weblogic.security.UserConfigFileManager;
 import javax.management.remote.JMXConnectorFactory;
 
@@ -66,7 +65,7 @@ public final class WebLogicJMXConnector
 
         try
         {
-			Hashtable<String, Object> jmxTable = new Hashtable<String, Object>();
+			Hashtable<String, Object> jmxTable = new Hashtable<>();
             jmxTable.put(JMXConnectorFactory.PROTOCOL_PROVIDER_PACKAGES, WebLogicJMXConnector.PROTOCOL_PACKAGES);
 
             if (jmxConfig.getIsSecure())

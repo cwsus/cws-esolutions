@@ -599,7 +599,7 @@ public class SQLUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType, java.lang.String)
      */
     @Override
-    public synchronized List<String[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
+    public synchronized List<Object[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
     {
         final String methodName = SQLUserManager.CNAME + "#searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException";
 
@@ -613,7 +613,7 @@ public class SQLUserManager implements UserManager
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> results = null;
+        List<Object[]> results = null;
 
         try
         {
@@ -645,30 +645,16 @@ public class SQLUserManager implements UserManager
 
                     while (resultSet.next())
                     {
-                        String[] userData = new String[]
+                        Object[] userData = new Object[]
                         {
                                 resultSet.getString(authData.getCommonName()),
                                 resultSet.getString(authData.getUserId()),
-                                resultSet.getString(authData.getGivenName()),
-                                resultSet.getString(authData.getSurname()),
-                                resultSet.getString(authData.getDisplayName()),
-                                resultSet.getString(authData.getEmailAddr()),
-                                resultSet.getString(authData.getUserRole()),
-                                resultSet.getString(authData.getLockCount()),
-                                resultSet.getString(authData.getLastLogin()),
-                                resultSet.getString(authData.getExpiryDate()),
-                                resultSet.getString(authData.getIsSuspended()),
-                                resultSet.getString(authData.getOlrSetupReq()),
-                                resultSet.getString(authData.getOlrLocked()),
-                                resultSet.getString(authData.getTcAccepted())
+                                resultSet.getInt(authData.getLockCount())
                         };
 
                         if (DEBUG)
                         {
-                            for (String str : userData)
-                            {
-                                DEBUGGER.debug(str);
-                            }
+                            DEBUGGER.debug("Data: {}", userData);
                         }
 
                         results.add(userData);

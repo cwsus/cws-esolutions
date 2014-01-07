@@ -157,7 +157,7 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing or if an invalid
      * <code>SearchRequestType</code> value is provided.
      */
-    List<String[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException;
+    List<Object[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException;
 
     /**
      * Loads and returns data for a provided user account. Search is performed using the user's

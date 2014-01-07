@@ -223,10 +223,10 @@ public class AgentDaemon implements Daemon
 
             if (DEBUG)
             {
-                DEBUGGER.debug("ConnectionFactory: {}", connFactory);
+                DEBUGGER.debug("ConnectionFactory: {}", this.connFactory);
             }
 
-            this.conn = connFactory.createConnection(AgentDaemon.agentBean.getConfigData().getServerConfig().getUsername(),
+            this.conn = this.connFactory.createConnection(AgentDaemon.agentBean.getConfigData().getServerConfig().getUsername(),
                     PasswordUtils.decryptText(AgentDaemon.agentBean.getConfigData().getServerConfig().getPassword(),
                             AgentDaemon.agentBean.getConfigData().getServerConfig().getSalt().length()));
             this.conn.setExceptionListener(new MQExceptionHandler());
@@ -235,7 +235,7 @@ public class AgentDaemon implements Daemon
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Connection: {}", conn);
+                DEBUGGER.debug("Connection: {}", this.conn);
             }
 
             this.session = this.conn.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -250,8 +250,8 @@ public class AgentDaemon implements Daemon
 
             if (DEBUG)
             {
-                DEBUGGER.debug("Destination: {}", request);
-                DEBUGGER.debug("Destination: {}", response);
+                DEBUGGER.debug("Destination: {}", this.request);
+                DEBUGGER.debug("Destination: {}", this.response);
             }
 
             this.consumer = this.session.createConsumer(this.request, "targetHost='" + AgentDaemon.agentBean.getHostName() + "'");
@@ -353,7 +353,7 @@ public class AgentDaemon implements Daemon
         this.producer = null;
         this.connFactory = null;
 
-        System.exit(exitCode);
+        System.exit(this.exitCode);
     }
 
     private static final void usage()

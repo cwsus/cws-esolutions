@@ -89,9 +89,7 @@ public class LDAPUserManagerTest
     {
         try
         {
-            List<String[]> searchList = userManager.searchUsers(SearchRequestType.GUID, "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-
-            Assert.assertNotNull(searchList);
+            Assert.assertNotNull(userManager.searchUsers(SearchRequestType.GUID, "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95"));
         }
         catch (UserManagementException umx)
         {

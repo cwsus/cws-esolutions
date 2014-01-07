@@ -28,6 +28,7 @@ package com.cws.esolutions.security.processors.impl;
 import java.util.List;
 import java.util.Calendar;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -107,7 +108,7 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                 if (StringUtils.isNotEmpty(commonName))
                 {
                     // good, now we have something we can look for
-                    List<String[]> userList = userManager.searchUsers(SearchRequestType.GUID, commonName);
+                    List<Object[]> userList = userManager.searchUsers(SearchRequestType.GUID, commonName);
 
                     if (DEBUG)
                     {
@@ -118,25 +119,22 @@ public class AccountResetProcessorImpl implements IAccountResetProcessor
                     if ((userList != null) && (userList.size() == 1))
                     {
                         // good, we can continue
-                        String[] userData = userList.get(0);
+                        Object[] userData = userList.get(0);
 
                         if (DEBUG)
                         {
-                            for (String str : userData)
-                            {
-                                DEBUGGER.debug("userData: {}", str);
-                            }
+                            DEBUGGER.debug("userData: {}", userData);
                         }
 
                         UserAccount userAccount = new UserAccount();
                         userAccount.setStatus(LoginStatus.RESET);
-                        userAccount.setGuid(userData[0]);
-                        userAccount.setUsername(userData[1]);
-                        userAccount.setGivenName(userData[2]);
-                        userAccount.setSurname(userData[3]);
-                        userAccount.setDisplayName(userData[4]);
-                        userAccount.setEmailAddr(userData[5]);
-                        userAccount.setRole(Role.valueOf(userData[8]));
+                        userAccount.setGuid((String) userData[0]);
+                        userAccount.setUsername((String) userData[1]);
+                        userAccount.setGivenName((String) userData[2]);
+                        userAccount.setSurname((String) userData[3]);
+                        userAccount.setDisplayName((String) userData[4]);
+                        userAccount.setEmailAddr((String) userData[5]);
+                        userAccount.setRole(Role.valueOf((String) userData[8]));
 
                         if (DEBUG)
                         {

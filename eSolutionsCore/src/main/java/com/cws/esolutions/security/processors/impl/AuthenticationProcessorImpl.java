@@ -40,7 +40,6 @@ import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
-import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
@@ -92,10 +91,9 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
         try
         {
             String password = null;
-            List<String[]> userInfo = null;
             UserAccount authAccount = null;
 
-            userInfo = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
+            List<Object[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
 
             if (DEBUG)
             {
@@ -108,19 +106,16 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
             else
             {
-                String[] userData = userInfo.get(0);
+                Object[] userData = userInfo.get(0);
 
                 if (DEBUG)
                 {
-                    for (String str : userData)
-                    {
-                        DEBUGGER.debug("userData: {}", str);
-                    }
+                    DEBUGGER.debug("userData: {}", userData);
                 }
 
                 authAccount = new UserAccount();
-                authAccount.setGuid(userData[0]);
-                authAccount.setUsername(userData[1]);
+                authAccount.setGuid((String) userData[0]);
+                authAccount.setUsername((String) userData[1]);
 
                 if (DEBUG)
                 {
@@ -285,25 +280,22 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                 {
                     // failed authentication, update counter
                     // find out if this is a valid user...
-                    List<String[]> userList = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
+                    List<Object[]> userList = userManager.searchUsers(SearchRequestType.USERNAME, authUser.getUsername());
 
                     // only do the work if the userlist is equal to 1.
                     // if there were 150 users found then we dont want
                     // to shoot them all
                     if ((userList != null) && (userList.size() == 1))
                     {
-                        String[] lockInfo = userList.get(0);
+                        Object[] lockInfo = userList.get(0);
 
                         if (DEBUG)
                         {
-                            for (String str : lockInfo)
-                            {
-                                DEBUGGER.debug("User Info: {}", str);
-                            }
+                            DEBUGGER.debug("User Info: {}", lockInfo);
                         }
 
-                        String userGuid = lockInfo[0];
-                        int currentCount = Integer.parseInt(lockInfo[9]);
+                        String userGuid = (String) lockInfo[0];
+                        int currentCount = (Integer) lockInfo[9];
 
                         if (DEBUG)
                         {
@@ -403,7 +395,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         try
         {
-            List<String[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, userAccount.getUsername());
+            List<Object[]> userInfo = userManager.searchUsers(SearchRequestType.USERNAME, userAccount.getUsername());
 
             if (DEBUG)
             {
@@ -416,17 +408,14 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
             }
             else
             {
-                String[] userData = userInfo.get(0);
+                Object[] userData = userInfo.get(0);
 
                 if (DEBUG)
                 {
-                    for (String str : userData)
-                    {
-                        DEBUGGER.debug("userData: {}", str);
-                    }
+                    DEBUGGER.debug("userData: {}", userData);
                 }
 
-                List<Object> accountInfo = userManager.loadUserAccount(userData[0]);
+                List<Object> accountInfo = userManager.loadUserAccount((String) userData[0]);
 
                 if (DEBUG)
                 {

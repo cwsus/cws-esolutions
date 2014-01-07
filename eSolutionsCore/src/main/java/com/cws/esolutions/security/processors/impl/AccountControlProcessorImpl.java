@@ -1066,7 +1066,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (isUserAuthorized)
             {
-                List<String[]> userList = null;
+                List<Object[]> userList = null;
 
                 switch (searchType)
                 {
@@ -1142,17 +1142,17 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     {
                         List<UserAccount> userAccounts = new ArrayList<>();
 
-                        for (String[] userData : userList)
+                        for (Object[] userData : userList)
                         {
-                            if (!(StringUtils.equals(reqAccount.getGuid(), userData[0])))
+                            if (!(StringUtils.equals(reqAccount.getGuid(), (String) userData[0])))
                             {
                                 UserAccount userInfo = new UserAccount();
-                                userInfo.setGuid(userData[0]);
-                                userInfo.setUsername(userData[1]);
-                                userInfo.setGivenName(userData[2]);
-                                userInfo.setSurname(userData[3]);
-                                userInfo.setEmailAddr(userData[5]);
-                                userInfo.setDisplayName(userData[4]);
+                                userInfo.setGuid((String) userData[0]);
+                                userInfo.setUsername((String) userData[1]);
+                                userInfo.setGivenName((String) userData[2]);
+                                userInfo.setSurname((String) userData[3]);
+                                userInfo.setEmailAddr((String) userData[5]);
+                                userInfo.setDisplayName((String) userData[4]);
 
                                 if (DEBUG)
                                 {

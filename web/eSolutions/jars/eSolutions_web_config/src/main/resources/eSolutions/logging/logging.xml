@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "./log4j.dtd">
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
     <appender name="esolutions-error" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/appvol/ATS70/eSolutions/applog/esolutions-error.log" />
+        <param name="File" value="${LOG_ROOT}/esolutions-error.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -14,7 +14,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="esolutions-debug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/appvol/ATS70/eSolutions/applog/esolutions-debug.log" />
+        <param name="File" value="${LOG_ROOT}/esolutions-debug.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />
@@ -26,7 +26,7 @@
         <filter class="org.apache.log4j.varia.DenyAllFilter" />
     </appender>
     <appender name="spring-logger" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="/appvol/ATS70/eSolutions/applog/spring-framework.log" />
+        <param name="File" value="${LOG_ROOT}/spring-framework.log" />
         <param name="DatePattern" value="'.'yy-MM-dd" />
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="[Time: %d{dd MMM yyyy HH:mm:ss,SSS}][Thread:%t][Log: %c][Level: %-5p] - [File: %F:%L] - %m %n" />

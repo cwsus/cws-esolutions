@@ -988,7 +988,7 @@ public class LDAPUserManager implements UserManager
      * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#searchUsers(com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType, java.lang.String)
      */
     @Override
-    public synchronized List<String[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
+    public synchronized List<Object[]> searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException
     {
         final String methodName = LDAPUserManager.CNAME + "#searchUsers(final SearchRequestType searchType, final String searchData) throws UserManagementException";
 
@@ -999,7 +999,7 @@ public class LDAPUserManager implements UserManager
             DEBUGGER.debug("Search data: {}", searchData);
         }
 
-        List<String[]> results = null;
+        List<Object[]> results = null;
         LDAPConnection ldapConn = null;
         LDAPConnectionPool ldapPool = null;
 
@@ -1078,7 +1078,8 @@ public class LDAPUserManager implements UserManager
                         SearchScope.SUB,
                         searchFilter,
                         authData.getCommonName(),
-                        authData.getUserId());
+                        authData.getUserId(),
+                        authData.getLockCount());
 
                     if (DEBUG)
                     {
@@ -1094,21 +1095,19 @@ public class LDAPUserManager implements UserManager
 
                     if (searchResult.getResultCode() == ResultCode.SUCCESS)
                     {
-                        results = new ArrayList<>();
+                        results = new ArrayList<Object[]>();
 
                         for (SearchResultEntry entry : searchResult.getSearchEntries())
                         {
-                            String[] userData = new String[] {
+                            Object[] userData = new Object[] {
                                     entry.getAttributeValue(authData.getCommonName()),
-                                    entry.getAttributeValue(authData.getUserId())
+                                    entry.getAttributeValue(authData.getUserId()),
+                                    entry.getAttributeValueAsInteger(authData.getLockCount())
                             };
 
                             if (DEBUG)
                             {
-                                for (String str : userData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
+                                DEBUGGER.debug("Data: {}", userData);
                             }
 
                             results.add(userData);
