@@ -71,7 +71,7 @@
         <baseObjectClass>inetorgperson</baseObjectClass>
         <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryAppBase>organizationalUnitName=Applications,organizationName=CWS US,dc=caspersbox,dc=com</repositoryAppBase>
+        <repositoryRoleBase>organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
     </auth-repo>
 
     <key-config>
