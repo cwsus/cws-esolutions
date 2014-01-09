@@ -186,7 +186,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     }
 
                     userAccount = new UserAccount();
-                    userAccount.setDN((String) userData.get(0));
                     userAccount.setGuid((String) userData.get(1));
                     userAccount.setUsername((String) userData.get(2));
                     userAccount.setGivenName((String) userData.get(3));
@@ -208,7 +207,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     // reset the failed count, this is a successful logon
                     try
                     {
-                        userManager.modifyUserInformation(userAccount.getDN(), new HashMap<String, Object>()
+                        userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(),
+                                new HashMap<String, Object>()
                                 {
                                     private static final long serialVersionUID = 3026623264042376743L;
 
