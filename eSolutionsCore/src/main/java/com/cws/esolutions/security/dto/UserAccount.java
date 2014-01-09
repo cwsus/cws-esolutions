@@ -45,14 +45,15 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
  */
 public class UserAccount implements Serializable
 {
-    private Role role = null;
     private String guid = null;
+    private String userDN = null;
     private String surname = null;
     private Date lastLogin = null;
     private Long expiryDate = null;
     private String username = null;
     private String emailAddr = null;
     private String givenName = null;
+    private List<Role> roles = null;
     private boolean olrSetup = false;
     private String displayName = null;
     private boolean olrLocked = false;
@@ -71,6 +72,19 @@ public class UserAccount implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
+
+    public final void setUserDN(final String value)
+    {
+        final String methodName = UserAccount.CNAME + "#setUserDN(final String value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.userDN = value;
+    }
 
     public final void setStatus(final LoginStatus value)
     {
@@ -202,9 +216,9 @@ public class UserAccount implements Serializable
         this.lastLogin = value;
     }
 
-    public final void setRole(final Role value)
+    public final void setRoles(final List<Role> value)
     {
-        final String methodName = UserAccount.CNAME + "#setRole(final Role value)";
+        final String methodName = UserAccount.CNAME + "#setRoles(final List<Role> value)";
 
         if (DEBUG)
         {
@@ -212,7 +226,7 @@ public class UserAccount implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.role = value;
+        this.roles = value;
     }
 
     public final void setDisplayName(final String value)
@@ -317,6 +331,19 @@ public class UserAccount implements Serializable
         }
 
         this.projectList = value;
+    }
+
+    public final String getUserDN()
+    {
+        final String methodName = UserAccount.CNAME + "#getUserDN()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.userDN);
+        }
+
+        return this.userDN;
     }
 
     public final LoginStatus getStatus()
@@ -462,17 +489,17 @@ public class UserAccount implements Serializable
         return this.lastLogin;
     }
 
-    public final Role getRole()
+    public final List<Role> getRoles()
     {
-        final String methodName = UserAccount.CNAME + "#getRole()";
+        final String methodName = UserAccount.CNAME + "#getRoles()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.role);
+            DEBUGGER.debug("Value: {}", this.roles);
         }
 
-        return this.role;
+        return this.roles;
     }
 
     public final String getDisplayName()

@@ -186,28 +186,29 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     }
 
                     userAccount = new UserAccount();
-                    userAccount.setGuid((String) userData.get(0));
-                    userAccount.setUsername((String) userData.get(1));
-                    userAccount.setGivenName((String) userData.get(2));
-                    userAccount.setSurname((String) userData.get(3));
-                    userAccount.setDisplayName((String) userData.get(4));
-                    userAccount.setEmailAddr((String) userData.get(5));
-                    userAccount.setPagerNumber((String) userData.get(6));
-                    userAccount.setTelephoneNumber((String) userData.get(7));
-                    userAccount.setRole(Role.valueOf((String) userData.get(8)));
-                    userAccount.setFailedCount((Integer) userData.get(9));
-                    userAccount.setLastLogin(new Date((Long) userData.get(10)));
-                    userAccount.setExpiryDate((Long) userData.get(11));
-                    userAccount.setSuspended((Boolean) userData.get(12));
-                    userAccount.setOlrSetup((Boolean) userData.get(13));
-                    userAccount.setOlrLocked((Boolean) userData.get(14));
-                    userAccount.setTcAccepted((Boolean) userData.get(15));
+                    userAccount.setDN((String) userData.get(0));
+                    userAccount.setGuid((String) userData.get(1));
+                    userAccount.setUsername((String) userData.get(2));
+                    userAccount.setGivenName((String) userData.get(3));
+                    userAccount.setSurname((String) userData.get(4));
+                    userAccount.setDisplayName((String) userData.get(5));
+                    userAccount.setEmailAddr((String) userData.get(6));
+                    userAccount.setPagerNumber((String) userData.get(7));
+                    userAccount.setTelephoneNumber((String) userData.get(8));
+                    userAccount.setRole(Role.valueOf((String) userData.get(9)));
+                    userAccount.setFailedCount((Integer) userData.get(10));
+                    userAccount.setLastLogin(new Date((Long) userData.get(11)));
+                    userAccount.setExpiryDate((Long) userData.get(12));
+                    userAccount.setSuspended((Boolean) userData.get(13));
+                    userAccount.setOlrSetup((Boolean) userData.get(14));
+                    userAccount.setOlrLocked((Boolean) userData.get(15));
+                    userAccount.setTcAccepted((Boolean) userData.get(16));
 
                     // have a user account, run with it
                     // reset the failed count, this is a successful logon
                     try
                     {
-                        userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), new HashMap<String, Object>()
+                        userManager.modifyUserInformation(userAccount.getDN(), new HashMap<String, Object>()
                                 {
                                     private static final long serialVersionUID = 3026623264042376743L;
 
