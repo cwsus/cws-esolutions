@@ -299,7 +299,10 @@ CREATE PROCEDURE CWSSEC.performAuthentication(
     IN password VARCHAR(255)
 )
 BEGIN
+    DECLARE RCOUNT INT DEFAULT 0;
+
     SELECT DISTINCT
+        COUNT(1) INTO RCOUNT,
         CN,
         UID,
         GIVENNAME,

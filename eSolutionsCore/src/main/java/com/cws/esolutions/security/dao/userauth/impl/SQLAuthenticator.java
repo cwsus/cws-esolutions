@@ -122,34 +122,10 @@ public class SQLAuthenticator implements Authenticator
                     userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
-                    userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
-                    stmt.close();
-                    stmt = null;
-                    stmt = sqlConn.prepareCall("{ CALL loginSuccess(?, ?) }");
-                    stmt.setString(1, guid); // common name
-                    stmt.setString(2, password); // username
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("stmt: {}", stmt);
-                    }
-
-                    int y = stmt.executeUpdate();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("Result: {}", y);
-                    }
-
-                    if (y != 1)
-                    {
-                        ERROR_RECORDER.error("Failed to update last logon and authentication count.");
                     }
                 }
             }
