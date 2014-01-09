@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.sql.SQLException;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -100,7 +99,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(userAccount.getGuid()); // usr_audit_userguid
-                    auditList.add(userAccount.getRole().name()); // usr_audit_role
+                    auditList.add(userAccount.getRoles().toString()); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
@@ -214,7 +213,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                             UserAccount userAccount = new UserAccount();
                             userAccount.setUsername(array[1]); // usr_audit_userid
                             userAccount.setGuid(array[2]); // usr_audit_userguid
-                            userAccount.setRole(Role.valueOf(array[3])); // usr_audit_role
 
                             if (DEBUG)
                             {

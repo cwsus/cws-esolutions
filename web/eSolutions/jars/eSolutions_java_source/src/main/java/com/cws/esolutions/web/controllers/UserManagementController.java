@@ -723,32 +723,7 @@ public class UserManagementController
 
         if (this.appConfig.getServices().get(this.serviceName))
         {
-            List<Role> availableRoles = new ArrayList<>();
-
-            switch (userAccount.getRole())
-            {
-                case SITEADMIN:
-                    availableRoles.addAll(Arrays.asList(Role.values()));
-
-                    break;
-                case ADMIN:
-                    availableRoles.addAll(Arrays.asList(Role.ADMIN, Role.SERVICEADMIN, Role.USERADMIN, Role.USER));
-
-                    break;
-                case USERADMIN:
-                    availableRoles.addAll(Arrays.asList(Role.USERADMIN, Role.USER));
-
-                    break;
-                default:
-                    break;
-            }
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("List<Role>: {}", availableRoles);
-            }
-
-            mView.addObject("roles", availableRoles);
+            mView.addObject("roles", Role.values());
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.createUserPage);
         }
@@ -2176,7 +2151,7 @@ public class UserManagementController
 
                 UserAccount account = new UserAccount();
                 account.setGuid(userGuid);
-                account.setRole(Role.valueOf(role));
+                account.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(role))));
 
                 if (DEBUG)
                 {
@@ -2537,8 +2512,7 @@ public class UserManagementController
                 newUser.setOlrLocked(false);
                 newUser.setOlrSetup(true);
                 newUser.setSuspended(user.isSuspended());
-                newUser.setTcAccepted(false);
-                newUser.setRole(user.getRole());
+                newUser.setRoles(user.getRoles());
                 newUser.setDisplayName(user.getGivenName() + " " + user.getSurname());
                 newUser.setEmailAddr(user.getEmailAddr());
                 newUser.setGivenName(user.getGivenName());

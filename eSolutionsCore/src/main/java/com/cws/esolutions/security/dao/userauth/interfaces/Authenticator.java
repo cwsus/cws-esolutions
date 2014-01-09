@@ -70,8 +70,6 @@ public interface Authenticator
      */
     List<Object> performLogon(final String guid, final String username, final String password) throws AuthenticatorException;
 
-    void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException;
-
     List<String> obtainSecurityData(final String userId, final String userGuid) throws AuthenticatorException;
 
     /**

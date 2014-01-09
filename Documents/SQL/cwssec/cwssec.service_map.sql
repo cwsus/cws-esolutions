@@ -113,7 +113,7 @@ CREATE PROCEDURE CWSSEC.listServicesForUser(
 BEGIN
     SELECT ID
     FROM SERVICE_MAP
-    WHERE cn = userGuid;
+    WHERE cn = guid;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

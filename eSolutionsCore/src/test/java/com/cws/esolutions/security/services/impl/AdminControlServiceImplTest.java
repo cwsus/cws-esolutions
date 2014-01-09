@@ -64,8 +64,7 @@ public class AdminControlServiceImplTest
             userAccount.setOlrLocked(false);
             userAccount.setOlrSetup(false);
             userAccount.setSuspended(false);
-            userAccount.setTcAccepted(false);
-            userAccount.setRole(Role.SITEADMIN);
+            userAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.SITEADMIN)));
             userAccount.setDisplayName("Kevin Huntly");
             userAccount.setEmailAddr("kmhuntly@gmail.com");
             userAccount.setGivenName("Kevin");
@@ -89,26 +88,13 @@ public class AdminControlServiceImplTest
 
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception ex)
         {
             Assert.fail(ex.getMessage());
 
             System.exit(-1);
-        }
-    }
-
-    @Test
-    public void testAdminControlServiceUserAccount()
-    {
-        try
-        {
-            Assert.assertTrue(service.accessControlService(userAccount));
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            Assert.fail(acsx.getMessage());
         }
     }
 

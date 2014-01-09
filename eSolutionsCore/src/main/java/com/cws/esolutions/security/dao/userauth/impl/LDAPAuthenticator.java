@@ -26,22 +26,17 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.net.ConnectException;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.ResultCode;
-import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.SearchScope;
 import com.unboundid.ldap.sdk.SearchResult;
-import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.LDAPException;
-import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
-import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
@@ -71,8 +66,8 @@ public class LDAPAuthenticator implements Authenticator
         }
 
         LDAPConnection ldapConn = null;
-        List<Object> userAccount = null;
         LDAPConnectionPool ldapPool = null;
+        List<Object> userAccount = new ArrayList<Object>();
 
         try
         {
@@ -95,7 +90,7 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("LDAPConnection: {}", ldapConn);
             }
 
-            if (ldapConn.isConnected())
+            if (!(ldapConn.isConnected()))
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
@@ -121,7 +116,6 @@ public class LDAPAuthenticator implements Authenticator
                 authData.getEmailAddr(),
                 authData.getPagerNumber(),
                 authData.getTelephoneNumber(),
-                authData.getUserRole(),
                 authData.getLockCount(),
                 authData.getLastLogin(),
                 authData.getExpiryDate(),
@@ -167,7 +161,6 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount = new ArrayList<>();
             userAccount.add(entry.getDN());
             userAccount.add(entry.getAttributeValue(authData.getCommonName()));
             userAccount.add(entry.getAttributeValue(authData.getUserId()));
@@ -177,13 +170,55 @@ public class LDAPAuthenticator implements Authenticator
             userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
             userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
             userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
-            userAccount.add(entry.getAttributeValue(authData.getUserRole()).toUpperCase());
             userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
             userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));
             userAccount.add(entry.getAttributeValueAsLong(authData.getExpiryDate()));
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
             userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
+
+            Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
+                    "(&(uniqueMember=" + entry.getDN() + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchFilter: {}", roleFilter);
+            }
+
+            SearchRequest roleSearch = new SearchRequest(
+                authRepo.getRepositoryRoleBase(),
+                SearchScope.SUB,
+                roleFilter,
+                "cn");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("SearchRequest: {}", roleSearch);
+            }
+
+            SearchResult roleResult = ldapConn.search(roleSearch);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", roleResult);
+            }
+
+            if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
+            {
+                List<String> roles = new ArrayList<>();
+
+                for (SearchResultEntry role : roleResult.getSearchEntries())
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SearchResultEntry: {}", role);
+                    }
+
+                    roles.add(role.getAttributeValue("cn"));
+                }
+
+                userAccount.add(roles);
+            }
 
             if (DEBUG)
             {
@@ -211,92 +246,6 @@ public class LDAPAuthenticator implements Authenticator
         }
 
         return userAccount;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#lockUserAccount(java.lang.String, int)
-     */
-    @Override
-    public synchronized void lockUserAccount(final String dn, final int count) throws AuthenticatorException
-    {
-        final String methodName = LDAPAuthenticator.CNAME + "#lockUserAccount(final String dn, final int count) throws AuthenticatorException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("dn: {}", dn);
-            DEBUGGER.debug("count: {}", count);
-        }
-
-        LDAPConnection ldapConn = null;
-        LDAPConnectionPool ldapPool = null;
-
-        try
-        {
-            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
-            }
-
-            if (ldapPool.isClosed())
-            {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
-            }
-
-            ldapConn = ldapPool.getConnection();
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-            }
-
-            if (ldapConn.isConnected())
-            {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
-            }
-
-            List<Modification> modifyList = new ArrayList<>(
-                Arrays.asList(
-                    new Modification(ModificationType.REPLACE, authData.getLockCount(), String.valueOf(count))));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("modifyList: {}", modifyList);
-            }
-
-            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(dn, modifyList));
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("LDAPResult: {}", ldapResult);
-            }
-
-            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
-            {
-                ERROR_RECORDER.error("Failed to increment user lock count.");
-            }
-        }
-        catch (LDAPException lx)
-        {
-            ERROR_RECORDER.error(lx.getMessage(), lx);
-
-            throw new AuthenticatorException(lx.getMessage(), lx);
-        }
-        catch (ConnectException cx)
-        {
-            ERROR_RECORDER.error(cx.getMessage(), cx);
-
-            throw new AuthenticatorException(cx.getMessage(), cx);
-        }
-        finally
-        {
-            if ((ldapPool != null) && (!(ldapPool.isClosed())))
-            {
-                ldapPool.releaseConnection(ldapConn);
-            }
-        }
     }
 
     /**
@@ -339,7 +288,7 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("LDAPConnection: {}", ldapConn);
             }
 
-            if (ldapConn.isConnected())
+            if (!(ldapConn.isConnected()))
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
@@ -445,7 +394,7 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("LDAPConnection: {}", ldapConn);
             }
 
-            if (ldapConn.isConnected())
+            if (!(ldapConn.isConnected()))
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
             }

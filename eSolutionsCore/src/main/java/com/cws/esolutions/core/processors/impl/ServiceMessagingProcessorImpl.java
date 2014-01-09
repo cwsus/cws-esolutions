@@ -395,7 +395,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 UserAccount svcAccount = new UserAccount();
                 svcAccount.setUsername(serviceAccount.get(0));
                 svcAccount.setGuid(serviceAccount.get(1));
-                svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+                svcAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(serviceAccount.get(2)))));
 
                 if (DEBUG)
                 {
@@ -638,7 +638,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             UserAccount svcAccount = new UserAccount();
             svcAccount.setUsername(serviceAccount.get(0));
             svcAccount.setGuid(serviceAccount.get(1));
-            svcAccount.setRole(Role.valueOf(serviceAccount.get(2)));
+            svcAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(serviceAccount.get(2)))));
 
             if (DEBUG)
             {

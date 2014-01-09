@@ -88,14 +88,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
         try
         {
-            // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-            }
-
             // it also requires authorization for the service
             boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
@@ -104,7 +96,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isUserAuthorized))
+            if (isUserAuthorized)
             {
                 String applGuid = UUID.randomUUID().toString();
 
@@ -288,14 +280,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
         try
         {
-            // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-            }
-
             // it also requires authorization for the service
             boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
@@ -304,7 +288,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isUserAuthorized))
+            if (isUserAuthorized)
             {
                 List<Object> appDataList = new ArrayList<Object>(
                         Arrays.asList(
@@ -426,14 +410,6 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
         try
         {
-            // this is an administrative function and requires admin level
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-            }
-
             // it also requires authorization for the service
             boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
 
@@ -442,7 +418,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isUserAuthorized))
+            if (isUserAuthorized)
             {
                 boolean isComplete = appDAO.deleteApplication(application.getGuid());
 

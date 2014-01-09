@@ -68,7 +68,7 @@
         <repositorySalt>repositorySalt</repositorySalt>
         <minConnections>minConnections</minConnections>
         <maxConnections>maxConnections</maxConnections>
-        <baseObjectClass>inetorgperson</baseObjectClass>
+        <baseObjectClass>inetOrgPerson</baseObjectClass>
         <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
         <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
         <repositoryRoleBase>organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>

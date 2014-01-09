@@ -67,8 +67,7 @@ public class SystemCheckProcessorImplTest
             userAccount.setOlrLocked(false);
             userAccount.setOlrSetup(false);
             userAccount.setSuspended(false);
-            userAccount.setTcAccepted(false);
-            userAccount.setRole(Role.SITEADMIN);
+            userAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.SITEADMIN)));
             userAccount.setDisplayName("Kevin Huntly");
             userAccount.setEmailAddr("kmhuntly@gmail.com");
             userAccount.setGivenName("Kevin");
@@ -92,7 +91,7 @@ public class SystemCheckProcessorImplTest
 
             CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception ex)
         {

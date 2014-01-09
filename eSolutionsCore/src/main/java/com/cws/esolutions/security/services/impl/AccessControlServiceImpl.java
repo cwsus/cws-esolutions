@@ -68,30 +68,28 @@ public class AccessControlServiceImpl implements IAccessControlService
 
         boolean isUserAuthorized = false;
 
-        switch (userAccount.getRole())
+        for (Role role : userAccount.getRoles())
         {
-            case SITEADMIN:
-                isUserAuthorized = true;
+            if (role == Role.SITEADMIN)
+            {
+                return true;
+            }
 
-                break;
-            default:
-                try
+            try
+            {
+                isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
+
+                if (DEBUG)
                 {
-                    isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                    }
+                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                 }
-                catch (SQLException sqx)
-                {
-                    ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                    throw new AccessControlServiceException(sqx.getMessage(), sqx);
-                }
-
-                break;
+                throw new AccessControlServiceException(sqx.getMessage(), sqx);
+            }
         }
 
         return isUserAuthorized;
@@ -275,35 +273,10 @@ public class AccessControlServiceImpl implements IAccessControlService
     }
 
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#accessControlService(com.cws.esolutions.security.dto.UserAccount)
-     */
-    @Override
-    public boolean accessControlService(final UserAccount userAccount)
-    {
-        final String methodName = IAccessControlService.CNAME + "#IAccessControlService(final UserAccount userAccount) throws AccessControlServiceException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount", userAccount);
-        }
-
-        if (StringUtils.isNotEmpty(userAccount.getGuid()))
-        {
-            if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SITEADMIN))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#accessControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.services.enums.AdminControlType)
      */
     @Override
-    public boolean accessControlService(final UserAccount userAccount, final AdminControlType controlType)
+    public boolean accessControlService(final UserAccount userAccount, final AdminControlType controlType) throws AccessControlServiceException
     {
         final String methodName = IAccessControlService.CNAME + "#IAccessControlService(final UserAccount userAccount, final AdminControlType controlType) throws AccessControlServiceException";
 
@@ -316,34 +289,28 @@ public class AccessControlServiceImpl implements IAccessControlService
 
         boolean isAuthorized = false;
 
-        if (userAccount.getRole() == Role.SITEADMIN)
+        for (Role role : userAccount.getRoles())
         {
-            return true;
-        }
+            if (role == Role.SITEADMIN)
+            {
+                return true;
+            }
 
-        switch (controlType)
-        {
-            case SERVICE_ADMIN:
-                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.SERVICEADMIN))
+            try
+            {
+                isAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), "test"); // TODO!!
+
+                if (DEBUG)
                 {
-                    isAuthorized = true;
+                    DEBUGGER.debug("isUserAuthorized: {}", isAuthorized);
                 }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                break;
-            case SERVICE_REQUEST:
-                if (userAccount.getRole() == Role.ADMIN)
-                {
-                    isAuthorized = true;
-                }
-
-                break;
-            case USER_ADMIN:
-                if ((userAccount.getRole() == Role.ADMIN) || (userAccount.getRole() == Role.USERADMIN))
-                {
-                    isAuthorized = true;
-                }
-
-                break;
+                throw new AccessControlServiceException(sqx.getMessage(), sqx);
+            }
         }
 
         return isAuthorized;

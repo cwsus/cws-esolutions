@@ -27,6 +27,7 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  */
 import java.util.Map;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,13 +74,13 @@ public interface UserManager
      * credentials - these will be configured by the user on their first
      * logon.
      *
-     * @param userDN - The full, generated Distinguished Name for the new user account
      * @param createRequest - An <code>ArrayList<String></code> containing the actual user information,
      * such as username, first name, etc.
+     * @param roles - An <code>ArrayList<String></code> containing the actual user information,
      * @return boolean - <code>true</code> if user creation was successful, <code>false</code> otherwise
      * @throws UserManagementException if an error occurs during processing
      */
-    boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException;
+    boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException;
 
     /**
      * Adds a new user to the authentication system. This method is utilized
@@ -108,6 +109,17 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing
      */
     boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException;
+
+    /**
+     * Locks a provided user account by either incrementing the existing lock count
+     * by 1 or by setting the value to the configured lockout value.
+     *
+     * @param userId - The username to perform the modification against
+     * @param userGuid - The UUID of the user to perform the modification against
+     * @return boolean
+     * @throws UserManagementException if an error occurs during processing
+     */
+    void lockUserAccount(final String userId, final String userGuid) throws UserManagementException;
 
     /**
      * Unlocks a provided user account by setting the lock count to 0.

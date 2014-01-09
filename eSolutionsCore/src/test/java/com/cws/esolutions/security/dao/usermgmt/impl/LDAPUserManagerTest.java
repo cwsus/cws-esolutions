@@ -26,7 +26,6 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.Map;
-import java.util.List;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.After;
@@ -52,10 +51,11 @@ public class LDAPUserManagerTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             Assert.fail(e.getMessage());
             System.exit(1);
         }
@@ -63,20 +63,21 @@ public class LDAPUserManagerTest
 
     public void testAddAccount()
     {
-        List<String> list = new ArrayList<>(
-                Arrays.asList(
-                    "testuser",
-                    RandomStringUtils.randomAlphanumeric(64),
-                    "USER",
-                    "Test",
-                    "User",
-                    "test@test.com",
-                    UUID.randomUUID().toString(),
-                    "Test User"));
-
         try
         {
-            Assert.assertTrue(userManager.addUserAccount(null, list));
+            Assert.assertTrue(userManager.addUserAccount(
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    "junit-test",
+                                    RandomStringUtils.randomAlphanumeric(64),
+                                    "Test",
+                                    "User",
+                                    "test@test.com",
+                                    UUID.randomUUID().toString(),
+                                    "Test User")),
+                    new ArrayList<>(
+                            Arrays.asList(
+                                    "USER"))));
         }
         catch (UserManagementException umx)
         {

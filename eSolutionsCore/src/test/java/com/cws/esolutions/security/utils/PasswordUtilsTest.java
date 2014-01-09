@@ -44,7 +44,7 @@ public class PasswordUtilsTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception e)
         {
@@ -58,7 +58,7 @@ public class PasswordUtilsTest
     public void testCreateHash()
     {
         final String salt = RandomStringUtils.randomAlphanumeric(bean.getConfigData().getSecurityConfig().getSaltLength());
-        final String pass = "PKi4ly7DYrmpJc6WQHoz4L32WYYFqQTfOZY+b3NZoK0=";
+        final String pass = "Ariana21*";
 
         System.out.println(salt);
         System.out.println(PasswordUtils.encryptText(pass, salt, bean.getConfigData().getSecurityConfig().getAuthAlgorithm(), bean.getConfigData().getSecurityConfig().getIterations()));

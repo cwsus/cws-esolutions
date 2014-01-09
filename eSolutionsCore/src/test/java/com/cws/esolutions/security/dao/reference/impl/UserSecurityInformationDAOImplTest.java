@@ -56,7 +56,7 @@ public class UserSecurityInformationDAOImplTest
             resetSalt = RandomStringUtils.randomAlphanumeric(64);
             logonSalt = RandomStringUtils.randomAlphanumeric(64);
 
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception e)
         {

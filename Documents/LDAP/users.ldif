@@ -13,7 +13,6 @@ cwsfailedpwdcount: 0
 cwsisolrlocked: false
 cwsisolrsetup: false
 cwsissuspended: false
-cwsistcaccepted: true
 cwslastlogin: 1387558338548
 cwspublickey:: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwd3vvX4/GPNnXNFAB
  KBflmN9dcNNojQ9TXHk1w/7abEgesJjpMGJlL41CCqSrsPD4hNr+aTrQ601HyIRDT2yqcJtruSK
@@ -25,7 +24,6 @@ cwspublickey:: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwd3vvX4/GPNnXNFAB
  wTxniQkWm8XDASb7NaXAs8tFL/sVc3KAnVsNVYTfzOp4PqLEhoGOriHuCRCEGd5frGY5PtzAfPn
  rP0lW/YKcYIpem0zyUouKqClsgQDKg6QwBRpYQi8vJkVG+iCV08k7/aZ3s3DaaRokcVYwRVtvlD
  eHHcBmeOtrnnklIi0Zyb8hZxdQh5Jxu6CJ754pZ9BN8/l2FnGOu3w70DGA7XJCqRHECAwEAAQ==
-cwsrole: SiteAdmin
 cwssecans1: DTfPFJ3IfBoqZ237AU4oI8dpQqmSWytEG1EVW1MaPPdp6QjoIzM4YuRgtn88T9bb
  hj9LusRuZE10bNiDv53Bmw==
 cwssecans2: 5WaeXlxLEtDdFuPYLptE2xSrHQXWTJxqJuYE3ffGexq91W2kJqKJB7ycLeyTkCq4

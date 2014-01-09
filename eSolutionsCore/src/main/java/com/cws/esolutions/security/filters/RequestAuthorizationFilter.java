@@ -274,7 +274,7 @@ public class RequestAuthorizationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if (userAccount.getRole() != Role.SITEADMIN)
+                if (!(userAccount.getRoles().contains(Role.SITEADMIN)))
                 {
                     try
                     {

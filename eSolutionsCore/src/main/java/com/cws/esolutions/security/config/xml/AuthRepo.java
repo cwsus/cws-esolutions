@@ -63,7 +63,7 @@ public final class AuthRepo implements Serializable
     private String repositoryDriver = null;
     private String repositoryBaseDN = null;
     private String repositoryUserBase = null;
-    private String repositoryAdminBase = null;
+    private String repositoryRoleBase = null;
     private AuthRepositoryType repoType = null;
     private String repositoryConnTimeout = null;
     private String repositoryReadTimeout = null;
@@ -270,9 +270,9 @@ public final class AuthRepo implements Serializable
         this.repositoryUserBase = value;
     }
 
-    public final void setRepositoryAdminBase(final String value)
+    public final void setRepositoryRoleBase(final String value)
     {
-        final String methodName = AuthRepo.CNAME + "#setRepositoryAdminBase(final String value)";
+        final String methodName = AuthRepo.CNAME + "#setRepositoryRoleBase(final String value)";
 
         if (DEBUG)
         {
@@ -280,7 +280,7 @@ public final class AuthRepo implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.repositoryAdminBase = value;
+        this.repositoryRoleBase = value;
     }
 
     public final void setMinConnections(final String value)
@@ -490,18 +490,18 @@ public final class AuthRepo implements Serializable
         return this.repositoryUserBase;
     }
 
-    @XmlElement(name = "repositoryAdminBase")
-    public final String getRepositoryAdminBase()
+    @XmlElement(name = "repositoryRoleBase")
+    public final String getRepositoryRoleBase()
     {
-        final String methodName = AuthRepo.CNAME + "#getRepositoryAdminBase()";
+        final String methodName = AuthRepo.CNAME + "#getRepositoryRoleBase()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.repositoryAdminBase);
+            DEBUGGER.debug("Value: {}", this.repositoryRoleBase);
         }
 
-        return this.repositoryAdminBase;
+        return this.repositoryRoleBase;
     }
 
     @XmlElement(name = "minConnections")

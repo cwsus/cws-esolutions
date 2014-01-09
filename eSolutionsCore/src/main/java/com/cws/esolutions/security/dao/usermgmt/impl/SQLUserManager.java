@@ -30,7 +30,9 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -160,17 +162,16 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.List, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userDN);
             DEBUGGER.debug("Value: {}", createRequest);
         }
 
@@ -533,14 +534,12 @@ public class SQLUserManager implements UserManager
                                 resultSet.getString(authData.getSurname()),
                                 resultSet.getString(authData.getDisplayName()),
                                 resultSet.getString(authData.getEmailAddr()),
-                                resultSet.getString(authData.getUserRole()),
                                 resultSet.getString(authData.getLockCount()),
                                 resultSet.getString(authData.getLastLogin()),
                                 resultSet.getString(authData.getExpiryDate()),
                                 resultSet.getString(authData.getIsSuspended()),
                                 resultSet.getString(authData.getOlrSetupReq()),
                                 resultSet.getString(authData.getOlrLocked()),
-                                resultSet.getString(authData.getTcAccepted())
                         };
 
                         if (DEBUG)
@@ -774,14 +773,12 @@ public class SQLUserManager implements UserManager
                     userAccount.add(resultSet.getString(authData.getEmailAddr()));
                     userAccount.add(resultSet.getString(authData.getPagerNumber()));
                     userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                    userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
                     userAccount.add(resultSet.getInt(authData.getLockCount()));
                     userAccount.add(resultSet.getLong(authData.getLastLogin()));
                     userAccount.add(resultSet.getLong(authData.getExpiryDate()));
                     userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
                     userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
-                    userAccount.add(resultSet.getBoolean(authData.getTcAccepted()));
 
                     if (DEBUG)
                     {
@@ -907,6 +904,72 @@ public class SQLUserManager implements UserManager
         }
 
         return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockUserAccount(java.lang.String, java.lang.String, java.lang.Boolean)
+     */
+    @Override
+    public synchronized void lockUserAccount(final String userId, final String userGuid) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#unlockUserAccount(final Stirng userId, final String userGuid) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        Connection sqlConn = null;
+        CallableStatement stmt = null;
+
+        try
+        {
+            sqlConn = SQLUserManager.dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+
+            stmt = sqlConn.prepareCall("{ CALL lockUserAccount(?) }");
+            stmt.setString(1, userGuid);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            stmt.executeUpdate();
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new UserManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            try
+            {
+                if (stmt != null)
+                {
+                    stmt.close();
+                }
+
+                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+                {
+                    sqlConn.close();
+                }
+            }
+            catch (SQLException sqx)
+            {
+                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+            }
+        }
     }
 
     /**

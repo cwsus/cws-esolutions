@@ -91,19 +91,6 @@ public class SQLAuthenticator implements Authenticator
 
                 if (resultSet.next())
                 {
-                    resultSet.last();
-                    int x = resultSet.getRow();
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("x: {}", x);
-                    }
-
-                    if ((x == 0) || (x > 1))
-                    {
-                        throw new AuthenticatorException("No user account was located for the provided data.");
-                    }
-
                     resultSet.first();
 
                     userAccount = new ArrayList<Object>();
@@ -115,7 +102,6 @@ public class SQLAuthenticator implements Authenticator
                     userAccount.add(resultSet.getString(authData.getEmailAddr()));
                     userAccount.add(resultSet.getString(authData.getPagerNumber()));
                     userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                    userAccount.add(resultSet.getString(authData.getUserRole()).toUpperCase());
                     userAccount.add(resultSet.getInt(authData.getLockCount()));
                     userAccount.add(resultSet.getLong(authData.getLastLogin()));
                     userAccount.add(resultSet.getLong(authData.getExpiryDate()));
@@ -162,80 +148,6 @@ public class SQLAuthenticator implements Authenticator
         }
 
         return userAccount;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.userauth.interfaces.Authenticator#lockUserAccount(java.lang.String, int)
-     */
-    @Override
-    public synchronized void lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException
-    {
-        final String methodName = SQLAuthenticator.CNAME + "#boolean lockUserAccount(final String userId, final int currentCount) throws AuthenticatorException";
-        
-        if(DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("LoginType: {}", userId);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = SQLAuthenticator.dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL lockUserAcct(?, ?)}");
-            stmt.setString(1, userId);
-            stmt.setInt(2, currentCount + 1);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("stmt: {}", stmt.toString());
-            }
-
-            if (!(stmt.execute()))
-            {
-                ERROR_RECORDER.error("Failed to increment user lock count.");
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new AuthenticatorException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-            
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
     }
 
     /**

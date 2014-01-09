@@ -31,7 +31,6 @@ import org.junit.Before;
 import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -55,7 +54,7 @@ public class AuthenticationProcessorImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
 
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");
@@ -73,7 +72,7 @@ public class AuthenticationProcessorImplTest
     public void testUsernameAuthentication()
     {
         UserAccount account = new UserAccount();
-        account.setUsername("demo");
+        account.setUsername("khuntly");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationRequest request = new AuthenticationRequest();
@@ -124,6 +123,7 @@ public class AuthenticationProcessorImplTest
         }
         catch (AuthenticationException ax)
         {
+            ax.printStackTrace();
             Assert.fail(ax.getMessage());
         }
     }
@@ -224,7 +224,6 @@ public class AuthenticationProcessorImplTest
         UserAccount account = new UserAccount();
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-        account.setRole(Role.SITEADMIN);
 
         UserSecurity userSecurity = new UserSecurity();
         userSecurity.setSecAnswerOne("answerone");

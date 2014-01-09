@@ -50,7 +50,6 @@ public final class AuthData implements Serializable
     private String userId = null;
     private String surname = null;
     private String memberOf = null;
-    private String userRole = null;
     private String lockCount = null;
     private String lastLogin = null;
     private String publicKey = null;
@@ -58,7 +57,6 @@ public final class AuthData implements Serializable
     private String olrLocked = null;
     private String givenName = null;
     private String expiryDate = null;
-    private String tcAccepted = null;
     private String commonName = null;
     private String objectClass = null;
     private String olrSetupReq = null;
@@ -129,19 +127,6 @@ public final class AuthData implements Serializable
         }
         
         this.userPassword = value;
-    }
-
-    public final void setUserRole(final String value)
-    {
-        final String methodName = AuthData.CNAME + "#setUserRole(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.userRole = value;
     }
 
     public final void setLockCount(final String value)
@@ -339,19 +324,6 @@ public final class AuthData implements Serializable
         this.displayName = value;
     }
 
-    public final void setTcAccepted(final String value)
-    {
-        final String methodName = AuthData.CNAME + "#setTcAccepted(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.tcAccepted = value;
-    }
-
     public final void setMemberOf(final String value)
     {
         final String methodName = AuthData.CNAME + "#setMemberOf(final String value)";
@@ -431,20 +403,6 @@ public final class AuthData implements Serializable
         }
         
         return this.userPassword;
-    }
-
-    @XmlElement(name = "userRole")
-    public final String getUserRole()
-    {
-        final String methodName = AuthData.CNAME + "#getUserRole()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.userRole);
-        }
-        
-        return this.userRole;
     }
 
     @XmlElement(name = "publicKey")
@@ -669,20 +627,6 @@ public final class AuthData implements Serializable
         }
         
         return this.displayName;
-    }
-
-    @XmlElement(name = "tcAccepted")
-    public final String getTcAccepted()
-    {
-        final String methodName = AuthData.CNAME + "#getTcAccepted()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.tcAccepted);
-        }
-        
-        return this.tcAccepted;
     }
 
     @XmlElement(name = "memberOf")

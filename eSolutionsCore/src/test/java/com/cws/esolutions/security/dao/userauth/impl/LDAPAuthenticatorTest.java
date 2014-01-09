@@ -46,7 +46,7 @@ public class LDAPAuthenticatorTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
         catch (Exception e)
         {
@@ -60,7 +60,10 @@ public class LDAPAuthenticatorTest
     {
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", "khuntly", "VjNSoL1UNGTL9+keI+fSTLCWdwcovfGkfSN1EGRA2GKq+hb+rRukzA9uijcC5Qere3Irb+m6YY3731eWk1YHnw=="));
+            Assert.assertNotNull(authenticator.performLogon(
+                    "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
+                    "khuntly",
+                    "VOpqGWznp1flygXFED8FVTxXTRHG9QG/Dj+apuuyeh59JWVbYd9hOgZTOfpLdBWRlPDb1TZnvt7XE3llHOPQQQ=="));
         }
         catch (AuthenticatorException e)
         {

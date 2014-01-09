@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.net.ConnectException;
+
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.Attribute;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -46,7 +47,6 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
-
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -87,85 +87,81 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            searchRequest = new SearchRequest(
+                    authRepo.getRepositoryBaseDN(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getCommonName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchRequest);
+            }
+
+            searchResult = ldapConn.search(searchRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 0))
+            {
+                // we should have a valid uuid now
+                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                        "(&(" + authData.getUserId() + "=" + userId + ")))");
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    DEBUGGER.debug("searchFilter: {}", searchFilter);
                 }
 
-                if (ldapConn.isConnected())
+                searchRequest = new SearchRequest(
+                        authRepo.getRepositoryBaseDN(),
+                        SearchScope.SUB,
+                        searchFilter,
+                        authData.getUserId());
+
+                if (DEBUG)
                 {
-                    searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                    }
-
-                    searchRequest = new SearchRequest(
-                            authRepo.getRepositoryBaseDN(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getCommonName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchRequest: {}", searchRequest);
-                    }
-
-                    searchResult = ldapConn.search(searchRequest);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 0))
-                    {
-                        // we should have a valid uuid now
-                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                "(&(" + authData.getUserId() + "=" + userId + ")))");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        }
-
-                        searchRequest = new SearchRequest(
-                                authRepo.getRepositoryBaseDN(),
-                                SearchScope.SUB,
-                                searchFilter,
-                                authData.getUserId());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("searchRequest: {}", searchRequest);
-                        }
-
-                        searchResult = ldapConn.search(searchRequest);
-
-                        if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() != 0))
-                        {
-                            throw new UserManagementException("A user currently exists with the provided username");
-                        }
-                    }
-                    else
-                    {
-                        throw new UserManagementException("A user currently exists with the provided UUID");
-                    }
+                    DEBUGGER.debug("searchRequest: {}", searchRequest);
                 }
-                else
+
+                searchResult = ldapConn.search(searchRequest);
+
+                if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() != 0))
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    throw new UserManagementException("A user currently exists with the provided username");
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new UserManagementException("A user currently exists with the provided UUID");
             }
         }
         catch (LDAPException lx)
@@ -190,12 +186,12 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.String, java.util.List)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#addUserAccount(java.lang.List, java.util.List)
      */
     @Override
-    public synchronized boolean addUserAccount(final String userDN, final List<String> createRequest) throws UserManagementException
+    public synchronized boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final String userDN, final String userDN, final List<String> createRequest) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -208,6 +204,15 @@ public class LDAPUserManager implements UserManager
         LDAPConnection ldapConn = null;
         LDAPConnectionPool ldapPool = null;
 
+        final StringBuilder userDN = new StringBuilder()
+            .append(authData.getUserId() + "=" + createRequest.get(0) + ",")
+            .append(authRepo.getRepositoryUserBase());
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("StringBuilder: {}", userDN);
+        }
+
         try
         {
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
@@ -217,55 +222,82 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            // have a connection, create the user
+            List<Attribute> newAttributes = new ArrayList<>();
+            newAttributes.add(new Attribute("objectClass", authData.getObjectClass()));
+            newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
+            newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
+            newAttributes.add(new Attribute(authData.getSurname(), createRequest.get(3)));
+            newAttributes.add(new Attribute(authData.getGivenName(), createRequest.get(4)));
+            newAttributes.add(new Attribute(authData.getEmailAddr(), createRequest.get(5)));
+            newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
+            newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
+
+            AddRequest addRequest = new AddRequest(userDN.toString(), newAttributes);
+
+            ldapResult = ldapConn.add(addRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                isUserCreated = true;
+            }
+
+            // add user to groups now
+            for (String role : roles)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("String: {}", role);
+                }
+
+                StringBuilder roleDN = new StringBuilder()
+                    .append("cn=" + role)
+                    .append(authRepo.getRepositoryRoleBase());
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    DEBUGGER.debug("StringBuilder: {}", roleDN);
                 }
 
-                if (ldapConn.isConnected())
+                addRequest = new AddRequest(roleDN.toString(),
+                    new ArrayList<Attribute>(
+                        Arrays.asList(
+                            new Attribute("objectClass", "uniqueMember"),
+                            new Attribute("uniqueMember", userDN.toString()))));
+
+                if (DEBUG)
                 {
-                    // have a connection, create the user
-                    List<Attribute> newAttributes = new ArrayList<>();
-                    newAttributes.add(new Attribute("objectClass", authData.getObjectClass()));
-                    newAttributes.add(new Attribute(authData.getUserId(), createRequest.get(0)));
-                    newAttributes.add(new Attribute(authData.getUserPassword(), createRequest.get(1)));
-                    newAttributes.add(new Attribute(authData.getUserRole(), createRequest.get(2)));
-                    newAttributes.add(new Attribute(authData.getSurname(), createRequest.get(3)));
-                    newAttributes.add(new Attribute(authData.getGivenName(), createRequest.get(4)));
-                    newAttributes.add(new Attribute(authData.getEmailAddr(), createRequest.get(5)));
-                    newAttributes.add(new Attribute(authData.getCommonName(), createRequest.get(6)));
-                    newAttributes.add(new Attribute(authData.getDisplayName(), createRequest.get(7)));
-
-                    AddRequest addRequest = new AddRequest(userDN, newAttributes);
-
-                    ldapResult = ldapConn.add(addRequest);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                    }
-
-                    if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                    {
-                        isUserCreated = true;
-                    }
-                    else
-                    {
-                        throw new UserManagementException("Failed to create the new user account. Please ensure that the data provided is valid and accurate.");
-                    }
+                    DEBUGGER.debug("AddRequest: {}", addRequest);
                 }
-                else
+
+                ldapResult = ldapConn.add(addRequest);
+
+                if (ldapResult.getResultCode() != ResultCode.SUCCESS)
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    ERROR_RECORDER.error("Failed to add user to group: {}", role);
                 }
-            }
-            else
-            {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
             }
         }
         catch (ConnectException cx)
@@ -320,119 +352,113 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
 
-                if (DEBUG)
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&("  + authData.getUserId() +  "=" + userId + "))" +
+                    "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
+
+            SearchRequest searchRequest = new SearchRequest(
+				    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getCommonName(),
+                    authData.getUserId(),
+                    authData.getDisplayName(),
+                    authData.getEmailAddr(),
+                    authData.getTelephoneNumber(),
+                    authData.getPagerNumber(),
+                    authData.getExpiryDate(),
+                    authData.getGivenName(),
+                    authData.getIsSuspended(),
+                    authData.getLastLogin(),
+                    authData.getLockCount(),
+                    authData.getOlrLocked(),
+                    authData.getOlrSetupReq(),
+                    authData.getSurname(),
+                    authData.getSecQuestionOne(),
+                    authData.getSecQuestionTwo(),
+                    authData.getSecAnswerOne(),
+                    authData.getSecAnswerTwo());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+                DEBUGGER.debug("searchRequest: {}", searchRequest);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                if (searchResult.getSearchEntries().size() == 1)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                }
-
-                if (ldapConn.isConnected())
-                {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getUserId() +  "=" + userId + "))" +
-                            "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
-
-                    SearchRequest searchRequest = new SearchRequest(
-						    authRepo.getRepositoryUserBase(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getCommonName(),
-                            authData.getUserId(),
-                            authData.getDisplayName(),
-                            authData.getEmailAddr(),
-                            authData.getTelephoneNumber(),
-                            authData.getPagerNumber(),
-                            authData.getExpiryDate(),
-                            authData.getGivenName(),
-                            authData.getIsSuspended(),
-                            authData.getLastLogin(),
-                            authData.getLockCount(),
-                            authData.getOlrLocked(),
-                            authData.getOlrSetupReq(),
-                            authData.getSurname(),
-                            authData.getTcAccepted(),
-                            authData.getUserRole(),
-                            authData.getSecQuestionOne(),
-                            authData.getSecQuestionTwo(),
-                            authData.getSecAnswerOne(),
-                            authData.getSecAnswerTwo());
+                    SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        DEBUGGER.debug("searchRequest: {}", searchRequest);
+                        DEBUGGER.debug("SearchResultEntry: {}", entry);
                     }
 
-                    SearchResult searchResult = ldapConn.search(searchRequest);
+                    List<Modification> modifyList = new ArrayList<>();
 
-                    if (DEBUG)
+                    for (String key : changeRequest.keySet())
                     {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if (searchResult.getResultCode() == ResultCode.SUCCESS)
-                    {
-                        if (searchResult.getSearchEntries().size() == 1)
+                        if (entry.getAttributeValue(key) != null)
                         {
-                            SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResultEntry: {}", entry);
-                            }
-
-                            List<Modification> modifyList = new ArrayList<>();
-
-                            for (String key : changeRequest.keySet())
-                            {
-                                if (entry.getAttributeValue(key) != null)
-                                {
-                                    modifyList.add(new Modification(ModificationType.REPLACE, key, String.valueOf(changeRequest.get(key))));
-                                }
-                                else
-                                {
-                                    modifyList.add(new Modification(ModificationType.ADD, key, String.valueOf(changeRequest.get(key))));
-                                }
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("modifyList: {}", modifyList);
-                            }
-
-                            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                            }
-
-                            if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                            {
-                                isComplete = true;
-                            }
+                            modifyList.add(new Modification(ModificationType.REPLACE, key, String.valueOf(changeRequest.get(key))));
                         }
                         else
                         {
-                            throw new LDAPException(ResultCode.ASSERTION_FAILED, "Multiple user accounts were located for the provided information.");
+                            modifyList.add(new Modification(ModificationType.ADD, key, String.valueOf(changeRequest.get(key))));
                         }
                     }
-                    else
+
+                    if (DEBUG)
                     {
-                        throw new LDAPException(ResultCode.ASSERTION_FAILED, "No user accounts were located with the provided information.");
+                        DEBUGGER.debug("modifyList: {}", modifyList);
+                    }
+
+                    LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPResult: {}", ldapResult);
+                    }
+
+                    if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+                    {
+                        isComplete = true;
                     }
                 }
                 else
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    throw new LDAPException(ResultCode.ASSERTION_FAILED, "Multiple user accounts were located for the provided information.");
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new LDAPException(ResultCode.ASSERTION_FAILED, "No user accounts were located with the provided information.");
             }
         }
         catch (LDAPException lx)
@@ -487,83 +513,78 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&("  + authData.getUserId() +  "=" + userId + "))" +
+                    "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
+
+            SearchRequest searchReq = new SearchRequest(
+				    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getIsSuspended());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() == 1))
+            {
+                SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    DEBUGGER.debug("SearchResultEntry: {}", entry);
                 }
 
-                if (ldapConn.isConnected())
+                List<Modification> modifyList = new ArrayList<>
+                (
+                    Arrays.asList
+                    (
+                        new Modification(ModificationType.REPLACE, authData.getIsSuspended(), String.valueOf(isSuspended))
+                    )
+                );
+
+                if (DEBUG)
                 {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getUserId() +  "=" + userId + "))" +
-                            "(&("  + authData.getCommonName() +  "=" + userGuid + ")))");
-
-                    SearchRequest searchReq = new SearchRequest(
-						    authRepo.getRepositoryUserBase(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getIsSuspended());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() == 1))
-                    {
-                        SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchResultEntry: {}", entry);
-                        }
-
-                        List<Modification> modifyList = new ArrayList<>
-                        (
-                            Arrays.asList
-                            (
-                                new Modification(ModificationType.REPLACE, authData.getIsSuspended(), String.valueOf(isSuspended))
-                            )
-                        );
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("modifyList: {}", modifyList);
-                        }
-
-                        LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                        }
-
-                        if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                        {
-                            isComplete = true;
-                        }
-                    }
+                    DEBUGGER.debug("modifyList: {}", modifyList);
                 }
-                else
+
+                LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                if (DEBUG)
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    DEBUGGER.debug("LDAPResult: {}", ldapResult);
                 }
-            }
-            else
-            {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+
+                if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+                {
+                    isComplete = true;
+                }
             }
         }
         catch (LDAPException lx)
@@ -587,6 +608,129 @@ public class LDAPUserManager implements UserManager
         }
 
         return isComplete;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#unlockUserAccount(java.lang.String, java.lang.String, java.lang.Boolean)
+     */
+    @Override
+    public synchronized void lockUserAccount(final String userId, final String userGuid) throws UserManagementException
+    {
+        final String methodName = LDAPUserManager.CNAME + "#lockUserAccount(final String userId, final String userGuid) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", userId);
+            DEBUGGER.debug("Value: {}", userGuid);
+        }
+
+        LDAPConnection ldapConn = null;
+        LDAPConnectionPool ldapPool = null;
+
+        try
+        {
+            ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
+            }
+
+            if (ldapPool.isClosed())
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&("  + authData.getUserId() +  "=" + userId + "))" +
+                    "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
+
+            SearchRequest searchReq = new SearchRequest(
+                    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getLockCount());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() != ResultCode.SUCCESS) || (searchResult.getSearchEntries().size() != 1))
+            {
+                SearchResultEntry entry = searchResult.getSearchEntries().get(0);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("SearchResultEntry: {}", entry);
+                }
+
+                List<Modification> modifyList = new ArrayList<>
+                (
+                    Arrays.asList
+                    (
+                        new Modification(ModificationType.REPLACE, authData.getLockCount(), "0")
+                    )
+                );
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("modifyList: {}", modifyList);
+                }
+
+                LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("LDAPResult: {}", ldapResult);
+                }
+
+                if (ldapResult.getResultCode() != ResultCode.SUCCESS)
+                {
+                    ERROR_RECORDER.error("Failed to modify the requested lock count");
+                }
+            }
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
+
+            throw new UserManagementException(lx.getMessage(), lx);
+        }
+        catch (ConnectException cx)
+        {
+            ERROR_RECORDER.error(cx.getMessage(), cx);
+
+            throw new UserManagementException(cx.getMessage(), cx);
+        }
+        finally
+        {
+            if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
+            {
+                ldapPool.releaseConnection(ldapConn);
+            }
+        }
     }
 
     /**
@@ -617,83 +761,79 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&("  + authData.getUserId() +  "=" + userId + "))" +
+                    "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
+
+            SearchRequest searchReq = new SearchRequest(
+				    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getLockCount());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() == 1))
+            {
+                SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    DEBUGGER.debug("SearchResultEntry: {}", entry);
                 }
 
-                if (ldapConn.isConnected())
+                List<Modification> modifyList = new ArrayList<>
+                (
+                    Arrays.asList
+                    (
+                        new Modification(ModificationType.REPLACE, authData.getLockCount(), "0")
+                    )
+                );
+
+                if (DEBUG)
                 {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getUserId() +  "=" + userId + "))" +
-                            "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
-
-                    SearchRequest searchReq = new SearchRequest(
-						    authRepo.getRepositoryUserBase(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getLockCount());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getSearchEntries().size() == 1))
-                    {
-                        SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchResultEntry: {}", entry);
-                        }
-
-                        List<Modification> modifyList = new ArrayList<>
-                        (
-                            Arrays.asList
-                            (
-                                new Modification(ModificationType.REPLACE, authData.getLockCount(), "0")
-                            )
-                        );
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("modifyList: {}", modifyList);
-                        }
-
-                        LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                        }
-
-                        if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                        {
-                            isComplete = true;
-                        }
-                    }
+                    DEBUGGER.debug("modifyList: {}", modifyList);
                 }
-                else
+
+                LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                if (DEBUG)
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    DEBUGGER.debug("LDAPResult: {}", ldapResult);
                 }
-            }
-            else
-            {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+
+                if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+                {
+                    isComplete = true;
+                }
             }
         }
         catch (LDAPException lx)
@@ -747,90 +887,86 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            // need to get the userdn
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                        "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            SearchRequest searchReq = new SearchRequest(
+                authRepo.getRepositoryUserBase(),
+                SearchScope.SUB,
+                searchFilter,
+                authData.getUserId(),
+                authData.getCommonName(),
+                authData.getGivenName(),
+                authData.getSurname(),
+                authData.getEmailAddr());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 1))
+            {
+                SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+                    DEBUGGER.debug("SearchResultEntry: {}", entry);
                 }
 
-                if (ldapConn.isConnected())
+                // perform the modification here
+                List<Modification> modifyList = new ArrayList<>(
+                        Arrays.asList(
+                                new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
+                                new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(expiry))));
+
+                LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+                if (DEBUG)
                 {
-                    // need to get the userdn
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                    }
-
-                    SearchRequest searchReq = new SearchRequest(
-                        authRepo.getRepositoryUserBase(),
-                        SearchScope.SUB,
-                        searchFilter,
-                        authData.getUserId(),
-                        authData.getCommonName(),
-                        authData.getGivenName(),
-                        authData.getSurname(),
-                        authData.getEmailAddr());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if ((searchResult.getResultCode() == ResultCode.SUCCESS) && (searchResult.getEntryCount() == 1))
-                    {
-                        SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("SearchResultEntry: {}", entry);
-                        }
-
-                        // perform the modification here
-                        List<Modification> modifyList = new ArrayList<>(
-                                Arrays.asList(
-                                        new Modification(ModificationType.REPLACE, authData.getUserPassword(), newPass),
-                                        new Modification(ModificationType.REPLACE, authData.getExpiryDate(), String.valueOf(expiry))));
-
-                        LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                        }
-
-                        isComplete = (ldapResult.getResultCode() == ResultCode.SUCCESS);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
-                    }
-                    else
-                    {
-                        throw new LDAPException(ResultCode.NO_RESULTS_RETURNED, "Unable to locate provided user. Cannot continue.");
-                    }
+                    DEBUGGER.debug("LDAPResult: {}", ldapResult);
                 }
-                else
+
+                isComplete = (ldapResult.getResultCode() == ResultCode.SUCCESS);
+
+                if (DEBUG)
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    DEBUGGER.debug("isComplete: {}", isComplete);
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new LDAPException(ResultCode.NO_RESULTS_RETURNED, "Unable to locate provided user. Cannot continue.");
             }
         }
         catch (LDAPException lx)
@@ -884,81 +1020,77 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
-            {
-                ldapConn = ldapPool.getConnection();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                }
-
-                if (ldapConn.isConnected())
-                {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&("  + authData.getUserId() +  "=" + userId + "))" +
-                            "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
-
-                    SearchRequest searchReq = new SearchRequest(
-						    authRepo.getRepositoryUserBase(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getCommonName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if (searchResult.getResultCode() == ResultCode.SUCCESS)
-                    {
-                        if (searchResult.getSearchEntries().size() == 1)
-                        {
-                            SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("SearchResultEntry: {}", entry);
-                            }
-
-                            DeleteRequest deleteRequest = new DeleteRequest(entry.getDN());
-                            deleteRequest.setDN(entry.getDN());
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DeleteRequest: {}", deleteRequest);
-                            }
-                    
-                            LDAPResult ldapResult = ldapConn.delete(deleteRequest);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("LDAPResult: {}", ldapResult);
-                            }
-
-                            if (ldapResult.getResultCode() == ResultCode.SUCCESS)
-                            {
-                                isComplete = true;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
-                }
-            }
-            else
+            if (ldapPool.isClosed())
             {
                 throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&("  + authData.getUserId() +  "=" + userId + "))" +
+                    "(&("  + authData.getCommonName() +  "=" + userGuid + "))");
+
+            SearchRequest searchReq = new SearchRequest(
+				    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getCommonName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                if (searchResult.getSearchEntries().size() == 1)
+                {
+                    SearchResultEntry entry = searchResult.getSearchEntries().get(0);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("SearchResultEntry: {}", entry);
+                    }
+
+                    DeleteRequest deleteRequest = new DeleteRequest(entry.getDN());
+                    deleteRequest.setDN(entry.getDN());
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("DeleteRequest: {}", deleteRequest);
+                    }
+            
+                    LDAPResult ldapResult = ldapConn.delete(deleteRequest);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPResult: {}", ldapResult);
+                    }
+
+                    if (ldapResult.getResultCode() == ResultCode.SUCCESS)
+                    {
+                        isComplete = true;
+                    }
+                }
             }
         }
         catch (LDAPException lx)
@@ -1012,120 +1144,115 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+            Filter searchFilter = null;
+
+            if (searchType != null)
+            {
+                switch (searchType)
+                {
+                    case USERNAME:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getUserId() + "=" + searchData + ")))");
+
+                        break;
+                    case EMAILADDR:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getEmailAddr() + "=" + searchData + ")))");
+
+                        break;
+                    case GUID:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getCommonName() + "=" + searchData + ")))");
+
+                        break;
+                    case GIVENNAME:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getGivenName() + "=" + searchData + ")))");
+
+                        break;
+                    case SURNAME:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getSurname() + "=" + searchData + ")))");
+
+                        break;
+                    case DISPLAYNAME:
+                        searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                                "(&(" + authData.getDisplayName() + "=" + searchData + ")))");
+
+                        break;
+                    default:
+                        throw new UserManagementException("No search type was provided.");
+                }
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                }
-
-                if (ldapConn.isConnected())
-                {
-                    Filter searchFilter = null;
-
-                    if (searchType != null)
-                    {
-                        switch (searchType)
-                        {
-                            case USERNAME:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getUserId() + "=" + searchData + ")))");
-
-                                break;
-                            case EMAILADDR:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getEmailAddr() + "=" + searchData + ")))");
-
-                                break;
-                            case GUID:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getCommonName() + "=" + searchData + ")))");
-
-                                break;
-                            case GIVENNAME:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getGivenName() + "=" + searchData + ")))");
-
-                                break;
-                            case SURNAME:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getSurname() + "=" + searchData + ")))");
-
-                                break;
-                            case DISPLAYNAME:
-                                searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                                        "(&(" + authData.getDisplayName() + "=" + searchData + ")))");
-
-                                break;
-                            default:
-                                throw new UserManagementException("No search type was provided.");
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("searchFilter: {}", searchFilter);
-                        }
-                    }
-                    else
-                    {
-                        throw new UserManagementException("No valid search request type was provided. Cannot continue.");
-                    }
-
-                    SearchRequest searchReq = new SearchRequest(
-                        authRepo.getRepositoryUserBase(),
-                        SearchScope.SUB,
-                        searchFilter,
-                        authData.getCommonName(),
-                        authData.getUserId(),
-                        authData.getLockCount());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if (searchResult.getResultCode() == ResultCode.SUCCESS)
-                    {
-                        results = new ArrayList<Object[]>();
-
-                        for (SearchResultEntry entry : searchResult.getSearchEntries())
-                        {
-                            Object[] userData = new Object[] {
-                                    entry.getAttributeValue(authData.getCommonName()),
-                                    entry.getAttributeValue(authData.getUserId()),
-                                    entry.getAttributeValueAsInteger(authData.getLockCount())
-                            };
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Data: {}", userData);
-                            }
-
-                            results.add(userData);
-                        }
-                    }
-                    else
-                    {
-                        throw new UserManagementException("No users were located with the search data provided");
-                    }
-                }
-                else
-                {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    DEBUGGER.debug("searchFilter: {}", searchFilter);
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new UserManagementException("No valid search request type was provided. Cannot continue.");
+            }
+
+            SearchRequest searchReq = new SearchRequest(
+                authRepo.getRepositoryUserBase(),
+                SearchScope.SUB,
+                searchFilter,
+                authData.getCommonName(),
+                authData.getUserId(),
+                authData.getLockCount());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                results = new ArrayList<Object[]>();
+
+                for (SearchResultEntry entry : searchResult.getSearchEntries())
+                {
+                    Object[] userData = new Object[] {
+                            entry.getAttributeValue(authData.getCommonName()),
+                            entry.getAttributeValue(authData.getUserId()),
+                            entry.getAttributeValueAsInteger(authData.getLockCount())
+                    };
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("Data: {}", userData);
+                    }
+
+                    results.add(userData);
+                }
+            }
+            else
+            {
+                throw new UserManagementException("No users were located with the search data provided");
             }
         }
         catch (LDAPException lx)
@@ -1178,111 +1305,145 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
 
-                if (DEBUG)
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            SearchRequest searchRequest = new SearchRequest(
+                    authRepo.getRepositoryUserBase(),
+                    SearchScope.SUB,
+                    searchFilter,
+                    authData.getCommonName(),
+                    authData.getUserId(),
+                    authData.getGivenName(),
+                    authData.getSurname(),
+                    authData.getDisplayName(),
+                    authData.getEmailAddr(),
+                    authData.getPagerNumber(),
+                    authData.getTelephoneNumber(),
+                    authData.getLastLogin(),
+                    authData.getExpiryDate(),
+                    authData.getIsSuspended(),
+                    authData.getOlrSetupReq(),
+                    authData.getOlrLocked());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchRequest);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchRequest);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                if (searchResult.getEntryCount() == 1)
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                }
-
-                if (ldapConn.isConnected())
-                {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&(" + authData.getCommonName() + "=" + userGuid + ")))");
+                    SearchResultEntry entry = searchResult.getSearchEntries().get(0);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
+                        DEBUGGER.debug("SearchResultEntry: {}", entry);
                     }
 
-                    SearchRequest searchRequest = new SearchRequest(
-                            authRepo.getRepositoryUserBase(),
-                            SearchScope.SUB,
-                            searchFilter,
-                            authData.getCommonName(),
-                            authData.getUserId(),
-                            authData.getGivenName(),
-                            authData.getSurname(),
-                            authData.getDisplayName(),
-                            authData.getEmailAddr(),
-                            authData.getPagerNumber(),
-                            authData.getTelephoneNumber(),
-                            authData.getUserRole(),
-                            authData.getLockCount(),
-                            authData.getLastLogin(),
-                            authData.getExpiryDate(),
-                            authData.getIsSuspended(),
-                            authData.getOlrSetupReq(),
-                            authData.getOlrLocked(),
-                            authData.getTcAccepted());
+                    // valid user, load the information
+                    userAccount = new ArrayList<>();
+                    userAccount.add(entry.getAttributeValue(authData.getCommonName()));
+                    userAccount.add(entry.getAttributeValue(authData.getUserId()));
+                    userAccount.add(entry.getAttributeValue(authData.getGivenName()));
+                    userAccount.add(entry.getAttributeValue(authData.getSurname()));
+                    userAccount.add(entry.getAttributeValue(authData.getDisplayName()));
+                    userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
+                    userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
+                    userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
+                    userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
+                    userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));
+                    userAccount.add(entry.getAttributeValueAsLong(authData.getExpiryDate()));
+                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
+                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
+                    userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
+
+                    Filter roleFilter = Filter.create("(&(objectClass=groupOfUniqueNames)" +
+                            "(&(uniqueMember=" + entry.getDN() + ")))");
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("searchRequest: {}", searchRequest);
+                        DEBUGGER.debug("SearchFilter: {}", roleFilter);
                     }
 
-                    SearchResult searchResult = ldapConn.search(searchRequest);
+                    SearchRequest roleSearch = new SearchRequest(
+                        authRepo.getRepositoryRoleBase(),
+                        SearchScope.SUB,
+                        roleFilter,
+                        "cn");
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
+                        DEBUGGER.debug("SearchRequest: {}", roleSearch);
                     }
 
-                    if (searchResult.getResultCode() == ResultCode.SUCCESS)
+                    SearchResult roleResult = ldapConn.search(roleSearch);
+
+                    if (DEBUG)
                     {
-                        if (searchResult.getEntryCount() == 1)
+                        DEBUGGER.debug("searchResult: {}", roleResult);
+                    }
+
+                    if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
+                    {
+                        List<String> roles = new ArrayList<>();
+
+                        for (SearchResultEntry role : roleResult.getSearchEntries())
                         {
-                            SearchResultEntry entry = searchResult.getSearchEntries().get(0);
-
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("SearchResultEntry: {}", entry);
+                                DEBUGGER.debug("SearchResultEntry: {}", role);
                             }
 
-                            // valid user, load the information
-                            userAccount = new ArrayList<>();
-                            userAccount.add(entry.getAttributeValue(authData.getCommonName()));
-                            userAccount.add(entry.getAttributeValue(authData.getUserId()));
-                            userAccount.add(entry.getAttributeValue(authData.getGivenName()));
-                            userAccount.add(entry.getAttributeValue(authData.getSurname()));
-                            userAccount.add(entry.getAttributeValue(authData.getDisplayName()));
-                            userAccount.add(entry.getAttributeValue(authData.getEmailAddr()));
-                            userAccount.add(entry.getAttributeValue(authData.getPagerNumber()));
-                            userAccount.add(entry.getAttributeValue(authData.getTelephoneNumber()));
-                            userAccount.add(entry.getAttributeValue(authData.getUserRole()).toUpperCase());
-                            userAccount.add(entry.getAttributeValueAsInteger(authData.getLockCount()));
-                            userAccount.add(entry.getAttributeValueAsLong(authData.getLastLogin()));
-                            userAccount.add(entry.getAttributeValueAsLong(authData.getExpiryDate()));
-                            userAccount.add(entry.getAttributeValueAsBoolean(authData.getIsSuspended()));
-                            userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrSetupReq()));
-                            userAccount.add(entry.getAttributeValueAsBoolean(authData.getOlrLocked()));
-                            userAccount.add(entry.getAttributeValueAsBoolean(authData.getTcAccepted()));
+                            roles.add(role.getAttributeValue("cn"));
+                        }
 
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("UserAccount: {}", userAccount);
-                            }
-                        }
-                        else
-                        {
-                            throw new UserManagementException("Multiple users were located for the provided information");
-                        }
+                        userAccount.add(roles);
                     }
-                    else
+
+                    if (DEBUG)
                     {
-                        throw new UserManagementException("Search request failed: " + searchResult.getResultCode());
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
                 }
                 else
                 {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+                    throw new UserManagementException("Multiple users were located for the provided information");
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new UserManagementException("Search request failed: " + searchResult.getResultCode());
             }
         }
         catch (LDAPException lx)
@@ -1334,81 +1495,77 @@ public class LDAPUserManager implements UserManager
                 DEBUGGER.debug("LDAPConnectionPool: {}", ldapPool);
             }
 
-            if (!(ldapPool.isClosed()))
+            if (ldapPool.isClosed())
             {
-                ldapConn = ldapPool.getConnection();
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
 
-                if (DEBUG)
+            ldapConn = ldapPool.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
+            }
+
+            if (!(ldapConn.isConnected()))
+            {
+                throw new ConnectException("Failed to create LDAP connection using the specified information");
+            }
+
+            Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
+                    "(&(objectClass=" + authData.getObjectClass() + ")))");
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchFilter: {}", searchFilter);
+            }
+
+            SearchRequest searchReq = new SearchRequest(
+                authRepo.getRepositoryUserBase(),
+                SearchScope.SUB,
+                searchFilter,
+                authData.getCommonName(),
+                authData.getUserId(),
+                authData.getDisplayName());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchRequest: {}", searchReq);
+            }
+
+            SearchResult searchResult = ldapConn.search(searchReq);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("searchResult: {}", searchResult);
+            }
+
+            if (searchResult.getResultCode() == ResultCode.SUCCESS)
+            {
+                results = new ArrayList<>();
+
+                for (SearchResultEntry entry : searchResult.getSearchEntries())
                 {
-                    DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                }
-
-                if (ldapConn.isConnected())
-                {
-                    Filter searchFilter = Filter.create("(&(objectClass=inetOrgPerson)" +
-                            "(&(objectClass=" + authData.getObjectClass() + ")))");
+                    String[] userData = new String[] {
+                            entry.getAttributeValue(authData.getCommonName()),
+                            entry.getAttributeValue(authData.getUserId()),
+                            entry.getAttributeValue(authData.getDisplayName()),
+                    };
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("searchFilter: {}", searchFilter);
-                    }
-
-                    SearchRequest searchReq = new SearchRequest(
-                        authRepo.getRepositoryUserBase(),
-                        SearchScope.SUB,
-                        searchFilter,
-                        authData.getCommonName(),
-                        authData.getUserId(),
-                        authData.getDisplayName());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchRequest: {}", searchReq);
-                    }
-
-                    SearchResult searchResult = ldapConn.search(searchReq);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("searchResult: {}", searchResult);
-                    }
-
-                    if (searchResult.getResultCode() == ResultCode.SUCCESS)
-                    {
-                        results = new ArrayList<>();
-
-                        for (SearchResultEntry entry : searchResult.getSearchEntries())
+                        for (String str : userData)
                         {
-                            String[] userData = new String[] {
-                                    entry.getAttributeValue(authData.getCommonName()),
-                                    entry.getAttributeValue(authData.getUserId()),
-                                    entry.getAttributeValue(authData.getDisplayName()),
-                            };
-
-                            if (DEBUG)
-                            {
-                                for (String str : userData)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
-                            }
-
-                            results.add(userData);
+                            DEBUGGER.debug(str);
                         }
                     }
-                    else
-                    {
-                        throw new ConnectException("No users were located with the search data provided");
-                    }
-                }
-                else
-                {
-                    throw new ConnectException("Failed to create LDAP connection using the specified information");
+
+                    results.add(userData);
                 }
             }
             else
             {
-                throw new ConnectException("Failed to create LDAP connection using the specified information");
+                throw new ConnectException("No users were located with the search data provided");
             }
         }
         catch (LDAPException lx)

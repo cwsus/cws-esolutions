@@ -50,7 +50,7 @@ public class AccountResetProcessorImplTest
     {
         try
         {
-            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/config/SecurityLogging.xml");
+            SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
 
             hostInfo = new RequestHostInfo();
             hostInfo.setHostAddress("junit");
@@ -78,7 +78,6 @@ public class AccountResetProcessorImplTest
         account.setOlrLocked(false);
         account.setSuspended(false);
         account.setFailedCount(0);
-        account.setTcAccepted(true);
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AccountResetRequest request = new AccountResetRequest();

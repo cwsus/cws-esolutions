@@ -35,6 +35,7 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
@@ -85,9 +86,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final UserAccount userAccount = request.getUserAccount();
         final UserSecurity userSecurity = request.getUserSecurity();
         final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
-        final StringBuilder userDN = new StringBuilder()
-            .append(authData.getUserId() + "=" + userAccount.getUsername() + ",")
-            .append(authRepo.getRepositoryUserBase());
 
         if (DEBUG)
         {
@@ -95,7 +93,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
             DEBUGGER.debug("UserSecurity: {}", userSecurity);
-            DEBUGGER.debug("userDN: {}", userDN);
         }
 
         try
@@ -172,7 +169,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         Arrays.asList(
                                 userAccount.getUsername(),
                                 newPassword,
-                                userAccount.getRole().name(),
                                 userAccount.getSurname(),
                                 userAccount.getGivenName(),
                                 userAccount.getEmailAddr(),
@@ -184,7 +180,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         DEBUGGER.debug("accountData: {}", accountData);
                     }
 
-                    boolean isUserCreated = userManager.addUserAccount(userDN.toString(), accountData);
+                    boolean isUserCreated = userManager.addUserAccount(accountData,
+                            new ArrayList<String>(Arrays.asList(userAccount.getRoles().toString())));
 
                     if (DEBUG)
                     {
@@ -725,7 +722,8 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                         private static final long serialVersionUID = -4501815670500496164L;
 
                         {
-                            put(authData.getUserRole(), userAccount.getRole());
+                            // TODO!!
+                            // put(authData.getUserRole(), userAccount.getRole());
                         }
                     };
 
@@ -761,14 +759,12 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             resAccount.setEmailAddr((String) userData.get(5));
                             resAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
                             resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
-                            resAccount.setRole(Role.valueOf((String) userData.get(8)));
                             resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
                             resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
                             resAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
                             resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                             resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
                             resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
-                            resAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
 
                             if (DEBUG)
                             {
@@ -1307,14 +1303,18 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     loadAccount.setEmailAddr((String) userData.get(5));
                     loadAccount.setPagerNumber((userData.get(6) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(6));
                     loadAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
-                    loadAccount.setRole(Role.valueOf((String) userData.get(8)));
-                    loadAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
-                    loadAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
-                    loadAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
-                    loadAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
-                    loadAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-                    loadAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
-                    loadAccount.setTcAccepted(((userData.get(15) == null) ? Boolean.FALSE : (Boolean) userData.get(15)));
+                    loadAccount.setFailedCount(((userData.get(8) == null) ? 0 : (Integer) userData.get(8)));
+                    loadAccount.setLastLogin(((userData.get(9) == null) ? new Date(1L) : new Date((Long) userData.get(9))));
+                    loadAccount.setExpiryDate(((userData.get(10) == null) ? 1L : (Long) userData.get(10)));
+                    loadAccount.setSuspended(((userData.get(11) == null) ? Boolean.FALSE : (Boolean) userData.get(11)));
+                    loadAccount.setOlrSetup(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
+                    loadAccount.setOlrLocked(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
+
+                    List<Role> roleList = new ArrayList<Role>();
+                    for (String role : (List<String>) userData.get(15))
+                    {
+                        roleList.add(Role.valueOf(role));
+                    }
 
                     if (DEBUG)
                     {

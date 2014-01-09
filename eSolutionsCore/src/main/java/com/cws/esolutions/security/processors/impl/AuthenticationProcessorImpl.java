@@ -194,29 +194,45 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setEmailAddr((String) userData.get(6));
                     userAccount.setPagerNumber((String) userData.get(7));
                     userAccount.setTelephoneNumber((String) userData.get(8));
-                    userAccount.setRole(Role.valueOf((String) userData.get(9)));
-                    userAccount.setFailedCount((Integer) userData.get(10));
-                    userAccount.setLastLogin(new Date((Long) userData.get(11)));
-                    userAccount.setExpiryDate((Long) userData.get(12));
-                    userAccount.setSuspended((Boolean) userData.get(13));
-                    userAccount.setOlrSetup((Boolean) userData.get(14));
-                    userAccount.setOlrLocked((Boolean) userData.get(15));
-                    userAccount.setTcAccepted((Boolean) userData.get(16));
+                    userAccount.setFailedCount((Integer) userData.get(9));
+                    userAccount.setLastLogin(new Date((Long) userData.get(10)));
+                    userAccount.setExpiryDate((Long) userData.get(11));
+                    userAccount.setSuspended((Boolean) userData.get(12));
+                    userAccount.setOlrSetup((Boolean) userData.get(13));
+                    userAccount.setOlrLocked((Boolean) userData.get(14));
+
+                    List<Role> roleList = new ArrayList<Role>();
+                    for (String role : (List<String>) userData.get(15))
+                    {
+                        roleList.add(Role.valueOf(role));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Role>: {}", roleList);
+                    }
+
+                    userAccount.setRoles(roleList);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
+                    }
 
                     // have a user account, run with it
                     // reset the failed count, this is a successful logon
                     try
                     {
                         userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(),
-                                new HashMap<String, Object>()
-                                {
-                                    private static final long serialVersionUID = 3026623264042376743L;
+                            new HashMap<String, Object>()
+                            {
+                                private static final long serialVersionUID = 3026623264042376743L;
 
-                                    {
-                                        put(authData.getLockCount(), 0);
-                                        put(authData.getLastLogin(), System.currentTimeMillis());
-                                    }
-                                });
+                                {
+                                    put(authData.getLockCount(), 0);
+                                    put(authData.getLastLogin(), System.currentTimeMillis());
+                                }
+                            });
                     }
                     catch (UserManagementException umx)
                     {
@@ -224,7 +240,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     }
 
                     // site admins pretty much get access to everything
-                    if (userAccount.getRole() != Role.SITEADMIN)
+                    if (!(userAccount.getRoles().contains(Role.SITEADMIN)))
                     {
                         // list user services
                         List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
@@ -295,27 +311,34 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                             DEBUGGER.debug("User Info: {}", lockInfo);
                         }
 
-                        String userGuid = (String) lockInfo[0];
-                        int currentCount = (Integer) lockInfo[9];
+                        final String guid = (String) lockInfo[0];
+                        final String name = (String) lockInfo[1];
+                        final int lockCount = (Integer) lockInfo[2];
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("userGuid: {}", userGuid);
-                            DEBUGGER.debug("currentCount: {}", currentCount);
+                            DEBUGGER.debug("guid: {}", guid);
+                            DEBUGGER.debug("name: {}", name);
+                            DEBUGGER.debug("lockCount: {}", lockCount);
                         }
 
                         // do it
-                        authenticator.lockUserAccount(userGuid, currentCount);
+                        userManager.modifyUserInformation(name, guid,
+                            new HashMap<String, Object>()
+                            {
+                                private static final long serialVersionUID = 3026623264042376743L;
+
+                                {
+                                    put(authData.getLockCount(), lockCount + 1);
+                                    put(authData.getLastLogin(), System.currentTimeMillis());
+                                }
+                            });
                     }
                 }
             }
             catch (UserManagementException umx)
             {
                 ERROR_RECORDER.error(umx.getMessage(), umx);
-            }
-            catch (AuthenticatorException ax1)
-            {
-                ERROR_RECORDER.error(ax1.getMessage(), ax1);
             }
 
             response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -416,68 +439,31 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     DEBUGGER.debug("userData: {}", userData);
                 }
 
-                List<Object> accountInfo = userManager.loadUserAccount((String) userData[0]);
+                List<String> securityData = authenticator.obtainSecurityData((String) userData[0], (String) userData[1]);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("List<Object>: {}", accountInfo);
+                    DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if ((accountInfo != null) && accountInfo.size() != 0)
+                if ((securityData != null) && (!(securityData.isEmpty())))
                 {
-                    resAccount = new UserAccount();
-                    resAccount.setGuid((String) accountInfo.get(0));
-                    resAccount.setUsername((String) accountInfo.get(1));
-                    resAccount.setGivenName((String) accountInfo.get(2));
-                    resAccount.setSurname((String) accountInfo.get(3));
-                    resAccount.setDisplayName((String) accountInfo.get(4));
-                    resAccount.setEmailAddr((String) accountInfo.get(5));
-                    resAccount.setPagerNumber((String) accountInfo.get(6));
-                    resAccount.setTelephoneNumber((String) accountInfo.get(7));
-                    resAccount.setRole(Role.valueOf((String) accountInfo.get(8)));
-                    resAccount.setFailedCount((Integer) accountInfo.get(9));
-                    resAccount.setLastLogin(new Date((Long) accountInfo.get(10)));
-                    resAccount.setExpiryDate((Long) accountInfo.get(11));
-                    resAccount.setSuspended((Boolean) accountInfo.get(12));
-                    resAccount.setOlrSetup((Boolean) accountInfo.get(13));
-                    resAccount.setOlrLocked((Boolean) accountInfo.get(14));
-                    resAccount.setTcAccepted((Boolean) accountInfo.get(15));
+                    UserSecurity userSecurity = new UserSecurity();
+                    userSecurity.setSecQuestionOne(securityData.get(0));
+                    userSecurity.setSecQuestionTwo(securityData.get(1));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: {}", resAccount);
+                        DEBUGGER.debug("UserSecurity: {}", userSecurity);
                     }
 
-                    List<String> securityData = authenticator.obtainSecurityData(resAccount.getUsername(), resAccount.getGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
-
-                    if ((securityData != null) && (!(securityData.isEmpty())))
-                    {
-                        UserSecurity userSecurity = new UserSecurity();
-                        userSecurity.setSecQuestionOne(securityData.get(0));
-                        userSecurity.setSecQuestionTwo(securityData.get(1));
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("UserSecurity: {}", userSecurity);
-                        }
-
-                        response.setUserAccount(resAccount);
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                        response.setUserSecurity(userSecurity);
-                    }
-                    else
-                    {
-                        // null data
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
+                    response.setUserAccount(resAccount);
+                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
+                    response.setUserSecurity(userSecurity);
                 }
                 else
                 {
+                    // null data
                     response.setRequestStatus(SecurityRequestStatus.FAILURE);
                 }
             }
