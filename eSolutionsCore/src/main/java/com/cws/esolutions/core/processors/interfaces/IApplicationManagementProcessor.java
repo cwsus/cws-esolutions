@@ -76,17 +76,83 @@ public interface IApplicationManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse addNewApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse updateApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse deleteApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse listApplications(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
+    ApplicationManagementResponse listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse getApplicationData(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse applicationFileRequest(final ApplicationManagementRequest request) throws ApplicationManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ApplicationManagementException
+     */
     ApplicationManagementResponse deployApplication(final ApplicationManagementRequest request) throws ApplicationManagementException;
 }

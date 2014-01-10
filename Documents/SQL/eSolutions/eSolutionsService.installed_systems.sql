@@ -80,22 +80,6 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.validateServerHostName
---
-DROP PROCEDURE IF EXISTS esolutionssvc.validateServerHostName$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.validateServerHostName(
-    IN operHostname VARCHAR(128)
-)
-BEGIN
-    SELECT COUNT(*)
-    FROM esolutionssvc.installed_systems
-    WHERE OPER_HOSTNAME = operHostname;
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-COMMIT$$
-
---
 -- Definition of procedure esolutionssvc.insertNewServer
 --
 DROP PROCEDURE IF EXISTS esolutionssvc.insertNewServer$$
@@ -240,21 +224,6 @@ BEGIN
     WHERE GUID = systemGuid;
 
     COMMIT;
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-COMMIT$$
-
---
--- Definition of procedure getServerCount
---
-DROP PROCEDURE IF EXISTS esolutionssvc.getServerCount$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServerCount(
-)
-BEGIN
-    SELECT COUNT(*)
-    FROM esolutionssvc.installed_systems
-    WHERE DELETE_DATE IS NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$

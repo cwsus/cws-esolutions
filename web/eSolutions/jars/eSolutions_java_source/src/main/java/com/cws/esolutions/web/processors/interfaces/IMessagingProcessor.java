@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.interfaces;
+package com.cws.esolutions.web.processors.interfaces;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.interfaces
@@ -65,13 +65,53 @@ public interface IMessagingProcessor
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws MessagingServiceException
+     */
     MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws MessagingServiceException
+     */
     MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws MessagingServiceException
+     */
     MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws MessagingServiceException
+     */
     MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws MessagingServiceException
+     */
     MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException;
 }

@@ -12,13 +12,17 @@
 package com.cws.esolutions.web.controllers;
 
 import org.slf4j.Logger;
+
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
+
 import org.slf4j.LoggerFactory;
+
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -36,6 +40,8 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
@@ -43,8 +49,6 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
-import com.cws.esolutions.core.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 /*
  * Project: eSolutions_java_source

@@ -78,11 +78,43 @@ public interface ISystemCheckProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws SystemCheckException
+     */
     SystemCheckResponse runNetstatCheck(final SystemCheckRequest request) throws SystemCheckException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws SystemCheckException
+     */
     SystemCheckResponse runTelnetCheck(final SystemCheckRequest request) throws SystemCheckException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws SystemCheckException
+     */
     SystemCheckResponse runRemoteDateCheck(final SystemCheckRequest request) throws SystemCheckException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws SystemCheckException
+     */
     SystemCheckResponse runProcessListCheck(final SystemCheckRequest request) throws SystemCheckException;
 }

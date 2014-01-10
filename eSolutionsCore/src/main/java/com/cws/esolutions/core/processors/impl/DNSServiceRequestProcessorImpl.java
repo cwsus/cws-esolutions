@@ -28,7 +28,6 @@ package com.cws.esolutions.core.processors.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
-import java.util.Vector;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
 import java.util.ArrayList;
@@ -64,7 +63,6 @@ import com.cws.esolutions.core.utils.exception.UtilityException;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
@@ -408,16 +406,14 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isServiceAuthorized))
+            if (isUserAuthorized)
             {
                 StringBuilder sBuilder = new StringBuilder()
                     .append("$ORIGIN " + entry.getOrigin() + "\n")
@@ -629,232 +625,107 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isServiceAuthorized))
+            if (isUserAuthorized)
             {
-                // insert the apex into the database
-                List<String> dnsList = new ArrayList<>(
-                        Arrays.asList(
-                                entry.getProjectCode(),
-                                entry.getFileName(),
-                                entry.getOrigin(),
-                                String.valueOf(entry.getLifetime()),
-                                entry.getApex(),
-                                entry.getMaster(),
-                                entry.getOwner(),
-                                entry.getSerialNumber(),
-                                String.valueOf(entry.getSlaveRefresh()),
-                                String.valueOf(entry.getSlaveRetry()),
-                                String.valueOf(entry.getSlaveExpiry()),
-                                String.valueOf(entry.getCacheTime())));
-
-                if (DEBUG)
+                // here we're going to generate the actual file given the provided
+                // data. at this point everything should already be in the database
+                // we could generate the zone file without having a "zone data" field,
+                // but the zone data field makes it somewhat easier, since its already
+                // been created for presentation/approval to the requestor
+                if (entry.getZoneData() != null)
                 {
-                    DEBUGGER.debug("dnsList: {}", dnsList);
-                }
+                    File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
 
-                // put in the apex
-                boolean isApexAdded = dnsDao.addNewService(dnsList, true);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isApexAdded: {}", isApexAdded);
-                }
-
-                if (isApexAdded)
-                {
-                    // insert the apex records
-                    for (DNSRecord record : entry.getApexRecords())
+                    if (DEBUG)
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DNSRecord: {}", record);
-                        }
-
-                        List<String> dnsRecord = new ArrayList<>(
-                                Arrays.asList(
-                                        entry.getProjectCode(),
-                                        entry.getFileName(),
-                                        record.getRecordOrigin(),
-                                        record.getRecordName(),
-                                        record.getRecordClass(),
-                                        record.getRecordType().name(),
-                                        String.valueOf(record.getRecordPort()),
-                                        String.valueOf(record.getRecordWeight()),
-                                        record.getRecordService(),
-                                        record.getRecordProtocol(),
-                                        String.valueOf(record.getRecordPriority()),
-                                        record.getPrimaryAddress().toString(),
-                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : CoreServiceConstants.NOT_SET,
-                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : CoreServiceConstants.NOT_SET));
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("dnsRecord: {}", dnsRecord);
-                        }
-
-                        boolean isRecordAdded = dnsDao.addNewService(dnsRecord, false);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isRecordAdded: {}", isRecordAdded);
-                        }
-
-                        if (!(isRecordAdded))
-                        {
-                            throw new DNSServiceException("Failed to add record to database. Cannot continue");
-                        }
+                        DEBUGGER.debug("File: {}", zoneFile);
                     }
 
-                    // move on to subrecords if there are any
-                    for (DNSRecord record : entry.getSubRecords())
+                    IOUtils.write(entry.getZoneData(), new FileOutputStream(zoneFile));
+
+                    if ((zoneFile.exists()) && (zoneFile.length() != 0))
                     {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("DNSRecord: {}", record);
-                        }
-
-                        List<String> dnsRecord = new ArrayList<>(
-                                Arrays.asList(
-                                        entry.getProjectCode(),
-                                        entry.getFileName(),
-                                        record.getRecordOrigin(),
-                                        record.getRecordName(),
-                                        record.getRecordClass(),
-                                        record.getRecordType().name(),
-                                        String.valueOf(record.getRecordPort()),
-                                        String.valueOf(record.getRecordWeight()),
-                                        record.getRecordService(),
-                                        record.getRecordProtocol(),
-                                        String.valueOf(record.getRecordPriority()),
-                                        record.getPrimaryAddress().toString(),
-                                        ((record.getSecondaryAddress() != null) && (record.getSecondaryAddress().size() != 0)) ? record.getSecondaryAddress().toString() : CoreServiceConstants.NOT_SET,
-                                        ((record.getTertiaryAddress() != null) && (record.getTertiaryAddress().size() != 0)) ? record.getTertiaryAddress().toString() : CoreServiceConstants.NOT_SET));
+                        IServerDataDAO dao = new ServerDataDAOImpl();
+                        List<String[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("dnsRecord: {}", dnsRecord);
+                            DEBUGGER.debug("dnsServers: {}", dnsServers);
                         }
 
-                        boolean isRecordAdded = dnsDao.addNewService(dnsRecord, false);
-
-                        if (DEBUG)
+                        if ((dnsServers != null) && (dnsServers.size() != 0))
                         {
-                            DEBUGGER.debug("isRecordAdded: {}", isRecordAdded);
-                        }
-
-                        if (!(isRecordAdded))
-                        {
-                            throw new DNSServiceException("Failed to add record to database. Cannot continue");
-                        }
-                    }
-
-                    // here we're going to generate the actual file given the provided
-                    // data. at this point everything should already be in the database
-                    // we could generate the zone file without having a "zone data" field,
-                    // but the zone data field makes it somewhat easier, since its already
-                    // been created for presentation/approval to the requestor
-                    if (entry.getZoneData() != null)
-                    {
-                        File zoneFile = FileUtils.getFile(CoreServiceConstants.TMP_DIR, entry.getFileName());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("File: {}", zoneFile);
-                        }
-
-                        IOUtils.write(entry.getZoneData(), new FileOutputStream(zoneFile));
-
-                        if ((zoneFile.exists()) && (zoneFile.length() != 0))
-                        {
-                            IServerDataDAO dao = new ServerDataDAOImpl();
-                            List<String[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
+                            final Properties sshProps = new Properties();
+                            sshProps.load(this.getClass().getClassLoader().getResourceAsStream(sshConfig.getSshProperties()));
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("dnsServers: {}", dnsServers);
+                                DEBUGGER.debug("Properties: {}", sshProps);
                             }
 
-                            if ((dnsServers != null) && (dnsServers.size() != 0))
+                            final Properties authProps = new Properties();
+                            authProps.put(CoreServiceConstants.ACCOUNT, sshConfig.getSshAccount());
+                            authProps.put(CoreServiceConstants.PASSWORD, sshConfig.getSshPassword());
+                            authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
+                            authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
+
+                            NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
+
+                            List<String[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
+
+                            if (DEBUG)
                             {
-                                final Properties sshProps = new Properties();
-                                sshProps.load(this.getClass().getClassLoader().getResourceAsStream(sshConfig.getSshProperties()));
+                                DEBUGGER.debug("slaveServers: {}", slaveServers);
+                            }
 
-                                if (DEBUG)
+                            if ((slaveServers != null) && (slaveServers.size() != 0))
+                            {
+                                int errCount = 0;
+
+                                for (Object[] server : slaveServers)
                                 {
-                                    DEBUGGER.debug("Properties: {}", sshProps);
+                                    try
+                                    {
+                                        NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
+                                    }
+                                    catch (UtilityException ux)
+                                    {
+                                        ERROR_RECORDER.error(ux.getMessage(), ux);
+
+                                        errCount++;
+                                    }
                                 }
 
-                                final Properties authProps = new Properties();
-                                authProps.put(CoreServiceConstants.ACCOUNT, sshConfig.getSshAccount());
-                                authProps.put(CoreServiceConstants.PASSWORD, sshConfig.getSshPassword());
-                                authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
-                                authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
-
-                                NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
-
-                                List<String[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
-
-                                if (DEBUG)
+                                if (errCount == 0)
                                 {
-                                    DEBUGGER.debug("slaveServers: {}", slaveServers);
+                                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
                                 }
-
-                                if ((slaveServers != null) && (slaveServers.size() != 0))
+                                else
                                 {
-                                    int errCount = 0;
-
-                                    for (Object[] server : slaveServers)
-                                    {
-                                        try
-                                        {
-                                            NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), (String) server[18], true);
-                                        }
-                                        catch (UtilityException ux)
-                                        {
-                                            ERROR_RECORDER.error(ux.getMessage(), ux);
-
-                                            errCount++;
-                                        }
-                                    }
-
-                                    if (errCount == 0)
-                                    {
-                                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                                    }
-                                    else
-                                    {
-                                        response.setRequestStatus(CoreServicesStatus.FAILURE);
-                                    }
+                                    response.setRequestStatus(CoreServicesStatus.FAILURE);
                                 }
                             }
-                        }
-                        else
-                        {
-                            // zone file wasn't created
-                            ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
-
-                            response.setRequestStatus(CoreServicesStatus.FAILURE);
                         }
                     }
                     else
                     {
                         // zone file wasn't created
-                        ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
+                        ERROR_RECORDER.error("Zone file was not created. Cannot continue.");
 
                         response.setRequestStatus(CoreServicesStatus.FAILURE);
                     }
                 }
                 else
                 {
-                    ERROR_RECORDER.error("Failed to insert apex record into the datastore. Cannot continue.");
+                    // zone file wasn't created
+                    ERROR_RECORDER.error("No zone data was provided in the request. Cannot continue.");
 
                     response.setRequestStatus(CoreServicesStatus.FAILURE);
                 }
@@ -965,16 +836,14 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
         try
         {
             // this will require admin and service authorization
-            boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if ((isAdminAuthorized) && (isServiceAuthorized))
+            if (isUserAuthorized)
             {
                 // TODO: build
                 // this will take the IP address in the "masters" clause and 
@@ -1006,278 +875,6 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                 AuditEntry auditEntry = new AuditEntry();
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.SITETXFR);
-                auditEntry.setUserAccount(userAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor#getDataFromDatabase(com.cws.esolutions.core.processors.dto.DNSServiceRequest)
-     */
-    @Override
-    public DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException
-    {
-        final String methodName = IDNSServiceRequestProcessor.CNAME + "#getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("DNSServiceRequest: {}", request);
-        }
-
-        DNSServiceResponse response = new DNSServiceResponse();
-
-        final DNSEntry entry = request.getDnsEntry();
-        final UserAccount userAccount = request.getUserAccount();
-        final RequestHostInfo reqInfo = request.getRequestInfo();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("DNSEntry: {}", entry);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
-            }
-
-            if (isServiceAuthorized)
-            {
-                List<Vector<String>> data = dnsDao.getServiceData(entry.getProjectCode());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("data: {}", data);
-                }
-
-                if ((data != null) && (data.size() != 0))
-                {
-                    // ok, this handles multiple apexes (e.g. DNSEntry objects)
-                    // find a way to pull it all together...
-                    List<DNSEntry> entryList = new ArrayList<>();
-                    List<DNSRecord> apexList = new ArrayList<>();
-                    List<DNSRecord> subList = new ArrayList<>();
-
-                    for (Vector<String> vector : data)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("Vector: {}", vector);
-                        }
-
-                        if (Boolean.valueOf(vector.get(2)))
-                        {
-                            DNSEntry dnsEntry = new DNSEntry();
-                            dnsEntry.setProjectCode(vector.get(0));
-                            dnsEntry.setFileName(vector.get(1));
-                            dnsEntry.setOrigin(vector.get(3));
-                            dnsEntry.setLifetime(Integer.parseInt(vector.get(4)));
-                            dnsEntry.setApex(vector.get(5));
-                            dnsEntry.setMaster(vector.get(6));
-                            dnsEntry.setOwner(vector.get(7));
-                            dnsEntry.setSerialNumber(vector.get(8));
-                            dnsEntry.setSlaveRefresh(Integer.parseInt(vector.get(9)));
-                            dnsEntry.setSlaveRetry(Integer.parseInt(vector.get(10)));
-                            dnsEntry.setSlaveExpiry(Integer.parseInt(vector.get(11)));
-                            dnsEntry.setCacheTime(Integer.parseInt(vector.get(12)));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSEntry: {}", dnsEntry);
-                            }
-
-                            entryList.add(dnsEntry);
-                        }
-                        else
-                        {
-                            DNSRecord record = new DNSRecord();
-                            record.setRecordOrigin(vector.get(3));
-                            record.setRecordName(vector.get(5));
-                            record.setRecordClass(vector.get(13));
-                            record.setRecordType(DNSRecordType.valueOf(vector.get(14)));
-                            record.setPrimaryAddress(new ArrayList<>(Arrays.asList(vector.get(20))));
-                            record.setSecondaryAddress(new ArrayList<>(Arrays.asList(vector.get(21))));
-                            record.setTertiaryAddress(new ArrayList<>(Arrays.asList(vector.get(22))));
-
-                            switch (record.getRecordType())
-                            {
-                                case SRV:
-                                    // _service._proto.name. TTL class SRV priority weight port target.
-                                    record.setRecordService(vector.get(17));
-                                    record.setRecordProtocol(vector.get(18));
-                                    record.setRecordLifetime(Integer.parseInt(vector.get(4)));
-                                    record.setRecordPriority(Integer.parseInt(vector.get(19)));
-                                    record.setRecordWeight(Integer.parseInt(vector.get(16)));
-                                    record.setRecordPort(Integer.parseInt(vector.get(15)));
-
-                                    break;
-                                case MX:
-                                    record.setRecordWeight(Integer.parseInt(vector.get(16)));
-
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSRecord: {}", record);
-                            }
-
-                            // must correlate back
-                            if (StringUtils.equals(record.getRecordOrigin(), "."))
-                            {
-                                // this is an apex record
-                                apexList.add(record);
-                            }
-                            else
-                            {
-                                // subrecord
-                                subList.add(record);
-                            }
-                        }
-                    }
-
-                    // assemble the records, in the proper order, into
-                    // the right DNSEntry object for return
-                    List<DNSEntry> responseList = new ArrayList<>();
-
-                    for (int x = 0; x < entryList.size(); x++)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("entry: {}", entryList.get(x));
-                        }
-
-                        DNSEntry modEntry = null;
-
-                        // apex first
-                        for (DNSRecord apex : apexList)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSRecord: {}", apex);
-                            }
-
-                            modEntry = ModifyEntryToAddRecord.addRecordToEntry(entryList.get(x), apex, true);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSEntry: {}", modEntry);
-                            }
-                        }
-
-                        responseList.add(modEntry);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("responseList: {}", responseList);
-                    }
-
-                    entryList.clear();
-                    entryList = new ArrayList<>(responseList);
-
-                    responseList.clear();
-                    responseList = new ArrayList<>();
-
-                    for (int x = 0; x < entryList.size(); x++)
-                    {
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("entry: {}", entryList.get(x));
-                        }
-
-                        DNSEntry modEntry = null;
-
-                        // apex first
-                        for (DNSRecord sub : subList)
-                        {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSRecord: {}", sub);
-                            }
-
-                            modEntry = ModifyEntryToAddRecord.addRecordToEntry(entryList.get(x), sub, false);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("DNSEntry: {}", modEntry);
-                            }
-                        }
-
-                        responseList.add(modEntry);
-                    }
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("responseList: {}", responseList);
-                    }
-
-                    if (responseList.size() != 0)
-                    {
-                        response.setDnsEntries(responseList);
-                        response.setRequestStatus(CoreServicesStatus.SUCCESS);
-                    }
-                }
-                else
-                {
-                    response.setRequestStatus(CoreServicesStatus.FAILURE);
-                }
-            }
-            else
-            {
-                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new DNSServiceException(sqx.getMessage(), sqx);
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new DNSServiceException(acsx.getMessage(), acsx);
-        }
-        finally
-        {
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.LOADRECORD);
                 auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());

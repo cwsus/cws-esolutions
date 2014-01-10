@@ -41,12 +41,12 @@ import com.cws.esolutions.core.dao.interfaces.IServiceDataDAO;
 public class ServiceDataDAOImpl implements IServiceDataDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#addNewService(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#addService(java.util.List)
      */
     @Override
-    public synchronized boolean addNewService(final List<String> data) throws SQLException
+    public synchronized boolean addService(final List<String> data) throws SQLException
     {
-        final String methodName = IServiceDataDAO.CNAME + "#addNewService(final List<String> data) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#addService(final List<String> data) throws SQLException";
         
         if (DEBUG)
         {
@@ -119,12 +119,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#updateServiceData(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#updateService(java.util.List)
      */
     @Override
-    public synchronized boolean updateServiceData(final List<String> data) throws SQLException
+    public synchronized boolean updateService(final List<String> data) throws SQLException
     {
-        final String methodName = IServiceDataDAO.CNAME + "#updateServiceData(final List<String> data) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#updateService(final List<String> data) throws SQLException";
         
         if (DEBUG)
         {
@@ -196,12 +196,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#removeServiceData(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#removeService(java.lang.String)
      */
     @Override
-    public synchronized boolean removeServiceData(final String datacenter) throws SQLException
+    public synchronized boolean removeService(final String datacenter) throws SQLException
     {
-        final String methodName = IServiceDataDAO.CNAME + "#removeServiceData(final String datacenter) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#removeService(final String datacenter) throws SQLException";
 
         if (DEBUG)
         {
@@ -259,97 +259,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         }
 
         return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceCount()
-     */
-    @Override
-    public synchronized int getServiceCount() throws SQLException
-    {
-        final String methodName = IServiceDataDAO.CNAME + "#getServiceCount() throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        int count = 0;
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{ CALL getServiceCount() }");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("stmt: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("count: {}", count);
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return count;
     }
 
     /**
@@ -451,12 +360,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceByAttribute(java.lang.String, int)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServicesByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> getServiceByAttribute(final String attribute, final int startRow) throws SQLException
+    public synchronized List<String[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException
     {
-        final String methodName = IServiceDataDAO.CNAME + "#getServiceByAttribute(final String attribute, final int startRow) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#getServicesByAttribute(final String attribute, final int startRow) throws SQLException";
 
         if (DEBUG)
         {
@@ -574,12 +483,12 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServiceData(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getService(java.lang.String)
      */
     @Override
-    public synchronized List<String> getServiceData(final String attribute) throws SQLException
+    public synchronized List<String> getService(final String attribute) throws SQLException
     {
-        final String methodName = IServiceDataDAO.CNAME + "#getServiceData(final String attribute) throws SQLException";
+        final String methodName = IServiceDataDAO.CNAME + "#getService(final String attribute) throws SQLException";
 
         if (DEBUG)
         {

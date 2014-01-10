@@ -27,10 +27,14 @@ package com.cws.esolutions.core.processors.impl;
  */
 import org.junit.Test;
 import org.junit.After;
+
 import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
+
 import java.util.ArrayList;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
@@ -43,7 +47,8 @@ import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
-import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 
 public class ServiceMessagingProcessorImplTest

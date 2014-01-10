@@ -93,14 +93,14 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 if (requestServer == null)
                 {
@@ -181,7 +181,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     }
                 }
 
-                boolean isComplete = serverDAO.addNewServer(insertData);
+                boolean isComplete = serverDAO.addServer(insertData);
 
                 if (DEBUG)
                 {
@@ -280,14 +280,14 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 if ((requestServer.getServerType() == ServerType.VIRTUALHOST) || (requestServer.getServerType() == ServerType.DMGRSERVER))
                 {
@@ -340,7 +340,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                     }
                 }
 
-                boolean isComplete = serverDAO.modifyServerData(requestServer.getServerGuid(), insertData);
+                boolean isComplete = serverDAO.updateServer(requestServer.getServerGuid(), insertData);
 
                 if (DEBUG)
                 {
@@ -410,6 +410,245 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
     }
 
     /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#removeServerData(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
+    @Override
+    public ServerManagementResponse removeServerData(final ServerManagementRequest request) throws ServerManagementException
+    {
+        final String methodName = IServerManagementProcessor.CNAME + "#removeServerData(final ServerManagementRequest request) throws ServerManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServerManagementRequest: {}", request);
+        }
+
+        ServerManagementResponse response = new ServerManagementResponse();
+
+        final Server requestServer = request.getTargetServer();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Server: {}", requestServer);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                boolean isComplete = serverDAO.removeServer(requestServer.getServerGuid());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("isComplete: {}", isComplete);
+                }
+
+                if (isComplete)
+                {
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new ServerManagementException(acsx.getMessage(), acsx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServerManagementException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.UPDATESERVER);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServers(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
+     */
+    @Override
+    public ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException
+    {
+        final String methodName = IServerManagementProcessor.CNAME + "#listServers(final ServerManagementRequest request) throws ServerManagementException";
+        
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ServerManagementRequest: {}", request);
+        }
+
+        ServerManagementResponse response = new ServerManagementResponse();
+
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                List<String[]> serverData = serverDAO.listServers(request.getStartPage());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("serverList: {}", serverData);
+                }
+
+                if ((serverData != null) && (serverData.size() != 0))
+                {
+                    List<Server> serverList = new ArrayList<>();
+
+                    for (String[] data : serverData)
+                    {
+                        Server server = new Server();
+                        server.setServerGuid(data[0]); // SYSTEM_GUID
+                        server.setServerRegion(ServiceRegion.valueOf(data[1])); // SYSTEM_REGION
+                        server.setNetworkPartition(NetworkPartition.valueOf(data[2])); // NETWORK_PARTITION
+                        server.setOperHostName(data[3]); // OPER_HOSTNAME
+    
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Server: {}", server);
+                        }
+    
+                        serverList.add(server);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("serverList: {}", serverList);
+                    }
+
+                    response.setEntryCount(value);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                    response.setServerList(serverList);
+                }
+                else
+                {
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+
+                    return response;
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ServerManagementException(sqx.getMessage(), sqx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+            
+            throw new ServerManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTSERVERS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+
+        return response;
+    }
+
+    /**
      * @see com.cws.esolutions.core.processors.interfaces.IServerManagementProcessor#listServersByAttribute(com.cws.esolutions.core.processors.dto.ServerManagementRequest)
      */
     @Override
@@ -436,14 +675,14 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 List<String[]> serverData = serverDAO.getServersByAttribute(request.getAttribute(), request.getStartPage());
 
@@ -477,6 +716,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         DEBUGGER.debug("serverList: {}", serverList);
                     }
 
+                    response.setEntryCount(value);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setServerList(serverList);
                 }
@@ -574,18 +814,18 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 if (requestServer != null)
                 {
-                    List<Object> serverData = serverDAO.getInstalledServer(requestServer.getServerGuid());
+                    List<Object> serverData = serverDAO.getServer(requestServer.getServerGuid());
 
                     if (DEBUG)
                     {
@@ -684,7 +924,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         {
                             case APPSERVER:
                                 // set owning dmgr
-                                List<Object> dmgrData = serverDAO.getInstalledServer((String) serverData.get(28));
+                                List<Object> dmgrData = serverDAO.getServer((String) serverData.get(28));
 
                                 if (DEBUG)
                                 {

@@ -37,7 +37,6 @@ import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
@@ -52,12 +51,12 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
 public class AccessControlServiceImpl implements IAccessControlService
 {
     /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorizedForService(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
+     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#isUserAuthorized(com.cws.esolutions.security.dto.UserAccount, java.lang.String)
      */
     @Override
-    public boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException
+    public boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException
     {
-        final String methodName = IAccessControlService.CNAME + "#isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException";
+        final String methodName = IAccessControlService.CNAME + "#isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException";
 
         if (DEBUG)
         {
@@ -235,7 +234,7 @@ public class AccessControlServiceImpl implements IAccessControlService
                 {
                     if (StringUtils.equals(user.getEmailAddr(), sender))
                     {
-                        isAuthorized = isUserAuthorizedForService(user, EMAIL_SVC_ID);
+                        isAuthorized = isUserAuthorized(user, EMAIL_SVC_ID);
 
                         if (DEBUG)
                         {
@@ -267,50 +266,6 @@ public class AccessControlServiceImpl implements IAccessControlService
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
             throw new AccessControlServiceException(sqx.getMessage(), sqx);
-        }
-
-        return isAuthorized;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.services.interfaces.IAccessControlService#accessControlService(com.cws.esolutions.security.dto.UserAccount, com.cws.esolutions.security.services.enums.AdminControlType)
-     */
-    @Override
-    public boolean accessControlService(final UserAccount userAccount, final AdminControlType controlType) throws AccessControlServiceException
-    {
-        final String methodName = IAccessControlService.CNAME + "#IAccessControlService(final UserAccount userAccount, final AdminControlType controlType) throws AccessControlServiceException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserAccount", userAccount);
-            DEBUGGER.debug("AdminControlType", controlType);
-        }
-
-        boolean isAuthorized = false;
-
-        for (Role role : userAccount.getRoles())
-        {
-            if (role == Role.SITEADMIN)
-            {
-                return true;
-            }
-
-            try
-            {
-                isAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), "test"); // TODO!!
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isAuthorized);
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-                throw new AccessControlServiceException(sqx.getMessage(), sqx);
-            }
         }
 
         return isAuthorized;

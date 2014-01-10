@@ -15,7 +15,7 @@ CREATE TABLE esolutionssvc.installed_applications (
     APP_ONLINE_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), -- when did the app get added
     APP_OFFLINE_DATE TIMESTAMP,
     PRIMARY KEY (GUID),
-    FULLTEXT KEY IDX_APPLICATIONS (NAME)
+    FULLTEXT KEY IDX_APPLICATIONS (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
@@ -31,16 +31,19 @@ DROP PROCEDURE IF EXISTS esolutionssvc.getApplicationByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE esolutionssvc.getApplicationByAttribute(
     IN attributeName VARCHAR(100),
-    IN startRow INT
+    IN startRow INT,
+    OUT appCount INT
 )
 BEGIN
     SELECT
+        COUNT(*) AS COUNTER,
         GUID,
         NAME,
-    MATCH (NAME)
+    MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
     AGAINST (+attributeName WITH QUERY EXPANSION)
     FROM esolutionssvc.installed_applications
-    WHERE MATCH (NAME)
+    INTO appCount
+    WHERE MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
@@ -160,29 +163,17 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure getApplicationCount
---
-DROP PROCEDURE IF EXISTS esolutionssvc.getApplicationCount$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getApplicationCount(
-)
-BEGIN
-    SELECT COUNT(*)
-    FROM esolutionssvc.installed_applications
-    WHERE APP_OFFLINE_DATE IS NULL;
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-COMMIT$$
-
---
 -- Definition of procedure esolutionssvc.listApplications
 --
 DROP PROCEDURE IF EXISTS esolutionssvc.listApplications$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE esolutionssvc.listApplications(
-    IN startRow INT
+    IN startRow INT,
+    OUT appCount INT
 )
 BEGIN
+    SELECT COUNT(*) INTO appCount FROM esolutionssvc.installed_applications WHERE APP_OFFLINE_DATE IS NULL;
+
     SELECT
         GUID,
         NAME

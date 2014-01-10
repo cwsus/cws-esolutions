@@ -112,8 +112,6 @@
                 <value>classpath:nls/ServiceManagementServlet/ServiceManagementServlet</value>
                 <value>classpath:nls/SystemCheckServlet/SystemCheckServlet</value>
                 <value>classpath:nls/SystemManagementServlet/SystemManagementServlet</value>
-                <value>classpath:nls/UserAccountServlet/UserAccountServlet</value>
-                <value>classpath:nls/UserManagementServlet/UserManagementServlet</value>
                 <value>classpath:nls/theme/resources</value>
             </list>
         </property>

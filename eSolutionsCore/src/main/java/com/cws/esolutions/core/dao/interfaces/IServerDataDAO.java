@@ -52,25 +52,15 @@ public interface IServerDataDAO
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    boolean addNewServer(final List<Object> serverData) throws SQLException;
+    boolean addServer(final List<Object> serverData) throws SQLException;
 
-    boolean removeExistingServer(final String serverGuid) throws SQLException;
+    boolean updateServer(final String serverGuid, final List<Object> serverData) throws SQLException;
 
-    boolean modifyServerData(final String serverGuid, final List<Object> serverData) throws SQLException;
+    boolean removeServer(final String serverGuid) throws SQLException;
 
-    List<Object> getInstalledServer(final String serverGuid) throws SQLException;
-
-    int getServerCount() throws SQLException;
-
-    int validateServerHostName(final String hostName) throws SQLException;
-
-    List<String[]> getInstalledServers(final int startRow) throws SQLException;
+    List<String[]> listServers(final int startRow) throws SQLException;
 
     List<String[]> getServersByAttribute(final String serverType, final int startRow) throws SQLException;
 
-    List<String[]> getRetiredServers(final int startRow) throws SQLException;
-
-    List<Object> getRetiredServer(final String guid) throws SQLException;
-
-    void archiveServerData(final String value) throws SQLException;
+    List<Object> getServer(final String serverGuid) throws SQLException;
 }

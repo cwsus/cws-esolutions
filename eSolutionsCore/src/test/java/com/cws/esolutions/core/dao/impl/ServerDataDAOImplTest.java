@@ -100,7 +100,7 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewServer(data));
+            Assert.assertTrue(dao.addServer(data));
         }
         catch (SQLException sqx)
         {
@@ -147,7 +147,7 @@ public class ServerDataDAOImplTest
 
         try
         {
-            Assert.assertNotNull(dao.modifyServerData("DMGRSERVER", data));
+            Assert.assertNotNull(dao.updateServer("DMGRSERVER", data));
         }
         catch (SQLException sqx)
         {
@@ -160,20 +160,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getInstalledServer("DMGRSERVER"));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void validateServerHostName()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.validateServerHostName("DMGRSERVER"));
+            Assert.assertNotNull(dao.getServer("DMGRSERVER"));
         }
         catch (SQLException sqx)
         {
@@ -186,7 +173,7 @@ public class ServerDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getInstalledServers(0));
+            Assert.assertNotNull(dao.listServers(0));
         }
         catch (SQLException sqx)
         {
@@ -208,63 +195,11 @@ public class ServerDataDAOImplTest
     }
 
     @Test
-    public void getServerCount()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.getServerCount());
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
     public void removeExistingServer()
     {
         try
         {
-            Assert.assertNotNull(dao.removeExistingServer(this.guid));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void archiveServerData()
-    {
-        try
-        {
-            dao.archiveServerData(this.guid);
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void getRetiredServers()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.getRetiredServers(0));
-        }
-        catch (SQLException sqx)
-        {
-            Assert.fail(sqx.getMessage());
-        }
-    }
-
-    @Test
-    public void getRetiredServer()
-    {
-        try
-        {
-            Assert.assertNotNull(dao.getRetiredServer(this.guid));
+            Assert.assertNotNull(dao.removeServer(this.guid));
         }
         catch (SQLException sqx)
         {

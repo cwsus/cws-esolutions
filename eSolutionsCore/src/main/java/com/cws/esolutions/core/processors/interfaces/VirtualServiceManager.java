@@ -53,9 +53,33 @@ public interface VirtualServiceManager
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + VirtualServiceManager.class.getName());
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws VirtualServiceException
+     */
     VirtualServiceResponse listVirtualMachines(final VirtualServiceRequest request) throws VirtualServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws VirtualServiceException
+     */
     VirtualServiceResponse startVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws VirtualServiceException
+     */
     VirtualServiceResponse stopVirtualMachine(final VirtualServiceRequest request) throws VirtualServiceException;
 }

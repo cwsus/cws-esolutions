@@ -89,7 +89,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -110,7 +110,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 try
                 {
-                    validator = appDAO.getApplicationData(applGuid);
+                    validator = appDAO.getApplication(applGuid);
                 }
                 catch (SQLException sqx)
                 {
@@ -140,7 +140,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             }
 
                             // make sure its a valid platform
-                            if (serviceDao.getServiceData(targetPlatform.getGuid()) == null)
+                            if (serviceDao.getService(targetPlatform.getGuid()) == null)
                             {
                                 throw new ApplicationManagementException("Provided platform is not valid. Cannot continue.");
                             }
@@ -166,7 +166,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                             DEBUGGER.debug("appDataList: {}", appDataList);
                         }
 
-                        boolean isApplicationAdded = appDAO.addNewApplication(appDataList);
+                        boolean isApplicationAdded = appDAO.addApplication(appDataList);
 
                         if (DEBUG)
                         {
@@ -281,7 +281,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -411,7 +411,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -420,7 +420,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (isUserAuthorized)
             {
-                boolean isComplete = appDAO.deleteApplication(application.getGuid());
+                boolean isComplete = appDAO.removeApplication(application.getGuid());
 
                 if (DEBUG)
                 {
@@ -524,7 +524,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -533,7 +533,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (isUserAuthorized)
             {
-                List<String[]> appData = appDAO.listInstalledApplications(request.getStartPage());
+                List<String[]> appData = appDAO.listApplications(request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -563,6 +563,149 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("List<Application>: {}", appList);
                     }
 
+                    response.setEntryCount(value); // TODO
+                    response.setApplicationList(appList);
+                    response.setRequestStatus(CoreServicesStatus.SUCCESS);
+                }
+                else
+                {
+                    // no data
+                    response.setRequestStatus(CoreServicesStatus.FAILURE);
+                }
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+                }
+            }
+            else
+            {
+                response.setRequestStatus(CoreServicesStatus.UNAUTHORIZED);
+            }
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ApplicationManagementResponse: {}", response);
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new ApplicationManagementException(sqx.getMessage(), sqx);
+        }
+        catch (AccessControlServiceException acsx)
+        {
+            ERROR_RECORDER.error(acsx.getMessage(), acsx);
+
+            throw new ApplicationManagementException(acsx.getMessage(), acsx);
+        }
+        finally
+        {
+            // audit
+            try
+            {
+                AuditEntry auditEntry = new AuditEntry();
+                auditEntry.setHostInfo(reqInfo);
+                auditEntry.setAuditType(AuditType.LISTAPPS);
+                auditEntry.setUserAccount(userAccount);
+                auditEntry.setApplicationId(request.getApplicationId());
+                auditEntry.setApplicationName(request.getApplicationName());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
+                }
+
+                AuditRequest auditRequest = new AuditRequest();
+                auditRequest.setAuditEntry(auditEntry);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
+                }
+
+                auditor.auditRequest(auditRequest);
+            }
+            catch (AuditServiceException asx)
+            {
+                ERROR_RECORDER.error(asx.getMessage(), asx);
+            }
+        }
+        
+        return response;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.processors.interfaces.IApplicationManagementProcessor#listApplicationsByAttribute(com.cws.esolutions.core.processors.dto.ApplicationManagementRequest)
+     */
+    @Override
+    public ApplicationManagementResponse listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException
+    {
+        final String methodName = IApplicationManagementProcessor.CNAME + "#listApplicationsByAttribute(final ApplicationManagementRequest request) throws ApplicationManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("ApplicationManagementRequest: {}", request);
+        }
+
+        ApplicationManagementResponse response = new ApplicationManagementResponse();
+
+        final Application application = request.getApplication();
+        final UserAccount userAccount = request.getUserAccount();
+        final RequestHostInfo reqInfo = request.getRequestInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Application: {}", application);
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
+        }
+
+        try
+        {
+            // it also requires authorization for the service
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+            }
+
+            if (isUserAuthorized)
+            {
+                List<String[]> appData = appDAO.getApplicationsByAttribute(application.getName(), request.getStartPage());
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("List<String[]>: {}", appData);
+                }
+
+                if ((appData != null) && (appData.size() != 0))
+                {
+                    List<Application> appList = new ArrayList<>();
+
+                    for (String[] array : appData)
+                    {
+                        Application app = new Application();
+                        app.setGuid(array[0]); // T1.APPLICATION_GUID
+                        app.setName(array[1]); // T1.APPLICATION_NAME
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Application: {}", app);
+                        }
+
+                        appList.add(app);
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<Application>: {}", appList);
+                    }
+
+                    response.setEntryCount(value); // TODO
                     response.setApplicationList(appList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
@@ -665,7 +808,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -674,8 +817,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (isUserAuthorized)
             {
-                List<Service> appPlatforms = null;
-                List<Object> appData = appDAO.getApplicationData(application.getGuid());
+                List<Object> appData = appDAO.getApplication(application.getGuid());
 
                 if (DEBUG)
                 {
@@ -689,55 +831,8 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("List<Object>: {}", appData);
                     }
 
-                    if (StringUtils.split((String) appData.get(8), ",").length >= 1) // T1.PLATFORM_GUID
-                    {
-                        String tmp = StringUtils.remove((String) appData.get(8), "[");
-                        String platformList = StringUtils.remove(tmp, "]");
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("platformList: {}", platformList);
-                        }
-
-                        appPlatforms = new ArrayList<>();
-
-                        for (String platformGuid : platformList.split(","))
-                        {
-                            List<String> platformData = serviceDao.getServiceData(StringUtils.trim(platformGuid));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("platformData: {}", platformData);
-                            }
-
-                            if ((platformData != null) && (platformData.size() != 0))
-                            {
-                                Service platform = new Service();
-                                platform.setGuid(platformData.get(0)); // T1.PLATFORM_GUID
-                                platform.setName(platformData.get(1)); // T1.PLATFORM_NAME
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("Service: {}", platform);
-                                }
-
-                                appPlatforms.add(platform);
-                            }
-                            else
-                            {
-                                throw new ApplicationManagementException("Unable to locate a valid platform for the provided application. Cannot continue.");
-                            }
-                        }
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<Service>: {}", appPlatforms);
-                        }
-                    }
-
                     // then put it all together
                     Application resApplication = new Application();
-                    resApplication.setPlatforms(appPlatforms);
                     resApplication.setGuid((String) appData.get(0)); // GUID
                     resApplication.setName((String) appData.get(1)); // NAME
                     resApplication.setVersion((double) appData.get(2)); // VERSION
@@ -853,7 +948,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
@@ -868,7 +963,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 }
 
                 // need to authorize for project
-                boolean isAuthorizedForRequest = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+                boolean isAuthorizedForRequest = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -877,7 +972,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
                 if (isAuthorizedForRequest)
                 {
-                    List<Object> appData = appDAO.getApplicationData(application.getGuid());
+                    List<Object> appData = appDAO.getApplication(application.getGuid());
 
                     if (DEBUG)
                     {
@@ -1107,7 +1202,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
         try
         {
             // it also requires authorization for the service
-            boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {

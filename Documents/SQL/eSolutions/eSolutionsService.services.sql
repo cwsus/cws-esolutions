@@ -121,21 +121,6 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure getServiceCount
---
-DROP PROCEDURE IF EXISTS esolutionssvc.getServiceCount$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServiceCount(
-)
-BEGIN
-    SELECT COUNT(*)
-    FROM esolutionssvc.services
-    WHERE STATUS = 'ACTIVE';
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-COMMIT$$
-
---
 -- Definition of procedure esolutionssvc.listServices
 --
 DROP PROCEDURE IF EXISTS esolutionssvc.listServices$$

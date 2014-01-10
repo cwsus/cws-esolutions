@@ -35,23 +35,21 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.lang.reflect.Field;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
-import com.cws.esolutions.security.enums.SaltType;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
@@ -97,14 +95,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 String userGuid = (StringUtils.isNotEmpty(userAccount.getGuid())) ? userAccount.getGuid() : UUID.randomUUID().toString();
 
@@ -328,14 +326,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 
                 // delete userAccount
@@ -433,14 +431,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 // we will only have a guid here - so we need to load the user
                 List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -559,14 +557,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 // we will only have a guid here - so we need to load the user
                 List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -698,14 +696,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 // we will only have a guid here - so we need to load the user
                 List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
@@ -881,14 +879,14 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
         try
         {
-            boolean isAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isAuthorized)
+            if (isUserAuthorized)
             {
                 // this is a reset request, so we need to do a few things
                 // 1, we need to generate a unique id that we can email off
@@ -1048,7 +1046,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1271,7 +1269,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (searchType != SearchRequestType.FORGOTUID)
             {
-                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
                 if (DEBUG)
                 {
@@ -1423,7 +1421,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
             if (request.getControlType() != ControlType.SERVICES)
             {
-                isUserAuthorized = accessControl.accessControlService(reqAccount, AdminControlType.USER_ADMIN);
+                isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
                 if (DEBUG)
                 {

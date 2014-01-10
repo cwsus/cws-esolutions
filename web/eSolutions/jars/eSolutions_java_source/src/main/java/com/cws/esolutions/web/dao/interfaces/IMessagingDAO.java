@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.dao.interfaces;
+package com.cws.esolutions.web.dao.interfaces;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.dao.processors.interfaces

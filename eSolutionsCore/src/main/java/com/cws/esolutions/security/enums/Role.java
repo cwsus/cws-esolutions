@@ -1,17 +1,13 @@
 /*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.security.enums;
 /*
@@ -23,14 +19,13 @@ package com.cws.esolutions.security.enums;
  *
  * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ * 35033355              Jan 10, 2014                         Created.
  */
+
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * TODO: Add class information/description
  *
- * @author khuntly
+ * @author 35033355
  * @version 1.0
  */
 public enum Role
@@ -39,5 +34,7 @@ public enum Role
     ADMIN,
     SITEADMIN,
     USERADMIN,
-    SERVICEADMIN;
+    SERVICEADMIN,
+    ADMINISTRATOR,
+    OPERATOR;
 }

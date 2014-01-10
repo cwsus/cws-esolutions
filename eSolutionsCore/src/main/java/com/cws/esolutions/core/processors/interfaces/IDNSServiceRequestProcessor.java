@@ -32,10 +32,8 @@ import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.DNSConfig;
 import com.cws.esolutions.core.config.xml.SSHConfig;
-import com.cws.esolutions.core.dao.impl.DNSServiceDAOImpl;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
-import com.cws.esolutions.core.dao.interfaces.IDNSServiceDAO;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
@@ -55,7 +53,6 @@ import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 public interface IDNSServiceRequestProcessor
 {
     static final IServerDataDAO dao = new ServerDataDAOImpl();
-    static final IDNSServiceDAO dnsDao = new DNSServiceDAOImpl();
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final String CNAME = IDNSServiceRequestProcessor.class.getName();
@@ -81,18 +78,6 @@ public interface IDNSServiceRequestProcessor
      * @throws DNSServiceException if an error occurs during processing
      */
     DNSServiceResponse performLookup(final DNSServiceRequest request) throws DNSServiceException;
-
-    /**
-     * This method is utilized to obtain information about a record within the database. At this point
-     * it uses the associated project code and obtains all available information for that project code
-     * and assembles into the DNS entries (and zones as necessary). The data is then returned to the
-     * user and displayed in whatever format appropriate.
-     *
-     * @param request - The <code>DNSServiceRequest</code> housing the necessary data to process
-     * @return <code>DNSServiceResponse</code> containing the response information, or error code
-     * @throws DNSServiceException if an error occurs during processing
-     */
-    DNSServiceResponse getDataFromDatabase(final DNSServiceRequest request) throws DNSServiceException;
 
     /**
      * Creates a new zone service file. This is BIND-specific, it will NOT work with other

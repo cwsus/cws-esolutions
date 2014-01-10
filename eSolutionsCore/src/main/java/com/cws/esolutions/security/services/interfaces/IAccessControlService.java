@@ -32,7 +32,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.core.dao.interfaces.IServerDataDAO;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.reference.impl.UserServiceInformationDAOImpl;
@@ -74,21 +73,7 @@ public interface IAccessControlService
      * @return boolean
      * @throws AccessControlServiceException
      */
-    boolean isUserAuthorizedForService(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException;
+    boolean isUserAuthorized(final UserAccount userAccount, final String serviceGuid) throws AccessControlServiceException;
 
     boolean isEmailAuthorized(final String sender, final String[] sources, final boolean isAlert) throws AccessControlServiceException;
-
-    /**
-     * Determines if the requested user has the proper level of authority to
-     * access the requested resource. This method needs a little work - its
-     * long-term goal is to allow both a servlet-based method as well as a
-     * portlet service. It should also query an applicable user datastore,
-     * in the event the session data may have been tampered.
-     *
-     * @param userAccount
-     * @param controlType
-     * @return boolean
-     * @throws AccessControlServiceException
-     */
-    boolean accessControlService(final UserAccount userAccount, final AdminControlType controlType) throws AccessControlServiceException;
 }

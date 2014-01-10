@@ -32,7 +32,7 @@ import org.junit.Before;
 import java.sql.SQLException;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.enums.SaltType;
+import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 

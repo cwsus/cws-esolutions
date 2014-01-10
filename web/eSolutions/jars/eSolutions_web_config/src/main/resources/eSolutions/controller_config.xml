@@ -46,6 +46,4 @@
     <import resource="classpath:eSolutions/servlets/ServiceManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    
     <import resource="classpath:eSolutions/servlets/SystemManagementController.xml" />
-    <import resource="classpath:eSolutions/servlets/UserAccountController.xml" />
-    <import resource="classpath:eSolutions/servlets/UserManagementController.xml" />
 </beans>

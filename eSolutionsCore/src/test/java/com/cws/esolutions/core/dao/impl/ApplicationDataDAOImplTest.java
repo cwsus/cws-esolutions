@@ -74,7 +74,7 @@ public class ApplicationDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addNewApplication(appData));
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addApplication(appData));
         }
         catch (SQLException sqx)
         {
@@ -99,7 +99,7 @@ public class ApplicationDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addNewApplication(appData));
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.addApplication(appData));
         }
         catch (SQLException sqx)
         {
@@ -112,7 +112,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.listInstalledApplications(0));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.listApplications(0));
         }
         catch (SQLException sqx)
         {
@@ -125,7 +125,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplicationData(this.guid));
+            Assert.assertNotNull(ApplicationDataDAOImplTest.dao.getApplication(this.guid));
         }
         catch (SQLException sqx)
         {
@@ -151,7 +151,7 @@ public class ApplicationDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(ApplicationDataDAOImplTest.dao.deleteApplication(this.guid));
+            Assert.assertTrue(ApplicationDataDAOImplTest.dao.removeApplication(this.guid));
         }
         catch (SQLException sqx)
         {

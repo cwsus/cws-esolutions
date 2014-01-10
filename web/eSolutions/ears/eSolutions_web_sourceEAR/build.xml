@@ -24,8 +24,8 @@
             <arg value="HEAD"/>
         </exec>
 
-        <touch file="${buildArea}/${pom.artifactId}-${pom.version}.version" />
+        <touch file="${basedir}/target/classes/${pom.artifactId}-${pom.version}.version" />
 
-        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${buildArea}/${pom.artifactId}-${pom.version}.version" append="false" />
+        <echo message="${pom.artifactId} commit version ${git.revision} built ${TODAY}" output="${basedir}/target/classes/${pom.artifactId}-${pom.version}.version" append="false" />
     </target>
 </project>

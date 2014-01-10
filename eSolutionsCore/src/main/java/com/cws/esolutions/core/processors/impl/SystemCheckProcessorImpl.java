@@ -85,14 +85,14 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.NETSTAT);
@@ -251,14 +251,14 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.TELNET);
@@ -418,14 +418,14 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.REMOTEDATE);
@@ -584,14 +584,14 @@ public class SystemCheckProcessorImpl implements ISystemCheckProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 ServiceCheckRequest systemReq = new ServiceCheckRequest();
                 systemReq.setRequestType(SystemCheckType.PROCESSLIST);

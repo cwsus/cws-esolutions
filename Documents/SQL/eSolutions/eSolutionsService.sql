@@ -10,12 +10,9 @@ COMMIT;
 
 USE esolutionssvc;
 
-SOURCE ./eSolutionsService.articles.sql;
-SOURCE ./eSolutionsService.dns_service.sql;
 SOURCE ./eSolutionsService.installed_applications.sql;
 SOURCE ./eSolutionsService.installed_systems.sql;
 SOURCE ./eSolutionsService.services.sql;
-SOURCE ./eSolutionsService.service_messages.sql;
 
 COMMIT;
 

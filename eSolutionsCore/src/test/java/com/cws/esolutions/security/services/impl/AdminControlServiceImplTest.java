@@ -37,7 +37,6 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -99,50 +98,11 @@ public class AdminControlServiceImplTest
     }
 
     @Test
-    public void testAdminControlServiceServiceAdmin()
-    {
-        try
-        {
-            Assert.assertTrue(service.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN));
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            Assert.fail(acsx.getMessage());
-        }
-    }
-
-    @Test
-    public void testAdminControlServiceUserAdmin()
-    {
-        try
-        {
-            Assert.assertTrue(service.accessControlService(userAccount, AdminControlType.USER_ADMIN));
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            Assert.fail(acsx.getMessage());
-        }
-    }
-
-    @Test
-    public void testIsEmailAuthorized()
-    {
-        try
-        {
-            Assert.assertTrue(service.isEmailAuthorized("kmhuntly@gmail.com", new String[] { "caspersb-amta1.caspersbox.corp" }, false));
-        }
-        catch (AccessControlServiceException ecsx)
-        {
-            Assert.fail(ecsx.getMessage());
-        }
-    }
-
-    @Test
     public void testIsUserAuthorizedForService()
     {
         try
         {
-            Assert.assertTrue(service.isUserAuthorizedForService(userAccount, "ef628254-e692-4029-8189-aedb9cf1e380"));
+            Assert.assertTrue(service.isUserAuthorized(userAccount, "ef628254-e692-4029-8189-aedb9cf1e380"));
         }
         catch (AccessControlServiceException ucsx)
         {

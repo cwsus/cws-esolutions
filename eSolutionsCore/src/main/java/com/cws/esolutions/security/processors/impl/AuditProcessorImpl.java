@@ -38,7 +38,6 @@ import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.processors.dto.AuditResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -87,7 +86,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_userguid
-                    auditList.add(SecurityServiceConstants.NOT_SET); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
@@ -99,7 +97,6 @@ public class AuditProcessorImpl implements IAuditProcessor
                     auditList.add(hostInfo.getSessionId()); // usr_audit_sessionid
                     auditList.add(userAccount.getUsername()); // usr_audit_userid
                     auditList.add(userAccount.getGuid()); // usr_audit_userguid
-                    auditList.add(userAccount.getRoles().toString()); // usr_audit_role
                     auditList.add(auditEntry.getApplicationId()); // usr_audit_applid
                     auditList.add(auditEntry.getApplicationName()); // usr_audit_applname
                     auditList.add(auditEntry.getAuditType().toString()); // usr_audit_action
@@ -154,15 +151,18 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final AuditEntry auditEntry = request.getAuditEntry();
+        final UserAccount reqAccount = request.getUserAccount();
 
         if (DEBUG)
         {
+            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("AuditEntry: {}", auditEntry);
+            DEBUGGER.debug("UserAccount: {}", reqAccount);
         }
 
         try
         {
-            boolean isUserAuthorized = accessControl.accessControlService(request.getUserAccount(), AdminControlType.USER_ADMIN);
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
 
             if (DEBUG)
             {

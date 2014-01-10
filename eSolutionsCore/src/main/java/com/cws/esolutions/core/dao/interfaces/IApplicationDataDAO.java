@@ -76,7 +76,7 @@ public interface IApplicationDataDAO
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
      */
-    boolean addNewApplication(final List<Object> applicationData) throws SQLException;
+    boolean addApplication(final List<Object> applicationData) throws SQLException;
 
     /**
      * Allows updates to be applied to an application in the asset management database. The
@@ -128,17 +128,7 @@ public interface IApplicationDataDAO
      * @return <code>true</code> if the data is successfully inserted, <code>false</code> otherwise
      * @throws SQLException if an error occurs during data processing
      */
-    boolean deleteApplication(final String appGuid) throws SQLException;
-
-    /**
-     * Gets a count of installed applications in the asset management database.
-     * This is used to drive an applicable front-end so that results can be paged
-     * through
-     *
-     * @return Total count of applications in the database
-     * @throws SQLException if an error occurs during data processing
-     */
-    int getApplicationCount() throws SQLException;
+    boolean removeApplication(final String appGuid) throws SQLException;
 
     /**
      * Lists applications stored within the asset management database. This listing
@@ -150,17 +140,7 @@ public interface IApplicationDataDAO
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
      */
-    List<String[]> listInstalledApplications(final int startRow) throws SQLException;
-
-    /**
-     * Lists applications stored within the asset management database. This listing
-     * can then be utilized by the processor to massage and prepare for display.
-     *
-     * @return A string array of the information contained within the datasource.
-     *         Only the application GUID and name are returned.
-     * @throws SQLException if an error occurs during data processing
-     */
-    List<Object> getApplicationData(final String appGuid) throws SQLException;
+    List<String[]> listApplications(final int startRow) throws SQLException;
 
     /**
      * Lists applications stored within the asset management database. This listing
@@ -174,4 +154,14 @@ public interface IApplicationDataDAO
      * @throws SQLException if an error occurs during data processing
      */
     List<String[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
+
+    /**
+     * Lists applications stored within the asset management database. This listing
+     * can then be utilized by the processor to massage and prepare for display.
+     *
+     * @return A string array of the information contained within the datasource.
+     *         Only the application GUID and name are returned.
+     * @throws SQLException if an error occurs during data processing
+     */
+    List<Object> getApplication(final String appGuid) throws SQLException;
 }

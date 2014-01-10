@@ -78,12 +78,63 @@ public interface IServerManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
 
-    // for service management we're going to do platforms and servers
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
     ServerManagementResponse addNewServer(final ServerManagementRequest request) throws ServerManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
     ServerManagementResponse updateServerData(final ServerManagementRequest request) throws ServerManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
+    ServerManagementResponse removeServerData(final ServerManagementRequest request) throws ServerManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
+    ServerManagementResponse listServers(final ServerManagementRequest request) throws ServerManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
     ServerManagementResponse listServersByAttribute(final ServerManagementRequest request) throws ServerManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServerManagementException
+     */
     ServerManagementResponse getServerData(final ServerManagementRequest request) throws ServerManagementException;
 }

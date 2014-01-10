@@ -84,14 +84,14 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 if (service == null)
                 {
@@ -103,7 +103,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                 try
                 {
-                    validator = serviceDao.getServiceByAttribute(service.getName(), request.getStartPage());
+                    validator = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
                 }
                 catch (SQLException sqx)
                 {
@@ -152,7 +152,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                         }
                     }
 
-                    boolean isComplete = serviceDao.addNewService(insertData);
+                    boolean isComplete = serviceDao.addService(insertData);
 
                     if (DEBUG)
                     {
@@ -255,14 +255,14 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 List<String> serverList = new ArrayList<>();
                 for (Server server : service.getServers())
@@ -298,7 +298,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                     }
                 }
 
-                boolean isComplete = serviceDao.updateServiceData(insertData);
+                boolean isComplete = serviceDao.updateService(insertData);
 
                 if (DEBUG)
                 {
@@ -396,16 +396,16 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
-                boolean isComplete = serviceDao.removeServiceData(service.getGuid());
+                boolean isComplete = serviceDao.removeService(service.getGuid());
 
                 if (DEBUG)
                 {
@@ -501,22 +501,15 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
-                int count = serviceDao.getServiceCount();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("count: {}", count);
-                }
-
                 List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
 
                 if (DEBUG)
@@ -548,7 +541,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                         DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
-                    response.setEntryCount(count);
+                    response.setEntryCount(count); // TODO
                     response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
@@ -639,22 +632,15 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
-                int count = serviceDao.getServiceCount();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("count: {}", count);
-                }
-
                 List<String[]> serviceData = serviceDao.listServices(request.getStartPage());
 
                 if (DEBUG)
@@ -689,7 +675,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                         DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
-                    response.setEntryCount(count);
+                    response.setEntryCount(count); // TODO
                     response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
@@ -780,16 +766,16 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
-                List<String[]> serviceData = serviceDao.getServiceByAttribute(service.getName(), request.getStartPage());
+                List<String[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -910,18 +896,18 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 List<Server> serverList = null;
 
-                List<String> serviceData = serviceDao.getServiceData(service.getGuid());
+                List<String> serviceData = serviceDao.getService(service.getGuid());
 
                 if (DEBUG)
                 {
@@ -946,7 +932,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                             for (String serverGuid : platformServers.split(","))
                             {
-                                List<Object> serverData = serverDao.getInstalledServer(StringUtils.trim(serverGuid));
+                                List<Object> serverData = serverDao.getServer(StringUtils.trim(serverGuid));
 
                                 if (DEBUG)
                                 {

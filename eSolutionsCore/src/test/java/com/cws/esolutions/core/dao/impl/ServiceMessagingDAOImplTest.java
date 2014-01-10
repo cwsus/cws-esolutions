@@ -26,18 +26,24 @@ package com.cws.esolutions.core.dao.impl;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.junit.Test;
 import org.junit.After;
+
 import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Before;
+
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.core.dao.interfaces.IMessagingDAO;
 import com.cws.esolutions.core.listeners.CoreServiceInitializer;
+import com.cws.esolutions.web.dao.impl.ServiceMessagingDAOImpl;
+import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
 
 public class ServiceMessagingDAOImplTest
 {

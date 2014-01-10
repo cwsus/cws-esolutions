@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.services.enums;
+package com.cws.esolutions.security.processors.enums;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.access.control.enums
- * File: accessControlType.java
+ * Package: com.cws.esolutions.security.processors.enums
+ * File: SaltType.java
  *
  * History
  *
@@ -33,9 +33,8 @@ package com.cws.esolutions.security.services.enums;
  * @author khuntly
  * @version 1.0
  */
-public enum AdminControlType
+public enum SaltType
 {
-    USER_ADMIN,
-    SERVICE_ADMIN,
-    SERVICE_REQUEST;
+    LOGON,
+    RESET;
 }

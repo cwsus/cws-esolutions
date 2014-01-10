@@ -1,8 +1,8 @@
 --
--- Definition of table esolutionssvc.service_messages
+-- Definition of table esolutions.service_messages
 --
-DROP TABLE IF EXISTS esolutionssvc.service_messages;
-CREATE TABLE esolutionssvc.service_messages (
+DROP TABLE IF EXISTS esolutions.service_messages;
+CREATE TABLE esolutions.service_messages (
     ID VARCHAR(16) CHARACTER SET UTF8 NOT NULL,
     TITLE VARCHAR(100) CHARACTER SET UTF8 NOT NULL,
     MESSAGE TEXT CHARACTER SET UTF8 NOT NULL,
@@ -19,17 +19,17 @@ CREATE TABLE esolutionssvc.service_messages (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE esolutionssvc.service_messages CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE esolutions.service_messages CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure esolutionssvc.getMessagesByAttribute
+-- Definition of procedure esolutions.getMessagesByAttribute
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getMessagesByAttribute$$
+DROP PROCEDURE IF EXISTS esolutions.getMessagesByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getMessagesByAttribute(
+CREATE PROCEDURE esolutions.getMessagesByAttribute(
     IN searchTerms VARCHAR(100)
 )
 BEGIN
@@ -47,7 +47,7 @@ BEGIN
         MODIFIED_BY,
     MATCH (ID, TITLE, MESSAGE, AUTHOR)
     AGAINST (+searchTerms WITH QUERY EXPANSION)
-    FROM esolutionssvc.service_messages
+    FROM esolutions.service_messages
     WHERE MATCH (ID, TITLE, MESSAGE, AUTHOR)
     AGAINST (+searchTerms IN BOOLEAN MODE)
     AND ACTIVE  = TRUE
@@ -58,11 +58,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.submitSvcMessage
+-- Definition of procedure esolutions.submitSvcMessage
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.submitSvcMessage$$
+DROP PROCEDURE IF EXISTS esolutions.submitSvcMessage$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.submitSvcMessage(
+CREATE PROCEDURE esolutions.submitSvcMessage(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -73,7 +73,7 @@ CREATE PROCEDURE esolutionssvc.submitSvcMessage(
     IN expiryDate BIGINT
 )
 BEGIN
-    INSERT INTO esolutionssvc.service_messages
+    INSERT INTO esolutions.service_messages
     (
         ID, TITLE, MESSAGE, AUTHOR, SUBMIT_DATE, ACTIVE , ALERT, EXPIRES, EXPIRES_ON
     )
@@ -88,11 +88,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.updateServiceMessage
+-- Definition of procedure esolutions.updateServiceMessage
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.updateServiceMessage$$
+DROP PROCEDURE IF EXISTS esolutions.updateServiceMessage$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.updateServiceMessage(
+CREATE PROCEDURE esolutions.updateServiceMessage(
     IN messageId VARCHAR(128),
     IN messageTitle VARCHAR(100),
     IN messageText TEXT,
@@ -103,7 +103,7 @@ CREATE PROCEDURE esolutionssvc.updateServiceMessage(
     IN modifyAuthor VARCHAR(45)
 )
 BEGIN
-    UPDATE esolutionssvc.service_messages
+    UPDATE esolutions.service_messages
     SET
         TITLE = messageTitle,
         MESSAGE = messageText,
@@ -121,11 +121,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.retrSvcMessages
+-- Definition of procedure esolutions.retrSvcMessages
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.retrServiceMessage$$
+DROP PROCEDURE IF EXISTS esolutions.retrServiceMessage$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retrServiceMessage(
+CREATE PROCEDURE esolutions.retrServiceMessage(
     IN requestId VARCHAR(45)
 )
 BEGIN
@@ -141,19 +141,19 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM esolutionssvc.service_messages
+    FROM esolutions.service_messages
     WHERE ID = requestId;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.retrServiceMessages
+-- Definition of procedure esolutions.retrServiceMessages
 --
 COMMIT$$
-DROP PROCEDURE IF EXISTS esolutionssvc.retrServiceMessages$$
+DROP PROCEDURE IF EXISTS esolutions.retrServiceMessages$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retrServiceMessages(
+CREATE PROCEDURE esolutions.retrServiceMessages(
 )
 BEGIN
     SELECT
@@ -168,7 +168,7 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM esolutionssvc.service_messages
+    FROM esolutions.service_messages
     WHERE ACTIVE  = TRUE
     AND ALERT = FALSE
     AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)
@@ -178,11 +178,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.retrAlertMessages
+-- Definition of procedure esolutions.retrAlertMessages
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.retrAlertMessages$$
+DROP PROCEDURE IF EXISTS esolutions.retrAlertMessages$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retrAlertMessages(
+CREATE PROCEDURE esolutions.retrAlertMessages(
 )
 BEGIN
     SELECT
@@ -197,7 +197,7 @@ BEGIN
         EXPIRES_ON,
         MODIFIED_ON,
         MODIFIED_BY
-    FROM esolutionssvc.service_messages
+    FROM esolutions.service_messages
     WHERE ACTIVE  = TRUE
     AND ALERT = TRUE
     AND (EXPIRES_ON > NOW() OR EXPIRES_ON = '0000-00-00 00:00:00' OR EXPIRES = FALSE)

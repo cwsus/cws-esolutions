@@ -52,17 +52,15 @@ public interface IServiceDataDAO
     static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
-    boolean addNewService(final List<String> serverData) throws SQLException;
+    boolean addService(final List<String> serverData) throws SQLException;
 
-    boolean updateServiceData(final List<String> serverData) throws SQLException;
+    boolean updateService(final List<String> serverData) throws SQLException;
 
-    boolean removeServiceData(final String serverGuid) throws SQLException;
-
-    int getServiceCount() throws SQLException;
+    boolean removeService(final String serverGuid) throws SQLException;
 
     List<String[]> listServices(final int startRow) throws SQLException;
 
-    List<String[]> getServiceByAttribute(final String attribute, final int startRow) throws SQLException;
+    List<String[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException;
 
-    List<String> getServiceData(final String attribute) throws SQLException;
+    List<String> getService(final String attribute) throws SQLException;
 }

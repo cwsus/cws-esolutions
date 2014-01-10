@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.core.processors.impl;
+package com.cws.esolutions.web.processors.impl;
 /*
  * Project: eSolutionsCore
  * Package: com.cws.esolutions.core.processors.impl
@@ -30,24 +30,22 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.core.dao.interfaces.IMessagingDAO;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.processors.enums.AuditType;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
-import com.cws.esolutions.core.dao.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
-import com.cws.esolutions.core.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
@@ -55,15 +53,18 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
+import com.cws.esolutions.web.dao.impl.ServiceMessagingDAOImpl;
+import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 /**
- * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor
+ * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor
  */
 public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 {
     private static final IMessagingDAO messageDAO = new ServiceMessagingDAOImpl();
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     @Override
     public MessagingResponse addNewMessage(final MessagingRequest request) throws MessagingServiceException
@@ -91,14 +92,14 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 String messageId = RandomStringUtils.randomAlphanumeric(appConfig.getMessageIdLength());
 
@@ -195,7 +196,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#updateExistingMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     @Override
     public MessagingResponse updateExistingMessage(final MessagingRequest request) throws MessagingServiceException
@@ -223,14 +224,14 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            boolean isServiceAuthorized = accessControl.isUserAuthorizedForService(userAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, request.getServiceId());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("isServiceAuthorized: {}", isServiceAuthorized);
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
 
-            if (isServiceAuthorized)
+            if (isUserAuthorized)
             {
                 List<Object> messageList = new ArrayList<Object>(
                         Arrays.asList(
@@ -324,7 +325,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     @Override
     public MessagingResponse showMessages(final MessagingRequest request) throws MessagingServiceException
@@ -498,7 +499,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showAlertMessages(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     @Override
     public MessagingResponse showAlertMessages(final MessagingRequest request) throws MessagingServiceException
@@ -574,7 +575,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
     }
 
     /**
-     * @see com.cws.esolutions.core.processors.interfaces.IMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
+     * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#showMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
      */
     @Override
     public MessagingResponse showMessage(final MessagingRequest request) throws MessagingServiceException

@@ -473,31 +473,6 @@ public class DNSServiceRequestImplTest
         }
     }
 
-    @Test
-    public static void testGetDataFromDatabase()
-    {
-        DNSEntry entry = new DNSEntry();
-        entry.setProjectCode("PRDPRJ");
-        entry.setApex("example.com");
-
-        DNSServiceRequest request = new DNSServiceRequest();
-        request.setDnsEntry(entry);
-        request.setUserAccount(userAccount);
-        request.setRequestInfo(hostInfo);
-        request.setServiceId("B52B1DE9-37A4-4554-B85E-2EA28C4EE3DD");
-
-        try
-        {
-            DNSServiceResponse response = dnsService.getDataFromDatabase(request);
-
-            Assert.assertEquals(CoreServicesStatus.SUCCESS, response.getRequestStatus());
-        }
-        catch (DNSServiceException dnsx)
-        {
-            Assert.fail(dnsx.getMessage());
-        }
-    }
-
     @After
     public void tearDown()
     {

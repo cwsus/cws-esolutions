@@ -85,7 +85,7 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewService(serviceData));
+            Assert.assertTrue(dao.addService(serviceData));
         }
         catch (SQLException sqx)
         {
@@ -109,7 +109,7 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewService(serviceData));
+            Assert.assertTrue(dao.addService(serviceData));
         }
         catch (SQLException sqx)
         {
@@ -140,7 +140,7 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewService(serviceData));
+            Assert.assertTrue(dao.addService(serviceData));
         }
         catch (SQLException sqx)
         {
@@ -164,7 +164,7 @@ public class ServiceDataDAOImplTest
 
         try
         {
-            Assert.assertTrue(dao.addNewService(serviceData));
+            Assert.assertTrue(dao.addService(serviceData));
         }
         catch (SQLException sqx)
         {
@@ -190,7 +190,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServiceByAttribute("TDC", 0));
+            Assert.assertNotNull(dao.getServicesByAttribute("TDC", 0));
         }
         catch (SQLException sqx)
         {
@@ -203,7 +203,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServiceData(pGuid));
+            Assert.assertNotNull(dao.getService(pGuid));
         }
         catch (SQLException sqx)
         {
@@ -216,7 +216,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertNotNull(dao.getServiceData(dGuid));
+            Assert.assertNotNull(dao.getService(dGuid));
         }
         catch (SQLException sqx)
         {
@@ -229,7 +229,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeServiceData(pGuid));
+            Assert.assertTrue(dao.removeService(pGuid));
         }
         catch (SQLException sqx)
         {
@@ -242,7 +242,7 @@ public class ServiceDataDAOImplTest
     {
         try
         {
-            Assert.assertTrue(dao.removeServiceData(dGuid));
+            Assert.assertTrue(dao.removeService(dGuid));
         }
         catch (SQLException sqx)
         {

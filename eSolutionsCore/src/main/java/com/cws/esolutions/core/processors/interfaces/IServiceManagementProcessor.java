@@ -74,17 +74,73 @@ public interface IServiceManagementProcessor
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
     static final Logger WARN_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.WARN_LOGGER + CNAME);
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse addNewService(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse updateServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse removeServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse listServices(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse listServicesByType(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse getServiceByAttribute(final ServiceManagementRequest request) throws ServiceManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws ServiceManagementException
+     */
     ServiceManagementResponse getServiceData(final ServiceManagementRequest request) throws ServiceManagementException;
 }

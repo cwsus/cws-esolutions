@@ -29,9 +29,11 @@ import java.util.List;
 import java.util.Arrays;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
@@ -41,12 +43,12 @@ import com.cws.esolutions.core.dao.interfaces.IApplicationDataDAO;
 public class ApplicationDataDAOImpl implements IApplicationDataDAO
 {
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#addNewApplication(java.util.List)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#addApplication(java.util.List)
      */
     @Override
-    public synchronized boolean addNewApplication(final List<Object> value) throws SQLException
+    public synchronized boolean addApplication(final List<Object> value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#addNewApplication(final List<Object> value) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#addApplication(final List<Object> value) throws SQLException";
         
         if (DEBUG)
         {
@@ -187,12 +189,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#deleteApplication(java.lang.String)
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#removeApplication(java.lang.String)
      */
     @Override
-    public synchronized boolean deleteApplication(final String value) throws SQLException
+    public synchronized boolean removeApplication(final String value) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#deleteApplication(final String value) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#removeApplication(final String value) throws SQLException";
         
         if (DEBUG)
         {
@@ -252,96 +254,12 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
     }
 
     /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationCount()
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#listApplications(int)
      */
     @Override
-    public synchronized int getApplicationCount() throws SQLException
+    public synchronized List<String[]> listApplications(final int startRow) throws SQLException
     {
-        final String methodName = IApplicationDataDAO.CNAME + "#getApplicationCount() throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-
-        int count = 0;
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getApplicationCount()}");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(stmt.toString());
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("count: {}", count);
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return count;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#listInstalledApplications(int)
-     */
-    @Override
-    public synchronized List<String[]> listInstalledApplications(final int startRow) throws SQLException
-    {
-        final String methodName = IApplicationDataDAO.CNAME + "#listInstalledApplications(final int startRow) throws SQLException";
+        final String methodName = IApplicationDataDAO.CNAME + "#listApplications(final int startRow) throws SQLException";
 
         if (DEBUG)
         {
@@ -365,8 +283,9 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{CALL listApplications(?)}");
+            stmt = sqlConn.prepareCall("{CALL listApplications(?, ?)}");
             stmt.setInt(1, startRow);
+            stmt.registerOutParameter(2, Types.INTEGER);
 
             if (DEBUG)
             {
@@ -406,106 +325,6 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                     if (DEBUG)
                     {
                         DEBUGGER.debug("Value: {}", responseData);
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            if (resultSet != null)
-            {
-                resultSet.close();
-            }
-
-            if (stmt != null)
-            {
-                stmt.close();
-            }
-
-            if ((sqlConn != null) && (!(sqlConn.isClosed())))
-            {
-                sqlConn.close();
-            }
-        }
-
-        return responseData;
-    }
-
-    /**
-     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationData(java.lang.String)
-     */
-    @Override
-    public synchronized List<Object> getApplicationData(final String value) throws SQLException
-    {
-        final String methodName = IApplicationDataDAO.CNAME + "#getInstalledServer(final String value) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("value: {}", value);
-        }
-
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-        List<Object> responseData = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
-            stmt.setString(1, value);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(stmt.toString());
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    responseData = new ArrayList<Object>
-                    (
-                        Arrays.asList
-                        (
-                            resultSet.getString(1), // APPLICATION_GUID
-                            resultSet.getString(2), // APPLICATION_NAME
-                            resultSet.getDouble(3), // APPLICATION_VERSION
-                            resultSet.getString(4), // INSTALLATION_PATH
-                            resultSet.getString(5), // PACKAGE_LOCATION
-                            resultSet.getString(6), // PACKAGE_INSTALLER
-                            resultSet.getString(7), // INSTALLER_OPTIONS
-                            resultSet.getString(8), // LOGS_DIRECTORY
-                            resultSet.getString(9) // PLATFORM_GUID
-                        )
-                    );
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("data: {}", responseData);
                     }
                 }
             }
@@ -645,6 +464,106 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
                                 DEBUGGER.debug(str1);
                             }
                         }
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if ((sqlConn != null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return responseData;
+    }
+
+    /**
+     * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplication(java.lang.String)
+     */
+    @Override
+    public synchronized List<Object> getApplication(final String value) throws SQLException
+    {
+        final String methodName = IApplicationDataDAO.CNAME + "#getApplication(final String value) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("value: {}", value);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<Object> responseData = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL getApplicationData(?)}");
+            stmt.setString(1, value);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("resultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+
+                    responseData = new ArrayList<Object>
+                    (
+                        Arrays.asList
+                        (
+                            resultSet.getString(1), // APPLICATION_GUID
+                            resultSet.getString(2), // APPLICATION_NAME
+                            resultSet.getDouble(3), // APPLICATION_VERSION
+                            resultSet.getString(4), // INSTALLATION_PATH
+                            resultSet.getString(5), // PACKAGE_LOCATION
+                            resultSet.getString(6), // PACKAGE_INSTALLER
+                            resultSet.getString(7), // INSTALLER_OPTIONS
+                            resultSet.getString(8), // LOGS_DIRECTORY
+                            resultSet.getString(9) // PLATFORM_GUID
+                        )
+                    );
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("data: {}", responseData);
                     }
                 }
             }
