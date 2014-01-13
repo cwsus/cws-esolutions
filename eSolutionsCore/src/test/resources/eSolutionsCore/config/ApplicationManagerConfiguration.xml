@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <application-config>
+        <appName>eSolutionsCore</appName>
+        <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
+        <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
+        <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
+        <connectTimeout>15000</connectTimeout>
+        <scriptTimeout>30000</scriptTimeout>
+        <messageIdLength>16</messageIdLength>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
+        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
+    </application-config>
+
+    <mail-config>
+        <dataSourceName>mail/MailSession</dataSourceName>
+        <!-- use this if you aren't in a container environment -->
+        <!--
+        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+        -->
+    </mail-config>
+
+    <!-- how do we talk to the agent? -->
+    <agent-config>
+        <connectionName>tcp://127.0.0.1:61616</connectionName>
+        <clientId>5ab9f480-d357-47e0-9473-90f58a8b8e37</clientId>
+        <requestQueue>CWS.REQUEST.TOPIC</requestQueue>
+        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+        <username>cwsmq</username>
+        <password>OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==</password>
+        <salt>Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw</salt>
+        <timeout>10000</timeout>
+    </agent-config>
+
+    <!-- do we need a proxy for internet access? -->
+    <proxy-config>
+        <proxyServiceRequired>true</proxyServiceRequired>
+        <proxyServerName>chibcarray.us.hsbc</proxyServerName>
+        <proxyServerPort>8080</proxyServerPort>
+        <proxyAuthRequired>true</proxyAuthRequired>
+        <proxyAuthType>NTLM</proxyAuthType>
+        <proxyAuthDomain>HNAH</proxyAuthDomain>
+        <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
+        <proxyUserId>35033355</proxyUserId>
+        <proxyPwdSalt>yN9r0BeCmRh2okYb6vEapXbTDjDozTXT</proxyPwdSalt>
+        <proxyPassword>L/rZFW1wndHXVKvfsaRT5hGUSWiVIMWIhK/uVjJ6q5JwY37KEP/4PlMhWTwtVndnp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
+    </proxy-config>
+
+    <dns-config>
+        <namedRootDir>/var/named</namedRootDir>
+        <zoneRootDir>/namedb</zoneRootDir> 
+        <refreshInterval>900</refreshInterval>
+        <retryInterval>3600</retryInterval>
+        <expirationInterval>604800</expirationInterval>
+        <cacheInterval>3600</cacheInterval>
+        <ttlInterval>900</ttlInterval>
+        <adminName>dnsadmins.</adminName>
+        <domainName>caspersbox.com.</domainName>
+        <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
+    </dns-config>
+
+    <ssh-config>
+        <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
+        <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
+        <sshAccount>kh05451</sshAccount> <!-- username to use for authentication -->
+        <sshSalt />
+        <sshPassword />
+        <sshKey>/opt/cws/eSolutions/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
+        <sshProperties /> <!-- password for key, if required -->
+    </ssh-config>
+
+    <exception-config>
+        <sendExceptionNotifications>false</sendExceptionNotifications>
+    </exception-config>
+
+    <resource-config>
+        <DataSourceManager>
+            <dsName>ApplicationDataSource</dsName>
+            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
+        </DataSourceManager>
+    </resource-config>
+</configuration>
