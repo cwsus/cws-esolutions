@@ -31,7 +31,6 @@ import java.sql.SQLException;
 import java.net.UnknownHostException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -67,28 +66,20 @@ public class AccessControlServiceImpl implements IAccessControlService
 
         boolean isUserAuthorized = false;
 
-        for (Role role : userAccount.getRoles())
+        try
         {
-            if (role == Role.SITEADMIN)
-            {
-                return true;
-            }
+            isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
 
-            try
+            if (DEBUG)
             {
-                isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-                }
+                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
             }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-                throw new AccessControlServiceException(sqx.getMessage(), sqx);
-            }
+            throw new AccessControlServiceException(sqx.getMessage(), sqx);
         }
 
         return isUserAuthorized;

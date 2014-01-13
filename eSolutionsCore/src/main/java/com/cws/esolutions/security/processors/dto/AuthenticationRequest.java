@@ -31,10 +31,10 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -55,7 +55,7 @@ public class AuthenticationRequest implements Serializable
     private String applicationName = null;
     private UserAccount userAccount = null;
     private RequestHostInfo hostInfo = null;
-    private UserSecurity userSecurity = null;
+    private AuthenticationData userSecurity = null;
     private AuthenticationType authType = null;
 
     private static final long serialVersionUID = -201074803920605226L;
@@ -91,9 +91,9 @@ public class AuthenticationRequest implements Serializable
         this.userAccount = value;
     }
 
-    public final void setUserSecurity(final UserSecurity value)
+    public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AuthenticationRequest.CNAME + "#setLoginType(final UserSecurity value)";
+        final String methodName = AuthenticationRequest.CNAME + "#setLoginType(final AuthenticationData value)";
 
         if (DEBUG)
         {
@@ -231,7 +231,7 @@ public class AuthenticationRequest implements Serializable
         return this.userAccount;
     }
 
-    public final UserSecurity getUserSecurity()
+    public final AuthenticationData getUserSecurity()
     {
         final String methodName = AuthenticationRequest.CNAME + "#getUserSecurity()";
 

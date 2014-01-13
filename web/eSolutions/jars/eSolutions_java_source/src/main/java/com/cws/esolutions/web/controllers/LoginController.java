@@ -12,17 +12,11 @@
 package com.cws.esolutions.web.controllers;
 
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,10 +30,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.dto.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.web.validators.LoginValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
@@ -47,9 +38,12 @@ import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
@@ -542,12 +536,12 @@ public class LoginController
                 DEBUGGER.debug("UserAccount: {}", reqUser);
             }
 
-            UserSecurity reqSecurity = new UserSecurity();
+            AuthenticationData reqSecurity = new AuthenticationData();
             reqSecurity.setPassword(loginRequest.getLoginPass());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserSecurity: {}", reqSecurity);
+                DEBUGGER.debug("AuthenticationData: {}", reqSecurity);
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();
@@ -800,7 +794,7 @@ public class LoginController
                     case SUCCESS:
                         // username validated
                         // add auth
-                        mView.addObject("command", new UserSecurity());
+                        mView.addObject("command", new AuthenticationData());
 
                         switch (this.appConfig.getLogonType())
                         {
@@ -869,14 +863,14 @@ public class LoginController
 
     // password logon
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public final ModelAndView submitPasswordLogin(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
+    public final ModelAndView submitPasswordLogin(@ModelAttribute("security") final AuthenticationData security, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#submitPasswordLogin(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitPasswordLogin(@ModelAttribute(\"security\") final AuthenticationData security, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserSecurity: {}", security);
+            DEBUGGER.debug("AuthenticationData: {}", security);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -1001,7 +995,7 @@ public class LoginController
                         return mView;
                     default:
                         // no dice (but its also an unspecified failure)
-                        mView.addObject("command", new UserSecurity());
+                        mView.addObject("command", new AuthenticationData());
                         mView.setViewName(this.passwordLoginPage);
                         mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
                         
@@ -1010,7 +1004,7 @@ public class LoginController
             }
             else
             {
-                mView.addObject("command", new UserSecurity());
+                mView.addObject("command", new AuthenticationData());
                 mView.setViewName(this.passwordLoginPage);
                 mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
             }
@@ -1019,7 +1013,7 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject("command", new UserSecurity());
+            mView.addObject("command", new AuthenticationData());
             mView.setViewName(this.passwordLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
@@ -1034,14 +1028,14 @@ public class LoginController
 
     // otp logon
     @RequestMapping(value = "/otp", method = RequestMethod.POST)
-    public final ModelAndView submitOtpLogin(@ModelAttribute("security") final UserSecurity security, final BindingResult bindResult)
+    public final ModelAndView submitOtpLogin(@ModelAttribute("security") final AuthenticationData security, final BindingResult bindResult)
     {
-        final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final UserSecurity security, final BindingResult bindResult)";
+        final String methodName = LoginController.CNAME + "#submitOtpLogin(@ModelAttribute(\"security\") final AuthenticationData security, final BindingResult bindResult)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("UserSecurity: {}", security);
+            DEBUGGER.debug("AuthenticationData: {}", security);
             DEBUGGER.debug("BindingResult: {}", bindResult);
         }
 
@@ -1165,7 +1159,7 @@ public class LoginController
 
                         return mView;
                     default:
-                        mView.addObject("command", new UserSecurity());
+                        mView.addObject("command", new AuthenticationData());
                         mView.setViewName(this.otpLoginPage);
                         mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
 
@@ -1174,7 +1168,7 @@ public class LoginController
             }
             else
             {
-                mView.addObject("command", new UserSecurity());
+                mView.addObject("command", new AuthenticationData());
                 mView.setViewName(this.otpLoginPage);
                 mView.addObject(Constants.ERROR_RESPONSE, this.messageSubmissionFailed);
             }
@@ -1183,7 +1177,7 @@ public class LoginController
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
 
-            mView.addObject("command", new UserSecurity());
+            mView.addObject("command", new AuthenticationData());
             mView.setViewName(this.otpLoginPage);
             mView.addObject(Constants.ERROR_RESPONSE, this.appConfig.getMessageRequestProcessingFailure());
         }

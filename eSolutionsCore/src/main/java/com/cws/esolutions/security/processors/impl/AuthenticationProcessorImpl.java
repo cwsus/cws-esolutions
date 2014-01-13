@@ -35,9 +35,8 @@ import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.enums.Role;
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -46,6 +45,7 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
@@ -80,7 +80,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount authUser = request.getUserAccount();
-        final UserSecurity authSec = request.getUserSecurity();
+        final AuthenticationData authSec = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -201,18 +201,40 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     userAccount.setOlrSetup((Boolean) userData.get(13));
                     userAccount.setOlrLocked((Boolean) userData.get(14));
 
-                    List<Role> roleList = new ArrayList<Role>();
-                    for (String role : (List<String>) userData.get(15))
+                    // build groups
+                    List<UserGroup> userGroups = new ArrayList<UserGroup>();
+                    for (String group : (List<String>) userData.get(15))
                     {
-                        roleList.add(Role.valueOf(role));
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Group: {}", group);
+                        }
+
+                        List<String> serviceList = svcInfo.listServicesForGroup(group);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("List<String>: {}", serviceList);
+                        }
+
+                        UserGroup userGroup = new UserGroup();
+                        userGroup.setName(group);
+                        userGroup.setServices(serviceList);
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("UserGroup: {}", userGroup);
+                        }
+
+                        userGroups.add(userGroup);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<Role>: {}", roleList);
+                        DEBUGGER.debug("List<UserGroup>: {}", userGroups);
                     }
 
-                    userAccount.setRoles(roleList);
+                    userAccount.setGroups(userGroups);
 
                     if (DEBUG)
                     {
@@ -237,23 +259,6 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     catch (UserManagementException umx)
                     {
                         ERROR_RECORDER.error(umx.getMessage(), umx);
-                    }
-
-                    // site admins pretty much get access to everything
-                    if (!(userAccount.getRoles().contains(Role.SITEADMIN)))
-                    {
-                        // list user services
-                        List<String> serviceList = svcInfo.listServicesForUser(userAccount.getGuid());
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("List<String>: {}", serviceList);
-                        }
-
-                        if ((serviceList != null) && (serviceList.size() != 0))
-                        {
-                            userAccount.setServiceList(serviceList);
-                        }
                     }
 
                     // user not already logged in or concurrent auth is allowed
@@ -448,13 +453,13 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                 if ((securityData != null) && (!(securityData.isEmpty())))
                 {
-                    UserSecurity userSecurity = new UserSecurity();
+                    AuthenticationData userSecurity = new AuthenticationData();
                     userSecurity.setSecQuestionOne(securityData.get(0));
                     userSecurity.setSecQuestionTwo(securityData.get(1));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserSecurity: {}", userSecurity);
+                        DEBUGGER.debug("AuthenticationData: {}", userSecurity);
                     }
 
                     response.setUserAccount(resAccount);
@@ -542,7 +547,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity userSecurity = request.getUserSecurity();
+        final AuthenticationData userSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {

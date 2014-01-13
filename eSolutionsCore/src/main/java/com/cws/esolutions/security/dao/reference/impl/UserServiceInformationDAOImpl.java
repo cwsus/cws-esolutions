@@ -32,6 +32,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 /**
  * @see com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO
@@ -334,6 +336,106 @@ public class UserServiceInformationDAOImpl implements IUserServiceInformationDAO
                     while (resultSet.next())
                     {
                         serviceList.add(resultSet.getString(1));
+                    }
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("List<String>: {}", serviceList);
+                    }
+                }
+            }
+        }
+        catch (SQLException sqx)
+        {
+            ERROR_RECORDER.error(sqx.getMessage(), sqx);
+
+            throw new SQLException(sqx.getMessage(), sqx);
+        }
+        finally
+        {
+            if (resultSet != null)
+            {
+                resultSet.close();
+            }
+
+            if (stmt != null)
+            {
+                stmt.close();
+            }
+
+            if (!(sqlConn == null) && (!(sqlConn.isClosed())))
+            {
+                sqlConn.close();
+            }
+        }
+
+        return serviceList;
+    }
+
+    /**
+     * @see com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO#listServicesForGroup(java.lang.String)
+     */
+    @Override
+    public synchronized List<String> listServicesForGroup(final String groupName) throws SQLException
+    {
+        final String methodName = IUserServiceInformationDAO.CNAME + "#listServicesForGroup(final String groupName) throws SQLException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", groupName);
+        }
+
+        Connection sqlConn = null;
+        ResultSet resultSet = null;
+        CallableStatement stmt = null;
+        List<String> serviceList = null;
+
+        try
+        {
+            sqlConn = dataSource.getConnection();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Connection: {}", sqlConn);
+            }
+
+            if (sqlConn.isClosed())
+            {
+                throw new SQLException("Unable to obtain application datasource connection");
+            }
+
+            sqlConn.setAutoCommit(true);
+            stmt = sqlConn.prepareCall("{CALL listServicesForGroup(?)}");
+            stmt.setString(1, groupName);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug(stmt.toString());
+            }
+
+            if (stmt.execute())
+            {
+                resultSet = stmt.getResultSet();
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("ResultSet: {}", resultSet);
+                }
+
+                if (resultSet.next())
+                {
+                    resultSet.first();
+                    serviceList = new ArrayList<>();
+
+                    for (String service : StringUtils.split(resultSet.getString(1), ",")) // single row response
+                    {
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Service: {}", service);
+                        }
+
+                        serviceList.add(service);
                     }
 
                     if (DEBUG)

@@ -541,7 +541,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                         DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
-                    response.setEntryCount(count); // TODO
+                    // response.setEntryCount(count); // TODO
                     response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
@@ -675,7 +675,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                         DEBUGGER.debug("serviceList: {}", serviceList);
                     }
 
-                    response.setEntryCount(count); // TODO
+                    // response.setEntryCount(count); // TODO
                     response.setServiceList(serviceList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }

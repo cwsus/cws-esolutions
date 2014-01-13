@@ -563,7 +563,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("List<Application>: {}", appList);
                     }
 
-                    response.setEntryCount(value); // TODO
+                    // response.setEntryCount(value); // TODO
                     response.setApplicationList(appList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }
@@ -705,7 +705,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                         DEBUGGER.debug("List<Application>: {}", appList);
                     }
 
-                    response.setEntryCount(value); // TODO
+                    // response.setEntryCount(value); // TODO
                     response.setApplicationList(appList);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                 }

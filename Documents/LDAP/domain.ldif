@@ -14,38 +14,3 @@ dn: organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com
 objectClass: organizationalUnit
 objectClass: top
 organizationalUnitName: Users
-
-dn: organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-organizationalUnitName: Service Accounts
-
-dn: organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalUnit
-objectClass: top
-organizationalUnitName: Roles
-
-dn: cn=USER,organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: groupOfNames
-objectClass: top
-cn: USER
-
-dn: cn=ADMIN,organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: groupOfNames
-objectClass: top
-cn: ADMIN
-
-dn: cn=SITEADMIN,organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: groupOfNames
-objectClass: top
-cn: SITEADMIN
-
-dn: cn=SERVICEADMIN,organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: groupOfNames
-objectClass: top
-cn: SERVICEADMIN
-
-dn: cn=USERADMIN,organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: groupOfNames
-objectClass: top
-cn: USERADMIN

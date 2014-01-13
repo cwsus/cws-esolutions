@@ -37,12 +37,12 @@ import org.apache.commons.lang.StringUtils;
 import org.virtualbox_4_2.VirtualBoxManager;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.core.processors.enums.ServerType;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.core.processors.dto.VirtualServiceRequest;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.core.processors.dto.VirtualServiceResponse;
 import com.cws.esolutions.core.processors.interfaces.VirtualServiceManager;
 import com.cws.esolutions.core.processors.exception.VirtualServiceException;
@@ -71,14 +71,14 @@ public class OracleVBoxManager implements VirtualServiceManager
 
         final Server server = request.getServer();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity userSecurity = request.getUserSecurity();
+        final AuthenticationData userSecurity = request.getUserSecurity();
         final VirtualBoxManager vboxMgr = VirtualBoxManager.createInstance(null);
 
         if (DEBUG)
         {
             DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
         }
 
@@ -164,14 +164,14 @@ public class OracleVBoxManager implements VirtualServiceManager
 
         final Server server = request.getServer();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity userSecurity = request.getUserSecurity();
+        final AuthenticationData userSecurity = request.getUserSecurity();
         final VirtualBoxManager vboxMgr = VirtualBoxManager.createInstance(null);
 
         if (DEBUG)
         {
             DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
         }
 
@@ -309,14 +309,14 @@ public class OracleVBoxManager implements VirtualServiceManager
 
         final Server server = request.getServer();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity userSecurity = request.getUserSecurity();
+        final AuthenticationData userSecurity = request.getUserSecurity();
         final VirtualBoxManager vboxMgr = VirtualBoxManager.createInstance(null);
 
         if (DEBUG)
         {
             DEBUGGER.debug("Server: {}", server);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             DEBUGGER.debug("VirtualBoxManager: {}", vboxMgr);
         }
 

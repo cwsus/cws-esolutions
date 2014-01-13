@@ -32,10 +32,10 @@ import org.junit.Assert;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
@@ -104,7 +104,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
-        UserSecurity userSecurity = new UserSecurity();
+        AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
@@ -136,7 +136,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("demo");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
-        UserSecurity userSecurity = new UserSecurity();
+        AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("demo");
 
         AuthenticationRequest request = new AuthenticationRequest();
@@ -166,7 +166,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
-        UserSecurity userSecurity = new UserSecurity();
+        AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
@@ -225,7 +225,7 @@ public class AuthenticationProcessorImplTest
         account.setUsername("khuntly");
         account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
 
-        UserSecurity userSecurity = new UserSecurity();
+        AuthenticationData userSecurity = new AuthenticationData();
         userSecurity.setSecAnswerOne("answerone");
         userSecurity.setSecAnswerTwo("answertwo");
 

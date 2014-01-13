@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.processors.dto.Server;
@@ -584,7 +583,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         DEBUGGER.debug("serverList: {}", serverList);
                     }
 
-                    response.setEntryCount(value);
+                    // response.setEntryCount(value);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setServerList(serverList);
                 }
@@ -716,7 +715,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         DEBUGGER.debug("serverList: {}", serverList);
                     }
 
-                    response.setEntryCount(value);
+                    //response.setEntryCount(value);
                     response.setRequestStatus(CoreServicesStatus.SUCCESS);
                     response.setServerList(serverList);
                 }
@@ -881,7 +880,6 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                         svcAccount = new UserAccount();
                         svcAccount.setUsername(serviceAccount.get(0));
                         svcAccount.setGuid(serviceAccount.get(1));
-                        svcAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(serviceAccount.get(2)))));
 
                         if (DEBUG)
                         {

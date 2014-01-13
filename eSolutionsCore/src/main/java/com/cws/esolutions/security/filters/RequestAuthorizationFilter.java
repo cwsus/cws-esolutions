@@ -45,10 +45,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.SecurityServiceConstants;
-import com.cws.esolutions.security.services.enums.AdminControlType;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
@@ -59,12 +57,10 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class RequestAuthorizationFilter implements Filter
 {
-    private String[] adminList = null;
     private String[] ignoreURIs = null;
     private String unauthorizedPage = null;
     private Map<String, String> serviceMap = null;
 
-    private static final String ADMIN_URIS = "admin.uris";
     private static final String IGNORE_URI_LIST = "ignore.uri.list";
     private static final String UNAUTHORIZED_PAGE = "unauthorized.uri";
     private static final String FILTER_CONFIG_PARAM_NAME = "filter-config";
@@ -104,8 +100,6 @@ public class RequestAuthorizationFilter implements Filter
             ISecurityReferenceDAO dao = new SecurityReferenceDAOImpl();
             this.serviceMap = dao.listAvailableServices();
             this.unauthorizedPage = rBundle.getString(RequestAuthorizationFilter.UNAUTHORIZED_PAGE);
-            this.adminList = (StringUtils.isNotEmpty(rBundle.getString(RequestAuthorizationFilter.ADMIN_URIS))) ?
-                    rBundle.getString(RequestAuthorizationFilter.ADMIN_URIS).trim().split(",") : null;
             this.ignoreURIs = (StringUtils.isNotEmpty(rBundle.getString(RequestAuthorizationFilter.IGNORE_URI_LIST))) ?
                     rBundle.getString(RequestAuthorizationFilter.IGNORE_URI_LIST).trim().split(",") : null;
 
@@ -274,81 +268,47 @@ public class RequestAuthorizationFilter implements Filter
                     DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
 
-                if (!(userAccount.getRoles().contains(Role.SITEADMIN)))
+                try
                 {
-                    try
+                    for (String key : this.serviceMap.keySet())
                     {
-                        for (String adminURI : this.adminList)
+                        if (DEBUG)
                         {
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("String: {}", adminURI);
-                            }
-
-                            if (StringUtils.startsWith(requestURI, adminURI))
-                            {
-                                IAccessControlService accessControl = new AccessControlServiceImpl();
-                                boolean isAdminAuthorized = accessControl.accessControlService(userAccount, AdminControlType.SERVICE_ADMIN);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("isAdminAuthorized: {}", isAdminAuthorized);
-                                }
-
-                                if (!(isAdminAuthorized))
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
-                                    }
-
-                                    hResponse.sendRedirect(unauthorizedRedirect);
-
-                                    return;
-                                }
-                            }
+                            DEBUGGER.debug("String: {}", key);
                         }
 
-                        for (String key : this.serviceMap.keySet())
+                        if (StringUtils.startsWith(requestURI, key))
                         {
+                            // make sure the user is authorized for the service
+                            IAccessControlService accessControl = new AccessControlServiceImpl();
+                            boolean isUserAuthorized = accessControl.isUserAuthorized(userAccount, this.serviceMap.get(key));
+
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("String: {}", key);
+                                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
                             }
 
-                            if (StringUtils.startsWith(requestURI, key))
+                            if (!(isUserAuthorized))
                             {
-                                // make sure the user is authorized for the service
-                                IAccessControlService accessControl = new AccessControlServiceImpl();
-                                boolean isUserAuthorized = accessControl.isUserAuthorizedForService(userAccount, this.serviceMap.get(key));
-
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                                    DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
                                 }
 
-                                if (!(isUserAuthorized))
-                                {
-                                    if (DEBUG)
-                                    {
-                                        DEBUGGER.debug("User is not authorized to access the requested resource. Redirecting !");
-                                    }
+                                hResponse.sendRedirect(unauthorizedRedirect);
 
-                                    hResponse.sendRedirect(unauthorizedRedirect);
-    
-                                    return;
-                                }
+                                return;
                             }
                         }
                     }
-                    catch (AccessControlServiceException acsx)
-                    {
-                        ERROR_RECORDER.error(acsx.getMessage(), acsx);
+                }
+                catch (AccessControlServiceException acsx)
+                {
+                    ERROR_RECORDER.error(acsx.getMessage(), acsx);
 
-                        hResponse.sendRedirect(unauthorizedRedirect);
+                    hResponse.sendRedirect(unauthorizedRedirect);
                     
-                        return;
-                    }
+                    return;
                 }
 
                 filterChain.doFilter(sRequest, sResponse);
@@ -368,7 +328,6 @@ public class RequestAuthorizationFilter implements Filter
             DEBUGGER.debug(methodName);
         }
 
-        this.adminList = null;
         this.unauthorizedPage = null;
         this.serviceMap.clear();
         this.serviceMap = null;

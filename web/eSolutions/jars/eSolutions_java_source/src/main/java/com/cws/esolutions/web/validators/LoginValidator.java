@@ -20,7 +20,7 @@ import org.springframework.validation.ValidationUtils;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.web.dto.LoginRequest;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /*
  * Project: eSolutions_java_source
  * Package: com.cws.esolutions.web.validators
@@ -65,7 +65,7 @@ public class LoginValidator implements Validator
             DEBUGGER.debug("Value: {}", value);
         }
 
-        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (UserSecurity.class.isAssignableFrom(value)) || (LoginRequest.class.isAssignableFrom(value)));
+        final boolean isSupported = ((UserAccount.class.isAssignableFrom(value)) || (AuthenticationData.class.isAssignableFrom(value)) || (LoginRequest.class.isAssignableFrom(value)));
 
         if (DEBUG)
         {

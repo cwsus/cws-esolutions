@@ -30,20 +30,21 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
+import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.processors.enums.AuditType;
+import com.cws.esolutions.web.dao.impl.ServiceMessagingDAOImpl;
 import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
@@ -53,9 +54,6 @@ import com.cws.esolutions.security.processors.impl.AccountControlProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
-import com.cws.esolutions.web.dao.impl.ServiceMessagingDAOImpl;
-import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 /**
  * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor
  */
@@ -396,7 +394,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                 UserAccount svcAccount = new UserAccount();
                 svcAccount.setUsername(serviceAccount.get(0));
                 svcAccount.setGuid(serviceAccount.get(1));
-                svcAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(serviceAccount.get(2)))));
 
                 if (DEBUG)
                 {
@@ -639,7 +636,6 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
             UserAccount svcAccount = new UserAccount();
             svcAccount.setUsername(serviceAccount.get(0));
             svcAccount.setGuid(serviceAccount.get(1));
-            svcAccount.setRoles(new ArrayList<Role>(Arrays.asList(Role.valueOf(serviceAccount.get(2)))));
 
             if (DEBUG)
             {

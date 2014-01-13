@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cws.esolutions.security.dto;
+package com.cws.esolutions.security.processors.dto;
 /*
  * Project: eSolutionsCore
- * Package: com.cws.esolutions.security.dto
- * File: UserSecurity.java
+ * Package: com.cws.esolutions.security.processors.dto
+ * File: AuthenticationData.java
  *
  * History
  *
@@ -38,7 +38,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * @author khuntly
  * @version 1.0
  */
-public class UserSecurity implements Serializable
+public class AuthenticationData implements Serializable
 {
     private String userSalt = null;
     private String otpValue = null;
@@ -50,15 +50,15 @@ public class UserSecurity implements Serializable
     private String secQuestionTwo = null;
     private String resetRequestId = null;
 
-    private static final String CNAME = UserSecurity.class.getName();
-    private static final long serialVersionUID = -1253092123530982249L;
+    private static final long serialVersionUID = -1680121237315483191L;
+    private static final String CNAME = AuthenticationData.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     public final void setUserSalt(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setUserSalt(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setUserSalt(final String value)";
 
         if (DEBUG)
         {
@@ -70,7 +70,7 @@ public class UserSecurity implements Serializable
 
     public final void setPassword(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setPassword(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setPassword(final String value)";
 
         if (DEBUG)
         {
@@ -82,7 +82,7 @@ public class UserSecurity implements Serializable
 
     public final void setNewPassword(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setNewPassword(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setNewPassword(final String value)";
 
         if (DEBUG)
         {
@@ -94,7 +94,7 @@ public class UserSecurity implements Serializable
 
     public final void setOtpValue(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setOtpValue(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setOtpValue(final String value)";
 
         if (DEBUG)
         {
@@ -106,7 +106,7 @@ public class UserSecurity implements Serializable
 
     public final void setSecQuestionOne(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setSecQuestionOne(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecQuestionOne(final String value)";
 
         if (DEBUG)
         {
@@ -118,7 +118,7 @@ public class UserSecurity implements Serializable
 
     public final void setSecQuestionTwo(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setSecQuestionTwo(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecQuestionTwo(final String value)";
 
         if (DEBUG)
         {
@@ -130,7 +130,7 @@ public class UserSecurity implements Serializable
 
     public final void setSecAnswerOne(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setSecAnswerOne(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecAnswerOne(final String value)";
 
         if (DEBUG)
         {
@@ -142,7 +142,7 @@ public class UserSecurity implements Serializable
 
     public final void setSecAnswerTwo(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setSecAnswerTwo(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setSecAnswerTwo(final String value)";
 
         if (DEBUG)
         {
@@ -154,7 +154,7 @@ public class UserSecurity implements Serializable
 
     public final void setResetRequestId(final String value)
     {
-        final String methodName = UserSecurity.CNAME + "#setResetRequestId(final String value)";
+        final String methodName = AuthenticationData.CNAME + "#setResetRequestId(final String value)";
 
         if (DEBUG)
         {
@@ -166,7 +166,7 @@ public class UserSecurity implements Serializable
 
     public final String getUserSalt()
     {
-        final String methodName = UserSecurity.CNAME + "#getUserSalt()";
+        final String methodName = AuthenticationData.CNAME + "#getUserSalt()";
 
         if (DEBUG)
         {
@@ -178,7 +178,7 @@ public class UserSecurity implements Serializable
 
     public final String getPassword()
     {
-        final String methodName = UserSecurity.CNAME + "#getPassword()";
+        final String methodName = AuthenticationData.CNAME + "#getPassword()";
 
         if (DEBUG)
         {
@@ -190,7 +190,7 @@ public class UserSecurity implements Serializable
 
     public final String getNewPassword()
     {
-        final String methodName = UserSecurity.CNAME + "#getNewPassword()";
+        final String methodName = AuthenticationData.CNAME + "#getNewPassword()";
 
         if (DEBUG)
         {
@@ -202,7 +202,7 @@ public class UserSecurity implements Serializable
 
     public final String getOtpValue()
     {
-        final String methodName = UserSecurity.CNAME + "#getOtpValue()";
+        final String methodName = AuthenticationData.CNAME + "#getOtpValue()";
 
         if (DEBUG)
         {
@@ -214,7 +214,7 @@ public class UserSecurity implements Serializable
 
     public final String getSecQuestionOne()
     {
-        final String methodName = UserSecurity.CNAME + "#getSecQuestionOne()";
+        final String methodName = AuthenticationData.CNAME + "#getSecQuestionOne()";
 
         if (DEBUG)
         {
@@ -226,7 +226,7 @@ public class UserSecurity implements Serializable
 
     public final String getSecQuestionTwo()
     {
-        final String methodName = UserSecurity.CNAME + "#getSecQuestionTwo()";
+        final String methodName = AuthenticationData.CNAME + "#getSecQuestionTwo()";
 
         if (DEBUG)
         {
@@ -238,7 +238,7 @@ public class UserSecurity implements Serializable
 
     public final String getSecAnswerOne()
     {
-        final String methodName = UserSecurity.CNAME + "#getSecAnswerOne()";
+        final String methodName = AuthenticationData.CNAME + "#getSecAnswerOne()";
 
         if (DEBUG)
         {
@@ -250,7 +250,7 @@ public class UserSecurity implements Serializable
 
     public final String getSecAnswerTwo()
     {
-        final String methodName = UserSecurity.CNAME + "#getSecAnswerTwo()";
+        final String methodName = AuthenticationData.CNAME + "#getSecAnswerTwo()";
 
         if (DEBUG)
         {
@@ -262,7 +262,7 @@ public class UserSecurity implements Serializable
 
     public final String getResetRequestId()
     {
-        final String methodName = UserSecurity.CNAME + "#getResetRequestId()";
+        final String methodName = AuthenticationData.CNAME + "#getResetRequestId()";
 
         if (DEBUG)
         {

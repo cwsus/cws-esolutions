@@ -10,12 +10,11 @@ USE cwssec;
 -- Source in all the sql scripts to build the tables
 --
 SOURCE ./cwssec.audit.sql;
-SOURCE ./cwssec.key_data.sql;
+SOURCE ./cwssec.groups.sql;
 SOURCE ./cwssec.logon_data.sql;
 SOURCE ./cwssec.reset_data.sql;
 SOURCE ./cwssec.security_questions.sql;
-SOURCE ./cwssec.service_map.sql;
-SOURCE ./cwssec.user_services.sql;
+SOURCE ./cwssec.services.sql;
 SOURCE ./cwssec.users.sql;
 
 COMMIT;

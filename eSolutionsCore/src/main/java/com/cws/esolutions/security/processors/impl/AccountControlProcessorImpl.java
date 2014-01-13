@@ -38,9 +38,7 @@ import java.lang.reflect.Field;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -50,6 +48,7 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.ControlType;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
@@ -82,7 +81,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount reqAccount = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity userSecurity = request.getUserSecurity();
+        final AuthenticationData userSecurity = request.getUserSecurity();
         final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
         if (DEBUG)
@@ -90,7 +89,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
             DEBUGGER.debug("Requestor: {}", reqAccount);
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserSecurity: {}", userSecurity);
+            DEBUGGER.debug("AuthenticationData: {}", userSecurity);
         }
 
         try
@@ -179,7 +178,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     }
 
                     boolean isUserCreated = userManager.addUserAccount(accountData,
-                            new ArrayList<String>(Arrays.asList(userAccount.getRoles().toString())));
+                            new ArrayList<String>(Arrays.asList(userAccount.getGroups().toString())));
 
                     if (DEBUG)
                     {
@@ -1307,12 +1306,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     loadAccount.setSuspended(((userData.get(11) == null) ? Boolean.FALSE : (Boolean) userData.get(11)));
                     loadAccount.setOlrSetup(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                     loadAccount.setOlrLocked(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
-
-                    List<Role> roleList = new ArrayList<Role>();
-                    for (String role : (List<String>) userData.get(15))
-                    {
-                        roleList.add(Role.valueOf(role));
-                    }
 
                     if (DEBUG)
                     {

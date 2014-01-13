@@ -34,7 +34,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.processors.enums.SaltType;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
@@ -43,13 +42,11 @@ import com.cws.esolutions.security.processors.dto.AuditRequest;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
-import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
 import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
-import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.AuditServiceException;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
-import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
@@ -77,7 +74,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity reqSecurity = request.getUserSecurity();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -216,7 +213,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity reqSecurity = request.getUserSecurity();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -360,7 +357,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity reqSecurity = request.getUserSecurity();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
         final String newUserSalt = RandomStringUtils.randomAlphanumeric(secConfig.getSaltLength());
 
         calendar.add(Calendar.DATE, secConfig.getPasswordExpiration());
@@ -585,7 +582,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount requestor = request.getRequestor();
         final UserAccount userAccount = request.getUserAccount();
-        final UserSecurity reqSecurity = request.getUserSecurity();
+        final AuthenticationData reqSecurity = request.getUserSecurity();
 
         if (DEBUG)
         {
@@ -749,127 +746,6 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                 auditEntry.setHostInfo(reqInfo);
                 auditEntry.setAuditType(AuditType.ADDSECURITY);
                 auditEntry.setUserAccount(requestor);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-        return response;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountChangeProcessor#changeUserKeys(com.cws.esolutions.security.processors.dto.AccountChangeRequest)
-     */
-    @Override
-    public AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException
-    {
-        final String methodName = IAccountChangeProcessor.CNAME + "#changeUserKeys(final AccountChangeRequest request) throws AccountChangeException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountChangeRequest: {}", request);
-        }
-
-        AccountChangeResponse response = new AccountChangeResponse();
-
-        final Calendar calendar = Calendar.getInstance();
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount userAccount = request.getUserAccount();
-        final UserAccount requestor = request.getRequestor();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("Calendar: {}", calendar);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-            DEBUGGER.debug("UserAccount: {}", userAccount);
-            DEBUGGER.debug("UserAccount: {}", requestor);
-        }
-
-        if (!(StringUtils.equals(userAccount.getGuid(), requestor.getGuid())))
-        {
-            // requesting user is not the same as the user being reset. authorize
-            response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-
-            return response;
-        }
-
-        try
-        {
-            // get the user keypair
-            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManager: {}", keyManager);
-            }
-
-            // delete the existing keys
-            boolean keysRemoved = keyManager.removeKeys(userAccount.getGuid());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("keysRemoved: {}", keysRemoved);
-            }
-
-            if (keysRemoved)
-            {
-                // good, now re-generate
-                boolean keysAdded = keyManager.createKeys(userAccount.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("keysAdded: {}", keysAdded);
-                }
-
-                if (keysAdded)
-                {
-                    response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                }
-                else
-                {
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-            else
-            {
-                response.setRequestStatus(SecurityRequestStatus.FAILURE);
-            }
-        }
-        catch (KeyManagementException kmx)
-        {
-            ERROR_RECORDER.error(kmx.getMessage(), kmx);
-
-            throw new AccountChangeException(kmx.getMessage(), kmx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.CHANGEKEYS);
-                auditEntry.setUserAccount(userAccount);
                 auditEntry.setApplicationId(request.getApplicationId());
                 auditEntry.setApplicationName(request.getApplicationName());
 

@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.core.processors.dto.Server;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -48,7 +48,7 @@ public class VirtualServiceRequest implements Serializable
     private Server server = null;
     private UserAccount userAccount = null;
     private UserAccount virtualOwner = null;
-    private UserSecurity userSecurity = null;
+    private AuthenticationData userSecurity = null;
     private RequestHostInfo requestInfo = null;
 
     private static final long serialVersionUID = -2457741523065460449L;
@@ -110,9 +110,9 @@ public class VirtualServiceRequest implements Serializable
         this.virtualOwner = value;
     }
 
-    public final void setUserSecurity(final UserSecurity value)
+    public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = VirtualServiceRequest.CNAME + "#setUserSecurity(final UserSecurity value)";
+        final String methodName = VirtualServiceRequest.CNAME + "#setUserSecurity(final AuthenticationData value)";
 
         if (DEBUG)
         {
@@ -175,7 +175,7 @@ public class VirtualServiceRequest implements Serializable
         return this.virtualOwner;
     }
 
-    public final UserSecurity getUserSecurity()
+    public final AuthenticationData getUserSecurity()
     {
         final String methodName = VirtualServiceRequest.CNAME + "#getUserSecurity()";
 

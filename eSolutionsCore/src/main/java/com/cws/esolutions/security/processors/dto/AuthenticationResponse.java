@@ -31,9 +31,9 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -46,7 +46,7 @@ public class AuthenticationResponse implements Serializable
 {
     private int count = 0;
     private UserAccount userAccount = null;
-    private UserSecurity userSecurity = null;
+    private AuthenticationData userSecurity = null;
     private SecurityRequestStatus requestStatus = null;
 
     private static final long serialVersionUID = 1605278206605846598L;
@@ -82,9 +82,9 @@ public class AuthenticationResponse implements Serializable
         this.userAccount = value;
     }
 
-    public final void setUserSecurity(final UserSecurity value)
+    public final void setUserSecurity(final AuthenticationData value)
     {
-        final String methodName = AuthenticationResponse.CNAME + "#setUserSecurity(final UserSecurity value)";
+        final String methodName = AuthenticationResponse.CNAME + "#setUserSecurity(final AuthenticationData value)";
 
         if (DEBUG)
         {
@@ -133,7 +133,7 @@ public class AuthenticationResponse implements Serializable
         return this.userAccount;
     }
 
-    public final UserSecurity getUserSecurity()
+    public final AuthenticationData getUserSecurity()
     {
         final String methodName = AuthenticationResponse.CNAME + "#getUserSecurity()";
 

@@ -94,4 +94,6 @@ public interface IUserServiceInformationDAO
      * @throws SQLException if a database error occurs attempting to access data
      */
     List<String> listServicesForUser(final String userGuid) throws SQLException;
+
+    List<String> listServicesForGroup(final String group) throws SQLException;
 }

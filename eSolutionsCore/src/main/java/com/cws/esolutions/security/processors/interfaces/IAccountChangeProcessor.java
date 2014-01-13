@@ -35,7 +35,6 @@ import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
-import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountChangeRequest;
@@ -43,7 +42,6 @@ import com.cws.esolutions.security.processors.dto.AccountChangeResponse;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
-import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.processors.exception.AccountChangeException;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
@@ -73,7 +71,6 @@ public interface IAccountChangeProcessor
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
-    static final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     
@@ -86,8 +83,6 @@ public interface IAccountChangeProcessor
     AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException;
 
     AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException;
-
-    AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException;
 
     AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException;
 }

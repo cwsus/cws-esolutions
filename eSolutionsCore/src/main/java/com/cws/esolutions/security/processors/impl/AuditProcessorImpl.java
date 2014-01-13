@@ -162,7 +162,7 @@ public class AuditProcessorImpl implements IAuditProcessor
 
         try
         {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
+            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, IAuditProcessor.SERVICE_ID);
 
             if (DEBUG)
             {

@@ -37,13 +37,3 @@ pager: 716-341-5669
 telephoneNumber: 716-341-5669
 uid: khuntly
 userPassword:: e1NTSEF9VkFvZmZyNXJUQWEyTGtzbTR6MWZGM2ZLL1h2emd0U05HemNyYkE9PQ==
-
-dn: uid=AppUser,organizationalUnitName=Service Accounts,organizationName=CWS US,dc=caspersbox,dc=com
-objectClass: organizationalPerson
-objectClass: person
-objectClass: inetorgperson
-objectClass: top
-cn: af8358c2-0a07-11e0-88ef0631adfd72085
-sn: Application User
-uid: AppUser
-userPassword:: e01ENX12SGJOZ3Vab2wwYUhoTCtZNFp0Y2RRPT0=

@@ -12,19 +12,14 @@
 package com.cws.esolutions.web.controllers;
 
 import java.util.Date;
-
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -41,13 +36,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
+
 import com.cws.esolutions.web.dto.UserChangeRequest;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.web.enums.ResetRequestType;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.web.validators.OnlineResetValidator;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
@@ -57,6 +50,7 @@ import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.enums.ModificationType;
 import com.cws.esolutions.security.processors.dto.AccountResetRequest;
 import com.cws.esolutions.security.processors.dto.AccountResetResponse;
@@ -64,9 +58,11 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
+import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.security.processors.impl.AccountResetProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.exception.AccountResetException;
@@ -532,12 +528,12 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserSecurity userSecurity = new UserSecurity();
+            AuthenticationData userSecurity = new AuthenticationData();
             userSecurity.setResetRequestId(resetId);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserSecurity: {}", userSecurity);
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             }
 
             AccountResetRequest resetReq = new AccountResetRequest();
@@ -983,11 +979,11 @@ public class OnlineResetController
                     return mView;
                 }
 
-                UserSecurity userSec = response.getUserSecurity();
+                AuthenticationData userSec = response.getUserSecurity();
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserSecurity: {}", userSec);
+                    DEBUGGER.debug("AuthenticationData: {}", userSec);
                 }
 
                 UserChangeRequest changeReq = new UserChangeRequest();
@@ -1117,13 +1113,13 @@ public class OnlineResetController
                 DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             }
 
-            UserSecurity userSecurity = new UserSecurity();
+            AuthenticationData userSecurity = new AuthenticationData();
             userSecurity.setSecAnswerOne(request.getSecAnswerOne());
             userSecurity.setSecAnswerTwo(request.getSecAnswerTwo());
 
             if (DEBUG)
             {
-                DEBUGGER.debug("UserSecurity: {}", userSecurity);
+                DEBUGGER.debug("AuthenticationData: {}", userSecurity);
             }
 
             AuthenticationRequest authRequest = new AuthenticationRequest();

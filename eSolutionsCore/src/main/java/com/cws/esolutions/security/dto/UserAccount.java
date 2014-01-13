@@ -31,8 +31,8 @@ import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+import org.apache.commons.lang.StringUtils;
 
-import com.cws.esolutions.security.enums.Role;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.processors.enums.LoginStatus;
 /**
@@ -50,7 +50,6 @@ public class UserAccount implements Serializable
     private Date lastLogin = null;
     private Long expiryDate = null;
     private String username = null;
-    private List<Role> roles = null;
     private String emailAddr = null;
     private String givenName = null;
     private boolean olrSetup = false;
@@ -60,9 +59,8 @@ public class UserAccount implements Serializable
     private LoginStatus status = null;
     private String pagerNumber = null;
     private Integer failedCount = null;
+    private List<UserGroup> groups = null;
     private String telephoneNumber = null;
-    private List<String> serviceList = null;
-    private List<String> projectList = null;
 
     private static final String CNAME = UserAccount.class.getName();
     private static final long serialVersionUID = -1860442834878637721L;
@@ -188,9 +186,9 @@ public class UserAccount implements Serializable
         this.lastLogin = value;
     }
 
-    public final void setRoles(final List<Role> value)
+    public final void setGroups(final List<UserGroup> value)
     {
-        final String methodName = UserAccount.CNAME + "#setRoles(final List<Role> value)";
+        final String methodName = UserAccount.CNAME + "#setGroups(final List<UserGroup> value)";
 
         if (DEBUG)
         {
@@ -198,7 +196,7 @@ public class UserAccount implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.roles = value;
+        this.groups = value;
     }
 
     public final void setDisplayName(final String value)
@@ -277,32 +275,6 @@ public class UserAccount implements Serializable
         }
 
         this.telephoneNumber = value;
-    }
-
-    public final void setServiceList(final List<String> value)
-    {
-        final String methodName = UserAccount.CNAME + "#setServiceList(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceList = value;
-    }
-
-    public final void setProjectList(final List<String> value)
-    {
-        final String methodName = UserAccount.CNAME + "#setProjectList(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.projectList = value;
     }
 
     public final LoginStatus getStatus()
@@ -435,17 +407,17 @@ public class UserAccount implements Serializable
         return this.lastLogin;
     }
 
-    public final List<Role> getRoles()
+    public final List<UserGroup> getGroups()
     {
-        final String methodName = UserAccount.CNAME + "#getRoles()";
+        final String methodName = UserAccount.CNAME + "#getGroups()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.roles);
+            DEBUGGER.debug("Value: {}", this.groups);
         }
 
-        return this.roles;
+        return this.groups;
     }
 
     public final String getDisplayName()
@@ -526,30 +498,27 @@ public class UserAccount implements Serializable
         return this.telephoneNumber;
     }
 
-    public final List<String> getServiceList()
+    public final boolean hasGroup(final String value)
     {
-        final String methodName = UserAccount.CNAME + "#getServiceList()";
+        final String methodName = UserAccount.CNAME + "#hasGroup(final String value)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceList);
+            DEBUGGER.debug("Value: {}", value);
         }
 
-        return this.serviceList;
-    }
+        boolean isAuthorized = false;
 
-    public final List<String> getProjectList()
-    {
-        final String methodName = UserAccount.CNAME + "#getProjectList()";
-
-        if (DEBUG)
+        for (UserGroup group : this.groups)
         {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.projectList);
+            if (StringUtils.equals(group.getName(), value))
+            {
+                isAuthorized = true;
+            }
         }
 
-        return this.projectList;
+        return isAuthorized;
     }
 
     @Override
