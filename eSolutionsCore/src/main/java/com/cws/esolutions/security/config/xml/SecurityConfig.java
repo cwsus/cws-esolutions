@@ -49,7 +49,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
 @XmlAccessorType(XmlAccessType.NONE)
 public final class SecurityConfig implements Serializable
 {
-    private int saltLength = 64; // default to 64
+    private int saltLength = 32; // default to 64
     private int maxAttempts = 3; // default of 3
     private int resetTimeout = 30; // default of 30 minutes
     private int smsCodeLength = 8; // default of 8
@@ -58,8 +58,8 @@ public final class SecurityConfig implements Serializable
     private String authManager = null;
     private String userManager = null;
     private int passwordMinLength = 8; // default of 8 characters
-    private int passwordMaxLength = 32; // default of 32 characters
-    private int passwordExpiration = 90; // 90 day lifetime
+    private int passwordMaxLength = 128; // default of 32 characters
+    private int passwordExpiration = 45; // 90 day lifetime
     private String authAlgorithm = null;
     private boolean performAudit = true; // default true to perform audit
     private String passwordManager = null;
@@ -83,8 +83,11 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
-        this.maxAttempts = value;
+
+        if (value >= this.maxAttempts)
+        {
+            this.maxAttempts = value;
+        }
     }
 
     public final void setPasswordManager(final String value)
@@ -110,7 +113,10 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug("Value: {}", value);
         }
 
-        this.passwordExpiration = value;
+        if (value >= this.passwordExpiration)
+        {
+            this.passwordExpiration = value;
+        }
     }
     
     public final void setPasswordMinLength(final int value)
@@ -122,21 +128,8 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.passwordMinLength = value;
-    }
-
-    public final void setIterations(final int value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setIterations(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.iterations = value;
     }
 
     public final void setPasswordMaxLength(final int value)
@@ -148,8 +141,27 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
-        this.passwordMaxLength = value;
+
+        if (value >= this.passwordMaxLength)
+        {
+            this.passwordMaxLength = value;
+        }
+    }
+
+    public final void setIterations(final int value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setIterations(final int value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        if (value >= this.iterations)
+        {
+            this.iterations = value;
+        }
     }
 
     public final void setAllowUserReset(final boolean value)
@@ -161,7 +173,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.allowUserReset = value;
     }
 
@@ -203,7 +215,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.authManager = value;
     }
 
@@ -216,7 +228,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.userManager = value;
     }
 
@@ -229,7 +241,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", value);
         }
-        
+
         this.performAudit = value;
     }
 
@@ -308,7 +320,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.maxAttempts);
         }
-        
+
         return this.maxAttempts;
     }
 
@@ -322,7 +334,7 @@ public final class SecurityConfig implements Serializable
             DEBUGGER.debug(methodName);
             DEBUGGER.debug("Value: {}", this.iterations);
         }
-        
+
         return this.iterations;
     }
 
