@@ -31,9 +31,9 @@ import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import org.apache.commons.lang.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
 import com.cws.esolutions.security.processors.dto.AuditEntry;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.security.processors.enums.AuditType;
@@ -59,7 +59,20 @@ import com.cws.esolutions.security.services.exception.AccessControlServiceExcept
  */
 public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 {
-    private static final IMessagingDAO messageDAO = new ServiceMessagingDAOImpl();
+    @Autowired private ServiceMessagingDAOImpl dao = null;
+
+    public final void setDao(final ServiceMessagingDAOImpl value)
+    {
+        final String methodName = IMessagingProcessor.CNAME + "#setDao(final ServiceMessagingDAOImpl value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dao = value;
+    }
 
     /**
      * @see com.cws.esolutions.web.processors.interfaces.IMessagingProcessor#addNewMessage(com.cws.esolutions.core.processors.dto.MessagingRequest)
@@ -118,7 +131,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 message.getExpiryDate()));
 
                 // submit it
-                boolean isSubmitted = messageDAO.insertMessage(messageList);
+                boolean isSubmitted = this.dao.insertMessage(messageList);
 
                 if (DEBUG)
                 {
@@ -242,7 +255,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
                                 userAccount.getUsername()));
 
                 // submit it
-                boolean isUpdated = messageDAO.updateMessage(message.getMessageId(), messageList);
+                boolean isUpdated = this.dao.updateMessage(message.getMessageId(), messageList);
 
                 if (DEBUG)
                 {
@@ -350,7 +363,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object[]> data = messageDAO.retrieveMessages();
+            List<Object[]> data = this.dao.retrieveMessages();
 
             if (DEBUG)
             {
@@ -513,7 +526,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object[]> data = messageDAO.retrieveAlertMessages();
+            List<Object[]> data = this.dao.retrieveAlertMessages();
 
             if (DEBUG)
             {
@@ -601,7 +614,7 @@ public class ServiceMessagingProcessorImpl implements IMessagingProcessor
 
         try
         {
-            List<Object> responseList = messageDAO.retrieveMessage(reqMessage.getMessageId());
+            List<Object> responseList = this.dao.retrieveMessage(reqMessage.getMessageId());
 
             if (DEBUG)
             {

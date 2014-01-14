@@ -11,6 +11,10 @@
 
     <import resource="classpath:/eSolutions/mailTemplates/ContactResponse.xml" />
 
+    <bean id="serviceMessaging" class="com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl">
+        <property name="dao" ref="serviceMessagingDao" />
+    </bean>
+
     <bean id="commonController" class="com.cws.esolutions.web.controllers.CommonController">
         <property name="appConfig">
             <ref bean="appConfig" />
@@ -18,6 +22,7 @@
         <property name="coreConfig">
             <ref bean="coreConfig" />
         </property>
+        <property name="processor" ref="serviceMessaging" />
         <property name="homePage" value="HomePage" />
         <property name="serviceId" value="5C0B0A54-2456-45C9-A435-B485ED36FAC7" />
         <property name="contactResponseEmail" ref="contactResponseEmail" />

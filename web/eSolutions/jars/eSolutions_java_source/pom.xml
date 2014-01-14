@@ -21,6 +21,10 @@
             <groupId>com.cws</groupId>
             <artifactId>eSolutionsCore</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsSecurity</artifactId>
+        </dependency>
         <!-- spring -->
         <dependency>
             <groupId>org.springframework</groupId>

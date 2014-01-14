@@ -21,9 +21,10 @@
         <eclipselink.version>2.4.0</eclipselink.version>
         <j2ssh.version>0.2.9</j2ssh.version>
         <virtualbox.version>4.2.8</virtualbox.version>
-        <eSolutionsAgent.version>1.0-SNAPSHOT</eSolutionsAgent.version>
         <jsch.version>0.1.50</jsch.version>
         <expectj.version>2.0.7</expectj.version>
+        <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
+        <eSolutionsAgent.version>1.0-SNAPSHOT</eSolutionsAgent.version>
     </properties>
 
     <dependencies>
@@ -65,20 +66,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>org.eclipse.persistence.moxy</artifactId>
-            <version>${moxy.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.persistence</groupId>
-            <artifactId>eclipselink</artifactId>
-            <version>${eclipselink.version}</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>sshtools</groupId>
             <artifactId>j2ssh-core</artifactId>
             <version>${j2ssh.version}</version>
@@ -114,13 +101,18 @@
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
-        <!-- expect -->
         <dependency>
-            <groupId>net.sourceforge.expectj</groupId>
-            <artifactId>expectj</artifactId>
-            <version>${expectj.version}</version>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsSecurity</artifactId>
+            <version>${eSolutionsSecurity.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.quartz-scheduler</groupId>
+                    <artifactId>quartz</artifactId>
+                </exclusion>
+            </exclusions>
             <type>jar</type>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

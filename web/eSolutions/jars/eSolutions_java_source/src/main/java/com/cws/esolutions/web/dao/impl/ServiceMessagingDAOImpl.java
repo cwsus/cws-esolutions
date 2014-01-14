@@ -29,10 +29,11 @@ import java.util.List;
 import java.sql.ResultSet;
 import java.sql.Connection;
 import java.util.ArrayList;
+import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.sql.CallableStatement;
-
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
 /**
@@ -40,6 +41,21 @@ import com.cws.esolutions.web.dao.interfaces.IMessagingDAO;
  */
 public class ServiceMessagingDAOImpl implements IMessagingDAO
 {
+    @Autowired private DataSource dataSource = null;
+
+    public final void setDataSource(final DataSource value)
+    {
+        final String methodName = IMessagingDAO.CNAME + "#setDataSource(final DataSource value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.dataSource = value;
+    }
+
     /**
      * @see com.cws.esolutions.web.dao.interfaces.processors.interfaces.IMessagingDAO#insertMessage(java.util.List)
      */
@@ -60,7 +76,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -128,7 +144,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -218,7 +234,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -321,7 +337,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -425,7 +441,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -497,7 +513,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {
@@ -562,7 +578,7 @@ public class ServiceMessagingDAOImpl implements IMessagingDAO
 
         try
         {
-            sqlConn = dataSource.getConnection();
+            sqlConn = this.dataSource.getConnection();
 
             if (sqlConn.isClosed())
             {

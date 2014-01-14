@@ -10,7 +10,17 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.controllers;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.controllers
+ * File: LoginController.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
 import java.util.Enumeration;
 import org.slf4j.LoggerFactory;
@@ -39,7 +49,6 @@ import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
 import com.cws.esolutions.security.processors.dto.AuthenticationData;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
@@ -48,17 +57,7 @@ import com.cws.esolutions.core.processors.exception.MessagingServiceException;
 import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
 import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.controllers
- * File: LoginController.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
+
 @Controller
 @RequestMapping("/login")
 public class LoginController
@@ -73,12 +72,26 @@ public class LoginController
     private String messageUsernameEmpty = null;
     private String messageSubmissionFailed = null;
     private ApplicationServiceBean appConfig = null;
+    private ServiceMessagingProcessorImpl messaging = null;
 
     private static final String CNAME = LoginController.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+
+    public final void setMessaging(final ServiceMessagingProcessorImpl value)
+    {
+        final String methodName = LoginController.CNAME + "#setMessaging(final ServiceMessagingProcessorImpl value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.messaging = value;
+    }
 
     public final void setCombinedLoginPage(final String value)
     {
@@ -226,7 +239,6 @@ public class LoginController
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
-        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -340,7 +352,7 @@ public class LoginController
 
         try
         {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
+            MessagingResponse messageResponse = this.messaging.showAlertMessages(new MessagingRequest());
 
             if (DEBUG)
             {
@@ -461,7 +473,6 @@ public class LoginController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
-        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -637,25 +648,6 @@ public class LoginController
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
         }
 
-        try
-        {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (MessagingServiceException msx)
-        {
-            // don't do anything with it
-        }
-
         if (DEBUG)
         {
             DEBUGGER.debug("ModelAndView: {}", mView);
@@ -684,7 +676,6 @@ public class LoginController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final IAuthenticationProcessor authProcessor = new AuthenticationProcessorImpl();
-        final IMessagingProcessor svcMessage = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -832,25 +823,6 @@ public class LoginController
             mView.addObject("command", new UserAccount());
             mView.setViewName(this.usernameLoginPage);
             mView.addObject(Constants.ERROR_MESSAGE, this.appConfig.getMessageRequestProcessingFailure());
-        }
-
-        try
-        {
-            MessagingResponse messageResponse = svcMessage.showAlertMessages(new MessagingRequest());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("MessagingResponse: {}", messageResponse);
-            }
-
-            if (messageResponse.getRequestStatus() == CoreServicesStatus.SUCCESS)
-            {
-                mView.addObject("alertMessages", messageResponse.getSvcMessages());
-            }
-        }
-        catch (MessagingServiceException msx)
-        {
-            // don't do anything with it
         }
 
         if (DEBUG)

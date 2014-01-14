@@ -59,9 +59,6 @@ import org.apache.commons.lang.StringUtils;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.MailConfig;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
-import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -349,12 +346,6 @@ public final class EmailUtils
                         if (mailMessages.length != 0)
                         {
                             emailMessages = new ArrayList<>();
-							IAccessControlService emailControl = new AccessControlServiceImpl();
-
-							if (DEBUG)
-							{
-								DEBUGGER.debug("AccessControlServiceImpl: {}", emailControl);
-							}
 
                             for (Message message : mailMessages)
                             {
@@ -364,112 +355,101 @@ public final class EmailUtils
                                 }
 
                                 // validate the message here
-                                boolean isAuthorized = emailControl.isEmailAuthorized(message.getFrom()[0].toString(),
-                                        message.getHeader("Received"), false);
+                                String messageId = message.getHeader("Message-ID")[0];
+                                Long messageDate = message.getReceivedDate().getTime();
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("isAuthorized: {}", isAuthorized);
+                                    DEBUGGER.debug("messageId: {}", messageId);
+                                    DEBUGGER.debug("messageDate: {}", messageDate);
                                 }
 
-                                if (isAuthorized)
+                                // only get emails for the last 24 hours
+                                // this should prevent us from pulling too
+                                // many emails
+                                if (messageDate >= TIME_PERIOD)
                                 {
-                                    String messageId = message.getHeader("Message-ID")[0];
-                                    Long messageDate = message.getReceivedDate().getTime();
+                                    // process it
+                                    Multipart attachment = (Multipart) message.getContent();
+                                    Map<String, InputStream> attachmentList = new HashMap<>();
+
+                                    for (int x = 0; x < attachment.getCount(); x++)
+                                    {
+                                        BodyPart bodyPart = attachment.getBodyPart(x);
+
+                                        if (!(Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())))
+                                        {
+                                            continue;
+                                        }
+
+                                        attachmentList.put(bodyPart.getFileName(), bodyPart.getInputStream());
+                                    }
+
+                                    List<String> toList = new ArrayList<>();
+                                    List<String> ccList = new ArrayList<>();
+                                    List<String> bccList = new ArrayList<>();
+                                    List<String> fromList = new ArrayList<>();
+
+                                    for (Address from : message.getFrom())
+                                    {
+                                        fromList.add(from.toString());
+                                    }
+
+                                    if ((message.getRecipients(RecipientType.TO) != null) && (message.getRecipients(RecipientType.TO).length != 0))
+                                    {
+                                        for (Address to : message.getRecipients(RecipientType.TO))
+                                        {
+                                            toList.add(to.toString());
+                                        }
+                                    }
+
+                                    if ((message.getRecipients(RecipientType.CC) != null) && (message.getRecipients(RecipientType.CC).length != 0))
+                                    {
+                                        for (Address cc : message.getRecipients(RecipientType.CC))
+                                        {
+                                            ccList.add(cc.toString());
+                                        }
+                                    }
+
+                                    if ((message.getRecipients(RecipientType.BCC) != null) && (message.getRecipients(RecipientType.BCC).length != 0))
+                                    {
+                                        for (Address bcc : message.getRecipients(RecipientType.BCC))
+                                        {
+                                            bccList.add(bcc.toString());
+                                        }
+                                    }
+
+                                    EmailMessage emailMessage = new EmailMessage();
+                                    emailMessage.setMessageTo(toList);
+                                    emailMessage.setMessageCC(ccList);
+                                    emailMessage.setMessageBCC(bccList);
+                                    emailMessage.setEmailAddr(fromList);
+                                    emailMessage.setMessageAttachments(attachmentList);
+                                    emailMessage.setMessageDate(message.getSentDate());
+                                    emailMessage.setMessageSubject(message.getSubject());
+                                    emailMessage.setMessageBody(message.getContent().toString());
+                                    emailMessage.setMessageSources(message.getHeader("Received"));
 
                                     if (DEBUG)
                                     {
-                                        DEBUGGER.debug("messageId: {}", messageId);
-                                        DEBUGGER.debug("messageDate: {}", messageDate);
+                                        DEBUGGER.debug("emailMessage: {}", emailMessage);
                                     }
 
-                                    // only get emails for the last 24 hours
-                                    // this should prevent us from pulling too
-                                    // many emails
-                                    if (messageDate >= TIME_PERIOD)
+                                    emailMessages.add(emailMessage);
+
+                                    if (DEBUG)
                                     {
-                                        // process it
-                                        Multipart attachment = (Multipart) message.getContent();
-                                        Map<String, InputStream> attachmentList = new HashMap<>();
-
-                                        for (int x = 0; x < attachment.getCount(); x++)
-                                        {
-                                            BodyPart bodyPart = attachment.getBodyPart(x);
-
-                                            if (!(Part.ATTACHMENT.equalsIgnoreCase(bodyPart.getDisposition())))
-                                            {
-                                                continue;
-                                            }
-
-                                            attachmentList.put(bodyPart.getFileName(), bodyPart.getInputStream());
-                                        }
-
-                                        List<String> toList = new ArrayList<>();
-                                        List<String> ccList = new ArrayList<>();
-                                        List<String> bccList = new ArrayList<>();
-                                        List<String> fromList = new ArrayList<>();
-
-                                        for (Address from : message.getFrom())
-                                        {
-                                            fromList.add(from.toString());
-                                        }
-
-                                        if ((message.getRecipients(RecipientType.TO) != null) && (message.getRecipients(RecipientType.TO).length != 0))
-                                        {
-                                            for (Address to : message.getRecipients(RecipientType.TO))
-                                            {
-                                                toList.add(to.toString());
-                                            }
-                                        }
-
-                                        if ((message.getRecipients(RecipientType.CC) != null) && (message.getRecipients(RecipientType.CC).length != 0))
-                                        {
-                                            for (Address cc : message.getRecipients(RecipientType.CC))
-                                            {
-                                                ccList.add(cc.toString());
-                                            }
-                                        }
-
-                                        if ((message.getRecipients(RecipientType.BCC) != null) && (message.getRecipients(RecipientType.BCC).length != 0))
-                                        {
-                                            for (Address bcc : message.getRecipients(RecipientType.BCC))
-                                            {
-                                                bccList.add(bcc.toString());
-                                            }
-                                        }
-
-                                        EmailMessage emailMessage = new EmailMessage();
-                                        emailMessage.setMessageTo(toList);
-                                        emailMessage.setMessageCC(ccList);
-                                        emailMessage.setMessageBCC(bccList);
-                                        emailMessage.setEmailAddr(fromList);
-                                        emailMessage.setMessageAttachments(attachmentList);
-                                        emailMessage.setMessageDate(message.getSentDate());
-                                        emailMessage.setMessageSubject(message.getSubject());
-                                        emailMessage.setMessageBody(message.getContent().toString());
-                                        emailMessage.setMessageSources(message.getHeader("Received"));
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("emailMessage: {}", emailMessage);
-                                        }
-
-                                        emailMessages.add(emailMessage);
-
-                                        if (DEBUG)
-                                        {
-                                            DEBUGGER.debug("emailMessages: {}", emailMessages);
-                                        }
+                                        DEBUGGER.debug("emailMessages: {}", emailMessages);
                                     }
+                                }
 
-                                    // archive it
-                                    archiveFolder.open(Folder.READ_WRITE);
+                                // archive it
+                                archiveFolder.open(Folder.READ_WRITE);
 
-                                    if (archiveFolder.isOpen())
-                                    {
-                                        mailFolder.copyMessages(new Message[] { message }, archiveFolder);
-                                        message.setFlag(Flags.Flag.DELETED, true);
-                                    }
+                                if (archiveFolder.isOpen())
+                                {
+                                    mailFolder.copyMessages(new Message[] { message }, archiveFolder);
+                                    message.setFlag(Flags.Flag.DELETED, true);
                                 }
                             }
                         }
@@ -509,12 +489,6 @@ public final class EmailUtils
             ERROR_RECORDER.error(mex.getMessage(), mex);
 
             throw new MessagingException(mex.getMessage(), mex);
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new MessagingException(acsx.getMessage(), acsx);
         }
         finally
         {

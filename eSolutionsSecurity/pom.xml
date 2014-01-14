@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+        <groupId>com.cws</groupId>
+        <artifactId>cws</artifactId>
+        <version>3.7</version>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>eSolutionsSecurity</artifactId>
+    <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <quartz.version>2.1.6</quartz.version>
+    </properties>
+
+    <dependencies>
+        <!-- quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+</project>

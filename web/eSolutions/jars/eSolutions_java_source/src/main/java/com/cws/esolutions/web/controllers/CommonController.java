@@ -10,19 +10,25 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.controllers;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.controllers
+ * File: CommonController.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
-
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.mail.SimpleMailMessage;
@@ -40,8 +46,6 @@ import com.cws.esolutions.core.utils.EmailUtils;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
 import com.cws.esolutions.core.utils.dto.EmailMessage;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.web.validators.EmailAddressValidator;
 import com.cws.esolutions.web.validators.EmailMessageValidator;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
@@ -49,18 +53,9 @@ import com.cws.esolutions.core.config.xml.CoreConfigurationData;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.controllers
- * File: CommonController.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
+
 @Controller
 @RequestMapping("/common")
 public class CommonController
@@ -70,6 +65,7 @@ public class CommonController
     private CoreConfigurationData coreConfig = null;
     private ApplicationServiceBean appConfig = null;
     private SimpleMailMessage contactResponseEmail = null;
+    private ServiceMessagingProcessorImpl processor = null;
 
     private static final String CNAME = CommonController.class.getName();
 
@@ -101,6 +97,19 @@ public class CommonController
         }
 
         this.coreConfig = value;
+    }
+
+    public final void setProcessor(final ServiceMessagingProcessorImpl value)
+    {
+        final String methodName = CommonController.CNAME + "#setProcessor(final ServiceMessagingProcessorImpl value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.processor = value;
     }
 
     public final void setHomePage(final String value)
@@ -159,7 +168,6 @@ public class CommonController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -228,7 +236,7 @@ public class CommonController
                 DEBUGGER.debug("MessagingRequest: {}", mRequest);
             }
 
-            MessagingResponse mResponse = msgProcessor.showMessages(mRequest);
+            MessagingResponse mResponse = processor.showMessages(mRequest);
 
             if (DEBUG)
             {
@@ -241,7 +249,7 @@ public class CommonController
                 mView.addObject("messageList", mResponse.getSvcMessages());
             }
 
-            MessagingResponse messageResponse = msgProcessor.showAlertMessages(new MessagingRequest());
+            MessagingResponse messageResponse = processor.showAlertMessages(new MessagingRequest());
 
             if (DEBUG)
             {

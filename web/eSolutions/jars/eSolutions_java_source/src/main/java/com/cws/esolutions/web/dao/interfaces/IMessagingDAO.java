@@ -27,12 +27,10 @@ package com.cws.esolutions.web.dao.interfaces;
  */
 import java.util.List;
 import org.slf4j.Logger;
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import org.slf4j.LoggerFactory;
 
-import com.cws.esolutions.core.CoreServiceBean;
-import com.cws.esolutions.core.CoreServiceConstants;
+import com.cws.esolutions.web.Constants;
 /**
  * Interface for the Application Data DAO layer. Allows access
  * into the asset management database to obtain, modify and remove
@@ -43,13 +41,10 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 public interface IMessagingDAO
 {
-    static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-
     static final String CNAME = IMessagingDAO.class.getName();
-    static final DataSource dataSource = appBean.getDataSources().get("ApplicationDataSource");
 
-    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER + CNAME);
-    static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
+    static final Logger ERROR_RECORDER = LoggerFactory.getLogger(Constants.ERROR_LOGGER + CNAME);
+    static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
     /**

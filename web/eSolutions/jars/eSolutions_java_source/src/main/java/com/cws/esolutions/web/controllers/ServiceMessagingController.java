@@ -10,16 +10,22 @@
  * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.web.controllers;
-
+/*
+ * Project: eSolutions_java_source
+ * Package: com.cws.esolutions.web.controllers
+ * File: ServiceMessagingController.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import org.slf4j.Logger;
-
 import java.util.Enumeration;
-
 import org.slf4j.LoggerFactory;
-
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.ModelAndView;
@@ -34,25 +40,14 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.cws.esolutions.web.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.web.ApplicationServiceBean;
-import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
-import com.cws.esolutions.web.processors.interfaces.IMessagingProcessor;
 import com.cws.esolutions.core.processors.dto.ServiceMessage;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
 import com.cws.esolutions.security.processors.dto.RequestHostInfo;
 import com.cws.esolutions.core.processors.enums.CoreServicesStatus;
+import com.cws.esolutions.web.processors.impl.ServiceMessagingProcessorImpl;
 import com.cws.esolutions.core.processors.exception.MessagingServiceException;
-/*
- * Project: eSolutions_java_source
- * Package: com.cws.esolutions.web.controllers
- * File: ServiceMessagingController.java
- *
- * History
- *
- * Author               Date                            Comments
- * ----------------------------------------------------------------------------
- * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
- */
+
 @Controller
 @RequestMapping("/service-messaging")
 public class ServiceMessagingController
@@ -64,6 +59,7 @@ public class ServiceMessagingController
     private String messageSuccessfullyAdded = null;
     private ApplicationServiceBean appConfig = null;
     private String messageSuccessfullyUpdated = null;
+    private ServiceMessagingProcessorImpl processor = null;
 
     private static final String CNAME = ServiceMessagingController.class.getName();
 
@@ -95,6 +91,19 @@ public class ServiceMessagingController
         }
 
         this.serviceId = value;
+    }
+
+    public final void setProcessor(final ServiceMessagingProcessorImpl value)
+    {
+        final String methodName = ServiceMessagingController.CNAME + "#setProcessor(final ServiceMessagingProcessorImpl value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.processor = value;
     }
 
     public final void setAddServiceMessagePage(final String value)
@@ -178,7 +187,6 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -246,7 +254,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = msgProcessor.showMessages(request);
+            MessagingResponse response = this.processor.showMessages(request);
 
             if (DEBUG)
             {
@@ -372,7 +380,6 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -449,7 +456,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = msgProcessor.showMessage(request);
+            MessagingResponse response = this.processor.showMessage(request);
 
             if (DEBUG)
             {
@@ -510,7 +517,6 @@ public class ServiceMessagingController
         final HttpServletRequest hRequest = requestAttributes.getRequest();
         final HttpSession hSession = hRequest.getSession();
         final UserAccount userAccount = (UserAccount) hSession.getAttribute(Constants.USER_ACCOUNT);
-        final IMessagingProcessor msgProcessor = new ServiceMessagingProcessorImpl();
 
         if (DEBUG)
         {
@@ -580,7 +586,7 @@ public class ServiceMessagingController
                 DEBUGGER.debug("MessagingRequest: {}", request);
             }
 
-            MessagingResponse response = (message.getIsNewMessage()) ? msgProcessor.addNewMessage(request) : msgProcessor.updateExistingMessage(request);
+            MessagingResponse response = (message.getIsNewMessage()) ? this.processor.addNewMessage(request) : this.processor.updateExistingMessage(request);
 
             if (DEBUG)
             {

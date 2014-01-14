@@ -93,16 +93,6 @@
             <param-value>SecurityService/filters/SessionAuthenticationFilter</param-value>
         </init-param>
     </filter>
-    <filter id="RequestAuthorizationFilter">
-        <description>Request Authorization Filter</description>
-        <display-name>RequestAuthorizationFilter</display-name>
-        <filter-name>RequestAuthorizationFilter</filter-name>
-        <filter-class>com.cws.esolutions.security.filters.RequestAuthorizationFilter</filter-class>
-        <init-param>
-            <param-name>filter-config</param-name>
-            <param-value>SecurityService/filters/RequestAuthorizationFilter</param-value>
-        </init-param>
-    </filter>
     <filter id="SpringEncodingFilter">
         <description>Spring Encoding Filter</description>
         <display-name>SpringEncodingFilter</display-name>
@@ -120,10 +110,6 @@
     </filter-mapping>
     <filter-mapping id="SessionAuthenticationFilter_mapping">
         <filter-name>SessionAuthenticationFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping id="RequestAuthorizationFilter_mapping">
-        <filter-name>RequestAuthorizationFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping id="SpringEncodingFilter_mapping">
@@ -156,6 +142,13 @@
         <url-pattern>/ui/*</url-pattern>
     </servlet-mapping>
 
+    <resource-ref id="esolutions">
+        <description>Application Datasource</description>
+        <res-ref-name>jdbc/esolutions</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Unshareable</res-sharing-scope>
+    </resource-ref>
     <resource-ref id="esolutionssvc">
         <description>Application Datasource</description>
         <res-ref-name>jdbc/esolutionssvc</res-ref-name>
@@ -237,6 +230,15 @@
             <transport-guarantee>CONFIDENTIAL</transport-guarantee>
         </user-data-constraint>
     </security-constraint>
+
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <realm-name>SecurityServiceRealm</realm-name>
+        <form-login-config>
+            <form-login-page>/ui/login/default</form-login-page>
+            <form-error-page>/ui/login/default</form-error-page>
+        </form-login-config>
+    </login-config>
 
     <session-config>
         <session-timeout>15</session-timeout>

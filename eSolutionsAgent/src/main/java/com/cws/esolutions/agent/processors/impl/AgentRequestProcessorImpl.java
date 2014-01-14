@@ -33,25 +33,20 @@ import com.cws.esolutions.agent.processors.dto.FileManagerRequest;
 import com.cws.esolutions.agent.processors.dto.FileManagerResponse;
 import com.cws.esolutions.agent.processors.dto.ServiceCheckRequest;
 import com.cws.esolutions.agent.processors.dto.ServiceCheckResponse;
-import com.cws.esolutions.agent.processors.dto.SystemManagerRequest;
-import com.cws.esolutions.agent.processors.dto.SystemManagerResponse;
 import com.cws.esolutions.agent.processors.impl.FileManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.impl.ServiceCheckProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.FileManagerException;
-import com.cws.esolutions.agent.processors.impl.SystemManagerProcessorImpl;
 import com.cws.esolutions.agent.processors.exception.ServiceCheckException;
 import com.cws.esolutions.agent.processors.exception.SystemManagerException;
 import com.cws.esolutions.agent.processors.interfaces.IFileManagerProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor;
 import com.cws.esolutions.agent.processors.interfaces.IServiceCheckProcessor;
-import com.cws.esolutions.agent.processors.interfaces.ISystemManagerProcessor;
 import com.cws.esolutions.agent.processors.exception.ApplicationManagerException;
 /**
  * @see com.cws.esolutions.agent.processors.interfaces.IAgentRequestProcessor
  */
 public class AgentRequestProcessorImpl implements IAgentRequestProcessor
 {
-    private static final ISystemManagerProcessor systemManagerProcessor = new SystemManagerProcessorImpl();
     private static final IFileManagerProcessor fileManager = new FileManagerProcessorImpl();
     private static final IServiceCheckProcessor svcCheck = new ServiceCheckProcessorImpl();
 
