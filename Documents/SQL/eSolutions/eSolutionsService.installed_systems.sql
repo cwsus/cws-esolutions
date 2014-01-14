@@ -56,10 +56,19 @@ DROP PROCEDURE IF EXISTS esolutionssvc.getServerByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE esolutionssvc.getServerByAttribute(
     IN attributeName VARCHAR(100),
-    IN startRow INT
+    IN startRow INT,
+    OUT count INT,
+    OUT score INT
 )
 BEGIN
+    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
+    DECLARE vRegion VARCHAR(45); -- NOTE: THIS IS NOT USED
+    DECLARE vPartition VARCHAR(45); -- NOTE: THIS IS NOT USED
+    DECLARE vHostname VARCHAR(45); -- NOTE: THIS IS NOT USED
+    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
+
     SELECT
+        COUNT(T1.GUID) AS aCount,
         T1.GUID,
         T1.REGION,
         T1.NWPARTITION,
@@ -67,9 +76,10 @@ BEGIN
         T2.GUID,
         T2.NAME,
     MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
-    AGAINST (attributeName WITH QUERY EXPANSION)
+    AGAINST (attributeName WITH QUERY EXPANSION) AS score
+    INTO count, vGuid, vRegion, vPartition, vHostname, vGuid, vName, score
     FROM esolutionssvc.installed_systems T1
-    INNER JOIN esolutionssvc.service_datacenters T2
+    INNER JOIN esolutionssvc.services T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
     AGAINST (attributeName IN BOOLEAN MODE)
@@ -234,19 +244,27 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS esolutionssvc.getServerList$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE esolutionssvc.getServerList(
-    IN startRow INT
+    IN startRow INT,
+    OUT count INT
+    OUT serverGuid VARCHAR(128),
+    OUT operHostName(VARCHAR(255),
+    OUT nwPartition VARCHAR(45),
+    OUT region VARCHAR(45),
+    OUT dcGuid VARCHAR(128),
+    OUT dcName VARCHAR(128)
 )
 BEGIN
     SELECT
+        COUNT(T1.GUID) AS aCount,
         T1.GUID,
-        T1.REGION,
-        T1.NWPARTITION,
         T1.OPER_HOSTNAME,
-        T1.OWNING_DMGR,
+        T1.NWPARTITION,
+        T1.REGION,
         T2.GUID,
         T2.NAME
-    FROM esolutionssvc.installed_systems
-    INNER JOIN esolutionssvc.service_datacenters T2
+    INTO count, serverGuid, operHostName, nwPartition, region, vRegion, dcGuid, dcName
+    FROM esolutionssvc.installed_systems T1
+    INNER JOIN esolutionssvc.services T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE DELETE_DATE IS NULL
     LIMIT startRow, 20;

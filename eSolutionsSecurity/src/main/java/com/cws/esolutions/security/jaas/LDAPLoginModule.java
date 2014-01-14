@@ -128,11 +128,17 @@ public class LDAPLoginModule implements LoginModule
         if (DEBUG)
         {
             DEBUGGER.debug("username: {}", username);
+            DEBUGGER.debug("Callback[]: {}", callbacks);
         }
 
         try
         {
             this.handler.handle(callbacks);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("CallbackHandler: {}", this.handler);
+            }
 
             List<Object> userData = authenticator.performLogon(username,
                     ((PasswordCallback) callbacks[1]).getPassword().toString());
@@ -195,22 +201,20 @@ public class LDAPLoginModule implements LoginModule
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: {}", userAccount);
+                    DEBUGGER.debug("UserAccount: {}", this.userAccount);
                 }
 
                 // user not already logged in or concurrent auth is allowed
-                if (System.currentTimeMillis() >= userAccount.getExpiryDate())
+                if (System.currentTimeMillis() >= this.userAccount.getExpiryDate())
                 {
                     this.userAccount.setStatus(LoginStatus.EXPIRED);
 
                     return true;
                 }
-                else
-                {
-                    this.userAccount.setStatus(LoginStatus.SUCCESS);
 
-                    return true;
-                }
+                this.userAccount.setStatus(LoginStatus.SUCCESS);
+
+                return true;
             }
         }
         catch (AuthenticatorException ax)
@@ -258,7 +262,7 @@ public class LDAPLoginModule implements LoginModule
             DEBUGGER.debug(methodName);
         }
 
-        this.subject.getPrincipals().add(userAccount);
+        this.subject.getPrincipals().add(this.userAccount);
         this.subject.getPrincipals().add(this.userGroups);
 
         return true;

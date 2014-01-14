@@ -32,17 +32,21 @@ DROP PROCEDURE IF EXISTS esolutionssvc.getApplicationByAttribute$$
 CREATE PROCEDURE esolutionssvc.getApplicationByAttribute(
     IN attributeName VARCHAR(100),
     IN startRow INT,
-    OUT appCount INT
+    OUT appCount INT,
+    OUT score INT
 )
 BEGIN
+    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
+    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
+
     SELECT
-        COUNT(*) AS COUNTER,
+        COUNT(GUID) AS counter,
         GUID,
         NAME,
     MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
-    AGAINST (+attributeName WITH QUERY EXPANSION)
+    AGAINST (+attributeName WITH QUERY EXPANSION) AS score
+	INTO appCount, vGuid, vName, score
     FROM esolutionssvc.installed_applications
-    INTO appCount
     WHERE MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE IS NULL
@@ -172,11 +176,14 @@ CREATE PROCEDURE esolutionssvc.listApplications(
     OUT appCount INT
 )
 BEGIN
-    SELECT COUNT(*) INTO appCount FROM esolutionssvc.installed_applications WHERE APP_OFFLINE_DATE IS NULL;
+    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
+    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
 
     SELECT
+        COUNT(GUID) AS aCount,
         GUID,
         NAME
+    INTO appCount, vGuid, vName
     FROM esolutionssvc.installed_applications
     WHERE APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
