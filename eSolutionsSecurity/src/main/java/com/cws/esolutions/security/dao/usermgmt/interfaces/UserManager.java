@@ -27,7 +27,6 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  */
 import java.util.Map;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

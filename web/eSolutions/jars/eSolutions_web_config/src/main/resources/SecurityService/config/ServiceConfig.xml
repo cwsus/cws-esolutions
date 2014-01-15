@@ -104,9 +104,5 @@
             <dsName>AuditDataSource</dsName>
             <datasource>jdbc/cwssec</datasource>
         </DataSourceManager>
-        <DataSourceManager>
-            <dsName>SessionDataSource</dsName>
-            <datasource>jdbc/cwssec</datasource>
-        </DataSourceManager>
     </resource-config>
 </configuration>

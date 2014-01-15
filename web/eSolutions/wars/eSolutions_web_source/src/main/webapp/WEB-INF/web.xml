@@ -231,15 +231,6 @@
         </user-data-constraint>
     </security-constraint>
 
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <realm-name>SecurityServiceRealm</realm-name>
-        <form-login-config>
-            <form-login-page>/ui/login/default</form-login-page>
-            <form-error-page>/ui/login/default</form-error-page>
-        </form-login-config>
-    </login-config>
-
     <session-config>
         <session-timeout>15</session-timeout>
         <cookie-config>

@@ -47,7 +47,7 @@ public interface ISecurityReferenceDAO
     static final String CNAME = ISecurityReferenceDAO.class.getName();
 
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = svcBean.getDataSources().get("SecurityDataSource");
+    static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_SECURITYDS_MANAGER);
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

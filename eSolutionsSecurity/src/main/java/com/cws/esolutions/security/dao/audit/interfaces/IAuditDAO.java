@@ -45,7 +45,7 @@ public interface IAuditDAO
 {
     static final String CNAME = IAuditDAO.class.getName();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final DataSource dataSource = svcBean.getDataSources().get("AuditDataSource");
+    static final DataSource dataSource = svcBean.getDataSources().get(SecurityServiceConstants.INIT_AUDITDS_MANAGER);
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

@@ -14,11 +14,7 @@
     </application-config>
 
     <mail-config>
-        <dataSourceName>mail/MailSession</dataSourceName>
-        <!-- use this if you aren't in a container environment -->
-        <!--
         <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        -->
     </mail-config>
 
     <!-- how do we talk to the agent? -->

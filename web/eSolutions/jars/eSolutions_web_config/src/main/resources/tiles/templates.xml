@@ -182,44 +182,4 @@
         <put-attribute name="pageTitle"     value="eSolutions - System Management - Telnet Test" cascade="true" />
         <put-attribute name="body"          value="/com.cws.esolutions.web.system-management/jsp/html/en/SystemMgmt_TelnetTest.jsp" cascade="true" />
     </definition>
-
-    <!-- User Management -->
-    <definition name="UserManagement_CreateUser" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - User Management - Create User" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.user-management/jsp/html/en/UserManagement_CreateUser.jsp" cascade="true" />
-    </definition>
-    <definition name="UserManagement_UserAudit" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - User Management - User Audit" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.user-management/jsp/html/en/UserManagement_UserAudit.jsp" cascade="true" />
-    </definition>
-    <definition name="UserManagement_UserSearch" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - User Management - User Search" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.user-management/jsp/html/en/UserManagement_UserSearch.jsp" cascade="true" />
-    </definition>
-    <definition name="UserManagement_ViewUser" extends="baseLayout">
-        <put-attribute name="pageTitle"     value="eSolutions - User Management - View User" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.user-management/jsp/html/en/UserManagement_ViewUser.jsp" cascade="true" />
-    </definition>
-
-    <!-- UserAccount -->
-    <definition name="UserAccount_ChangePassword" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Update Password" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangePassword.jsp" cascade="true" />
-    </definition>
-    <definition name="UserAccount_ChangeSecurity" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Update Security Questions" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeSecurity.jsp" cascade="true" />
-    </definition>
-    <definition name="UserAccount_ChangeEmail" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Update Email Address" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeEmail.jsp" cascade="true" />
-    </definition>
-    <definition name="UserAccount_ChangeContact" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - Update Contact Information" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ChangeContact.jsp" cascade="true" />
-    </definition>
-    <definition name="UserAccount_ShowUser" extends="baseLayout">
-        <put-attribute name="title"         value="eSolutions - View User Account" cascade="true" />
-        <put-attribute name="body"          value="/com.cws.esolutions.web.useraccount/jsp/html/en/UserAccount_ViewAccount.jsp" cascade="true" />
-    </definition>
 </tiles-definitions>
