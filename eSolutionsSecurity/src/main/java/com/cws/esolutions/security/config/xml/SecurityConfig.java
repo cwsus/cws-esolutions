@@ -25,7 +25,6 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -34,7 +33,6 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
 /**
@@ -62,10 +60,7 @@ public final class SecurityConfig implements Serializable
     private int passwordExpiration = 45; // 90 day lifetime
     private String authAlgorithm = null;
     private boolean performAudit = true; // default true to perform audit
-    private String passwordManager = null;
-    private boolean allowUserReset = false;
     private boolean smsResetEnabled = false;
-    private List<String> serviceAccount = null;
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -88,19 +83,6 @@ public final class SecurityConfig implements Serializable
         {
             this.maxAttempts = value;
         }
-    }
-
-    public final void setPasswordManager(final String value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setPasswordManager(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.passwordManager = value;
     }
 
     public final void setPasswordExpiration(final int value)
@@ -162,19 +144,6 @@ public final class SecurityConfig implements Serializable
         {
             this.iterations = value;
         }
-    }
-
-    public final void setAllowUserReset(final boolean value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setAllowUserReset(final boolean value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.allowUserReset = value;
     }
 
     public final void setAuthAlgorithm(final String value)
@@ -297,19 +266,6 @@ public final class SecurityConfig implements Serializable
         this.resetTimeout = value;
     }
 
-    public final void setServiceAccount(final List<String> value)
-    {
-        final String methodName = SecurityConfig.CNAME + "#setServiceAccount(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.serviceAccount = value;
-    }
-
     @XmlElement(name = "maxAttempts")
     public final int getMaxAttempts()
     {
@@ -352,20 +308,6 @@ public final class SecurityConfig implements Serializable
         return this.authAlgorithm;
     }
 
-    @XmlElement(name = "passwordManager")
-    public final String getPasswordManager()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getPasswordManager()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.passwordManager);
-        }
-
-        return this.passwordManager;
-    }
-
     @XmlElement(name = "passwordExpiration")
     public final int getPasswordExpiration()
     {
@@ -406,20 +348,6 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.passwordMaxLength;
-    }
-
-    @XmlElement(name = "allowUserReset")
-    public final boolean getAllowUserReset()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getAllowUserReset()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.allowUserReset);
-        }
-
-        return this.allowUserReset;
     }
 
     @XmlElement(name = "saltLength")
@@ -532,21 +460,6 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.resetTimeout;
-    }
-
-    @XmlElement(name = "accountInformation")
-    @XmlElementWrapper(name = "serviceAccount")
-    public final List<String> getServiceAccount()
-    {
-        final String methodName = SecurityConfig.CNAME + "#getServiceAccount()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.serviceAccount);
-        }
-
-        return this.serviceAccount;
     }
 
     @Override

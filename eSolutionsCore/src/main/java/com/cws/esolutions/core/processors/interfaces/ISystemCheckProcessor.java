@@ -26,6 +26,7 @@ package com.cws.esolutions.core.processors.interfaces;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,6 @@ import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
@@ -63,8 +63,7 @@ public interface ISystemCheckProcessor
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
+    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
 
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();

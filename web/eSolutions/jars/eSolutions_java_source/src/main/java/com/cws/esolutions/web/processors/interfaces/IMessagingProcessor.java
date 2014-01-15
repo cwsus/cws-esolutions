@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
 import com.cws.esolutions.core.processors.dto.MessagingRequest;
 import com.cws.esolutions.core.processors.dto.MessagingResponse;
@@ -53,9 +52,8 @@ public interface IMessagingProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();
-    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
+    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
 
     static final String dateFormat = appConfig.getDateFormat();
     static final String CNAME = IMessagingProcessor.class.getName();

@@ -26,6 +26,7 @@ package com.cws.esolutions.core.config.xml;
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 import java.io.File;
+import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -34,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import com.cws.esolutions.core.CoreServiceConstants;
 /**
@@ -60,6 +62,7 @@ public final class ApplicationConfig implements Serializable
     private File serviceRootDirectory = null;
     private File archiveRootDirectory = null;
     private String virtualManagerClass = null;
+    private List<String> serviceAccount = null;
 
     private static final long serialVersionUID = -2125011070971484380L;
     private static final String CNAME = ApplicationConfig.class.getName();
@@ -222,6 +225,19 @@ public final class ApplicationConfig implements Serializable
         }
 
         this.agentBundleSource = value;
+    }
+
+    public final void setServiceAccount(final List<String> value)
+    {
+        final String methodName = ApplicationConfig.CNAME + "#setServiceAccount(final List<String> value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.serviceAccount = value;
     }
 
     @XmlElement(name = "appName")
@@ -390,6 +406,21 @@ public final class ApplicationConfig implements Serializable
         }
         
         return this.agentBundleSource;
+    }
+
+    @XmlElement(name = "accountInformation")
+    @XmlElementWrapper(name = "serviceAccount")
+    public final List<String> getServiceAccount()
+    {
+        final String methodName = ApplicationConfig.CNAME + "#getServiceAccount()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.serviceAccount);
+        }
+
+        return this.serviceAccount;
     }
 
     @Override

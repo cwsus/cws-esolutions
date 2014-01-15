@@ -32,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import com.cws.esolutions.core.CoreServiceBean;
 import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.AgentConfig;
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
@@ -62,12 +61,11 @@ public interface IApplicationManagementProcessor
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
     static final IServiceDataDAO serviceDao = new ServiceDataDAOImpl();
     static final IApplicationDataDAO appDAO = new ApplicationDataDAOImpl();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IApplicationManagementProcessor.class.getName();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final ApplicationConfig appConfig = appBean.getConfigData().getAppConfig();    
-    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
+    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
 
     static final int CONNECT_TIMEOUT = appConfig.getConnectTimeout();
 

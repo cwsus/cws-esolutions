@@ -11,6 +11,11 @@
         <messageIdLength>16</messageIdLength>
         <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
         <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
+        <serviceAccount>
+            <accountInformation>service-account</accountInformation>
+            <accountInformation>a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0</accountInformation>
+            <accountInformation>SITEADMIN</accountInformation>
+        </serviceAccount>
     </application-config>
 
     <agent-config>
@@ -52,20 +57,15 @@
 
     <mail-config>
         <dataSourceName>mail/MailSession</dataSourceName>
-        <!-- use this if you aren't in a container environment -->
-        <!--
-        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        -->
     </mail-config>
 
     <ssh-config>
         <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
         <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
         <sshAccount>kh05451</sshAccount> <!-- username to use for authentication -->
-        <sshSalt />
-        <sshPassword />
         <sshKey>/opt/cws/eSolutions/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
-        <sshProperties /> <!-- password for key, if required -->
+        <sshPassword />
+        <sshSalt />
     </ssh-config>
 
     <exception-config>

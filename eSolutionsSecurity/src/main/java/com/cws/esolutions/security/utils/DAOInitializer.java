@@ -87,193 +87,184 @@ public final class DAOInitializer
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
 
-        int minConnections = 1;
-        int maxConnections = 10;
         FileInputStream fileStream = null;
 
-        switch (authRepo.getRepoType())
-        {
-            case LDAP:
-                LDAPConnection ldapConn = null;
-                LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
+        final File configFile = FileUtils.getFile(authRepo.getConfigFile());
 
-                try
-                {
-                    File ldapConfigFile = FileUtils.getFile(authRepo.getConfigFile());
+        if (DEBUG)
+        {
+            DEBUGGER.debug("File: {}", configFile);
+        }
+
+        if (!(configFile.canRead()))
+        {
+            throw new SecurityServiceException("Unable to read configuration file. Cannot continue.");
+        }
+
+        try
+        {
+            fileStream = new FileInputStream(configFile);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("FileInputStream: {}", fileStream);
+            }
+
+            if (fileStream.available() == 0)
+            {
+                throw new SecurityServiceException("Unable to read configuration file. Cannot continue.");
+            }
+
+            Properties connProps = new Properties();
+            connProps.load(fileStream);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
+            switch (authRepo.getRepoType())
+            {
+                case LDAP:
+                    LDAPConnection ldapConn = null;
+                    LDAPConnectionOptions connOpts = new LDAPConnectionOptions();
+
+                    connOpts.setAutoReconnect(true);
+                    connOpts.setAbandonOnTimeout(true);
+                    connOpts.setBindWithDNRequiresPassword(true);
+                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(authRepo.getRepositoryConnTimeout())));
+                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(authRepo.getRepositoryReadTimeout())));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("File: {}", ldapConfigFile);
+                        DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                     }
 
-                    if (ldapConfigFile.canRead())
+                    if (Boolean.valueOf(connProps.getProperty(authRepo.getIsSecure())))
                     {
-                        fileStream = new FileInputStream(ldapConfigFile);
+                        SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
+                                connProps.getProperty(authRepo.getTrustStoreFile()),
+                                connProps.getProperty(authRepo.getTrustStorePass()).toCharArray(),
+                                connProps.getProperty(authRepo.getTrustStoreType()),
+                                true));
 
                         if (DEBUG)
                         {
-                            DEBUGGER.debug("FileInputStream: {}", fileStream);
+                            DEBUGGER.debug("SSLUtil: {}", sslUtil);
                         }
 
-                        if (fileStream.available() != 0)
+                        SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
+
+                        if (DEBUG)
                         {
-                            Properties ldapProperties = new Properties();
-                            ldapProperties.load(fileStream);
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Properties: {}", ldapProperties);
-                            }
-
-                            connOpts.setAbandonOnTimeout(true);
-                            connOpts.setAutoReconnect(true);
-                            connOpts.setBindWithDNRequiresPassword(true);
-                            connOpts.setConnectTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryConnTimeout())));
-                            connOpts.setResponseTimeoutMillis(Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryReadTimeout())));
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
-                            }
-
-                            if (Boolean.valueOf(ldapProperties.getProperty(authRepo.getIsSecure())))
-                            {
-                                SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
-                                        ldapProperties.getProperty(authRepo.getTrustStoreFile()),
-                                        ldapProperties.getProperty(authRepo.getTrustStorePass()).toCharArray(),
-                                        ldapProperties.getProperty(authRepo.getTrustStoreType()),
-                                        true));
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("SSLUtil: {}", sslUtil);
-                                }
-
-                                SSLSocketFactory sslSocketFactory = sslUtil.createSSLSocketFactory();
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
-                                }
-
-                                ldapConn = new LDAPConnection(sslSocketFactory, connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
-                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
-                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
-                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
-                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
-                            }
-                            else
-                            {
-                                ldapConn = new LDAPConnection(connOpts, ldapProperties.getProperty(authRepo.getRepositoryHost()),
-                                        Integer.parseInt(ldapProperties.getProperty(authRepo.getRepositoryPort())),
-                                        ldapProperties.getProperty(authRepo.getRepositoryUser()),
-                                        PasswordUtils.decryptText(ldapProperties.getProperty(authRepo.getRepositoryPass()),
-                                                ldapProperties.getProperty(authRepo.getRepositorySalt()).length()));
-                            }
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("LDAPConnection: {}", ldapConn);
-                            }
-
-                            if (ldapConn.isConnected())
-                            {
-                                LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn, minConnections, maxConnections);
-
-                                if (DEBUG)
-                                {
-                                    DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
-                                }
-
-                                if (!(connPool.isClosed()))
-                                {
-                                    bean.setAuthDataSource(connPool);
-                                }
-                                else
-                                {
-                                    throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to create LDAP connection pool");
-                                }
-                            }
-                            else
-                            {
-                                throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
-                            }
+                            DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
                         }
-                        else
-                        {
-                            throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
-                        }
+
+                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(authRepo.getRepositoryHost()),
+                                Integer.parseInt(connProps.getProperty(authRepo.getRepositoryPort())),
+                                connProps.getProperty(authRepo.getRepositoryUser()),
+                                PasswordUtils.decryptText(connProps.getProperty(authRepo.getRepositoryPass()),
+                                        connProps.getProperty(authRepo.getRepositorySalt()).length()));
                     }
                     else
                     {
-                        throw new IOException("Unable to load LDAP configuration file. Cannot continue.");
+                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(authRepo.getRepositoryHost()),
+                                Integer.parseInt(connProps.getProperty(authRepo.getRepositoryPort())),
+                                connProps.getProperty(authRepo.getRepositoryUser()),
+                                PasswordUtils.decryptText(connProps.getProperty(authRepo.getRepositoryPass()),
+                                        connProps.getProperty(authRepo.getRepositorySalt()).length()));
                     }
-                }
-                catch (LDAPException lx)
-                {
-                    ERROR_RECORDER.error(lx.getMessage(), lx);
 
-                    throw new SecurityServiceException(lx.getMessage(), lx);
-                }
-                catch (IOException iox)
-                {
-                    ERROR_RECORDER.error(iox.getMessage(), iox);
-
-                    throw new SecurityServiceException(iox.getMessage(), iox);
-                }
-                catch (GeneralSecurityException gsx)
-                {
-                    ERROR_RECORDER.error(gsx.getMessage(), gsx);
-
-                    throw new SecurityServiceException(gsx.getMessage(), gsx);
-                }
-                finally
-                {
-                    try
+                    if (DEBUG)
                     {
-                        fileStream.close();
+                        DEBUGGER.debug("LDAPConnection: {}", ldapConn);
                     }
-                    catch (IOException iox)
-                    {
-                        ERROR_RECORDER.error(iox.getMessage(), iox);
-                    }
-                }
 
-                break;
-            case SQL:
-                // the isContainer only matters here
-                if (isContainer)
-                {
-                    try
+                    if (!(ldapConn.isConnected()))
+                    {
+                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                    }
+
+                    LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
+                            Integer.parseInt(connProps.getProperty(authRepo.getMinConnections())),
+                            Integer.parseInt(connProps.getProperty(authRepo.getMaxConnections())));
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LDAPConnectionPool: {}", connPool);
+                    }
+
+                    if (connPool.isClosed())
+                    {
+                        throw new LDAPException(ResultCode.CONNECT_ERROR, "Failed to establish an LDAP connection");
+                    }
+
+                    bean.setAuthDataSource(connPool);
+
+                    break;
+                case SQL:
+                    // the isContainer only matters here
+                    if (isContainer)
                     {
                         Context initContext = new InitialContext();
                         Context envContext = (Context) initContext.lookup(DAOInitializer.DS_CONTEXT);
 
                         bean.setAuthDataSource(envContext.lookup(authRepo.getRepositoryHost()));
                     }
-                    catch (NamingException nx)
+                    else
                     {
-                        ERROR_RECORDER.error(nx.getMessage(), nx);
+                        BasicDataSource dataSource = new BasicDataSource();
+                        dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(authRepo.getMinConnections())));
+                        dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(authRepo.getMaxConnections())));
+                        dataSource.setDriverClassName(connProps.getProperty(authRepo.getRepositoryDriver()));
+                        dataSource.setUrl(connProps.getProperty(authRepo.getRepositoryHost()));
+                        dataSource.setUsername(connProps.getProperty(authRepo.getRepositoryUser()));
+                        dataSource.setPassword(PasswordUtils.decryptText(
+                                connProps.getProperty(authRepo.getRepositoryPass()),
+                                connProps.getProperty(authRepo.getRepositorySalt()).length()));
 
-                        throw new SecurityServiceException(nx.getMessage(), nx);
+                        bean.setAuthDataSource(dataSource);
                     }
-                }
-                else
-                {
-                    BasicDataSource dataSource = new BasicDataSource();
-                    dataSource.setDriverClassName(authRepo.getRepositoryDriver());
-                    dataSource.setUrl(authRepo.getRepositoryHost());
-                    dataSource.setUsername(authRepo.getRepositoryUser());
-                    dataSource.setPassword(PasswordUtils.decryptText(
-                            authRepo.getRepositoryPass(),
-                            authRepo.getRepositorySalt().length()));
 
-                    bean.setAuthDataSource(dataSource);
-                }
+                    break;
+                default:
+                    throw new SecurityServiceException("Unhandled ResourceType");
+            }
+        }
+        catch (LDAPException lx)
+        {
+            ERROR_RECORDER.error(lx.getMessage(), lx);
 
-                break;
-            default:
-                throw new SecurityServiceException("Unhandled ResourceType");
+            throw new SecurityServiceException(lx.getMessage(), lx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new SecurityServiceException(iox.getMessage(), iox);
+        }
+        catch (GeneralSecurityException gsx)
+        {
+            ERROR_RECORDER.error(gsx.getMessage(), gsx);
+
+            throw new SecurityServiceException(gsx.getMessage(), gsx);
+        }
+        catch (NamingException nx)
+        {
+            ERROR_RECORDER.error(nx.getMessage(), nx);
+
+            throw new SecurityServiceException(nx.getMessage(), nx);
+        }
+        finally
+        {
+            try
+            {
+                fileStream.close();
+            }
+            catch (IOException iox)
+            {
+                ERROR_RECORDER.error(iox.getMessage(), iox);
+            }
         }
     }
 

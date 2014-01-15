@@ -34,7 +34,6 @@ import com.cws.esolutions.core.CoreServiceConstants;
 import com.cws.esolutions.core.config.xml.SSHConfig;
 import com.cws.esolutions.core.config.xml.AgentConfig;
 import com.cws.esolutions.core.config.xml.ScriptConfig;
-import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.core.dao.impl.ServerDataDAOImpl;
 import com.cws.esolutions.core.dao.impl.ServiceDataDAOImpl;
 import com.cws.esolutions.core.config.xml.ApplicationConfig;
@@ -63,8 +62,7 @@ public interface IServerManagementProcessor
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
 
     static final CoreServiceBean appBean = CoreServiceBean.getInstance();
-    static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
-    static final List<String> serviceAccount = secBean.getConfigData().getSecurityConfig().getServiceAccount();
+    static final List<String> serviceAccount = appBean.getConfigData().getAppConfig().getServiceAccount();
 
     static final SSHConfig sshConfig = appBean.getConfigData().getSshConfig();
     static final AgentConfig agentConfig = appBean.getConfigData().getAgentConfig();
