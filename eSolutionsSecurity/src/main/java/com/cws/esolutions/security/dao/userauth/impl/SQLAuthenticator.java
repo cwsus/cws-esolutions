@@ -78,39 +78,46 @@ public class SQLAuthenticator implements Authenticator
             stmt.setString(1, username); // username
             stmt.setString(2, password); // password
 
-            if (stmt.execute())
+            if (DEBUG)
             {
-                resultSet = stmt.getResultSet();
+                DEBUGGER.debug("CallableStatement: {}", stmt);
+            }
+
+            if (!(stmt.execute()))
+            {
+                throw new AuthenticatorException("No user was found for the provided user information");
+            }
+
+            resultSet = stmt.getResultSet();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("ResultSet: {}", resultSet);
+            }
+
+            if (resultSet.next())
+            {
+                resultSet.first();
+
+                userAccount = new ArrayList<Object>();
+                userAccount.add(resultSet.getString(authData.getCommonName()));
+                userAccount.add(resultSet.getString(authData.getUserId()));
+                userAccount.add(resultSet.getString(authData.getGivenName()));
+                userAccount.add(resultSet.getString(authData.getSurname()));
+                userAccount.add(resultSet.getString(authData.getDisplayName()));
+                userAccount.add(resultSet.getString(authData.getEmailAddr()));
+                userAccount.add(resultSet.getString(authData.getPagerNumber()));
+                userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
+                userAccount.add(resultSet.getInt(authData.getLockCount()));
+                userAccount.add(resultSet.getLong(authData.getLastLogin()));
+                userAccount.add(resultSet.getLong(authData.getExpiryDate()));
+                userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
+                userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
+                userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("ResultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    userAccount = new ArrayList<Object>();
-                    userAccount.add(resultSet.getString(authData.getCommonName()));
-                    userAccount.add(resultSet.getString(authData.getUserId()));
-                    userAccount.add(resultSet.getString(authData.getGivenName()));
-                    userAccount.add(resultSet.getString(authData.getSurname()));
-                    userAccount.add(resultSet.getString(authData.getDisplayName()));
-                    userAccount.add(resultSet.getString(authData.getEmailAddr()));
-                    userAccount.add(resultSet.getString(authData.getPagerNumber()));
-                    userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                    userAccount.add(resultSet.getInt(authData.getLockCount()));
-                    userAccount.add(resultSet.getLong(authData.getLastLogin()));
-                    userAccount.add(resultSet.getLong(authData.getExpiryDate()));
-                    userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
-                    userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
-                    userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("UserAccount: {}", userAccount);
-                    }
+                    DEBUGGER.debug("UserAccount: {}", userAccount);
                 }
             }
         }

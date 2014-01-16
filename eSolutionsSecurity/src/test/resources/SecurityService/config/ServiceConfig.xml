@@ -22,7 +22,6 @@
         <objectClass>cwsperson</objectClass>
         <userId>uid</userId>
         <userPassword>userPassword</userPassword>
-        <userRole>cwsrole</userRole>
         <lockCount>cwsfailedpwdcount</lockCount>
         <lastLogin>cwslastlogin</lastLogin>
         <surname>sn</surname>
@@ -49,6 +48,7 @@
         <repoType>SQL</repoType>
         <configFile>/opt/cws/eSolutions/etc/repository.properties</configFile>
         <isSecure>isSecure</isSecure>
+        <repositoryDriver>repositoryDriver</repositoryDriver>
         <trustStoreFile>trustStoreFile</trustStoreFile>
         <trustStorePass>trustStorePass</trustStorePass>
         <trustStoreType>trustStoreType</trustStoreType>

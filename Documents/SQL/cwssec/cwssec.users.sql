@@ -16,7 +16,7 @@ CREATE TABLE CWSSEC.USERS (
     GIVENNAME VARCHAR(100) NOT NULL,
     DISPLAYNAME VARCHAR(100) NOT NULL,
     EMAIL VARCHAR(50) NOT NULL,
-    TELEPHONE VARCHAR(12) NOT NULL,
+    TELEPHONENUMBER VARCHAR(12) NOT NULL,
     PAGER VARCHAR(12) NOT NULL,
     CWSEXPIRYDATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     CWSSECQ1 VARCHAR(60) NOT NULL,
@@ -99,7 +99,7 @@ BEGIN
     )
     VALUES
     (
-        guid, username, password, suspended, TRUE,
+        guid, username, PASSWORD(password), suspended, TRUE,
         FALSE, surname, givenname, displayname, email, unix_timestamp(now())
     );
 
@@ -148,10 +148,10 @@ CREATE PROCEDURE CWSSEC.updateUserPassword(
 BEGIN
     UPDATE USERS
     SET
-        USERPASSWORD = newPassword,
+        USERPASSWORD = PASSWORD(newPassword),
         CWSEXPIRYDATE = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL expiry DAY),
         CWSFAILEDPWDCOUNT = 0
-    WHERE USERPASSWORD = currentPassword
+    WHERE USERPASSWORD = PASSWORD(currentPassword)
     AND CN = commonName;
 
     COMMIT;
@@ -171,7 +171,7 @@ CREATE PROCEDURE CWSSEC.resetUserPassword(
 BEGIN
     UPDATE USERS
     SET
-        USERPASSWORD = newPassword,
+        USERPASSWORD = PASSWORD(newPassword),
         CWSEXPIRYDATE = CURRENT_TIMESTAMP(),
         CWSFAILEDPWDCOUNT = 0
     WHERE CN = commonName;
@@ -237,48 +237,54 @@ CREATE PROCEDURE CWSSEC.performAuthentication(
     IN password VARCHAR(255)
 )
 BEGIN
-    SET @guid := (SELECT DISTINCT CN FROM CWSSEC.USERS WHERE UID = username;
+    DECLARE guid VARCHAR(128);
+    DECLARE counter INT;
 
-    IF ((SELECT COUNT(@guid)) = 1)
+    SELECT DISTINCT CN INTO guid FROM CWSSEC.USERS WHERE UID = username;
+
+    IF (guid IS NOT NULL)
     THEN
-        SET @count := (SELECT DISTINCT CN
-            FROM CWSSEC.USERS
-            WHERE UID = username AND
-            USERPASSWORD = password);
+        SELECT DISTINCT COUNT(CN)
+        INTO counter
+        FROM CWSSEC.USERS
+        WHERE UID = username
+        AND USERPASSWORD = PASSWORD(password);
 
-        IF ((SELECT COUNT(@count)) = 1)
+        IF (counter = 1)
         THEN
             UPDATE CWSSEC.USERS
             SET CWSFAILEDPWDCOUNT = 0
-            WHERE CN = @guid
+            WHERE CN = guid
             AND UID = username;
 
             SELECT DISTINCT
                 CN,
                 UID,
-                GIVENNAME,
-                SN,
-                DISPLAYNAME,
-                EMAIL,
                 CWSFAILEDPWDCOUNT,
                 CWSLASTLOGIN,
-                UNIX_TIMESTAMP(CWSEXPIRYDATE),
                 CWSISSUSPENDED,
                 CWSISOLRSETUP,
                 CWSISOLRLOCKED,
+                SN,
+                GIVENNAME,
+                DISPLAYNAME,
+                EMAIL,
+                TELEPHONENUMBER,
+                PAGER,
+                CWSEXPIRYDATE,
                 MEMBEROF
             FROM CWSSEC.USERS
-            WHERE CN = @guid
+            WHERE CN = guid
             AND UID = username;
         ELSE
             SET @lockCount := (SELECT CWSFAILEDPWDCOUNT
                 FROM CWSSEC.USERS
-                WHERE CN = @guid
+                WHERE CN = guid
                 AND UID = username);
 
             UPDATE CWSSEC.USERS
             SET CWSFAILEDPWDCOUNT = @lockCount + 1
-            WHERE CN = @guid
+            WHERE CN = guid
             AND UID = username;
         END IF;
     END IF;
@@ -330,7 +336,7 @@ BEGIN
         CWSSECANS2 = secAnswerTwo
     WHERE UID = userName
     AND CN = commonName
-    AND USERPASSWORD = userPassword;
+    AND USERPASSWORD = PASSWORD(userPassword);
 
     COMMIT;
 END $$

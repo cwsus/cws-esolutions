@@ -39,8 +39,6 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 
 public class SQLAuthenticatorTest
 {
-    private static final Authenticator authenticator = new SQLAuthenticator();
-
     @Before
     public void setUp()
     {
@@ -58,9 +56,11 @@ public class SQLAuthenticatorTest
     @Test
     public void testPasswordLogon()
     {
+        Authenticator authenticator = new SQLAuthenticator();
+
         try
         {
-            Assert.assertNotNull(authenticator.performLogon("khuntly", "4MEK2S5r0fjVfk1wP2mrytpXcaI9m1hNr/zIq8RVdDgvR0VqbBmR1IHhonw124Au"));
+            Assert.assertNotNull(authenticator.performLogon("khuntly", "cypAYq/FLZmI87TujhBHqKqELW8lbjaxvq2hV8v4HHI22Y0q/sijkGfpAg0Ku+btTbk36XunTfIa8VnqV1aGzw=="));
         }
         catch (AuthenticatorException e)
         {
@@ -71,6 +71,8 @@ public class SQLAuthenticatorTest
     @Test
     public void testObtainSecurityQuestions()
     {
+        Authenticator authenticator = new SQLAuthenticator();
+
         try
         {
             Assert.assertNotNull(authenticator.obtainSecurityData("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95", "khuntly"));
@@ -84,6 +86,8 @@ public class SQLAuthenticatorTest
     @Test
     public void testVerifySecurityQuestions()
     {
+        Authenticator authenticator = new SQLAuthenticator();
+
         List<String> authList = new ArrayList<>(
                 Arrays.asList(
                         "74d9729b-7fb2-4fef-874b-c9ee5d7a5a95",
