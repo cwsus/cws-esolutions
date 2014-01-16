@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -177,7 +178,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                 if ((userData != null) && (!(userData.isEmpty())))
                 {
-                    if (((Integer) userData.get(9) >= secConfig.getMaxAttempts()) || ((Boolean) userData.get(12)))
+                    if (((Integer) userData.get(8) >= secConfig.getMaxAttempts()) || ((Boolean) userData.get(11)))
                     {
                         // user locked
                         response.setRequestStatus(SecurityRequestStatus.FAILURE);
@@ -186,24 +187,24 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     }
 
                     userAccount = new UserAccount();
-                    userAccount.setGuid((String) userData.get(1));
-                    userAccount.setUsername((String) userData.get(2));
-                    userAccount.setGivenName((String) userData.get(3));
-                    userAccount.setSurname((String) userData.get(4));
-                    userAccount.setDisplayName((String) userData.get(5));
-                    userAccount.setEmailAddr((String) userData.get(6));
-                    userAccount.setPagerNumber((String) userData.get(7));
-                    userAccount.setTelephoneNumber((String) userData.get(8));
-                    userAccount.setFailedCount((Integer) userData.get(9));
-                    userAccount.setLastLogin(new Date((Long) userData.get(10)));
-                    userAccount.setExpiryDate((Long) userData.get(11));
-                    userAccount.setSuspended((Boolean) userData.get(12));
-                    userAccount.setOlrSetup((Boolean) userData.get(13));
-                    userAccount.setOlrLocked((Boolean) userData.get(14));
+                    userAccount.setGuid((String) userData.get(0));
+                    userAccount.setUsername((String) userData.get(1));
+                    userAccount.setGivenName((String) userData.get(2));
+                    userAccount.setSurname((String) userData.get(3));
+                    userAccount.setDisplayName((String) userData.get(4));
+                    userAccount.setEmailAddr((String) userData.get(5));
+                    userAccount.setPagerNumber((String) userData.get(6));
+                    userAccount.setTelephoneNumber((String) userData.get(7));
+                    userAccount.setFailedCount((Integer) userData.get(8));
+                    userAccount.setLastLogin((Date) userData.get(9));
+                    userAccount.setExpiryDate((Date) userData.get(10));
+                    userAccount.setSuspended((Boolean) userData.get(11));
+                    userAccount.setOlrSetup((Boolean) userData.get(12));
+                    userAccount.setOlrLocked((Boolean) userData.get(13));
 
                     // build groups
                     List<UserGroup> userGroups = new ArrayList<UserGroup>();
-                    for (String group : (List<String>) userData.get(15))
+                    for (String group : (List<String>) userData.get(14))
                     {
                         if (DEBUG)
                         {
@@ -242,27 +243,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     }
 
                     // have a user account, run with it
-                    // reset the failed count, this is a successful logon
-                    try
-                    {
-                        userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(),
-                            new HashMap<String, Object>()
-                            {
-                                private static final long serialVersionUID = 3026623264042376743L;
-
-                                {
-                                    put(authData.getLockCount(), 0);
-                                    put(authData.getLastLogin(), System.currentTimeMillis());
-                                }
-                            });
-                    }
-                    catch (UserManagementException umx)
-                    {
-                        ERROR_RECORDER.error(umx.getMessage(), umx);
-                    }
-
-                    // user not already logged in or concurrent auth is allowed
-                    if (System.currentTimeMillis() >= userAccount.getExpiryDate())
+                    if ((userAccount.getExpiryDate().before(new Date(System.currentTimeMillis())))
+                            || (userAccount.getExpiryDate().equals(new Date(System.currentTimeMillis()))))
                     {
                         userAccount.setStatus(LoginStatus.EXPIRED);
 

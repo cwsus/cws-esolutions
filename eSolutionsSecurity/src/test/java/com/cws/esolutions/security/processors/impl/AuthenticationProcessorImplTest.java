@@ -100,7 +100,6 @@ public class AuthenticationProcessorImplTest
     public void testPasswordAuthentication()
     {
         UserAccount account = new UserAccount();
-        account.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
         account.setUsername("khuntly");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
@@ -132,12 +131,11 @@ public class AuthenticationProcessorImplTest
     public void testCombinedAuthentication()
     {
         UserAccount account = new UserAccount();
-        account.setGuid("fcd711bf-829a-4194-bbe2-6925a3095772");
-        account.setUsername("demo");
+        account.setUsername("khuntly");
         hostInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
         AuthenticationData userSecurity = new AuthenticationData();
-        userSecurity.setPassword("demo");
+        userSecurity.setPassword("Ariana21*");
 
         AuthenticationRequest request = new AuthenticationRequest();
         request.setApplicationName("esolutions");

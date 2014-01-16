@@ -42,6 +42,7 @@
         <pagerNumber>pager</pagerNumber>
         <userType>cwsusertype</userType>
         <telephoneNumber>telephoneNumber</telephoneNumber>
+        <memberOf>memberOf</memberOf>
     </auth-data>
 
     <auth-repo>

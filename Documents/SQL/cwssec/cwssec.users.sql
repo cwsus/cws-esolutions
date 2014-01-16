@@ -100,7 +100,7 @@ BEGIN
     VALUES
     (
         guid, username, PASSWORD(password), suspended, TRUE,
-        FALSE, surname, givenname, displayname, email, unix_timestamp(now())
+        FALSE, surname, givenname, displayname, email, UNIX_TIMESTAMP(NOW())
     );
 
     COMMIT;
@@ -142,7 +142,6 @@ DROP PROCEDURE IF EXISTS CWSSEC.updateUserPassword$$
 CREATE PROCEDURE CWSSEC.updateUserPassword(
     IN commonName VARCHAR(128),
     IN expiry INT,
-    IN currentPassword VARCHAR(255),
     IN newPassword VARCHAR(255)
 )
 BEGIN
@@ -151,8 +150,7 @@ BEGIN
         USERPASSWORD = PASSWORD(newPassword),
         CWSEXPIRYDATE = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL expiry DAY),
         CWSFAILEDPWDCOUNT = 0
-    WHERE USERPASSWORD = PASSWORD(currentPassword)
-    AND CN = commonName;
+    WHERE CN = commonName;
 
     COMMIT;
 END $$
@@ -199,7 +197,6 @@ BEGIN
         CWSEXPIRYDATE,
         EMAIL,
         CWSISSUSPENDED,
-        CN,
         CWSISOLRSETUP,
         CWSISOLRLOCKED,
         DISPLAYNAME,
@@ -253,25 +250,27 @@ BEGIN
         IF (counter = 1)
         THEN
             UPDATE CWSSEC.USERS
-            SET CWSFAILEDPWDCOUNT = 0
+            SET
+                CWSFAILEDPWDCOUNT = 0,
+                CWSLASTLOGIN = CURRENT_TIMESTAMP()
             WHERE CN = guid
             AND UID = username;
 
             SELECT DISTINCT
                 CN,
                 UID,
+                GIVENNAME,
+                SN,
+                DISPLAYNAME,
+                EMAIL,
+                PAGER,
+                TELEPHONENUMBER,
                 CWSFAILEDPWDCOUNT,
                 CWSLASTLOGIN,
+                CWSEXPIRYDATE,
                 CWSISSUSPENDED,
                 CWSISOLRSETUP,
                 CWSISOLRLOCKED,
-                SN,
-                GIVENNAME,
-                DISPLAYNAME,
-                EMAIL,
-                TELEPHONENUMBER,
-                PAGER,
-                CWSEXPIRYDATE,
                 MEMBEROF
             FROM CWSSEC.USERS
             WHERE CN = guid

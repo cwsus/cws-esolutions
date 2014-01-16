@@ -25,10 +25,16 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Arrays;
 import java.util.List;
 import java.util.ArrayList;
 import java.net.ConnectException;
+
 import com.unboundid.ldap.sdk.Filter;
+import com.unboundid.ldap.sdk.LDAPResult;
+import com.unboundid.ldap.sdk.Modification;
+import com.unboundid.ldap.sdk.ModificationType;
+import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
@@ -40,7 +46,6 @@ import com.unboundid.ldap.sdk.LDAPConnection;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
-
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
@@ -159,7 +164,6 @@ public class LDAPAuthenticator implements Authenticator
                 DEBUGGER.debug("BindResult: {}", bindResult);
             }
 
-            userAccount.add(entry.getDN());
             userAccount.add(entry.getAttributeValue(authData.getCommonName()));
             userAccount.add(entry.getAttributeValue(authData.getUserId()));
             userAccount.add(entry.getAttributeValue(authData.getGivenName()));
@@ -216,6 +220,29 @@ public class LDAPAuthenticator implements Authenticator
                 }
 
                 userAccount.add(roles);
+            }
+
+            // reset the lock count and update last login
+            List<Modification> modifyList = new ArrayList<>(
+                    Arrays.asList(
+                        new Modification(ModificationType.REPLACE, authData.getLastLogin(), String.valueOf(System.currentTimeMillis())),
+                        new Modification(ModificationType.REPLACE, authData.getLockCount(), String.valueOf(0))));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("List<Modification>: {}", modifyList);
+            }
+
+            LDAPResult ldapResult = ldapConn.modify(new ModifyRequest(entry.getDN(), modifyList));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LDAPResult: {}", ldapResult);
+            }
+
+            if (ldapResult.getResultCode() != ResultCode.SUCCESS)
+            {
+                ERROR_RECORDER.error("Failed to modify lockcount and last login for authenticated account.");
             }
 
             if (DEBUG)

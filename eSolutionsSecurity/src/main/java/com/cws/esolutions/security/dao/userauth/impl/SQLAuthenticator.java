@@ -30,7 +30,11 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
+
 import javax.sql.DataSource;
+
+import org.apache.commons.lang.StringUtils;
+
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -100,20 +104,33 @@ public class SQLAuthenticator implements Authenticator
                 resultSet.first();
 
                 userAccount = new ArrayList<Object>();
-                userAccount.add(resultSet.getString(authData.getCommonName()));
-                userAccount.add(resultSet.getString(authData.getUserId()));
-                userAccount.add(resultSet.getString(authData.getGivenName()));
-                userAccount.add(resultSet.getString(authData.getSurname()));
-                userAccount.add(resultSet.getString(authData.getDisplayName()));
-                userAccount.add(resultSet.getString(authData.getEmailAddr()));
-                userAccount.add(resultSet.getString(authData.getPagerNumber()));
-                userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                userAccount.add(resultSet.getInt(authData.getLockCount()));
-                userAccount.add(resultSet.getLong(authData.getLastLogin()));
-                userAccount.add(resultSet.getLong(authData.getExpiryDate()));
-                userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
-                userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
-                userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
+                userAccount.add(resultSet.getString(authData.getCommonName())); // CN
+                userAccount.add(resultSet.getString(authData.getUserId())); // UID
+                userAccount.add(resultSet.getString(authData.getGivenName())); // GIVENNAME
+                userAccount.add(resultSet.getString(authData.getSurname())); // SN
+                userAccount.add(resultSet.getString(authData.getDisplayName())); // DISPLAYNAME
+                userAccount.add(resultSet.getString(authData.getEmailAddr())); // EMAIL
+                userAccount.add(resultSet.getString(authData.getPagerNumber())); // PAGER
+                userAccount.add(resultSet.getString(authData.getTelephoneNumber())); // TELEPHONENUMBER
+                userAccount.add(resultSet.getInt(authData.getLockCount())); // CWSFAILEDPWDCOUNT
+                userAccount.add(resultSet.getTimestamp(authData.getLastLogin())); // CWSLASTLOGIN
+                userAccount.add(resultSet.getTimestamp(authData.getExpiryDate())); // CWSEXPIRYDATE
+                userAccount.add(resultSet.getBoolean(authData.getIsSuspended())); // CWSISSUSPENDED
+                userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq())); // CWSISOLRSETUP
+                userAccount.add(resultSet.getBoolean(authData.getOlrLocked())); // CWSISOLRLOCKED
+
+                List<String> groupList = new ArrayList<String>();
+                for (String str : StringUtils.split(resultSet.getString(authData.getMemberOf()), ","))
+                {
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("String: {}", str);
+                    }
+
+                    groupList.add(str);
+                }
+
+                userAccount.add(groupList); // MEMBEROF
 
                 if (DEBUG)
                 {

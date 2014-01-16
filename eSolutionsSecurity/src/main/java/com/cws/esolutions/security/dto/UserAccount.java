@@ -49,7 +49,7 @@ public class UserAccount implements Serializable, Principal
     private String guid = null;
     private String surname = null;
     private Date lastLogin = null;
-    private Long expiryDate = null;
+    private Date expiryDate = null;
     private String username = null;
     private String emailAddr = null;
     private String givenName = null;
@@ -134,9 +134,9 @@ public class UserAccount implements Serializable, Principal
         this.surname = value;
     }
 
-    public final void setExpiryDate(final Long value)
+    public final void setExpiryDate(final Date value)
     {
-        final String methodName = UserAccount.CNAME + "#setExpiryDate(final Long value)";
+        final String methodName = UserAccount.CNAME + "#setExpiryDate(final Date value)";
 
         if (DEBUG)
         {
@@ -369,7 +369,7 @@ public class UserAccount implements Serializable, Principal
         return this.surname;
     }
 
-    public final Long getExpiryDate()
+    public final Date getExpiryDate()
     {
         final String methodName = UserAccount.CNAME + "#getExpiryDate()";
 

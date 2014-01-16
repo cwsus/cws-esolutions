@@ -142,7 +142,7 @@ public interface UserManager
      */
     boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException;
 
-    boolean changeUserPassword(final String userDN, final String newPass, final Long expiry) throws UserManagementException;
+    boolean changeUserPassword(final String userDN, final String newPass, final int expiry) throws UserManagementException;
 
     /**
      * Searches for user accounts given provided search data.

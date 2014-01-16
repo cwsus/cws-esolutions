@@ -432,7 +432,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                             // make the modification in the user repository
                             userManager.changeUserPassword(userAccount.getGuid(),
                                     PasswordUtils.encryptText(reqSecurity.getNewPassword(), newUserSalt,
-                                            secConfig.getAuthAlgorithm(), secConfig.getIterations()), calendar.getTimeInMillis());
+                                            secConfig.getAuthAlgorithm(), secConfig.getIterations()), secConfig.getPasswordExpiration());
 
                             if (DEBUG)
                             {
@@ -473,7 +473,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                     // repository, because we couldnt update the salt value. if we don't
                                     // undo it then the user will never be able to login without admin
                                     // intervention
-                                    boolean isBackedOut = userManager.changeUserPassword(userAccount.getUsername(), currentPassword, userAccount.getExpiryDate());
+                                    boolean isBackedOut = userManager.changeUserPassword(userAccount.getUsername(), currentPassword, secConfig.getPasswordExpiration());
 
                                     if (!(isBackedOut))
                                     {

@@ -72,7 +72,7 @@ public class MQUtilsTest
 
         try
         {
-            String corr = MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
+            Assert.assertNotNull(MQUtils.sendMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
                     new ArrayList<>(
                             Arrays.asList(
                                     this.bean.getConfigData().getAgentConfig().getUsername(),
@@ -80,9 +80,7 @@ public class MQUtilsTest
                                     this.bean.getConfigData().getAgentConfig().getSalt())),
                                     this.bean.getConfigData().getAgentConfig().getRequestQueue(),
                                     "N840B7LZZ8FLAM8",
-                                    request);
-            System.out.println(corr);
-            Assert.assertNotNull(corr);
+                                    request));
         }
         catch (UtilityException ux)
         {
@@ -95,7 +93,7 @@ public class MQUtilsTest
     {
         try
         {
-            Object object = MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
+            Assert.assertNotNull(MQUtils.getMqMessage(this.bean.getConfigData().getAgentConfig().getConnectionName(),
                     new ArrayList<>(
                             Arrays.asList(
                                     this.bean.getConfigData().getAgentConfig().getUsername(),
@@ -103,9 +101,7 @@ public class MQUtilsTest
                                     this.bean.getConfigData().getAgentConfig().getSalt())),
                                     this.bean.getConfigData().getAgentConfig().getResponseQueue(),
                                     this.bean.getConfigData().getAgentConfig().getTimeout(),
-                                    "6mUhCACmfS47lysyKfkPlg56g3p92W6Q7CcAq1julEST3NLpSpV20EL3WycSh3mi");
-            System.out.println(object);
-            Assert.assertNotNull(object);
+                                    "6mUhCACmfS47lysyKfkPlg56g3p92W6Q7CcAq1julEST3NLpSpV20EL3WycSh3mi"));
         }
         catch (UtilityException ux)
         {

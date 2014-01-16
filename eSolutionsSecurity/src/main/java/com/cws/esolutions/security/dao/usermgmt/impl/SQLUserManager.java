@@ -76,8 +76,9 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?, ?) }");
             stmt.setString(1, userGuid);
+            stmt.setInt(2, 0);
 
             if (DEBUG)
             {
@@ -190,14 +191,14 @@ public class SQLUserManager implements UserManager
             sqlConn.setAutoCommit(true);
 
             stmt = sqlConn.prepareCall("{ CALL addUserAccount(?, ?, ?, ?, ?, ?, ?, ?) }");
-            stmt.setString(1, createRequest.get(0));
-            stmt.setString(2, createRequest.get(1));
-            stmt.setString(3, createRequest.get(2));
-            stmt.setString(4, createRequest.get(3));
-            stmt.setString(5, createRequest.get(4));
-            stmt.setString(6, createRequest.get(5));
-            stmt.setString(7, createRequest.get(6));
-            stmt.setString(8, createRequest.get(7));
+            stmt.setString(1, createRequest.get(0)); // guid
+            stmt.setString(2, createRequest.get(1)); // username
+            stmt.setString(3, createRequest.get(2)); // password
+            stmt.setBoolean(4, Boolean.valueOf(createRequest.get(3))); // suspended
+            stmt.setString(5, createRequest.get(4)); // surname
+            stmt.setString(6, createRequest.get(5)); // givenname
+            stmt.setString(7, createRequest.get(6)); // display name
+            stmt.setString(8, createRequest.get(7)); // email
 
             if (DEBUG)
             {
@@ -269,8 +270,8 @@ public class SQLUserManager implements UserManager
 
             int x = 1;
             sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder()
-                .append("UPDATE usr_lgn \n")
+            StringBuilder sBuilder = new StringBuilder() // TODO!! THIS NEEDS TO NOT BE HARDCODED!!
+                .append("UPDATE CWSSEC.USERS \n")
                 .append("SET \n");
 
             for (String key : changeRequest.keySet())
@@ -330,12 +331,12 @@ public class SQLUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.Long)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.int)
      */
     @Override
-    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException
+    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException
     {
-        final String methodName = SQLUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException";
+        final String methodName = SQLUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException";
 
         if (DEBUG)
         {
@@ -364,8 +365,8 @@ public class SQLUserManager implements UserManager
             // then make sure the new password doesnt match the existing password
             stmt = sqlConn.prepareCall("{ CALL updateUserPassword(?, ?, ?) }");
             stmt.setString(1, userGuid);
-            stmt.setString(2, newPass);
-            stmt.setLong(3, expiry);
+            stmt.setInt(2, expiry);
+            stmt.setString(3, newPass);
 
             if (DEBUG)
             {
@@ -528,17 +529,7 @@ public class SQLUserManager implements UserManager
                         String[] userData = new String[]
                         {
                                 resultSet.getString(authData.getCommonName()),
-                                resultSet.getString(authData.getUserId()),
-                                resultSet.getString(authData.getGivenName()),
-                                resultSet.getString(authData.getSurname()),
-                                resultSet.getString(authData.getDisplayName()),
-                                resultSet.getString(authData.getEmailAddr()),
-                                resultSet.getString(authData.getLockCount()),
-                                resultSet.getString(authData.getLastLogin()),
-                                resultSet.getString(authData.getExpiryDate()),
-                                resultSet.getString(authData.getIsSuspended()),
-                                resultSet.getString(authData.getOlrSetupReq()),
-                                resultSet.getString(authData.getOlrLocked()),
+                                resultSet.getString(authData.getUserId())
                         };
 
                         if (DEBUG)
@@ -624,8 +615,9 @@ public class SQLUserManager implements UserManager
 
             sqlConn.setAutoCommit(true);
 
-            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?) }");
+            stmt = sqlConn.prepareCall("{ CALL getUserByAttribute(?, ?) }");
             stmt.setString(1, searchData);
+            stmt.setInt(2, 0);
 
             if (DEBUG)
             {
@@ -646,8 +638,7 @@ public class SQLUserManager implements UserManager
                         Object[] userData = new Object[]
                         {
                                 resultSet.getString(authData.getCommonName()),
-                                resultSet.getString(authData.getUserId()),
-                                resultSet.getInt(authData.getLockCount())
+                                resultSet.getString(authData.getUserId())
                         };
 
                         if (DEBUG)
@@ -764,20 +755,19 @@ public class SQLUserManager implements UserManager
                     resultSet.first();
 
                     userAccount = new ArrayList<>();
-                    userAccount.add(resultSet.getString(authData.getCommonName()));
-                    userAccount.add(resultSet.getString(authData.getUserId()));
-                    userAccount.add(resultSet.getString(authData.getGivenName()));
-                    userAccount.add(resultSet.getString(authData.getSurname()));
-                    userAccount.add(resultSet.getString(authData.getDisplayName()));
-                    userAccount.add(resultSet.getString(authData.getEmailAddr()));
-                    userAccount.add(resultSet.getString(authData.getPagerNumber()));
-                    userAccount.add(resultSet.getString(authData.getTelephoneNumber()));
-                    userAccount.add(resultSet.getInt(authData.getLockCount()));
-                    userAccount.add(resultSet.getLong(authData.getLastLogin()));
-                    userAccount.add(resultSet.getLong(authData.getExpiryDate()));
-                    userAccount.add(resultSet.getBoolean(authData.getIsSuspended()));
-                    userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq()));
-                    userAccount.add(resultSet.getBoolean(authData.getOlrLocked()));
+                    userAccount.add(guid);
+                    userAccount.add(resultSet.getString(authData.getUserId())); // UID
+                    userAccount.add(resultSet.getInt(authData.getLockCount())); // CWSFAILEDPWDCOUNT
+                    userAccount.add(resultSet.getString(authData.getLastLogin())); // CWSLASTLOGIN
+                    userAccount.add(resultSet.getString(authData.getSurname())); // SN
+                    userAccount.add(resultSet.getString(authData.getGivenName())); // GIVENNAME
+                    userAccount.add(resultSet.getTimestamp(authData.getExpiryDate())); // CWSEXPIRYDATE
+                    userAccount.add(resultSet.getString(authData.getEmailAddr())); // EMAIL
+                    userAccount.add(resultSet.getInt(authData.getIsSuspended())); // CWSISSUSPENDED
+                    userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq())); // CWSISOLRSETUP
+                    userAccount.add(resultSet.getBoolean(authData.getOlrLocked())); // CWSISOLRLOCKED
+                    userAccount.add(resultSet.getBoolean(authData.getDisplayName())); // DISPLAYNAME
+                    userAccount.add(resultSet.getBoolean(authData.getMemberOf())); // MEMBEROF
 
                     if (DEBUG)
                     {

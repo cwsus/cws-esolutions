@@ -358,6 +358,15 @@ public class AgentDaemon implements Daemon
 
     private static final void usage()
     {
-        System.out.println("usage");
+        System.out.println("eSolutionsAgent Usage");
+        System.out.println("\t Java Options: ");
+        System.out.println("\t\t appConfig: The full path to the server configuration file.");
+        System.out.println("\t\t logConfig: The full path to the logging configuration file.");
+        System.out.println("\t\t logRoot: The full path to the desired location for application logs.");
+        System.out.println("\t Program Options: ");
+        System.out.println("\t\t start: Start the agent daemon");
+        System.out.println("\t\t stop: Stop the agent daemon");
+
+        System.exit(-1);
     }
 }

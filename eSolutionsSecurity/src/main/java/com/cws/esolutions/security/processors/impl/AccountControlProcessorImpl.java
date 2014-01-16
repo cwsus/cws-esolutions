@@ -758,7 +758,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                             resAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
                             resAccount.setFailedCount(((userData.get(9) == null) ? 0 : (Integer) userData.get(9)));
                             resAccount.setLastLogin(((userData.get(10) == null) ? new Date(1L) : new Date((Long) userData.get(10))));
-                            resAccount.setExpiryDate(((userData.get(11) == null) ? 1L : (Long) userData.get(11)));
+                            resAccount.setExpiryDate(((userData.get(11) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(11)));
                             resAccount.setSuspended(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                             resAccount.setOlrSetup(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));
                             resAccount.setOlrLocked(((userData.get(14) == null) ? Boolean.FALSE : (Boolean) userData.get(14)));
@@ -904,7 +904,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     // we never show the user the password, we're only doing this
                     // to prevent unauthorized access (or further unauthorized access)
                     // we get a return code back but we aren't going to use it really
-                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, System.currentTimeMillis());
+                    boolean isComplete = userManager.changeUserPassword(userAccount.getGuid(), tmpPassword, 0); // TODO ??
 
                     if (DEBUG)
                     {
@@ -1302,7 +1302,7 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
                     loadAccount.setTelephoneNumber((userData.get(7) == null) ? SecurityServiceConstants.NOT_SET : (String) userData.get(7));
                     loadAccount.setFailedCount(((userData.get(8) == null) ? 0 : (Integer) userData.get(8)));
                     loadAccount.setLastLogin(((userData.get(9) == null) ? new Date(1L) : new Date((Long) userData.get(9))));
-                    loadAccount.setExpiryDate(((userData.get(10) == null) ? 1L : (Long) userData.get(10)));
+                    loadAccount.setExpiryDate(((userData.get(10) == null) ? new Date(System.currentTimeMillis()) : (Date) userData.get(10)));
                     loadAccount.setSuspended(((userData.get(11) == null) ? Boolean.FALSE : (Boolean) userData.get(11)));
                     loadAccount.setOlrSetup(((userData.get(12) == null) ? Boolean.FALSE : (Boolean) userData.get(12)));
                     loadAccount.setOlrLocked(((userData.get(13) == null) ? Boolean.FALSE : (Boolean) userData.get(13)));

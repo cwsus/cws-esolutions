@@ -860,12 +860,12 @@ public class LDAPUserManager implements UserManager
     }
 
     /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.Long)
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#changeUserPassword(java.lang.String, java.lang.String, java.lang.int)
      */
     @Override
-    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException
+    public synchronized boolean changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException
     {
-        final String methodName = LDAPUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final Long expiry) throws UserManagementException";
+        final String methodName = LDAPUserManager.CNAME + "#changeUserPassword(final String userGuid, final String newPass, final int expiry) throws UserManagementException";
 
         if (DEBUG)
         {
