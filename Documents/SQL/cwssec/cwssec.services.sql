@@ -40,7 +40,7 @@ insert into services values ('44fe9373-781a-45a1-80c2-01de0b903083', 'Add Server
 insert into services values ('5bac5eb9-249b-4745-8fb5-936f7f4784d5', 'Update Server', 'Allows the ability to modify an existing server');
 insert into services values ('c5101c2d-7835-4eae-972d-b32cb6eae392', 'Delete Server', 'Allows the ability to remove an existing server');
 insert into services values ('0a4f0f7d-a411-4397-ba6d-5e6b45e7f004', 'List Servers', 'Allows the ability to list available servers');
-insert into services values ('e760a5b4-9497-4873-baca-fefb486edbea', 'Search Servers', 'Allows the ability to search for servers');
+insert into services values ('e769a5b4-9497-4873-baca-fefb486edbea', 'Search Servers', 'Allows the ability to search for servers');
 insert into services values ('f007bde9-133d-4d42-83dc-3dcfe9383cd8', 'Retrieve Server', 'Allows the ability to retrieve data for a given server');
 insert into services values ('0ba28df3-b93e-42dd-af49-5e43e72cccd4', 'System Check', 'Allows the ability to perform various system checks');
 insert into services values ('1408c2b1-e726-4d7f-901f-b46bbd70cce9', 'List Virtual Machines', 'Allows the ability to list available Virtual Machines');

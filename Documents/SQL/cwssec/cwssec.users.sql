@@ -7,24 +7,25 @@ CREATE TABLE CWSSEC.USERS (
     CN VARCHAR(128) NOT NULL,
     UID VARCHAR(50) NOT NULL,
     USERPASSWORD VARCHAR(255) NOT NULL,
-    CWSFAILEDPWDCOUNT MEDIUMINT NOT NULL DEFAULT 0,
-    CWSLASTLOGIN TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+    CWSFAILEDPWDCOUNT INT NOT NULL DEFAULT 0,
+    CWSLASTLOGIN TIMESTAMP,
     CWSISSUSPENDED BOOLEAN NOT NULL DEFAULT FALSE,
     CWSISOLRSETUP BOOLEAN NOT NULL DEFAULT TRUE,
     CWSISOLRLOCKED BOOLEAN NOT NULL DEFAULT FALSE,
     SN VARCHAR(100) NOT NULL,
     GIVENNAME VARCHAR(100) NOT NULL,
-    DISPLAYNAME VARCHAR(100) NOT NULL DEFAULT 'DISPLAY NAME',
+    DISPLAYNAME VARCHAR(100) NOT NULL,
     EMAIL VARCHAR(50) NOT NULL,
     TELEPHONE VARCHAR(12) NOT NULL,
     PAGER VARCHAR(12) NOT NULL,
-    CWSEXPIRYDATE BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-    CWSSECQ1 VARCHAR(60) NOT NULL DEFAULT 'QUESTION 1',
-    CWSSECQ2 VARCHAR(60) NOT NULL DEFAULT 'QUESTION 2',
-    CWSSECANS1 VARCHAR(255) NOT NULL DEFAULT 'ANSWER 1',
-    CWSSECANS2 VARCHAR(255) NOT NULL DEFAULT 'ANSWER 2',
+    CWSEXPIRYDATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    CWSSECQ1 VARCHAR(60) NOT NULL,
+    CWSSECQ2 VARCHAR(60) NOT NULL,
+    CWSSECANS1 VARCHAR(255) NOT NULL,
+    CWSSECANS2 VARCHAR(255) NOT NULL,
+    MEMBEROF TEXT NOT NULL,
     PRIMARY KEY (CN),
-    UNIQUE KEY USERID (UID),
+    UNIQUE (UID),
     INDEX IDX_USERS (CN, UID, EMAIL),
     FULLTEXT KEY FT_USERS (UID, GIVENNAME, SN, EMAIL, CN)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
@@ -47,9 +48,9 @@ CREATE PROCEDURE CWSSEC.getUserByAttribute(
 BEGIN
     SELECT
         CN,
-        UID
+        UID,
     MATCH (UID, GIVENNAME, SN, EMAIL, CN)
-    AGAINST (+attributeName WITH QUERY EXPANSION)
+    AGAINST (+attributeName WITH QUERY EXPANSION) AS score
     FROM CWSSEC.USERS
     WHERE MATCH (UID, GIVENNAME, SN, EMAIL, CN)
     AGAINST (+attributeName IN BOOLEAN MODE)
@@ -140,6 +141,7 @@ DROP PROCEDURE IF EXISTS CWSSEC.updateUserPassword$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE CWSSEC.updateUserPassword(
     IN commonName VARCHAR(128),
+    IN expiry INT,
     IN currentPassword VARCHAR(255),
     IN newPassword VARCHAR(255)
 )
@@ -147,7 +149,7 @@ BEGIN
     UPDATE USERS
     SET
         USERPASSWORD = newPassword,
-        CWSEXPIRYDATE = unix_timestamp(now()),
+        CWSEXPIRYDATE = DATE_ADD(CURRENT_TIMESTAMP(), INTERVAL expiry DAY),
         CWSFAILEDPWDCOUNT = 0
     WHERE USERPASSWORD = currentPassword
     AND CN = commonName;
@@ -170,36 +172,11 @@ BEGIN
     UPDATE USERS
     SET
         USERPASSWORD = newPassword,
-        CWSEXPIRYDATE = unix_timestamp(now()),
+        CWSEXPIRYDATE = CURRENT_TIMESTAMP(),
         CWSFAILEDPWDCOUNT = 0
     WHERE CN = commonName;
 
     COMMIT;
-END $$
-/*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
-COMMIT$$
-
---
--- Definition of procedure showUserAccounts
---
-DROP PROCEDURE IF EXISTS CWSSEC.showUserAccounts$$
-/*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE CWSSEC.showUserAccounts(
-)
-BEGIN
-    SELECT
-        UID,
-        CWSLASTLOGIN,
-        SN,
-        GIVENNAME,
-        CWSEXPIRYDATE,
-        EMAIL,
-        CWSISSUSPENDED,
-        CN,
-        CWSISOLRSETUP,
-        CWSISOLRLOCKED,
-        DISPLAYNAME,
-    FROM USERS;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
@@ -226,6 +203,7 @@ BEGIN
         CWSISOLRSETUP,
         CWSISOLRLOCKED,
         DISPLAYNAME,
+        MEMBEROF
     FROM USERS
     WHERE cn = commonName;
 END $$
@@ -255,58 +233,54 @@ COMMIT$$
 DROP PROCEDURE IF EXISTS CWSSEC.performAuthentication$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE CWSSEC.performAuthentication(
-    IN guid VARCHAR(128),
     IN username VARCHAR(100),
     IN password VARCHAR(255)
 )
 BEGIN
-    DECLARE ucount INT DEFAULT 0;
-    DECLARE lockCount INT DEFAULT 0;
+    SET @guid := (SELECT DISTINCT CN FROM CWSSEC.USERS WHERE UID = username;
 
-    SELECT DISTINCT COUNT(CN)
-    INTO ucount
-    FROM CWSSEC.USERS
-    WHERE CN = guid
-    AND UID = username
-    AND USERPASSWORD = password;
-
-    SELECT ucount;
-
-    IF (ucount = 1)
+    IF ((SELECT COUNT(@guid)) = 1)
     THEN
-        UPDATE CWSSEC.USERS
-        SET CWSFAILEDPWDCOUNT = 0
-        WHERE CN = guid
-        AND UID = username;
-
-        SELECT DISTINCT
-            CN,
-            UID,
-            GIVENNAME,
-            SN,
-            DISPLAYNAME,
-            EMAIL,
-            CWSFAILEDPWDCOUNT,
-            CWSLASTLOGIN,
-            CWSEXPIRYDATE,
-            CWSISSUSPENDED,
-            CWSISOLRSETUP,
-            CWSISOLRLOCKED
-        FROM CWSSEC.USERS
-        WHERE CN = guid
-        AND UID = username;
-    ELSE
-        SET lockCount := (SELECT CWSFAILEDPWDCOUNT
+        SET @count := (SELECT DISTINCT CN
             FROM CWSSEC.USERS
-            WHERE CN = guid
-            AND UID = username);
+            WHERE UID = username AND
+            USERPASSWORD = password);
 
-        SELECT lockCount;
+        IF ((SELECT COUNT(@count)) = 1)
+        THEN
+            UPDATE CWSSEC.USERS
+            SET CWSFAILEDPWDCOUNT = 0
+            WHERE CN = @guid
+            AND UID = username;
 
-        UPDATE CWSSEC.USERS
-        SET CWSFAILEDPWDCOUNT = lockCount + 1
-        WHERE CN = guid
-        AND UID = username;
+            SELECT DISTINCT
+                CN,
+                UID,
+                GIVENNAME,
+                SN,
+                DISPLAYNAME,
+                EMAIL,
+                CWSFAILEDPWDCOUNT,
+                CWSLASTLOGIN,
+                UNIX_TIMESTAMP(CWSEXPIRYDATE),
+                CWSISSUSPENDED,
+                CWSISOLRSETUP,
+                CWSISOLRLOCKED,
+                MEMBEROF
+            FROM CWSSEC.USERS
+            WHERE CN = @guid
+            AND UID = username;
+        ELSE
+            SET @lockCount := (SELECT CWSFAILEDPWDCOUNT
+                FROM CWSSEC.USERS
+                WHERE CN = @guid
+                AND UID = username);
+
+            UPDATE CWSSEC.USERS
+            SET CWSFAILEDPWDCOUNT = @lockCount + 1
+            WHERE CN = @guid
+            AND UID = username;
+        END IF;
     END IF;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$

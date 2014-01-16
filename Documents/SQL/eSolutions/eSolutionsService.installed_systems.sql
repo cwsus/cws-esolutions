@@ -245,9 +245,9 @@ DROP PROCEDURE IF EXISTS esolutionssvc.getServerList$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
 CREATE PROCEDURE esolutionssvc.getServerList(
     IN startRow INT,
-    OUT count INT
+    OUT count INT,
     OUT serverGuid VARCHAR(128),
-    OUT operHostName(VARCHAR(255),
+    OUT operHostName VARCHAR(255),
     OUT nwPartition VARCHAR(45),
     OUT region VARCHAR(45),
     OUT dcGuid VARCHAR(128),
@@ -262,7 +262,7 @@ BEGIN
         T1.REGION,
         T2.GUID,
         T2.NAME
-    INTO count, serverGuid, operHostName, nwPartition, region, vRegion, dcGuid, dcName
+    INTO count, serverGuid, operHostName, nwPartition, region, dcGuid, dcName
     FROM esolutionssvc.installed_systems T1
     INNER JOIN esolutionssvc.services T2
     ON T1.DATACENTER_GUID = T2.GUID
