@@ -28,19 +28,26 @@ package com.cws.esolutions.core.processors.impl;
 import java.io.File;
 import java.util.List;
 import java.util.Arrays;
+
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Type;
+
 import java.util.ArrayList;
 import java.io.IOException;
 import java.util.Properties;
+
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Record;
+
 import java.sql.SQLException;
 import java.security.Security;
 import java.io.FileOutputStream;
+
 import org.xbill.DNS.SimpleResolver;
+
 import java.io.FileNotFoundException;
 import java.net.UnknownHostException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.FileUtils;
 import org.xbill.DNS.TextParseException;
@@ -305,7 +312,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
             else
             {
                 // this will run through the available slave servers
-                List<String[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
+                List<Object[]> serverList = dao.getServersByAttribute(ServerType.DNSSLAVE.name(), 0);
 
                 if (DEBUG)
                 {
@@ -318,10 +325,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     {
                         if (DEBUG)
                         {
-                            for (Object obj : data)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
+                            DEBUGGER.debug("Value: {}", data);
                         }
 
                         String serverName = (String) data[15];
@@ -653,7 +657,7 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                     if ((zoneFile.exists()) && (zoneFile.length() != 0))
                     {
                         IServerDataDAO dao = new ServerDataDAOImpl();
-                        List<String[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
+                        List<Object[]> dnsServers = dao.getServersByAttribute(ServerType.DNSMASTER.name() + " " + request.getServiceRegion().name(), 0);
 
                         if (DEBUG)
                         {
@@ -676,9 +680,12 @@ public class DNSServiceRequestProcessorImpl implements IDNSServiceRequestProcess
                             authProps.put(CoreServiceConstants.SALT, sshConfig.getSshSalt());
                             authProps.put(CoreServiceConstants.KEYFILE, sshConfig.getSshKey());
 
-                            NetworkUtils.executeSCPTransfer(sshProps, authProps, new ArrayList<>(Arrays.asList(zoneFile)), zoneFile.getAbsolutePath(), dnsServers.get(0)[18], true);
+                            NetworkUtils.executeSCPTransfer(sshProps, authProps,
+                                    new ArrayList<>(
+                                            Arrays.asList(zoneFile)),
+                                    zoneFile.getAbsolutePath(), (String) dnsServers.get(0)[18], true);
 
-                            List<String[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
+                            List<Object[]> slaveServers = dao.getServersByAttribute(ServerType.DNSSLAVE.name() + " " + request.getServiceRegion().name(), 0);
 
                             if (DEBUG)
                             {

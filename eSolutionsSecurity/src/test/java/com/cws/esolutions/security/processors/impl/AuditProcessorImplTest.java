@@ -47,19 +47,19 @@ public class AuditProcessorImplTest
     private static UserAccount userAccount = new UserAccount();
     private static RequestHostInfo hostInfo = new RequestHostInfo();
 
-    private static final IAuditProcessor auditor = new AuditProcessorImpl();
+    private static final IAuditProcessor processor = new AuditProcessorImpl();
 
     @Before
     public void setUp()
     {
         try
         {
-            hostInfo.setHostAddress("junit");
-            hostInfo.setHostName("junit");
+            AuditProcessorImplTest.hostInfo.setHostAddress("junit");
+            AuditProcessorImplTest.hostInfo.setHostName("junit");
 
-            userAccount.setStatus(LoginStatus.SUCCESS);
-            userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
-            userAccount.setUsername("khuntly");
+            AuditProcessorImplTest.userAccount.setStatus(LoginStatus.SUCCESS);
+            AuditProcessorImplTest.userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
+            AuditProcessorImplTest.userAccount.setUsername("khuntly");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
@@ -72,46 +72,51 @@ public class AuditProcessorImplTest
     }
 
     @Test
-    public static void testAuditRequest()
+    public void testAuditRequest()
     {
         AuditEntry auditEntry = new AuditEntry();
         auditEntry.setApplicationId("JUNIT");
         auditEntry.setApplicationName("JUNIT");
         auditEntry.setAuditType(AuditType.JUNIT);
-        auditEntry.setHostInfo(hostInfo);
-        auditEntry.setUserAccount(userAccount);
+        auditEntry.setHostInfo(AuditProcessorImplTest.hostInfo);
+        auditEntry.setUserAccount(AuditProcessorImplTest.userAccount);
 
         AuditRequest auditRequest = new AuditRequest();
         auditRequest.setAuditEntry(auditEntry);
 
         try
         {
-            auditor.auditRequest(auditRequest);
+            AuditProcessorImplTest.processor.auditRequest(auditRequest);
         }
         catch (AuditServiceException asx)
         {
-            Assert.fail("An error occurred while performing the test");
+            Assert.fail(asx.getMessage());
         }
     }
 
     @Test
-    public static void testGetAuditEntries()
+    public void testGetAuditEntries()
     {
         AuditEntry auditEntry = new AuditEntry();
-        auditEntry.setUserAccount(userAccount);
+        auditEntry.setUserAccount(AuditProcessorImplTest.userAccount);
 
         AuditRequest request = new AuditRequest();
         request.setAuditEntry(auditEntry);
+        request.setApplicationId("myid");
+        request.setApplicationName("esolutions");
+        request.setHostInfo(AuditProcessorImplTest.hostInfo);
+        request.setUserAccount(AuditProcessorImplTest.userAccount);
+        
 
         try
         {
-            AuditResponse response = auditor.getAuditEntries(request);
+            AuditResponse response = AuditProcessorImplTest.processor.getAuditEntries(request);
 
             Assert.assertEquals(SecurityRequestStatus.SUCCESS, response.getRequestStatus());
         }
         catch (AuditServiceException asx)
         {
-            Assert.fail("An error occurred while performing the test");
+            Assert.fail(asx.getMessage());
         }
     }
 

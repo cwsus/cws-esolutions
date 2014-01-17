@@ -86,54 +86,56 @@ public class ResetRequestReaper implements Job
                 DEBUGGER.debug("activeResets: {}", activeResets);
             }
 
-            if ((activeResets != null) && (activeResets.size() != 0))
+            if ((activeResets == null) || (activeResets.size() == 0))
             {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MINUTE, 30);
-                long expiryTime = cal.getTimeInMillis();
+                return;
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MINUTE, 30);
+            long expiryTime = cal.getTimeInMillis();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Calendar: {}", cal);
+                DEBUGGER.debug("expiryTime: {}", expiryTime);
+            }
+
+            for (String[] reset : activeResets)
+            {
+                if (DEBUG)
+                {
+                    for (String str : reset)
+                    {
+                        DEBUGGER.debug("str : {}", str);
+                    }
+                }
+
+                String commonName = reset[0];
+                String resetKey = reset[1];
+                long createTime = Long.valueOf(reset[2]);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Calendar: {}", cal);
-                    DEBUGGER.debug("expiryTime: {}", expiryTime);
+                    DEBUGGER.debug("commonName: {}", commonName);
+                    DEBUGGER.debug("resetKey: {}", resetKey);
+                    DEBUGGER.debug("createTime: {}", createTime);
                 }
 
-                for (String[] reset : activeResets)
+                if (createTime <= expiryTime)
                 {
-                    if (DEBUG)
-                    {
-                        for (String str : reset)
-                        {
-                            DEBUGGER.debug("str : {}", str);
-                        }
-                    }
+                    AUDIT_RECORDER.info("Removing expired reset request: {}", resetKey);
 
-                    String commonName = reset[0];
-                    String resetKey = reset[1];
-                    long createTime = Long.valueOf(reset[2]);
+                    boolean isComplete = dao.removeResetData(commonName, resetKey);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("commonName: {}", commonName);
-                        DEBUGGER.debug("resetKey: {}", resetKey);
-                        DEBUGGER.debug("createTime: {}", createTime);
+                        DEBUGGER.debug("isComplete: {}", isComplete);
                     }
 
-                    if (createTime <= expiryTime)
+                    if (!(isComplete))
                     {
-                        AUDIT_RECORDER.info("Removing expired reset request: {}", resetKey);
-
-                        boolean isComplete = dao.removeResetData(commonName, resetKey);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
-
-                        if (!(isComplete))
-                        {
-                            ERROR_RECORDER.error("Failed to remove expired reset request " + resetKey);
-                        }
+                        ERROR_RECORDER.error("Failed to remove expired reset request " + resetKey);
                     }
                 }
             }

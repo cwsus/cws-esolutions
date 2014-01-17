@@ -1,8 +1,8 @@
 --
--- Definition of table esolutionssvc.services
+-- Definition of table ESOLUTIONSSVC.SERVICES
 --
-DROP TABLE IF EXISTS esolutionssvc.services;
-CREATE TABLE esolutionssvc.services (
+DROP TABLE IF EXISTS ESOLUTIONSSVC.SERVICES;
+CREATE TABLE ESOLUTIONSSVC.SERVICES (
     GUID VARCHAR(128) NOT NULL UNIQUE,
     SERVICE_TYPE VARCHAR(50) NOT NULL,
     NAME VARCHAR(128) NOT NULL UNIQUE,
@@ -16,17 +16,17 @@ CREATE TABLE esolutionssvc.services (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE esolutionssvc.services CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE ESOLUTIONSSVC.SERVICES CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure esolutionssvc.getServiceByAttribute
+-- Definition of procedure ESOLUTIONSSVC.getServiceByAttribute
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getServiceByAttribute$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getServiceByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServiceByAttribute(
+CREATE PROCEDURE ESOLUTIONSSVC.getServiceByAttribute(
     IN attributeName VARCHAR(100),
     IN startRow INT
 )
@@ -34,10 +34,9 @@ BEGIN
     SELECT
         GUID,
         NAME,
-        SERVICE_TYPE,
     MATCH (SERVICE_TYPE, NAME, REGION, NWPARTITION)
-    AGAINST (+attributeName WITH QUERY EXPANSION)
-    FROM esolutionssvc.services
+    AGAINST (+attributeName WITH QUERY EXPANSION) AS score
+    FROM ESOLUTIONSSVC.SERVICES
     WHERE MATCH (SERVICE_TYPE, NAME, REGION, NWPARTITION)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND STATUS = 'ACTIVE'
@@ -47,11 +46,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.addNewService
+-- Definition of procedure ESOLUTIONSSVC.addNewService
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.addNewService$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.addNewService$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.addNewService(
+CREATE PROCEDURE ESOLUTIONSSVC.addNewService(
     IN guid VARCHAR(128),
     IN serviceType VARCHAR(50),
     IN name VARCHAR(128),
@@ -62,7 +61,7 @@ CREATE PROCEDURE esolutionssvc.addNewService(
     IN description TEXT
 )
 BEGIN
-    INSERT INTO esolutionssvc.services (GUID, SERVICE_TYPE, NAME, REGION, NWPARTITION, STATUS, SERVERS, DESCRIPTION)
+    INSERT INTO ESOLUTIONSSVC.SERVICES (GUID, SERVICE_TYPE, NAME, REGION, NWPARTITION, STATUS, SERVERS, DESCRIPTION)
     VALUES (guid, serviceType, name, region, nwpartition, status, servers, description);
 
     COMMIT;
@@ -71,11 +70,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.updateServiceData
+-- Definition of procedure ESOLUTIONSSVC.updateServiceData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.updateServiceData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.updateServiceData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.updateServiceData(
+CREATE PROCEDURE ESOLUTIONSSVC.updateServiceData(
     IN guid VARCHAR(128),
     IN serviceType VARCHAR(50),
     IN name VARCHAR(128),
@@ -86,7 +85,7 @@ CREATE PROCEDURE esolutionssvc.updateServiceData(
     IN description TEXT
 )
 BEGIN
-    UPDATE esolutionssvc.services
+    UPDATE ESOLUTIONSSVC.SERVICES
     SET
         SERVICE_TYPE = serviceType,
         NAME = name,
@@ -103,15 +102,15 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.removeServiceData
+-- Definition of procedure ESOLUTIONSSVC.removeServiceData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.removeServiceData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.removeServiceData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.removeServiceData(
+CREATE PROCEDURE ESOLUTIONSSVC.removeServiceData(
     IN guid VARCHAR(128)
 )
 BEGIN
-    UPDATE esolutionssvc.services
+    UPDATE ESOLUTIONSSVC.SERVICES
     SET STATUS = 'INACTIVE'
     WHERE GUID = guid;
 
@@ -121,19 +120,22 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.listServices
+-- Definition of procedure ESOLUTIONSSVC.listServices
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.listServices$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.listServices$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.listServices(
+CREATE PROCEDURE ESOLUTIONSSVC.listServices(
     IN startRow INT
 )
 BEGIN
+    SET @counter := (SELECT COUNT(GUID) FROM ESOLUTIONSSVC.SERVICES WHERE STATUS = 'ACTIVE');
+
     SELECT
+        @counter AS COUNTER,
         GUID,
         SERVICE_TYPE,
         NAME
-    FROM esolutionssvc.services
+    FROM ESOLUTIONSSVC.SERVICES
     WHERE STATUS = 'ACTIVE'
     LIMIT startRow, 20;
 END $$
@@ -141,11 +143,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.getServiceData
+-- Definition of procedure ESOLUTIONSSVC.getServiceData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getServiceData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getServiceData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServiceData(
+CREATE PROCEDURE ESOLUTIONSSVC.getServiceData(
     IN guid VARCHAR(128)
 )
 BEGIN
@@ -157,7 +159,7 @@ BEGIN
         STATUS,
         SERVERS,
         DESCRIPTION
-    FROM esolutionssvc.services
+    FROM ESOLUTIONSSVC.SERVICES
     WHERE GUID = guid
     AND STATUS = 'ACTIVE';
 END $$

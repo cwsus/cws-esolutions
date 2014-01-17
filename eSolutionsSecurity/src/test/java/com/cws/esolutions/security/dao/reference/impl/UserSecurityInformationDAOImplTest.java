@@ -226,7 +226,7 @@ public class UserSecurityInformationDAOImplTest
     }
 
     @After
-    public static void tearDown()
+    public void tearDown()
     {
         SecurityServiceInitializer.shutdown();
     }

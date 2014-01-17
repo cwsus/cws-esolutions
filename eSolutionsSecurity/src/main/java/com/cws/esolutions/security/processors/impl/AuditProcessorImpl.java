@@ -180,15 +180,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                         DEBUGGER.debug("UserAccount: {}", user);
                     }
 
-                    // capture the data for the given user
-                    int rowCount = auditDAO.getAuditCount(user.getGuid());
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("rowCount: {}", rowCount);
-                    }
-
-                    List<String[]> dataResponse = auditDAO.getAuditInterval(user.getGuid(), request.getStartRow());
+                    List<Object> dataResponse = auditDAO.getAuditInterval(user.getGuid(), request.getStartRow());
 
                     if (DEBUG)
                     {
@@ -197,43 +189,48 @@ public class AuditProcessorImpl implements IAuditProcessor
 
                     if ((dataResponse != null) && (dataResponse.size() != 0))
                     {
+                        int count = (Integer) dataResponse.get(0);
                         List<AuditEntry> auditList = new ArrayList<>();
 
-                        for (String[] array : dataResponse)
+                        for (int x = 1; dataResponse.size() != x; x++)
                         {
                             if (DEBUG)
                             {
-                                for (String str : array)
-                                {
-                                    DEBUGGER.debug(str);
-                                }
+                                DEBUGGER.debug("Value: {}", dataResponse.get(x));
                             }
 
-                            // capture
-                            UserAccount userAccount = new UserAccount();
-                            userAccount.setUsername(array[1]); // usr_audit_userid
-                            userAccount.setGuid(array[2]); // usr_audit_userguid
+                            Object[] array = (Object[]) dataResponse.get(x);
 
                             if (DEBUG)
                             {
-                                DEBUGGER.debug("UserAccount: {}", userAccount);
+                                DEBUGGER.debug("Object[]: {}", array);
                             }
 
                             RequestHostInfo hostInfo = new RequestHostInfo();
-                            hostInfo.setHostAddress(array[8]);
-                            hostInfo.setHostName(array[9]);
-                            hostInfo.setSessionId(array[0]);
+                            hostInfo.setHostAddress((String) array[7]); // resultSet.getString(9), // SOURCE_ADDRESS
+                            hostInfo.setHostName((String) array[8]); // resultSet.getString(10) // SOURCE_HOSTNAME
+                            hostInfo.setSessionId((String) array[0]); // resultSet.getString(2), // SESSION_ID
 
                             if (DEBUG)
                             {
                                 DEBUGGER.debug("RequestHostInfo: {}", hostInfo);
                             }
 
+                            // capture
+                            UserAccount userAccount = new UserAccount();
+                            userAccount.setUsername((String) array[1]); // resultSet.getString(3), // USERNAME
+                            userAccount.setGuid((String) array[2]); // resultSet.getString(4), // CN
+
+                            if (DEBUG)
+                            {
+                                DEBUGGER.debug("UserAccount: {}", userAccount);
+                            }
+
                             AuditEntry resEntry = new AuditEntry();
-                            resEntry.setApplicationId(array[4]); // usr_audit_applid
-                            resEntry.setApplicationName(array[5]); // usr_audit_applname
-                            resEntry.setAuditDate(new Date(Long.valueOf(array[6]))); // usr_audit_timestamp
-                            resEntry.setAuditType(AuditType.valueOf(array[7])); // usr_audit_action
+                            resEntry.setApplicationId((String) (array[3])); // resultSet.getString(5), // APPLICATION_ID
+                            resEntry.setApplicationName((String) array[4]); // resultSet.getString(6), // APPLICATION_NAME
+                            resEntry.setAuditDate((Date) array[5]); // resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
+                            resEntry.setAuditType(AuditType.valueOf((String) array[6])); // resultSet.getString(8), // ACTION
                             resEntry.setHostInfo(hostInfo);
                             resEntry.setUserAccount(userAccount);
 
@@ -250,7 +247,7 @@ public class AuditProcessorImpl implements IAuditProcessor
                             DEBUGGER.debug("AuditList: {}", auditList);
                         }
 
-                        response.setEntryCount(rowCount);
+                        response.setEntryCount(count);
                         response.setAuditList(auditList);
                         response.setRequestStatus(SecurityRequestStatus.SUCCESS);
                     }

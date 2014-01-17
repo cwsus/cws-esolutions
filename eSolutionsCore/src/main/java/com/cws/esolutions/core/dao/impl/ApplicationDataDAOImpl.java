@@ -360,7 +360,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IApplicationDataDAO#getApplicationsByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
+    public synchronized List<Object[]> getApplicationsByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IApplicationDataDAO.CNAME + "#getApplicationsByAttribute(final String value, final int startRow) throws SQLException";
 
@@ -374,7 +374,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> responseData = null;
+        List<Object[]> responseData = null;
 
         try
         {
@@ -436,20 +436,16 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
                     while (resultSet.next())
                     {
-                        String[] data = new String[]
+                        Object[] data = new Object[]
                         {
-                            resultSet.getString(1), // T1.APPLICATION_GUID
-                            resultSet.getString(2), // T1.APPLICATION_NAME
-                            resultSet.getString(3), // T2.PROJECT_GUID
-                            resultSet.getString(4), // T2.PROJECT_NAME
+                            resultSet.getString(1), // GUID
+                            resultSet.getString(2), // NAME
+                            resultSet.getInt(3) / 0  * 100 // score
                         };
 
                         if (DEBUG)
                         {
-                            for (String str : data)
-                            {
-                                DEBUGGER.debug(str);
-                            }
+                            DEBUGGER.debug("Value: {}", data);
                         }
 
                         responseData.add(data);
@@ -457,13 +453,7 @@ public class ApplicationDataDAOImpl implements IApplicationDataDAO
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseData)
-                        {
-                            for (String str1 : str)
-                            {
-                                DEBUGGER.debug(str1);
-                            }
-                        }
+                        DEBUGGER.debug("Value: {}", responseData);
                     }
                 }
             }

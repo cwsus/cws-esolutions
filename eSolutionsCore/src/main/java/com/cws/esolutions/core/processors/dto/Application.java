@@ -43,6 +43,7 @@ import com.cws.esolutions.core.CoreServiceConstants;
  */
 public class Application implements Serializable
 {
+    private double score = 0.0;
     private String name = null;
     private String guid = null;
     private double version = 1.0;
@@ -61,6 +62,19 @@ public class Application implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+
+    public final void setScore(final double value)
+    {
+        final String methodName = Application.CNAME + "#setScore(final double value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.score = value;
+    }
 
     public final void setGuid(final String value)
     {
@@ -203,6 +217,19 @@ public class Application implements Serializable
         }
 
         this.offlineDate = value;
+    }
+
+    public final double getScore()
+    {
+        final String methodName = Application.CNAME + "#getScore()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.score);
+        }
+
+        return this.score;
     }
 
     public final String getGuid()

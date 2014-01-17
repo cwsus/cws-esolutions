@@ -25,7 +25,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.security.Principal;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceConstants;
@@ -35,7 +34,7 @@ import com.cws.esolutions.security.SecurityServiceConstants;
  * @author 35033355
  * @version 1.0
  */
-public class UserGroup implements Serializable, Principal
+public class UserGroup implements Serializable
 {
     private String name = null;
     private List<String> services = null;
@@ -46,31 +45,6 @@ public class UserGroup implements Serializable, Principal
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
-
-    public UserGroup()
-    {
-        final String methodName = UserGroup.CNAME + "#()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-    }
-
-    public UserGroup(final String value)
-    {
-        super();
-
-        final String methodName = UserGroup.CNAME + "#(final String value)#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.name = value;
-    }
 
     public final void setName(final String value)
     {
@@ -98,7 +72,6 @@ public class UserGroup implements Serializable, Principal
         this.services = value;
     }
 
-    @Override
     public final String getName()
     {
         final String methodName = UserGroup.CNAME + "#getName()";

@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -204,7 +203,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
 
                     // build groups
                     List<UserGroup> userGroups = new ArrayList<UserGroup>();
-                    for (String group : (List<String>) userData.get(14))
+                    for (String group : StringUtils.split((String) userData.get(14), ","))
                     {
                         if (DEBUG)
                         {

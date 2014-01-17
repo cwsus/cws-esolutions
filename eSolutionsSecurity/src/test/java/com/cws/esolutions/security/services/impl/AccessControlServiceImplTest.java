@@ -1,23 +1,19 @@
 /*
  * Copyright (c) 2009 - 2013 By: CWS, Inc.
  * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * All rights reserved. These materials are confidential and
+ * proprietary to CaspersBox Web Services N.A and no part of
+ * these materials should be reproduced, published in any form
+ * by any means, electronic or mechanical, including photocopy
+ * or any information storage or retrieval system not should
+ * the materials be disclosed to third parties without the
+ * express written authorization of CaspersBox Web Services, N.A.
  */
 package com.cws.esolutions.security.services.impl;
 /*
  * Project: eSolutionsSecurity
- * Package: com.cws.esolutions.security.services.impl
- * File: AdminControlServiceImplTest.java
+ * Package: com.cws.esolutions.security.processors.impl
+ * File: AccountChangeProcessorImplTest.java
  *
  * History
  *
@@ -37,13 +33,12 @@ import com.cws.esolutions.security.listeners.SecurityServiceInitializer;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
 
-public class AdminControlServiceImplTest
+public class AccessControlServiceImplTest
 {
-    private static UserAccount userAccount = null;
-    private static RequestHostInfo hostInfo = null;
+    private static UserAccount userAccount = new UserAccount();
+    private static RequestHostInfo hostInfo = new RequestHostInfo();
+    private static final IAccessControlService processor = new AccessControlServiceImpl();
 
-    private static final IAccessControlService service = new AccessControlServiceImpl();
-    
     @Before
     public void setUp()
     {
@@ -66,16 +61,19 @@ public class AdminControlServiceImplTest
         }
     }
 
+    /**
+     * Test method for {@link com.cws.esolutions.security.services.impl.AccessControlServiceImpl#isUserAuthorized(com.cws.esolutions.security.dto.UserAccount, java.lang.String)}.
+     */
     @Test
-    public void testIsUserAuthorizedForService()
+    public final void testIsUserAuthorized()
     {
         try
         {
-            Assert.assertTrue(service.isUserAuthorized(userAccount, "ef628254-e692-4029-8189-aedb9cf1e380"));
+            Assert.assertNotNull(processor.isUserAuthorized(userAccount, "test"));
         }
-        catch (AccessControlServiceException ucsx)
+        catch (AccessControlServiceException acsx)
         {
-            Assert.fail(ucsx.getMessage());
+            Assert.fail(acsx.getMessage());
         }
     }
 

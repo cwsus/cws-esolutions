@@ -153,7 +153,7 @@ public interface IApplicationDataDAO
      *         Only the application GUID and name are returned.
      * @throws SQLException if an error occurs during data processing
      */
-    List<String[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
+    List<Object[]> getApplicationsByAttribute(final String attribute, final int startRow) throws SQLException;
 
     /**
      * Lists applications stored within the asset management database. This listing

@@ -207,19 +207,31 @@ public class LDAPAuthenticator implements Authenticator
 
             if ((roleResult.getResultCode() == ResultCode.SUCCESS) && (roleResult.getEntryCount() != 0))
             {
-                List<String> roles = new ArrayList<>();
+                StringBuilder sBuilder = new StringBuilder();
 
-                for (SearchResultEntry role : roleResult.getSearchEntries())
+                for (int x = 0; x < roleResult.getSearchEntries().size(); x++)
                 {
+                    SearchResultEntry role = roleResult.getSearchEntries().get(x);
+
                     if (DEBUG)
                     {
                         DEBUGGER.debug("SearchResultEntry: {}", role);
                     }
 
-                    roles.add(role.getAttributeValue("cn"));
+                    if (x == roleResult.getSearchEntries().size())
+                    {
+                        sBuilder.append(role);
+                    }
+
+                    sBuilder.append(role + ", ");
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("sBuilder: {}", sBuilder.toString());
+                    }
                 }
 
-                userAccount.add(roles);
+                userAccount.add(sBuilder.toString());
             }
 
             // reset the lock count and update last login

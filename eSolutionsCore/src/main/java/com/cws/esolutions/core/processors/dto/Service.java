@@ -46,6 +46,7 @@ import com.cws.esolutions.core.processors.enums.NetworkPartition;
  */
 public class Service implements Serializable
 {
+    private double score = 0.0;
     private String guid = null;
     private String name = null;
     private ServiceType type = null;
@@ -61,6 +62,19 @@ public class Service implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+
+    public final void setScore(final double value)
+    {
+        final String methodName = Service.CNAME + "#setScore(final double value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.score = value;
+    }
 
     public final void setGuid(final String value)
     {
@@ -164,6 +178,19 @@ public class Service implements Serializable
         }
 
         this.partition = value;
+    }
+
+    public final double getScore()
+    {
+        final String methodName = Service.CNAME + "#getScore()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.score);
+        }
+
+        return this.score;
     }
 
     public final String getGuid()

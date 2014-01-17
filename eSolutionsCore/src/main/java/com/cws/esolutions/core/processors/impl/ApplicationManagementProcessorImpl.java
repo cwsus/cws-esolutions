@@ -30,6 +30,7 @@ import java.util.UUID;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.core.utils.MQUtils;
@@ -675,7 +676,7 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
 
             if (isUserAuthorized)
             {
-                List<String[]> appData = appDAO.getApplicationsByAttribute(application.getName(), request.getStartPage());
+                List<Object[]> appData = appDAO.getApplicationsByAttribute(application.getName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -686,11 +687,12 @@ public class ApplicationManagementProcessorImpl implements IApplicationManagemen
                 {
                     List<Application> appList = new ArrayList<>();
 
-                    for (String[] array : appData)
+                    for (Object[] array : appData)
                     {
                         Application app = new Application();
-                        app.setGuid(array[0]); // T1.APPLICATION_GUID
-                        app.setName(array[1]); // T1.APPLICATION_NAME
+                        app.setGuid((String) array[0]); // T1.APPLICATION_GUID
+                        app.setName((String) array[1]); // T1.APPLICATION_NAME
+                        app.setScore((double) array[2]);
 
                         if (DEBUG)
                         {

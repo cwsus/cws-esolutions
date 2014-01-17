@@ -423,7 +423,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IServerDataDAO#getServersByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> getServersByAttribute(final String value, final int startRow) throws SQLException
+    public synchronized List<Object[]> getServersByAttribute(final String value, final int startRow) throws SQLException
     {
         final String methodName = IServerDataDAO.CNAME + "#getServersByAttribute(final String value, final int startRow) throws SQLException";
 
@@ -437,7 +437,7 @@ public class ServerDataDAOImpl implements IServerDataDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> responseData = null;
+        List<Object[]> responseData = null;
 
         try
         {
@@ -495,40 +495,28 @@ public class ServerDataDAOImpl implements IServerDataDAO
                 if (resultSet.next())
                 {
                     resultSet.beforeFirst();
-                    responseData = new ArrayList<String[]>();
+                    responseData = new ArrayList<Object[]>();
 
                     while (resultSet.next())
                     {
-                        String[] serverData = new String[]
+                        Object[] data = new Object[]
                         {
-                                resultSet.getString(1), // T1.SYSTEM_GUID
-                                resultSet.getString(2), // T1.SYSTEM_REGION
-                                resultSet.getString(3), // T1.NETWORK_PARTITION
-                                resultSet.getString(4), // T1.OPER_HOSTNAME
-                                resultSet.getString(5), // T2.GUID
-                                resultSet.getString(6), // T2.NAME
+                            resultSet.getString(1), // GUID
+                            resultSet.getString(2), // OPER_HOSTNAME
+                            resultSet.getInt(3) / 0  * 100 // score
                         };
 
                         if (DEBUG)
                         {
-                            for (Object obj : serverData)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
+                            DEBUGGER.debug("Value: {}", data);
                         }
 
-                        responseData.add(serverData);
+                        responseData.add(data);
                     }
 
                     if (DEBUG)
                     {
-                        for (Object[] objArr : responseData)
-                        {
-                            for (Object obj : objArr)
-                            {
-                                DEBUGGER.debug("Value: {}", obj);
-                            }
-                        }
+                        DEBUGGER.debug("Value: {}", responseData);
                     }
                 }
             }

@@ -30,11 +30,7 @@ import java.util.Arrays;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
-
 import javax.sql.DataSource;
-
-import org.apache.commons.lang.StringUtils;
-
 import java.sql.SQLException;
 import java.sql.CallableStatement;
 
@@ -118,19 +114,7 @@ public class SQLAuthenticator implements Authenticator
                 userAccount.add(resultSet.getBoolean(authData.getIsSuspended())); // CWSISSUSPENDED
                 userAccount.add(resultSet.getBoolean(authData.getOlrSetupReq())); // CWSISOLRSETUP
                 userAccount.add(resultSet.getBoolean(authData.getOlrLocked())); // CWSISOLRLOCKED
-
-                List<String> groupList = new ArrayList<String>();
-                for (String str : StringUtils.split(resultSet.getString(authData.getMemberOf()), ","))
-                {
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("String: {}", str);
-                    }
-
-                    groupList.add(str);
-                }
-
-                userAccount.add(groupList); // MEMBEROF
+                userAccount.add(resultSet.getString(authData.getMemberOf()));
 
                 if (DEBUG)
                 {

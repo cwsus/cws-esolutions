@@ -60,7 +60,7 @@ public interface IServiceDataDAO
 
     List<String[]> listServices(final int startRow) throws SQLException;
 
-    List<String[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException;
+    List<Object[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException;
 
     List<String> getService(final String attribute) throws SQLException;
 }

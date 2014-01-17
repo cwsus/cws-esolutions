@@ -49,6 +49,7 @@ public class Server implements Serializable
 {
     private int cpuCount = 1; // has to be at least 1
     private int dmgrPort = 0; // only used when the servertype is dmgr
+    private double score = 0.0;
     private String mgrUrl = null; // this is used for both vmgr and dmgr - the access url
     private String osName = null;
     private String cpuType = null;
@@ -86,6 +87,19 @@ public class Server implements Serializable
     private static final Logger DEBUGGER = LoggerFactory.getLogger(CoreServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(CoreServiceConstants.ERROR_LOGGER);
+
+    public final void setScore(final double value)
+    {
+        final String methodName = Server.CNAME + "#setScore(final double value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        this.score = value;
+    }
 
     public final void setServerGuid(final String value)
     {
@@ -501,6 +515,19 @@ public class Server implements Serializable
         }
 
         this.offlineDate = value;
+    }
+
+    public final double getScore()
+    {
+        final String methodName = Server.CNAME + "#getScore()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.score);
+        }
+
+        return this.score;
     }
 
     public final String getServerGuid()

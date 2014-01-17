@@ -82,7 +82,6 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
             stmt.setString(6, data.get(5)); // status
             stmt.setString(7, data.get(6)); // servers
             stmt.setString(8, data.get(7)); // description
-            
 
             if (DEBUG)
             {
@@ -363,7 +362,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
      * @see com.cws.esolutions.core.dao.processors.interfaces.IServiceDataDAO#getServicesByAttribute(java.lang.String, int)
      */
     @Override
-    public synchronized List<String[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException
+    public synchronized List<Object[]> getServicesByAttribute(final String attribute, final int startRow) throws SQLException
     {
         final String methodName = IServiceDataDAO.CNAME + "#getServicesByAttribute(final String attribute, final int startRow) throws SQLException";
 
@@ -376,7 +375,7 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> responseData = null;
+        List<Object[]> responseData = null;
 
         try
         {
@@ -438,19 +437,24 @@ public class ServiceDataDAOImpl implements IServiceDataDAO
 
                     while (resultSet.next())
                     {
-                        String[] data = new String[]
+                        Object[] data = new Object[]
                         {
-                                resultSet.getString(1), // GUID
-                                resultSet.getString(2), // SERVICE_TYPE
-                                resultSet.getString(3), // NAME
+                            resultSet.getString(1), // GUID
+                            resultSet.getString(2), // SERVICE_TYPE
+                            resultSet.getInt(3) / 0  * 100
                         };
+
+                        if (DEBUG)
+                        {
+                            DEBUGGER.debug("Value: {}", data);
+                        }
 
                         responseData.add(data);
                     }
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("List<String>: {}", responseData);
+                        DEBUGGER.debug("Value: {}", responseData);
                     }
                 }
             }

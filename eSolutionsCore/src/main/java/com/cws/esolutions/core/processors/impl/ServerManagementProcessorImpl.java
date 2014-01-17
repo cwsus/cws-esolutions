@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.sql.SQLException;
+
 import org.apache.commons.lang.StringUtils;
 
 import com.cws.esolutions.security.dto.UserAccount;
@@ -108,7 +109,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
                 try
                 {
-                    List<String[]> validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
+                    List<Object[]> validator = serverDAO.getServersByAttribute(requestServer.getOperHostName(), request.getStartPage());
 
                     if (DEBUG)
                     {
@@ -683,7 +684,7 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
 
             if (isUserAuthorized)
             {
-                List<String[]> serverData = serverDAO.getServersByAttribute(request.getAttribute(), request.getStartPage());
+                List<Object[]> serverData = serverDAO.getServersByAttribute(request.getAttribute(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -694,13 +695,12 @@ public class ServerManagementProcessorImpl implements IServerManagementProcessor
                 {
                     List<Server> serverList = new ArrayList<>();
 
-                    for (String[] data : serverData)
+                    for (Object[] data : serverData)
                     {
                         Server server = new Server();
-                        server.setServerGuid(data[0]); // SYSTEM_GUID
-                        server.setServerRegion(ServiceRegion.valueOf(data[1])); // SYSTEM_REGION
-                        server.setNetworkPartition(NetworkPartition.valueOf(data[2])); // NETWORK_PARTITION
-                        server.setOperHostName(data[3]); // OPER_HOSTNAME
+                        server.setServerGuid((String) data[0]); // SYSTEM_GUID
+                        server.setOperHostName((String) data[1]); // OPER_HOSTNAME
+                        server.setScore((double) data[2]);
     
                         if (DEBUG)
                         {

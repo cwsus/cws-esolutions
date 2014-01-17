@@ -99,7 +99,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 }
 
                 // make sure all the platform data is there
-                List<String[]> validator = null;
+                List<Object[]> validator = null;
 
                 try
                 {
@@ -136,14 +136,15 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
                     List<String> insertData = new ArrayList<>(
                             Arrays.asList(
-                                    UUID.randomUUID().toString(),
-                                    service.getName(),
-                                    service.getRegion().name(),
-                                    service.getPartition().name(),
-                                    service.getStatus().name(),
-                                    serverList.toString(),
-                                    service.getDescription()));
-
+                                    UUID.randomUUID().toString(), // GUID
+                                    service.getType().name(), // SERVICE_TYPE
+                                    service.getName(), // NAME
+                                    service.getRegion().name(), // REGION
+                                    service.getPartition().name(), // NWPARTITION
+                                    service.getStatus().name(), // STATUS
+                                    serverList.toString(), // SERVERS
+                                    service.getDescription())); // DESCRIPTION
+                    
                     if (DEBUG)
                     {
                         for (Object str : insertData)
@@ -775,7 +776,7 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
 
             if (isUserAuthorized)
             {
-                List<String[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
+                List<Object[]> serviceData = serviceDao.getServicesByAttribute(service.getName(), request.getStartPage());
 
                 if (DEBUG)
                 {
@@ -786,12 +787,12 @@ public class ServiceManagementProcessorImpl implements IServiceManagementProcess
                 {
                     List<Service> serviceList = new ArrayList<>();
 
-                    for (String[] data : serviceData)
+                    for (Object[] data : serviceData)
                     {
                         Service resService = new Service();
-                        service.setGuid(data[0]);
-                        service.setType(ServiceType.valueOf(data[1]));
-                        service.setName(data[2]);
+                        service.setGuid((String) data[0]);
+                        service.setName((String) data[1]);
+                        service.setScore((double) data[2]);
 
                         if (DEBUG)
                         {

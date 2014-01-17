@@ -77,22 +77,17 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
+        final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("KeyManager: {}", keyManager);
         }
 
         try
         {
-            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManager: {}", keyManager);
-            }
-
             KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
             if (keyPair != null)
@@ -219,22 +214,17 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
+        final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("KeyManager: {}", keyManager);
         }
 
         try
         {
-            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManager: {}", keyManager);
-            }
-
             KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
             if (keyPair != null)
@@ -354,22 +344,17 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
+        final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("KeyManager: {}", keyManager);
         }
 
         try
         {
-            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManager: {}", keyManager);
-            }
-
             KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
             if (keyPair != null)
@@ -494,22 +479,17 @@ public class FileSecurityProcessorImpl implements IFileSecurityProcessor
 
         final RequestHostInfo reqInfo = request.getHostInfo();
         final UserAccount userAccount = request.getUserAccount();
+        final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
         if (DEBUG)
         {
             DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
             DEBUGGER.debug("UserAccount", userAccount);
+            DEBUGGER.debug("KeyManager: {}", keyManager);
         }
 
         try
         {
-            KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("KeyManager: {}", keyManager);
-            }
-
             KeyPair keyPair = keyManager.returnKeys(userAccount.getGuid());
 
             if (keyPair != null)

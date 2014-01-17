@@ -31,28 +31,52 @@
                     <value>localhost</value>
                 </entry>
                 <entry>
-                    <key>mailFrom</key>
-                    <value>secadm@caspersbox.com</value>
+                    <key>portNumber</key>
+                    <value>465</value>
                 </entry>
                 <entry>
-                    <key>mailProps</key>
-                    <value>/eSolutionsCore/mail/MailConfig.properties</value>
+                    <key>isSecure</key>
+                    <value>false</value>
                 </entry>
                 <entry>
-                    <key>userAccount</key>
-                    <value>secadm</value>
+                    <key>isAuthenticated</key>
+                    <value>false</value>
+                </entry>
+                <!--
+                <entry>
+                    <key>username</key>
+                    <value>kmhuntly</value>
                 </entry>
                 <entry>
-                    <key>sendMessageAs</key>
-                    <value>secadm@caspersbox.com</value>
+                    <key>password</key>
+                    <value>password</value>
                 </entry>
+                <entry>
+                    <key>salt</key>
+                    <value>salt</value>
+                </entry>
+                -->
                 <entry>
                     <key>messageSubject</key>
                     <value>Your password is about to expire</value>
                 </entry>
                 <entry>
                     <key>messageBody</key>
-                    <value></value>
+                    <value>
+                        <![CDATA[
+                            Dear %s,
+
+                            Your password will be expiring soon. Please log in to the service and change
+                            your password at your earliest convenience to ensure your access remains
+                            available.
+
+                            Please do not respond to this email as it is sent from an unmonitored mailbox.
+
+                            Thanks,
+
+                            Your Administration Team
+                        ]]>
+                    </value>
                 </entry>
             </job-data-map>
         </job>

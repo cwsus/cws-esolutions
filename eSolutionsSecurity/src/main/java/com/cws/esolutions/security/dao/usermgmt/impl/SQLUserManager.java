@@ -528,8 +528,8 @@ public class SQLUserManager implements UserManager
                     {
                         String[] userData = new String[]
                         {
-                                resultSet.getString(authData.getCommonName()),
-                                resultSet.getString(authData.getUserId())
+                            resultSet.getString(authData.getCommonName()),
+                            resultSet.getString(authData.getUserId())
                         };
 
                         if (DEBUG)

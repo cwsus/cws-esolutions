@@ -1,8 +1,8 @@
 --
--- Definition of table esolutionssvc.installed_systems
+-- Definition of table ESOLUTIONSSVC.INSTALLED_SYSTEMS
 --
-DROP TABLE IF EXISTS esolutionssvc.installed_systems;
-CREATE TABLE esolutionssvc.installed_systems (
+DROP TABLE IF EXISTS ESOLUTIONSSVC.INSTALLED_SYSTEMS;
+CREATE TABLE ESOLUTIONSSVC.INSTALLED_SYSTEMS (
     GUID VARCHAR(128) CHARACTER SET UTF8 NOT NULL,
     SYSTEM_OSTYPE VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     STATUS VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
@@ -37,51 +37,35 @@ CREATE TABLE esolutionssvc.installed_systems (
     PRIMARY KEY (GUID),
     CONSTRAINT FK_DATACENTER_GUID
         FOREIGN KEY (DATACENTER_GUID)
-        REFERENCES esolutionssvc.service_datacenters (DATACENTER_GUID)
+        REFERENCES ESOLUTIONSSVC.service_datacenters (DATACENTER_GUID)
             ON DELETE RESTRICT
             ON UPDATE NO ACTION,
     FULLTEXT KEY IDX_SEARCH (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, OPER_HOSTNAME, ASSIGNED_ENGINEER, OWNING_DMGR)
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE esolutionssvc.installed_systems CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE ESOLUTIONSSVC.INSTALLED_SYSTEMS CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure esolutionssvc.getServerByAttribute
+-- Definition of procedure ESOLUTIONSSVC.getServerByAttribute
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getServerByAttribute$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getServerByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServerByAttribute(
+CREATE PROCEDURE ESOLUTIONSSVC.getServerByAttribute(
     IN attributeName VARCHAR(100),
-    IN startRow INT,
-    OUT count INT,
-    OUT score INT
+    IN startRow INT
 )
 BEGIN
-    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
-    DECLARE vRegion VARCHAR(45); -- NOTE: THIS IS NOT USED
-    DECLARE vPartition VARCHAR(45); -- NOTE: THIS IS NOT USED
-    DECLARE vHostname VARCHAR(45); -- NOTE: THIS IS NOT USED
-    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
-
     SELECT
-        COUNT(T1.GUID) AS aCount,
-        T1.GUID,
-        T1.REGION,
-        T1.NWPARTITION,
-        T1.OPER_HOSTNAME,
-        T2.GUID,
-        T2.NAME,
-    MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
+        GUID,
+        OPER_HOSTNAME,
+    MATCH (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, OPER_HOSTNAME, ASSIGNED_ENGINEER, OWNING_DMGR)
     AGAINST (attributeName WITH QUERY EXPANSION) AS score
-    INTO count, vGuid, vRegion, vPartition, vHostname, vGuid, vName, score
-    FROM esolutionssvc.installed_systems T1
-    INNER JOIN esolutionssvc.services T2
-    ON T1.DATACENTER_GUID = T2.GUID
-    WHERE MATCH (T1.GUID, T1.SYSTEM_OSTYPE, T1.STATUS, T1.REGION, T1.NWPARTITION, T1.DATACENTER_GUID, T1.SYSTYPE, T1.OPER_HOSTNAME, T1.ASSIGNED_ENGINEER, T1.OWNING_DMGR)
+    FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS
+    WHERE MATCH (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, OPER_HOSTNAME, ASSIGNED_ENGINEER, OWNING_DMGR)
     AGAINST (attributeName IN BOOLEAN MODE)
     AND DELETE_DATE IS NULL
     LIMIT startRow, 20;
@@ -90,11 +74,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.insertNewServer
+-- Definition of procedure ESOLUTIONSSVC.insertNewServer
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.insertNewServer$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.insertNewServer$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.insertNewServer(
+CREATE PROCEDURE ESOLUTIONSSVC.insertNewServer(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -128,12 +112,12 @@ CREATE PROCEDURE esolutionssvc.insertNewServer(
 BEGIN
     IF dmgrPort = 0
     THEN
-        INSERT INTO esolutionssvc.installed_systems
+        INSERT INTO ESOLUTIONSSVC.INSTALLED_SYSTEMS
         (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, OWNING_DMGR)
         VALUES
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, owningDmgr);
     ELSE
-        INSERT INTO esolutionssvc.installed_systems
+        INSERT INTO ESOLUTIONSSVC.INSTALLED_SYSTEMS
         (GUID, SYSTEM_OSTYPE, STATUS, REGION, NWPARTITION, DATACENTER_GUID, SYSTYPE, DOMAIN_NAME, CPU_TYPE, CPU_COUNT, SERVER_RACK, RACK_POSITION, SERVER_MODEL, SERIAL_NUMBER, INSTALLED_MEMORY, OPER_IP, OPER_HOSTNAME, MGMT_IP, MGMT_HOSTNAME, BKUP_IP, BKUP_HOSTNAME, NAS_IP, NAS_HOSTNAME, NAT_ADDR, COMMENTS, ASSIGNED_ENGINEER, ADD_DATE, MGR_ENTRY, DMGR_PORT, OWNING_DMGR)
         VALUES
         (systemGuid, systemOs, systemStatus, systemRegion, networkPartition, datacenter, systemType, domainName, cpuType, cpuCount, serverRack, rackPosition, serverModel, serialNumber, installedMemory, operIp, operHostname, mgmtIp, mgmtHostname, backupIp, backupHostname, nasIp, nasHostname, natAddr, systemComments, engineer, NOW(), mgrEntry, dmgrPort, owningDmgr);
@@ -145,11 +129,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.updateServerData
+-- Definition of procedure ESOLUTIONSSVC.updateServerData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.updateServerData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.updateServerData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.updateServerData(
+CREATE PROCEDURE ESOLUTIONSSVC.updateServerData(
     IN systemGuid VARCHAR(128),
     IN systemOs VARCHAR(45),
     IN systemStatus VARCHAR(45),
@@ -181,7 +165,7 @@ CREATE PROCEDURE esolutionssvc.updateServerData(
     IN owningDmgr VARCHAR(255)
 )
 BEGIN
-    UPDATE esolutionssvc.installed_systems
+    UPDATE ESOLUTIONSSVC.INSTALLED_SYSTEMS
     SET
         SYSTEM_OSTYPE = systemOs,
         STATUS = systemStatus,
@@ -219,15 +203,15 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.retireServer
+-- Definition of procedure ESOLUTIONSSVC.retireServer
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.retireServer$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.retireServer$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retireServer(
+CREATE PROCEDURE ESOLUTIONSSVC.retireServer(
     IN systemGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE esolutionssvc.installed_systems
+    UPDATE ESOLUTIONSSVC.INSTALLED_SYSTEMS
     SET
         STATUS = 'RETIRED',
         DELETE_DATE = CURRENT_TIMESTAMP()
@@ -239,32 +223,26 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.getServerList
+-- Definition of procedure ESOLUTIONSSVC.getServerList
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getServerList$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getServerList$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getServerList(
-    IN startRow INT,
-    OUT count INT,
-    OUT serverGuid VARCHAR(128),
-    OUT operHostName VARCHAR(255),
-    OUT nwPartition VARCHAR(45),
-    OUT region VARCHAR(45),
-    OUT dcGuid VARCHAR(128),
-    OUT dcName VARCHAR(128)
+CREATE PROCEDURE ESOLUTIONSSVC.getServerList(
+    IN startRow INT
 )
 BEGIN
+    SET @counter := (SELECT COUNT(GUID) FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS WHERE DELETE_DATE IS NULL);
+
     SELECT
-        COUNT(T1.GUID) AS aCount,
+        @counter AS COUNTER,
         T1.GUID,
         T1.OPER_HOSTNAME,
         T1.NWPARTITION,
         T1.REGION,
         T2.GUID,
         T2.NAME
-    INTO count, serverGuid, operHostName, nwPartition, region, dcGuid, dcName
-    FROM esolutionssvc.installed_systems T1
-    INNER JOIN esolutionssvc.services T2
+    FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS T1
+    INNER JOIN ESOLUTIONSSVC.SERVICES T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE DELETE_DATE IS NULL
     LIMIT startRow, 20;
@@ -273,11 +251,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.retrServerData
+-- Definition of procedure ESOLUTIONSSVC.retrServerData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.retrServerData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.retrServerData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retrServerData(
+CREATE PROCEDURE ESOLUTIONSSVC.retrServerData(
     IN serverGuid VARCHAR(128)
 )
 BEGIN
@@ -314,8 +292,8 @@ BEGIN
         T1.MGR_ENTRY,
         T2.GUID,
         T2.NAME
-    FROM esolutionssvc.installed_systems T1
-    INNER JOIN esolutionssvc.service_datacenters T2
+    FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS T1
+    INNER JOIN ESOLUTIONSSVC.service_datacenters T2
     ON T1.DATACENTER_GUID = T2.GUID
     WHERE T1.GUID = serverGuid
     AND DELETE_DATE IS NULL;
@@ -326,13 +304,13 @@ COMMIT$$
 --
 -- Definition of procedure getRetiredServers
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getRetiredServers$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getRetiredServers$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getRetiredServers(
+CREATE PROCEDURE ESOLUTIONSSVC.getRetiredServers(
 )
 BEGIN
     SELECT GUID
-    FROM esolutionssvc.installed_systems
+    FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS
     WHERE DELETE_DATE IS NOT NULL;
 END $$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
@@ -341,21 +319,21 @@ COMMIT$$
 --
 -- Definition of procedure getRetiredServers
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.retireServer$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.retireServer$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.retireServer(
+CREATE PROCEDURE ESOLUTIONSSVC.retireServer(
     IN guid VARCHAR(128)
 )
 BEGIN
-    INSERT INTO esolutionssvc_hist.installed_systems
+    INSERT INTO ESOLUTIONSSVC_hist.INSTALLED_SYSTEMS
     SELECT *
-    FROM esolutionssvc.installed_systems
+    FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS
     WHERE GUID = guid
     AND DELETE_DATE IS NOT NULL;
 
     COMMIT;
 
-    DELETE FROM esolutionssvc.installed_systems
+    DELETE FROM ESOLUTIONSSVC.INSTALLED_SYSTEMS
     WHERE GUID = guid
     AND DELETE_DATE IS NOT NULL;
 

@@ -25,6 +25,7 @@ package com.cws.esolutions.security.quartz;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.util.Date;
 import java.util.List;
 import org.quartz.Job;
 import org.slf4j.Logger;
@@ -70,6 +71,13 @@ public class IdleAccountLocker implements Job
             DEBUGGER.debug("JobExecutionContext: {}", context);
         }
 
+        final int inactive = Integer.parseInt((String) context.getJobDetail().getJobDataMap().get("inactive"));
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("inactive: {}", inactive);
+        }
+
         try
         {
             // this is NOT going to route through the processor.
@@ -88,52 +96,56 @@ public class IdleAccountLocker implements Job
                 DEBUGGER.debug("accounts: {}", accounts);
             }
 
-            if ((accounts != null) && (accounts.size() != 0))
+            if ((accounts == null) || (accounts.size() == 0))
             {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 30);
-                Long expiryTime = cal.getTimeInMillis();
+                return;
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, inactive);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Calendar: {}", cal);
+            }
+
+            for (String[] account : accounts)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Account: {}", (Object) account);
+                }
+
+                List<Object> accountDetail = manager.loadUserAccount(account[0]);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Calendar: {}", cal);
-                    DEBUGGER.debug("expiryTime: {}", expiryTime);
+                    DEBUGGER.debug("List<Object>: {}", accountDetail);
                 }
 
-                for (String[] account : accounts)
+                String guid = (String) accountDetail.get(0);
+                String username = (String) accountDetail.get(1);
+                Date lastLogin = (Date) accountDetail.get(3);
+
+                if (DEBUG)
                 {
-                    if (DEBUG)
-                    {
-                        for (String str : account)
-                        {
-                            DEBUGGER.debug("account: {}", str);
-                        }
-                    }
+                    DEBUGGER.debug("String: {}", guid);
+                    DEBUGGER.debug("String: {}", username);
+                    DEBUGGER.debug("Date: {}", lastLogin);
+                }
 
-                    String commonName = account[0];
-                    String userName = account[1];
-                    long lastLogin = Long.valueOf(account[8]);
+                if (cal.getTime().before(lastLogin))
+                {
+                    boolean isComplete = manager.modifyUserSuspension(username, guid, true);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("commonName: {}", commonName);
-                        DEBUGGER.debug("userName: {}", userName);
-                        DEBUGGER.debug("lastLogin: {}", lastLogin);
+                        DEBUGGER.debug("isComplete: {}", isComplete);
                     }
 
-                    if (lastLogin >= expiryTime)
+                    if (!(isComplete))
                     {
-                        boolean isComplete = manager.modifyUserSuspension(userName, commonName, true);
-
-                        if (DEBUG)
-                        {
-                            DEBUGGER.debug("isComplete: {}", isComplete);
-                        }
-
-                        if (!(isComplete))
-                        {
-                            ERROR_RECORDER.error("Failed to suspend account " + userName);
-                        }
+                        ERROR_RECORDER.error("Failed to suspend account " + username);
                     }
                 }
             }

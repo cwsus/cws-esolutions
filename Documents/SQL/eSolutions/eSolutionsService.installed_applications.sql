@@ -1,8 +1,8 @@
 --
--- Definition of table esolutionssvc.installed_applications
+-- Definition of table ESOLUTIONSSVC.INSTALLED_APPLICATIONS
 --
-DROP TABLE IF EXISTS esolutionssvc.installed_applications;
-CREATE TABLE esolutionssvc.installed_applications (
+DROP TABLE IF EXISTS ESOLUTIONSSVC.INSTALLED_APPLICATIONS;
+CREATE TABLE ESOLUTIONSSVC.INSTALLED_APPLICATIONS (
     GUID VARCHAR(128) CHARACTER SET UTF8 NOT NULL UNIQUE,
     NAME VARCHAR(45) CHARACTER SET UTF8 NOT NULL,
     VERSION DECIMAL(30, 2) NOT NULL DEFAULT 1.0,
@@ -19,34 +19,27 @@ CREATE TABLE esolutionssvc.installed_applications (
 ) ENGINE=MyISAM DEFAULT CHARSET=UTF8 ROW_FORMAT=COMPACT COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
-ALTER TABLE esolutionssvc.installed_applications CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
+ALTER TABLE ESOLUTIONSSVC.INSTALLED_APPLICATIONS CONVERT TO CHARACTER SET UTF8 COLLATE UTF8_GENERAL_CI;
 COMMIT;
 
 DELIMITER $$
 
 --
--- Definition of procedure esolutionssvc.getApplicationByAttribute
+-- Definition of procedure ESOLUTIONSSVC.getApplicationByAttribute
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getApplicationByAttribute$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getApplicationByAttribute$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getApplicationByAttribute(
+CREATE PROCEDURE ESOLUTIONSSVC.getApplicationByAttribute(
     IN attributeName VARCHAR(100),
-    IN startRow INT,
-    OUT appCount INT,
-    OUT score INT
+    IN startRow INT
 )
 BEGIN
-    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
-    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
-
     SELECT
-        COUNT(GUID) AS counter,
         GUID,
         NAME,
     MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
     AGAINST (+attributeName WITH QUERY EXPANSION) AS score
-	INTO appCount, vGuid, vName, score
-    FROM esolutionssvc.installed_applications
+    FROM ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     WHERE MATCH (NAME, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER, INSTALLER_OPTIONS)
     AGAINST (+attributeName IN BOOLEAN MODE)
     AND APP_OFFLINE_DATE IS NULL
@@ -56,11 +49,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.insertNewApplication
+-- Definition of procedure ESOLUTIONSSVC.insertNewApplication
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.insertNewApplication$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.insertNewApplication$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.insertNewApplication(
+CREATE PROCEDURE ESOLUTIONSSVC.insertNewApplication(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -72,7 +65,7 @@ CREATE PROCEDURE esolutionssvc.insertNewApplication(
     IN platformGuid TEXT
 )
 BEGIN
-    INSERT INTO esolutionssvc.installed_applications
+    INSERT INTO ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     (
         GUID, NAME, VERSION, INSTALLATION_PATH, PACKAGE_LOCATION, PACKAGE_INSTALLER,
         INSTALLER_OPTIONS, LOGS_DIRECTORY, PLATFORM_GUID, APP_ONLINE_DATE
@@ -89,11 +82,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.updateApplicationData
+-- Definition of procedure ESOLUTIONSSVC.updateApplicationData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.updateApplicationData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.updateApplicationData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.updateApplicationData(
+CREATE PROCEDURE ESOLUTIONSSVC.updateApplicationData(
     IN appGuid VARCHAR(128),
     IN appName VARCHAR(45),
     IN appVersion DECIMAL(30, 2),
@@ -105,7 +98,7 @@ CREATE PROCEDURE esolutionssvc.updateApplicationData(
     IN platformGuid TEXT
 )
 BEGIN
-    UPDATE esolutionssvc.installed_applications
+    UPDATE ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     SET
         NAME = appName,
         VERSION = appVersion,
@@ -123,15 +116,15 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.removeApplicationData
+-- Definition of procedure ESOLUTIONSSVC.removeApplicationData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.removeApplicationData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.removeApplicationData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.removeApplicationData(
+CREATE PROCEDURE ESOLUTIONSSVC.removeApplicationData(
     IN appGuid VARCHAR(128)
 )
 BEGIN
-    UPDATE esolutionssvc.installed_applications
+    UPDATE ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     SET APP_OFFLINE_DATE = CURRENT_TIMESTAMP()
     WHERE GUID = appGuid;
 
@@ -141,11 +134,11 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.getApplicationData
+-- Definition of procedure ESOLUTIONSSVC.getApplicationData
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.getApplicationData$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.getApplicationData$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.getApplicationData(
+CREATE PROCEDURE ESOLUTIONSSVC.getApplicationData(
     IN appGuid VARCHAR(128)
 )
 BEGIN
@@ -159,7 +152,7 @@ BEGIN
         INSTALLER_OPTIONS,
         LOGS_DIRECTORY,
         PLATFORM_GUID
-    FROM esolutionssvc.installed_applications
+    FROM ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     WHERE GUID = appGuid
     AND APP_OFFLINE_DATE IS NULL;
 END $$
@@ -167,24 +160,21 @@ END $$
 COMMIT$$
 
 --
--- Definition of procedure esolutionssvc.listApplications
+-- Definition of procedure ESOLUTIONSSVC.listApplications
 --
-DROP PROCEDURE IF EXISTS esolutionssvc.listApplications$$
+DROP PROCEDURE IF EXISTS ESOLUTIONSSVC.listApplications$$
 /*!50003 SET @TEMP_SQL_MODE=@@SQL_MODE, SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER' */ $$
-CREATE PROCEDURE esolutionssvc.listApplications(
-    IN startRow INT,
-    OUT appCount INT
+CREATE PROCEDURE ESOLUTIONSSVC.listApplications(
+    IN startRow INT
 )
 BEGIN
-    DECLARE vGuid VARCHAR(128); -- NOTE: THIS IS NOT USED
-    DECLARE vName VARCHAR(45); -- NOTE: THIS IS NOT USED
+    SET @counter := (SELECT COUNT(GUID) FROM ESOLUTIONSSVC.INSTALLED_APPLICATIONS WHERE APP_OFFLINE_DATE IS NULL);
 
     SELECT
-        COUNT(GUID) AS aCount,
+        @counter AS COUNTER,
         GUID,
         NAME
-    INTO appCount, vGuid, vName
-    FROM esolutionssvc.installed_applications
+    FROM ESOLUTIONSSVC.INSTALLED_APPLICATIONS
     WHERE APP_OFFLINE_DATE IS NULL
     LIMIT startRow, 20;
 END $$

@@ -34,13 +34,11 @@ import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.FileSecurityConfig;
-import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.processors.dto.FileSecurityRequest;
 import com.cws.esolutions.security.processors.dto.FileSecurityResponse;
 import com.cws.esolutions.security.config.xml.SecurityConfigurationData;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
-import com.cws.esolutions.security.dao.keymgmt.factory.KeyManagementFactory;
 import com.cws.esolutions.security.processors.exception.FileSecurityException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -59,7 +57,6 @@ public interface IFileSecurityProcessor
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityConfigurationData secConfig = secBean.getConfigData();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();
-    static final KeyManager keyManager = KeyManagementFactory.getKeyManager(keyConfig.getKeyManager());
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

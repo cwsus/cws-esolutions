@@ -30,7 +30,6 @@ import java.util.Date;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.security.Principal;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 
@@ -44,7 +43,7 @@ import com.cws.esolutions.security.processors.enums.LoginStatus;
  * @author khuntly
  * @version 1.0
  */
-public class UserAccount implements Serializable, Principal
+public class UserAccount implements Serializable
 {
     private String guid = null;
     private String surname = null;
@@ -69,31 +68,6 @@ public class UserAccount implements Serializable, Principal
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER);
-
-    public UserAccount()
-    {
-        final String methodName = UserAccount.CNAME + "#()#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-        }
-    }
-
-    public UserAccount(final String value)
-    {
-        super();
-
-        final String methodName = UserAccount.CNAME + "#(final String value)#Constructor";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.username = value;
-    }
 
     public final void setStatus(final LoginStatus value)
     {
@@ -332,20 +306,6 @@ public class UserAccount implements Serializable, Principal
     public final String getUsername()
     {
         final String methodName = UserAccount.CNAME + "#getUsername()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.username);
-        }
-
-        return this.username;
-    }
-
-    @Override
-    public final String getName()
-    {
-        final String methodName = UserAccount.CNAME + "#getName()";
 
         if (DEBUG)
         {

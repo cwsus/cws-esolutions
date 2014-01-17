@@ -51,9 +51,11 @@ import com.cws.esolutions.security.dao.reference.impl.UserSecurityInformationDAO
 import com.cws.esolutions.security.dao.reference.interfaces.IUserServiceInformationDAO;
 import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInformationDAO;
 /**
- * Interface for the Application Data DAO layer. Allows access
- * into the asset management database to obtain, modify and remove
- * application information.
+ * Allows processing of account change requests for individual user accounts for
+ * select pieces of information. This does not allow full modification of the
+ * entire user account, some modifications are restricted to system adminstrators.
+ * Only the owning user account can modify information for itself - methods housed
+ * within this class cannot be executed by the administration team.
  *
  * @author khuntly
  * @version 1.0
@@ -78,11 +80,53 @@ public interface IAccountChangeProcessor
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     static final Logger ERROR_RECORDER = LoggerFactory.getLogger(SecurityServiceConstants.ERROR_LOGGER + CNAME);
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
     AccountChangeResponse changeUserEmail(final AccountChangeRequest request) throws AccountChangeException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
     AccountChangeResponse changeUserPassword(final AccountChangeRequest request) throws AccountChangeException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
     AccountChangeResponse changeUserSecurity(final AccountChangeRequest request) throws AccountChangeException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
     AccountChangeResponse changeUserContact(final AccountChangeRequest request) throws AccountChangeException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param request
+     * @return
+     * @throws AccountChangeException
+     */
+    AccountChangeResponse changeUserKeys(final AccountChangeRequest request) throws AccountChangeException;
 }

@@ -64,7 +64,7 @@ public class ApplicationManagementProcessorImplTest
             userAccount.setGuid("74d9729b-7fb2-4fef-874b-c9ee5d7a5a95");
             userAccount.setUsername("khuntly");
 
-            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "logging/logging.xml");
+            CoreServiceInitializer.initializeService("eSolutionsCore/config/ServiceConfig.xml", "eSolutionsCore/logging/logging.xml");
 
             SecurityServiceInitializer.initializeService("SecurityService/config/ServiceConfig.xml", "SecurityService/logging/logging.xml");
         }
@@ -79,7 +79,7 @@ public class ApplicationManagementProcessorImplTest
     @Test
     public void testAddNewApplication()
     {
-        String[] platforms = { "17b33263-560e-4cbc-95eb-b78483d04bab", "8dde8b07-f028-480a-bc74-047da3637ef3", "affdb777-5f23-42ab-9af9-cab14fa7df19" };
+        String[] platforms = { "09571c2c-dd88-4d57-b418-dbbd35deb653", "16d15529-2e28-4beb-873c-eb5fba452feb", "54c10a53-5d77-4c54-8041-eb90c33e7c1d" };
 
         List<Service> platformList = new ArrayList<>();
 
@@ -92,7 +92,7 @@ public class ApplicationManagementProcessorImplTest
         }
 
         Application application = new Application();
-        application.setName("eSolutionsAgent");
+        application.setName("Test eSolutions");
         application.setVersion(1.0);
         application.setInstallPath("/opt/cws/eSolutions");
         application.setPackageLocation("/installs/cws/eSolutionsAgent");

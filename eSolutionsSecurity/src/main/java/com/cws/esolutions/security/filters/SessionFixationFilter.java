@@ -90,40 +90,40 @@ public class SessionFixationFilter implements Filter
             DEBUGGER.debug("HttpSession.getId(): {}", hSession.getId());
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
             }
         }
 
-        Enumeration<String> sessionAttributes = hSession.getAttributeNames();
+        Enumeration<?> sessionAttributes = hSession.getAttributeNames();
 
         if (DEBUG)
         {
@@ -134,7 +134,7 @@ public class SessionFixationFilter implements Filter
         {
             while (sessionAttributes.hasMoreElements())
             {
-                String element = sessionAttributes.nextElement();
+                String element = (String) sessionAttributes.nextElement();
 
                 if (DEBUG)
                 {
@@ -184,11 +184,11 @@ public class SessionFixationFilter implements Filter
                     DEBUGGER.debug("HttpSession: {}", nSession);
 
                     DEBUGGER.debug("Dumping session content:");
-                    Enumeration<String> sessionEnumeration = nSession.getAttributeNames();
+                    Enumeration<?> sessionEnumeration = nSession.getAttributeNames();
 
                     while (sessionEnumeration.hasMoreElements())
                     {
-                        String newSesionElement = sessionEnumeration.nextElement();
+                        String newSesionElement = (String) sessionEnumeration.nextElement();
                         Object newSessionValue = nSession.getAttribute(newSesionElement);
     
                         DEBUGGER.debug("Attribute: " + newSesionElement + "; Value: " + newSessionValue);

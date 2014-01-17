@@ -200,33 +200,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -344,33 +344,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -441,33 +441,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -530,33 +530,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -620,33 +620,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -760,33 +760,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);
@@ -906,33 +906,33 @@ public class SystemCheckController
             DEBUGGER.debug("UserAccount: {}", userAccount);
 
             DEBUGGER.debug("Dumping session content:");
-            @SuppressWarnings("unchecked") Enumeration<String> sessionEnumeration = hSession.getAttributeNames();
+            Enumeration<?> sessionEnumeration = hSession.getAttributeNames();
 
             while (sessionEnumeration.hasMoreElements())
             {
-                String element = sessionEnumeration.nextElement();
+                String element = (String) sessionEnumeration.nextElement();
                 Object value = hSession.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request content:");
-            @SuppressWarnings("unchecked") Enumeration<String> requestEnumeration = hRequest.getAttributeNames();
+            Enumeration<?> requestEnumeration = hRequest.getAttributeNames();
 
             while (requestEnumeration.hasMoreElements())
             {
-                String element = requestEnumeration.nextElement();
+                String element = (String) requestEnumeration.nextElement();
                 Object value = hRequest.getAttribute(element);
 
                 DEBUGGER.debug("Attribute: {}; Value: {}", element, value);
             }
 
             DEBUGGER.debug("Dumping request parameters:");
-            @SuppressWarnings("unchecked") Enumeration<String> paramsEnumeration = hRequest.getParameterNames();
+            Enumeration<?> paramsEnumeration = hRequest.getParameterNames();
 
             while (paramsEnumeration.hasMoreElements())
             {
-                String element = paramsEnumeration.nextElement();
+                String element = (String) paramsEnumeration.nextElement();
                 Object value = hRequest.getParameter(element);
 
                 DEBUGGER.debug("Parameter: {}; Value: {}", element, value);

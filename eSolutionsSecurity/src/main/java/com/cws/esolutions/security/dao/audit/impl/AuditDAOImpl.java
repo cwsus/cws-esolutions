@@ -66,11 +66,11 @@ public class AuditDAOImpl implements IAuditDAO
             stmt.setString(1, auditRequest.get(0)); // usr_audit_sessionid
             stmt.setString(2, auditRequest.get(1)); // usr_audit_userid
             stmt.setString(3, auditRequest.get(2)); // usr_audit_userguid
-            stmt.setString(5, auditRequest.get(3)); // usr_audit_applid
-            stmt.setString(6, auditRequest.get(4)); // usr_audit_applname
-            stmt.setString(7, auditRequest.get(5)); // usr_audit_action
-            stmt.setString(8, auditRequest.get(6)); // usr_audit_srcaddr
-            stmt.setString(9, auditRequest.get(7)); // usr_audit_srchost
+            stmt.setString(4, auditRequest.get(3)); // usr_audit_applid
+            stmt.setString(5, auditRequest.get(4)); // usr_audit_applname
+            stmt.setString(6, auditRequest.get(5)); // usr_audit_action
+            stmt.setString(7, auditRequest.get(6)); // usr_audit_srcaddr
+            stmt.setString(8, auditRequest.get(7)); // usr_audit_srchost
 
             if (DEBUG)
             {
@@ -107,97 +107,7 @@ public class AuditDAOImpl implements IAuditDAO
     }
 
     @Override
-    public synchronized int getAuditCount(final String guid) throws SQLException
-    {
-        final String methodName = IAuditDAO.CNAME + "#getAuditCount(final String guid) throws SQLException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", guid);
-        }
-
-        int count = 0;
-        Connection sqlConn = null;
-        ResultSet resultSet = null;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain audit datasource connection");
-            }
-
-            sqlConn.setAutoCommit(true);
-            stmt = sqlConn.prepareCall("{ CALL getAuditCount(?) }");
-            stmt.setString(1, guid);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("stmt: {}", stmt);
-            }
-
-            if (stmt.execute())
-            {
-                resultSet = stmt.getResultSet();
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("resultSet: {}", resultSet);
-                }
-
-                if (resultSet.next())
-                {
-                    resultSet.first();
-
-                    count = resultSet.getInt(1);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("count: {}", count);
-                    }
-                }
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new SQLException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (resultSet != null)
-                {
-                    resultSet.close();
-                }
-
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return count;
-    }
-
-    @Override
-    public synchronized List<String[]> getAuditInterval(final String guid, final int startRow) throws SQLException
+    public synchronized List<Object> getAuditInterval(final String guid, final int startRow) throws SQLException
     {
         final String methodName = IAuditDAO.CNAME + "#getAuditInterval(final String guid, final int startRow) throws SQLException";
 
@@ -211,7 +121,7 @@ public class AuditDAOImpl implements IAuditDAO
         Connection sqlConn = null;
         ResultSet resultSet = null;
         CallableStatement stmt = null;
-        List<String[]> responseList = null;
+        List<Object> responseList = null;
 
         try
         {
@@ -243,29 +153,37 @@ public class AuditDAOImpl implements IAuditDAO
 
                 if (resultSet.next())
                 {
+                    int count = resultSet.getInt(1);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("count: {}", count);
+                    }
+
                     resultSet.beforeFirst();
                     responseList = new ArrayList<>();
+                    responseList.add(count);
 
                     while (resultSet.next())
                     {
-                        String[] data = new String[]
+                        Object[] data = new Object[]
                         {
-                                resultSet.getString(1), // usr_audit_sessionid
-                                resultSet.getString(2), // usr_audit_userid
-                                resultSet.getString(3), // usr_audit_userguid
-                                resultSet.getString(4), // usr_audit_applid
-                                resultSet.getString(5), // usr_audit_applname
-                                String.valueOf(resultSet.getLong(6)), // usr_audit_timestamp
-                                resultSet.getString(7), // usr_audit_action
-                                resultSet.getString(8), // usr_audit_srcaddr
-                                resultSet.getString(9) // usr_audit_srchost
+                                resultSet.getString(2), // SESSION_ID
+                                resultSet.getString(3), // USERNAME
+                                resultSet.getString(4), // CN
+                                resultSet.getString(5), // APPLICATION_ID
+                                resultSet.getString(6), // APPLICATION_NAME
+                                resultSet.getTimestamp(7), // REQUEST_TIMESTAMP
+                                resultSet.getString(8), // ACTION
+                                resultSet.getString(9), // SOURCE_ADDRESS
+                                resultSet.getString(10) // SOURCE_HOSTNAME
                         };
 
                         if (DEBUG)
                         {
-                            for (String str : data)
+                            for (Object obj : data)
                             {
-                                DEBUGGER.debug(str);
+                                DEBUGGER.debug("Value: {}", obj);
                             }
                         }
 
@@ -274,13 +192,7 @@ public class AuditDAOImpl implements IAuditDAO
 
                     if (DEBUG)
                     {
-                        for (String[] str : responseList)
-                        {
-                            for (String str1 : str)
-                            {
-                                DEBUGGER.debug(str1);
-                            }
-                        }
+                        DEBUGGER.debug("responseList: {}", responseList);
                     }
                 }
             }

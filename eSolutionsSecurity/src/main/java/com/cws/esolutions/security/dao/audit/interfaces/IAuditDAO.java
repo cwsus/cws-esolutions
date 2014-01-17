@@ -54,7 +54,5 @@ public interface IAuditDAO
 
     void auditRequestedOperation(final List<String> auditRequest) throws SQLException;
 
-    List<String[]> getAuditInterval(final String username, final int startRow) throws SQLException;
-
-    int getAuditCount(final String guid) throws SQLException;
+    List<Object> getAuditInterval(final String username, final int startRow) throws SQLException;
 }

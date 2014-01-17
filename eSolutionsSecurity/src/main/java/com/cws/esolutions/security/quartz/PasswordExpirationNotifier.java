@@ -31,9 +31,13 @@ import org.quartz.Job;
 import org.slf4j.Logger;
 import java.util.Calendar;
 import org.slf4j.LoggerFactory;
-import javax.mail.MessagingException;
+import org.apache.commons.mail.Email;
 import org.quartz.JobExecutionContext;
+import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.DefaultAuthenticator;
 
+import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
@@ -95,25 +99,68 @@ public class PasswordExpirationNotifier implements Job
                 DEBUGGER.debug("accounts: {}", accounts);
             }
 
-            if ((accounts != null) && (accounts.size() != 0))
+            if ((accounts == null) || (accounts.size() == 0))
             {
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 30);
-                Long expiryTime = cal.getTimeInMillis();
+                return;
+            }
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 30);
+            Long expiryTime = cal.getTimeInMillis();
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Calendar: {}", cal);
+                DEBUGGER.debug("expiryTime: {}", expiryTime);
+            }
+
+            for (String[] account : accounts)
+            {
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Account: {}", (Object) account);
+                }
+
+                List<Object> accountDetail = manager.loadUserAccount(account[0]);
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("Calendar: {}", cal);
-                    DEBUGGER.debug("expiryTime: {}", expiryTime);
+                    DEBUGGER.debug("List<Object>: {}", accountDetail);
                 }
 
-                for (String[] account : accounts)
+                try
                 {
+                    Email email = new SimpleEmail();
+                    email.setHostName((String) jobData.get("mailHost"));
+                    email.setSmtpPort(Integer.parseInt((String) jobData.get("portNumber")));
+
+                    if ((boolean) jobData.get("isSecure"))
+                    {
+                        email.setSSLOnConnect(true);
+                    }
+
+                    if ((boolean) jobData.get("isAuthenticated"))
+                    {
+                        email.setAuthenticator(new DefaultAuthenticator((String) jobData.get("username"),
+                                PasswordUtils.decryptText((String) jobData.get("password"), ((String) jobData.get("salt")).length())));
+                    }
+
+                    email.setFrom(bean.getConfigData().getEmailAddr());
+                    email.addTo((String) accountDetail.get(6));
+                    email.setSubject((String) jobData.get("messageSubject"));
+                    email.setMsg(String.format((String) jobData.get("messageBody"),
+                            (String) accountDetail.get(4)));
+                    
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("Account: {}", account);
+                        DEBUGGER.debug("SimpleEmail: {}", email);
                     }
-                    // TODO
+
+                    email.send();
+                }
+                catch (EmailException ex)
+                {
+                    ERROR_RECORDER.error(ex.getMessage(), ex);
                 }
             }
         }

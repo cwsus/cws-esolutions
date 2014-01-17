@@ -25,8 +25,7 @@ package com.cws.esolutions.security.services.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.sql.SQLException;
-
+import com.cws.esolutions.security.dto.UserGroup;
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
 import com.cws.esolutions.security.services.exception.AccessControlServiceException;
@@ -50,24 +49,19 @@ public class AccessControlServiceImpl implements IAccessControlService
             DEBUGGER.debug("serviceGuid: {}", serviceGuid);
         }
 
-        boolean isUserAuthorized = false;
-
-        try
+        for (UserGroup group : userAccount.getGroups())
         {
-            isUserAuthorized = sqlServiceDAO.verifyServiceForUser(userAccount.getGuid(), serviceGuid);
-
             if (DEBUG)
             {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
+                DEBUGGER.debug("UserGroup: {}", group);
+            }
+
+            if (group.getServices().contains(serviceGuid))
+            {
+                return true;
             }
         }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
 
-            throw new AccessControlServiceException(sqx.getMessage(), sqx);
-        }
-
-        return isUserAuthorized;
+        return false;
     }
 }

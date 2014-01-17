@@ -65,7 +65,10 @@ CREATE PROCEDURE CWSSEC.getAuditInterval(
     IN startRow INT
 )
 BEGIN
+    SET @counter := (SELECT COUNT(CN) FROM AUDIT WHERE CN = userguid);
+
     SELECT
+        @counter AS COUNT,
         SESSION_ID,
         USERNAME,
         CN,
@@ -75,11 +78,11 @@ BEGIN
         ACTION,
         SOURCE_ADDRESS,
         SOURCE_HOSTNAME
-    FROM AUDIT
-    WHERE CN = userguid
-    ORDER BY REQUEST_TIMESTAMP DESC
-    LIMIT startRow, 20;
-END $$
+        FROM AUDIT
+        WHERE CN = userguid
+        ORDER BY REQUEST_TIMESTAMP DESC
+        LIMIT startRow, 20;
+END$$
 /*!50003 SET SESSION SQL_MODE=@TEMP_SQL_MODE */  $$
 COMMIT$$
 

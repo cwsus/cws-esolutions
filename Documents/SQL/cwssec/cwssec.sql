@@ -16,6 +16,7 @@ SOURCE ./cwssec.reset_data.sql;
 SOURCE ./cwssec.security_questions.sql;
 SOURCE ./cwssec.services.sql;
 SOURCE ./cwssec.users.sql;
+SOURCE ./cwssec.key_data.sql;
 
 COMMIT;
 
