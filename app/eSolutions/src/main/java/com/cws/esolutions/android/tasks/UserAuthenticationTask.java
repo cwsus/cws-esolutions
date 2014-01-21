@@ -1,21 +1,36 @@
-/**
- * Copyright (c) 2009 - 2012 By: CWS, Inc.
+/*
+ * Copyright (c) 2009 - 2014 CaspersBox Web Services
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CWS N.A and no part of these materials
- * should be reproduced, published in any form by any means,
- * electronic or mechanical, including photocopy or any information
- * storage or retrieval system not should the materials be
- * disclosed to third parties without the express written
- * authorization of CWS N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cws.esolutions.android.tasks;
-
+/*
+ * eSolutions
+ * com.cws.esolutions.core.tasks
+ * UserAuthenticationTask.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import org.slf4j.Logger;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.net.InetAddress;
 import android.os.AsyncTask;
 import android.app.Activity;
 import android.content.Intent;
@@ -24,45 +39,21 @@ import org.slf4j.LoggerFactory;
 import android.widget.TextView;
 import android.content.Context;
 import android.net.NetworkInfo;
-import org.ksoap2.SoapEnvelope;
 import android.net.ConnectivityManager;
-import org.ksoap2.serialization.SoapObject;
-import org.ksoap2.transport.HttpTransportSE;
-import org.ksoap2.serialization.PropertyInfo;
-import org.xmlpull.v1.XmlPullParserException;
-import org.ksoap2.serialization.SoapPrimitive;
 import org.apache.commons.lang.RandomStringUtils;
-import org.ksoap2.serialization.SoapSerializationEnvelope;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
 import com.cws.esolutions.security.dto.UserAccount;
-import com.cws.esolutions.security.dto.UserSecurity;
 import com.cws.esolutions.security.enums.SecurityRequestStatus;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
+import com.cws.esolutions.security.processors.dto.RequestHostInfo;
+import com.cws.esolutions.security.processors.dto.AuthenticationData;
 import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
-/**
- * eSolutions
- * com.cws.esolutions.core.tasks
- * UserAuthenticationTask.java
- *
- * TODO: Add class description
- *
- * $Id: UserAuthenticationTask.java 2289 2013-01-03 21:03:37Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2013-01-03 16:03:37 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2289 $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * khuntly @ Oct 12, 2012 2:56:18 PM
- *     Created.
- */
+
 public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, List<Object>>
 {
     private String methodName = null;
@@ -86,8 +77,8 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
         if (DEBUG)
         {
             DEBUGGER.debug(this.methodName);
-            DEBUGGER.debug("Activity: ", request);
-            DEBUGGER.debug("Class: ", response);
+            DEBUGGER.debug("Activity: {}", request);
+            DEBUGGER.debug("Class: {}", response);
         }
 
         this.reqActivity = request;
@@ -124,6 +115,8 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                 if (networks.isConnected())
                 {
                     isConnected = true;
+
+                    break;
                 }
             }
 
@@ -148,8 +141,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
         }
 
         UserAccount userAccount = new UserAccount();
-        UserSecurity userSecurity = new UserSecurity();
-        AuthenticationRequest authRequest = new AuthenticationRequest();
+        AuthenticationData userSecurity = new AuthenticationData();
         AuthenticationResponse authResponse = new AuthenticationResponse();
 
         final List<Object> requestList = (List<Object>) request[0];
@@ -158,16 +150,9 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                         requestList.get(1)));
         final AuthenticationType authType = (AuthenticationType) requestList.get(0);
         final LoginType loginType = (LoginType) requestList.get(1);
-        final String sessionId = (String) requestList.get(2);
 
         try
         {
-            authRequest.setAuthType((AuthenticationType) requestList.get(0));
-            authRequest.setLoginType((LoginType) requestList.get(1));
-            authRequest.setAppName(Constants.APPLICATION_NAME);
-
-            userAccount.setSessionId(sessionId);
-
             switch (authType)
             {
                 case LOGIN:
@@ -175,7 +160,6 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                     {
                         case USERNAME:
                             userAccount.setUsername((String) requestList.get(3));
-                            userAccount.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                             break;
                         case PASSWORD:
@@ -189,47 +173,37 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: ", userAccount);
-                        DEBUGGER.debug("AuthenticationRequest: ", authRequest);
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
 
-                    authRequest.setUserAccount(userAccount);
-                    authRequest.setUserSecurity(userSecurity);
+                    RequestHostInfo reqInfo = new RequestHostInfo();
+                    reqInfo.setHostAddress(InetAddress.getLocalHost().getHostAddress());
+                    reqInfo.setHostName(InetAddress.getLocalHost().getHostName());
+                    reqInfo.setSessionId(RandomStringUtils.randomAlphanumeric(32));
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AuthenticationRequest: ", authRequest);
+                        DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
                     }
 
-                    SoapObject soapObject = new SoapObject("http://agent.caspersbox.corp/s?q=esolutions", "sayHello");
+                    AuthenticationRequest authReq = new AuthenticationRequest();
+                    authReq.setApplicationName(Constants.APPLICATION_NAME);
+                    authReq.setAuthType((AuthenticationType) requestList.get(0));
+                    authReq.setLoginType((LoginType) requestList.get(1));
+                    authReq.setUserAccount(userAccount);
+                    authReq.setApplicationId(Constants.APPLICATION_ID);
+                    authReq.setHostInfo(reqInfo);
 
-                    PropertyInfo propInfo = new PropertyInfo();
-                    propInfo.name = "name";
-                    propInfo.type = PropertyInfo.STRING_CLASS;
-                    propInfo.setValue("hello");
-
-                    PropertyInfo info = new PropertyInfo();
-                    info.setType(AuthenticationRequest.class);
-                    info.setValue(authRequest);
-                    info.setName("request");
-
-                    soapObject.addProperty(propInfo);
-                    //soapObject.addProperty(info);
-
-                    SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER11);
-                    envelope.setOutputSoapObject(soapObject);
-
-                    HttpTransportSE httpTransport = new HttpTransportSE("http://161.86.145.22:8181/eSolutions/eSolutionsService?wsdl");
-
-                    httpTransport.call("http://agent.caspersbox.corp/s?q=esolutions/sayHello", envelope);
-
-                    SoapPrimitive response = (SoapPrimitive) envelope.getResponse();
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("AuthenticationRequest: {}", authReq);
+                    }
 
                     //authResponse = agentAuth.processAgentLogon(authRequest);
 
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("AuthenticationResponse: ", authResponse);
+                        DEBUGGER.debug("AuthenticationResponse: {}", authResponse);
                     }
 
                     responseList.add(authResponse);
@@ -245,13 +219,9 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
         {
             ERROR_RECORDER.error(ax.getMessage(), ax);
         }
-        catch (IOException e)
+        catch (IOException iox)
         {
-            e.printStackTrace();
-        }
-        catch (XmlPullParserException e)
-        {
-            e.printStackTrace();
+            ERROR_RECORDER.error(iox.getMessage(), iox);
         }
 
         return responseList;
@@ -265,7 +235,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
         if (DEBUG)
         {
             DEBUGGER.debug(this.methodName);
-            DEBUGGER.debug("responseList: ", responseList);
+            DEBUGGER.debug("responseList: {}", responseList);
         }
 
         final LoginType loginType = (LoginType) responseList.get(0);
@@ -282,7 +252,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
                 if (DEBUG)
                 {
-                    DEBUGGER.debug("UserAccount: ", resAccount);
+                    DEBUGGER.debug("UserAccount: {}", resAccount);
                 }
 
                 switch(resAccount.getStatus())
@@ -299,7 +269,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
 
                                 if (DEBUG)
                                 {
-                                    DEBUGGER.debug("Intent: ", intent);
+                                    DEBUGGER.debug("Intent: {}", intent);
                                 }
 
                                 break;

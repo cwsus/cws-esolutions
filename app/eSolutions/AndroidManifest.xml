@@ -4,7 +4,7 @@
     android:versionName = "1.0"
     android:installLocation = "auto">
 
-    <uses-sdk android:minSdkVersion = "8" android:targetSdkVersion = "15" />
+    <uses-sdk android:minSdkVersion = "8" android:targetSdkVersion = "16" />
 
     <uses-permission android:name = "android.permission.INTERNET"/>
     <uses-permission android:name = "android.permission.ACCESS_NETWORK_STATE" />
@@ -34,6 +34,11 @@
         <activity
             android:name = "com.cws.esolutions.android.ui.DNSActivity"
             android:label = "@string/dnsTitle"
+            android:exported = "false">
+        </activity>
+        <activity
+            android:name = "com.cws.esolutions.android.ui.VirtualManagerActivity"
+            android:label = "@string/vmTitle"
             android:exported = "false">
         </activity>
     </application>

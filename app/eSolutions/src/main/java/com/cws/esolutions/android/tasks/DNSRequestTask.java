@@ -1,16 +1,30 @@
-/**
- * Copyright (c) 2009 - 2012 By: CWS, Inc.
+/*
+ * Copyright (c) 2009 - 2014 CaspersBox Web Services
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CWS N.A and no part of these materials
- * should be reproduced, published in any form by any means,
- * electronic or mechanical, including photocopy or any information
- * storage or retrieval system not should the materials be
- * disclosed to third parties without the express written
- * authorization of CWS N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cws.esolutions.android.tasks;
-
+/*
+ * eSolutions
+ * com.cws.esolutions.core.tasks
+ * DNSRequestTask.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import org.slf4j.Logger;
 import java.util.ArrayList;
@@ -25,36 +39,17 @@ import android.net.ConnectivityManager;
 
 import com.cws.esolutions.android.ui.R;
 import com.cws.esolutions.android.Constants;
-import com.cws.esolutions.core.processors.dto.DNSEntry;
+import com.cws.esolutions.core.processors.dto.DNSRecord;
 import com.cws.esolutions.core.processors.enums.DNSRecordType;
 import com.cws.esolutions.core.processors.enums.DNSRequestType;
 import com.cws.esolutions.core.processors.dto.DNSServiceRequest;
 import com.cws.esolutions.core.processors.dto.DNSServiceResponse;
-import com.cws.esolutions.core.processors.impl.DNSServiceRequestImpl;
 import com.cws.esolutions.core.processors.exception.DNSServiceException;
-import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequest;
-/**
- * eSolutions
- * com.cws.esolutions.core.tasks
- * DNSRequestTask.java
- *
- * TODO: Add class description
- *
- * $Id: DNSRequestTask.java 2139 2012-11-12 00:36:14Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2012-11-11 19:36:14 -0500 (Sun, 11 Nov 2012) $
- * $Revision: 2139 $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 12, 2012 2:56:18 PM
- *     Created.
- */
+import com.cws.esolutions.core.processors.impl.DNSServiceRequestProcessorImpl;
+import com.cws.esolutions.core.processors.interfaces.IDNSServiceRequestProcessor;
+
 public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
 {
-    private String methodName = null;
     private Activity reqActivity = null;
 
     private static final String CNAME = DNSRequestTask.class.getName();
@@ -64,12 +59,12 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     
     public DNSRequestTask(final Activity activity)
     {
-        methodName = CNAME + "#DNSRequestTask(final Activity activity)";
+        final String methodName = DNSRequestTask.CNAME + "#DNSRequestTask(final Activity activity)";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Activity: ", activity);
+            DEBUGGER.debug("Activity: {}", activity);
         }
 
         this.reqActivity = activity;
@@ -78,7 +73,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     @Override
     protected void onPreExecute()
     {
-        methodName = CNAME + "#onPreExecute()";
+        final String methodName = DNSRequestTask.CNAME + "#onPreExecute()";
 
         if (DEBUG)
         {
@@ -105,6 +100,8 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
                 if (networks.isConnected())
                 {
                     isConnected = true;
+
+                    break;
                 }
             }
 
@@ -120,7 +117,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     @Override
     protected List<String> doInBackground(final String... request)
     {
-        methodName = CNAME + "#doInBackground(final String... request)";
+        final String methodName = DNSRequestTask.CNAME + "#doInBackground(final String... request)";
 
         if (DEBUG)
         {
@@ -132,43 +129,36 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
             }
         }
 
-        DNSServiceRequest dnsRequest = null;
-        DNSServiceResponse dnsResponse = null;
         List<String> resultsList = new ArrayList<String>();
 
-        final IDNSServiceRequest dnsProcessor = new DNSServiceRequestImpl();
+        final IDNSServiceRequestProcessor dnsProcessor = new DNSServiceRequestProcessorImpl();
 
         try
         {
-            DNSEntry dnsEntry = new DNSEntry();
-            dnsEntry.setHostName(request[0]);
-            dnsEntry.setRecordType(DNSRecordType.valueOf(request[2]));
+            DNSRecord record = new DNSRecord();
+            record.setRecordName(request[0]);
+            record.setRecordType(DNSRecordType.valueOf(request[2]));
 
             if (DEBUG)
             {
-                DEBUGGER.debug("DNSEntry: {}", dnsEntry);
+                DEBUGGER.debug("DNSRecord: {}", record);
             }
 
-            dnsRequest = new DNSServiceRequest();
+            DNSServiceRequest dnsRequest = new DNSServiceRequest();
             dnsRequest.setRequestType(DNSRequestType.LOOKUP);
             dnsRequest.setResolverHost(request[1]);
-            dnsRequest.setDnsEntry(dnsEntry);
+            dnsRequest.setRecord(record);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("DNSRequest: ", dnsRequest);
+                DEBUGGER.debug("DNSRequest: {}", dnsRequest);
             }
 
-            dnsResponse = dnsProcessor.performLookup(dnsRequest);
+            DNSServiceResponse response = dnsProcessor.performLookup(dnsRequest);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("DNSResponse: ", dnsResponse);
-
-                for (String str : resultsList)
-                {
-                    DEBUGGER.debug(str);
-                }
+                DEBUGGER.debug("DNSResponse: {}", response);
             }
         }
         catch (DNSServiceException dsx)
@@ -181,7 +171,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
 
     protected void onPostExecute(final List<String> result)
     {
-        methodName = CNAME + "#onPostExecute(final List<String> result)";
+        final String methodName = DNSRequestTask.CNAME + "#onPostExecute(final List<String> result)";
 
         if (DEBUG)
         {

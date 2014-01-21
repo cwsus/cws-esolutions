@@ -1,5 +1,4 @@
 <resources>
-    <string name = "menu_kbase">Help</string>
     <string name = "menu_dnssvc">DNS</string>
     <string name = "menu_sysmgt">Systems</string>
     <string name = "menu_settings">Settings</string>

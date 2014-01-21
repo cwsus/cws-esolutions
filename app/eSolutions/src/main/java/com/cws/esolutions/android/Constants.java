@@ -1,33 +1,29 @@
-/**
- * Copyright (c) 2009 - 2012 By: CaspersBox Web Services
+/*
+ * Copyright (c) 2009 - 2014 CaspersBox Web Services
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CWS N.A and no part of these materials
- * should be reproduced, published in any form by any means,
- * electronic or mechanical, including photocopy or any information
- * storage or retrieval system not should the materials be
- * disclosed to third parties without the express written
- * authorization of CWS N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cws.esolutions.android;
-/**
+/*
  * eSolutions
  * com.cws.esolutions.android
  * Constants.java
  *
- * TODO: Add class description
- *
- * $Id: Constants.java 1943 2012-10-19 00:28:55Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2012-10-18 20:28:55 -0400 (Thu, 18 Oct 2012) $
- * $Revision: 1943 $
- * @author khuntly
- * @version 1.0
- *
  * History
+ *
+ * Author               Date                            Comments
  * ----------------------------------------------------------------------------
- * khuntly @ Nov 23, 2008 22:39:20
- *     Created.
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
 public final class Constants
 {
@@ -36,6 +32,7 @@ public final class Constants
      */
     public static final String USER_DATA = "userAccount";
     public static final String APPLICATION_NAME = "eSolutions";
+    public static final String APPLICATION_ID = "5446d6f1-cab8-439f-9bc7-f72141cc81bc";
 
     /* Logging constants */
     public static final String LOGGING_TAG = "eSolutions-";

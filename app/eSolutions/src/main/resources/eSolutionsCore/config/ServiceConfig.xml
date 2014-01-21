@@ -2,38 +2,41 @@
 <configuration>
     <application-config>
         <appName>eSolutionsCore</appName>
-        <serviceRootDirectory>/opt/eSolutions</serviceRootDirectory>
-        <archiveRootDirectory>/opt/eSolutions/archive</archiveRootDirectory>
+        <serviceRootDirectory>/opt/cws/eSolutions</serviceRootDirectory>
+        <archiveRootDirectory>/opt/cws/eSolutions/archive</archiveRootDirectory>
         <fileRepositoryRoot>C:/Temp/repo</fileRepositoryRoot>
         <dateFormat>MM/dd/yyyy hh:mm</dateFormat>
         <connectTimeout>15000</connectTimeout>
         <scriptTimeout>30000</scriptTimeout>
         <messageIdLength>16</messageIdLength>
-        <agentPort>10180</agentPort>
-        <managerClassName>com.cws.esolutions.core.vmgr.impl.OracleVBoxManager</managerClassName>
+        <virtualManagerClass>com.cws.esolutions.core.processors.impl.OracleVBoxManager</virtualManagerClass>
+        <agentBundleSource>/nas/installs/eSolutionsAgent/eSolutionsAgent.tar.gz</agentBundleSource>
+        <serviceAccount>
+            <accountInformation>service-account</accountInformation>
+            <accountInformation>a9c68aa0-5f26-4f96-a4d9-49c647b7aeb0</accountInformation>
+            <accountInformation>SITEADMIN</accountInformation>
+        </serviceAccount>
     </application-config>
 
-    <server-config>
-        <portNumber>8181</portNumber>
-        <timeout>30000</timeout>
-        <sslEnabled />
-        <sslKeystore />
-        <sslKeyPassword />
-        <sslKeySalt />
-    </server-config>
+    <mail-config>
+        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
+    </mail-config>
 
-    <file-repository>
-        <fileHandler>com.cws.esolutions.core.filehandler.impl.FileSystemFileHandler</fileHandler>
-        <fileRepositoryRoot>/opt/eSolutions/repository/main/</fileRepositoryRoot>
-        <archiveRepositoryRoot>/opt/eSolutions/repository/archive/</archiveRepositoryRoot>
-        <allowedExtensions>
-            <extension>txt</extension>
-            <extension>pdf</extension>
-        </allowedExtensions>
-    </file-repository>
+    <!-- how do we talk to the agent? -->
+    <agent-config>
+        <connectionName>tcp://127.0.0.1:61616</connectionName>
+        <clientId>5ab9f480-d357-47e0-9473-90f58a8b8e37</clientId>
+        <requestQueue>CWS.REQUEST.TOPIC</requestQueue>
+        <responseQueue>CWS.RESPONSE.QUEUE</responseQueue>
+        <username>cwsmq</username>
+        <password>OXjrFNJCkWg6KIgv3XioKDyas9bhkyGnsB3Se55nJ1a+em8CdViU/ZuTw4LYS08wMHi+V1i7rsvlrAkeCH58VNXAYCjIXErmm2wXK0EzSYm152/Cg/bKcW27pM48Oovgp2r7lv+HaHrRrR/w/FaGSA==</password>
+        <salt>Hjq7slET1m8haapqkZqKAnLvT9DxhJPc9hfGlfpjzNZ8pSSbcSgX8Ji7G1L6Q9rw</salt>
+        <timeout>10000</timeout>
+    </agent-config>
 
+    <!-- do we need a proxy for internet access? -->
     <proxy-config>
-        <proxyServiceRequired>false</proxyServiceRequired>
+        <proxyServiceRequired>true</proxyServiceRequired>
         <proxyServerName>chibcarray.us.hsbc</proxyServerName>
         <proxyServerPort>8080</proxyServerPort>
         <proxyAuthRequired>true</proxyAuthRequired>
@@ -41,12 +44,13 @@
         <proxyAuthDomain>HNAH</proxyAuthDomain>
         <proxyServerRealm>NTLM_DMZServices</proxyServerRealm>
         <proxyUserId>35033355</proxyUserId>
-        <proxyPwdSalt>GMk0FpQ2cALg08Li6w9FfQXtOJlH2tHj</proxyPwdSalt>
-        <proxyPassword>O0LlkFkk210o81qZYjS6et0fbIuceYFRIyII3mFpcjdCoAx7htugR3SCOo44KZfHp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
+        <proxyPwdSalt>yN9r0BeCmRh2okYb6vEapXbTDjDozTXT</proxyPwdSalt>
+        <proxyPassword>L/rZFW1wndHXVKvfsaRT5hGUSWiVIMWIhK/uVjJ6q5JwY37KEP/4PlMhWTwtVndnp2r7lv+HaHrRrR/w/FaGSA==</proxyPassword>
     </proxy-config>
 
     <dns-config>
-        <templateZoneFile>nls/ZoneTemplate.zone</templateZoneFile>
+        <namedRootDir>/var/named</namedRootDir>
+        <zoneRootDir>/namedb</zoneRootDir> 
         <refreshInterval>900</refreshInterval>
         <retryInterval>3600</retryInterval>
         <expirationInterval>604800</expirationInterval>
@@ -54,34 +58,31 @@
         <ttlInterval>900</ttlInterval>
         <adminName>dnsadmins.</adminName>
         <domainName>caspersbox.com.</domainName>
-        <masterNameServer>prodns1</masterNameServer>
-        <slaveNameServers>
-            <serverName>prodns2</serverName>
-            <serverName>prodns3</serverName>
-        </slaveNameServers>
         <searchServiceHost>http://webtools.live2support.com/nt_digajax.php?queryType=dig&amp;target={0}&amp;record={1}</searchServiceHost>
     </dns-config>
 
-    <mail-config>
-        <dataSourceName>jndi/mail</dataSourceName>
-        <propertyFile>eSolutionsCore/mail/MailConfig.properties</propertyFile>
-        <mailFrom>eSolutions@caspersbox.com</mailFrom>
-    </mail-config>
+    <ssh-config>
+        <timeout>15000</timeout> <!-- connect timeout in milliseconds (defaults to 10 seconds (10000) if not set here) -->
+        <sshProperties>/eSolutionsCore/config/ssh.properties</sshProperties> <!-- full path to properties file containing ssh props (like StrictHostKeyChecking, etc) -->
+        <sshAccount>kh05451</sshAccount> <!-- username to use for authentication -->
+        <sshSalt />
+        <sshPassword />
+        <sshKey>/opt/cws/eSolutions/.ssh/id_rsa</sshKey> <!-- path to the ssh private key -->
+        <sshProperties /> <!-- password for key, if required -->
+    </ssh-config>
 
     <exception-config>
         <sendExceptionNotifications>false</sendExceptionNotifications>
-        <sendStackTrace>false</sendStackTrace>
-        <emailFrom>esolutionscore-alert@caspersbox.com</emailFrom>
-        <notificationAddress>
-            <emailAddress>oncalls@caspersbox.com</emailAddress>
-            <emailAddress>kmhuntly@gmail.com</emailAddress>
-        </notificationAddress>
     </exception-config>
 
     <resource-config>
         <DataSourceManager>
             <dsName>ApplicationDataSource</dsName>
-            <datasource>jdbc/esolutionssvc</datasource>
+            <datasource>jdbc:mysql://127.0.0.1/esolutionssvc?autoReconnect=true&amp;zeroDateTimeBehavior=convertToNull</datasource>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <dsUser>appuser</dsUser>
+            <dsPass>TrUqoyr4N3KXK8Ivd9jcZ1fXPy00JRe5xNFiaOEUVQU=</dsPass>
+            <salt>OITltocOUZjW</salt>
         </DataSourceManager>
     </resource-config>
 </configuration>

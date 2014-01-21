@@ -1,16 +1,30 @@
-/**
- * Copyright (c) 2009 - 2012 By: CaspersBox Web Services
+/*
+ * Copyright (c) 2009 - 2014 CaspersBox Web Services
  * 
- * All rights reserved. These materials are confidential and
- * proprietary to CWS N.A and no part of these materials
- * should be reproduced, published in any form by any means,
- * electronic or mechanical, including photocopy or any information
- * storage or retrieval system not should the materials be
- * disclosed to third parties without the express written
- * authorization of CWS N.A.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.cws.esolutions.android.ui;
-
+/*
+ * NewProject
+ * com.cws.esolutions.core.ui
+ * LoginActivity.java
+ *
+ * History
+ *
+ * Author               Date                            Comments
+ * ----------------------------------------------------------------------------
+ * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
+ */
 import java.util.List;
 import java.util.Arrays;
 import org.slf4j.Logger;
@@ -32,25 +46,7 @@ import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.android.tasks.UserAuthenticationTask;
 import com.cws.esolutions.security.dao.userauth.enums.LoginType;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
-/**
- * NewProject
- * com.cws.esolutions.core.ui
- * LoginActivity.java
- *
- * TODO: Add class description
- *
- * $Id: LoginActivity.java 2289 2013-01-03 21:03:37Z kmhuntly@gmail.com $
- * $Author: kmhuntly@gmail.com $
- * $Date: 2013-01-03 16:03:37 -0500 (Thu, 03 Jan 2013) $
- * $Revision: 2289 $
- * @author khuntly
- * @version 1.0
- *
- * History
- * ----------------------------------------------------------------------------
- * kh05451 @ Oct 11, 2012 1:22:30 PM
- *     Created.
- */
+
 public class LoginActivity extends Activity
 {
     private String sessionId = null;
@@ -71,7 +67,7 @@ public class LoginActivity extends Activity
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Bundle: ", bundle);
+            DEBUGGER.debug("Bundle: {}", bundle);
         }
 
         super.onCreate(bundle);
@@ -92,7 +88,6 @@ public class LoginActivity extends Activity
                 if (userAccount != null)
                 {
                     // user already went through and submitted uid
-                    sessionId = userAccount.getSessionId();
                     loginType = LoginType.PASSWORD;
                     tvRequestName.setText(R.string.tvPassword);
                     etRequestValue.setHint(R.string.hintPassword);
@@ -138,7 +133,7 @@ public class LoginActivity extends Activity
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("View: ", view);
+            DEBUGGER.debug("View: {}", view);
         }
 
         if (StringUtils.isEmpty(etRequestValue.getText().toString()))
@@ -182,8 +177,8 @@ public class LoginActivity extends Activity
 
             if (DEBUG)
             {
-                DEBUGGER.debug("authRequest: ", authRequest);
-                DEBUGGER.debug("UserAuthenticationTask: ", userLogin);
+                DEBUGGER.debug("authRequest: {}", authRequest);
+                DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
             }
 
             switch (loginType)
@@ -195,7 +190,7 @@ public class LoginActivity extends Activity
                 case PASSWORD:
                     if (DEBUG)
                     {
-                        DEBUGGER.debug("UserAccount: ", userAccount);
+                        DEBUGGER.debug("UserAccount: {}", userAccount);
                     }
 
                     authRequest.add(3, getIntent().getSerializableExtra("userData"));
@@ -213,7 +208,7 @@ public class LoginActivity extends Activity
             {
                 for (Object obj: authRequest)
                 {
-                    DEBUGGER.debug("Object: ", obj);
+                    DEBUGGER.debug("Object: {}", obj);
                 }
             }
 

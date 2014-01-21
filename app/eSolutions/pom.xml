@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.cws</groupId>
         <artifactId>cws</artifactId>
-        <version>3.7</version>
+        <version>3.8</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -17,7 +17,7 @@
     <name>${project.artifactId}</name>
 
     <properties>
-        <platform.version>4.0.1.2</platform.version>
+        <platform.version>4.1.1.4</platform.version>
     </properties>
 
     <dependencies>
@@ -29,11 +29,46 @@
         </dependency>
         <!-- cws-shared -->
         <dependency>
-            <groupId>cws-shared</groupId>
+            <groupId>com.cws</groupId>
             <artifactId>eSolutionsCore</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>quartz</artifactId>
+            		<groupId>org.quartz-scheduler</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>activation</artifactId>
+            		<groupId>javax.activation</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>j2ssh-core</artifactId>
+            		<groupId>sshtools</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>j2ssh-common</artifactId>
+            		<groupId>sshtools</groupId>
+            	</exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.cws</groupId>
+            <artifactId>eSolutionsSecurity</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+            	<exclusion>
+            		<artifactId>quartz</artifactId>
+            		<groupId>org.quartz-scheduler</groupId>
+            	</exclusion>
+            	<exclusion>
+            		<artifactId>activation</artifactId>
+            		<groupId>javax.activation</groupId>
+            	</exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -48,9 +83,14 @@
                     <resourceDirectory>${project.basedir}/res</resourceDirectory>
                     <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
-                        <platform>10</platform>
+                        <platform>16</platform>
                     </sdk>
+                    <emulator>
+                        <avd>Android</avd>
+                    </emulator>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <deleteConflictingFiles>true</deleteConflictingFiles>
+                    <extractDuplicates>true</extractDuplicates>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
