@@ -1,0 +1,49 @@
+version: 1
+
+dn: cn=Application Operator,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Application Operator
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=Application Deployer,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Application Deployer
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=DNS Manager,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: DNS Manager
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=DNS Operator,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: DNS Operator
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=Server Manager,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Server Manager
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=Server Operator,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Server Operator
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=Service Manager,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Service Manager
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
+
+dn: cn=Service Operator,organizationalUnitName=Groups,organizationName=CWS US,dc=caspersbox,dc=com
+objectClass: top
+objectClass: groupOfUniqueNames
+cn: Service Operator
+uniqueMember: uid=khuntly,organizationalunitname=Users,organizationname=CWS US,dc=caspersbox,dc=com
