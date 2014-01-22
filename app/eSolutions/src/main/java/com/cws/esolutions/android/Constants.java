@@ -27,7 +27,7 @@ package com.cws.esolutions.android;
  */
 public final class Constants
 {
-    /**
+    /*
      * Application constants
      */
     public static final String USER_DATA = "userAccount";

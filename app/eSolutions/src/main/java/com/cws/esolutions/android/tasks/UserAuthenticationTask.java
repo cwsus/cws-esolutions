@@ -27,19 +27,25 @@ package com.cws.esolutions.android.tasks;
  */
 import java.util.List;
 import java.util.Arrays;
+
 import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.net.InetAddress;
+
 import android.os.AsyncTask;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
+
 import org.slf4j.LoggerFactory;
+
 import android.widget.TextView;
 import android.content.Context;
 import android.net.NetworkInfo;
 import android.net.ConnectivityManager;
+
 import org.apache.commons.lang.RandomStringUtils;
 
 import com.cws.esolutions.android.ui.R;
@@ -53,10 +59,11 @@ import com.cws.esolutions.security.processors.dto.AuthenticationRequest;
 import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 import com.cws.esolutions.security.processors.dto.AuthenticationResponse;
 import com.cws.esolutions.security.processors.exception.AuthenticationException;
+import com.cws.esolutions.security.processors.impl.AuthenticationProcessorImpl;
+import com.cws.esolutions.security.processors.interfaces.IAuthenticationProcessor;
 
 public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, List<Object>>
 {
-    private String methodName = null;
     private Activity reqActivity = null;
     private Class<?> resActivity = null;
 
@@ -72,11 +79,11 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
      */
     public UserAuthenticationTask(final Activity request, final Class<?> response)
     {
-        this.methodName = UserAuthenticationTask.CNAME + "#UserAuthenticationTask(final Activity request, final Class<?> response)";
+        final String methodName = UserAuthenticationTask.CNAME + "#UserAuthenticationTask(final Activity request, final Class<?> response)";
 
         if (DEBUG)
         {
-            DEBUGGER.debug(this.methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Activity: {}", request);
             DEBUGGER.debug("Class: {}", response);
         }
@@ -88,31 +95,45 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     @Override
     protected void onPreExecute()
     {
-        this.methodName = UserAuthenticationTask.CNAME + "#onPreExecute()";
+        final String methodName = UserAuthenticationTask.CNAME + "#onPreExecute()";
 
         if (DEBUG)
         {
-            DEBUGGER.debug(this.methodName);
+            DEBUGGER.debug(methodName);
         }
 
         boolean isConnected = false;
-        ConnectivityManager connMgr = null;
+        ConnectivityManager connMgr = (ConnectivityManager) reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        connMgr = (ConnectivityManager) reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] networkInfo = connMgr.getAllNetworkInfo();
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ConnectivityManager: {}", connMgr);
+        }
+        
+        NetworkInfo[] networks = connMgr.getAllNetworkInfo();
 
-        if ((networkInfo.length == 0) || (networkInfo == null))
+        if (DEBUG)
+        {
+            DEBUGGER.debug("NetworkInfo[]: {}", networks);
+        }
+
+        if ((networks.length == 0) || (networks == null))
         {
             // no available network connection
             ERROR_RECORDER.error("No available network connection. Cannot continue.");
 
-            cancel(true);
+            super.cancel(true);
         }
         else
         {
-            for (NetworkInfo networks : networkInfo)
+            for (NetworkInfo network : networks)
             {
-                if (networks.isConnected())
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("NetworkInfo: {}", network);
+                }
+
+                if (network.isConnected())
                 {
                     isConnected = true;
 
@@ -124,7 +145,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
             {
                 ERROR_RECORDER.error("Network connections are available but not currently connected.");
 
-                cancel(true);                
+                super.cancel(true);
             }
         }
     }
@@ -132,17 +153,16 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     @Override
     protected List<Object> doInBackground(final List<Object>... request)
     {
-        this.methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<Object>... request)";
+        final String methodName = UserAuthenticationTask.CNAME + "#doInBackground(final List<Object>... request)";
 
         if (DEBUG)
         {
-            DEBUGGER.debug(this.methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("Request: {}", request);
         }
 
         UserAccount userAccount = new UserAccount();
         AuthenticationData userSecurity = new AuthenticationData();
-        AuthenticationResponse authResponse = new AuthenticationResponse();
 
         final List<Object> requestList = (List<Object>) request[0];
         final List<Object> responseList = new ArrayList<Object>(
@@ -150,6 +170,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                         requestList.get(1)));
         final AuthenticationType authType = (AuthenticationType) requestList.get(0);
         final LoginType loginType = (LoginType) requestList.get(1);
+        final IAuthenticationProcessor processor = new AuthenticationProcessorImpl();
 
         try
         {
@@ -199,7 +220,7 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
                         DEBUGGER.debug("AuthenticationRequest: {}", authReq);
                     }
 
-                    //authResponse = agentAuth.processAgentLogon(authRequest);
+                    AuthenticationResponse authResponse = processor.processAgentLogon(authReq);
 
                     if (DEBUG)
                     {
@@ -230,11 +251,11 @@ public class UserAuthenticationTask extends AsyncTask<List<Object>, Integer, Lis
     @Override
     protected void onPostExecute(final List<Object> responseList)
     {
-        this.methodName = UserAuthenticationTask.CNAME + "#onPostExecute(final List<Object> responseList)";
+        final String methodName = UserAuthenticationTask.CNAME + "#onPostExecute(final List<Object> responseList)";
 
         if (DEBUG)
         {
-            DEBUGGER.debug(this.methodName);
+            DEBUGGER.debug(methodName);
             DEBUGGER.debug("responseList: {}", responseList);
         }
 

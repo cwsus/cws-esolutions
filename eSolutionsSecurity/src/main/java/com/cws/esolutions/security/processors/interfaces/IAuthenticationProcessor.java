@@ -30,8 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthData;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
@@ -63,19 +61,16 @@ import com.cws.esolutions.security.dao.reference.interfaces.IUserSecurityInforma
 public interface IAuthenticationProcessor
 {
     static final IAuditProcessor auditor = new AuditProcessorImpl();
+    static final String CNAME = IAuthenticationProcessor.class.getName();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
-    static final IUserServiceInformationDAO svcInfo = new UserServiceInformationDAOImpl();
-    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
-    static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
-
-    static final String CNAME = IAuthenticationProcessor.class.getName();
-    static final AuthData authData = svcBean.getConfigData().getAuthData();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
+    static final IUserServiceInformationDAO svcInfo = new UserServiceInformationDAOImpl();
     static final IAccountControlProcessor controlProcessor = new AccountControlProcessorImpl();
+    static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
+    static final UserManager userManager = UserManagerFactory.getUserManager(svcBean.getConfigData().getSecurityConfig().getUserManager());
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

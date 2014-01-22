@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthData;
+// import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.FileSecurityConfig;
@@ -53,7 +53,7 @@ public interface IFileSecurityProcessor
     static final IAuditProcessor auditor = new AuditProcessorImpl();
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
     static final String CNAME = IFileSecurityProcessor.class.getName();
-    static final AuthData authData = secBean.getConfigData().getAuthData();
+    // static final AuthData authData = secBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final SecurityConfigurationData secConfig = secBean.getConfigData();
     static final FileSecurityConfig fileSecurityConfig = secConfig.getFileSecurityConfig();

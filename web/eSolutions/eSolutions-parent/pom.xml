@@ -25,6 +25,7 @@
         <tiles.version>2.2.2</tiles.version>
         <eSolutionsCore.version>1.0-SNAPSHOT</eSolutionsCore.version>
         <eSolutionsSecurity.version>1.0-SNAPSHOT</eSolutionsSecurity.version>
+        <spnego.version>7</spnego.version>
     </properties>
 
     <modules>
@@ -206,6 +207,14 @@
                 <groupId>org.apache.tiles</groupId>
                 <artifactId>tiles-jsp</artifactId>
                 <version>${tiles.version}</version>
+                <type>jar</type>
+                <scope>compile</scope>
+            </dependency>
+            <!-- spnego -->
+            <dependency>
+                <groupId>net.sourceforge.spnego</groupId>
+                <artifactId>spnego</artifactId>
+                <version>${spnego.version}</version>
                 <type>jar</type>
                 <scope>compile</scope>
             </dependency>

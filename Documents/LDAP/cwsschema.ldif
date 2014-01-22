@@ -21,7 +21,8 @@ m-name: cwsexpirydate
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.1
 m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-equality: generalizedTimeMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.2,ou=attributeTypes,cn=cws,ou=schema
 objectClass: metaTop
@@ -33,6 +34,7 @@ m-name: cwsfailedpwdcount
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.2
 m-singlevalue: TRUE
+m-equality: integerMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.3,ou=attributeTypes,cn=cws,ou=schema
@@ -45,6 +47,7 @@ m-name: cwsissuspended
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.3
 m-singlevalue: TRUE
+m-equality: booleanMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.4,ou=attributeTypes,cn=cws,ou=schema
@@ -57,6 +60,7 @@ m-name: cwsisolrsetup
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.4
 m-singlevalue: TRUE
+m-equality: booleanMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.6,ou=attributeTypes,cn=cws,ou=schema
@@ -69,6 +73,8 @@ m-name: cwssecq1
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.6
 m-singlevalue: TRUE
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.7,ou=attributeTypes,cn=cws,ou=schema
@@ -81,6 +87,8 @@ m-name: cwssecq2
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.7
 m-singlevalue: TRUE
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.8,ou=attributeTypes,cn=cws,ou=schema
@@ -117,7 +125,8 @@ m-name: cwslastlogin
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.10
 m-singlevalue: TRUE
-m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-equality: generalizedTimeMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.12,ou=attributeTypes,cn=cws,ou=schema
 objectClass: metaTop
@@ -129,6 +138,7 @@ m-name: cwsisolrlocked
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.12
 m-singlevalue: TRUE
+m-equality: booleanMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.13,ou=attributeTypes,cn=cws,ou=schema
@@ -141,6 +151,7 @@ m-name: cwsislocked
 m-noUserModification: FALSE
 m-oid: 1.3.6.1.4.1.16316.999.3.2.13
 m-singlevalue: TRUE
+m-equality: booleanMatch
 m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
 
 dn: m-oid=1.3.6.1.4.1.16316.999.3.2.20,ou=attributeTypes,cn=cws,ou=schema

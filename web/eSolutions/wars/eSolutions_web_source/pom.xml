@@ -55,6 +55,10 @@
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-jsp</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.sourceforge.spnego</groupId>
+            <artifactId>spnego</artifactId>
+        </dependency>
         <!-- eSolutions jars -->
         <dependency>
             <groupId>eSolutions</groupId>

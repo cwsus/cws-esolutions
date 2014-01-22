@@ -25,11 +25,9 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import java.util.Date;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.sql.SQLException;
 import com.unboundid.ldap.sdk.ResultCode;
@@ -309,16 +307,8 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                         }
 
                         // do it
-                        userManager.modifyUserInformation(name, guid,
-                            new HashMap<String, Object>()
-                            {
-                                private static final long serialVersionUID = 3026623264042376743L;
-
-                                {
-                                    put(authData.getLockCount(), lockCount + 1);
-                                    put(authData.getLastLogin(), System.currentTimeMillis());
-                                }
-                            });
+                        // TODO: make a farkin method out of this
+                        userManager.clearLockCount(name, guid);
                     }
                 }
             }
@@ -568,15 +558,7 @@ public class AuthenticationProcessorImpl implements IAuthenticationProcessor
                     {
                         try
                         {
-                            Map<String, Object> changeRequest = new HashMap<>();
-                            changeRequest.put(authData.getOlrLocked(), "true");
-
-                            if (DEBUG)
-                            {
-                                DEBUGGER.debug("Map<String, Object>: {}", changeRequest);
-                            }
-
-                            userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), changeRequest);
+                            userManager.lockOnlineReset(userAccount.getUsername(), userAccount.getGuid());
                         }
                         catch (UserManagementException umx)
                         {

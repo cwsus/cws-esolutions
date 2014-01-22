@@ -25,10 +25,12 @@ package com.cws.esolutions.security.config.xml;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
+import java.io.File;
 import org.slf4j.Logger;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -61,6 +63,8 @@ public final class SecurityConfig implements Serializable
     private String authAlgorithm = null;
     private boolean performAudit = true; // default true to perform audit
     private boolean smsResetEnabled = false;
+
+    private File authConfig = null;
 
     private static final long serialVersionUID = -338675198961732554L;
     private static final String CNAME = SecurityConfig.class.getName();
@@ -266,6 +270,20 @@ public final class SecurityConfig implements Serializable
         this.resetTimeout = value;
     }
 
+    public final void setAuthConfig(final File value)
+    {
+        final String methodName = SecurityConfig.CNAME + "#setAuthConfig(final File value)";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", value);
+        }
+
+        System.out.println(value);
+        this.authConfig = value;
+    }
+
     @XmlElement(name = "maxAttempts")
     public final int getMaxAttempts()
     {
@@ -460,6 +478,20 @@ public final class SecurityConfig implements Serializable
         }
 
         return this.resetTimeout;
+    }
+
+    @XmlElement(name = "authConfig")
+    public final File getAuthConfig()
+    {
+        final String methodName = SecurityConfig.CNAME + "#getAuthConfig()";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("Value: {}", this.authConfig);
+        }
+        
+        return this.authConfig;
     }
 
     @Override

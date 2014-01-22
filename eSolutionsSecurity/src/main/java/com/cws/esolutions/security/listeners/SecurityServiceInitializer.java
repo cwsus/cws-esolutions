@@ -98,7 +98,7 @@ public class SecurityServiceInitializer
 
             SecurityServiceInitializer.svcBean.setConfigData(configData);
 
-            DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), false, SecurityServiceInitializer.svcBean);
+            DAOInitializer.configureAndCreateAuthConnection(configData.getSecurityConfig().getAuthConfig(), false, SecurityServiceInitializer.svcBean);
 
             Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
@@ -165,17 +165,17 @@ public class SecurityServiceInitializer
             DEBUGGER.debug(methodName);
         }
 
-        final SecurityConfigurationData configData = svcBean.getConfigData();
+        final SecurityConfigurationData config = SecurityServiceInitializer.svcBean.getConfigData();
         Map<String, DataSource> dsMap = SecurityServiceInitializer.svcBean.getDataSources();
 
         if (DEBUG)
         {
-            DEBUGGER.debug("SecurityConfigurationData: {}", configData);
+            DEBUGGER.debug("SecurityConfigurationData: {}", config);
         }
 
         try
         {
-            DAOInitializer.closeAuthConnection(configData.getAuthRepo(), false, svcBean);
+            DAOInitializer.closeAuthConnection(config.getSecurityConfig().getAuthConfig(), false, svcBean);
 
             if (dsMap != null)
             {

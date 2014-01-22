@@ -27,12 +27,14 @@ package com.cws.esolutions.security.processors.impl;
  */
 import java.util.Map;
 import java.util.List;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Calendar;
+import java.util.ArrayList;
 import java.sql.SQLException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.RandomStringUtils;
+
 import com.cws.esolutions.security.dto.UserAccount;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.config.xml.KeyConfig;
@@ -115,15 +117,7 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getIterations()));
 
-                Map<String, Object> requestMap = new HashMap<>();
-                requestMap.put(authData.getEmailAddr(), userAccount.getEmailAddr());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Request Map: {}", requestMap);
-                }
-
-                boolean isComplete = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), requestMap);
+                boolean isComplete = userManager.modifyUserEmail(userAccount.getUsername(), userAccount.getGuid(), userAccount.getEmailAddr());
 
                 if (isComplete)
                 {
@@ -253,16 +247,11 @@ public class AccountChangeProcessorImpl implements IAccountChangeProcessor
                                 secBean.getConfigData().getSecurityConfig().getAuthAlgorithm(),
                                 secBean.getConfigData().getSecurityConfig().getIterations()));
 
-                Map<String, Object> requestMap = new HashMap<>();
-                requestMap.put(authData.getTelephoneNumber(), userAccount.getTelephoneNumber());
-                requestMap.put(authData.getPagerNumber(), userAccount.getPagerNumber());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("Request Map: {}", requestMap);
-                }
-
-                boolean isComplete = userManager.modifyUserInformation(userAccount.getUsername(), userAccount.getGuid(), requestMap);
+                boolean isComplete = userManager.modifyUserContact(userAccount.getUsername(), userAccount.getGuid(),
+                        new ArrayList<String>(
+                                Arrays.asList(
+                                        userAccount.getTelephoneNumber(),
+                                        userAccount.getPagerNumber())));
 
                 if (isComplete)
                 {

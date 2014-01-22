@@ -56,7 +56,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
     private static final Logger ERROR_LOGGER = LoggerFactory.getLogger(Constants.ERROR_LOGGER);
-    
+
     public DNSRequestTask(final Activity activity)
     {
         final String methodName = DNSRequestTask.CNAME + "#DNSRequestTask(final Activity activity)";
@@ -81,23 +81,37 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
         }
 
         boolean isConnected = false;
-        ConnectivityManager connMgr = null;
+        final ConnectivityManager connMgr = (ConnectivityManager) this.reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        connMgr = (ConnectivityManager) reqActivity.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (DEBUG)
+        {
+            DEBUGGER.debug("ConnectivityManager: {}", connMgr);
+        }
+        
         NetworkInfo[] networkInfo = connMgr.getAllNetworkInfo();
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("NetworkInfo[]: {}", networkInfo);
+        }
 
         if ((networkInfo.length == 0) || (networkInfo == null))
         {
             // no available network connection
             ERROR_LOGGER.error("No available network connection. Cannot continue.");
 
-            cancel(true);
+            super.cancel(true);
         }
         else
         {
-            for (NetworkInfo networks : networkInfo)
+            for (NetworkInfo network : networkInfo)
             {
-                if (networks.isConnected())
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("NetworkInfo: {}", network);
+                }
+
+                if (network.isConnected())
                 {
                     isConnected = true;
 
@@ -109,7 +123,7 @@ public class DNSRequestTask extends AsyncTask<String, Object, List<String>>
             {
                 ERROR_LOGGER.error("Network connections are available but not currently connected.");
 
-                cancel(true);                
+                super.cancel(true);
             }
         }
     }

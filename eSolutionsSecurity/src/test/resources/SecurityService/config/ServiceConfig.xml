@@ -14,8 +14,9 @@
         <smsResetEnabled>false</smsResetEnabled> <!-- do we send the reset email AND an sms ? -->
         <smsCodeLength>8</smsCodeLength> <!-- how long should the sms reset id be ? -->
         <resetTimeout>30</resetTimeout> <!-- reset timeout length (minutes) -->
-        <authManager>com.cws.esolutions.security.dao.userauth.impl.SQLAuthenticator</authManager>
-        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.SQLUserManager</userManager>
+        <authConfig>/opt/cws/eSolutions/etc/repository.properties</authConfig>
+        <authManager>com.cws.esolutions.security.dao.userauth.impl.LDAPAuthenticator</authManager>
+        <userManager>com.cws.esolutions.security.dao.usermgmt.impl.LDAPUserManager</userManager>
     </security-config>
 
     <auth-data>
@@ -44,49 +45,6 @@
         <telephoneNumber>telephoneNumber</telephoneNumber>
         <memberOf>memberOf</memberOf>
     </auth-data>
-
-    <auth-repo>
-        <repoType>SQL</repoType>
-        <configFile>/opt/cws/eSolutions/etc/repository.properties</configFile>
-        <isSecure>isSecure</isSecure>
-        <repositoryDriver>repositoryDriver</repositoryDriver>
-        <trustStoreFile>trustStoreFile</trustStoreFile>
-        <trustStorePass>trustStorePass</trustStorePass>
-        <trustStoreType>trustStoreType</trustStoreType>
-        <repositoryHost>repositoryHost</repositoryHost>
-        <repositoryPort>repositoryPort</repositoryPort>
-        <repositoryConnTimeout>repositoryConnTimeout</repositoryConnTimeout>
-        <repositoryReadTimeout>repositoryReadTimeout</repositoryReadTimeout>
-        <repositoryUser>repositoryUser</repositoryUser>
-        <repositoryPass>repositoryPass</repositoryPass>
-        <repositorySalt>repositorySalt</repositorySalt>
-        <minConnections>minConnections</minConnections>
-        <maxConnections>maxConnections</maxConnections>
-    </auth-repo>
-
-    <!--
-    <auth-repo>
-        <repoType>LDAP</repoType>
-        <configFile>/opt/cws/eSolutions/etc/repository.properties</configFile>
-        <isSecure>isSecure</isSecure>
-        <trustStoreFile>trustStoreFile</trustStoreFile>
-        <trustStorePass>trustStorePass</trustStorePass>
-        <trustStoreType>trustStoreType</trustStoreType>
-        <repositoryHost>repositoryHost</repositoryHost>
-        <repositoryPort>repositoryPort</repositoryPort>
-        <repositoryConnTimeout>repositoryConnTimeout</repositoryConnTimeout>
-        <repositoryReadTimeout>repositoryReadTimeout</repositoryReadTimeout>
-        <repositoryUser>repositoryUser</repositoryUser>
-        <repositoryPass>repositoryPass</repositoryPass>
-        <repositorySalt>repositorySalt</repositorySalt>
-        <minConnections>minConnections</minConnections>
-        <maxConnections>maxConnections</maxConnections>
-        <baseObjectClass>inetOrgPerson</baseObjectClass>
-        <repositoryBaseDN>dc=caspersbox,dc=com</repositoryBaseDN>
-        <repositoryUserBase>organizationalUnitName=Users,organizationName=CWS US,dc=caspersbox,dc=com</repositoryUserBase>
-        <repositoryRoleBase>organizationalUnitName=Roles,organizationName=CWS US,dc=caspersbox,dc=com</repositoryRoleBase>
-    </auth-repo>
-    -->
 
     <key-config>
         <keyAlgorithm>RSA</keyAlgorithm>

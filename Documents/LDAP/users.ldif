@@ -8,12 +8,10 @@ objectClass: person
 objectClass: organizationalPerson
 cn: 74d9729b-7fb2-4fef-874b-c9ee5d7a5a95
 sn: Huntly
-cwsexpirydate: 1392841991985
 cwsfailedpwdcount: 0
 cwsisolrlocked: false
 cwsisolrsetup: false
 cwsissuspended: false
-cwslastlogin: 1387558338548
 cwspublickey:: MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwd3vvX4/GPNnXNFAB
  KBflmN9dcNNojQ9TXHk1w/7abEgesJjpMGJlL41CCqSrsPD4hNr+aTrQ601HyIRDT2yqcJtruSK
  EE4+byhy9cHUittvXFFPOoNfHtfXLQvemtVyAJb5vPaGWky6VEXqclHd1kDI8OK3XDys8JQCUc0

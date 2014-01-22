@@ -25,27 +25,32 @@ package com.cws.esolutions.security.dao.userauth.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Arrays;
 import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
+import java.io.IOException;
+import java.util.Properties;
+import java.io.FileInputStream;
 import java.net.ConnectException;
-
+import java.io.FileNotFoundException;
 import com.unboundid.ldap.sdk.Filter;
 import com.unboundid.ldap.sdk.LDAPResult;
-import com.unboundid.ldap.sdk.Modification;
-import com.unboundid.ldap.sdk.ModificationType;
-import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.BindResult;
 import com.unboundid.ldap.sdk.BindRequest;
 import com.unboundid.ldap.sdk.SearchScope;
+import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.SearchResult;
+import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
+import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.SimpleBindRequest;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
+
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
@@ -75,6 +80,14 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
@@ -108,7 +121,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                authRepo.getRepositoryUserBase(),
+                connProps.getProperty(SecurityServiceConstants.BASE_DN),
                 SearchScope.SUB,
                 searchFilter,
                 authData.getCommonName(),
@@ -188,7 +201,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest roleSearch = new SearchRequest(
-                authRepo.getRepositoryRoleBase(),
+                connProps.getProperty(SecurityServiceConstants.ROLE_BASE),
                 SearchScope.SUB,
                 roleFilter,
                 "cn");
@@ -274,6 +287,18 @@ public class LDAPAuthenticator implements Authenticator
 
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new AuthenticatorException(iox.getMessage(), iox);
+        }
         finally
         {
             if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
@@ -306,6 +331,14 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
@@ -340,7 +373,7 @@ public class LDAPAuthenticator implements Authenticator
             }
 
             SearchRequest searchRequest = new SearchRequest(
-                authRepo.getRepositoryUserBase(),
+                connProps.getProperty(SecurityServiceConstants.BASE_DN),
                 SearchScope.SUB,
                 searchFilter,
                 authData.getUserId(),
@@ -382,6 +415,18 @@ public class LDAPAuthenticator implements Authenticator
 
             throw new AuthenticatorException(cx.getMessage(), cx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new AuthenticatorException(iox.getMessage(), iox);
+        }
         finally
         {
             if ((ldapPool != null) && ((ldapConn != null) && (ldapConn.isConnected())))
@@ -412,6 +457,14 @@ public class LDAPAuthenticator implements Authenticator
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
 
             if (DEBUG)
@@ -444,7 +497,7 @@ public class LDAPAuthenticator implements Authenticator
                 "(&(" + authData.getSecAnswerTwo() + "=" + request.get(3) + ")))");
 
             SearchRequest searchReq = new SearchRequest(
-                authRepo.getRepositoryUserBase(),
+                connProps.getProperty(SecurityServiceConstants.BASE_DN),
                 SearchScope.SUB,
                 searchFilter,
                 authData.getCommonName());
@@ -479,6 +532,18 @@ public class LDAPAuthenticator implements Authenticator
             ERROR_RECORDER.error(cx.getMessage(), cx);
 
             throw new AuthenticatorException(cx.getMessage(), cx);
+        }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new AuthenticatorException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new AuthenticatorException(iox.getMessage(), iox);
         }
         finally
         {

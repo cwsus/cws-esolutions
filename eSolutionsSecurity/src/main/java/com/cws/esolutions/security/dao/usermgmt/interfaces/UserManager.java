@@ -25,15 +25,14 @@ package com.cws.esolutions.security.dao.usermgmt.interfaces;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.xml.AuthData;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.usermgmt.enums.SearchRequestType;
 import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementException;
 /**
@@ -47,8 +46,8 @@ import com.cws.esolutions.security.dao.usermgmt.exception.UserManagementExceptio
 public interface UserManager
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final AuthData authData = svcBean.getConfigData().getAuthData();
+    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -82,19 +81,28 @@ public interface UserManager
     boolean addUserAccount(final List<String> createRequest, final List<String> roles) throws UserManagementException;
 
     /**
-     * Adds a new user to the authentication system. This method is utilized
-     * for an LDAP user datastore, and does NOT insert security reset
-     * credentials - these will be configured by the user on their first
-     * logon.
+     * 
+     * TODO: Add in the method description/comments
      *
      * @param userId
      * @param userGuid
-     * @param changeRequest
-     * @return boolean
-     * @throws NamingException
-     * @throws InvalidAgentException
+     * @param address
+     * @return
+     * @throws UserManagementException
      */
-    boolean modifyUserInformation(final String userId, final String userGuid, final Map<String, Object> changeRequest) throws UserManagementException;
+    boolean modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param value
+     * @return
+     * @throws UserManagementException
+     */
+    boolean modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException;
 
     /**
      * Suspends or unsuspends a provided user account. This could be utilized
@@ -108,6 +116,41 @@ public interface UserManager
      * @throws UserManagementException if an error occurs during processing
      */
     boolean modifyUserSuspension(final String userId, final String userGuid, final boolean isSuspended) throws UserManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param role
+     * @return
+     * @throws UserManagementException
+     */
+    boolean modifyUserRole(final String userId, final String userGuid, final String role) throws UserManagementException;
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param isSuspended
+     * @return
+     * @throws UserManagementException
+     */
+    boolean lockOnlineReset(final String userId, final String userGuid) throws UserManagementException;
+
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param isSuspended
+     * @return
+     * @throws UserManagementException
+     */
+    boolean clearLockCount(final String userId, final String userGuid) throws UserManagementException;
 
     /**
      * Locks a provided user account by either incrementing the existing lock count
@@ -142,6 +185,16 @@ public interface UserManager
      */
     boolean removeUserAccount(final String userId, final String userGuid) throws UserManagementException;
 
+    /**
+     * 
+     * TODO: Add in the method description/comments
+     *
+     * @param userDN
+     * @param newPass
+     * @param expiry
+     * @return
+     * @throws UserManagementException
+     */
     boolean changeUserPassword(final String userDN, final String newPass, final int expiry) throws UserManagementException;
 
     /**

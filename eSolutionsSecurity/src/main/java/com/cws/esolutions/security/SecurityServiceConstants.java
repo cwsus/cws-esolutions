@@ -47,7 +47,11 @@ public class SecurityServiceConstants
      * Application constants
      */
     public static final String NOT_SET = "Unconfigured";
+    public static final String BASE_DN = "repositoryBaseDN";
     public static final String DS_CONTEXT = "java:comp/env";
+    public static final String BASE_OBJECT = "baseObjectClass";
+    public static final String USER_BASE = "repositoryUserBase";
+    public static final String ROLE_BASE = "repositoryRoleBase";
     public static final String INIT_AUDITDS_MANAGER = "AuditDataSource";
     public static final String INIT_CONFIG_FILE = "SecurityServiceConfig";
     public static final String INIT_SECURITYDS_MANAGER = "SecurityDataSource";

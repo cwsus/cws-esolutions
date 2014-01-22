@@ -44,17 +44,14 @@ import com.cws.esolutions.android.tasks.DNSRequestTask;
 
 public class DNSActivity extends Activity
 {
-    private String methodName = null;
-    private EditText hostName = null;
-    private EditText serverName = null;
-
     private static final String CNAME = DNSActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @Override
     public void onCreate(final Bundle bundle)
     {
-        methodName = CNAME + "#onCreate(final Bundle bundle)";
+        final String methodName = DNSActivity.CNAME + "#onCreate(final Bundle bundle)";
 
         if (DEBUG)
         {
@@ -66,34 +63,35 @@ public class DNSActivity extends Activity
         setContentView(R.layout.activity_dns);
         setTitle(R.string.dnsTitle);
 
-        final UserAccount userAccount = (UserAccount) getIntent().getExtras().getSerializable(Constants.USER_DATA);
+        final UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
 
         if (userAccount == null)
         {
             // no user, die
             this.startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            super.finish();
         }
         else
         {
-            hostName = (EditText) findViewById(R.id.etHostName);
-            serverName = (EditText) findViewById(R.id.etDNSServer);
+            final EditText hostName = (EditText) findViewById(R.id.etHostName);
+            final EditText serverName = (EditText) findViewById(R.id.etDNSServer);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("hostName: {}", hostName);
-                DEBUGGER.debug("serverName: {}", serverName);
+                DEBUGGER.debug("EditText: {}", hostName);
+                DEBUGGER.debug("EditText: {}", serverName);
             }            
         }
     }
 
-    /**
-     * @author kh05451
-     * @param view - the view
-     */
     public void executeDnsLookup(final View view)
     {
-        methodName = CNAME + "#executeDnsLookup(final View view)";
+        final String methodName = DNSActivity.CNAME + "#executeDnsLookup(final View view)";
 
         if (DEBUG)
         {
@@ -101,11 +99,19 @@ public class DNSActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(serverName.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-
-
+        final EditText hostName = (EditText) super.findViewById(R.id.etHostName);
+        final EditText serverName = (EditText) super.findViewById(R.id.etDNSServer);
         final DNSRequestTask dnsRequest = new DNSRequestTask(DNSActivity.this);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("EditText: {}", hostName);
+            DEBUGGER.debug("EditText: {}", serverName);
+            DEBUGGER.debug("DNSRequestTask: {}", dnsRequest);
+        }
+
+        InputMethodManager imm = (InputMethodManager) super.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(serverName.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
 
         dnsRequest.execute(hostName.getText().toString(), serverName.getText().toString());
 
@@ -113,13 +119,20 @@ public class DNSActivity extends Activity
         {
             TextView resultView = new TextView(this);
             resultView.setText("No network connection is available.");
-            setContentView(resultView);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("TextView: {}", resultView);
+            }
+
+            super.setContentView(resultView);
         }
     }
 
+    @Override
     public boolean onCreateOptionsMenu(final Menu menu)
     {
-        methodName = CNAME + "#onCreateOptionsMenu(final menu menu)";
+        final String methodName = DNSActivity.CNAME + "#onCreateOptionsMenu(final menu menu)";
 
         if (DEBUG)
         {
@@ -127,13 +140,15 @@ public class DNSActivity extends Activity
             DEBUGGER.debug("Menu: {}", menu);
         }
 
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        super.getMenuInflater().inflate(R.menu.main_menu, menu);
+
         return true;
     }
 
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item)
     {
-        methodName = CNAME + "#onOptionsItemSelected(final MenuItem item)";
+        final String methodName = DNSActivity.CNAME + "#onOptionsItemSelected(final MenuItem item)";
 
         if (DEBUG)
         {
@@ -143,28 +158,51 @@ public class DNSActivity extends Activity
 
         final UserAccount userAccount = (UserAccount) getIntent().getExtras().getSerializable(Constants.USER_DATA);
 
+        if (DEBUG)
+        {
+            DEBUGGER.debug("UserAccount: {}", userAccount);
+        }
+
         switch (item.getItemId())
         {
             case R.id.menu_signout:
-                getIntent().removeExtra(Constants.USER_DATA);
-                getIntent().getExtras().remove(Constants.USER_DATA);
+                super.getIntent().removeExtra(Constants.USER_DATA);
+                super.getIntent().getExtras().remove(Constants.USER_DATA);
 
                 Intent intent = new Intent(this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", intent);
+                }
+
                 this.startActivity(intent);
 
-                finish();
+                super.finish();
 
                 break;
             case R.id.menu_dnssvc:
                 Intent dnsIntent = new Intent(this, DNSActivity.class);
                 dnsIntent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", dnsIntent);
+                }
+
                 this.startActivity(dnsIntent);
 
                 break;
             case R.id.menu_sysmgt:
                 Intent sysmIntent = new Intent(this, DNSActivity.class);
                 sysmIntent.putExtra(Constants.USER_DATA, userAccount);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("Intent: {}", sysmIntent);
+                }
+
                 this.startActivity(sysmIntent);
 
                 break;

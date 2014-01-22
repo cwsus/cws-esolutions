@@ -25,12 +25,10 @@ package com.cws.esolutions.security.processors.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.sql.SQLException;
@@ -528,145 +526,6 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
     }
 
     /**
-     * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserLockout(com.cws.esolutions.security.processors.dto.AccountControlRequest)
-     */
-    @Override
-    public AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException
-    {
-        final String methodName = IAccountControlProcessor.CNAME + "#modifyUserLockout(final AccountControlRequest) throws AccountControlException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AccountControlRequest: {}", request);
-        }
-
-        AccountControlResponse response = new AccountControlResponse();
-
-        final RequestHostInfo reqInfo = request.getHostInfo();
-        final UserAccount reqAccount = request.getRequestor();
-        final UserAccount userAccount = request.getUserAccount();
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("UserAccount reqUser: {}", reqAccount);
-            DEBUGGER.debug("UserAccount userAccount: {}", userAccount);
-            DEBUGGER.debug("RequestHostInfo: {}", reqInfo);
-        }
-
-        try
-        {
-            boolean isUserAuthorized = accessControl.isUserAuthorized(reqAccount, request.getServiceId());
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("isUserAuthorized: {}", isUserAuthorized);
-            }
-
-            if (isUserAuthorized)
-            {
-                // we will only have a guid here - so we need to load the user
-                List<Object> userData = userManager.loadUserAccount(userAccount.getGuid());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("List<Object>: {}", userData);
-                }
-
-                if ((userData != null) && (userData.size() != 0))
-                {
-                    Map<String, Object> requestMap = new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = -4501815670500496164L;
-
-                        {
-                            put(authData.getLockCount(), userAccount.getFailedCount());
-                        }
-                    };
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("requestMap: {}", requestMap);
-                    }
-
-                    boolean isComplete = userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), requestMap);
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("isComplete: {}", isComplete);
-                    }
-
-                    if (isComplete)
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.SUCCESS);
-                    }
-                    else
-                    {
-                        response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                    }
-                }
-                else
-                {
-                    ERROR_RECORDER.error("Failed to locate user for given GUID");
-
-                    response.setRequestStatus(SecurityRequestStatus.FAILURE);
-                }
-            }
-            else
-            {
-                response.setRequestStatus(SecurityRequestStatus.UNAUTHORIZED);
-            }
-        }
-        catch (AccessControlServiceException acsx)
-        {
-            ERROR_RECORDER.error(acsx.getMessage(), acsx);
-
-            throw new AccountControlException(acsx.getMessage(), acsx);
-        }
-        catch (UserManagementException umx)
-        {
-            ERROR_RECORDER.error(umx.getMessage(), umx);
-
-            throw new AccountControlException(umx.getMessage(), umx);
-        }
-        finally
-        {
-            // audit
-            try
-            {
-                AuditEntry auditEntry = new AuditEntry();
-                auditEntry.setHostInfo(reqInfo);
-                auditEntry.setAuditType(AuditType.SUSPENDUSER);
-                auditEntry.setUserAccount(reqAccount);
-                auditEntry.setApplicationId(request.getApplicationId());
-                auditEntry.setApplicationName(request.getApplicationName());
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditEntry: {}", auditEntry);
-                }
-
-                AuditRequest auditRequest = new AuditRequest();
-                auditRequest.setAuditEntry(auditEntry);
-
-                if (DEBUG)
-                {
-                    DEBUGGER.debug("AuditRequest: {}", auditRequest);
-                }
-
-                auditor.auditRequest(auditRequest);
-            }
-            catch (AuditServiceException asx)
-            {
-                ERROR_RECORDER.error(asx.getMessage(), asx);
-            }
-        }
-
-
-        return response;
-    }
-
-    /**
      * @see com.cws.esolutions.security.processors.interfaces.IAccountControlProcessor#modifyUserRole(com.cws.esolutions.security.processors.dto.AccountControlRequest)
      */
     @Override
@@ -714,23 +573,9 @@ public class AccountControlProcessorImpl implements IAccountControlProcessor
 
                 if ((userData != null) && (userData.size() != 0))
                 {
-                    Map<String, Object> requestMap = new HashMap<String, Object>()
-                    {
-                        private static final long serialVersionUID = -4501815670500496164L;
-
-                        {
-                            // TODO!!
-                            // put(authData.getUserRole(), userAccount.getRole());
-                        }
-                    };
-
-                    if (DEBUG)
-                    {
-                        DEBUGGER.debug("requestMap: {}", requestMap);
-                    }
-
-                    boolean isComplete = userManager.modifyUserInformation((String) userData.get(1), (String) userData.get(0), requestMap);
-
+                    // TODO
+                    // boolean isComplete = userManager.modifyUserRole((String) userData.get(1), (String) userData.get(0), userAccount.getRole().name());
+                    boolean isComplete = false;
                     if (DEBUG)
                     {
                         DEBUGGER.debug("isComplete: {}", isComplete);

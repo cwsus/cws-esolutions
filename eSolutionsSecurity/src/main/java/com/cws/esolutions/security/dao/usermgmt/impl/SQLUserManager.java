@@ -25,7 +25,6 @@ package com.cws.esolutions.security.dao.usermgmt.impl;
  * ----------------------------------------------------------------------------
  * kmhuntly@gmail.com   11/23/2008 22:39:20             Created.
  */
-import java.util.Map;
 import java.util.List;
 import java.sql.ResultSet;
 import java.sql.Connection;
@@ -206,97 +205,6 @@ public class SQLUserManager implements UserManager
             }
 
             if (!(stmt.execute()))
-            {
-                isComplete = true;
-            }
-        }
-        catch (SQLException sqx)
-        {
-            ERROR_RECORDER.error(sqx.getMessage(), sqx);
-
-            throw new UserManagementException(sqx.getMessage(), sqx);
-        }
-        finally
-        {
-            try
-            {
-                if (stmt != null)
-                {
-                    stmt.close();
-                }
-
-                if (!(sqlConn == null) && (!(sqlConn.isClosed())))
-                {
-                    sqlConn.close();
-                }
-            }
-            catch (SQLException sqx)
-            {
-                ERROR_RECORDER.error(sqx.getMessage(), sqx);
-            }
-        }
-
-        return isComplete;
-    }
-
-    /**
-     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserInformation(java.lang.String, java.lang.String, java.util.Map)
-     */
-    @Override
-    public synchronized boolean modifyUserInformation(final String userId, final String userGuid, Map<String, Object> changeRequest) throws UserManagementException
-    {
-        final String methodName = SQLUserManager.CNAME + "#modifyUserInformation(final String userId, final String userGuid, Map<String, Object> changeRequest) throws UserManagementException";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", userId);
-            DEBUGGER.debug("Value: {}", userGuid);
-            DEBUGGER.debug("Value: {}", changeRequest);
-        }
-
-        Connection sqlConn = null;
-        boolean isComplete = false;
-        CallableStatement stmt = null;
-
-        try
-        {
-            sqlConn = SQLUserManager.dataSource.getConnection();
-
-            if (sqlConn.isClosed())
-            {
-                throw new SQLException("Unable to obtain application datasource connection");
-            }
-
-            int x = 1;
-            sqlConn.setAutoCommit(true);
-            StringBuilder sBuilder = new StringBuilder() // TODO!! THIS NEEDS TO NOT BE HARDCODED!!
-                .append("UPDATE CWSSEC.USERS \n")
-                .append("SET \n");
-
-            for (String key : changeRequest.keySet())
-            {
-                sBuilder.append(key + " = " + changeRequest.get(key) + " ");
-
-                if (x != changeRequest.size())
-                {
-                    sBuilder.append(", ");
-                }
-
-                x++;
-            }
-
-            sBuilder.append("WHERE uid = '" + userId + "' \n");
-            sBuilder.append("AND cn = '" + userGuid + "'");
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug(sBuilder.toString());
-            }
-
-            x = sqlConn.createStatement().executeUpdate(sBuilder.toString());
-
-            if (x == 1)
             {
                 isComplete = true;
             }
@@ -1038,5 +946,131 @@ public class SQLUserManager implements UserManager
         }
 
         return isComplete;
+    }
+
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param value
+     * @return
+     * @throws UserManagementException
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserEmail(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#modifyUserEmail(final String userId, final String userGuid, final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("userGuid: {}", value);
+        }
+        
+        return false;
+    }
+
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param value
+     * @return
+     * @throws UserManagementException
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserContact(java.lang.String, java.lang.String, java.util.List)
+     */
+    @Override
+    public boolean modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#modifyUserContact(final String userId, final String userGuid, final List<String> value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("userGuid: {}", value);
+        }
+        
+        return false;
+    }
+
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @param role
+     * @return
+     * @throws UserManagementException
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#modifyUserRole(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean modifyUserRole(final String userId, final String userGuid, final String value) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#modifyUserRole(final String userId, final String userGuid, final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+            DEBUGGER.debug("userGuid: {}", value);
+        }
+        
+        return false;
+    }
+
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @return
+     * @throws UserManagementException
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#lockOnlineReset(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean lockOnlineReset(final String userId, final String userGuid) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#lockOnlineReset(final String userId, final String userGuid, final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+        }
+        
+        return false;
+    }
+
+    /**
+     * TODO: Add in the method description/comments
+     *
+     * @param userId
+     * @param userGuid
+     * @return
+     * @throws UserManagementException
+     * @see com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager#clearLockCount(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean clearLockCount(final String userId, final String userGuid) throws UserManagementException
+    {
+        final String methodName = SQLUserManager.CNAME + "#clearLockCount(final String userId, final String userGuid, final String value) throws UserManagementException";
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug(methodName);
+            DEBUGGER.debug("userId: {}", userId);
+            DEBUGGER.debug("userGuid: {}", userGuid);
+        }
+        
+        return false;
     }
 }

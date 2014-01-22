@@ -31,13 +31,13 @@ import java.io.IOException;
 import java.util.Properties;
 import javax.naming.Context;
 import java.sql.SQLException;
-import java.io.FileInputStream;
 import org.slf4j.LoggerFactory;
+import java.io.FileInputStream;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.io.FileNotFoundException;
 import com.unboundid.util.ssl.SSLUtil;
 import javax.net.ssl.SSLSocketFactory;
-import org.apache.commons.io.FileUtils;
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.LDAPConnection;
@@ -48,9 +48,9 @@ import com.unboundid.ldap.sdk.LDAPConnectionOptions;
 import com.unboundid.util.ssl.TrustStoreTrustManager;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.utils.PasswordUtils;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.enums.AuthRepositoryType;
 import com.cws.esolutions.security.exception.SecurityServiceException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -62,7 +62,22 @@ import com.cws.esolutions.security.exception.SecurityServiceException;
  */
 public final class DAOInitializer
 {
+    private static final String REPO_TYPE = "repoType";
+    private static final String IS_SECURE = "isSecure";
+    private static final String TRUST_FILE= "trustStoreFile";
+    private static final String TRUST_PASS = "trustStorePass";
+    private static final String TRUST_TYPE = "trustStoreType";
     private static final String DS_CONTEXT = "java:comp/env/";
+    private static final String CONN_DRIVER = "repositoryDriver";
+    private static final String REPOSITORY_HOST = "repositoryHost";
+    private static final String REPOSITORY_PORT = "repositoryPort";
+    private static final String MIN_CONNECTIONS = "minConnections";
+    private static final String MAX_CONNECTIONS = "maxConnections";
+    private static final String REPOSITORY_USER = "repositoryUser";
+    private static final String REPOSITORY_PASS = "repositoryPass";
+    private static final String REPOSITORY_SALT = "repositorySalt";
+    private static final String CONN_TIMEOUT = "repositoryConnTimeout";
+    private static final String READ_TIMEOUT = "repositoryReadTimeout";
     private static final String CNAME = DAOInitializer.class.getName();
 
     private static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
@@ -75,55 +90,36 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs opening the connection
      */
-    public synchronized static void configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void configureAndCreateAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#configureAndCreateAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthRepo: {}", authRepo);
+            DEBUGGER.debug("String: {}", properties);
             DEBUGGER.debug("isContainer: {}", isContainer);
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
 
-        FileInputStream fileStream = null;
-
-        final File configFile = FileUtils.getFile(authRepo.getConfigFile());
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug("File: {}", configFile);
-        }
-
-        if (!(configFile.canRead()))
-        {
-            throw new SecurityServiceException("Unable to read configuration file. Cannot continue.");
-        }
-
         try
         {
-            fileStream = new FileInputStream(configFile);
-
-            if (DEBUG)
-            {
-                DEBUGGER.debug("FileInputStream: {}", fileStream);
-            }
-
-            if (fileStream.available() == 0)
-            {
-                throw new SecurityServiceException("Unable to read configuration file. Cannot continue.");
-            }
-
             Properties connProps = new Properties();
-            connProps.load(fileStream);
+            connProps.load(new FileInputStream(properties));
 
             if (DEBUG)
             {
                 DEBUGGER.debug("Properties: {}", connProps);
             }
 
-            switch (authRepo.getRepoType())
+            AuthRepositoryType repoType = AuthRepositoryType.valueOf(connProps.getProperty(DAOInitializer.REPO_TYPE));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthRepositoryType: {}", repoType);
+            }
+
+            switch (repoType)
             {
                 case LDAP:
                     LDAPConnection ldapConn = null;
@@ -132,20 +128,20 @@ public final class DAOInitializer
                     connOpts.setAutoReconnect(true);
                     connOpts.setAbandonOnTimeout(true);
                     connOpts.setBindWithDNRequiresPassword(true);
-                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(authRepo.getRepositoryConnTimeout())));
-                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(authRepo.getRepositoryReadTimeout())));
+                    connOpts.setConnectTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.CONN_TIMEOUT)));
+                    connOpts.setResponseTimeoutMillis(Integer.parseInt(connProps.getProperty(DAOInitializer.READ_TIMEOUT)));
 
                     if (DEBUG)
                     {
                         DEBUGGER.debug("LDAPConnectionOptions: {}", connOpts);
                     }
 
-                    if (Boolean.valueOf(connProps.getProperty(authRepo.getIsSecure())))
+                    if (Boolean.valueOf(connProps.getProperty(DAOInitializer.IS_SECURE)))
                     {
                         SSLUtil sslUtil = new SSLUtil(new TrustStoreTrustManager(
-                                connProps.getProperty(authRepo.getTrustStoreFile()),
-                                connProps.getProperty(authRepo.getTrustStorePass()).toCharArray(),
-                                connProps.getProperty(authRepo.getTrustStoreType()),
+                                connProps.getProperty(DAOInitializer.TRUST_FILE),
+                                connProps.getProperty(DAOInitializer.TRUST_PASS).toCharArray(),
+                                connProps.getProperty(DAOInitializer.TRUST_TYPE),
                                 true));
 
                         if (DEBUG)
@@ -160,19 +156,19 @@ public final class DAOInitializer
                             DEBUGGER.debug("SSLSocketFactory: {}", sslSocketFactory);
                         }
 
-                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(authRepo.getRepositoryHost()),
-                                Integer.parseInt(connProps.getProperty(authRepo.getRepositoryPort())),
-                                connProps.getProperty(authRepo.getRepositoryUser()),
-                                PasswordUtils.decryptText(connProps.getProperty(authRepo.getRepositoryPass()),
-                                        connProps.getProperty(authRepo.getRepositorySalt()).length()));
+                        ldapConn = new LDAPConnection(sslSocketFactory, connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
+                                Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)),
+                                connProps.getProperty(DAOInitializer.REPOSITORY_USER),
+                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
+                                        connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
                     }
                     else
                     {
-                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(authRepo.getRepositoryHost()),
-                                Integer.parseInt(connProps.getProperty(authRepo.getRepositoryPort())),
-                                connProps.getProperty(authRepo.getRepositoryUser()),
-                                PasswordUtils.decryptText(connProps.getProperty(authRepo.getRepositoryPass()),
-                                        connProps.getProperty(authRepo.getRepositorySalt()).length()));
+                        ldapConn = new LDAPConnection(connOpts, connProps.getProperty(DAOInitializer.REPOSITORY_HOST),
+                                Integer.parseInt(connProps.getProperty(DAOInitializer.REPOSITORY_PORT)),
+                                connProps.getProperty(DAOInitializer.REPOSITORY_USER),
+                                PasswordUtils.decryptText(connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
+                                        connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
                     }
 
                     if (DEBUG)
@@ -186,8 +182,8 @@ public final class DAOInitializer
                     }
 
                     LDAPConnectionPool connPool = new LDAPConnectionPool(ldapConn,
-                            Integer.parseInt(connProps.getProperty(authRepo.getMinConnections())),
-                            Integer.parseInt(connProps.getProperty(authRepo.getMaxConnections())));
+                            Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)),
+                            Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
 
                     if (DEBUG)
                     {
@@ -209,19 +205,19 @@ public final class DAOInitializer
                         Context initContext = new InitialContext();
                         Context envContext = (Context) initContext.lookup(DAOInitializer.DS_CONTEXT);
 
-                        bean.setAuthDataSource(envContext.lookup(authRepo.getRepositoryHost()));
+                        bean.setAuthDataSource(envContext.lookup(DAOInitializer.REPOSITORY_HOST));
                     }
                     else
                     {
                         BasicDataSource dataSource = new BasicDataSource();
-                        dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(authRepo.getMinConnections())));
-                        dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(authRepo.getMaxConnections())));
-                        dataSource.setDriverClassName(connProps.getProperty(authRepo.getRepositoryDriver()));
-                        dataSource.setUrl(connProps.getProperty(authRepo.getRepositoryHost()));
-                        dataSource.setUsername(connProps.getProperty(authRepo.getRepositoryUser()));
+                        dataSource.setInitialSize(Integer.parseInt(connProps.getProperty(DAOInitializer.MIN_CONNECTIONS)));
+                        dataSource.setMaxActive(Integer.parseInt(connProps.getProperty(DAOInitializer.MAX_CONNECTIONS)));
+                        dataSource.setDriverClassName(connProps.getProperty(DAOInitializer.CONN_DRIVER));
+                        dataSource.setUrl(connProps.getProperty(DAOInitializer.REPOSITORY_HOST));
+                        dataSource.setUsername(connProps.getProperty(DAOInitializer.REPOSITORY_USER));
                         dataSource.setPassword(PasswordUtils.decryptText(
-                                connProps.getProperty(authRepo.getRepositoryPass()),
-                                connProps.getProperty(authRepo.getRepositorySalt()).length()));
+                                connProps.getProperty(DAOInitializer.REPOSITORY_PASS),
+                                connProps.getProperty(DAOInitializer.REPOSITORY_SALT).length()));
 
                         bean.setAuthDataSource(dataSource);
                     }
@@ -237,12 +233,6 @@ public final class DAOInitializer
 
             throw new SecurityServiceException(lx.getMessage(), lx);
         }
-        catch (IOException iox)
-        {
-            ERROR_RECORDER.error(iox.getMessage(), iox);
-
-            throw new SecurityServiceException(iox.getMessage(), iox);
-        }
         catch (GeneralSecurityException gsx)
         {
             ERROR_RECORDER.error(gsx.getMessage(), gsx);
@@ -255,16 +245,17 @@ public final class DAOInitializer
 
             throw new SecurityServiceException(nx.getMessage(), nx);
         }
-        finally
+        catch (FileNotFoundException fnfx)
         {
-            try
-            {
-                fileStream.close();
-            }
-            catch (IOException iox)
-            {
-                ERROR_RECORDER.error(iox.getMessage(), iox);
-            }
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new SecurityServiceException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new SecurityServiceException(iox.getMessage(), iox);
         }
     }
 
@@ -274,21 +265,36 @@ public final class DAOInitializer
      * @param bean - The <code>SecurityServiceBean</code> that holds the connection
      * @throws SecurityServiceException if an exception occurs closing the connection
      */
-    public synchronized static void closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
+    public synchronized static void closeAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException
     {
-        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final AuthRepo authRepo, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
+        String methodName = DAOInitializer.CNAME + "#closeAuthConnection(final File properties, final boolean isContainer, final SecurityServiceBean bean) throws SecurityServiceException";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
-            DEBUGGER.debug("AuthRepo: {}", authRepo);
+            DEBUGGER.debug("File: {}", properties);
             DEBUGGER.debug("isContainer: {}", isContainer);
             DEBUGGER.debug("SecurityServiceBean: {}", bean);
         }
 
         try
         {
-            switch (authRepo.getRepoType())
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(properties));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
+            AuthRepositoryType repoType = AuthRepositoryType.valueOf(connProps.getProperty(DAOInitializer.REPO_TYPE));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("AuthRepositoryType: {}", repoType);
+            }
+
+            switch (repoType)
             {
                 case LDAP:
                     LDAPConnectionPool ldapPool = (LDAPConnectionPool) bean.getAuthDataSource();
@@ -329,6 +335,14 @@ public final class DAOInitializer
         catch (SQLException sqx)
         {
             ERROR_RECORDER.error(sqx.getMessage(), sqx);
+        }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
         }
     }
 }

@@ -27,10 +27,16 @@ package com.cws.esolutions.security.dao.keymgmt.impl;
  */
 import java.util.List;
 import java.util.Arrays;
+import java.util.Properties;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.sql.Connection;
+
 import javax.sql.DataSource;
+
 import java.sql.SQLException;
 import java.security.KeyPair;
 import java.security.PublicKey;
@@ -38,8 +44,11 @@ import java.security.KeyFactory;
 import java.security.PrivateKey;
 import java.sql.CallableStatement;
 import java.security.SecureRandom;
+
 import com.unboundid.ldap.sdk.Filter;
+
 import java.security.KeyPairGenerator;
+
 import com.unboundid.ldap.sdk.ResultCode;
 import com.unboundid.ldap.sdk.LDAPResult;
 import com.unboundid.ldap.sdk.SearchScope;
@@ -49,14 +58,18 @@ import com.unboundid.ldap.sdk.ModifyRequest;
 import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.SearchRequest;
 import com.unboundid.ldap.sdk.LDAPConnection;
+
 import java.security.spec.X509EncodedKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.PKCS8EncodedKeySpec;
+
 import com.unboundid.ldap.sdk.ModificationType;
 import com.unboundid.ldap.sdk.SearchResultEntry;
 import com.unboundid.ldap.sdk.LDAPConnectionPool;
+
 import java.security.spec.InvalidKeySpecException;
 
+import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.dao.keymgmt.interfaces.KeyManager;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 /**
@@ -97,6 +110,14 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
@@ -127,7 +148,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryUserBase(),
+                            connProps.getProperty(SecurityServiceConstants.USER_BASE),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -206,7 +227,7 @@ public class LDAPKeyManager implements KeyManager
                             "(&("  + authData.getCommonName() +  "=" + guid + ")))");
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryUserBase(),
+                            connProps.getProperty(SecurityServiceConstants.USER_BASE),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getPublicKey());
@@ -278,6 +299,18 @@ public class LDAPKeyManager implements KeyManager
 
             throw new KeyManagementException(lx.getMessage(), lx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new KeyManagementException(iox.getMessage(), iox);
+        }
         finally
         {
             try
@@ -339,6 +372,14 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
@@ -369,7 +410,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryUserBase(),
+                            connProps.getProperty(SecurityServiceConstants.USER_BASE),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -490,6 +531,18 @@ public class LDAPKeyManager implements KeyManager
 
             throw new KeyManagementException(lx.getMessage(), lx);
         }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new KeyManagementException(iox.getMessage(), iox);
+        }
         finally
         {
             try
@@ -551,6 +604,14 @@ public class LDAPKeyManager implements KeyManager
 
         try
         {
+            Properties connProps = new Properties();
+            connProps.load(new FileInputStream(secConfig.getAuthConfig()));
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("Properties: {}", connProps);
+            }
+
             ldapPool = (LDAPConnectionPool) svcBean.getAuthDataSource();
             sqlConn = dataSource.getConnection();
 
@@ -581,7 +642,7 @@ public class LDAPKeyManager implements KeyManager
                     }
 
                     searchReq = new SearchRequest(
-                            authRepo.getRepositoryUserBase(),
+                            connProps.getProperty(SecurityServiceConstants.USER_BASE),
                             SearchScope.SUB,
                             searchFilter,
                             authData.getUserId(),
@@ -665,6 +726,18 @@ public class LDAPKeyManager implements KeyManager
             ERROR_RECORDER.error(lx.getMessage(), lx);
 
             throw new KeyManagementException(lx.getMessage(), lx);
+        }
+        catch (FileNotFoundException fnfx)
+        {
+            ERROR_RECORDER.error(fnfx.getMessage(), fnfx);
+
+            throw new KeyManagementException(fnfx.getMessage(), fnfx);
+        }
+        catch (IOException iox)
+        {
+            ERROR_RECORDER.error(iox.getMessage(), iox);
+
+            throw new KeyManagementException(iox.getMessage(), iox);
         }
         finally
         {

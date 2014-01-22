@@ -30,8 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthData;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
@@ -66,8 +64,6 @@ public interface IAccountChangeProcessor
     static final SecurityServiceBean secBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final AuthRepo authRepo = secBean.getConfigData().getAuthRepo();
-    static final AuthData authData = secBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = secBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityConfig secConfig = secBean.getConfigData().getSecurityConfig();

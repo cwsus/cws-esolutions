@@ -49,20 +49,16 @@ import com.cws.esolutions.security.dao.userauth.enums.AuthenticationType;
 
 public class LoginActivity extends Activity
 {
-    private String sessionId = null;
-    private String methodName = null;
     private LoginType loginType = null;
-    private TextView tvRequestName = null;
-    private EditText etRequestValue = null;
-    private TextView tvResponseValue = null;
-    
+
     private static final String CNAME = LoginActivity.class.getName();
     private static final Logger DEBUGGER = LoggerFactory.getLogger(Constants.DEBUGGER);
     private static final boolean DEBUG = DEBUGGER.isDebugEnabled();
 
+    @Override
     public void onCreate(final Bundle bundle)
     {
-        methodName = CNAME + "#onCreate(final Bundle bundle)";
+        final String methodName = LoginActivity.CNAME + "#onCreate(final Bundle bundle)";
 
         if (DEBUG)
         {
@@ -71,64 +67,100 @@ public class LoginActivity extends Activity
         }
 
         super.onCreate(bundle);
+        super.setContentView(R.layout.activity_login);
+        super.setTitle(R.string.loginTitle);
 
-        setContentView(R.layout.activity_login);
-        setTitle(R.string.loginTitle);
+        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
+        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
+        final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
 
-        tvRequestName = (TextView) findViewById(R.id.tvRequestName);
-        etRequestValue = (EditText) findViewById(R.id.etRequestValue);
-        tvResponseValue = (TextView) findViewById(R.id.tvResponseValue);
-
-        if (getIntent().getExtras() != null)
+        if (DEBUG)
         {
-            if (getIntent().getExtras().containsKey(Constants.USER_DATA))
+            DEBUGGER.debug("TextView: {}", tvRequestName);
+            DEBUGGER.debug("EditText: {}", etRequestValue);
+            DEBUGGER.debug("TextView: {}", tvResponseValue);
+        }
+
+        if (super.getIntent().getExtras() != null)
+        {
+            if (super.getIntent().getExtras().containsKey(Constants.USER_DATA))
             {
-                UserAccount userAccount = (UserAccount) getIntent().getExtras().getSerializable(Constants.USER_DATA);
+                UserAccount userAccount = (UserAccount) super.getIntent().getExtras().getSerializable(Constants.USER_DATA);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("UserAccount: {}", userAccount);
+                }
 
                 if (userAccount != null)
                 {
                     // user already went through and submitted uid
-                    loginType = LoginType.PASSWORD;
+                    this.loginType = LoginType.PASSWORD;
                     tvRequestName.setText(R.string.tvPassword);
                     etRequestValue.setHint(R.string.hintPassword);
                     etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LoginType: {}", this.loginType);
+                        DEBUGGER.debug("TextView: {}", tvRequestName);
+                        DEBUGGER.debug("EditText: {}", etRequestValue);
+                        DEBUGGER.debug("TextView: {}", tvResponseValue);
+                    }
                 }
                 else
                 {
-                    getIntent().getExtras().remove(Constants.USER_DATA);
+                    super.getIntent().getExtras().remove(Constants.USER_DATA);
 
-                    loginType = LoginType.USERNAME;
+                    this.loginType = LoginType.USERNAME;
                     tvRequestName.setText(R.string.tvUsername);
                     etRequestValue.setHint(R.string.hintUsername);
                     etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("LoginType: {}", this.loginType);
+                        DEBUGGER.debug("TextView: {}", tvRequestName);
+                        DEBUGGER.debug("EditText: {}", etRequestValue);
+                        DEBUGGER.debug("TextView: {}", tvResponseValue);
+                    }
                 }
             }
         }
         else
         {
-            loginType = LoginType.USERNAME;
+            this.loginType = LoginType.USERNAME;
             tvRequestName.setText(R.string.tvUsername);
             etRequestValue.setHint(R.string.hintUsername);
             etRequestValue.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
+
+            if (DEBUG)
+            {
+                DEBUGGER.debug("LoginType: {}", this.loginType);
+                DEBUGGER.debug("TextView: {}", tvRequestName);
+                DEBUGGER.debug("EditText: {}", etRequestValue);
+                DEBUGGER.debug("TextView: {}", tvResponseValue);
+            }
         }
     }
 
+    @Override
     public void onBackPressed()
     {
-        methodName = CNAME + "#onBackPressed()";
+        final String methodName = LoginActivity.CNAME + "#onBackPressed()";
 
         if (DEBUG)
         {
             DEBUGGER.debug(methodName);
         }
 
-        finish();
+        super.finish();
     }
 
     @SuppressWarnings("unchecked")
     public void executeUserLogin(final View view) throws NoSuchAlgorithmException, UnsupportedEncodingException
     {
-        methodName = CNAME + "#executeUserLogin(final View view)";
+        final String methodName = LoginActivity.CNAME + "#executeUserLogin(final View view)";
 
         if (DEBUG)
         {
@@ -136,21 +168,42 @@ public class LoginActivity extends Activity
             DEBUGGER.debug("View: {}", view);
         }
 
+        final TextView tvRequestName = (TextView) super.findViewById(R.id.tvRequestName);
+        final EditText etRequestValue = (EditText) super.findViewById(R.id.etRequestValue);
+        final TextView tvResponseValue = (TextView) super.findViewById(R.id.tvResponseValue);
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("TextView: {}", tvRequestName);
+            DEBUGGER.debug("EditText: {}", etRequestValue);
+            DEBUGGER.debug("TextView: {}", tvResponseValue);
+        }
+
         if (StringUtils.isEmpty(etRequestValue.getText().toString()))
         {
             // no data provided
             // route through the request type
             // to display the right message
-            switch (loginType)
+            switch (this.loginType)
             {
                 case USERNAME:
                     tvResponseValue.setTextColor(Color.RED);
                     tvResponseValue.setText(R.string.txtUsernameRequired);
 
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("TextView: {}", tvResponseValue);
+                    }
+
                     break;
                 case PASSWORD:
                     tvResponseValue.setTextColor(Color.RED);
                     tvResponseValue.setText(R.string.txtPasswordRequired);
+
+                    if (DEBUG)
+                    {
+                        DEBUGGER.debug("TextView: {}", tvResponseValue);
+                    }
 
                     break;
                 case COMBINED:
@@ -170,14 +223,12 @@ public class LoginActivity extends Activity
             final List<Object> authRequest = new ArrayList<Object>(
                     Arrays.asList(
                             AuthenticationType.LOGIN,
-                            loginType,
-                            sessionId));
-            final UserAuthenticationTask userLogin = new UserAuthenticationTask(
-                    LoginActivity.this, MainActivity.class);
+                            this.loginType));
+            final UserAuthenticationTask userLogin = new UserAuthenticationTask(LoginActivity.this, MainActivity.class);
 
             if (DEBUG)
             {
-                DEBUGGER.debug("authRequest: {}", authRequest);
+                DEBUGGER.debug("List<Object>: {}", authRequest);
                 DEBUGGER.debug("UserAuthenticationTask: {}", userLogin);
             }
 
@@ -219,6 +270,11 @@ public class LoginActivity extends Activity
             {
                 tvResponseValue.setTextColor(Color.RED);
                 tvResponseValue.setText(R.string.txtSignonError);
+
+                if (DEBUG)
+                {
+                    DEBUGGER.debug("TextView: {}", tvResponseValue);
+                }
             }
         }
     }

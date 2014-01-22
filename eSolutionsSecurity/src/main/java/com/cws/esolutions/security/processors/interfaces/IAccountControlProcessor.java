@@ -30,21 +30,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthData;
-import com.cws.esolutions.security.config.xml.AuthRepo;
-import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
 import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.processors.impl.AuditProcessorImpl;
 import com.cws.esolutions.security.dao.usermgmt.interfaces.UserManager;
 import com.cws.esolutions.security.processors.dto.AccountControlRequest;
 import com.cws.esolutions.security.processors.dto.AccountControlResponse;
-import com.cws.esolutions.security.dao.userauth.interfaces.Authenticator;
 import com.cws.esolutions.security.processors.interfaces.IAuditProcessor;
 import com.cws.esolutions.security.services.impl.AccessControlServiceImpl;
 import com.cws.esolutions.security.dao.usermgmt.factory.UserManagerFactory;
 import com.cws.esolutions.security.services.interfaces.IAccessControlService;
-import com.cws.esolutions.security.dao.userauth.factory.AuthenticatorFactory;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.processors.exception.AccountControlException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
@@ -66,16 +61,12 @@ public interface IAccountControlProcessor
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
 
     static final IAuditProcessor auditor = new AuditProcessorImpl();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
-    static final AuthData authData = svcBean.getConfigData().getAuthData();
-    static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final IAccessControlService accessControl = new AccessControlServiceImpl();
     static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     static final IUserSecurityInformationDAO userSec = new UserSecurityInformationDAOImpl();
     static final UserManager userManager = UserManagerFactory.getUserManager(secConfig.getUserManager());
-    static final Authenticator authenticator = AuthenticatorFactory.getAuthenticator(secConfig.getAuthManager());
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();
@@ -90,8 +81,6 @@ public interface IAccountControlProcessor
     AccountControlResponse removeUserAccount(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse modifyUserSuspension(final AccountControlRequest request) throws AccountControlException;
-
-    AccountControlResponse modifyUserLockout(final AccountControlRequest request) throws AccountControlException;
 
     AccountControlResponse modifyUserRole(final AccountControlRequest request) throws AccountControlException;
 

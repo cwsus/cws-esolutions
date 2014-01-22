@@ -30,10 +30,10 @@ import java.security.KeyPair;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.SecurityServiceBean;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.config.xml.AuthData;
 import com.cws.esolutions.security.config.xml.KeyConfig;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.reference.impl.SecurityReferenceDAOImpl;
 import com.cws.esolutions.security.dao.keymgmt.exception.KeyManagementException;
 import com.cws.esolutions.security.dao.reference.interfaces.ISecurityReferenceDAO;
@@ -51,10 +51,9 @@ public interface KeyManager
 {
     static final ISecurityReferenceDAO secRef = new SecurityReferenceDAOImpl();
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final AuthData authData = svcBean.getConfigData().getAuthData();
     static final KeyConfig keyConfig = svcBean.getConfigData().getKeyConfig();
-
+    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
     static final IUserServiceInformationDAO userSvcs = new UserServiceInformationDAOImpl();
     
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);

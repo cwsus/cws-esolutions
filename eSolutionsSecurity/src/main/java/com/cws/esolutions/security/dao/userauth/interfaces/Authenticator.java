@@ -30,9 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.cws.esolutions.security.config.xml.AuthData;
-import com.cws.esolutions.security.config.xml.AuthRepo;
 import com.cws.esolutions.security.SecurityServiceBean;
 import com.cws.esolutions.security.SecurityServiceConstants;
+import com.cws.esolutions.security.config.xml.SecurityConfig;
 import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException;
 /**
  * Interface for the Application Data DAO layer. Allows access
@@ -45,8 +45,8 @@ import com.cws.esolutions.security.dao.userauth.exception.AuthenticatorException
 public interface Authenticator
 {
     static final SecurityServiceBean svcBean = SecurityServiceBean.getInstance();
-    static final AuthRepo authRepo = svcBean.getConfigData().getAuthRepo();
     static final AuthData authData = svcBean.getConfigData().getAuthData();
+    static final SecurityConfig secConfig = svcBean.getConfigData().getSecurityConfig();
 
     static final Logger DEBUGGER = LoggerFactory.getLogger(SecurityServiceConstants.DEBUGGER);
     static final boolean DEBUG = DEBUGGER.isDebugEnabled();

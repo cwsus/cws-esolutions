@@ -49,7 +49,6 @@ public final class SecurityConfigurationData implements Serializable
 {
     private String emailAddr = null;
     private AuthData authData = null;
-    private AuthRepo authRepo = null;
     private KeyConfig keyConfig = null;
     private SecurityConfig securityConfig = null;
     private ResourceConfig resourceConfig = null;
@@ -100,19 +99,6 @@ public final class SecurityConfigurationData implements Serializable
         }
         
         this.authData = value;
-    }
-
-    public final void setAuthRepo(final AuthRepo value)
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#setHostName(final AuthRepo value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-        
-        this.authRepo = value;
     }
 
     public final void setResourceConfig(final ResourceConfig value)
@@ -207,20 +193,6 @@ public final class SecurityConfigurationData implements Serializable
         }
         
         return this.authData;
-    }
-
-    @XmlElement(name = "auth-repo")
-    public final AuthRepo getAuthRepo()
-    {
-        final String methodName = SecurityConfigurationData.CNAME + "#getAuthRepo()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.authRepo);
-        }
-        
-        return this.authRepo;
     }
 
     @XmlElement(name = "resource-config")

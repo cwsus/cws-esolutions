@@ -130,7 +130,7 @@ public class SecurityServiceListener implements ServletContextListener
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(SecurityServiceConstants.DS_CONTEXT);
 
-                    DAOInitializer.configureAndCreateAuthConnection(configData.getAuthRepo(), true, SecurityServiceListener.svcBean);
+                    DAOInitializer.configureAndCreateAuthConnection(configData.getSecurityConfig().getAuthConfig(), true, SecurityServiceListener.svcBean);
 
                     Map<String, DataSource> dsMap = new HashMap<>();
 
@@ -176,14 +176,16 @@ public class SecurityServiceListener implements ServletContextListener
             DEBUGGER.debug("ServletContextEvent: {}", sContextEvent);
         }
 
+        SecurityConfigurationData config = SecurityServiceListener.svcBean.getConfigData();
+
         if (DEBUG)
         {
-            DEBUGGER.debug("SecurityConfigurationData: {}", SecurityServiceListener.svcBean.getConfigData());
+            DEBUGGER.debug("SecurityConfigurationData: {}", config);
         }
 
         try
         {
-            DAOInitializer.closeAuthConnection(SecurityServiceListener.svcBean.getConfigData().getAuthRepo(), true, svcBean);
+            DAOInitializer.closeAuthConnection(config.getSecurityConfig().getAuthConfig(), true, svcBean);
         }
         catch (SecurityServiceException ssx)
         {
