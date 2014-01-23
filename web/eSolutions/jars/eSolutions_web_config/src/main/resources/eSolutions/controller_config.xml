@@ -42,7 +42,6 @@
     <import resource="classpath:eSolutions/servlets/CommonController.xml" />
     <import resource="classpath:eSolutions/servlets/LoginController.xml" />
     <import resource="classpath:eSolutions/servlets/ServiceMessagingController.xml" />
-    <import resource="classpath:eSolutions/servlets/OnlineResetController.xml" />
     <import resource="classpath:eSolutions/servlets/ServiceManagementController.xml" />
     <import resource="classpath:eSolutions/servlets/SystemCheckController.xml" />    
     <import resource="classpath:eSolutions/servlets/SystemManagementController.xml" />

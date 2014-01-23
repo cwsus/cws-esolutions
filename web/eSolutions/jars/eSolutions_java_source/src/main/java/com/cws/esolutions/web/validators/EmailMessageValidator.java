@@ -13,6 +13,7 @@ package com.cws.esolutions.web.validators;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.regex.Pattern;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import org.springframework.validation.ValidationUtils;
@@ -113,8 +114,20 @@ public class EmailMessageValidator implements Validator
             DEBUGGER.debug("Errors: {}", errors);
         }
 
+		final Pattern pattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
+
+        if (DEBUG)
+        {
+            DEBUGGER.debug("Pattern: {}", pattern);
+        }
+
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "messageBody", this.messageBodyRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "emailAddr", this.messageFromRequired);
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "messageSubject", this.messageSubjectRequired);
+
+        if (!(pattern.matcher(address).matches()))
+        {
+            errors.reject("emailAddr", this.messageFromRequired);
+        }
     }
 }

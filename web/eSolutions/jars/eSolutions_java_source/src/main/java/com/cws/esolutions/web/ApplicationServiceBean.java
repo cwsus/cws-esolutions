@@ -34,15 +34,11 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String dateFormat = null;
     @Autowired private String fileEncoding = null;
     @Autowired private String homeRedirect = null;
-    @Autowired private String secEmailAddr = null;
-    @Autowired private String svcEmailAddr = null;
     @Autowired private LogonType logonType = null;
     @Autowired private String logonRedirect = null;
-    @Autowired private int timeoutWarning = 840000;
     @Autowired private String applicationId = null;
     @Autowired private String applicationName = null;
     @Autowired private String unavailablePage = null;
-    @Autowired private String expiredRedirect = null;
     @Autowired private String unauthorizedPage = null;
     @Autowired private String contactAdminsPage = null;
     @Autowired private String errorResponsePage = null;
@@ -58,12 +54,8 @@ public class ApplicationServiceBean implements Serializable
     @Autowired private String messageUserNotLoggedIn = null;
     @Autowired private String messageValidationFailed = null;
     @Autowired private String messageEmailSentSuccess = null;
-    @Autowired private EmailAddressValidator emailValidator = null;
-    @Autowired private List<String> allowedAppFileExtensions = null;
-    @Autowired private List<String> allowedWebFileExtensions = null;
     @Autowired private EmailMessageValidator messageValidator = null;
     @Autowired private String messageRequestProcessingFailure = null;
-    @Autowired private String uploadDirectory = System.getProperty("java.io.tmpdir");
 
     private static final long serialVersionUID = 6547417416150985897L;
     private static final String CNAME = ApplicationServiceBean.class.getName();
@@ -109,19 +101,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.logonRedirect = value;
-    }
-
-    public final void setExpiredRedirect(final String value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setExpiredRedirect(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.expiredRedirect = value;
     }
 
     public final void setHomeRedirect(final String value)
@@ -267,45 +246,6 @@ public class ApplicationServiceBean implements Serializable
         this.dateFormat = value;
     }
 
-    public final void setSecEmailAddr(final String value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setSecEmailAddr(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.secEmailAddr = value;
-    }
-
-    public final void setSvcEmailAddr(final String value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setSvcEmailAddr(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.svcEmailAddr = value;
-    }
-
-    public final void setTimeoutWarning(final int value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setTimeoutWarning(final int value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.timeoutWarning = value;
-    }
-
     public final void setApplicationName(final String value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setApplicationName(final String value)";
@@ -343,45 +283,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         this.services = value;
-    }
-
-    public final void setUploadDirectory(final String value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setUploadDirectory(final String value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.uploadDirectory = value;
-    }
-
-    public final void setAllowedAppFileExtensions(final List<String> value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setAllowedAppFileExtensions(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.allowedAppFileExtensions = value;
-    }
-
-    public final void setAllowedWebFileExtensions(final List<String> value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setAllowedWebFileExtensions(final List<String> value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.allowedWebFileExtensions = value;
     }
 
     public final void setMessageRequestCanceled(final String value)
@@ -488,19 +389,6 @@ public class ApplicationServiceBean implements Serializable
         this.messageEmailSentSuccess = value;
     }
 
-    public final void setEmailValidator(final EmailAddressValidator value)
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#setEmailValidator(final EmailAddressValidator value)";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", value);
-        }
-
-        this.emailValidator = value;
-    }
-
     public final void setMessageValidator(final EmailMessageValidator value)
     {
         final String methodName = ApplicationServiceBean.CNAME + "#setMessageValidator(final EmailMessageValidator value)";
@@ -566,19 +454,6 @@ public class ApplicationServiceBean implements Serializable
         return this.logonRedirect;
     }
 
-    public final String getExpiredRedirect()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getExpiredRedirect()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.expiredRedirect);
-        }
-
-        return this.expiredRedirect;
-    }
-
     public final String getHomeRedirect()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getHomeRedirect()";
@@ -618,45 +493,6 @@ public class ApplicationServiceBean implements Serializable
         return this.dateFormat;
     }
 
-    public final String getSecEmailAddr()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getSecEmailAddr()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.secEmailAddr);
-        }
-
-        return this.secEmailAddr;
-    }
-
-    public final String getSvcEmailAddr()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getSvcEmailAddr()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.svcEmailAddr);
-        }
-
-        return this.svcEmailAddr;
-    }
-
-    public final long getTimeoutWarning()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getTimeoutWarning()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.timeoutWarning);
-        }
-
-        return this.timeoutWarning;
-    }
-
     public final String getApplicationName()
     {
         final String methodName = ApplicationServiceBean.CNAME + "#getApplicationName()";
@@ -694,19 +530,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.services;
-    }
-
-    public final String getUploadDirectory()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getUploadDirectory()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.uploadDirectory);
-        }
-
-        return this.uploadDirectory;
     }
 
     public final String getHomePage()
@@ -798,32 +621,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.requestCompletePage;
-    }
-
-    public final List<String> getAllowedAppFileExtensions()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getAllowedAppFileExtensions()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.allowedAppFileExtensions);
-        }
-
-        return this.allowedAppFileExtensions;
-    }
-
-    public final List<String> getAllowedWebFileExtensions()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getAllowedWebFileExtensions()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.allowedWebFileExtensions);
-        }
-
-        return this.allowedWebFileExtensions;
     }
 
     public final String getMessageRequestCanceled()
@@ -928,19 +725,6 @@ public class ApplicationServiceBean implements Serializable
         }
 
         return this.messageEmailSentSuccess;
-    }
-
-    public final EmailAddressValidator getEmailValidator()
-    {
-        final String methodName = ApplicationServiceBean.CNAME + "#getEmailValidator()";
-
-        if (DEBUG)
-        {
-            DEBUGGER.debug(methodName);
-            DEBUGGER.debug("Value: {}", this.emailValidator);
-        }
-
-        return this.emailValidator;
     }
 
     public final EmailMessageValidator getMessageValidator()

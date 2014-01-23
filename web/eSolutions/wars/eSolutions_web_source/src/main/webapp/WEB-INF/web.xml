@@ -69,9 +69,6 @@
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
-    <listener>
-        <listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
-    </listener>
 
     <filter id="SSLEnforcementFilter">
         <description>Security Service SSL Enforcement</description>
